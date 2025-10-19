@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# Cleanup script for Rmlx
+
+rm -f src/Makevars
+exit 0

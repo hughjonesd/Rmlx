@@ -1,0 +1,82 @@
+#!/bin/sh
+
+# Configure script for Rmlx: detect MLX headers and libraries
+
+echo "Checking for MLX (Apple Machine Learning eXchange)..."
+
+# Allow environment variable overrides
+MLX_INCLUDE=${MLX_INCLUDE:-""}
+MLX_LIB_DIR=${MLX_LIB_DIR:-""}
+MLX_LIBS=${MLX_LIBS:-"-lmlx"}
+
+# Search paths for headers if not specified
+if [ -z "$MLX_INCLUDE" ]; then
+  for dir in \
+    /opt/homebrew/include \
+    /usr/local/include \
+    "$(xcrun --show-sdk-path 2>/dev/null)/usr/include"
+  do
+    if [ -d "$dir" ] && [ -f "$dir/mlx/mlx.h" ]; then
+      MLX_INCLUDE="$dir"
+      echo "Found MLX headers in: $MLX_INCLUDE"
+      break
+    fi
+  done
+fi
+
+# Search paths for libraries if not specified
+if [ -z "$MLX_LIB_DIR" ]; then
+  for dir in \
+    /opt/homebrew/lib \
+    /usr/local/lib
+  do
+    if [ -d "$dir" ] && [ -f "$dir/libmlx.dylib" -o -f "$dir/libmlx.a" ]; then
+      MLX_LIB_DIR="$dir"
+      echo "Found MLX library in: $MLX_LIB_DIR"
+      break
+    fi
+  done
+fi
+
+# Check if we found everything
+if [ -z "$MLX_INCLUDE" ]; then
+  echo ""
+  echo "ERROR: MLX headers not found!"
+  echo ""
+  echo "MLX (Apple Machine Learning eXchange) is required to build this package."
+  echo "This package is designed for macOS on Apple Silicon."
+  echo ""
+  echo "To install MLX, you can:"
+  echo "  1. Use Homebrew: brew install mlx"
+  echo "  2. Build from source: https://github.com/ml-explore/mlx"
+  echo ""
+  echo "Or set environment variables:"
+  echo "  MLX_INCLUDE=/path/to/mlx/include"
+  echo "  MLX_LIB_DIR=/path/to/mlx/lib"
+  echo ""
+  exit 1
+fi
+
+if [ -z "$MLX_LIB_DIR" ]; then
+  echo ""
+  echo "ERROR: MLX library not found!"
+  echo ""
+  echo "MLX (Apple Machine Learning eXchange) library is required."
+  echo "Please install MLX or set MLX_LIB_DIR environment variable."
+  echo ""
+  exit 1
+fi
+
+# Write src/Makevars
+echo "Writing src/Makevars..."
+cat > src/Makevars <<EOF
+PKG_CPPFLAGS = -I${MLX_INCLUDE}
+PKG_LIBS = -L${MLX_LIB_DIR} ${MLX_LIBS}
+EOF
+
+echo "Configuration successful!"
+echo "  MLX_INCLUDE: $MLX_INCLUDE"
+echo "  MLX_LIB_DIR: $MLX_LIB_DIR"
+echo "  MLX_LIBS: $MLX_LIBS"
+
+exit 0
