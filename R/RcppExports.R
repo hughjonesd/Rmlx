@@ -57,6 +57,10 @@ cpp_mlx_slice <- function(xp_, starts_, stops_, strides_) {
     .Call(`_Rmlx_cpp_mlx_slice`, xp_, starts_, stops_, strides_)
 }
 
+cpp_mlx_cumulative <- function(xp_, op) {
+    .Call(`_Rmlx_cpp_mlx_cumulative`, xp_, op)
+}
+
 cpp_mlx_solve <- function(a_xp_, b_xp_) {
     .Call(`_Rmlx_cpp_mlx_solve`, a_xp_, b_xp_)
 }

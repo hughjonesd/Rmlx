@@ -122,3 +122,54 @@ test_that("abs and sign work", {
   result_sign <- as.matrix(sign(x_mlx))
   expect_equal(result_sign, sign(x), tolerance = 1e-6)
 })
+
+test_that("cumulative operations work", {
+  x <- matrix(1:12, 3, 4)
+  x_mlx <- as_mlx(x)
+
+  # cumsum returns 1D mlx array
+  result_cumsum <- as.vector(cumsum(x_mlx))
+  expect_equal(result_cumsum, cumsum(x), tolerance = 1e-6)
+
+  # cumprod
+  result_cumprod <- as.vector(cumprod(x_mlx))
+  expect_equal(result_cumprod, cumprod(x), tolerance = 1e-6)
+
+  # cummax
+  x2 <- matrix(c(5, 2, 8, 3, 1, 9, 4, 7, 6, 10, 11, 12), 3, 4)
+  x2_mlx <- as_mlx(x2)
+  result_cummax <- as.vector(cummax(x2_mlx))
+  expect_equal(result_cummax, cummax(x2), tolerance = 1e-6)
+
+  # cummin
+  result_cummin <- as.vector(cummin(x2_mlx))
+  expect_equal(result_cummin, cummin(x2), tolerance = 1e-6)
+})
+
+test_that("unsupported Math functions fall back to R", {
+  x <- matrix(seq(-2.7, 2.7, length.out = 12), 3, 4)
+  x_mlx <- as_mlx(x)
+
+  # trunc not in MLX, should fall back to R with warning
+  expect_warning(
+    result_trunc <- as.matrix(trunc(x_mlx)),
+    "MLX does not support 'trunc'"
+  )
+  expect_equal(result_trunc, trunc(x), tolerance = 1e-6)
+
+  # gamma not in MLX, should fall back to R with warning
+  x_pos <- matrix(seq(0.5, 3.5, length.out = 12), 3, 4)
+  x_pos_mlx <- as_mlx(x_pos)
+  expect_warning(
+    result_gamma <- as.matrix(gamma(x_pos_mlx)),
+    "MLX does not support 'gamma'"
+  )
+  expect_equal(result_gamma, gamma(x_pos), tolerance = 1e-6)
+
+  # lgamma not in MLX, should fall back to R with warning
+  expect_warning(
+    result_lgamma <- as.matrix(lgamma(x_pos_mlx)),
+    "MLX does not support 'lgamma'"
+  )
+  expect_equal(result_lgamma, lgamma(x_pos), tolerance = 1e-6)
+})

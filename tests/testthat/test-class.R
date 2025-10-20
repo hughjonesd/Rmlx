@@ -46,3 +46,21 @@ test_that("mlx_eval runs without error", {
 
   expect_invisible(mlx_eval(m_mlx))
 })
+
+test_that("as.vector.mlx works for 1D arrays", {
+  v <- 1:10
+  v_mlx <- as_mlx(v)
+
+  v_back <- as.vector(v_mlx)
+  expect_equal(v_back, as.numeric(v))
+})
+
+test_that("as.vector.mlx fails for multi-dimensional arrays", {
+  m <- matrix(1:12, 3, 4)
+  m_mlx <- as_mlx(m)
+
+  expect_error(
+    as.vector(m_mlx),
+    "Cannot convert multi-dimensional mlx array to vector"
+  )
+})

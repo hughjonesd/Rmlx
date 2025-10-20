@@ -205,6 +205,28 @@ SEXP cpp_mlx_slice(SEXP xp_, SEXP starts_, SEXP stops_, SEXP strides_) {
   return make_mlx_xptr(std::move(result));
 }
 
+// Cumulative operations (flatten array)
+// [[Rcpp::export]]
+SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+
+  array result = [&]() -> array {
+    if (op == "cumsum") {
+      return cumsum(wrapper->get());
+    } else if (op == "cumprod") {
+      return cumprod(wrapper->get());
+    } else if (op == "cummax") {
+      return cummax(wrapper->get());
+    } else if (op == "cummin") {
+      return cummin(wrapper->get());
+    } else {
+      Rcpp::stop("Unsupported cumulative operation: " + op);
+    }
+  }();
+
+  return make_mlx_xptr(std::move(result));
+}
+
 // Linear algebra operations
 // [[Rcpp::export]]
 SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_) {

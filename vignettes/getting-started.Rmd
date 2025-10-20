@@ -73,7 +73,7 @@ z <- x + y * 2
 mlx_eval(z)
 
 # Or convert to R (automatically evaluates)
-result <- as.matrix(z)
+as.matrix(z)
 ```
 
 ## Arithmetic Operations

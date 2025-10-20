@@ -79,6 +79,21 @@ as.array.mlx <- function(x, ...) {
   as.matrix.mlx(x, ...)
 }
 
+#' Convert MLX array to R vector
+#'
+#' @param x An \code{mlx} object
+#' @param mode Character string specifying the mode (ignored)
+#' @return A numeric vector
+#' @export
+as.vector.mlx <- function(x, mode = "any") {
+  # Only works for 1D arrays
+  if (length(x$dim) != 1) {
+    stop("Cannot convert multi-dimensional mlx array to vector. Use as.vector(as.matrix(x)) to flatten.")
+  }
+
+  as.vector(as.matrix(x))
+}
+
 #' Test if object is an MLX array
 #'
 #' @param x Object to test
