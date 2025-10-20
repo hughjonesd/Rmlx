@@ -17,18 +17,56 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
       return negative(wrapper->get());
     } else if (op == "abs") {
       return abs(wrapper->get());
+    } else if (op == "sign") {
+      return sign(wrapper->get());
     } else if (op == "sqrt") {
       return sqrt(wrapper->get());
+    } else if (op == "rsqrt") {
+      return rsqrt(wrapper->get());
+    } else if (op == "square") {
+      return square(wrapper->get());
     } else if (op == "exp") {
       return exp(wrapper->get());
+    } else if (op == "expm1") {
+      return expm1(wrapper->get());
     } else if (op == "log") {
       return log(wrapper->get());
+    } else if (op == "log2") {
+      return log2(wrapper->get());
+    } else if (op == "log10") {
+      return log10(wrapper->get());
+    } else if (op == "log1p") {
+      return log1p(wrapper->get());
     } else if (op == "sin") {
       return sin(wrapper->get());
     } else if (op == "cos") {
       return cos(wrapper->get());
     } else if (op == "tan") {
       return tan(wrapper->get());
+    } else if (op == "asin") {
+      return arcsin(wrapper->get());
+    } else if (op == "acos") {
+      return arccos(wrapper->get());
+    } else if (op == "atan") {
+      return arctan(wrapper->get());
+    } else if (op == "sinh") {
+      return sinh(wrapper->get());
+    } else if (op == "cosh") {
+      return cosh(wrapper->get());
+    } else if (op == "tanh") {
+      return tanh(wrapper->get());
+    } else if (op == "asinh") {
+      return arcsinh(wrapper->get());
+    } else if (op == "acosh") {
+      return arccosh(wrapper->get());
+    } else if (op == "atanh") {
+      return arctanh(wrapper->get());
+    } else if (op == "floor") {
+      return floor(wrapper->get());
+    } else if (op == "ceil") {
+      return ceil(wrapper->get());
+    } else if (op == "round") {
+      return round(wrapper->get());
     } else {
       Rcpp::stop("Unsupported unary operation: " + op);
     }

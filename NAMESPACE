@@ -2,6 +2,7 @@
 
 S3method("%*%",mlx)
 S3method("[",mlx)
+S3method(Math,mlx)
 S3method(Ops,mlx)
 S3method(as.array,mlx)
 S3method(as.matrix,mlx)
