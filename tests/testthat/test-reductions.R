@@ -1,7 +1,4 @@
 test_that("sum works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
@@ -10,9 +7,6 @@ test_that("sum works", {
 })
 
 test_that("mean works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
@@ -21,9 +15,6 @@ test_that("mean works", {
 })
 
 test_that("colMeans works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
@@ -32,9 +23,6 @@ test_that("colMeans works", {
 })
 
 test_that("rowMeans works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 

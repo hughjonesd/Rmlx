@@ -1,7 +1,4 @@
 test_that("matrix multiplication works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   a <- matrix(1:6, 2, 3)
   b <- matrix(1:6, 3, 2)
 
@@ -15,9 +12,6 @@ test_that("matrix multiplication works", {
 })
 
 test_that("matrix multiplication dimension checking works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   a <- matrix(1:6, 2, 3)
   b <- matrix(1:6, 2, 3)  # Non-conformable
 
@@ -28,9 +22,6 @@ test_that("matrix multiplication dimension checking works", {
 })
 
 test_that("transpose works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
@@ -42,9 +33,6 @@ test_that("transpose works", {
 })
 
 test_that("crossprod works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(rnorm(20), 5, 4)
   x_mlx <- as_mlx(x)
 
@@ -60,9 +48,6 @@ test_that("crossprod works", {
 })
 
 test_that("tcrossprod works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(rnorm(20), 5, 4)
   x_mlx <- as_mlx(x)
 

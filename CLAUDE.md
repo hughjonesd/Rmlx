@@ -121,3 +121,4 @@ After editing docs:
 R -q -e 'devtools::document()'
 ```
 - Where possible, use usethis:: package commands to do things the canonical way.
+- the array type doesn't have a default constructor!

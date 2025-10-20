@@ -1,7 +1,4 @@
 test_that("as_mlx converts R objects correctly", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   # Vector
   v <- 1:10
   v_mlx <- as_mlx(v)
@@ -17,9 +14,6 @@ test_that("as_mlx converts R objects correctly", {
 })
 
 test_that("roundtrip conversion preserves values", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   m <- matrix(rnorm(20), 4, 5)
   m_mlx <- as_mlx(m)
   m_back <- as.matrix(m_mlx)
@@ -28,9 +22,6 @@ test_that("roundtrip conversion preserves values", {
 })
 
 test_that("dtype argument works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   m <- matrix(1:12, 3, 4)
   m_fp32 <- as_mlx(m, dtype = "float32")
   m_fp64 <- as_mlx(m, dtype = "float64")
@@ -50,9 +41,6 @@ test_that("is.mlx works", {
 })
 
 test_that("mlx_eval runs without error", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   m <- matrix(1:12, 3, 4)
   m_mlx <- as_mlx(m)
 

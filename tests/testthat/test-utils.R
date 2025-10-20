@@ -1,7 +1,4 @@
 test_that("print.mlx works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
@@ -11,9 +8,6 @@ test_that("print.mlx works", {
 })
 
 test_that("dim.mlx works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
@@ -21,9 +15,6 @@ test_that("dim.mlx works", {
 })
 
 test_that("length.mlx works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
@@ -31,9 +22,6 @@ test_that("length.mlx works", {
 })
 
 test_that("mlx_dim works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
@@ -41,9 +29,6 @@ test_that("mlx_dim works", {
 })
 
 test_that("mlx_dtype works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x, dtype = "float32")
 

@@ -18,9 +18,6 @@ test_that("mlx_default_device setter works", {
 })
 
 test_that("device argument is respected", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
 
   x_gpu <- as_mlx(x, device = "gpu")

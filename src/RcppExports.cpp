@@ -180,6 +180,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_solve
+SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_solve(SEXP a_xp_SEXP, SEXP b_xp_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type b_xp_(b_xp_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_solve(a_xp_, b_xp_));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_from_numeric", (DL_FUNC) &_Rmlx_cpp_mlx_from_numeric, 4},
@@ -196,6 +208,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_reshape", (DL_FUNC) &_Rmlx_cpp_mlx_reshape, 2},
     {"_Rmlx_cpp_mlx_matmul", (DL_FUNC) &_Rmlx_cpp_mlx_matmul, 2},
     {"_Rmlx_cpp_mlx_slice", (DL_FUNC) &_Rmlx_cpp_mlx_slice, 4},
+    {"_Rmlx_cpp_mlx_solve", (DL_FUNC) &_Rmlx_cpp_mlx_solve, 2},
     {NULL, NULL, 0}
 };
 

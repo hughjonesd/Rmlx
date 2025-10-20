@@ -166,3 +166,25 @@ SEXP cpp_mlx_slice(SEXP xp_, SEXP starts_, SEXP stops_, SEXP strides_) {
 
   return make_mlx_xptr(std::move(result));
 }
+
+// Linear algebra operations
+// [[Rcpp::export]]
+SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  // linalg operations currently require CPU stream
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+
+  array result = [&]() -> array {
+    if (b_xp_ == R_NilValue) {
+      // No b provided: compute matrix inverse
+      return linalg::inv(a_wrapper->get(), cpu_stream);
+    } else {
+      // b provided: solve linear system Ax = b
+      MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
+      return linalg::solve(a_wrapper->get(), b_wrapper->get(), cpu_stream);
+    }
+  }();
+
+  return make_mlx_xptr(std::move(result));
+}

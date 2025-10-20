@@ -1,7 +1,4 @@
 test_that("arithmetic operations work", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   y <- matrix(13:24, 3, 4)
 
@@ -30,9 +27,6 @@ test_that("arithmetic operations work", {
 })
 
 test_that("unary negation works", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
@@ -41,9 +35,6 @@ test_that("unary negation works", {
 })
 
 test_that("comparison operators work", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   y <- matrix(c(1:6, 13:18), 3, 4)
 
@@ -64,9 +55,6 @@ test_that("comparison operators work", {
 })
 
 test_that("scalar operations work", {
-  skip_if_not_installed("Rmlx")
-  skip_on_cran()
-
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
