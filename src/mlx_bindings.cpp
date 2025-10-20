@@ -83,6 +83,45 @@ Device string_to_device(const std::string& device) {
   Rcpp::stop("Unsupported device: " + device);
 }
 
+// Helper: Reorder data from R (column-major) to MLX (row-major) for 2D arrays
+// Instead of transpose, we physically rearrange elements
+std::vector<double> reorder_col_major_to_row_major(const double* data, int nrow, int ncol) {
+  std::vector<double> result(nrow * ncol);
+  for (int i = 0; i < nrow; i++) {
+    for (int j = 0; j < ncol; j++) {
+      result[i * ncol + j] = data[j * nrow + i];  // col-major[j,i] -> row-major[i,j]
+    }
+  }
+  return result;
+}
+
+std::vector<float> reorder_col_major_to_row_major_f32(const double* data, int nrow, int ncol) {
+  std::vector<float> result(nrow * ncol);
+  for (int i = 0; i < nrow; i++) {
+    for (int j = 0; j < ncol; j++) {
+      result[i * ncol + j] = static_cast<float>(data[j * nrow + i]);
+    }
+  }
+  return result;
+}
+
+// Helper: Reorder data from MLX (row-major) to R (column-major) for 2D arrays
+void reorder_row_major_to_col_major(const double* src, double* dst, int nrow, int ncol) {
+  for (int i = 0; i < nrow; i++) {
+    for (int j = 0; j < ncol; j++) {
+      dst[j * nrow + i] = src[i * ncol + j];  // row-major[i,j] -> col-major[j,i]
+    }
+  }
+}
+
+void reorder_row_major_to_col_major_f32(const float* src, double* dst, int nrow, int ncol) {
+  for (int i = 0; i < nrow; i++) {
+    for (int j = 0; j < ncol; j++) {
+      dst[j * nrow + i] = static_cast<double>(src[i * ncol + j]);
+    }
+  }
+}
+
 } // namespace rmlx
 
 using namespace rmlx;
@@ -101,16 +140,29 @@ SEXP cpp_mlx_from_numeric(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
   Dtype dt = string_to_dtype(dtype_str);
   StreamOrDevice dev = string_to_device(device_str);
 
-  // Copy data from R to MLX on CPU first, then move to device
-  // R uses column-major, MLX uses row-major
+  // Copy data from R to MLX, reordering for layout if needed
   array arr_cpu = [&]() -> array {
-    if (dt == float64) {
-      return array(x.begin(), shape, float64);
-    } else if (dt == float32) {
-      std::vector<float> data_f32(x.begin(), x.end());
-      return array(data_f32.begin(), shape, float32);
+    if (shape.size() == 2) {
+      // 2D: reorder from column-major to row-major
+      if (dt == float64) {
+        std::vector<double> data_reordered = reorder_col_major_to_row_major(x.begin(), shape[0], shape[1]);
+        return array(data_reordered.data(), shape, float64);
+      } else if (dt == float32) {
+        std::vector<float> data_reordered = reorder_col_major_to_row_major_f32(x.begin(), shape[0], shape[1]);
+        return array(data_reordered.data(), shape, float32);
+      } else {
+        Rcpp::stop("Unsupported dtype for conversion from numeric");
+      }
     } else {
-      Rcpp::stop("Unsupported dtype for conversion from numeric");
+      // 1D or 3D+: no reordering needed
+      if (dt == float64) {
+        return array(x.begin(), shape, float64);
+      } else if (dt == float32) {
+        std::vector<float> data_f32(x.begin(), x.end());
+        return array(data_f32.begin(), shape, float32);
+      } else {
+        Rcpp::stop("Unsupported dtype for conversion from numeric");
+      }
     }
   }();
 
@@ -136,30 +188,77 @@ SEXP cpp_mlx_empty(SEXP dim_, SEXP dtype_, SEXP device_) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_to_numeric(SEXP xp_) {
+SEXP cpp_mlx_to_r(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
+
+  // Ensure array is row-contiguous before extracting data
+  // This is important for transposed arrays which may have non-standard strides
+  if (arr.ndim() >= 2) {
+    arr = contiguous(arr);
+  }
 
   // Evaluate first
   eval(arr);
 
-  // Get total size
+  // Get total size and shape
   int total_size = arr.size();
+  const auto& shape = arr.shape();
 
-  // Create output vector
+  // For boolean arrays, return LogicalVector
+  if (arr.dtype() == bool_) {
+    LogicalVector result(total_size);
+
+    if (arr.ndim() == 2) {
+      // 2D: reorder from row-major to column-major
+      int nrow = shape[0];
+      int ncol = shape[1];
+      const bool* data = arr.data<bool>();
+      for (int i = 0; i < nrow; i++) {
+        for (int j = 0; j < ncol; j++) {
+          result[j * nrow + i] = data[i * ncol + j];
+        }
+      }
+    } else {
+      // 1D or 3D+: no reordering needed
+      const bool* data = arr.data<bool>();
+      for (int i = 0; i < total_size; ++i) {
+        result[i] = data[i];
+      }
+    }
+    return result;
+  }
+
+  // For numeric arrays, return NumericVector
   NumericVector result(total_size);
 
-  // Copy data
-  if (arr.dtype() == float64) {
-    const double* data = arr.data<double>();
-    std::copy(data, data + total_size, result.begin());
-  } else if (arr.dtype() == float32) {
-    const float* data = arr.data<float>();
-    for (int i = 0; i < total_size; ++i) {
-      result[i] = static_cast<double>(data[i]);
+  // Copy data, reordering for layout if needed
+  if (arr.ndim() == 2) {
+    // 2D: reorder from row-major to column-major
+    int nrow = shape[0];
+    int ncol = shape[1];
+    if (arr.dtype() == float64) {
+      const double* data = arr.data<double>();
+      reorder_row_major_to_col_major(data, result.begin(), nrow, ncol);
+    } else if (arr.dtype() == float32) {
+      const float* data = arr.data<float>();
+      reorder_row_major_to_col_major_f32(data, result.begin(), nrow, ncol);
+    } else {
+      Rcpp::stop("Unsupported dtype for conversion to R");
     }
   } else {
-    Rcpp::stop("Unsupported dtype for conversion to numeric");
+    // 1D or 3D+: no reordering needed
+    if (arr.dtype() == float64) {
+      const double* data = arr.data<double>();
+      std::copy(data, data + total_size, result.begin());
+    } else if (arr.dtype() == float32) {
+      const float* data = arr.data<float>();
+      for (int i = 0; i < total_size; ++i) {
+        result[i] = static_cast<double>(data[i]);
+      }
+    } else {
+      Rcpp::stop("Unsupported dtype for conversion to R");
+    }
   }
 
   return result;

@@ -59,12 +59,12 @@ mlx_eval <- function(x) {
 #'
 #' @param x An \code{mlx} object
 #' @param ... Additional arguments (ignored)
-#' @return A numeric matrix or array
+#' @return A matrix or array (numeric or logical depending on dtype)
 #' @export
 #' @method as.matrix mlx
 as.matrix.mlx <- function(x, ...) {
   mlx_eval(x)
-  out <- cpp_mlx_to_numeric(x$ptr)
+  out <- cpp_mlx_to_r(x$ptr)
   dim(out) <- x$dim
   out
 }

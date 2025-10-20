@@ -84,6 +84,8 @@ rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @export
 #' @method t mlx
 t.mlx <- function(x) {
+  # Must transpose in MLX so MLX shape matches R dims
+  # Layout conversion (physical reordering) happens at boundaries during copy
   ptr <- cpp_mlx_transpose(x$ptr)
   new_mlx(ptr, rev(x$dim), x$dtype, x$device)
 }

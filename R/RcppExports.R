@@ -9,8 +9,8 @@ cpp_mlx_empty <- function(dim_, dtype_, device_) {
     .Call(`_Rmlx_cpp_mlx_empty`, dim_, dtype_, device_)
 }
 
-cpp_mlx_to_numeric <- function(xp_) {
-    .Call(`_Rmlx_cpp_mlx_to_numeric`, xp_)
+cpp_mlx_to_r <- function(xp_) {
+    .Call(`_Rmlx_cpp_mlx_to_r`, xp_)
 }
 
 cpp_mlx_eval <- function(xp_) {

@@ -13,7 +13,7 @@ test_that("as_mlx converts R objects correctly", {
   m_mlx <- as_mlx(m)
   expect_s3_class(m_mlx, "mlx")
   expect_equal(m_mlx$dim, c(3L, 4L))
-  expect_equal(m_mlx$dtype, "float64")
+  expect_equal(m_mlx$dtype, "float32")  # Default is float32 for GPU compatibility
 })
 
 test_that("roundtrip conversion preserves values", {

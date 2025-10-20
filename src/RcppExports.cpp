@@ -37,14 +37,14 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_mlx_to_numeric
-SEXP cpp_mlx_to_numeric(SEXP xp_);
-RcppExport SEXP _Rmlx_cpp_mlx_to_numeric(SEXP xp_SEXP) {
+// cpp_mlx_to_r
+SEXP cpp_mlx_to_r(SEXP xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_to_r(SEXP xp_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_to_numeric(xp_));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_to_r(xp_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -184,7 +184,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_from_numeric", (DL_FUNC) &_Rmlx_cpp_mlx_from_numeric, 4},
     {"_Rmlx_cpp_mlx_empty", (DL_FUNC) &_Rmlx_cpp_mlx_empty, 3},
-    {"_Rmlx_cpp_mlx_to_numeric", (DL_FUNC) &_Rmlx_cpp_mlx_to_numeric, 1},
+    {"_Rmlx_cpp_mlx_to_r", (DL_FUNC) &_Rmlx_cpp_mlx_to_r, 1},
     {"_Rmlx_cpp_mlx_eval", (DL_FUNC) &_Rmlx_cpp_mlx_eval, 1},
     {"_Rmlx_cpp_mlx_shape", (DL_FUNC) &_Rmlx_cpp_mlx_shape, 1},
     {"_Rmlx_cpp_mlx_dtype", (DL_FUNC) &_Rmlx_cpp_mlx_dtype, 1},
