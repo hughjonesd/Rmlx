@@ -12,7 +12,7 @@
 \item{...}{Additional arguments (ignored)}
 }
 \value{
-A numeric matrix or array
+A matrix or array (numeric or logical depending on dtype)
 }
 \description{
 Convert MLX array to R matrix/array

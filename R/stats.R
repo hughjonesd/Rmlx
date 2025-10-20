@@ -77,6 +77,60 @@ rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
   .mlx_reduce_axis(x, "mean", axis = 1L, keepdims = FALSE)
 }
 
+#' Row sums generic
+#'
+#' @param x An array
+#' @param ... Additional arguments
+#' @export
+rowSums <- function(x, ...) {
+  UseMethod("rowSums")
+}
+
+#' Default rowSums method
+#' @export
+rowSums.default <- base::rowSums
+
+#' Row sums of MLX matrix
+#'
+#' @param x An \code{mlx} matrix
+#' @param na.rm Ignored (for compatibility)
+#' @param dims Which dimensions are regarded as rows (default: 1)
+#' @param ... Additional arguments (ignored)
+#' @return An \code{mlx} vector with row sums
+#' @export
+#' @method rowSums mlx
+rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
+  # Row sums operate on rows (axis=1 in row-major)
+  .mlx_reduce_axis(x, "sum", axis = 1L, keepdims = FALSE)
+}
+
+#' Column sums generic
+#'
+#' @param x An array
+#' @param ... Additional arguments
+#' @export
+colSums <- function(x, ...) {
+  UseMethod("colSums")
+}
+
+#' Default colSums method
+#' @export
+colSums.default <- base::colSums
+
+#' Column sums of MLX matrix
+#'
+#' @param x An \code{mlx} matrix
+#' @param na.rm Ignored (for compatibility)
+#' @param dims Which dimensions are regarded as columns (default: 1)
+#' @param ... Additional arguments (ignored)
+#' @return An \code{mlx} vector with column sums
+#' @export
+#' @method colSums mlx
+colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
+  # Column sums operate on columns (axis=0 in row-major)
+  .mlx_reduce_axis(x, "sum", axis = 0L, keepdims = FALSE)
+}
+
 #' Transpose of MLX matrix
 #'
 #' @param x An \code{mlx} matrix
