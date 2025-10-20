@@ -2,7 +2,7 @@
 #'
 #' @param e1 First operand (mlx or numeric)
 #' @param e2 Second operand (mlx or numeric)
-#' @return An \code{mlx} object
+#' @return An `mlx` object
 #' @export
 #' @method Ops mlx
 Ops.mlx <- function(e1, e2 = NULL) {
@@ -36,7 +36,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #'
 #' @param x First matrix (mlx or numeric)
 #' @param y Second matrix (mlx or numeric)
-#' @return An \code{mlx} object
+#' @return An `mlx` object
 #' @export
 #' @method %*% mlx
 `%*%.mlx` <- function(x, y) {
@@ -59,7 +59,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
   result_dtype <- .promote_dtype(x$dtype, y$dtype)
   result_device <- .common_device(x$device, y$device)
 
-  ptr <- cpp_mlx_matmul(x$ptr, y$ptr)
+  ptr <- cpp_mlx_matmul(x$ptr, y$ptr, result_dtype, result_device)
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
@@ -75,7 +75,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
   result_dtype <- .promote_dtype(x$dtype, y$dtype)
   result_device <- .common_device(x$device, y$device)
 
-  ptr <- cpp_mlx_binary(x$ptr, y$ptr, op)
+  ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, result_dtype, result_device)
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
@@ -102,8 +102,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
 # Internal helper: promote dtype
 .promote_dtype <- function(dtype1, dtype2) {
-  if (dtype1 == dtype2) return(dtype1)
-  if (dtype1 == "float64" || dtype2 == "float64") return("float64")
+  if (dtype1 == "float32" && dtype2 == "float32") return("float32")
   return("float32")
 }
 

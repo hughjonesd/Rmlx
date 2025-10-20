@@ -10,7 +10,6 @@ This package provides an R interface to Apple's MLX (Machine Learning eXchange)
 library for GPU-accelerated array operations on Apple Silicon.
 }
 \section{Key Features}{
-
 \itemize{
 \item Lazy evaluation: Operations are not computed until explicitly evaluated
 \item GPU acceleration: Leverage Metal on Apple Silicon
@@ -20,11 +19,10 @@ library for GPU-accelerated array operations on Apple Silicon.
 }
 
 \section{Main Functions}{
-
 \itemize{
-\item \code{\link{as_mlx}}: Convert R objects to MLX arrays
-\item \code{\link{as.matrix.mlx}}: Convert MLX arrays back to R
-\item \code{\link{mlx_eval}}: Force evaluation of lazy operations
+\item \code{\link[=as_mlx]{as_mlx()}}: Convert R objects to MLX arrays
+\item \code{\link[=as.matrix.mlx]{as.matrix.mlx()}}: Convert MLX arrays back to R
+\item \code{\link[=mlx_eval]{mlx_eval()}}: Force evaluation of lazy operations
 \item Arithmetic: \code{+}, \code{-}, \code{*}, \code{/}, \code{^}
 \item Matrix ops: \code{\%*\%}, \code{t}, \code{crossprod}, \code{tcrossprod}
 \item Reductions: \code{sum}, \code{mean}, \code{colMeans}, \code{rowMeans}
@@ -32,7 +30,6 @@ library for GPU-accelerated array operations on Apple Silicon.
 }
 
 \section{Lazy Evaluation}{
-
 MLX arrays use lazy evaluation by default. Operations are recorded but not
 executed until:
 \itemize{
@@ -43,9 +40,9 @@ executed until:
 }
 
 \section{Device Management}{
-
-Use \code{\link{mlx_default_device}} to control whether arrays are created
-on GPU (default) or CPU.
+Use \code{\link[=mlx_default_device]{mlx_default_device()}} to control whether arrays are created
+on GPU (default) or CPU. All \code{mlx} arrays are stored in \code{float32}
+regardless of device. Use base R arrays if you require \code{float64} math.
 }
 
 \author{

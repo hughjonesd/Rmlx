@@ -66,3 +66,19 @@ test_that("scalar operations work", {
   z <- as.matrix(x_mlx * 2)
   expect_equal(z, x * 2, tolerance = 1e-6)
 })
+
+test_that("binary operations align devices and dtypes", {
+  old_device <- mlx_default_device()
+  on.exit(mlx_default_device(old_device))
+
+  mlx_default_device("gpu")
+
+  x_gpu <- as_mlx(matrix(1:4, 2, 2), device = "gpu", dtype = "float32")
+  y_cpu <- as_mlx(matrix(5:8, 2, 2), device = "cpu")
+
+  result <- x_gpu + y_cpu
+
+  expect_equal(result$device, "gpu")
+  expect_equal(result$dtype, "float32")
+  expect_equal(as.matrix(result), matrix(c(6, 8, 10, 12), 2, 2), tolerance = 1e-6)
+})

@@ -1,16 +1,25 @@
 #' Create MLX array from R object
 #'
 #' @param x Numeric vector, matrix, or array to convert
-#' @param dtype Data type: "float32" or "float64" (default)
+#' @param dtype Ignored. Present for backward compatibility. All arrays are
+#'   stored as `float32`.
 #' @param device Device: "gpu" (default) or "cpu"
-#' @return An object of class \code{mlx}
+#' @return An object of class `mlx`
+#' @details Apple MLX executes in single precision. All `mlx` arrays are stored
+#'   as `float32` regardless of the requested dtype. Asking for `dtype = "float64"`
+#'   emits a warning and the input is downcast to `float32`. If you require
+#'   double precision arithmetic, use base R arrays instead of `mlx` objects.
 #' @export
 #' @examples
 #' \dontrun{
 #' x <- as_mlx(matrix(1:12, 3, 4))
 #' }
 as_mlx <- function(x, dtype = c("float32", "float64"), device = mlx_default_device()) {
-  dtype <- match.arg(dtype)
+  device <- match.arg(device, c("gpu", "cpu"))
+  dtype_val <- if (missing(dtype)) "float32" else match.arg(dtype)
+  if (dtype_val == "float64") {
+    warning("MLX arrays are stored in float32; downcasting input.", call. = FALSE)
+  }
 
   if (is.mlx(x)) return(x)
 
@@ -30,14 +39,14 @@ as_mlx <- function(x, dtype = c("float32", "float64"), device = mlx_default_devi
   }
 
   # Create MLX array via C++
-  ptr <- cpp_mlx_from_numeric(x_num, as.integer(dim_vec), dtype, device)
+  ptr <- cpp_mlx_from_numeric(x_num, as.integer(dim_vec), "float32", device)
 
   # Create S3 object
   structure(
     list(
       ptr = ptr,
       dim = as.integer(dim_vec),
-      dtype = dtype,
+      dtype = "float32",
       device = device
     ),
     class = "mlx"
@@ -46,7 +55,7 @@ as_mlx <- function(x, dtype = c("float32", "float64"), device = mlx_default_devi
 
 #' Force evaluation of lazy MLX operations
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @return The input object (invisibly)
 #' @export
 mlx_eval <- function(x) {
@@ -57,7 +66,7 @@ mlx_eval <- function(x) {
 
 #' Convert MLX array to R matrix/array
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @param ... Additional arguments (ignored)
 #' @return A matrix or array (numeric or logical depending on dtype)
 #' @export
@@ -71,7 +80,7 @@ as.matrix.mlx <- function(x, ...) {
 
 #' Convert MLX array to R array
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @param ... Additional arguments (ignored)
 #' @return A numeric array
 #' @export
@@ -81,7 +90,7 @@ as.array.mlx <- function(x, ...) {
 
 #' Convert MLX array to R vector
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @param mode Character string specifying the mode (ignored)
 #' @return A numeric vector
 #' @export

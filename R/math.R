@@ -1,13 +1,14 @@
 #' Math operations for MLX arrays
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @param ... Additional arguments (ignored)
-#' @return An \code{mlx} object with the result
+#' @return An `mlx` object with the result
 #' @export
 #' @method Math mlx
 Math.mlx <- function(x, ...) {
   # .Generic contains the name of the function that was called
   op <- .Generic
+  dots <- list(...)
 
   # Cumulative operations flatten the array in column-major order (like R)
   # MLX flattens in row-major order, so we need to fall back to R
@@ -22,6 +23,13 @@ Math.mlx <- function(x, ...) {
   op_map <- c(
     "ceiling" = "ceil"
   )
+
+  # Additional arguments change semantics for some Math generics (e.g., log base, round digits)
+  if (length(dots) > 0 && op %in% c("log", "round", "signif")) {
+    x_r <- as.matrix(x)
+    result_r <- do.call(get(op, mode = "function"), c(list(x_r), dots))
+    return(as_mlx(result_r, dtype = x$dtype, device = x$device))
+  }
 
   if (op %in% names(op_map)) {
     op <- op_map[op]

@@ -93,15 +93,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_binary
-SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op);
-RcppExport SEXP _Rmlx_cpp_mlx_binary(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP opSEXP) {
+SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op, std::string dtype_str, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_binary(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP opSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp1_(xp1_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type xp2_(xp2_SEXP);
     Rcpp::traits::input_parameter< std::string >::type op(opSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_binary(xp1_, xp2_, op));
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_binary(xp1_, xp2_, op, dtype_str, device_str));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -155,14 +157,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_matmul
-SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_);
-RcppExport SEXP _Rmlx_cpp_mlx_matmul(SEXP xp1_SEXP, SEXP xp2_SEXP) {
+SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_, std::string dtype_str, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_matmul(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp1_(xp1_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type xp2_(xp2_SEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_matmul(xp1_, xp2_));
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_matmul(xp1_, xp2_, dtype_str, device_str));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -193,14 +197,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_solve
-SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_);
-RcppExport SEXP _Rmlx_cpp_mlx_solve(SEXP a_xp_SEXP, SEXP b_xp_SEXP) {
+SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_, std::string dtype_str, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_solve(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type b_xp_(b_xp_SEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_solve(a_xp_, b_xp_));
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_solve(a_xp_, b_xp_, dtype_str, device_str));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -213,15 +219,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_shape", (DL_FUNC) &_Rmlx_cpp_mlx_shape, 1},
     {"_Rmlx_cpp_mlx_dtype", (DL_FUNC) &_Rmlx_cpp_mlx_dtype, 1},
     {"_Rmlx_cpp_mlx_unary", (DL_FUNC) &_Rmlx_cpp_mlx_unary, 2},
-    {"_Rmlx_cpp_mlx_binary", (DL_FUNC) &_Rmlx_cpp_mlx_binary, 3},
+    {"_Rmlx_cpp_mlx_binary", (DL_FUNC) &_Rmlx_cpp_mlx_binary, 5},
     {"_Rmlx_cpp_mlx_reduce", (DL_FUNC) &_Rmlx_cpp_mlx_reduce, 2},
     {"_Rmlx_cpp_mlx_reduce_axis", (DL_FUNC) &_Rmlx_cpp_mlx_reduce_axis, 4},
     {"_Rmlx_cpp_mlx_transpose", (DL_FUNC) &_Rmlx_cpp_mlx_transpose, 1},
     {"_Rmlx_cpp_mlx_reshape", (DL_FUNC) &_Rmlx_cpp_mlx_reshape, 2},
-    {"_Rmlx_cpp_mlx_matmul", (DL_FUNC) &_Rmlx_cpp_mlx_matmul, 2},
+    {"_Rmlx_cpp_mlx_matmul", (DL_FUNC) &_Rmlx_cpp_mlx_matmul, 4},
     {"_Rmlx_cpp_mlx_slice", (DL_FUNC) &_Rmlx_cpp_mlx_slice, 4},
     {"_Rmlx_cpp_mlx_cumulative", (DL_FUNC) &_Rmlx_cpp_mlx_cumulative, 2},
-    {"_Rmlx_cpp_mlx_solve", (DL_FUNC) &_Rmlx_cpp_mlx_solve, 2},
+    {"_Rmlx_cpp_mlx_solve", (DL_FUNC) &_Rmlx_cpp_mlx_solve, 4},
     {NULL, NULL, 0}
 };
 

@@ -1,6 +1,6 @@
 #' Print MLX array
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @param ... Additional arguments (ignored)
 #' @export
 #' @method print mlx
@@ -24,7 +24,7 @@ print.mlx <- function(x, ...) {
 
 #' Object structure for MLX array
 #'
-#' @param object An \code{mlx} object
+#' @param object An `mlx` object
 #' @param ... Additional arguments (ignored)
 #' @export
 str.mlx <- function(object, ...) {
@@ -39,7 +39,7 @@ str.mlx <- function(object, ...) {
 
 #' Get dimensions of MLX array
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @return Integer vector of dimensions
 #' @export
 #' @method dim mlx
@@ -49,7 +49,7 @@ dim.mlx <- function(x) {
 
 #' Get length of MLX array
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @return Total number of elements
 #' @export
 #' @method length mlx
@@ -59,7 +59,7 @@ length.mlx <- function(x) {
 
 #' Get dimensions helper
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @return Dimensions
 #' @export
 mlx_dim <- function(x) {
@@ -69,7 +69,7 @@ mlx_dim <- function(x) {
 
 #' Get data type helper
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @return Data type string
 #' @export
 mlx_dtype <- function(x) {
@@ -79,12 +79,12 @@ mlx_dtype <- function(x) {
 
 #' Subset MLX array
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @param i Row indices
 #' @param j Column indices (for matrices)
 #' @param ... Additional indices
 #' @param drop Should dimensions be dropped? (default: TRUE)
-#' @return Subsetted \code{mlx} object
+#' @return Subsetted `mlx` object
 #' @export
 #' @method [ mlx
 `[.mlx` <- function(x, i, j, ..., drop = TRUE) {
@@ -98,9 +98,9 @@ mlx_dtype <- function(x) {
     strides <- indices$stride
 
     ptr <- cpp_mlx_slice(x$ptr, starts, stops, strides)
-    new_dim <- max(0, (stops[1] - starts[1]) %/% strides[1])
+    new_len <- .slice_extent(starts[1], stops[1], strides[1])
 
-    return(new_mlx(ptr, new_dim, x$dtype, x$device))
+    return(new_mlx(ptr, as.integer(new_len), x$dtype, x$device))
   }
 
   # Handle 2D case
@@ -119,16 +119,17 @@ mlx_dtype <- function(x) {
     ptr <- cpp_mlx_slice(x$ptr, starts, stops, strides)
 
     new_dim <- c(
-      max(0, (stops[1] - starts[1]) %/% strides[1]),
-      max(0, (stops[2] - starts[2]) %/% strides[2])
+      .slice_extent(starts[1], stops[1], strides[1]),
+      .slice_extent(starts[2], stops[2], strides[2])
     )
 
     if (drop) {
-      new_dim <- new_dim[new_dim > 1]
+      keep <- new_dim != 1L
+      new_dim <- new_dim[keep]
       if (length(new_dim) == 0) new_dim <- 1L
     }
 
-    return(new_mlx(ptr, new_dim, x$dtype, x$device))
+    return(new_mlx(ptr, as.integer(new_dim), x$dtype, x$device))
   }
 
   stop("Indexing for arrays with >2 dimensions not yet implemented")
@@ -178,4 +179,15 @@ mlx_dtype <- function(x) {
   }
 
   stop("Unsupported index type")
+}
+
+.slice_extent <- function(start, stop, stride) {
+  if (stride <= 0L) {
+    stop("Stride must be positive")
+  }
+  delta <- stop - start
+  if (delta <= 0L) {
+    return(0L)
+  }
+  as.integer(((delta - 1L) %/% stride) + 1L)
 }

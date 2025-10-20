@@ -9,7 +9,8 @@ as_mlx(x, dtype = c("float32", "float64"), device = mlx_default_device())
 \arguments{
 \item{x}{Numeric vector, matrix, or array to convert}
 
-\item{dtype}{Data type: "float32" or "float64" (default)}
+\item{dtype}{Ignored. Present for backward compatibility. All arrays are
+stored as \code{float32}.}
 
 \item{device}{Device: "gpu" (default) or "cpu"}
 }
@@ -18,6 +19,12 @@ An object of class \code{mlx}
 }
 \description{
 Create MLX array from R object
+}
+\details{
+Apple MLX executes in single precision. All \code{mlx} arrays are stored
+as \code{float32} regardless of the requested dtype. Asking for \code{dtype = "float64"}
+emits a warning and the input is downcast to \code{float32}. If you require
+double precision arithmetic, use base R arrays instead of \code{mlx} objects.
 }
 \examples{
 \dontrun{

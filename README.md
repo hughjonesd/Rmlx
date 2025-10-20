@@ -142,14 +142,16 @@ x_gpu <- as_mlx(matrix(1:12, 3, 4), device = "gpu")
 x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 ```
 
+> **Precision note:** MLX executes in single precision. `as_mlx()` always stores
+> data as `float32`, regardless of the requested dtype. If you need double
+> precision arithmetic, operate on base R arrays instead of `mlx` objects.
+
 ## Data Types
 
-Supported dtypes:
-- `float64` (default, matches R)
-- `float32` (faster on GPU)
+Supported dtype:
+- `float32`
 
 ```r
-x_f64 <- as_mlx(matrix(1:12, 3, 4), dtype = "float64")
 x_f32 <- as_mlx(matrix(1:12, 3, 4), dtype = "float32")
 ```
 

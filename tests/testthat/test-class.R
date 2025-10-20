@@ -21,13 +21,20 @@ test_that("roundtrip conversion preserves values", {
   expect_equal(m_back, m, tolerance = 1e-6)
 })
 
+test_that("roundtrip conversion preserves higher-dimensional arrays", {
+  arr <- array(seq_len(24), dim = c(2, 3, 4))
+  arr_mlx <- as_mlx(arr)
+  arr_back <- as.array(arr_mlx)
+
+  expect_equal(arr_back, arr, tolerance = 1e-6)
+})
+
 test_that("dtype argument works", {
   m <- matrix(1:12, 3, 4)
   m_fp32 <- as_mlx(m, dtype = "float32")
-  m_fp64 <- as_mlx(m, dtype = "float64")
+  expect_warning(as_mlx(m, dtype = "float64"), "stored in float32", fixed = TRUE)
 
   expect_equal(m_fp32$dtype, "float32")
-  expect_equal(m_fp64$dtype, "float64")
 })
 
 test_that("is.mlx works", {

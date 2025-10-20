@@ -26,10 +26,10 @@ colMeans.default <- base::colMeans
 
 #' Sum of MLX array elements
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @param ... Additional arguments (ignored)
 #' @param na.rm Ignored (for compatibility)
-#' @return An \code{mlx} scalar
+#' @return An `mlx` scalar
 #' @export
 #' @method sum mlx
 sum.mlx <- function(x, ..., na.rm = FALSE) {
@@ -38,9 +38,9 @@ sum.mlx <- function(x, ..., na.rm = FALSE) {
 
 #' Mean of MLX array elements
 #'
-#' @param x An \code{mlx} object
+#' @param x An `mlx` object
 #' @param ... Additional arguments (ignored)
-#' @return An \code{mlx} scalar
+#' @return An `mlx` scalar
 #' @export
 #' @method mean mlx
 mean.mlx <- function(x, ...) {
@@ -49,11 +49,11 @@ mean.mlx <- function(x, ...) {
 
 #' Column means of MLX matrix
 #'
-#' @param x An \code{mlx} matrix
+#' @param x An `mlx` matrix
 #' @param na.rm Ignored (for compatibility)
 #' @param dims Which dimensions are regarded as columns (default: 1)
 #' @param ... Additional arguments (ignored)
-#' @return An \code{mlx} vector with column means
+#' @return An `mlx` vector with column means
 #' @export
 #' @method colMeans mlx
 colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
@@ -65,11 +65,11 @@ colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 
 #' Row means of MLX matrix
 #'
-#' @param x An \code{mlx} matrix
+#' @param x An `mlx` matrix
 #' @param na.rm Ignored (for compatibility)
 #' @param dims Which dimensions are regarded as rows (default: 1)
 #' @param ... Additional arguments (ignored)
-#' @return An \code{mlx} vector with row means
+#' @return An `mlx` vector with row means
 #' @export
 #' @method rowMeans mlx
 rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
@@ -92,11 +92,11 @@ rowSums.default <- base::rowSums
 
 #' Row sums of MLX matrix
 #'
-#' @param x An \code{mlx} matrix
+#' @param x An `mlx` matrix
 #' @param na.rm Ignored (for compatibility)
 #' @param dims Which dimensions are regarded as rows (default: 1)
 #' @param ... Additional arguments (ignored)
-#' @return An \code{mlx} vector with row sums
+#' @return An `mlx` vector with row sums
 #' @export
 #' @method rowSums mlx
 rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
@@ -119,11 +119,11 @@ colSums.default <- base::colSums
 
 #' Column sums of MLX matrix
 #'
-#' @param x An \code{mlx} matrix
+#' @param x An `mlx` matrix
 #' @param na.rm Ignored (for compatibility)
 #' @param dims Which dimensions are regarded as columns (default: 1)
 #' @param ... Additional arguments (ignored)
-#' @return An \code{mlx} vector with column sums
+#' @return An `mlx` vector with column sums
 #' @export
 #' @method colSums mlx
 colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
@@ -133,8 +133,8 @@ colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 
 #' Transpose of MLX matrix
 #'
-#' @param x An \code{mlx} matrix
-#' @return Transposed \code{mlx} matrix
+#' @param x An `mlx` matrix
+#' @return Transposed `mlx` matrix
 #' @export
 #' @method t mlx
 t.mlx <- function(x) {
@@ -146,9 +146,9 @@ t.mlx <- function(x) {
 
 #' Cross product
 #'
-#' @param x An \code{mlx} matrix
-#' @param y An \code{mlx} matrix (default: NULL, uses x)
-#' @return \code{t(x) \%*\% y} as an \code{mlx} object
+#' @param x An `mlx` matrix
+#' @param y An `mlx` matrix (default: NULL, uses x)
+#' @return `t(x) %*% y` as an `mlx` object
 #' @export
 #' @method crossprod mlx
 crossprod.mlx <- function(x, y = NULL) {
@@ -158,9 +158,9 @@ crossprod.mlx <- function(x, y = NULL) {
 
 #' Transposed cross product
 #'
-#' @param x An \code{mlx} matrix
-#' @param y An \code{mlx} matrix (default: NULL, uses x)
-#' @return \code{x \%*\% t(y)} as an \code{mlx} object
+#' @param x An `mlx` matrix
+#' @param y An `mlx` matrix (default: NULL, uses x)
+#' @return `x %*% t(y)` as an `mlx` object
 #' @export
 #' @method tcrossprod mlx
 tcrossprod.mlx <- function(x, y = NULL) {

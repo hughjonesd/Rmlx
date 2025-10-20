@@ -11,6 +11,25 @@ test_that("matrix multiplication works", {
   expect_equal(c, a %*% b, tolerance = 1e-6)
 })
 
+test_that("matrix multiplication aligns devices and dtypes", {
+  old_device <- mlx_default_device()
+  on.exit(mlx_default_device(old_device))
+
+  mlx_default_device("gpu")
+
+  a <- matrix(1:6, 2, 3)
+  b <- matrix(7:12, 3, 2)
+
+  a_gpu <- as_mlx(a, device = "gpu", dtype = "float32")
+  b_cpu <- as_mlx(b, device = "cpu")
+
+  c_mlx <- a_gpu %*% b_cpu
+
+  expect_equal(c_mlx$device, "gpu")
+  expect_equal(c_mlx$dtype, "float32")
+  expect_equal(as.matrix(c_mlx), a %*% b, tolerance = 1e-5)
+})
+
 test_that("matrix multiplication dimension checking works", {
   a <- matrix(1:6, 2, 3)
   b <- matrix(1:6, 2, 3)  # Non-conformable

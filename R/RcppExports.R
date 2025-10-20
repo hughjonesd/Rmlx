@@ -29,8 +29,8 @@ cpp_mlx_unary <- function(xp_, op) {
     .Call(`_Rmlx_cpp_mlx_unary`, xp_, op)
 }
 
-cpp_mlx_binary <- function(xp1_, xp2_, op) {
-    .Call(`_Rmlx_cpp_mlx_binary`, xp1_, xp2_, op)
+cpp_mlx_binary <- function(xp1_, xp2_, op, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_binary`, xp1_, xp2_, op, dtype_str, device_str)
 }
 
 cpp_mlx_reduce <- function(xp_, op) {
@@ -49,8 +49,8 @@ cpp_mlx_reshape <- function(xp_, new_dim_) {
     .Call(`_Rmlx_cpp_mlx_reshape`, xp_, new_dim_)
 }
 
-cpp_mlx_matmul <- function(xp1_, xp2_) {
-    .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_)
+cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
 }
 
 cpp_mlx_slice <- function(xp_, starts_, stops_, strides_) {
@@ -61,7 +61,7 @@ cpp_mlx_cumulative <- function(xp_, op) {
     .Call(`_Rmlx_cpp_mlx_cumulative`, xp_, op)
 }
 
-cpp_mlx_solve <- function(a_xp_, b_xp_) {
-    .Call(`_Rmlx_cpp_mlx_solve`, a_xp_, b_xp_)
+cpp_mlx_solve <- function(a_xp_, b_xp_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_solve`, a_xp_, b_xp_, dtype_str, device_str)
 }
 

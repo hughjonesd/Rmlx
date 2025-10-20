@@ -77,33 +77,46 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
 
 // Binary operations
 // [[Rcpp::export]]
-SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op) {
+SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
+                    std::string dtype_str, std::string device_str) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
+  Dtype target_dtype = string_to_dtype(dtype_str);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array lhs = wrapper1->get();
+  array rhs = wrapper2->get();
+
+  lhs = astype(lhs, target_dtype);
+  rhs = astype(rhs, target_dtype);
+
+  lhs = astype(lhs, target_dtype, target_device);
+  rhs = astype(rhs, target_dtype, target_device);
+
   array result = [&]() -> array {
     if (op == "+") {
-      return add(wrapper1->get(), wrapper2->get());
+      return add(lhs, rhs);
     } else if (op == "-") {
-      return subtract(wrapper1->get(), wrapper2->get());
+      return subtract(lhs, rhs);
     } else if (op == "*") {
-      return multiply(wrapper1->get(), wrapper2->get());
+      return multiply(lhs, rhs);
     } else if (op == "/") {
-      return divide(wrapper1->get(), wrapper2->get());
+      return divide(lhs, rhs);
     } else if (op == "^") {
-      return power(wrapper1->get(), wrapper2->get());
+      return power(lhs, rhs);
     } else if (op == "==") {
-      return equal(wrapper1->get(), wrapper2->get());
+      return equal(lhs, rhs);
     } else if (op == "!=") {
-      return not_equal(wrapper1->get(), wrapper2->get());
+      return not_equal(lhs, rhs);
     } else if (op == "<") {
-      return less(wrapper1->get(), wrapper2->get());
+      return less(lhs, rhs);
     } else if (op == "<=") {
-      return less_equal(wrapper1->get(), wrapper2->get());
+      return less_equal(lhs, rhs);
     } else if (op == ">") {
-      return greater(wrapper1->get(), wrapper2->get());
+      return greater(lhs, rhs);
     } else if (op == ">=") {
-      return greater_equal(wrapper1->get(), wrapper2->get());
+      return greater_equal(lhs, rhs);
     } else {
       Rcpp::stop("Unsupported binary operation: " + op);
     }
@@ -178,11 +191,24 @@ SEXP cpp_mlx_reshape(SEXP xp_, SEXP new_dim_) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_) {
+SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
+                    std::string dtype_str, std::string device_str) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
-  array result = matmul(wrapper1->get(), wrapper2->get());
+  Dtype target_dtype = string_to_dtype(dtype_str);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array lhs = wrapper1->get();
+  array rhs = wrapper2->get();
+
+  lhs = astype(lhs, target_dtype);
+  rhs = astype(rhs, target_dtype);
+
+  lhs = astype(lhs, target_dtype, target_device);
+  rhs = astype(rhs, target_dtype, target_device);
+
+  array result = matmul(lhs, rhs);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -229,22 +255,28 @@ SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
 
 // Linear algebra operations
 // [[Rcpp::export]]
-SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_) {
+SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
+                   std::string dtype_str, std::string device_str) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
-  // linalg operations currently require CPU stream
+  Dtype target_dtype = string_to_dtype(dtype_str);
+  StreamOrDevice target_device = string_to_device(device_str);
   StreamOrDevice cpu_stream = Device(Device::cpu);
+  array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
 
   array result = [&]() -> array {
     if (b_xp_ == R_NilValue) {
       // No b provided: compute matrix inverse
-      return linalg::inv(a_wrapper->get(), cpu_stream);
+      return linalg::inv(a_cpu, cpu_stream);
     } else {
       // b provided: solve linear system Ax = b
       MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
-      return linalg::solve(a_wrapper->get(), b_wrapper->get(), cpu_stream);
+      array b_cpu = astype(b_wrapper->get(), target_dtype, cpu_stream);
+      return linalg::solve(a_cpu, b_cpu, cpu_stream);
     }
   }();
 
-  return make_mlx_xptr(std::move(result));
+  array result_target = astype(result, target_dtype, target_device);
+
+  return make_mlx_xptr(std::move(result_target));
 }

@@ -64,3 +64,27 @@ test_that("solve works when A is mlx and b is R matrix", {
 
   expect_equal(as.matrix(x_mlx), x_r, tolerance = 1e-5)
 })
+
+test_that("solve stages to cpu and restores gpu device", {
+  old_device <- mlx_default_device()
+  on.exit(mlx_default_device(old_device))
+
+  mlx_default_device("gpu")
+
+  set.seed(987)
+  A <- matrix(rnorm(9), 3, 3)
+  b <- matrix(rnorm(3), 3, 1)
+
+  A_gpu <- as_mlx(A, device = "gpu", dtype = "float32")
+  b_gpu <- as_mlx(b, device = "gpu", dtype = "float32")
+
+  x_gpu <- solve(A_gpu, b_gpu)
+
+  expect_equal(x_gpu$device, "gpu")
+  expect_equal(x_gpu$dtype, "float32")
+  expect_equal(as.matrix(x_gpu), solve(A, b), tolerance = 1e-5)
+
+  A_inv_gpu <- solve(A_gpu)
+  expect_equal(A_inv_gpu$device, "gpu")
+  expect_equal(as.matrix(A_inv_gpu), solve(A), tolerance = 1e-5)
+})

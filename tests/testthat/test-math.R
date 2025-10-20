@@ -110,6 +110,9 @@ test_that("rounding functions work", {
 
   result_round <- as.matrix(round(x_mlx))
   expect_equal(result_round, round(x), tolerance = 1e-6)
+
+  result_round_digits <- as.matrix(round(x_mlx, digits = 2))
+  expect_equal(result_round_digits, round(x, digits = 2), tolerance = 1e-6)
 })
 
 test_that("abs and sign work", {
