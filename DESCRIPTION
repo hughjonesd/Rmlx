@@ -16,7 +16,9 @@ Suggests:
     testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    bench
+    bench,
+    dplyr,
+    ggplot2
 Config/testthat/edition: 3
 SystemRequirements: MLX (Apple Machine Learning eXchange) with C/C++ headers and library; macOS on Apple Silicon
 Roxygen: list(markdown = TRUE)
