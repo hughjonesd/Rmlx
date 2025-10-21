@@ -208,18 +208,22 @@ x_gpu <- as_mlx(matrix(1:12, 3, 4), device = "gpu")
 x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 ```
 
-> **Precision note:** `as_mlx()` always stores data in `float32`.
-> Requests for `dtype = "float64"` are downcast with a warning. Use base
-> R arrays if you require double precision arithmetic.
+> **Precision note:** Numeric inputs are stored in `float32`. Requests
+> for `dtype = "float64"` are downcast with a warning. Logical inputs
+> are stored as MLX `bool` tensors (logical `NA` values are not
+> supported). Use base R arrays if you require double precision
+> arithmetic.
 
 ## Data Types
 
 Supported dtype:
 
-- `float32`
+- `float32` for numeric data (default)
+- `bool` for logical data
 
 ``` r
 x_f32 <- as_mlx(matrix(1:12, 3, 4), dtype = "float32")
+logical_mat <- as_mlx(matrix(c(TRUE, FALSE, TRUE, TRUE), 2, 2))
 ```
 
 ## Documentation

@@ -37,6 +37,16 @@ test_that("dtype argument works", {
   expect_equal(m_fp32$dtype, "float32")
 })
 
+test_that("logical inputs create boolean MLX arrays", {
+  m <- matrix(c(TRUE, FALSE, TRUE, TRUE), 2, 2)
+  m_mlx <- as_mlx(m)
+
+  expect_s3_class(m_mlx, "mlx")
+  expect_equal(m_mlx$dtype, "bool")
+  expect_equal(m_mlx$dim, dim(m))
+  expect_identical(as.matrix(m_mlx), m)
+})
+
 test_that("is.mlx works", {
   m <- matrix(1:12, 3, 4)
   m_mlx <- as_mlx(m)

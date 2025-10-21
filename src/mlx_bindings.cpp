@@ -225,27 +225,24 @@ SEXP cpp_mlx_from_numeric(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
   Dtype dt = string_to_dtype(dtype_str);
   StreamOrDevice dev = string_to_device(device_str);
 
-  // Copy data from R to MLX, reordering for layout if needed
-  array arr_cpu = [&]() -> array {
-    size_t ndim = shape.size();
-    std::vector<int> dims(shape.begin(), shape.end());
+  size_t ndim = shape.size();
+  std::vector<int> dims(shape.begin(), shape.end());
 
+  auto make_array = [&](Dtype storage_dtype) -> array {
     if (ndim == 2) {
-      // 2D: reorder from column-major to row-major
-      if (dt == float64) {
+      if (storage_dtype == float64) {
         std::vector<double> data_reordered = reorder_col_major_to_row_major(x.begin(), shape[0], shape[1]);
         return array(data_reordered.data(), shape, float64);
-      } else if (dt == float32) {
+      } else if (storage_dtype == float32) {
         std::vector<float> data_reordered = reorder_col_major_to_row_major_f32(x.begin(), shape[0], shape[1]);
         return array(data_reordered.data(), shape, float32);
       } else {
         Rcpp::stop("Unsupported dtype for conversion from numeric");
       }
     } else if (ndim <= 1) {
-      // 1D: no reordering needed
-      if (dt == float64) {
+      if (storage_dtype == float64) {
         return array(x.begin(), shape, float64);
-      } else if (dt == float32) {
+      } else if (storage_dtype == float32) {
         std::vector<float> data_f32(x.begin(), x.end());
         return array(data_f32.begin(), shape, float32);
       } else {
@@ -253,17 +250,31 @@ SEXP cpp_mlx_from_numeric(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
       }
     } else {
       size_t total = x.size();
-      if (dt == float64) {
+      if (storage_dtype == float64) {
         std::vector<double> data_reordered(total);
         reorder_col_major_to_row_major_nd<double, double>(x.begin(), data_reordered.data(), dims);
         return array(data_reordered.data(), shape, float64);
-      } else if (dt == float32) {
+      } else if (storage_dtype == float32) {
         std::vector<float> data_reordered(total);
         reorder_col_major_to_row_major_nd<double, float>(x.begin(), data_reordered.data(), dims);
         return array(data_reordered.data(), shape, float32);
       } else {
         Rcpp::stop("Unsupported dtype for conversion from numeric");
       }
+    }
+  };
+
+  // Copy data from R to MLX, reordering for layout if needed
+  array arr_cpu = [&]() -> array {
+    if (dt == float64) {
+      return make_array(float64);
+    } else if (dt == float32) {
+      return make_array(float32);
+    } else if (dt == bool_) {
+      array float_arr = make_array(float32);
+      return astype(float_arr, bool_);
+    } else {
+      Rcpp::stop("Unsupported dtype for conversion from numeric");
     }
   }();
 

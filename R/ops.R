@@ -71,10 +71,18 @@ Ops.mlx <- function(e1, e2 = NULL) {
 # Internal helper: binary operation
 .mlx_binary <- function(x, y, op) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
-  result_dtype <- .promote_dtype(x$dtype, y$dtype)
+  input_dtype <- .promote_dtype(x$dtype, y$dtype)
   result_device <- .common_device(x$device, y$device)
 
-  ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, result_dtype, result_device)
+  is_comparison <- op %in% c("==", "!=", "<", "<=", ">", ">=")
+
+  if (!is_comparison && identical(input_dtype, "bool")) {
+    input_dtype <- "float32"
+  }
+
+  result_dtype <- if (is_comparison) "bool" else input_dtype
+
+  ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype, result_device)
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
@@ -101,8 +109,15 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
 # Internal helper: promote dtype
 .promote_dtype <- function(dtype1, dtype2) {
-  if (dtype1 == "float32" && dtype2 == "float32") return("float32")
-  return("float32")
+  if (dtype1 == dtype2) return(dtype1)
+
+  dtypes <- c(dtype1, dtype2)
+
+  if ("float32" %in% dtypes) return("float32")
+  if ("float64" %in% dtypes) return("float32")
+  if ("bool" %in% dtypes) return("float32")
+
+  stop("Unsupported dtype combination: ", dtype1, " and ", dtype2)
 }
 
 # Internal helper: common device

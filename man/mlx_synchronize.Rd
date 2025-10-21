@@ -6,9 +6,6 @@
 \usage{
 mlx_synchronize(device = c("gpu", "cpu"))
 }
-\arguments{
-\item{device}{Device to synchronize ("gpu" or "cpu")}
-}
 \description{
 Waits for all outstanding operations on the specified device to complete.
 }

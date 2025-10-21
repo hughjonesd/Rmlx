@@ -7,9 +7,7 @@
 \method{\%*\%}{mlx}(x, y)
 }
 \arguments{
-\item{x}{First matrix (mlx or numeric)}
-
-\item{y}{Second matrix (mlx or numeric)}
+\item{x, y}{numeric or complex matrices or vectors.}
 }
 \value{
 An \code{mlx} object

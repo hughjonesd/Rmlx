@@ -42,8 +42,10 @@ test_that("comparison operators work", {
   y_mlx <- as_mlx(y)
 
   # Less than
-  z <- as.matrix(x_mlx < y_mlx)
+  lt <- x_mlx < y_mlx
+  z <- as.matrix(lt)
   expect_equal(z, x < y)
+  expect_equal(lt$dtype, "bool")
 
   # Equal
   z <- as.matrix(x_mlx == y_mlx)
@@ -65,6 +67,24 @@ test_that("scalar operations work", {
   # Scalar multiplication
   z <- as.matrix(x_mlx * 2)
   expect_equal(z, x * 2, tolerance = 1e-6)
+})
+
+test_that("boolean operands coerce for arithmetic", {
+  bool_mat <- matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2)
+  num_mat <- matrix(1:4, 2, 2)
+
+  bool_mlx <- as_mlx(bool_mat)
+  num_mlx <- as_mlx(num_mat)
+
+  sum_obj <- bool_mlx + num_mlx
+  sum_res <- as.matrix(sum_obj)
+  expect_equal(sum_res, num_mat + (bool_mat * 1), tolerance = 1e-6)
+  expect_equal(sum_obj$dtype, "float32")
+
+  bool_sum_obj <- bool_mlx + bool_mlx
+  bool_sum <- as.matrix(bool_sum_obj)
+  expect_equal(bool_sum, (bool_mat * 1) + (bool_mat * 1), tolerance = 1e-6)
+  expect_equal(bool_sum_obj$dtype, "float32")
 })
 
 test_that("binary operations align devices and dtypes", {

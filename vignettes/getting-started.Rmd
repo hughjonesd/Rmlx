@@ -58,9 +58,10 @@ print(x)
 x_gpu <- as_mlx(m, device = "gpu")
 ```
 
-> **Precision note:** `as_mlx()` always stores data in single precision (`float32`).
-> Requesting `dtype = "float64"` will downcast the input with a warning. Use base
-> R arrays if you need double precision arithmetic.
+> **Precision note:** Numeric inputs are stored in single precision (`float32`).
+> Requesting `dtype = "float64"` will downcast the input with a warning.
+> Logical inputs are stored as MLX `bool` tensors (logical `NA` values are not
+> supported). Use base R arrays if you need double precision arithmetic.
 
 ## Lazy Evaluation
 
@@ -192,8 +193,8 @@ x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 mlx_default_device("gpu")
 ```
 
-Remember that computations are always performed in `float32`; the CPU mode is
-useful when you need to compare against base R or debug without a GPU.
+Remember that numeric computations are always performed in `float32`; the CPU
+mode is useful when you need to compare against base R or debug without a GPU.
 
 ## Performance Comparison
 
