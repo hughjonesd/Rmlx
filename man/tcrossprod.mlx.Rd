@@ -4,12 +4,14 @@
 \alias{tcrossprod.mlx}
 \title{Transposed cross product}
 \usage{
-\method{tcrossprod}{mlx}(x, y = NULL)
+\method{tcrossprod}{mlx}(x, y = NULL, ...)
 }
 \arguments{
 \item{x}{An \code{mlx} matrix}
 
 \item{y}{An \code{mlx} matrix (default: NULL, uses x)}
+
+\item{...}{Additional arguments passed to base::tcrossprod.}
 }
 \value{
 \code{x \%*\% t(y)} as an \code{mlx} object

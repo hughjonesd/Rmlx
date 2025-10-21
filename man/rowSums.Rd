@@ -2,15 +2,23 @@
 % Please edit documentation in R/stats.R
 \name{rowSums}
 \alias{rowSums}
-\title{Row sums generic}
+\title{Row sums for MLX tensors}
 \usage{
-rowSums(x, ...)
+rowSums(x, na.rm = FALSE, dims = 1, ...)
 }
 \arguments{
-\item{x}{An array}
+\item{x}{An array or \code{mlx} tensor.}
 
-\item{...}{Additional arguments}
+\item{na.rm}{Logical; currently ignored for \code{mlx} tensors.}
+
+\item{dims}{Dimensions passed through to the base implementation when
+\code{x} is not an \code{mlx} tensor.}
+
+\item{...}{Additional arguments forwarded to the base implementation.}
+}
+\value{
+An \code{mlx} tensor if \code{x} is \code{mlx}, otherwise a numeric vector.
 }
 \description{
-Row sums generic
+Row sums for MLX tensors
 }

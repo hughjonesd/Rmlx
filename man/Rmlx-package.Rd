@@ -53,6 +53,6 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com}
+\strong{Maintainer}: David Hugh-Jones \email{david@hughjones.com}
 
 }

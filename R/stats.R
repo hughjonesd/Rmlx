@@ -1,28 +1,13 @@
-#' Row means generic
+#' Shared arguments for MLX/base reduction helpers.
 #'
-#' @param x An array
-#' @param ... Additional arguments
-#' @export
-rowMeans <- function(x, ...) {
-  UseMethod("rowMeans")
-}
-
-#' Default rowMeans method
-#' @export
-rowMeans.default <- base::rowMeans
-
-#' Column means generic
-#'
-#' @param x An array
-#' @param ... Additional arguments
-#' @export
-colMeans <- function(x, ...) {
-  UseMethod("colMeans")
-}
-
-#' Default colMeans method
-#' @export
-colMeans.default <- base::colMeans
+#' @param x An array or `mlx` tensor.
+#' @param na.rm Logical; currently ignored for `mlx` tensors.
+#' @param dims Dimensions passed through to the base implementation when
+#'   `x` is not an `mlx` tensor.
+#' @param ... Additional arguments forwarded to the base implementation.
+#' @keywords internal
+#' @name mlx_reduction_base
+NULL
 
 #' Sum of MLX array elements
 #'
@@ -47,88 +32,52 @@ mean.mlx <- function(x, ...) {
   .mlx_reduce(x, "mean")
 }
 
-#' Column means of MLX matrix
+#' Row means for MLX tensors
 #'
-#' @param x An `mlx` matrix
-#' @param na.rm Ignored (for compatibility)
-#' @param dims Which dimensions are regarded as columns (default: 1)
-#' @param ... Additional arguments (ignored)
-#' @return An `mlx` vector with column means
+#' @inheritParams mlx_reduction_base
+#' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
 #' @export
-#' @method colMeans mlx
-colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
-  # In R's column-major layout, columns are along axis 1 (after transposing MLX view)
-  # MLX uses row-major, so we need to think carefully about axis mapping
-  # For a standard R matrix, colMeans operates on columns (axis=0 in row-major)
-  .mlx_reduce_axis(x, "mean", axis = 0L, keepdims = FALSE)
+rowMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
+  if (inherits(x, "mlx")) {
+    return(.mlx_reduce_axis(x, "mean", axis = 1L, keepdims = FALSE))
+  }
+  base::rowMeans(x, na.rm = na.rm, dims = dims, ...)
 }
 
-#' Row means of MLX matrix
+#' Column means for MLX tensors
 #'
-#' @param x An `mlx` matrix
-#' @param na.rm Ignored (for compatibility)
-#' @param dims Which dimensions are regarded as rows (default: 1)
-#' @param ... Additional arguments (ignored)
-#' @return An `mlx` vector with row means
+#' @inheritParams mlx_reduction_base
+#' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
 #' @export
-#' @method rowMeans mlx
-rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
-  # Row means operate on rows (axis=1 in row-major)
-  .mlx_reduce_axis(x, "mean", axis = 1L, keepdims = FALSE)
+colMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
+  if (inherits(x, "mlx")) {
+    return(.mlx_reduce_axis(x, "mean", axis = 0L, keepdims = FALSE))
+  }
+  base::colMeans(x, na.rm = na.rm, dims = dims, ...)
 }
 
-#' Row sums generic
+#' Row sums for MLX tensors
 #'
-#' @param x An array
-#' @param ... Additional arguments
+#' @inheritParams mlx_reduction_base
+#' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
 #' @export
-rowSums <- function(x, ...) {
-  UseMethod("rowSums")
+rowSums <- function(x, na.rm = FALSE, dims = 1, ...) {
+  if (inherits(x, "mlx")) {
+    return(.mlx_reduce_axis(x, "sum", axis = 1L, keepdims = FALSE))
+  }
+  base::rowSums(x, na.rm = na.rm, dims = dims, ...)
 }
 
-#' Default rowSums method
-#' @export
-rowSums.default <- base::rowSums
-
-#' Row sums of MLX matrix
+#' Column sums for MLX tensors
 #'
-#' @param x An `mlx` matrix
-#' @param na.rm Ignored (for compatibility)
-#' @param dims Which dimensions are regarded as rows (default: 1)
-#' @param ... Additional arguments (ignored)
-#' @return An `mlx` vector with row sums
+#' @inheritParams mlx_reduction_base
+#' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
 #' @export
-#' @method rowSums mlx
-rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
-  # Row sums operate on rows (axis=1 in row-major)
-  .mlx_reduce_axis(x, "sum", axis = 1L, keepdims = FALSE)
-}
-
-#' Column sums generic
-#'
-#' @param x An array
-#' @param ... Additional arguments
-#' @export
-colSums <- function(x, ...) {
-  UseMethod("colSums")
-}
-
-#' Default colSums method
-#' @export
-colSums.default <- base::colSums
-
-#' Column sums of MLX matrix
-#'
-#' @param x An `mlx` matrix
-#' @param na.rm Ignored (for compatibility)
-#' @param dims Which dimensions are regarded as columns (default: 1)
-#' @param ... Additional arguments (ignored)
-#' @return An `mlx` vector with column sums
-#' @export
-#' @method colSums mlx
-colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
-  # Column sums operate on columns (axis=0 in row-major)
-  .mlx_reduce_axis(x, "sum", axis = 0L, keepdims = FALSE)
+colSums <- function(x, na.rm = FALSE, dims = 1, ...) {
+  if (inherits(x, "mlx")) {
+    return(.mlx_reduce_axis(x, "sum", axis = 0L, keepdims = FALSE))
+  }
+  base::colSums(x, na.rm = na.rm, dims = dims, ...)
 }
 
 #' Transpose of MLX matrix
@@ -149,9 +98,10 @@ t.mlx <- function(x) {
 #' @param x An `mlx` matrix
 #' @param y An `mlx` matrix (default: NULL, uses x)
 #' @return `t(x) %*% y` as an `mlx` object
+#' @param ... Additional arguments passed to base::crossprod.
 #' @export
 #' @method crossprod mlx
-crossprod.mlx <- function(x, y = NULL) {
+crossprod.mlx <- function(x, y = NULL, ...) {
   if (is.null(y)) y <- x
   t(x) %*% y
 }
@@ -161,9 +111,10 @@ crossprod.mlx <- function(x, y = NULL) {
 #' @param x An `mlx` matrix
 #' @param y An `mlx` matrix (default: NULL, uses x)
 #' @return `x %*% t(y)` as an `mlx` object
+#' @param ... Additional arguments passed to base::tcrossprod.
 #' @export
 #' @method tcrossprod mlx
-tcrossprod.mlx <- function(x, y = NULL) {
+tcrossprod.mlx <- function(x, y = NULL, ...) {
   if (is.null(y)) y <- x
   x %*% t(y)
 }

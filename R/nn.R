@@ -1,10 +1,11 @@
 #' Create a learnable linear transformation
-#'
+#' 
 #' @param in_features Number of input features.
 #' @param out_features Number of output features.
 #' @param bias Should a bias term be included?
 #' @param device Device for the parameters.
 #' @return An object of class `mlx_module`.
+#' @importFrom stats rnorm
 #' @export
 mlx_linear <- function(in_features,
                        out_features,
