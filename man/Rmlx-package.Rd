@@ -45,6 +45,13 @@ on GPU (default) or CPU. All \code{mlx} arrays are stored in \code{float32}
 regardless of device. Use base R arrays if you require \code{float64} math.
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://hughjonesd.github.io/Rmlx/}
+}
+
+}
 \author{
 \strong{Maintainer}: First Last \email{first.last@example.com}
 

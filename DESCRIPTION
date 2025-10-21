@@ -21,3 +21,4 @@ Config/testthat/edition: 3
 SystemRequirements: MLX (Apple Machine Learning eXchange) with C/C++ headers and library; macOS on Apple Silicon
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+URL: https://hughjonesd.github.io/Rmlx/

@@ -3,3 +3,7 @@
 ^\.Rhistory$
 ^plan\.md$
 ^CLAUDE\.md$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
