@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <complex>
+#include <cstdint>
 
 using namespace Rcpp;
 using namespace mlx::core;
@@ -75,6 +76,12 @@ std::string dtype_to_string(Dtype dtype) {
   if (dtype == float64) return "float64";
   if (dtype == int32) return "int32";
   if (dtype == int64) return "int64";
+  if (dtype == int16) return "int16";
+  if (dtype == int8) return "int8";
+  if (dtype == uint8) return "uint8";
+  if (dtype == uint16) return "uint16";
+  if (dtype == uint32) return "uint32";
+  if (dtype == uint64) return "uint64";
   if (dtype == complex64) return "complex64";
   if (dtype == bool_) return "bool";
   return "unknown";
@@ -478,6 +485,98 @@ SEXP cpp_mlx_to_r(SEXP xp_) {
       }
     } else {
       reorder_row_major_to_col_major_nd<bool, int>(data, result.begin(), dims);
+    }
+    return result;
+  }
+
+  if (arr.dtype() == int32) {
+    IntegerVector result(total_size);
+    std::vector<int> dims(shape.begin(), shape.end());
+    const int32_t* data = arr.data<int32_t>();
+
+    if (arr.ndim() == 2) {
+      int nrow = shape[0];
+      int ncol = shape[1];
+      for (int i = 0; i < nrow; ++i) {
+        for (int j = 0; j < ncol; ++j) {
+          result[j * nrow + i] = static_cast<int>(data[i * ncol + j]);
+        }
+      }
+    } else if (arr.ndim() <= 1) {
+      for (int i = 0; i < total_size; ++i) {
+        result[i] = static_cast<int>(data[i]);
+      }
+    } else {
+      reorder_row_major_to_col_major_nd<int32_t, int>(data, result.begin(), dims);
+    }
+    return result;
+  }
+
+  if (arr.dtype() == int64) {
+    NumericVector result(total_size);
+    std::vector<int> dims(shape.begin(), shape.end());
+    const int64_t* data = arr.data<int64_t>();
+
+    if (arr.ndim() == 2) {
+      int nrow = shape[0];
+      int ncol = shape[1];
+      for (int i = 0; i < nrow; ++i) {
+        for (int j = 0; j < ncol; ++j) {
+          result[j * nrow + i] = static_cast<double>(data[i * ncol + j]);
+        }
+      }
+    } else if (arr.ndim() <= 1) {
+      for (int i = 0; i < total_size; ++i) {
+        result[i] = static_cast<double>(data[i]);
+      }
+    } else {
+      reorder_row_major_to_col_major_nd<int64_t, double>(data, result.begin(), dims);
+    }
+    return result;
+  }
+
+  if (arr.dtype() == uint32) {
+    NumericVector result(total_size);
+    std::vector<int> dims(shape.begin(), shape.end());
+    const uint32_t* data = arr.data<uint32_t>();
+
+    if (arr.ndim() == 2) {
+      int nrow = shape[0];
+      int ncol = shape[1];
+      for (int i = 0; i < nrow; ++i) {
+        for (int j = 0; j < ncol; ++j) {
+          result[j * nrow + i] = static_cast<double>(data[i * ncol + j]);
+        }
+      }
+    } else if (arr.ndim() <= 1) {
+      for (int i = 0; i < total_size; ++i) {
+        result[i] = static_cast<double>(data[i]);
+      }
+    } else {
+      reorder_row_major_to_col_major_nd<uint32_t, double>(data, result.begin(), dims);
+    }
+    return result;
+  }
+
+  if (arr.dtype() == uint64) {
+    NumericVector result(total_size);
+    std::vector<int> dims(shape.begin(), shape.end());
+    const uint64_t* data = arr.data<uint64_t>();
+
+    if (arr.ndim() == 2) {
+      int nrow = shape[0];
+      int ncol = shape[1];
+      for (int i = 0; i < nrow; ++i) {
+        for (int j = 0; j < ncol; ++j) {
+          result[j * nrow + i] = static_cast<double>(data[i * ncol + j]);
+        }
+      }
+    } else if (arr.ndim() <= 1) {
+      for (int i = 0; i < total_size; ++i) {
+        result[i] = static_cast<double>(data[i]);
+      }
+    } else {
+      reorder_row_major_to_col_major_nd<uint64_t, double>(data, result.begin(), dims);
     }
     return result;
   }

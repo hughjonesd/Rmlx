@@ -49,6 +49,34 @@ cpp_mlx_reduce_axis <- function(xp_, op, axis, keepdims) {
     .Call(`_Rmlx_cpp_mlx_reduce_axis`, xp_, op, axis, keepdims)
 }
 
+cpp_mlx_argmax <- function(xp_, axis, keepdims) {
+    .Call(`_Rmlx_cpp_mlx_argmax`, xp_, axis, keepdims)
+}
+
+cpp_mlx_argmin <- function(xp_, axis, keepdims) {
+    .Call(`_Rmlx_cpp_mlx_argmin`, xp_, axis, keepdims)
+}
+
+cpp_mlx_sort <- function(xp_, axis) {
+    .Call(`_Rmlx_cpp_mlx_sort`, xp_, axis)
+}
+
+cpp_mlx_argsort <- function(xp_, axis) {
+    .Call(`_Rmlx_cpp_mlx_argsort`, xp_, axis)
+}
+
+cpp_mlx_topk <- function(xp_, k, axis) {
+    .Call(`_Rmlx_cpp_mlx_topk`, xp_, k, axis)
+}
+
+cpp_mlx_partition <- function(xp_, kth, axis) {
+    .Call(`_Rmlx_cpp_mlx_partition`, xp_, kth, axis)
+}
+
+cpp_mlx_argpartition <- function(xp_, kth, axis) {
+    .Call(`_Rmlx_cpp_mlx_argpartition`, xp_, kth, axis)
+}
+
 cpp_mlx_transpose <- function(xp_) {
     .Call(`_Rmlx_cpp_mlx_transpose`, xp_)
 }
