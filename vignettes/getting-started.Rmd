@@ -54,9 +54,13 @@ m <- matrix(1:12, nrow = 3, ncol = 4)
 x <- as_mlx(m)
 print(x)
 
-# Specify dtype and device
-x_fp32 <- as_mlx(m, dtype = "float32", device = "gpu")
+# Move the array to the GPU
+x_gpu <- as_mlx(m, device = "gpu")
 ```
+
+> **Precision note:** `as_mlx()` always stores data in single precision (`float32`).
+> Requesting `dtype = "float64"` will downcast the input with a warning. Use base
+> R arrays if you need double precision arithmetic.
 
 ## Lazy Evaluation
 
@@ -69,11 +73,14 @@ x <- as_mlx(matrix(1:100, 10, 10))
 y <- as_mlx(matrix(101:200, 10, 10))
 z <- x + y * 2
 
-# Force evaluation
+# Force evaluation of a specific array
 mlx_eval(z)
 
 # Or convert to R (automatically evaluates)
 as.matrix(z)
+
+# Wait for all queued work on the GPU if needed
+mlx_synchronize("gpu")
 ```
 
 ## Arithmetic Operations
@@ -145,6 +152,9 @@ rowMeans(x)
 
 # Convert to R to see values
 as.matrix(colMeans(x))
+
+# Cumulative operations flatten the array in column-major order
+as.vector(cumsum(x))
 ```
 
 ## Indexing
@@ -181,6 +191,9 @@ x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 # Set back to GPU
 mlx_default_device("gpu")
 ```
+
+Remember that computations are always performed in `float32`; the CPU mode is
+useful when you need to compare against base R or debug without a GPU.
 
 ## Performance Comparison
 

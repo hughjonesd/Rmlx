@@ -1,0 +1,187 @@
+---
+output: github_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Rmlx
+
+R interface to Apple's MLX (Machine Learning eXchange) library for GPU-accelerated array operations on Apple Silicon.
+
+## Overview
+
+Rmlx provides an R interface to Apple's MLX framework, enabling high-performance GPU computing on Apple Silicon (M1, M2, M3+) using the Metal backend. The package implements lazy evaluation and familiar R syntax through S3 method dispatch.
+
+**Status**: Phase 1 implementation complete (arrays, operations, evaluation, tests, documentation). Phase 2 (autodiff, optimizers) not yet implemented.
+
+## Requirements
+
+- macOS on Apple Silicon (M1/M2/M3 or later)
+- MLX C/C++ library installed
+- R >= 4.1.0
+- Rcpp >= 1.0.10
+
+## Installation
+
+### Install MLX
+
+First, install the MLX library:
+
+```bash
+# Option 1: Homebrew (if available)
+brew install mlx
+
+# Option 2: Build from source
+git clone https://github.com/ml-explore/mlx.git
+cd mlx
+mkdir build && cd build
+cmake ..
+make
+sudo make install
+```
+
+### Install Rmlx
+
+```r
+# Install from source
+devtools::install()
+
+# Or with custom MLX paths
+Sys.setenv(MLX_INCLUDE = "/path/to/mlx/include")
+Sys.setenv(MLX_LIB_DIR = "/path/to/mlx/lib")
+devtools::install()
+```
+
+## Features
+
+### Lazy Evaluation
+
+Operations are recorded but not executed until explicitly evaluated:
+
+```{r}
+library(Rmlx)
+
+x <- as_mlx(matrix(1:100, 10, 10))
+y <- as_mlx(matrix(101:200, 10, 10))
+
+# Lazy - not computed yet
+z <- x + y * 2
+
+# Force evaluation
+mlx_eval(z)
+
+# Or convert to R (automatically evaluates)
+result <- as.matrix(z)
+
+# Wait for queued GPU work (useful when timing)
+mlx_synchronize("gpu")
+```
+
+### Arithmetic Operations
+
+Standard R operators work seamlessly:
+
+```{r}
+x <- as_mlx(matrix(1:12, 3, 4))
+y <- as_mlx(matrix(13:24, 3, 4))
+
+# Element-wise operations
+sum_xy <- x + y
+diff_xy <- x - y
+prod_xy <- x * y
+quot_xy <- x / y
+pow_xy <- x ^ 2
+
+# Comparisons
+lt <- x < y
+eq <- x == y
+```
+
+### Matrix Operations
+
+```{r}
+a <- as_mlx(matrix(1:6, 2, 3))
+b <- as_mlx(matrix(1:6, 3, 2))
+
+# Matrix multiplication
+c <- a %*% b
+as.matrix(c)
+```
+
+### Reductions
+
+```{r}
+x <- as_mlx(matrix(1:100, 10, 10))
+
+# Overall reductions
+sum(x)
+mean(x)
+
+# Column/row means
+colMeans(x)
+rowMeans(x)
+
+# Cumulative operations flatten column-major
+as.vector(cumsum(x))
+```
+
+### Indexing
+
+```{r}
+x <- as_mlx(matrix(1:100, 10, 10))
+
+# Subset
+x[1:5, 1:5]
+x[1, ]
+x[, 1]
+```
+
+### Device Management
+
+```{r}
+# Check/set default device
+mlx_default_device()           # "gpu"
+mlx_default_device("cpu")      # Switch to CPU
+mlx_default_device("gpu")      # Back to GPU
+
+# Create on specific device
+x_gpu <- as_mlx(matrix(1:12, 3, 4), device = "gpu")
+x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
+```
+
+> **Precision note:** `as_mlx()` always stores data in `float32`. Requests for `dtype = "float64"` are downcast with a warning. Use base R arrays if you require double precision arithmetic.
+
+## Data Types
+
+Supported dtype:
+
+- `float32`
+
+```{r}
+x_f32 <- as_mlx(matrix(1:12, 3, 4), dtype = "float32")
+```
+
+## Documentation
+
+- Package documentation: `?Rmlx`
+- Getting started vignette: `vignette("getting-started", package = "Rmlx")`
+- Function help: `?as_mlx`, `?mlx_eval`, etc.
+
+## Testing
+
+Tests use testthat and compare against base R results:
+
+```r
+# Run all tests
+devtools::test()
+
+# Run specific test file
+devtools::test_file("tests/testthat/test-ops.R")
+```
+
+Tests skip gracefully if MLX is not available or the package fails to load.

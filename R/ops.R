@@ -34,8 +34,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
 #' Matrix multiplication for MLX arrays
 #'
-#' @param x First matrix (mlx or numeric)
-#' @param y Second matrix (mlx or numeric)
+#' @inheritParams base::`%*%`
 #' @return An `mlx` object
 #' @export
 #' @method %*% mlx

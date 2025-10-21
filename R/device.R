@@ -23,7 +23,7 @@ mlx_default_device <- local({
 #'
 #' Waits for all outstanding operations on the specified device to complete.
 #'
-#' @param device Device to synchronize ("gpu" or "cpu")
+#' @inheritParams mlx_default_device
 #' @export
 mlx_synchronize <- function(device = c("gpu", "cpu")) {
   device <- match.arg(device)
