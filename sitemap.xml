@@ -17,6 +17,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as_mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/cbind.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/colMeans.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/colSums.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/crossprod.mlx.html</loc></url>
@@ -50,6 +51,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/new_mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/pinv.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/print.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/rbind.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rowMeans.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rowSums.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/solve.mlx.html</loc></url>
