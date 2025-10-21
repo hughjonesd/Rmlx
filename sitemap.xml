@@ -5,6 +5,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/COMPLETION_SUMMARY.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/IMPLEMENTATION_STATUS.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/LICENSE-text.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/LICENSE.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/articles/getting-started.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/articles/index.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/articles/performance.html</loc></url>
@@ -18,12 +19,8 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as_mlx.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/colMeans.default.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/colMeans.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/colMeans.mlx.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/colSums.default.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/colSums.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/colSums.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/crossprod.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/dim.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/fft.html</loc></url>
@@ -43,6 +40,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_set_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_parameters.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_reduction_base.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_relu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sequential.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_stop_gradient.html</loc></url>
@@ -51,12 +49,8 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/new_mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/pinv.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/print.mlx.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/rowMeans.default.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rowMeans.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/rowMeans.mlx.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/rowSums.default.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rowSums.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/rowSums.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/solve.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/str.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/sub-.mlx.html</loc></url>
