@@ -51,9 +51,9 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_synchronize.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_topk.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_train_step.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/new_mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/pinv.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/print.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/qr.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rbind.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rowMeans.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rowSums.html</loc></url>
@@ -61,6 +61,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/str.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/sub-.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/sum.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/svd.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/t.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/tcrossprod.mlx.html</loc></url>
 </urlset>

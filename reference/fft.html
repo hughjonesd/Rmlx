@@ -74,6 +74,23 @@ coefficients; otherwise the base R result.</p>
     <div class="dont-index"><p><code><a href="https://rdrr.io/r/stats/fft.html" class="external-link">stats::fft()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">fft</span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10+0i -2+2i -2+0i -2-2i</span>
+<span class="r-in"><span><span class="fu">fft</span><span class="op">(</span><span class="va">z</span>, inverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10+0i -2-2i -2+0i -2+2i</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
