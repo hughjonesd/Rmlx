@@ -3,7 +3,14 @@
 ^\.Rhistory$
 ^plan\.md$
 ^CLAUDE\.md$
+^AGENTS\.md$
+^COMPLETION_SUMMARY\.md$
+^IMPLEMENTATION_STATUS\.md$
+^README\.Rmd$
+^benchmark\.R$
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
 ^\.github$
+^\.claude/?$
+^LICENSE\.md$

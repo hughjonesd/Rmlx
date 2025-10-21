@@ -3,7 +3,9 @@ Type: Package
 Title: R Interface to Apple's MLX Arrays (GPU-Accelerated on Apple Silicon)
 Version: 0.0.0.9000
 Authors@R:
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+    person("David", "Hugh-Jones", email = "david@hughjones.com", role = c("aut", "cre"))
+Author: David Hugh-Jones [aut, cre]
+Maintainer: David Hugh-Jones <david@hughjones.com>
 Description: S3 class 'mlx' backed by Apple MLX arrays with lazy GPU ops via Rcpp.
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -19,6 +21,7 @@ Suggests:
     bench,
     dplyr,
     ggplot2
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 SystemRequirements: MLX (Apple Machine Learning eXchange) with C/C++ headers and library; macOS on Apple Silicon
 Roxygen: list(markdown = TRUE)
