@@ -38,6 +38,9 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_set_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_parameters.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_bernoulli.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_normal.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_uniform.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_reduction_base.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_relu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sequential.html</loc></url>
