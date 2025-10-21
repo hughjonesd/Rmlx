@@ -25,6 +25,37 @@ int normalize_axis(const array& arr, int axis) {
   return axis;
 }
 
+std::vector<int> normalize_axes(const array& arr, const std::vector<int>& axes) {
+  std::vector<int> result;
+  result.reserve(axes.size());
+  for (int axis : axes) {
+    result.push_back(normalize_axis(arr, axis));
+  }
+  return result;
+}
+
+std::optional<std::vector<int>> optional_axes(
+    const array& arr,
+    const Rcpp::Nullable<Rcpp::IntegerVector>& axes) {
+  if (axes.isNull()) {
+    return std::nullopt;
+  }
+  Rcpp::IntegerVector axes_vec(axes.get());
+  if (axes_vec.size() == 0) {
+    Rcpp::stop("axes must contain at least one element.");
+  }
+  std::vector<int> raw_axes(axes_vec.begin(), axes_vec.end());
+  for (int& axis : raw_axes) {
+    if (axis == 0) {
+      Rcpp::stop("Axis indices are 1-based; axis 0 is invalid.");
+    }
+    if (axis > 0) {
+      axis -= 1;
+    }
+  }
+  return normalize_axes(arr, raw_axes);
+}
+
 }  // namespace
 
 // Unary operations
@@ -342,6 +373,75 @@ SEXP cpp_mlx_argpartition(SEXP xp_, int kth, Rcpp::Nullable<int> axis) {
   return make_mlx_xptr(std::move(result));
 }
 
+// logsumexp / logcumsumexp / softmax helpers
+// [[Rcpp::export]]
+SEXP cpp_mlx_logsumexp(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes,
+                       bool keepdims) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = [&]() -> array {
+    if (axes.isNotNull()) {
+      Rcpp::IntegerVector axes_vec(axes.get());
+      std::vector<int> ax(axes_vec.begin(), axes_vec.end());
+      return logsumexp(arr, normalize_axes(arr, ax), keepdims);
+    }
+    return logsumexp(arr, keepdims);
+  }();
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_logsumexp_axis(SEXP xp_, int axis, bool keepdims) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+  int ax = normalize_axis(arr, axis);
+  array result = logsumexp(arr, ax, keepdims);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_logcumsumexp(SEXP xp_, Rcpp::Nullable<int> axis,
+                          bool reverse, bool inclusive) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = [&]() -> array {
+    if (axis.isNotNull()) {
+      int ax = normalize_axis(arr, Rcpp::as<int>(axis.get()));
+      return logcumsumexp(arr, ax, reverse, inclusive);
+    }
+    return logcumsumexp(arr, reverse, inclusive);
+  }();
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_softmax(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes,
+                     bool precise) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = [&]() -> array {
+    if (axes.isNotNull()) {
+      Rcpp::IntegerVector axes_vec(axes.get());
+      std::vector<int> ax(axes_vec.begin(), axes_vec.end());
+      return softmax(arr, normalize_axes(arr, ax), precise);
+    }
+    return softmax(arr, precise);
+  }();
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_softmax_axis(SEXP xp_, int axis, bool precise) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+  int ax = normalize_axis(arr, axis);
+  array result = softmax(arr, ax, precise);
+  return make_mlx_xptr(std::move(result));
+}
+
 // Matrix operations
 // [[Rcpp::export]]
 SEXP cpp_mlx_transpose(SEXP xp_) {
@@ -643,4 +743,149 @@ SEXP cpp_mlx_pinv(SEXP a_xp_,
   array pinv_target = astype(pinv_cpu, target_dtype, target_device);
 
   return make_mlx_xptr(std::move(pinv_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_norm(SEXP xp_, SEXP ord_,
+                  Rcpp::Nullable<Rcpp::IntegerVector> axes,
+                  bool keepdims, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array arr_cpu = astype(arr, arr.dtype(), cpu_stream);
+  std::optional<std::vector<int>> axes_opt = optional_axes(arr, axes);
+
+  array result_cpu = [&]() -> array {
+    if (Rf_isNull(ord_)) {
+      if (axes_opt.has_value()) {
+        return mlx::core::linalg::norm(arr_cpu, axes_opt.value(), keepdims, cpu_stream);
+      }
+      return mlx::core::linalg::norm(arr_cpu, std::nullopt, keepdims, cpu_stream);
+    }
+    if (Rf_isReal(ord_) || Rf_isInteger(ord_)) {
+      double ord_val = Rcpp::as<double>(ord_);
+      if (axes_opt.has_value()) {
+        return mlx::core::linalg::norm(arr_cpu, ord_val, axes_opt.value(), keepdims, cpu_stream);
+      }
+      return mlx::core::linalg::norm(arr_cpu, ord_val, std::nullopt, keepdims, cpu_stream);
+    }
+    if (Rf_isString(ord_)) {
+      std::string ord_str = Rcpp::as<std::string>(ord_);
+      if (axes_opt.has_value()) {
+        return mlx::core::linalg::norm(arr_cpu, ord_str, axes_opt.value(), keepdims, cpu_stream);
+      }
+      return mlx::core::linalg::norm(arr_cpu, ord_str, std::nullopt, keepdims, cpu_stream);
+    }
+    Rcpp::stop("Unsupported ord type for mlx_norm.");
+  }();
+
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_eig(SEXP xp_, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array arr_cpu = astype(arr, arr.dtype(), cpu_stream);
+  auto eig_pair = mlx::core::linalg::eig(arr_cpu, cpu_stream);
+
+  array values_target = astype(eig_pair.first, eig_pair.first.dtype(), target_device);
+  array vectors_target = astype(eig_pair.second, eig_pair.second.dtype(), target_device);
+
+  return List::create(
+      Named("values") = make_mlx_xptr(std::move(values_target)),
+      Named("vectors") = make_mlx_xptr(std::move(vectors_target)));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_eigvals(SEXP xp_, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array arr_cpu = astype(arr, arr.dtype(), cpu_stream);
+  array vals_cpu = mlx::core::linalg::eigvals(arr_cpu, cpu_stream);
+  array vals_target = astype(vals_cpu, vals_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(vals_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_eigvalsh(SEXP xp_, std::string uplo, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array arr_cpu = astype(arr, arr.dtype(), cpu_stream);
+  array vals_cpu = mlx::core::linalg::eigvalsh(arr_cpu, uplo, cpu_stream);
+  array vals_target = astype(vals_cpu, vals_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(vals_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_eigh(SEXP xp_, std::string uplo, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array arr_cpu = astype(arr, arr.dtype(), cpu_stream);
+  auto eig_pair = mlx::core::linalg::eigh(arr_cpu, uplo, cpu_stream);
+
+  array values_target = astype(eig_pair.first, eig_pair.first.dtype(), target_device);
+  array vectors_target = astype(eig_pair.second, eig_pair.second.dtype(), target_device);
+
+  return List::create(
+      Named("values") = make_mlx_xptr(std::move(values_target)),
+      Named("vectors") = make_mlx_xptr(std::move(vectors_target)));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_solve_triangular(SEXP a_xp_, SEXP b_xp_, bool upper,
+                              std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+  MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+  array b_cpu = astype(b_wrapper->get(), b_wrapper->get().dtype(), cpu_stream);
+
+  array result_cpu = mlx::core::linalg::solve_triangular(a_cpu, b_cpu, upper, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_cross(SEXP a_xp_, SEXP b_xp_, int axis, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+  MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+  array b_cpu = astype(b_wrapper->get(), b_wrapper->get().dtype(), cpu_stream);
+
+  int axis_input = axis;
+  if (axis_input >= 0) {
+    axis_input -= 1;
+  }
+  int ax = normalize_axis(a_cpu, axis_input);
+  array result_cpu = mlx::core::linalg::cross(a_cpu, b_cpu, ax, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(result_target));
 }

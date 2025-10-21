@@ -63,3 +63,53 @@ test_that("mlx_partition and mlx_argpartition position kth elements", {
   argpart <- as.integer(as.vector(as.matrix(mlx_argpartition(x, kth))))
   expect_equal(c(5, 1, 7, 3, 9)[argpart + 1L][kth + 1L], ref_sorted[kth + 1L])
 })
+
+test_that("mlx_logsumexp matches base computations", {
+  vec <- c(-2, -1, 0, 1)
+  mlx_vec <- as_mlx(vec)
+  expect_equal(
+    as.numeric(as.matrix(mlx_logsumexp(mlx_vec))),
+    log(sum(exp(vec))),
+    tolerance = 1e-6
+  )
+
+  mat <- matrix(seq_len(6), nrow = 2)
+  mlx_mat <- as_mlx(mat)
+  lse_axis2 <- as.matrix(mlx_logsumexp(mlx_mat, axis = 2))
+  expected <- apply(mat, 1, function(row) log(sum(exp(row))))
+  expect_equal(as.numeric(lse_axis2), expected, tolerance = 1e-6)
+})
+
+test_that("mlx_logcumsumexp matches cumulative reference", {
+  vec <- c(-1, 0, 2)
+  mlx_vec <- as_mlx(vec)
+  expect_equal(
+    as.vector(as.matrix(mlx_logcumsumexp(mlx_vec))),
+    log(cumsum(exp(vec))),
+    tolerance = 1e-6
+  )
+
+  mat <- matrix(c(0, 1, 2, 3, 4, 5), nrow = 2, byrow = TRUE)
+  mlx_mat <- as_mlx(mat)
+  res <- as.matrix(mlx_logcumsumexp(mlx_mat, axis = 2))
+  expected <- t(apply(mat, 1, function(row) log(cumsum(exp(row)))))
+  expect_equal(res, expected, tolerance = 1e-6)
+})
+
+test_that("mlx_softmax normalizes along the requested axis", {
+  mat <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
+  mlx_mat <- as_mlx(mat)
+  sm_rows <- as.matrix(mlx_softmax(mlx_mat, axis = 2))
+  expected_rows <- t(apply(mat, 1, function(row) {
+    ex <- exp(row - max(row))
+    ex / sum(ex)
+  }))
+  expect_equal(sm_rows, expected_rows, tolerance = 1e-6)
+
+  sm_cols <- as.matrix(mlx_softmax(mlx_mat, axis = 1))
+  expected_cols <- apply(mat, 2, function(col) {
+    ex <- exp(col - max(col))
+    ex / sum(ex)
+  })
+  expect_equal(sm_cols, expected_cols, tolerance = 1e-6)
+})

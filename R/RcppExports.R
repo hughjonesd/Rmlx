@@ -77,6 +77,26 @@ cpp_mlx_argpartition <- function(xp_, kth, axis) {
     .Call(`_Rmlx_cpp_mlx_argpartition`, xp_, kth, axis)
 }
 
+cpp_mlx_logsumexp <- function(xp_, axes, keepdims) {
+    .Call(`_Rmlx_cpp_mlx_logsumexp`, xp_, axes, keepdims)
+}
+
+cpp_mlx_logsumexp_axis <- function(xp_, axis, keepdims) {
+    .Call(`_Rmlx_cpp_mlx_logsumexp_axis`, xp_, axis, keepdims)
+}
+
+cpp_mlx_logcumsumexp <- function(xp_, axis, reverse, inclusive) {
+    .Call(`_Rmlx_cpp_mlx_logcumsumexp`, xp_, axis, reverse, inclusive)
+}
+
+cpp_mlx_softmax <- function(xp_, axes, precise) {
+    .Call(`_Rmlx_cpp_mlx_softmax`, xp_, axes, precise)
+}
+
+cpp_mlx_softmax_axis <- function(xp_, axis, precise) {
+    .Call(`_Rmlx_cpp_mlx_softmax_axis`, xp_, axis, precise)
+}
+
 cpp_mlx_transpose <- function(xp_) {
     .Call(`_Rmlx_cpp_mlx_transpose`, xp_)
 }
@@ -139,5 +159,33 @@ cpp_mlx_svd <- function(a_xp_, compute_uv, dtype_str, device_str) {
 
 cpp_mlx_pinv <- function(a_xp_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_pinv`, a_xp_, dtype_str, device_str)
+}
+
+cpp_mlx_norm <- function(xp_, ord_, axes, keepdims, device_str) {
+    .Call(`_Rmlx_cpp_mlx_norm`, xp_, ord_, axes, keepdims, device_str)
+}
+
+cpp_mlx_eig <- function(xp_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_eig`, xp_, device_str)
+}
+
+cpp_mlx_eigvals <- function(xp_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_eigvals`, xp_, device_str)
+}
+
+cpp_mlx_eigvalsh <- function(xp_, uplo, device_str) {
+    .Call(`_Rmlx_cpp_mlx_eigvalsh`, xp_, uplo, device_str)
+}
+
+cpp_mlx_eigh <- function(xp_, uplo, device_str) {
+    .Call(`_Rmlx_cpp_mlx_eigh`, xp_, uplo, device_str)
+}
+
+cpp_mlx_solve_triangular <- function(a_xp_, b_xp_, upper, device_str) {
+    .Call(`_Rmlx_cpp_mlx_solve_triangular`, a_xp_, b_xp_, upper, device_str)
+}
+
+cpp_mlx_cross <- function(a_xp_, b_xp_, axis, device_str) {
+    .Call(`_Rmlx_cpp_mlx_cross`, a_xp_, b_xp_, axis, device_str)
 }
 
