@@ -14,7 +14,7 @@ permissions: read-all
 
 jobs:
   pkgdown:
-    runs-on: ubuntu-latest
+    runs-on: macos-14
     # Only restrict concurrency for non-PR jobs
     concurrency:
       group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
@@ -26,6 +26,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: r-lib/actions/setup-pandoc@v2
+
+      - name: Install MLX C++ library
+        run: |
+          brew update
+          brew install mlx
 
       - uses: r-lib/actions/setup-r@v2
         with:
