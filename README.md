@@ -63,6 +63,9 @@ Operations are recorded but not executed until explicitly evaluated:
 library(Rmlx)
 #> 
 #> Attaching package: 'Rmlx'
+#> The following object is masked from 'package:stats':
+#> 
+#>     fft
 #> The following objects are masked from 'package:base':
 #> 
 #>     colMeans, colSums, rowMeans, rowSums
@@ -81,6 +84,20 @@ result <- as.matrix(z)
 
 # Wait for queued GPU work (useful when timing)
 mlx_synchronize("gpu")
+
+# Simple aggregate checks
+sum(z)
+#> mlx array []
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 35150
+mean(z)
+#> mlx array []
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 351.5
 ```
 
 ### Arithmetic Operations
@@ -101,6 +118,18 @@ pow_xy <- x ^ 2
 # Comparisons
 lt <- x < y
 eq <- x == y
+
+# Bring results back to R
+as.matrix(sum_xy)
+#>      [,1] [,2] [,3] [,4]
+#> [1,]   14   20   26   32
+#> [2,]   16   22   28   34
+#> [3,]   18   24   30   36
+as.matrix(lt)
+#>      [,1] [,2] [,3] [,4]
+#> [1,] TRUE TRUE TRUE TRUE
+#> [2,] TRUE TRUE TRUE TRUE
+#> [3,] TRUE TRUE TRUE TRUE
 ```
 
 ### Matrix Operations
@@ -123,6 +152,68 @@ Advanced decompositions mirror base R:
 qr_res <- qr(a)
 svd_res <- svd(a)
 chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
+fft_res <- fft(a)
+
+# Inspect outputs
+qr_res$Q
+#> mlx array [2 x 2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>            [,1]       [,2]
+#> [1,] -0.4472135 -0.8944272
+#> [2,] -0.8944272  0.4472136
+svd_res$d
+#> [1] 9.5255181 0.5143006
+as.matrix(chol_res)
+#>          [,1]     [,2]
+#> [1,] 3.741657 8.552360
+#> [2,] 0.000000 1.963962
+```
+
+### Differentiation
+
+``` r
+loss <- function(w, x, y) {
+  preds <- x %*% w
+  resids <- preds - y
+  sum(resids * resids) / length(y)
+}
+
+x <- as_mlx(matrix(rnorm(20), 5, 4))
+y <- as_mlx(matrix(rnorm(5), 5, 1))
+w <- as_mlx(matrix(0, 4, 1))
+
+grads <- mlx_grad(loss, w, x, y)
+
+# Inspect gradient
+as.matrix(grads[[1]])
+#>            [,1]
+#> [1,] -0.1165231
+#> [2,]  0.3198068
+#> [3,]  0.6219584
+#> [4,] -1.0378716
+
+# Simple SGD loop
+model <- mlx_linear(4, 1, bias = FALSE)
+opt <- mlx_optimizer_sgd(mlx_parameters(model), lr = 0.1)
+loss_fn <- function(mod, data_x, data_y) {
+  preds <- mlx_forward(mod, data_x)
+  resids <- preds - data_y
+  sum(resids * resids) / length(data_y)
+}
+for (step in 1:50) {
+  mlx_train_step(model, loss_fn, opt, x, y)
+}
+
+# Check final loss
+final_loss <- mlx_forward(model, x)
+mean((final_loss - y) * (final_loss - y))
+#> mlx array []
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 0.1122016
 ```
 
 ### Reductions
@@ -132,13 +223,13 @@ x <- as_mlx(matrix(1:100, 10, 10))
 
 # Overall reductions
 sum(x)
-#> mlx array [1]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 5050
 mean(x)
-#> mlx array [1]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
@@ -219,8 +310,9 @@ x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 > **Precision note:** Numeric inputs are stored in `float32`. Requests
 > for `dtype = "float64"` are downcast with a warning. Logical inputs
 > are stored as MLX `bool` tensors (logical `NA` values are not
-> supported). Use base R arrays if you require double precision
-> arithmetic.
+> supported). Complex inputs are stored as `complex64` (single-precision
+> real/imaginary parts). Use base R arrays if you require double
+> precision arithmetic.
 
 ## Data Types
 
