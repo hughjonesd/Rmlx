@@ -23,3 +23,9 @@ An \code{mlx} tensor of indices.
 \description{
 Argmax and argmin on MLX tensors
 }
+\examples{
+x <- as_mlx(matrix(c(1, 5, 3, 2), 2, 2))
+mlx_argmax(x)
+mlx_argmax(x, axis = 1)
+mlx_argmin(x)
+}

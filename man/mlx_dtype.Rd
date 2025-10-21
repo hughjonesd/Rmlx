@@ -15,3 +15,7 @@ Data type string
 \description{
 Get data type helper
 }
+\examples{
+x <- as_mlx(matrix(1:6, 2, 3))
+mlx_dtype(x)
+}

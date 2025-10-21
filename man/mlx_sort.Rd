@@ -26,3 +26,9 @@ Sort and argsort for MLX tensors
 Indices returned by \code{mlx_argsort()} and \code{mlx_argpartition()} use
 zero-based offsets, matching MLX's native conventions.
 }
+\examples{
+x <- as_mlx(c(3, 1, 4, 2))
+mlx_sort(x)
+mlx_argsort(x)
+mlx_sort(as_mlx(matrix(1:6, 2, 3)), axis = 1)
+}

@@ -14,3 +14,10 @@ mlx_param_set_values(params, values)
 \description{
 Assign tensors back to parameters
 }
+\examples{
+set.seed(1)
+layer <- mlx_linear(2, 1)
+params <- mlx_parameters(layer)
+current <- mlx_param_values(params)
+mlx_param_set_values(params, current)
+}

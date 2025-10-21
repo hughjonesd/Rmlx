@@ -34,7 +34,5 @@ input is downcast to \code{float32}. If you require double precision arithmetic,
 use base R arrays instead of \code{mlx} objects.
 }
 \examples{
-\dontrun{
 x <- as_mlx(matrix(1:12, 3, 4))
-}
 }

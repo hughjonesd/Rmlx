@@ -15,3 +15,7 @@ The input object (invisibly)
 \description{
 Force evaluation of lazy MLX operations
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+mlx_eval(x)
+}

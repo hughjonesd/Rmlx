@@ -26,3 +26,9 @@ An object of class \code{mlx_module}.
 \description{
 Create a learnable linear transformation
 }
+\examples{
+set.seed(1)
+layer <- mlx_linear(3, 2)
+x <- as_mlx(matrix(1:6, 2, 3))
+mlx_forward(layer, x)
+}

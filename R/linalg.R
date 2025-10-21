@@ -7,6 +7,10 @@
 #' @return An `mlx` object containing the solution
 #' @export
 #' @method solve mlx
+#' @examples
+#' a <- as_mlx(matrix(c(3, 1, 1, 2), 2, 2))
+#' b <- as_mlx(c(9, 8))
+#' solve(a, b)
 solve.mlx <- function(a, b = NULL, ...) {
   target_device <- a$device
   target_dtype <- "float32"

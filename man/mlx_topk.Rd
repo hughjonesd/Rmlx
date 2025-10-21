@@ -33,3 +33,10 @@ Top-k selection and partitioning on MLX tensors
 \code{mlx_topk()} returns the largest \code{k} values as reported by MLX. Use
 \code{mlx_argsort()} if you need the associated indices.
 }
+\examples{
+scores <- as_mlx(c(0.7, 0.2, 0.9, 0.4))
+mlx_topk(scores, k = 2)
+mlx_partition(scores, kth = 1)
+mlx_argpartition(scores, kth = 1)
+mlx_topk(as_mlx(matrix(1:6, 2, 3)), k = 1, axis = 1)
+}

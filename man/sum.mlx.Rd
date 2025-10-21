@@ -19,3 +19,7 @@ An \code{mlx} scalar
 \description{
 Sum of MLX array elements
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+sum(x)
+}

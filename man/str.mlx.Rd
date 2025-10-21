@@ -14,3 +14,7 @@
 \description{
 Object structure for MLX array
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+str(x)
+}

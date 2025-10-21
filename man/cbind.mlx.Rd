@@ -16,3 +16,8 @@ An \code{mlx} tensor stacked along the second axis.
 \description{
 Column-bind MLX tensors
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+y <- as_mlx(matrix(5:8, 2, 2))
+cbind(x, y)
+}

@@ -19,3 +19,7 @@
 \description{
 Transposed cross product
 }
+\examples{
+x <- as_mlx(matrix(1:6, 2, 3))
+tcrossprod(x)
+}

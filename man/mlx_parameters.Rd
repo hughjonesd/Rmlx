@@ -15,3 +15,8 @@ A list of \code{mlx_param} objects.
 \description{
 Collect parameters from modules
 }
+\examples{
+set.seed(1)
+layer <- mlx_linear(2, 1)
+mlx_parameters(layer)
+}

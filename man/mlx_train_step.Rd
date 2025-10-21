@@ -21,3 +21,16 @@ A list with the current loss.
 \description{
 Single training step helper
 }
+\examples{
+set.seed(1)
+model <- mlx_linear(2, 1, bias = FALSE)
+opt <- mlx_optimizer_sgd(mlx_parameters(model), lr = 0.1)
+data_x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
+data_y <- as_mlx(matrix(c(1, 2), 2, 1))
+loss_fn <- function(mod, x, y) {
+  preds <- mlx_forward(mod, x)
+  diff <- preds - y
+  sum(diff * diff)
+}
+mlx_train_step(model, loss_fn, opt, data_x, data_y)
+}

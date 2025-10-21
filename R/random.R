@@ -8,7 +8,10 @@
 #'
 #' @return An `mlx` tensor whose entries are sampled uniformly.
 #' @export
-#'
+#' @examples
+#' \dontrun{
+#' noise <- mlx_rand_uniform(c(2, 2), min = -1, max = 1)
+#' }
 mlx_rand_uniform <- function(dim, min = 0, max = 1,
                              dtype = c("float32", "float64"),
                              device = mlx_default_device()) {
@@ -30,6 +33,10 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
 #' @param sd Standard deviation of the normal distribution.
 #' @return An `mlx` tensor with normally distributed entries.
 #' @export
+#' @examples
+#' \dontrun{
+#' weights <- mlx_rand_normal(c(3, 3), mean = 0, sd = 0.1)
+#' }
 mlx_rand_normal <- function(dim, mean = 0, sd = 1,
                             dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
@@ -51,6 +58,10 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
 #' @param device Target device ("gpu" or "cpu").
 #' @return An `mlx` boolean tensor.
 #' @export
+#' @examples
+#' \dontrun{
+#' mask <- mlx_rand_bernoulli(c(4, 4), prob = 0.3)
+#' }
 mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
   if (length(dim) == 0L) {
     stop("dim must contain at least one element.", call. = FALSE)

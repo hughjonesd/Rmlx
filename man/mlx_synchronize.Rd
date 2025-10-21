@@ -12,3 +12,7 @@ mlx_synchronize(device = c("gpu", "cpu"))
 \description{
 Waits for all outstanding operations on the specified device to complete.
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+mlx_synchronize("gpu")
+}

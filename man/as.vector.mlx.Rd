@@ -17,3 +17,7 @@ A numeric vector
 \description{
 Convert MLX array to R vector
 }
+\examples{
+x <- as_mlx(1:5)
+as.vector(x)
+}

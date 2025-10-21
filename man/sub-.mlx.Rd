@@ -23,3 +23,7 @@ Subsetted \code{mlx} object
 \description{
 Subset MLX array
 }
+\examples{
+x <- as_mlx(matrix(1:9, 3, 3))
+x[1, ]
+}

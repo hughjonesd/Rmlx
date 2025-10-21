@@ -17,3 +17,7 @@ A matrix or array (numeric or logical depending on dtype)
 \description{
 Convert MLX array to R matrix/array
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+as.matrix(x)
+}

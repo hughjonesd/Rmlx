@@ -4,6 +4,9 @@
 #' @param ... Additional arguments (ignored)
 #' @export
 #' @method print mlx
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' print(x)
 print.mlx <- function(x, ...) {
   cat(sprintf("mlx array [%s]\n", paste(x$dim, collapse = " x ")))
   cat(sprintf("  dtype: %s\n", x$dtype))
@@ -27,6 +30,9 @@ print.mlx <- function(x, ...) {
 #' @param object An `mlx` object
 #' @param ... Additional arguments (ignored)
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' str(x)
 str.mlx <- function(object, ...) {
   cat(sprintf(
     "mlx [%s] %s on %s\n",
@@ -43,6 +49,9 @@ str.mlx <- function(object, ...) {
 #' @return Integer vector of dimensions
 #' @export
 #' @method dim mlx
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' dim(x)
 dim.mlx <- function(x) {
   x$dim
 }
@@ -53,6 +62,9 @@ dim.mlx <- function(x) {
 #' @return Total number of elements
 #' @export
 #' @method length mlx
+#' @examples
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' length(x)
 length.mlx <- function(x) {
   prod(x$dim)
 }
@@ -62,6 +74,9 @@ length.mlx <- function(x) {
 #' @param x An `mlx` object
 #' @return Dimensions
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' mlx_dim(x)
 mlx_dim <- function(x) {
   stopifnot(is.mlx(x))
   x$dim
@@ -72,6 +87,9 @@ mlx_dim <- function(x) {
 #' @param x An `mlx` object
 #' @return Data type string
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' mlx_dtype(x)
 mlx_dtype <- function(x) {
   stopifnot(is.mlx(x))
   x$dtype
@@ -87,6 +105,9 @@ mlx_dtype <- function(x) {
 #' @return Subsetted `mlx` object
 #' @export
 #' @method [ mlx
+#' @examples
+#' x <- as_mlx(matrix(1:9, 3, 3))
+#' x[1, ]
 `[.mlx` <- function(x, i, j, ..., drop = TRUE) {
   ndim <- length(x$dim)
 
@@ -135,7 +156,12 @@ mlx_dtype <- function(x) {
   stop("Indexing for arrays with >2 dimensions not yet implemented")
 }
 
-# Internal helper: normalize index to start/stop/stride
+#' Normalize indexing parameters for slicing
+#'
+#' @param idx Index specification from R.
+#' @param dim_size Size of the dimension.
+#' @return List with `start`, `stop`, `stride` (zero-based).
+#' @noRd
 .normalize_index <- function(idx, dim_size) {
   if (missing(idx) || is.null(idx)) {
     # Full span
@@ -181,6 +207,11 @@ mlx_dtype <- function(x) {
   stop("Unsupported index type")
 }
 
+#' Compute the extent of a slice given start/stop/stride
+#'
+#' @param start,stop,stride Slice parameters.
+#' @return Length of the resulting slice.
+#' @noRd
 .slice_extent <- function(start, stop, stride) {
   if (stride <= 0L) {
     stop("Stride must be positive")

@@ -15,3 +15,7 @@ Dimensions
 \description{
 Get dimensions helper
 }
+\examples{
+x <- as_mlx(matrix(1:6, 2, 3))
+mlx_dim(x)
+}

@@ -15,3 +15,7 @@ Total number of elements
 \description{
 Get length of MLX array
 }
+\examples{
+x <- as_mlx(matrix(1:6, 2, 3))
+length(x)
+}

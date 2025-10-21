@@ -16,9 +16,8 @@ Current default device (character)
 Get or set default MLX device
 }
 \examples{
-\dontrun{
 mlx_default_device()  # Get current default
 mlx_default_device("cpu")  # Set to CPU
 mlx_default_device("gpu")  # Set back to GPU
-}
+mlx_default_device()
 }

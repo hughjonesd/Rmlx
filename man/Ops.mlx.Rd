@@ -17,3 +17,11 @@ An \code{mlx} object
 \description{
 Arithmetic and comparison operators for MLX arrays
 }
+\examples{
+\dontrun{
+x <- as_mlx(matrix(1:4, 2, 2))
+y <- as_mlx(matrix(5:8, 2, 2))
+x + y
+x < y
+}
+}

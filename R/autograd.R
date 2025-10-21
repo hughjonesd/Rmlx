@@ -23,17 +23,15 @@
 #' breaks the gradient tape and results in an error.
 #'
 #' @examples
-#' \dontrun{
 #' loss <- function(w, x, y) {
 #'   preds <- x %*% w
 #'   resids <- preds - y
 #'   sum(resids * resids) / length(y)
 #' }
-#' x <- as_mlx(matrix(rnorm(20), 5, 4))
-#' y <- as_mlx(matrix(rnorm(5), 5, 1))
-#' w <- as_mlx(matrix(0, 4, 1))
-#' grad_w <- mlx_grad(loss, w, x, y)[[1]]
-#' }
+#' x <- as_mlx(matrix(1:8, 4, 2))
+#' y <- as_mlx(matrix(c(1, 3, 2, 4), 4, 1))
+#' w <- as_mlx(matrix(0, 2, 1))
+#' mlx_grad(loss, w, x, y)[[1]]
 #' @export
 mlx_grad <- function(f, ..., argnums = NULL, value = FALSE) {
   stopifnot(is.function(f))
@@ -73,6 +71,11 @@ mlx_grad <- function(f, ..., argnums = NULL, value = FALSE) {
 
 #' @rdname mlx_grad
 #' @export
+#' @examples
+#' loss <- function(w, x) sum((x %*% w) * (x %*% w))
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' w <- as_mlx(matrix(c(1, -1), 2, 1))
+#' mlx_value_grad(loss, w, x)
 mlx_value_grad <- function(f, ..., argnums = NULL) {
   mlx_grad(f, ..., argnums = argnums, value = TRUE)
 }
@@ -83,6 +86,9 @@ mlx_value_grad <- function(f, ..., argnums = NULL) {
 #'
 #' @return A new `mlx` tensor with identical values but zero gradient.
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' mlx_stop_gradient(x)
 mlx_stop_gradient <- function(x) {
   if (!is.mlx(x)) x <- as_mlx(x)
   new_ptr <- cpp_mlx_stop_gradient(x$ptr)

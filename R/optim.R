@@ -4,6 +4,10 @@
 #' @param lr Learning rate.
 #' @return An optimizer object with a `step()` method.
 #' @export
+#' @examples
+#' set.seed(1)
+#' model <- mlx_linear(2, 1, bias = FALSE)
+#' opt <- mlx_optimizer_sgd(mlx_parameters(model), lr = 0.1)
 mlx_optimizer_sgd <- function(params, lr = 0.01) {
   if (!all(vapply(params, inherits, logical(1), "mlx_param"))) {
     stop("params must be a list of mlx_param objects.", call. = FALSE)
@@ -39,6 +43,18 @@ mlx_optimizer_sgd <- function(params, lr = 0.01) {
 #' @param ... Additional data passed to `loss_fn`.
 #' @return A list with the current loss.
 #' @export
+#' @examples
+#' set.seed(1)
+#' model <- mlx_linear(2, 1, bias = FALSE)
+#' opt <- mlx_optimizer_sgd(mlx_parameters(model), lr = 0.1)
+#' data_x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
+#' data_y <- as_mlx(matrix(c(1, 2), 2, 1))
+#' loss_fn <- function(mod, x, y) {
+#'   preds <- mlx_forward(mod, x)
+#'   diff <- preds - y
+#'   sum(diff * diff)
+#' }
+#' mlx_train_step(model, loss_fn, opt, data_x, data_y)
 mlx_train_step <- function(module, loss_fn, optimizer, ...) {
   if (!inherits(module, "mlx_module")) {
     stop("module must inherit from mlx_module.", call. = FALSE)

@@ -12,3 +12,8 @@ An \code{mlx_module} applying ReLU.
 \description{
 Rectified linear activation module
 }
+\examples{
+act <- mlx_relu()
+x <- as_mlx(matrix(c(-1, 0, 2), 3, 1))
+mlx_forward(act, x)
+}

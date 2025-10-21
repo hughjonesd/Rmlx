@@ -17,3 +17,9 @@ Output tensor.
 \description{
 Forward pass utility
 }
+\examples{
+set.seed(1)
+layer <- mlx_linear(2, 1)
+input <- as_mlx(matrix(c(1, 2), 1, 2))
+mlx_forward(layer, input)
+}

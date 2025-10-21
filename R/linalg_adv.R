@@ -1,12 +1,27 @@
-#' @keywords internal
+#' Wrap a raw MLX pointer into an `mlx` object
+#'
+#' @param ptr External pointer returned by C++ bindings.
+#' @param device Device string associated with the tensor.
+#' @return An `mlx` tensor.
+#' @noRd
 .mlx_wrap_result <- function(ptr, device) {
   dim <- cpp_mlx_shape(ptr)
   dtype <- cpp_mlx_dtype(ptr)
   new_mlx(ptr, dim, dtype, device)
 }
 
+#' Cholesky decomposition for MLX tensors
+#'
+#' @param x An `mlx` positive-definite matrix.
+#' @param pivot Ignored; pivoted decomposition is not supported.
+#' @param LINPACK Ignored; set to `FALSE`.
+#' @param ... Additional arguments (unused).
+#' @return Upper-triangular Cholesky factor as an `mlx` matrix.
 #' @export
 #' @method chol mlx
+#' @examples
+#' x <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
+#' chol(x)
 chol.mlx <- function(x, pivot = FALSE, LINPACK = FALSE, ...) {
   if (!is.mlx(x)) x <- as_mlx(x)
   if (pivot) stop("pivoted Cholesky is not supported for mlx objects.", call. = FALSE)
@@ -16,8 +31,18 @@ chol.mlx <- function(x, pivot = FALSE, LINPACK = FALSE, ...) {
   .mlx_wrap_result(ptr, x$device)
 }
 
+#' QR decomposition for MLX tensors
+#'
+#' @param x An `mlx` matrix.
+#' @param tol Ignored; custom tolerances are not supported.
+#' @param LAPACK Ignored; set to `FALSE`.
+#' @param ... Additional arguments (unused).
+#' @return A list with components `Q` and `R`, each an `mlx` matrix.
 #' @export
 #' @method qr mlx
+#' @examples
+#' x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 3, 2))
+#' qr(x)
 qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   if (!is.mlx(x)) x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L)
@@ -38,8 +63,19 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   )
 }
 
+#' Singular value decomposition for MLX tensors
+#'
+#' @param x An `mlx` matrix.
+#' @param nu Number of left singular vectors to return (0 or `min(dim(x))`).
+#' @param nv Number of right singular vectors to return (0 or `min(dim(x))`).
+#' @param LINPACK Ignored; set to `FALSE`.
+#' @param ... Additional arguments (unused).
+#' @return A list with components `d`, `u`, and `v`.
 #' @export
 #' @method svd mlx
+#' @examples
+#' x <- as_mlx(matrix(c(1, 0, 0, 2), 2, 2))
+#' svd(x)
 svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE, ...) {
   if (!is.mlx(x)) x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L)
@@ -81,6 +117,9 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE, ...) {
 #' @param x An `mlx` object or coercible matrix.
 #' @return An `mlx` object containing the pseudoinverse.
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
+#' pinv(x)
 pinv <- function(x) {
   if (!is.mlx(x)) x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L)
@@ -101,6 +140,10 @@ pinv <- function(x) {
 #'   coefficients; otherwise the base R result.
 #' @seealso [stats::fft()]
 #' @export
+#' @examples
+#' z <- as_mlx(c(1, 2, 3, 4))
+#' fft(z)
+#' fft(z, inverse = TRUE)
 fft <- function(z, inverse = FALSE, ...) {
   UseMethod("fft")
 }

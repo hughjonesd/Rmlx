@@ -19,3 +19,7 @@
 \description{
 Cross product
 }
+\examples{
+x <- as_mlx(matrix(1:6, 2, 3))
+crossprod(x)
+}

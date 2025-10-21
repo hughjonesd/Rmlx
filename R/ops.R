@@ -5,6 +5,13 @@
 #' @return An `mlx` object
 #' @export
 #' @method Ops mlx
+#' @examples
+#' \dontrun{
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' y <- as_mlx(matrix(5:8, 2, 2))
+#' x + y
+#' x < y
+#' }
 Ops.mlx <- function(e1, e2 = NULL) {
   op <- .Generic
 
@@ -38,6 +45,12 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' @return An `mlx` object
 #' @export
 #' @method %*% mlx
+#' @examples
+#' \dontrun{
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' y <- as_mlx(matrix(1:6, 3, 2))
+#' x %*% y
+#' }
 `%*%.mlx` <- function(x, y) {
   if (!is.mlx(x)) x <- as_mlx(x)
   if (!is.mlx(y)) y <- as_mlx(y)
@@ -62,13 +75,23 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
-# Internal helper: unary operation
+#' Apply a unary MLX kernel
+#'
+#' @param x An `mlx` tensor.
+#' @param op Operation name forwarded to C++.
+#' @return Updated `mlx` tensor with the same shape.
+#' @noRd
 .mlx_unary <- function(x, op) {
   ptr <- cpp_mlx_unary(x$ptr, op)
   new_mlx(ptr, x$dim, x$dtype, x$device)
 }
 
-# Internal helper: binary operation
+#' Apply a binary MLX kernel with dtype/device alignment
+#'
+#' @param x,y `mlx` tensors to combine.
+#' @param op Operation identifier.
+#' @return Resulting `mlx` tensor.
+#' @noRd
 .mlx_binary <- function(x, y, op) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
   input_dtype <- .promote_dtype(x$dtype, y$dtype)
@@ -86,7 +109,11 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
-# Internal helper: broadcast dimensions
+#' Broadcast two dimension vectors
+#'
+#' @param dim1,dim2 Dimension vectors.
+#' @return Broadcasted dimensions.
+#' @noRd
 .broadcast_dim <- function(dim1, dim2) {
   # Simplified broadcasting rules
   # In reality, this should follow NumPy-style broadcasting
@@ -107,7 +134,11 @@ Ops.mlx <- function(e1, e2 = NULL) {
   }
 }
 
-# Internal helper: promote dtype
+#' Promote two MLX dtypes to a computation dtype
+#'
+#' @param dtype1,dtype2 Character dtype names.
+#' @return Promoted dtype.
+#' @noRd
 .promote_dtype <- function(dtype1, dtype2) {
   if (dtype1 == dtype2) return(dtype1)
 
@@ -121,7 +152,11 @@ Ops.mlx <- function(e1, e2 = NULL) {
   stop("Unsupported dtype combination: ", dtype1, " and ", dtype2)
 }
 
-# Internal helper: common device
+#' Choose a common device for two tensors
+#'
+#' @param device1,device2 Device strings.
+#' @return Device string.
+#' @noRd
 .common_device <- function(device1, device2) {
   if (device1 == device2) return(device1)
   # Prefer GPU if devices differ

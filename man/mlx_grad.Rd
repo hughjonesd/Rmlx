@@ -37,15 +37,17 @@ to base R objects (such as \code{as.matrix()}, \code{as.numeric()}, or \code{[[}
 breaks the gradient tape and results in an error.
 }
 \examples{
-\dontrun{
 loss <- function(w, x, y) {
   preds <- x \%*\% w
   resids <- preds - y
   sum(resids * resids) / length(y)
 }
-x <- as_mlx(matrix(rnorm(20), 5, 4))
-y <- as_mlx(matrix(rnorm(5), 5, 1))
-w <- as_mlx(matrix(0, 4, 1))
-grad_w <- mlx_grad(loss, w, x, y)[[1]]
-}
+x <- as_mlx(matrix(1:8, 4, 2))
+y <- as_mlx(matrix(c(1, 3, 2, 4), 4, 1))
+w <- as_mlx(matrix(0, 2, 1))
+mlx_grad(loss, w, x, y)[[1]]
+loss <- function(w, x) sum((x \%*\% w) * (x \%*\% w))
+x <- as_mlx(matrix(1:4, 2, 2))
+w <- as_mlx(matrix(c(1, -1), 2, 1))
+mlx_value_grad(loss, w, x)
 }

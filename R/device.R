@@ -4,11 +4,10 @@
 #' @return Current default device (character)
 #' @export
 #' @examples
-#' \dontrun{
 #' mlx_default_device()  # Get current default
 #' mlx_default_device("cpu")  # Set to CPU
 #' mlx_default_device("gpu")  # Set back to GPU
-#' }
+#' mlx_default_device()
 mlx_default_device <- local({
   dev <- "gpu"
   function(value) {
@@ -25,6 +24,9 @@ mlx_default_device <- local({
 #'
 #' @param device Device to synchronize ("gpu" or "cpu").
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' mlx_synchronize("gpu")
 mlx_synchronize <- function(device = c("gpu", "cpu")) {
   device <- match.arg(device)
   cpp_mlx_synchronize(device)

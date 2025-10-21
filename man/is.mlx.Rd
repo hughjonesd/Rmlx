@@ -15,3 +15,7 @@ Logical
 \description{
 Test if object is an MLX array
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+is.mlx(x)
+}

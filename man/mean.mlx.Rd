@@ -17,3 +17,7 @@ An \code{mlx} scalar
 \description{
 Mean of MLX array elements
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+mean(x)
+}

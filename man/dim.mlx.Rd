@@ -15,3 +15,7 @@ Integer vector of dimensions
 \description{
 Get dimensions of MLX array
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+dim(x)
+}

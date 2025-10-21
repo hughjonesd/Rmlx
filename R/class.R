@@ -14,9 +14,7 @@
 #'   use base R arrays instead of `mlx` objects.
 #' @export
 #' @examples
-#' \dontrun{
 #' x <- as_mlx(matrix(1:12, 3, 4))
-#' }
 as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64"), device = mlx_default_device()) {
   device <- match.arg(device, c("gpu", "cpu"))
   dtype_val <- if (missing(dtype)) {
@@ -104,6 +102,9 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64"), devi
 #' @param x An `mlx` object
 #' @return The input object (invisibly)
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' mlx_eval(x)
 mlx_eval <- function(x) {
   stopifnot(is.mlx(x))
   cpp_mlx_eval(x$ptr)
@@ -117,6 +118,9 @@ mlx_eval <- function(x) {
 #' @return A matrix or array (numeric or logical depending on dtype)
 #' @export
 #' @method as.matrix mlx
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' as.matrix(x)
 as.matrix.mlx <- function(x, ...) {
   mlx_eval(x)
   out <- cpp_mlx_to_r(x$ptr)
@@ -133,6 +137,9 @@ as.matrix.mlx <- function(x, ...) {
 #' @param ... Additional arguments (ignored)
 #' @return A numeric array
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:8, 2, 4))
+#' as.array(x)
 as.array.mlx <- function(x, ...) {
   as.matrix.mlx(x, ...)
 }
@@ -143,6 +150,9 @@ as.array.mlx <- function(x, ...) {
 #' @param mode Character string specifying the mode (ignored)
 #' @return A numeric vector
 #' @export
+#' @examples
+#' x <- as_mlx(1:5)
+#' as.vector(x)
 as.vector.mlx <- function(x, mode = "any") {
   # Only works for 1D arrays
   if (length(x$dim) == 0) {
@@ -161,6 +171,9 @@ as.vector.mlx <- function(x, mode = "any") {
 #' @param x Object to test
 #' @return Logical
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' is.mlx(x)
 is.mlx <- function(x) {
   inherits(x, "mlx")
 }
@@ -172,6 +185,7 @@ is.mlx <- function(x) {
 #' @param dtype Data type
 #' @param device Device
 #' @keywords internal
+#' @noRd
 new_mlx <- function(ptr, dim, dtype, device) {
   structure(
     list(

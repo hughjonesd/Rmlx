@@ -15,3 +15,10 @@ An \code{mlx} object
 \description{
 Matrix multiplication for MLX arrays
 }
+\examples{
+\dontrun{
+x <- as_mlx(matrix(1:6, 2, 3))
+y <- as_mlx(matrix(1:6, 3, 2))
+x \%*\% y
+}
+}

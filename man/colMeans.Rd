@@ -22,3 +22,7 @@ An \code{mlx} tensor if \code{x} is \code{mlx}, otherwise a numeric vector.
 \description{
 Column means for MLX tensors
 }
+\examples{
+x <- as_mlx(matrix(1:6, 3, 2))
+colMeans(x)
+}

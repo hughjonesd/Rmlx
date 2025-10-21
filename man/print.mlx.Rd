@@ -14,3 +14,7 @@
 \description{
 Print MLX array
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+print(x)
+}

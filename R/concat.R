@@ -4,6 +4,10 @@
 #'   coerced via `as_mlx()`.
 #' @return An `mlx` tensor stacked along the first axis.
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' y <- as_mlx(matrix(5:8, 2, 2))
+#' rbind(x, y)
 rbind.mlx <- function(..., deparse.level = 1) {
   objs <- list(...)
   if (!length(objs)) stop("No objects to bind.", call. = FALSE)
@@ -19,6 +23,10 @@ rbind.mlx <- function(..., deparse.level = 1) {
 #' @inheritParams rbind.mlx
 #' @return An `mlx` tensor stacked along the second axis.
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' y <- as_mlx(matrix(5:8, 2, 2))
+#' cbind(x, y)
 cbind.mlx <- function(..., deparse.level = 1) {
   objs <- list(...)
   if (!length(objs)) stop("No objects to bind.", call. = FALSE)

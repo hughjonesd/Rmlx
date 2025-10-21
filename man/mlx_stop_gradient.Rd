@@ -15,3 +15,7 @@ A new \code{mlx} tensor with identical values but zero gradient.
 \description{
 Stop gradient propagation through an MLX tensor
 }
+\examples{
+x <- as_mlx(matrix(1:4, 2, 2))
+mlx_stop_gradient(x)
+}

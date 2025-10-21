@@ -5,6 +5,10 @@
 #' @return An `mlx` object with the result
 #' @export
 #' @method Math mlx
+#' @examples
+#' x <- as_mlx(matrix(c(-1, 0, 1), 3, 1))
+#' sin(x)
+#' round(x + 0.4)
 Math.mlx <- function(x, ...) {
   # .Generic contains the name of the function that was called
   op <- .Generic

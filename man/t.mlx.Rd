@@ -15,3 +15,7 @@ Transposed \code{mlx} matrix
 \description{
 Transpose of MLX matrix
 }
+\examples{
+x <- as_mlx(matrix(1:6, 2, 3))
+t(x)
+}

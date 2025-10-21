@@ -7,6 +7,11 @@
 #' @return An object of class `mlx_module`.
 #' @importFrom stats rnorm
 #' @export
+#' @examples
+#' set.seed(1)
+#' layer <- mlx_linear(3, 2)
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' mlx_forward(layer, x)
 mlx_linear <- function(in_features,
                        out_features,
                        bias = TRUE,
@@ -56,6 +61,10 @@ mlx_linear <- function(in_features,
 #'
 #' @return An `mlx_module` applying ReLU.
 #' @export
+#' @examples
+#' act <- mlx_relu()
+#' x <- as_mlx(matrix(c(-1, 0, 2), 3, 1))
+#' mlx_forward(act, x)
 mlx_relu <- function() {
   forward <- function(x) {
     mask <- x > 0
@@ -76,6 +85,11 @@ mlx_relu <- function() {
 #' @param ... Modules to compose.
 #' @return An `mlx_module`.
 #' @export
+#' @examples
+#' set.seed(1)
+#' net <- mlx_sequential(mlx_linear(2, 3), mlx_relu(), mlx_linear(3, 1))
+#' input <- as_mlx(matrix(c(1, 2), 1, 2))
+#' mlx_forward(net, input)
 mlx_sequential <- function(...) {
   layers <- list(...)
   if (length(layers) == 0) {
@@ -113,6 +127,11 @@ mlx_sequential <- function(...) {
 #' @param x Input tensor.
 #' @return Output tensor.
 #' @export
+#' @examples
+#' set.seed(1)
+#' layer <- mlx_linear(2, 1)
+#' input <- as_mlx(matrix(c(1, 2), 1, 2))
+#' mlx_forward(layer, input)
 mlx_forward <- function(module, x) {
   if (!inherits(module, "mlx_module")) {
     stop("Expected an `mlx_module`.", call. = FALSE)
@@ -125,6 +144,10 @@ mlx_forward <- function(module, x) {
 #' @param module An `mlx_module` or list of modules.
 #' @return A list of `mlx_param` objects.
 #' @export
+#' @examples
+#' set.seed(1)
+#' layer <- mlx_linear(2, 1)
+#' mlx_parameters(layer)
 mlx_parameters <- function(module) {
   if (inherits(module, "mlx_module")) {
     return(module$parameters())
@@ -138,6 +161,12 @@ mlx_parameters <- function(module) {
 
 # Internal helper for parameters ----------------------------------------
 
+#' Wrap an environment entry as a learnable parameter
+#'
+#' @param env Environment storing tensors.
+#' @param name Field name within the environment.
+#' @return An object of class `mlx_param`.
+#' @noRd
 mlx_param <- function(env, name) {
   structure(
     list(env = env, name = name),
@@ -145,11 +174,22 @@ mlx_param <- function(env, name) {
   )
 }
 
+#' Retrieve a tensor from an `mlx_param`
+#'
+#' @param param Parameter wrapper.
+#' @return An `mlx` tensor.
+#' @noRd
 mlx_param_get <- function(param) {
   stopifnot(inherits(param, "mlx_param"))
   param$env[[param$name]]
 }
 
+#' Assign a tensor to an `mlx_param`
+#'
+#' @param param Parameter wrapper.
+#' @param value An `mlx` tensor.
+#' @return `NULL` (invisibly).
+#' @noRd
 mlx_param_set <- function(param, value) {
   stopifnot(inherits(param, "mlx_param"), is.mlx(value))
   param$env[[param$name]] <- value
@@ -161,6 +201,10 @@ mlx_param_set <- function(param, value) {
 #' @param params A list of `mlx_param`.
 #' @return List of `mlx` tensors.
 #' @export
+#' @examples
+#' set.seed(1)
+#' layer <- mlx_linear(2, 1)
+#' vals <- mlx_param_values(mlx_parameters(layer))
 mlx_param_values <- function(params) {
   lapply(params, mlx_param_get)
 }
@@ -170,6 +214,12 @@ mlx_param_values <- function(params) {
 #' @param params A list of `mlx_param`.
 #' @param values A list of tensors.
 #' @export
+#' @examples
+#' set.seed(1)
+#' layer <- mlx_linear(2, 1)
+#' params <- mlx_parameters(layer)
+#' current <- mlx_param_values(params)
+#' mlx_param_set_values(params, current)
 mlx_param_set_values <- function(params, values) {
   stopifnot(length(params) == length(values))
   for (i in seq_along(params)) {

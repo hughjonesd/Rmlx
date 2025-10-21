@@ -7,6 +7,11 @@
 #'
 #' @return An `mlx` tensor of indices.
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(c(1, 5, 3, 2), 2, 2))
+#' mlx_argmax(x)
+#' mlx_argmax(x, axis = 1)
+#' mlx_argmin(x)
 mlx_argmax <- function(x, axis = NULL, keepdims = FALSE) {
   x <- if (is.mlx(x)) x else as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
@@ -38,6 +43,11 @@ mlx_argmin <- function(x, axis = NULL, keepdims = FALSE) {
 #' @details Indices returned by `mlx_argsort()` and `mlx_argpartition()` use
 #'   zero-based offsets, matching MLX's native conventions.
 #' @export
+#' @examples
+#' x <- as_mlx(c(3, 1, 4, 2))
+#' mlx_sort(x)
+#' mlx_argsort(x)
+#' mlx_sort(as_mlx(matrix(1:6, 2, 3)), axis = 1)
 mlx_sort <- function(x, axis = NULL) {
   x <- if (is.mlx(x)) x else as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
@@ -71,6 +81,12 @@ mlx_argsort <- function(x, axis = NULL) {
 #' @details `mlx_topk()` returns the largest `k` values as reported by MLX. Use
 #'   `mlx_argsort()` if you need the associated indices.
 #' @export
+#' @examples
+#' scores <- as_mlx(c(0.7, 0.2, 0.9, 0.4))
+#' mlx_topk(scores, k = 2)
+#' mlx_partition(scores, kth = 1)
+#' mlx_argpartition(scores, kth = 1)
+#' mlx_topk(as_mlx(matrix(1:6, 2, 3)), k = 1, axis = 1)
 mlx_topk <- function(x, k, axis = NULL) {
   x <- if (is.mlx(x)) x else as_mlx(x)
   if (length(k) != 1L || !is.finite(k) || k <= 0) {
@@ -114,7 +130,12 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   new_mlx(ptr, new_dim, dtype, x$device)
 }
 
-# Internal helper: convert R axis (1-indexed) to zero-based for C++.
+#' Convert R axis (1-indexed) to zero-based for MLX
+#'
+#' @inheritParams mlx_argmax
+#' @param x An `mlx` tensor providing dimensionality.
+#' @return Integer axis (zero-based) or `NULL`.
+#' @noRd
 .mlx_normalize_axis <- function(axis, x) {
   if (is.null(axis)) {
     return(NULL)

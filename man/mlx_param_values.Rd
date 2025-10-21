@@ -15,3 +15,8 @@ List of \code{mlx} tensors.
 \description{
 Retrieve parameter tensors
 }
+\examples{
+set.seed(1)
+layer <- mlx_linear(2, 1)
+vals <- mlx_param_values(mlx_parameters(layer))
+}

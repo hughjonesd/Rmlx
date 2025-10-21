@@ -17,6 +17,9 @@ NULL
 #' @return An `mlx` scalar
 #' @export
 #' @method sum mlx
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' sum(x)
 sum.mlx <- function(x, ..., na.rm = FALSE) {
   .mlx_reduce(x, "sum")
 }
@@ -28,6 +31,9 @@ sum.mlx <- function(x, ..., na.rm = FALSE) {
 #' @return An `mlx` scalar
 #' @export
 #' @method mean mlx
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' mean(x)
 mean.mlx <- function(x, ...) {
   .mlx_reduce(x, "mean")
 }
@@ -37,6 +43,9 @@ mean.mlx <- function(x, ...) {
 #' @inheritParams mlx_reduction_base
 #' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:6, 3, 2))
+#' rowMeans(x)
 rowMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
   if (inherits(x, "mlx")) {
     return(.mlx_reduce_axis(x, "mean", axis = 1L, keepdims = FALSE))
@@ -49,6 +58,9 @@ rowMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @inheritParams mlx_reduction_base
 #' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:6, 3, 2))
+#' colMeans(x)
 colMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
   if (inherits(x, "mlx")) {
     return(.mlx_reduce_axis(x, "mean", axis = 0L, keepdims = FALSE))
@@ -61,6 +73,9 @@ colMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @inheritParams mlx_reduction_base
 #' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:6, 3, 2))
+#' rowSums(x)
 rowSums <- function(x, na.rm = FALSE, dims = 1, ...) {
   if (inherits(x, "mlx")) {
     return(.mlx_reduce_axis(x, "sum", axis = 1L, keepdims = FALSE))
@@ -73,6 +88,9 @@ rowSums <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @inheritParams mlx_reduction_base
 #' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
 #' @export
+#' @examples
+#' x <- as_mlx(matrix(1:6, 3, 2))
+#' colSums(x)
 colSums <- function(x, na.rm = FALSE, dims = 1, ...) {
   if (inherits(x, "mlx")) {
     return(.mlx_reduce_axis(x, "sum", axis = 0L, keepdims = FALSE))
@@ -86,6 +104,9 @@ colSums <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @return Transposed `mlx` matrix
 #' @export
 #' @method t mlx
+#' @examples
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' t(x)
 t.mlx <- function(x) {
   # Must transpose in MLX so MLX shape matches R dims
   # Layout conversion (physical reordering) happens at boundaries during copy
@@ -101,6 +122,9 @@ t.mlx <- function(x) {
 #' @param ... Additional arguments passed to base::crossprod.
 #' @export
 #' @method crossprod mlx
+#' @examples
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' crossprod(x)
 crossprod.mlx <- function(x, y = NULL, ...) {
   if (is.null(y)) y <- x
   t(x) %*% y
@@ -114,12 +138,20 @@ crossprod.mlx <- function(x, y = NULL, ...) {
 #' @param ... Additional arguments passed to base::tcrossprod.
 #' @export
 #' @method tcrossprod mlx
+#' @examples
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' tcrossprod(x)
 tcrossprod.mlx <- function(x, y = NULL, ...) {
   if (is.null(y)) y <- x
   x %*% t(y)
 }
 
-# Internal helper: full reduction
+#' Reduce an MLX tensor over all axes
+#'
+#' @param x An `mlx` tensor.
+#' @param op Reduction identifier.
+#' @return Reduced `mlx` tensor.
+#' @noRd
 .mlx_reduce <- function(x, op) {
   ptr <- cpp_mlx_reduce(x$ptr, op)
   shape <- cpp_mlx_shape(ptr)
@@ -131,7 +163,14 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   new_mlx(ptr, new_dim, x$dtype, x$device)
 }
 
-# Internal helper: axis reduction
+#' Reduce an MLX tensor along a specific axis
+#'
+#' @param x An `mlx` tensor.
+#' @param op Reduction identifier.
+#' @param axis Axis index (zero-based).
+#' @param keepdims Logical flag preserving reduced axis.
+#' @return Reduced `mlx` tensor.
+#' @noRd
 .mlx_reduce_axis <- function(x, op, axis, keepdims) {
   ptr <- cpp_mlx_reduce_axis(x$ptr, op, as.integer(axis), keepdims)
 

@@ -21,6 +21,11 @@ coefficients; otherwise the base R result.
 Extends \code{\link[stats:fft]{stats::fft()}} to work with \code{mlx} objects while delegating to the
 standard R implementation for other inputs.
 }
+\examples{
+z <- as_mlx(c(1, 2, 3, 4))
+fft(z)
+fft(z, inverse = TRUE)
+}
 \seealso{
 \code{\link[stats:fft]{stats::fft()}}
 }

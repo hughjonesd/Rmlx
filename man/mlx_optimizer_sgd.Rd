@@ -17,3 +17,8 @@ An optimizer object with a \code{step()} method.
 \description{
 Stochastic gradient descent optimizer
 }
+\examples{
+set.seed(1)
+model <- mlx_linear(2, 1, bias = FALSE)
+opt <- mlx_optimizer_sgd(mlx_parameters(model), lr = 0.1)
+}
