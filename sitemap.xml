@@ -28,6 +28,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/is.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/length.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mean.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_argmax.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dim.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dtype.html</loc></url>
@@ -45,8 +46,10 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_reduction_base.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_relu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sequential.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sort.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_stop_gradient.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_synchronize.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_topk.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_train_step.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/new_mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/pinv.html</loc></url>
