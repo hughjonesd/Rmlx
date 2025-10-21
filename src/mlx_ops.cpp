@@ -228,8 +228,8 @@ SEXP cpp_mlx_random_normal(SEXP dim_, double mean, double std,
   if (dtype != float32 && dtype != float64) {
     Rcpp::stop("Random normal currently supports dtype = \"float32\" or \"float64\" only.");
   }
-  StreamOrDevice dev = string_to_device(device_str);
-  array result = mlx::core::random::normal(shape, dtype, static_cast<float>(mean), static_cast<float>(std), std::nullopt, dev);
+  StreamOrDevice dev_input = string_to_device(device_str);
+  array result = mlx::core::random::normal(shape, dtype, array(static_cast<float>(mean), dtype), array(static_cast<float>(std), dtype), std::nullopt, dev_input);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -240,8 +240,30 @@ SEXP cpp_mlx_random_bernoulli(SEXP dim_, double prob, std::string device_str) {
   }
   IntegerVector dim(dim_);
   Shape shape(dim.begin(), dim.end());
+  StreamOrDevice dev_input = string_to_device(device_str);
+  array result = mlx::core::random::bernoulli(array(static_cast<float>(prob), float32), shape, std::nullopt, dev_input);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_concat(SEXP args_, int axis) {
+  List args(args_);
+  if (args.size() == 0) {
+    Rcpp::stop("No tensors supplied for concatenation.");
+  }
+  std::vector<array> arrays;
+  arrays.reserve(args.size());
+  std::string device_str;
+  for (int i = 0; i < args.size(); ++i) {
+    List obj(args[i]);
+    arrays.push_back(get_mlx_wrapper(obj["ptr"])->get());
+    if (i == 0) {
+      device_str = Rcpp::as<std::string>(obj["device"]);
+    }
+  }
+
   StreamOrDevice dev = string_to_device(device_str);
-  array result = mlx::core::random::bernoulli(static_cast<float>(prob), shape, std::nullopt, dev);
+  array result = concatenate(arrays, axis, dev);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -256,8 +278,8 @@ SEXP cpp_mlx_random_uniform(SEXP dim_, double low, double high,
     Rcpp::stop("Random uniform currently supports dtype = \"float32\" or \"float64\" only.");
   }
 
-  StreamOrDevice dev = string_to_device(device_str);
-  array result = mlx::core::random::uniform(low, high, shape, dtype, std::nullopt, dev);
+  StreamOrDevice dev_input = string_to_device(device_str);
+  array result = mlx::core::random::uniform(low, high, shape, dtype, std::nullopt, dev_input);
   return make_mlx_xptr(std::move(result));
 }
 
