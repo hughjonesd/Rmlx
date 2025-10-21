@@ -10,6 +10,31 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// cpp_mlx_value_grad
+SEXP cpp_mlx_value_grad(SEXP fun_sexp, List args, IntegerVector argnums, bool return_value);
+RcppExport SEXP _Rmlx_cpp_mlx_value_grad(SEXP fun_sexpSEXP, SEXP argsSEXP, SEXP argnumsSEXP, SEXP return_valueSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type fun_sexp(fun_sexpSEXP);
+    Rcpp::traits::input_parameter< List >::type args(argsSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type argnums(argnumsSEXP);
+    Rcpp::traits::input_parameter< bool >::type return_value(return_valueSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_value_grad(fun_sexp, args, argnums, return_value));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_stop_gradient
+SEXP cpp_mlx_stop_gradient(SEXP xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_stop_gradient(SEXP xp_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_stop_gradient(xp_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_from_r
 SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_);
 RcppExport SEXP _Rmlx_cpp_mlx_from_r(SEXP x_SEXP, SEXP dim_SEXP, SEXP dtype_SEXP, SEXP device_SEXP) {
@@ -289,6 +314,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_Rmlx_cpp_mlx_value_grad", (DL_FUNC) &_Rmlx_cpp_mlx_value_grad, 4},
+    {"_Rmlx_cpp_mlx_stop_gradient", (DL_FUNC) &_Rmlx_cpp_mlx_stop_gradient, 1},
     {"_Rmlx_cpp_mlx_from_r", (DL_FUNC) &_Rmlx_cpp_mlx_from_r, 4},
     {"_Rmlx_cpp_mlx_empty", (DL_FUNC) &_Rmlx_cpp_mlx_empty, 3},
     {"_Rmlx_cpp_mlx_to_r", (DL_FUNC) &_Rmlx_cpp_mlx_to_r, 1},

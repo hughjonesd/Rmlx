@@ -122,6 +122,22 @@ chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
 fft_res <- fft(a)
 ```
 
+### Differentiation
+
+```{r}
+loss <- function(w, x, y) {
+  preds <- x %*% w
+  resids <- preds - y
+  sum(resids * resids) / length(y)
+}
+
+x <- as_mlx(matrix(rnorm(20), 5, 4))
+y <- as_mlx(matrix(rnorm(5), 5, 1))
+w <- as_mlx(matrix(0, 4, 1))
+
+grads <- mlx_grad(loss, w, x, y)
+```
+
 ### Reductions
 
 ```{r}
