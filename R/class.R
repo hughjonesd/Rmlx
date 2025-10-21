@@ -62,7 +62,11 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64"), devi
     } else {
       x_payload <- as.numeric(x)
     }
-    dim_vec <- length(x)
+    if (length(x) == 1L && is.null(dim(x))) {
+      dim_vec <- integer(0)
+    } else {
+      dim_vec <- length(x)
+    }
   } else if (is.matrix(x) || is.array(x)) {
     if (dtype_val == "bool") {
       x_payload <- as.numeric(as.logical(x))
@@ -116,6 +120,9 @@ mlx_eval <- function(x) {
 as.matrix.mlx <- function(x, ...) {
   mlx_eval(x)
   out <- cpp_mlx_to_r(x$ptr)
+  if (length(x$dim) == 0) {
+    return(as.vector(out))
+  }
   dim(out) <- x$dim
   out
 }

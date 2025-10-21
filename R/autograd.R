@@ -17,6 +17,11 @@
 #'   gradients in the same order as `argnums`. When `value = TRUE`, a list with
 #'   elements `value` (the function output as `mlx`) and `grads`.
 #'
+#' @details
+#' Keep the differentiated closure inside MLX operations. Coercing tensors back
+#' to base R objects (such as `as.matrix()`, `as.numeric()`, or `[[` extraction)
+#' breaks the gradient tape and results in an error.
+#'
 #' @examples
 #' \dontrun{
 #' loss <- function(w, x, y) {

@@ -171,8 +171,13 @@ tcrossprod.mlx <- function(x, y = NULL) {
 # Internal helper: full reduction
 .mlx_reduce <- function(x, op) {
   ptr <- cpp_mlx_reduce(x$ptr, op)
-  # Result is a scalar (0-d array or 1-element array)
-  new_mlx(ptr, 1L, x$dtype, x$device)
+  shape <- cpp_mlx_shape(ptr)
+  if (length(shape) == 0) {
+    new_dim <- integer(0)
+  } else {
+    new_dim <- as.integer(shape)
+  }
+  new_mlx(ptr, new_dim, x$dtype, x$device)
 }
 
 # Internal helper: axis reduction

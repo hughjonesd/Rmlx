@@ -160,6 +160,18 @@ y <- as_mlx(matrix(rnorm(5), 5, 1))
 w <- as_mlx(matrix(0, 4, 1))
 
 grads <- mlx_grad(loss, w, x, y)
+
+# A small SGD loop using the module/optimizer helpers
+model <- mlx_linear(4, 1, bias = FALSE)
+opt <- mlx_optimizer_sgd(mlx_parameters(model), lr = 0.1)
+loss_fn <- function(mod, data_x, data_y) {
+  preds <- mlx_forward(mod, data_x)
+  resids <- preds - data_y
+  sum(resids * resids) / length(data_y)
+}
+for (step in 1:50) {
+  mlx_train_step(model, loss_fn, opt, x, y)
+}
 ```
 
 ## Reductions
