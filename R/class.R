@@ -1,3 +1,40 @@
+#' Infer dimensions for MLX conversion
+#'
+#' @param x Input object destined for MLX conversion.
+#' @return Integer vector of dimensions (possibly length zero).
+#' @noRd
+.mlx_infer_dim <- function(x) {
+  dims <- dim(x)
+  if (!is.null(dims)) {
+    return(as.integer(dims))
+  }
+  if (length(x) == 1L && is.null(dims)) {
+    return(integer(0))
+  }
+  as.integer(length(x))
+}
+
+#' Coerce R payload into the storage format expected by MLX
+#'
+#' @param x Input object (vector/array).
+#' @param dtype Target MLX dtype.
+#' @return Vector of numeric or complex values.
+#' @noRd
+.mlx_coerce_payload <- function(x, dtype) {
+  switch(
+    dtype,
+    "bool" = {
+      x_logical <- as.logical(x)
+      if (any(is.na(x_logical))) {
+        stop("Logical NA values are not supported for MLX boolean arrays.", call. = FALSE)
+      }
+      as.numeric(x_logical)
+    },
+    "complex64" = as.complex(x),
+    as.numeric(x)
+  )
+}
+
 #' Create MLX array from R object
 #'
 #' @param x Numeric, logical, or complex vector, matrix, or array to convert
@@ -34,53 +71,15 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64"), devi
     dtype_val <- "float32"
   }
 
-  if (dtype_val == "bool") {
-    if (!is.logical(x)) {
-      x <- as.logical(x)
-    }
-    if (any(is.na(x))) {
-      stop("Logical NA values are not supported for MLX boolean arrays.", call. = FALSE)
-    }
-  }
-
-  if (dtype_val == "complex64") {
-    if (!is.complex(x)) {
-      x <- as.complex(x)
-    }
-  }
-
   if (is.mlx(x)) return(x)
 
-  # Convert to numeric and get dimensions
-  if (is.vector(x) && !is.list(x)) {
-    if (dtype_val == "bool") {
-      x_payload <- as.numeric(as.logical(x))
-    } else if (dtype_val == "complex64") {
-      x_payload <- as.complex(x)
-    } else {
-      x_payload <- as.numeric(x)
-    }
-    if (length(x) == 1L && is.null(dim(x))) {
-      dim_vec <- integer(0)
-    } else {
-      dim_vec <- length(x)
-    }
-  } else if (is.matrix(x) || is.array(x)) {
-    if (dtype_val == "bool") {
-      x_payload <- as.numeric(as.logical(x))
-    } else if (dtype_val == "complex64") {
-      x_payload <- as.complex(x)
-    } else {
-      x_payload <- as.numeric(x)
-    }
-    dim_vec <- dim(x)
-  } else {
+  is_supported <- (is.vector(x) && !is.list(x)) || is.matrix(x) || is.array(x)
+  if (!is_supported) {
     stop("Cannot convert object of class ", class(x)[1], " to mlx")
   }
 
-  if (is.null(dim_vec)) {
-    stop("Cannot determine dimensions of input")
-  }
+  dim_vec <- .mlx_infer_dim(x)
+  x_payload <- .mlx_coerce_payload(x, dtype_val)
 
   # Create MLX array via C++
   ptr <- cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val, device)

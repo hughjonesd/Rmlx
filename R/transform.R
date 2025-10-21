@@ -16,10 +16,7 @@ mlx_argmax <- function(x, axis = NULL, keepdims = FALSE) {
   x <- if (is.mlx(x)) x else as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_argmax(x$ptr, axis_idx, keepdims)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_dim <- if (length(dim)) as.integer(dim) else integer(0)
-  new_mlx(ptr, new_dim, dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' @rdname mlx_argmax
@@ -28,10 +25,7 @@ mlx_argmin <- function(x, axis = NULL, keepdims = FALSE) {
   x <- if (is.mlx(x)) x else as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_argmin(x$ptr, axis_idx, keepdims)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_dim <- if (length(dim)) as.integer(dim) else integer(0)
-  new_mlx(ptr, new_dim, dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' Sort and argsort for MLX tensors
@@ -52,10 +46,7 @@ mlx_sort <- function(x, axis = NULL) {
   x <- if (is.mlx(x)) x else as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_sort(x$ptr, axis_idx)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_dim <- if (length(dim)) as.integer(dim) else integer(0)
-  new_mlx(ptr, new_dim, dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' @rdname mlx_sort
@@ -64,10 +55,7 @@ mlx_argsort <- function(x, axis = NULL) {
   x <- if (is.mlx(x)) x else as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_argsort(x$ptr, axis_idx)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_dim <- if (length(dim)) as.integer(dim) else integer(0)
-  new_mlx(ptr, new_dim, dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' Top-k selection and partitioning on MLX tensors
@@ -94,10 +82,7 @@ mlx_topk <- function(x, k, axis = NULL) {
   }
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_topk(x$ptr, as.integer(k), axis_idx)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_dim <- if (length(dim)) as.integer(dim) else integer(0)
-  new_mlx(ptr, new_dim, dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' @rdname mlx_topk
@@ -109,10 +94,7 @@ mlx_partition <- function(x, kth, axis = NULL) {
   }
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_partition(x$ptr, as.integer(kth), axis_idx)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_dim <- if (length(dim)) as.integer(dim) else integer(0)
-  new_mlx(ptr, new_dim, dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' @rdname mlx_topk
@@ -124,10 +106,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   }
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_argpartition(x$ptr, as.integer(kth), axis_idx)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_dim <- if (length(dim)) as.integer(dim) else integer(0)
-  new_mlx(ptr, new_dim, dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' Normalize multiple axes for MLX
@@ -198,10 +177,7 @@ mlx_logsumexp <- function(x, axis = NULL, keepdims = FALSE) {
   x <- if (is.mlx(x)) x else as_mlx(x)
   axes_idx <- .mlx_normalize_axes(axis, x)
   ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, keepdims)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_dim <- if (length(dim)) as.integer(dim) else integer(0)
-  new_mlx(ptr, new_dim, dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' Log cumulative sum exponential for MLX tensors
@@ -221,10 +197,7 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
   x <- if (is.mlx(x)) x else as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_logcumsumexp(x$ptr, axis_idx, reverse, inclusive)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_dim <- if (length(dim)) as.integer(dim) else integer(0)
-  new_mlx(ptr, new_dim, dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' Softmax for MLX tensors
@@ -241,7 +214,5 @@ mlx_softmax <- function(x, axis = NULL, precise = FALSE) {
   x <- if (is.mlx(x)) x else as_mlx(x)
   axes_idx <- .mlx_normalize_axes(axis, x)
   ptr <- cpp_mlx_softmax(x$ptr, axes_idx, precise)
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_mlx(ptr, as.integer(dim), dtype, x$device)
+  .mlx_wrap_result(ptr, x$device)
 }
