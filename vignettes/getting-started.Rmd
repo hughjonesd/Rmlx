@@ -14,16 +14,19 @@ knitr::opts_chunk$set(
 )
 ```
 
+
 ## Introduction
 
-Rmlx provides an R interface to Apple's MLX (Machine Learning eXchange) library,
-enabling GPU-accelerated array operations on Apple Silicon Macs. MLX leverages
-the Metal framework for high-performance computing on Apple's GPUs.
+Apple MLX (Machine Learning eXchange) is Apple’s high-performance array and machine-learning framework for Apple Silicon, built on top of Metal for GPU execution and optimized CPU kernels. It offers lazy evaluation, vectorized math, automatic differentiation, and neural network building blocks (see the [official MLX documentation](https://ml-explore.github.io/mlx/) for full details).
 
-**Important**: This package requires:
-- macOS on Apple Silicon (M1, M2, M3, or later)
-- MLX library installed (via Homebrew or built from source)
+`Rmlx` is a thin R layer over MLX that lets you:
 
+* Create MLX tensors from R data (`as_mlx()`).
+* Run GPU-accelerated math, linear algebra, FFTs, and reductions with familiar R syntax.
+* Use automatic differentiation (`mlx_grad()`, `mlx_value_grad()`) for optimization.
+* Build simple models with MLX modules and update them using SGD helpers.
+
+All heavy computation stays in MLX land; you only copy back to base R when you call functions like `as.matrix()`.
 ## System Requirements
 
 Before using Rmlx, ensure MLX is installed:
@@ -129,49 +132,51 @@ print(x_t)
 
 ```{r}
 x <- as_mlx(matrix(rnorm(20), 5, 4))
-
-# t(x) %*% x
-xtx <- crossprod(x)
-
-# x %*% t(x)
-xxt <- tcrossprod(x)
-```
-
-### Advanced decompositions
-
-```{r}
-qr_res <- qr(a)
-svd_res <- svd(a)
-chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
-fft_res <- fft(a)
-```
-
-### Differentiation
-
-```{r}
-loss <- function(w, x, y) {
-  preds <- x %*% w
-  resids <- preds - y
-  sum(resids * resids) / length(y)
-}
-
-x <- as_mlx(matrix(rnorm(20), 5, 4))
-y <- as_mlx(matrix(rnorm(5), 5, 1))
+true_w <- as_mlx(matrix(c(2, -1, 0.5, 0.25), 4, 1))
+y <- x %*% true_w
 w <- as_mlx(matrix(0, 4, 1))
 
-grads <- mlx_grad(loss, w, x, y)
-
-# A small SGD loop using the module/optimizer helpers
-model <- mlx_linear(4, 1, bias = FALSE)
-opt <- mlx_optimizer_sgd(mlx_parameters(model), lr = 0.1)
-loss_fn <- function(mod, data_x, data_y) {
-  preds <- mlx_forward(mod, data_x)
+# Loss must stay entirely in MLX-land: no conversions back to base R
+loss <- function(theta, data_x, data_y) {
+  preds <- data_x %*% theta
   resids <- preds - data_y
   sum(resids * resids) / length(data_y)
 }
-for (step in 1:50) {
-  mlx_train_step(model, loss_fn, opt, x, y)
+
+grads <- mlx_grad(loss, w, x, y)
+
+# Wrong: converting to base R breaks the gradient
+bad_loss <- function(theta, data_x, data_y) {
+  preds <- as.matrix(data_x %*% theta)  # leaves MLX
+  resids <- preds - as.matrix(data_y)
+  sum(resids * resids) / nrow(resids)
 }
+try(mlx_grad(bad_loss, w, x, y))
+
+# A small SGD loop using the module/optimizer helpers
+model <- mlx_linear(4, 1, bias = FALSE)  # learns a single weight vector
+parameters <- mlx_parameters(model)
+opt <- mlx_optimizer_sgd(parameters, lr = 0.1)
+loss_fn <- function(mod, data_x, data_y) {
+  theta <- mlx_param_values(parameters)[[1]]
+  loss(theta, data_x, data_y)
+}
+
+loss_history <- numeric(50)
+for (step in seq_along(loss_history)) {
+  step_res <- mlx_train_step(model, loss_fn, opt, x, y)
+  loss_history[step] <- as.vector(step_res$loss)
+}
+
+# Check final loss and inspect learned parameters
+final_loss <- mlx_forward(model, x)
+residual_mse <- as.vector(mean((final_loss - y) * (final_loss - y)))
+residual_mse
+loss_history
+
+learned_w <- mlx_param_values(parameters)[[1]]
+as.matrix(learned_w)
+as.matrix(true_w)
 ```
 
 ## Reductions
@@ -280,9 +285,3 @@ Current limitations in this initial version:
 - 2D arrays (matrices) are primary focus
 - Limited indexing operations
 - No autodiff or gradient computation (planned for future release)
-
-## Next Steps
-
-- Explore more complex workflows
-- Combine with other R packages
-- Report issues at: https://github.com/your-repo/Rmlx

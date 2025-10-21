@@ -145,6 +145,10 @@ as.array.mlx <- function(x, ...) {
 #' @export
 as.vector.mlx <- function(x, mode = "any") {
   # Only works for 1D arrays
+  if (length(x$dim) == 0) {
+    return(as.vector(as.matrix(x)))
+  }
+
   if (length(x$dim) != 1) {
     stop("Cannot convert multi-dimensional mlx array to vector. Use as.vector(as.matrix(x)) to flatten.")
   }
