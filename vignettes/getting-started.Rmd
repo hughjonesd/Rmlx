@@ -61,7 +61,8 @@ x_gpu <- as_mlx(m, device = "gpu")
 > **Precision note:** Numeric inputs are stored in single precision (`float32`).
 > Requesting `dtype = "float64"` will downcast the input with a warning.
 > Logical inputs are stored as MLX `bool` tensors (logical `NA` values are not
-> supported). Use base R arrays if you need double precision arithmetic.
+> supported). Complex inputs are stored as `complex64` (single-precision real
+> and imaginary parts). Use base R arrays if you need double precision arithmetic.
 
 ## Lazy Evaluation
 
@@ -134,6 +135,15 @@ xtx <- crossprod(x)
 
 # x %*% t(x)
 xxt <- tcrossprod(x)
+```
+
+### Advanced decompositions
+
+```{r}
+qr_res <- qr(a)
+svd_res <- svd(a)
+chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
+fft_res <- fft(a)
 ```
 
 ## Reductions

@@ -117,6 +117,14 @@ as.matrix(c)
 #> [2,]   28   64
 ```
 
+Advanced decompositions mirror base R:
+
+``` r
+qr_res <- qr(a)
+svd_res <- svd(a)
+chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
+```
+
 ### Reductions
 
 ``` r

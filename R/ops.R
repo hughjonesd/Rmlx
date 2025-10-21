@@ -113,6 +113,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
   dtypes <- c(dtype1, dtype2)
 
+  if ("complex64" %in% dtypes) return("complex64")
   if ("float32" %in% dtypes) return("float32")
   if ("float64" %in% dtypes) return("float32")
   if ("bool" %in% dtypes) return("float32")

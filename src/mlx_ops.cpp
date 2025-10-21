@@ -1,5 +1,7 @@
 #include "mlx_bindings.hpp"
 #include <mlx/mlx.h>
+#include <mlx/linalg.h>
+#include <mlx/fft.h>
 #include <Rcpp.h>
 #include <string>
 #include <numeric>
@@ -301,7 +303,112 @@ SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
     }
   }();
 
-  array result_target = astype(result, target_dtype, target_device);
+array result_target = astype(result, target_dtype, target_device);
 
   return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_fft(SEXP xp_, bool inverse, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+
+  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+
+  array input_cpu = astype(wrapper->get(), wrapper->get().dtype(), cpu_stream);
+  array result_cpu = inverse ? mlx::core::fft::ifftn(input_cpu, cpu_stream)
+                             : mlx::core::fft::fftn(input_cpu, cpu_stream);
+
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_cholesky(SEXP a_xp_, bool upper,
+                      std::string dtype_str, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  Dtype target_dtype = string_to_dtype(dtype_str);
+  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+
+  array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
+  array chol_cpu = mlx::core::linalg::cholesky(a_cpu, upper, cpu_stream);
+  array chol_target = astype(chol_cpu, target_dtype, target_device);
+
+  return make_mlx_xptr(std::move(chol_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_qr(SEXP a_xp_,
+                std::string dtype_str, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  Dtype target_dtype = string_to_dtype(dtype_str);
+  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+
+  array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
+  auto qr_cpu = mlx::core::linalg::qr(a_cpu, cpu_stream);
+
+  array q_target = astype(qr_cpu.first, target_dtype, target_device);
+  array r_target = astype(qr_cpu.second, target_dtype, target_device);
+
+  return List::create(
+      Named("Q") = make_mlx_xptr(std::move(q_target)),
+      Named("R") = make_mlx_xptr(std::move(r_target)));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_svd(SEXP a_xp_, bool compute_uv,
+                 std::string dtype_str, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  Dtype target_dtype = string_to_dtype(dtype_str);
+  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+
+  array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
+  std::vector<array> svd_cpu = mlx::core::linalg::svd(a_cpu, compute_uv, cpu_stream);
+
+  List out(svd_cpu.size());
+  CharacterVector names(svd_cpu.size());
+  if (svd_cpu.size() == 3) {
+    names[0] = "U";
+    names[1] = "S";
+    names[2] = "Vh";
+  } else if (svd_cpu.size() == 2) {
+    names[0] = "S";
+    names[1] = "Vh";
+  } else if (svd_cpu.size() == 1) {
+    names[0] = "S";
+  }
+
+  for (size_t i = 0; i < svd_cpu.size(); ++i) {
+    array target = astype(svd_cpu[i], target_dtype, target_device);
+    out[i] = make_mlx_xptr(std::move(target));
+  }
+
+  if (svd_cpu.size() > 0) {
+    out.attr("names") = names;
+  }
+
+  return out;
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_pinv(SEXP a_xp_,
+                  std::string dtype_str, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  Dtype target_dtype = string_to_dtype(dtype_str);
+  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+
+  array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
+  array pinv_cpu = mlx::core::linalg::pinv(a_cpu, cpu_stream);
+  array pinv_target = astype(pinv_cpu, target_dtype, target_device);
+
+  return make_mlx_xptr(std::move(pinv_target));
 }

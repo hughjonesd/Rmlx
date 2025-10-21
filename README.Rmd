@@ -113,6 +113,15 @@ c <- a %*% b
 as.matrix(c)
 ```
 
+Advanced decompositions mirror base R:
+
+```{r}
+qr_res <- qr(a)
+svd_res <- svd(a)
+chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
+fft_res <- fft(a)
+```
+
 ### Reductions
 
 ```{r}
@@ -154,7 +163,7 @@ x_gpu <- as_mlx(matrix(1:12, 3, 4), device = "gpu")
 x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 ```
 
-> **Precision note:** Numeric inputs are stored in `float32`. Requests for `dtype = "float64"` are downcast with a warning. Logical inputs are stored as MLX `bool` tensors (logical `NA` values are not supported). Use base R arrays if you require double precision arithmetic.
+> **Precision note:** Numeric inputs are stored in `float32`. Requests for `dtype = "float64"` are downcast with a warning. Logical inputs are stored as MLX `bool` tensors (logical `NA` values are not supported). Complex inputs are stored as `complex64` (single-precision real/imaginary parts). Use base R arrays if you require double precision arithmetic.
 
 ## Data Types
 

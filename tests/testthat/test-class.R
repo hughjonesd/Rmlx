@@ -47,6 +47,16 @@ test_that("logical inputs create boolean MLX arrays", {
   expect_identical(as.matrix(m_mlx), m)
 })
 
+test_that("complex inputs create complex MLX arrays", {
+  m <- matrix(complex(real = 1:4, imaginary = seq(0.1, 0.4, by = 0.1)), 2, 2)
+  m_mlx <- as_mlx(m)
+
+  expect_s3_class(m_mlx, "mlx")
+  expect_equal(m_mlx$dtype, "complex64")
+  expect_equal(m_mlx$dim, dim(m))
+  expect_equal(as.matrix(m_mlx), m, tolerance = 1e-5)
+})
+
 test_that("is.mlx works", {
   m <- matrix(1:12, 3, 4)
   m_mlx <- as_mlx(m)

@@ -88,3 +88,48 @@ test_that("solve stages to cpu and restores gpu device", {
   expect_equal(A_inv_gpu$device, "gpu")
   expect_equal(as.matrix(A_inv_gpu), solve(A), tolerance = 1e-5)
 })
+
+test_that("cholesky matches base R", {
+  set.seed(123)
+  A <- matrix(rnorm(9), 3, 3)
+  spd <- crossprod(A) + diag(3) * 1e-3
+
+  chol_r <- chol(spd)
+  chol_mlx <- chol(as_mlx(spd))
+
+  expect_equal(as.matrix(chol_mlx), chol_r, tolerance = 1e-5)
+})
+
+test_that("qr decomposition reconstructs the original matrix", {
+  set.seed(42)
+  A <- matrix(rnorm(12), 4, 3)
+  qr_mlx <- qr(as_mlx(A))
+
+  Q <- as.matrix(qr_mlx$Q)
+  R <- as.matrix(qr_mlx$R)
+
+  expect_equal(Q %*% R, A, tolerance = 1e-5)
+  expect_equal(t(Q) %*% Q, diag(3), tolerance = 1e-5)
+})
+
+test_that("svd reconstructs the original matrix", {
+  set.seed(101)
+  A <- matrix(rnorm(12), 3, 4)
+  svd_mlx <- svd(as_mlx(A))
+
+  U <- as.matrix(svd_mlx$u)
+  d <- svd_mlx$d
+  V <- as.matrix(svd_mlx$v)
+
+  reconstructed <- U %*% diag(d) %*% t(V)
+  expect_equal(reconstructed, A, tolerance = 1e-4)
+})
+
+test_that("pinv matches analytical pseudoinverse for full-rank matrix", {
+  set.seed(202)
+  A <- matrix(rnorm(12), 4, 3)
+  pseudo_r <- solve(t(A) %*% A) %*% t(A)
+
+  pseudo_mlx <- pinv(as_mlx(A))
+  expect_equal(as.matrix(pseudo_mlx), pseudo_r, tolerance = 1e-4)
+})

@@ -1,13 +1,15 @@
 #' Create MLX array from R object
 #'
-#' @param x Numeric or logical vector, matrix, or array to convert
+#' @param x Numeric, logical, or complex vector, matrix, or array to convert
 #' @param dtype Ignored. Present for backward compatibility. Numeric arrays are
-#'   stored as `float32`; logical arrays use MLX `bool`.
+#'   stored as `float32`; logical arrays use MLX `bool`; complex arrays use MLX
+#'   `complex64`.
 #' @param device Device: "gpu" (default) or "cpu"
 #' @return An object of class `mlx`
-#' @details Apple MLX executes in single precision. Numeric inputs are stored
-#'   as `float32` regardless of the requested dtype. Logical inputs are mapped to
-#'   MLX boolean tensors. Asking for `dtype = "float64"` emits a warning and the
+#' @details Apple MLX executes in single precision. Numeric inputs are stored in
+#'   `float32` regardless of the requested dtype. Logical inputs are mapped to
+#'   MLX boolean tensors. Complex inputs are stored as `complex64` (float32 real
+#'   and imaginary parts). Asking for `dtype = "float64"` emits a warning and the
 #'   input is downcast to `float32`. If you require double precision arithmetic,
 #'   use base R arrays instead of `mlx` objects.
 #' @export
@@ -15,10 +17,16 @@
 #' \dontrun{
 #' x <- as_mlx(matrix(1:12, 3, 4))
 #' }
-as_mlx <- function(x, dtype = c("float32", "float64", "bool"), device = mlx_default_device()) {
+as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64"), device = mlx_default_device()) {
   device <- match.arg(device, c("gpu", "cpu"))
   dtype_val <- if (missing(dtype)) {
-    if (is.logical(x)) "bool" else "float32"
+    if (is.logical(x)) {
+      "bool"
+    } else if (is.complex(x)) {
+      "complex64"
+    } else {
+      "float32"
+    }
   } else {
     match.arg(dtype)
   }
@@ -37,14 +45,32 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool"), device = mlx_defa
     }
   }
 
+  if (dtype_val == "complex64") {
+    if (!is.complex(x)) {
+      x <- as.complex(x)
+    }
+  }
+
   if (is.mlx(x)) return(x)
 
   # Convert to numeric and get dimensions
   if (is.vector(x) && !is.list(x)) {
-    x_num <- if (dtype_val == "bool") as.numeric(as.logical(x)) else as.numeric(x)
+    if (dtype_val == "bool") {
+      x_payload <- as.numeric(as.logical(x))
+    } else if (dtype_val == "complex64") {
+      x_payload <- as.complex(x)
+    } else {
+      x_payload <- as.numeric(x)
+    }
     dim_vec <- length(x)
   } else if (is.matrix(x) || is.array(x)) {
-    x_num <- if (dtype_val == "bool") as.numeric(as.logical(x)) else as.numeric(x)
+    if (dtype_val == "bool") {
+      x_payload <- as.numeric(as.logical(x))
+    } else if (dtype_val == "complex64") {
+      x_payload <- as.complex(x)
+    } else {
+      x_payload <- as.numeric(x)
+    }
     dim_vec <- dim(x)
   } else {
     stop("Cannot convert object of class ", class(x)[1], " to mlx")
@@ -55,7 +81,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool"), device = mlx_defa
   }
 
   # Create MLX array via C++
-  ptr <- cpp_mlx_from_numeric(x_num, as.integer(dim_vec), dtype_val, device)
+  ptr <- cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val, device)
 
   # Create S3 object
   structure(

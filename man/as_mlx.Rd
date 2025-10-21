@@ -6,15 +6,16 @@
 \usage{
 as_mlx(
   x,
-  dtype = c("float32", "float64", "bool"),
+  dtype = c("float32", "float64", "bool", "complex64"),
   device = mlx_default_device()
 )
 }
 \arguments{
-\item{x}{Numeric or logical vector, matrix, or array to convert}
+\item{x}{Numeric, logical, or complex vector, matrix, or array to convert}
 
 \item{dtype}{Ignored. Present for backward compatibility. Numeric arrays are
-stored as \code{float32}; logical arrays use MLX \code{bool}.}
+stored as \code{float32}; logical arrays use MLX \code{bool}; complex arrays use MLX
+\code{complex64}.}
 
 \item{device}{Device: "gpu" (default) or "cpu"}
 }
@@ -25,9 +26,10 @@ An object of class \code{mlx}
 Create MLX array from R object
 }
 \details{
-Apple MLX executes in single precision. Numeric inputs are stored
-as \code{float32} regardless of the requested dtype. Logical inputs are mapped to
-MLX boolean tensors. Asking for \code{dtype = "float64"} emits a warning and the
+Apple MLX executes in single precision. Numeric inputs are stored in
+\code{float32} regardless of the requested dtype. Logical inputs are mapped to
+MLX boolean tensors. Complex inputs are stored as \code{complex64} (float32 real
+and imaginary parts). Asking for \code{dtype = "float64"} emits a warning and the
 input is downcast to \code{float32}. If you require double precision arithmetic,
 use base R arrays instead of \code{mlx} objects.
 }

@@ -2,6 +2,7 @@
 #define MLX_BINDINGS_HPP
 
 #include <Rcpp.h>
+#include <complex>
 #include <mlx/mlx.h>
 #include <memory>
 

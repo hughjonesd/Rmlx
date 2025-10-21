@@ -124,7 +124,7 @@ ggplot(solve_results, aes(x = factor(size), y = as.numeric(median),
 
 ## Notes
 
-- Numeric data resides in single-precision (`float32`) when stored as `mlx` arrays; logical data uses MLX `bool`.
+- Numeric data resides in single-precision (`float32`) when stored as `mlx` arrays; logical data uses MLX `bool`, and complex data uses `complex64`.
 - When comparing timings, make sure MLX is configured for GPU execution and
   consider calling `mlx_synchronize("gpu")` before reading the results to avoid
   asynchronous delays.

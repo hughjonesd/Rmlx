@@ -149,6 +149,23 @@ test_that("cumulative operations work", {
   expect_equal(result_cummin, cummin(x2), tolerance = 1e-6)
 })
 
+test_that("fft matches base R", {
+  set.seed(123)
+  x <- rnorm(16)
+  x_mlx <- as_mlx(x)
+
+  fft_r <- fft(x)
+  fft_mlx <- fft(x_mlx)
+
+  expect_s3_class(fft_mlx, "mlx")
+  expect_equal(as.vector(as.matrix(fft_mlx)), fft_r, tolerance = 1e-4)
+
+  ifft_mlx <- fft(fft_mlx, inverse = TRUE)
+  ifft_r <- fft(fft_r, inverse = TRUE)
+
+  expect_equal(as.vector(as.matrix(ifft_mlx)), ifft_r, tolerance = 1e-4)
+})
+
 test_that("unsupported Math functions fall back to R", {
   x <- matrix(seq(-2.7, 2.7, length.out = 12), 3, 4)
   x_mlx <- as_mlx(x)
