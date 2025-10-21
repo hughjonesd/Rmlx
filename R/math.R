@@ -13,9 +13,9 @@ Math.mlx <- function(x, ...) {
   # Cumulative operations flatten the array in column-major order (like R)
   # MLX flattens in row-major order, so we need to fall back to R
   if (op %in% c("cumsum", "cumprod", "cummax", "cummin")) {
-    x_r <- as.matrix(x)
-    result_r <- get(.Generic, mode = "function")(x_r, ...)
-    return(as_mlx(result_r, dtype = x$dtype, device = x$device))
+    ptr <- cpp_mlx_cumulative(x$ptr, op)
+    len <- as.integer(prod(x$dim))
+    return(new_mlx(ptr, len, x$dtype, x$device))
   }
 
   # Map R function names to MLX operations

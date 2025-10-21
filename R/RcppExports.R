@@ -53,6 +53,10 @@ cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
 }
 
+cpp_mlx_synchronize <- function(device_str) {
+    invisible(.Call(`_Rmlx_cpp_mlx_synchronize`, device_str))
+}
+
 cpp_mlx_slice <- function(xp_, starts_, stops_, strides_) {
     .Call(`_Rmlx_cpp_mlx_slice`, xp_, starts_, stops_, strides_)
 }

@@ -27,7 +27,6 @@ mlx_default_device <- local({
 #' @export
 mlx_synchronize <- function(device = c("gpu", "cpu")) {
   device <- match.arg(device)
-  # This would call into C++ if MLX provides a synchronization function
-  # For now, this is a placeholder
+  cpp_mlx_synchronize(device)
   invisible(NULL)
 }

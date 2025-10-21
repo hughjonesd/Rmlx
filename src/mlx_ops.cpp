@@ -2,6 +2,8 @@
 #include <mlx/mlx.h>
 #include <Rcpp.h>
 #include <string>
+#include <numeric>
+#include <algorithm>
 
 using namespace Rcpp;
 using namespace rmlx;
@@ -213,6 +215,13 @@ SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
   return make_mlx_xptr(std::move(result));
 }
 
+// [[Rcpp::export]]
+void cpp_mlx_synchronize(std::string device_str) {
+  Device dev = string_to_device(device_str);
+  Stream stream = default_stream(dev);
+  synchronize(stream);
+}
+
 // Indexing/slicing
 // [[Rcpp::export]]
 SEXP cpp_mlx_slice(SEXP xp_, SEXP starts_, SEXP stops_, SEXP strides_) {
@@ -236,15 +245,31 @@ SEXP cpp_mlx_slice(SEXP xp_, SEXP starts_, SEXP stops_, SEXP strides_) {
 SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
+  array arr = wrapper->get();
+
+  array flat = [&]() -> array {
+    if (arr.ndim() <= 1) {
+      return reshape(arr, Shape{static_cast<int>(arr.size())});
+    }
+
+    std::vector<int> perm(arr.ndim());
+    std::iota(perm.begin(), perm.end(), 0);
+    std::reverse(perm.begin(), perm.end());
+
+    array transposed = transpose(arr, perm);
+    transposed = contiguous(transposed);
+    return reshape(transposed, Shape{static_cast<int>(arr.size())});
+  }();
+
   array result = [&]() -> array {
     if (op == "cumsum") {
-      return cumsum(wrapper->get());
+      return cumsum(flat);
     } else if (op == "cumprod") {
-      return cumprod(wrapper->get());
+      return cumprod(flat);
     } else if (op == "cummax") {
-      return cummax(wrapper->get());
+      return cummax(flat);
     } else if (op == "cummin") {
-      return cummin(wrapper->get());
+      return cummin(flat);
     } else {
       Rcpp::stop("Unsupported cumulative operation: " + op);
     }
