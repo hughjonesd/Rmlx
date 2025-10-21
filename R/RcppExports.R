@@ -61,6 +61,18 @@ cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
 }
 
+cpp_mlx_random_normal <- function(dim_, mean, std, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_normal`, dim_, mean, std, dtype_str, device_str)
+}
+
+cpp_mlx_random_bernoulli <- function(dim_, prob, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_bernoulli`, dim_, prob, device_str)
+}
+
+cpp_mlx_random_uniform <- function(dim_, low, high, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_uniform`, dim_, low, high, dtype_str, device_str)
+}
+
 cpp_mlx_synchronize <- function(device_str) {
     invisible(.Call(`_Rmlx_cpp_mlx_synchronize`, device_str))
 }

@@ -148,6 +148,17 @@ as.matrix(c)
 
 Advanced decompositions mirror base R:
 
+### Random Sampling
+
+``` r
+random_tensor <- mlx_rand_uniform(c(512, 512), min = -1, max = 1)
+random_tensor
+#> mlx array [512 x 512]
+#>   dtype: float32
+#>   device: gpu
+#>   (262144 elements, not shown)
+```
+
 ``` r
 qr_res <- qr(a)
 svd_res <- svd(a)
@@ -188,11 +199,11 @@ grads <- mlx_grad(loss, w, x, y)
 
 # Inspect gradient
 as.matrix(grads[[1]])
-#>            [,1]
-#> [1,] -0.1165231
-#> [2,]  0.3198068
-#> [3,]  0.6219584
-#> [4,] -1.0378716
+#>             [,1]
+#> [1,] -0.53908861
+#> [2,]  0.03495799
+#> [3,]  0.31788656
+#> [4,]  0.08960838
 
 # Simple SGD loop
 model <- mlx_linear(4, 1, bias = FALSE)
@@ -213,7 +224,7 @@ mean((final_loss - y) * (final_loss - y))
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 0.1122016
+#> [1] 0.03953141
 ```
 
 ### Reductions

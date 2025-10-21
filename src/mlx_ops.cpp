@@ -2,6 +2,7 @@
 #include <mlx/mlx.h>
 #include <mlx/linalg.h>
 #include <mlx/fft.h>
+#include <mlx/random.h>
 #include <Rcpp.h>
 #include <string>
 #include <numeric>
@@ -214,6 +215,49 @@ SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
 
   array result = matmul(lhs, rhs);
 
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_normal(SEXP dim_, double mean, double std,
+                           std::string dtype_str, std::string device_str) {
+  IntegerVector dim(dim_);
+  Shape shape(dim.begin(), dim.end());
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  if (dtype != float32 && dtype != float64) {
+    Rcpp::stop("Random normal currently supports dtype = \"float32\" or \"float64\" only.");
+  }
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = mlx::core::random::normal(shape, dtype, static_cast<float>(mean), static_cast<float>(std), std::nullopt, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_bernoulli(SEXP dim_, double prob, std::string device_str) {
+  if (prob < 0.0 || prob > 1.0) {
+    Rcpp::stop("prob must be between 0 and 1.");
+  }
+  IntegerVector dim(dim_);
+  Shape shape(dim.begin(), dim.end());
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = mlx::core::random::bernoulli(static_cast<float>(prob), shape, std::nullopt, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_uniform(SEXP dim_, double low, double high,
+                            std::string dtype_str, std::string device_str) {
+  IntegerVector dim(dim_);
+  Shape shape(dim.begin(), dim.end());
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  if (dtype != float32 && dtype != float64) {
+    Rcpp::stop("Random uniform currently supports dtype = \"float32\" or \"float64\" only.");
+  }
+
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = mlx::core::random::uniform(low, high, shape, dtype, std::nullopt, dev);
   return make_mlx_xptr(std::move(result));
 }
 
