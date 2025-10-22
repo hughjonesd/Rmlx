@@ -109,6 +109,34 @@ cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
 }
 
+cpp_mlx_zeros <- function(dim_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_zeros`, dim_, dtype_str, device_str)
+}
+
+cpp_mlx_ones <- function(dim_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_ones`, dim_, dtype_str, device_str)
+}
+
+cpp_mlx_full <- function(dim_, value_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_full`, dim_, value_, dtype_str, device_str)
+}
+
+cpp_mlx_eye <- function(n, m, k, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_eye`, n, m, k, dtype_str, device_str)
+}
+
+cpp_mlx_identity <- function(n, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_identity`, n, dtype_str, device_str)
+}
+
+cpp_mlx_arange <- function(start_, stop, step_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_arange`, start_, stop, step_, dtype_str, device_str)
+}
+
+cpp_mlx_linspace <- function(start, stop, num, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_linspace`, start, stop, num, dtype_str, device_str)
+}
+
 cpp_mlx_random_normal <- function(dim_, mean, std, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_random_normal`, dim_, mean, std, dtype_str, device_str)
 }

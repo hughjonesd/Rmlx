@@ -452,6 +452,10 @@ SEXP cpp_mlx_to_r(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
+  if (arr.dtype() == float64) {
+    arr = astype(arr, float64, Device(Device::cpu));
+  }
+
   // Ensure array is row-contiguous before extracting data
   // This is important for transposed arrays which may have non-standard strides
   if (arr.ndim() >= 2) {
