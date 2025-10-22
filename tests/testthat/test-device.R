@@ -26,3 +26,16 @@ test_that("device argument is respected", {
   x_cpu <- as_mlx(x, device = "cpu")
   expect_equal(x_cpu$device, "cpu")
 })
+
+test_that("with_default_device temporarily overrides device", {
+  original <- mlx_default_device()
+  on.exit(mlx_default_device(original), add = TRUE)
+
+  result <- with_default_device("cpu", {
+    expect_equal(mlx_default_device(), "cpu")
+    "value"
+  })
+
+  expect_equal(result, "value")
+  expect_equal(mlx_default_device(), original)
+})
