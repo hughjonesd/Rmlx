@@ -69,12 +69,12 @@ cpp_mlx_logical <- function(xp1_, xp2_, op, device_str) {
     .Call(`_Rmlx_cpp_mlx_logical`, xp1_, xp2_, op, device_str)
 }
 
-cpp_mlx_reduce <- function(xp_, op) {
-    .Call(`_Rmlx_cpp_mlx_reduce`, xp_, op)
+cpp_mlx_reduce <- function(xp_, op, ddof) {
+    .Call(`_Rmlx_cpp_mlx_reduce`, xp_, op, ddof)
 }
 
-cpp_mlx_reduce_axis <- function(xp_, op, axis, keepdims) {
-    .Call(`_Rmlx_cpp_mlx_reduce_axis`, xp_, op, axis, keepdims)
+cpp_mlx_reduce_axis <- function(xp_, op, axis, keepdims, ddof) {
+    .Call(`_Rmlx_cpp_mlx_reduce_axis`, xp_, op, axis, keepdims, ddof)
 }
 
 cpp_mlx_argmax <- function(xp_, axis, keepdims) {

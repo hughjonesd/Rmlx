@@ -5,6 +5,9 @@
 \alias{mlx_prod}
 \alias{mlx_all}
 \alias{mlx_any}
+\alias{mlx_mean}
+\alias{mlx_var}
+\alias{mlx_std}
 \title{Reduce MLX tensors}
 \usage{
 mlx_sum(x, axis = NULL, drop = TRUE)
@@ -14,6 +17,12 @@ mlx_prod(x, axis = NULL, drop = TRUE)
 mlx_all(x, axis = NULL, drop = TRUE)
 
 mlx_any(x, axis = NULL, drop = TRUE)
+
+mlx_mean(x, axis = NULL, drop = TRUE)
+
+mlx_var(x, axis = NULL, drop = TRUE, ddof = 0L)
+
+mlx_std(x, axis = NULL, drop = TRUE, ddof = 0L)
 }
 \arguments{
 \item{x}{An object coercible to \code{mlx} via \code{\link[=as_mlx]{as_mlx()}}.}
@@ -23,6 +32,9 @@ When \code{NULL}, the reduction is performed over all elements.}
 
 \item{drop}{Logical flag controlling dimension dropping: \code{TRUE} (default)
 removes reduced axes, while \code{FALSE} retains them with length one.}
+
+\item{ddof}{Non-negative integer delta degrees of freedom for variance or
+standard deviation reductions.}
 }
 \value{
 An \code{mlx} tensor containing the reduction result.
@@ -39,4 +51,7 @@ mlx_sum(x, axis = 1)
 mlx_prod(x, axis = 2, drop = FALSE)
 mlx_all(x > 0)
 mlx_any(x > 3)
+mlx_mean(x, axis = 1)
+mlx_var(x, axis = 2)
+mlx_std(x, ddof = 1)
 }

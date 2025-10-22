@@ -20,6 +20,8 @@ NULL
 #'   When `NULL`, the reduction is performed over all elements.
 #' @param drop Logical flag controlling dimension dropping: `TRUE` (default)
 #'   removes reduced axes, while `FALSE` retains them with length one.
+#' @param ddof Non-negative integer delta degrees of freedom for variance or
+#'   standard deviation reductions.
 #' @return An `mlx` tensor containing the reduction result.
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -28,6 +30,10 @@ NULL
 #' mlx_prod(x, axis = 2, drop = FALSE)
 #' mlx_all(x > 0)
 #' mlx_any(x > 3)
+#' mlx_mean(x, axis = 1)
+#' mlx_var(x, axis = 2)
+#' mlx_std(x, ddof = 1)
+#' @aliases mlx_sum mlx_prod mlx_all mlx_any mlx_mean mlx_var mlx_std
 #' @name mlx_sum
 NULL
 
@@ -53,6 +59,24 @@ mlx_all <- function(x, axis = NULL, drop = TRUE) {
 #' @export
 mlx_any <- function(x, axis = NULL, drop = TRUE) {
   .mlx_reduce_dispatch(x, "any", axis = axis, drop = drop)
+}
+
+#' @rdname mlx_sum
+#' @export
+mlx_mean <- function(x, axis = NULL, drop = TRUE) {
+  .mlx_reduce_dispatch(x, "mean", axis = axis, drop = drop)
+}
+
+#' @rdname mlx_sum
+#' @export
+mlx_var <- function(x, axis = NULL, drop = TRUE, ddof = 0L) {
+  .mlx_reduce_dispatch(x, "var", axis = axis, drop = drop, ddof = ddof)
+}
+
+#' @rdname mlx_sum
+#' @export
+mlx_std <- function(x, axis = NULL, drop = TRUE, ddof = 0L) {
+  .mlx_reduce_dispatch(x, "std", axis = axis, drop = drop, ddof = ddof)
 }
 
 #' Mean of MLX array elements
@@ -183,8 +207,8 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @param op Reduction identifier.
 #' @return Reduced `mlx` tensor.
 #' @noRd
-.mlx_reduce <- function(x, op) {
-  ptr <- cpp_mlx_reduce(x$ptr, op)
+.mlx_reduce <- function(x, op, ddof = 0L) {
+  ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof))
   .mlx_wrap_result(ptr, x$device)
 }
 
@@ -196,16 +220,16 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @param keepdims Logical flag preserving reduced axis.
 #' @return Reduced `mlx` tensor.
 #' @noRd
-.mlx_reduce_axis <- function(x, op, axis, keepdims) {
+.mlx_reduce_axis <- function(x, op, axis, keepdims, ddof = 0L) {
   axis0 <- as.integer(axis) - 1L
   if (axis0 < 0L || axis0 >= length(x$dim)) {
     stop("axis is out of bounds for input tensor", call. = FALSE)
   }
-  ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, keepdims)
+  ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, keepdims, as.integer(ddof))
   .mlx_wrap_result(ptr, x$device)
 }
 
-.mlx_reduce_axes <- function(x, op, axes, drop) {
+.mlx_reduce_axes <- function(x, op, axes, drop, ddof = 0L) {
   axes <- as.integer(axes)
   if (any(is.na(axes))) {
     stop("axis must be a vector of integers", call. = FALSE)
@@ -217,26 +241,26 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   axes <- unique(axes)
   if (!drop) {
     for (ax in sort(axes)) {
-      x <- .mlx_reduce_axis(x, op, axis = ax, keepdims = TRUE)
+      x <- .mlx_reduce_axis(x, op, axis = ax, keepdims = TRUE, ddof = ddof)
     }
   } else {
     for (ax in sort(axes, decreasing = TRUE)) {
-      x <- .mlx_reduce_axis(x, op, axis = ax, keepdims = FALSE)
+      x <- .mlx_reduce_axis(x, op, axis = ax, keepdims = FALSE, ddof = ddof)
     }
   }
   x
 }
 
-.mlx_reduce_dispatch <- function(x, op, axis = NULL, drop = TRUE) {
+.mlx_reduce_dispatch <- function(x, op, axis = NULL, drop = TRUE, ddof = 0L) {
   x <- if (inherits(x, "mlx")) x else as_mlx(x)
   if (is.null(axis)) {
-    return(.mlx_reduce(x, op))
+    return(.mlx_reduce(x, op, ddof = ddof))
   }
   if (!is.logical(drop) || length(drop) != 1L) {
     stop("drop must be a single logical value", call. = FALSE)
   }
   axes <- axis
-  .mlx_reduce_axes(x, op, axes, drop = drop)
+  .mlx_reduce_axes(x, op, axes, drop = drop, ddof = ddof)
 }
 
 #' @export
@@ -249,7 +273,28 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
     warning("na.rm is ignored for mlx tensors", call. = FALSE)
   }
 
-  args <- list(x, ...)
+  dots <- list(...)
+  axis <- dots$axis
+  drop_arg <- dots$drop
+  if (!is.null(axis)) dots$axis <- NULL
+  if (!is.null(drop_arg)) dots$drop <- NULL
+
+  args <- c(list(x), dots)
+
+  # If axis/drop specified, limit to single operand
+  if (!is.null(axis) || !is.null(drop_arg)) {
+    if (length(args) > 1L) {
+      stop("axis/drop arguments are only supported when reducing a single tensor", call. = FALSE)
+    }
+    drop_val <- if (is.null(drop_arg)) TRUE else drop_arg
+    return(.mlx_reduce_dispatch(args[[1L]], switch(op,
+      sum = "sum",
+      prod = "prod",
+      all = "all",
+      any = "any"
+    ), axis = axis, drop = drop_val))
+  }
+
   reduce_one <- function(obj) {
     obj_mlx <- if (inherits(obj, "mlx")) obj else as_mlx(obj)
     .mlx_reduce(obj_mlx, switch(op,

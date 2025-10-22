@@ -357,7 +357,7 @@ SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op, std::string device_st
 
 // Reductions
 // [[Rcpp::export]]
-SEXP cpp_mlx_reduce(SEXP xp_, std::string op) {
+SEXP cpp_mlx_reduce(SEXP xp_, std::string op, int ddof) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   array input = wrapper->get();
@@ -377,6 +377,20 @@ SEXP cpp_mlx_reduce(SEXP xp_, std::string op) {
         input = astype(input, float32);
       }
       return mean(input, false);
+    } else if (op == "var") {
+      if (input.dtype() == bool_ || input.dtype() == int32 || input.dtype() == int64) {
+        input = astype(input, float32);
+      }
+      Dtype out_dtype = (input.dtype() == float64) ? float64 : float32;
+      input = astype(input, out_dtype);
+      return mlx::core::var(input, false, ddof);
+    } else if (op == "std") {
+      if (input.dtype() == bool_ || input.dtype() == int32 || input.dtype() == int64) {
+        input = astype(input, float32);
+      }
+      Dtype out_dtype = (input.dtype() == float64) ? float64 : float32;
+      input = astype(input, out_dtype);
+      return mlx::core::std(input, false, ddof);
     } else if (op == "min") {
       return min(input, false);
     } else if (op == "max") {
@@ -397,7 +411,7 @@ SEXP cpp_mlx_reduce(SEXP xp_, std::string op) {
 
 // Axis reductions
 // [[Rcpp::export]]
-SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims) {
+SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims, int ddof) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   std::vector<int> axes = {axis};
@@ -419,6 +433,20 @@ SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims) {
         input = astype(input, float32);
       }
       return mean(input, axes, keepdims);
+    } else if (op == "var") {
+      if (input.dtype() == bool_ || input.dtype() == int32 || input.dtype() == int64) {
+        input = astype(input, float32);
+      }
+      Dtype out_dtype = (input.dtype() == float64) ? float64 : float32;
+      input = astype(input, out_dtype);
+      return mlx::core::var(input, axes, keepdims, ddof);
+    } else if (op == "std") {
+      if (input.dtype() == bool_ || input.dtype() == int32 || input.dtype() == int64) {
+        input = astype(input, float32);
+      }
+      Dtype out_dtype = (input.dtype() == float64) ? float64 : float32;
+      input = astype(input, out_dtype);
+      return mlx::core::std(input, axes, keepdims, ddof);
     } else if (op == "min") {
       return min(input, axes, keepdims);
     } else if (op == "max") {

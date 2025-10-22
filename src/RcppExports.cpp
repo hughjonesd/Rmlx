@@ -224,20 +224,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_reduce
-SEXP cpp_mlx_reduce(SEXP xp_, std::string op);
-RcppExport SEXP _Rmlx_cpp_mlx_reduce(SEXP xp_SEXP, SEXP opSEXP) {
+SEXP cpp_mlx_reduce(SEXP xp_, std::string op, int ddof);
+RcppExport SEXP _Rmlx_cpp_mlx_reduce(SEXP xp_SEXP, SEXP opSEXP, SEXP ddofSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
     Rcpp::traits::input_parameter< std::string >::type op(opSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_reduce(xp_, op));
+    Rcpp::traits::input_parameter< int >::type ddof(ddofSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_reduce(xp_, op, ddof));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_reduce_axis
-SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims);
-RcppExport SEXP _Rmlx_cpp_mlx_reduce_axis(SEXP xp_SEXP, SEXP opSEXP, SEXP axisSEXP, SEXP keepdimsSEXP) {
+SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims, int ddof);
+RcppExport SEXP _Rmlx_cpp_mlx_reduce_axis(SEXP xp_SEXP, SEXP opSEXP, SEXP axisSEXP, SEXP keepdimsSEXP, SEXP ddofSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -245,7 +246,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type op(opSEXP);
     Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
     Rcpp::traits::input_parameter< bool >::type keepdims(keepdimsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_reduce_axis(xp_, op, axis, keepdims));
+    Rcpp::traits::input_parameter< int >::type ddof(ddofSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_reduce_axis(xp_, op, axis, keepdims, ddof));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -823,8 +825,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_floor_divide", (DL_FUNC) &_Rmlx_cpp_mlx_floor_divide, 3},
     {"_Rmlx_cpp_mlx_remainder", (DL_FUNC) &_Rmlx_cpp_mlx_remainder, 3},
     {"_Rmlx_cpp_mlx_logical", (DL_FUNC) &_Rmlx_cpp_mlx_logical, 4},
-    {"_Rmlx_cpp_mlx_reduce", (DL_FUNC) &_Rmlx_cpp_mlx_reduce, 2},
-    {"_Rmlx_cpp_mlx_reduce_axis", (DL_FUNC) &_Rmlx_cpp_mlx_reduce_axis, 4},
+    {"_Rmlx_cpp_mlx_reduce", (DL_FUNC) &_Rmlx_cpp_mlx_reduce, 3},
+    {"_Rmlx_cpp_mlx_reduce_axis", (DL_FUNC) &_Rmlx_cpp_mlx_reduce_axis, 5},
     {"_Rmlx_cpp_mlx_argmax", (DL_FUNC) &_Rmlx_cpp_mlx_argmax, 3},
     {"_Rmlx_cpp_mlx_argmin", (DL_FUNC) &_Rmlx_cpp_mlx_argmin, 3},
     {"_Rmlx_cpp_mlx_sort", (DL_FUNC) &_Rmlx_cpp_mlx_sort, 2},
