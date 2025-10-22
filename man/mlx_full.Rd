@@ -15,7 +15,7 @@ mlx_full(dim, value, dtype = NULL, device = mlx_default_device())
 If omitted, defaults to \code{"complex64"} for complex scalars, \code{"bool"} for logical scalars,
 and \code{"float32"} otherwise.}
 
-\item{device}{Target device (\code{"gpu"} or \code{"cpu"}).}
+\item{device}{Target device ("gpu" or "cpu").}
 }
 \value{
 An \code{mlx} tensor filled with the supplied value.

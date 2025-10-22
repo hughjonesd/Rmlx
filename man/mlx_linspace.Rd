@@ -21,7 +21,7 @@ mlx_linspace(
 
 \item{dtype}{MLX dtype (\code{"float32"} or \code{"float64"}).}
 
-\item{device}{Target device (\code{"gpu"} or \code{"cpu"}).}
+\item{device}{Target device ("gpu" or "cpu").}
 }
 \value{
 A 1D \code{mlx} tensor.

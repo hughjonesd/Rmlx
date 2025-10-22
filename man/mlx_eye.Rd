@@ -20,9 +20,9 @@ mlx_eye(
 \item{k}{Diagonal index: \code{0} is the main diagonal, positive values shift upward,
 negative values shift downward.}
 
-\item{dtype}{MLX dtype to use (\code{"float32"} or \code{"float64"}).}
+\item{dtype}{Desired MLX dtype ("float32" or "float64").}
 
-\item{device}{Target device (\code{"gpu"} or \code{"cpu"}).}
+\item{device}{Target device ("gpu" or "cpu").}
 }
 \value{
 An \code{mlx} matrix with ones on the selected diagonal and zeros elsewhere.

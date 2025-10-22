@@ -1,8 +1,6 @@
 #' Create tensors of zeros on MLX devices
 #'
-#' @param dim Integer vector giving the tensor shape.
-#' @param dtype MLX dtype to use (`"float32"` or `"float64"`).
-#' @param device Target device (`"gpu"` or `"cpu"`).
+#' @inheritParams mlx_params
 #' @return An `mlx` tensor filled with zeros.
 #' @export
 #' @examples

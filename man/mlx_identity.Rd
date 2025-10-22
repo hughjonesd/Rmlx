@@ -9,9 +9,9 @@ mlx_identity(n, dtype = c("float32", "float64"), device = mlx_default_device())
 \arguments{
 \item{n}{Size of the square matrix.}
 
-\item{dtype}{MLX dtype to use (\code{"float32"} or \code{"float64"}).}
+\item{dtype}{Desired MLX dtype ("float32" or "float64").}
 
-\item{device}{Target device (\code{"gpu"} or \code{"cpu"}).}
+\item{device}{Target device ("gpu" or "cpu").}
 }
 \value{
 An \code{mlx} identity matrix.

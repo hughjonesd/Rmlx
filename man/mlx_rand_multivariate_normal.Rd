@@ -9,11 +9,11 @@ mlx_rand_multivariate_normal(
   mean,
   cov,
   dtype = c("float32", "float64"),
-  device = mlx_default_device()
+  device = "cpu"
 )
 }
 \arguments{
-\item{dim}{Integer vector giving the shape of the output.}
+\item{dim}{Integer vector giving the tensor shape.}
 
 \item{mean}{An \code{mlx} tensor or vector for the mean.}
 
@@ -21,7 +21,7 @@ mlx_rand_multivariate_normal(
 
 \item{dtype}{Desired MLX dtype ("float32" or "float64").}
 
-\item{device}{Target device ("gpu" or "cpu"). Note: this function requires CPU
+\item{device}{Target device ("cpu" only). Note: this function requires CPU
 due to SVD decomposition of the covariance matrix; GPU device is not currently
 supported.}
 }

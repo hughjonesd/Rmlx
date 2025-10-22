@@ -1,3 +1,12 @@
+#' Common MLX parameter documentation
+#'
+#' @param x An `mlx` tensor, matrix, array, or object coercible to `mlx`.
+#' @param dim Integer vector giving the tensor shape.
+#' @param dtype Desired MLX dtype ("float32" or "float64").
+#' @param device Target device ("gpu" or "cpu").
+#' @name mlx_params
+NULL
+
 #' Print MLX array
 #'
 #' @param x An `mlx` object
