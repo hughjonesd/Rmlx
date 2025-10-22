@@ -682,6 +682,38 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_pad
+SEXP cpp_mlx_pad(SEXP xp_, Rcpp::IntegerMatrix pad_pairs_, double pad_value, std::string dtype_str, std::string device_str, std::string mode_str);
+RcppExport SEXP _Rmlx_cpp_mlx_pad(SEXP xp_SEXP, SEXP pad_pairs_SEXP, SEXP pad_valueSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP, SEXP mode_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type pad_pairs_(pad_pairs_SEXP);
+    Rcpp::traits::input_parameter< double >::type pad_value(pad_valueSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type mode_str(mode_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_pad(xp_, pad_pairs_, pad_value, dtype_str, device_str, mode_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_split
+SEXP cpp_mlx_split(SEXP xp_, Rcpp::Nullable<int> num_splits_, Rcpp::Nullable<Rcpp::IntegerVector> indices_, int axis, std::string dtype_str, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_split(SEXP xp_SEXP, SEXP num_splits_SEXP, SEXP indices_SEXP, SEXP axisSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<int> >::type num_splits_(num_splits_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type indices_(indices_SEXP);
+    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_split(xp_, num_splits_, indices_, axis, dtype_str, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_where
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_where(SEXP cond_xp_SEXP, SEXP xp_true_SEXP, SEXP xp_false_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -989,6 +1021,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_tile", (DL_FUNC) &_Rmlx_cpp_mlx_tile, 2},
     {"_Rmlx_cpp_mlx_roll", (DL_FUNC) &_Rmlx_cpp_mlx_roll, 3},
     {"_Rmlx_cpp_mlx_moveaxis", (DL_FUNC) &_Rmlx_cpp_mlx_moveaxis, 3},
+    {"_Rmlx_cpp_mlx_pad", (DL_FUNC) &_Rmlx_cpp_mlx_pad, 6},
+    {"_Rmlx_cpp_mlx_split", (DL_FUNC) &_Rmlx_cpp_mlx_split, 6},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_random_uniform", (DL_FUNC) &_Rmlx_cpp_mlx_random_uniform, 5},

@@ -48,9 +48,11 @@ reference:
       - mlx_expand_dims
       - mlx_repeat
       - mlx_tile
+      - mlx_pad
       - mlx_roll
       - mlx_moveaxis
       - aperm.mlx
+      - mlx_split
       - mlx_where
       - mlx_shape_helpers
       - rbind.mlx

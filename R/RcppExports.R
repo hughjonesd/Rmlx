@@ -209,6 +209,14 @@ cpp_mlx_moveaxis <- function(xp_, source_, destination_) {
     .Call(`_Rmlx_cpp_mlx_moveaxis`, xp_, source_, destination_)
 }
 
+cpp_mlx_pad <- function(xp_, pad_pairs_, pad_value, dtype_str, device_str, mode_str) {
+    .Call(`_Rmlx_cpp_mlx_pad`, xp_, pad_pairs_, pad_value, dtype_str, device_str, mode_str)
+}
+
+cpp_mlx_split <- function(xp_, num_splits_, indices_, axis, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_split`, xp_, num_splits_, indices_, axis, dtype_str, device_str)
+}
+
 cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_where`, cond_xp_, xp_true_, xp_false_, dtype_str, device_str)
 }

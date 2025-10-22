@@ -191,6 +191,183 @@ mlx_roll <- function(x, shift, axis = NULL) {
   .mlx_wrap_result(ptr, x$device)
 }
 
+#' Pad or split MLX tensors
+#'
+#' @description
+#' * `mlx_pad()` mirrors the MLX padding primitive, enlarging each axis according
+#'   to `pad_width`. Values are added symmetrically (`pad_width[i, 1]` before,
+#'   `pad_width[i, 2]` after) using the specified `mode`.
+#' * `mlx_split()` divides a tensor along an axis either into equal sections
+#'   (`sections` scalar) or at explicit 1-based split points (`sections` vector),
+#'   returning a list of `mlx` tensors.
+#'
+#' @param x An object coercible to `mlx` via [as_mlx()].
+#' @param pad_width Padding extents. Supply a single integer, a length-two
+#'   numeric vector, or a matrix/list with one `(before, after)` pair per padded
+#'   axis.
+#' @param value Constant fill value used when `mode = "constant"`.
+#' @param mode Padding mode passed to MLX (e.g., `"constant"`, `"edge"`,
+#'   `"reflect"`).
+#' @param axes Optional integer vector of axes (1-indexed, negatives count from
+#'   the end) to which `pad_width` applies. Unlisted axes receive zero padding.
+#' @param sections Either a single integer (number of equal parts) or an integer
+#'   vector of 1-based split points along `axis`.
+#' @param axis Axis (1-indexed, negatives count from the end) to operate on.
+#' @return For `mlx_pad()`, an `mlx` tensor; for `mlx_split()`, a list of `mlx`
+#'   tensors.
+#' @export
+#' @examples
+#' x <- as_mlx(matrix(1:4, 2, 2))
+#' padded <- mlx_pad(x, pad_width = 1)
+#' padded_cols <- mlx_pad(x, pad_width = c(0, 1), axes = 2)
+#' parts <- mlx_split(x, sections = 2, axis = 1)
+#' custom_parts <- mlx_split(x, sections = c(1), axis = 2)
+mlx_pad <- function(x,
+                    pad_width,
+                    value = 0,
+                    mode = c("constant", "edge", "reflect", "symmetric"),
+                    axes = NULL) {
+  x <- if (is.mlx(x)) x else as_mlx(x)
+  mode <- match.arg(mode)
+
+  ndim <- length(x$dim)
+  if (ndim == 0L) {
+    stop("Cannot pad a scalar mlx tensor.", call. = FALSE)
+  }
+  if (length(value) != 1L || !is.finite(value)) {
+    stop("value must be a single finite numeric scalar.", call. = FALSE)
+  }
+
+  target_axes <- if (is.null(axes)) {
+    seq_len(ndim)
+  } else {
+    axes <- as.integer(axes)
+    if (!length(axes)) {
+      stop("axes must contain at least one axis.", call. = FALSE)
+    }
+    vapply(axes, function(ax) .mlx_normalize_axis_single(ax, x) + 1L, integer(1))
+  }
+
+  pad_matrix <- matrix(0L, nrow = ndim, ncol = 2)
+  pad_pairs <- .parse_pad_width(pad_width, length(target_axes))
+  if (any(pad_pairs < 0L)) {
+    stop("pad_width values must be non-negative.", call. = FALSE)
+  }
+  pad_matrix[target_axes, ] <- pad_pairs
+
+  ptr <- cpp_mlx_pad(
+    x$ptr,
+    pad_matrix,
+    as.numeric(value),
+    x$dtype,
+    x$device,
+    mode
+  )
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_pad
+#' @export
+mlx_split <- function(x, sections, axis = 1L) {
+  x <- if (is.mlx(x)) x else as_mlx(x)
+  if (missing(sections)) {
+    stop("sections must be supplied.", call. = FALSE)
+  }
+  axis_idx <- .mlx_normalize_axis(axis, x)
+  dim_len <- x$dim[axis_idx + 1L]
+
+  sections <- as.integer(sections)
+  sections <- sections[!is.na(sections)]
+  if (!length(sections)) {
+    stop("sections must contain at least one integer.", call. = FALSE)
+  }
+
+  if (length(sections) == 1L) {
+    num <- sections[[1]]
+    if (num <= 0L || dim_len %% num != 0L) {
+      stop("sections must evenly divide the axis length.", call. = FALSE)
+    }
+    ptrs <- cpp_mlx_split(
+      x$ptr,
+      num_splits_ = num,
+      indices_ = NULL,
+      axis = axis_idx,
+      dtype_str = x$dtype,
+      device_str = x$device
+    )
+  } else {
+    if (any(sections <= 0L) || any(sections >= dim_len)) {
+      stop("Split points must be between 1 and the axis length (exclusive).", call. = FALSE)
+    }
+    if (is.unsorted(sections, strictly = TRUE)) {
+      stop("Split points must be strictly increasing.", call. = FALSE)
+    }
+    ptrs <- cpp_mlx_split(
+      x$ptr,
+      num_splits_ = NULL,
+      indices_ = sections,
+      axis = axis_idx,
+      dtype_str = x$dtype,
+      device_str = x$device
+    )
+  }
+
+  res <- lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, x$device))
+  res
+}
+
+#' @noRd
+.parse_pad_width <- function(pad_width, n_axes) {
+  if (n_axes <= 0L) {
+    stop("n_axes must be positive.", call. = FALSE)
+  }
+
+  to_matrix <- function(vals) {
+    mat <- matrix(as.integer(vals), nrow = n_axes, ncol = 2, byrow = TRUE)
+    mat
+  }
+
+  if (is.numeric(pad_width) && length(pad_width) == 1L) {
+    return(to_matrix(rep.int(pad_width, 2L)))
+  }
+
+  if (is.numeric(pad_width) && length(pad_width) == 2L) {
+    mat <- matrix(as.integer(pad_width), nrow = n_axes, ncol = 2, byrow = TRUE)
+    return(mat)
+  }
+
+  if (is.matrix(pad_width)) {
+    if (ncol(pad_width) != 2L) {
+      stop("pad_width matrix must have two columns.", call. = FALSE)
+    }
+    if (nrow(pad_width) != n_axes) {
+      stop("pad_width matrix must have one row per axis.", call. = FALSE)
+    }
+    return(matrix(as.integer(pad_width), ncol = 2))
+  }
+
+  if (is.list(pad_width)) {
+    if (length(pad_width) != n_axes) {
+      stop("pad_width list must have one element per axis.", call. = FALSE)
+    }
+    mat <- matrix(0L, nrow = n_axes, ncol = 2)
+    for (i in seq_len(n_axes)) {
+      vals <- pad_width[[i]]
+      if (!is.numeric(vals) || length(vals) != 2L) {
+        stop("Each pad_width list element must be a length-two numeric vector.", call. = FALSE)
+      }
+      mat[i, ] <- as.integer(vals)
+    }
+    return(mat)
+  }
+
+  if (is.numeric(pad_width) && length(pad_width) == 2L * n_axes) {
+    return(matrix(as.integer(pad_width), nrow = n_axes, ncol = 2, byrow = TRUE))
+  }
+
+  stop("Unsupported pad_width specification.", call. = FALSE)
+}
+
 #' Reorder MLX tensor axes
 #'
 #' @description

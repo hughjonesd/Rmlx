@@ -1172,6 +1172,89 @@ SEXP cpp_mlx_moveaxis(SEXP xp_, Rcpp::IntegerVector source_, Rcpp::IntegerVector
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_pad(SEXP xp_,
+                 Rcpp::IntegerMatrix pad_pairs_,
+                 double pad_value,
+                 std::string dtype_str,
+                 std::string device_str,
+                 std::string mode_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  if (pad_pairs_.ncol() != 2) {
+    Rcpp::stop("pad_width must have two columns (before, after).");
+  }
+  int ndim = static_cast<int>(arr.ndim());
+  if (pad_pairs_.nrow() != ndim) {
+    Rcpp::stop("pad_width row count must match tensor rank.");
+  }
+
+  std::vector<std::pair<int, int>> pad_width;
+  pad_width.reserve(ndim);
+  for (int i = 0; i < pad_pairs_.nrow(); ++i) {
+    int before = pad_pairs_(i, 0);
+    int after = pad_pairs_(i, 1);
+    if (before < 0 || after < 0) {
+      Rcpp::stop("pad widths must be non-negative.");
+    }
+    pad_width.emplace_back(before, after);
+  }
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  StreamOrDevice dev = string_to_device(device_str);
+  array pad_val = array(pad_value, dtype);
+
+  array result = pad(arr, pad_width, pad_val, mode_str, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_split(SEXP xp_,
+                   Rcpp::Nullable<int> num_splits_,
+                   Rcpp::Nullable<Rcpp::IntegerVector> indices_,
+                   int axis,
+                   std::string dtype_str,
+                   std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  int ax = normalize_axis(arr, axis);
+  StreamOrDevice dev = string_to_device(device_str);
+
+  std::vector<array> outputs;
+
+  if (indices_.isNotNull()) {
+    Rcpp::IntegerVector indices_vec(indices_.get());
+    if (indices_vec.size() == 0) {
+      Rcpp::stop("indices must contain at least one value.");
+    }
+    Shape indices_shape;
+    indices_shape.reserve(indices_vec.size());
+    for (int value : indices_vec) {
+      if (value < 0) {
+        Rcpp::stop("Split indices must be non-negative.");
+      }
+      indices_shape.push_back(value);
+    }
+    outputs = split(arr, indices_shape, ax, dev);
+  } else if (num_splits_.isNotNull()) {
+    int num_splits = Rcpp::as<int>(num_splits_.get());
+    if (num_splits <= 0) {
+      Rcpp::stop("num_splits must be positive.");
+    }
+    outputs = split(arr, num_splits, ax, dev);
+  } else {
+    Rcpp::stop("Either num_splits or indices must be supplied.");
+  }
+
+  List out(outputs.size());
+  for (int i = 0; i < static_cast<int>(outputs.size()); ++i) {
+    out[i] = make_mlx_xptr(std::move(outputs[i]));
+  }
+  return out;
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_,
                    std::string dtype_str, std::string device_str) {
   MlxArrayWrapper* cond_wrapper = get_mlx_wrapper(cond_xp_);

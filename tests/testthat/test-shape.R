@@ -51,6 +51,27 @@ test_that("mlx_tile tiles tensors", {
   expect_equal(as.matrix(tiled), expected, tolerance = 1e-6)
 })
 
+test_that("mlx_pad pads tensors with various specifications", {
+  x <- as_mlx(matrix(1:4, 2, 2))
+  padded_scalar <- mlx_pad(x, pad_width = 1)
+  expected_scalar <- matrix(0, nrow = 4, ncol = 4)
+  expected_scalar[2:3, 2:3] <- as.matrix(x)
+  expect_equal(as.matrix(padded_scalar), expected_scalar, tolerance = 1e-6)
+
+  padded_axis <- mlx_pad(x, pad_width = c(0, 2), axes = 2, value = -1)
+  expected_axis <- cbind(as.matrix(x), matrix(-1, nrow = 2, ncol = 2))
+  expect_equal(as.matrix(padded_axis), expected_axis, tolerance = 1e-6)
+
+  pad_list <- list(c(1, 0), c(0, 1))
+  padded_list <- mlx_pad(x, pad_width = pad_list)
+  expected_list <- rbind(
+    c(0, 0, 0),
+    c(1, 3, 0),
+    c(2, 4, 0)
+  )
+  expect_equal(as.matrix(padded_list), expected_list, tolerance = 1e-6)
+})
+
 test_that("mlx_roll shifts elements circularly", {
   x <- as_mlx(matrix(1:4, 2, 2))
   rolled_cols <- mlx_roll(x, shift = 1, axis = 2)
@@ -88,6 +109,31 @@ test_that("aperm.mlx matches base behaviour", {
 
   reversed <- aperm(x)
   expect_equal(as.array(reversed), aperm(arr), tolerance = 1e-6)
+})
+
+test_that("mlx_split divides tensors into equal parts", {
+  arr <- matrix(1:6, nrow = 3, byrow = TRUE)
+  x <- as_mlx(arr)
+
+  parts <- mlx_split(x, sections = 3, axis = 1)
+  expect_equal(length(parts), 3L)
+  expect_true(all(vapply(parts, inherits, logical(1), what = "mlx")))
+  expect_equal(lapply(parts, dim), list(c(1L, 2L), c(1L, 2L), c(1L, 2L)))
+  expect_equal(as.matrix(parts[[2]]), arr[2, , drop = FALSE], tolerance = 1e-6)
+})
+
+test_that("mlx_split supports custom split points", {
+  arr <- array(1:12, dim = c(3, 4))
+  x <- as_mlx(arr)
+
+  parts <- mlx_split(x, sections = c(1, 3), axis = 2)
+  expect_equal(length(parts), 3L)
+  expect_equal(dim(parts[[1]]), c(3L, 1L))
+  expect_equal(dim(parts[[2]]), c(3L, 2L))
+  expect_equal(dim(parts[[3]]), c(3L, 1L))
+
+  reconstructed <- do.call(cbind, lapply(parts, as.matrix))
+  expect_equal(reconstructed, as.matrix(x), tolerance = 1e-6)
 })
 
 test_that("mlx_where acts like ifelse for tensors", {
