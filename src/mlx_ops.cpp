@@ -1092,6 +1092,86 @@ SEXP cpp_mlx_roll(SEXP xp_, SEXP shift_, Rcpp::Nullable<Rcpp::IntegerVector> axe
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_moveaxis(SEXP xp_, Rcpp::IntegerVector source_, Rcpp::IntegerVector destination_) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  int ndim = static_cast<int>(arr.ndim());
+  int n = source_.size();
+  if (n == 0) {
+    Rcpp::stop("source must contain at least one axis.");
+  }
+  if (destination_.size() != n) {
+    Rcpp::stop("source and destination must have the same length.");
+  }
+
+  std::vector<int> source_norm;
+  std::vector<int> dest_norm;
+  source_norm.reserve(n);
+  dest_norm.reserve(n);
+
+  std::vector<bool> is_moved(ndim, false);
+  for (int axis : source_) {
+    int norm = normalize_axis(arr, axis);
+    if (is_moved[norm]) {
+      Rcpp::stop("source axes must be unique.");
+    }
+    is_moved[norm] = true;
+    source_norm.push_back(norm);
+  }
+
+  std::vector<bool> dest_seen(ndim, false);
+  for (int axis : destination_) {
+    int norm = normalize_axis(arr, axis);
+    if (dest_seen[norm]) {
+      Rcpp::stop("destination axes must be unique.");
+    }
+    dest_seen[norm] = true;
+    dest_norm.push_back(norm);
+  }
+
+  std::vector<std::pair<int, int>> moves;
+  moves.reserve(n);
+  for (int i = 0; i < n; ++i) {
+    moves.emplace_back(dest_norm[i], source_norm[i]);
+  }
+  std::sort(
+      moves.begin(),
+      moves.end(),
+      [](const std::pair<int, int>& lhs, const std::pair<int, int>& rhs) {
+        return lhs.first < rhs.first;
+      });
+
+  std::vector<int> remaining;
+  remaining.reserve(ndim - n);
+  for (int axis = 0; axis < ndim; ++axis) {
+    if (!is_moved[axis]) {
+      remaining.push_back(axis);
+    }
+  }
+
+  std::vector<int> permutation;
+  permutation.reserve(ndim);
+  std::size_t move_idx = 0;
+  std::size_t rem_idx = 0;
+  for (int pos = 0; pos < ndim; ++pos) {
+    if (move_idx < moves.size() && moves[move_idx].first == pos) {
+      permutation.push_back(moves[move_idx].second);
+      ++move_idx;
+    } else {
+      if (rem_idx >= remaining.size()) {
+        Rcpp::stop("Invalid moveaxis configuration.");
+      }
+      permutation.push_back(remaining[rem_idx]);
+      ++rem_idx;
+    }
+  }
+
+  array result = transpose(arr, permutation);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_,
                    std::string dtype_str, std::string device_str) {
   MlxArrayWrapper* cond_wrapper = get_mlx_wrapper(cond_xp_);

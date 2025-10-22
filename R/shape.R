@@ -191,6 +191,102 @@ mlx_roll <- function(x, shift, axis = NULL) {
   .mlx_wrap_result(ptr, x$device)
 }
 
+#' Reorder MLX tensor axes
+#'
+#' @description
+#' * `mlx_moveaxis()` mirrors MLX's native [moveaxis](https://ml-explore.github.io/mlx/build/html/python/array_api/generated/mlx.core.moveaxis.html)
+#'   primitive, repositioning one or more axes to new locations.
+#' * `aperm.mlx()` provides the familiar R interface, permuting axes according
+#'   to `perm` via repeated calls to `mlx_moveaxis()`.
+#'
+#' @param x,a An object coercible to `mlx` via [as_mlx()].
+#' @param source Integer vector of axis indices to move (1-indexed; negatives
+#'   count from the end).
+#' @param destination Integer vector giving the target positions for `source`
+#'   axes (1-indexed; negatives count from the end). Must be the same length as
+#'   `source`.
+#' @param perm Integer permutation describing the desired axis order, matching
+#'   the semantics of [base::aperm()].
+#' @param resize Logical flag from [base::aperm()]. Only `TRUE` is currently
+#'   supported for MLX tensors.
+#' @param ... Additional arguments accepted for compatibility; ignored.
+#' @return An `mlx` tensor with axes permuted.
+#' @export
+#' @examples
+#' x <- as_mlx(array(1:8, dim = c(2, 2, 2)))
+#' moved <- mlx_moveaxis(x, source = 1, destination = 3)
+#' permuted <- aperm(x, c(2, 1, 3))
+mlx_moveaxis <- function(x, source, destination) {
+  x <- if (is.mlx(x)) x else as_mlx(x)
+  if (missing(source) || missing(destination)) {
+    stop("source and destination must be supplied.", call. = FALSE)
+  }
+  if (length(source) != length(destination)) {
+    stop("source and destination must have the same length.", call. = FALSE)
+  }
+  if (!length(source)) {
+    stop("source must contain at least one axis.", call. = FALSE)
+  }
+
+  source_idx <- .mlx_normalize_axes(source, x)
+  dest_idx <- .mlx_normalize_axes(destination, x)
+  source_idx <- as.integer(source_idx)
+  dest_idx <- as.integer(dest_idx)
+  if (anyDuplicated(source_idx)) {
+    stop("source axes must be unique.", call. = FALSE)
+  }
+  if (anyDuplicated(dest_idx)) {
+    stop("destination axes must be unique.", call. = FALSE)
+  }
+
+  ptr <- cpp_mlx_moveaxis(x$ptr, source_idx, dest_idx)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_moveaxis
+#' @export
+#' @method aperm mlx
+aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
+  x <- if (is.mlx(a)) a else as_mlx(a)
+  if (!isTRUE(resize)) {
+    stop("`resize = FALSE` is not supported for mlx tensors.", call. = FALSE)
+  }
+
+  ndim <- length(x$dim)
+  if (ndim == 0L) {
+    return(x)
+  }
+
+  if (is.null(perm)) {
+    perm <- rev(seq_len(ndim))
+  }
+
+  perm <- as.integer(perm)
+  if (length(perm) != ndim) {
+    stop("perm must have length equal to the number of dimensions.", call. = FALSE)
+  }
+  if (!setequal(perm, seq_len(ndim))) {
+    stop("perm must be a permutation of seq_len(ndim).", call. = FALSE)
+  }
+
+  result <- x
+  current <- seq_len(ndim)
+  for (i in seq_len(ndim)) {
+    target_axis <- perm[i]
+    current_pos <- match(target_axis, current)
+    if (is.na(current_pos)) {
+      stop("Invalid permutation supplied.", call. = FALSE)
+    }
+    if (current_pos != i) {
+      result <- mlx_moveaxis(result, source = current_pos, destination = i)
+      axis_val <- current[current_pos]
+      current <- current[-current_pos]
+      current <- append(current, axis_val, after = i - 1L)
+    }
+  }
+  result
+}
+
 #' Elementwise conditional selection
 #'
 #' @param condition Logical `mlx` tensor (non-zero values are treated as `TRUE`).

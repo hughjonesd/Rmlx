@@ -669,6 +669,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_moveaxis
+SEXP cpp_mlx_moveaxis(SEXP xp_, Rcpp::IntegerVector source_, Rcpp::IntegerVector destination_);
+RcppExport SEXP _Rmlx_cpp_mlx_moveaxis(SEXP xp_SEXP, SEXP source_SEXP, SEXP destination_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type source_(source_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type destination_(destination_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_moveaxis(xp_, source_, destination_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_where
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_where(SEXP cond_xp_SEXP, SEXP xp_true_SEXP, SEXP xp_false_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -975,6 +988,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_repeat", (DL_FUNC) &_Rmlx_cpp_mlx_repeat, 3},
     {"_Rmlx_cpp_mlx_tile", (DL_FUNC) &_Rmlx_cpp_mlx_tile, 2},
     {"_Rmlx_cpp_mlx_roll", (DL_FUNC) &_Rmlx_cpp_mlx_roll, 3},
+    {"_Rmlx_cpp_mlx_moveaxis", (DL_FUNC) &_Rmlx_cpp_mlx_moveaxis, 3},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_random_uniform", (DL_FUNC) &_Rmlx_cpp_mlx_random_uniform, 5},

@@ -49,6 +49,8 @@ reference:
       - mlx_repeat
       - mlx_tile
       - mlx_roll
+      - mlx_moveaxis
+      - aperm.mlx
       - mlx_where
       - mlx_shape_helpers
       - rbind.mlx

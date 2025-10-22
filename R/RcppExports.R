@@ -205,6 +205,10 @@ cpp_mlx_roll <- function(xp_, shift_, axes_) {
     .Call(`_Rmlx_cpp_mlx_roll`, xp_, shift_, axes_)
 }
 
+cpp_mlx_moveaxis <- function(xp_, source_, destination_) {
+    .Call(`_Rmlx_cpp_mlx_moveaxis`, xp_, source_, destination_)
+}
+
 cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_where`, cond_xp_, xp_true_, xp_false_, dtype_str, device_str)
 }
