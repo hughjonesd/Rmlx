@@ -944,6 +944,65 @@ SEXP cpp_mlx_random_bernoulli(SEXP dim_, double prob, std::string device_str) {
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_random_gumbel(SEXP dim_, std::string dtype_str,
+                           std::string device_str) {
+  IntegerVector dim(dim_);
+  Shape shape(dim.begin(), dim.end());
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  if (dtype != float32 && dtype != float64) {
+    Rcpp::stop("Random gumbel currently supports dtype = \"float32\" or \"float64\" only.");
+  }
+  StreamOrDevice dev_input = string_to_device(device_str);
+  array result = mlx::core::random::gumbel(shape, dtype, std::nullopt, dev_input);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_truncated_normal(SEXP lower_, SEXP upper_, SEXP dim_,
+                                     std::string dtype_str, std::string device_str) {
+  double lower = Rcpp::as<double>(lower_);
+  double upper = Rcpp::as<double>(upper_);
+  IntegerVector dim(dim_);
+  Shape shape(dim.begin(), dim.end());
+
+  if (lower >= upper) {
+    Rcpp::stop("lower must be less than upper.");
+  }
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  if (dtype != float32 && dtype != float64) {
+    Rcpp::stop("Random truncated_normal currently supports dtype = \"float32\" or \"float64\" only.");
+  }
+  StreamOrDevice dev_input = string_to_device(device_str);
+  array lower_arr(static_cast<float>(lower), dtype);
+  array upper_arr(static_cast<float>(upper), dtype);
+  array result = mlx::core::random::truncated_normal(lower_arr, upper_arr, shape, dtype, std::nullopt, dev_input);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_multivariate_normal(SEXP mean_, SEXP cov_, SEXP dim_,
+                                        std::string dtype_str, std::string device_str) {
+  IntegerVector dim(dim_);
+  Shape shape(dim.begin(), dim.end());
+
+  List mean_obj(mean_);
+  array mean_arr = get_mlx_wrapper(mean_obj["ptr"])->get();
+
+  List cov_obj(cov_);
+  array cov_arr = get_mlx_wrapper(cov_obj["ptr"])->get();
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  if (dtype != float32 && dtype != float64) {
+    Rcpp::stop("Random multivariate_normal currently supports dtype = \"float32\" or \"float64\" only.");
+  }
+  StreamOrDevice dev_input = string_to_device(device_str);
+  array result = mlx::core::random::multivariate_normal(mean_arr, cov_arr, shape, dtype, std::nullopt, dev_input);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_concat(SEXP args_, int axis) {
   List args(args_);
   if (args.size() == 0) {

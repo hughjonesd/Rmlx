@@ -177,6 +177,18 @@ cpp_mlx_random_bernoulli <- function(dim_, prob, device_str) {
     .Call(`_Rmlx_cpp_mlx_random_bernoulli`, dim_, prob, device_str)
 }
 
+cpp_mlx_random_gumbel <- function(dim_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_gumbel`, dim_, dtype_str, device_str)
+}
+
+cpp_mlx_random_truncated_normal <- function(lower_, upper_, dim_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_truncated_normal`, lower_, upper_, dim_, dtype_str, device_str)
+}
+
+cpp_mlx_random_multivariate_normal <- function(mean_, cov_, dim_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_multivariate_normal`, mean_, cov_, dim_, dtype_str, device_str)
+}
+
 cpp_mlx_concat <- function(args_, axis) {
     .Call(`_Rmlx_cpp_mlx_concat`, args_, axis)
 }

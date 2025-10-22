@@ -582,6 +582,49 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_random_gumbel
+SEXP cpp_mlx_random_gumbel(SEXP dim_, std::string dtype_str, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_random_gumbel(SEXP dim_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type dim_(dim_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_random_gumbel(dim_, dtype_str, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_random_truncated_normal
+SEXP cpp_mlx_random_truncated_normal(SEXP lower_, SEXP upper_, SEXP dim_, std::string dtype_str, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_random_truncated_normal(SEXP lower_SEXP, SEXP upper_SEXP, SEXP dim_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type lower_(lower_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type upper_(upper_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type dim_(dim_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_random_truncated_normal(lower_, upper_, dim_, dtype_str, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_random_multivariate_normal
+SEXP cpp_mlx_random_multivariate_normal(SEXP mean_, SEXP cov_, SEXP dim_, std::string dtype_str, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_random_multivariate_normal(SEXP mean_SEXP, SEXP cov_SEXP, SEXP dim_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type mean_(mean_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type cov_(cov_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type dim_(dim_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_random_multivariate_normal(mean_, cov_, dim_, dtype_str, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_concat
 SEXP cpp_mlx_concat(SEXP args_, int axis);
 RcppExport SEXP _Rmlx_cpp_mlx_concat(SEXP args_SEXP, SEXP axisSEXP) {
@@ -1013,6 +1056,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_linspace", (DL_FUNC) &_Rmlx_cpp_mlx_linspace, 5},
     {"_Rmlx_cpp_mlx_random_normal", (DL_FUNC) &_Rmlx_cpp_mlx_random_normal, 5},
     {"_Rmlx_cpp_mlx_random_bernoulli", (DL_FUNC) &_Rmlx_cpp_mlx_random_bernoulli, 3},
+    {"_Rmlx_cpp_mlx_random_gumbel", (DL_FUNC) &_Rmlx_cpp_mlx_random_gumbel, 3},
+    {"_Rmlx_cpp_mlx_random_truncated_normal", (DL_FUNC) &_Rmlx_cpp_mlx_random_truncated_normal, 5},
+    {"_Rmlx_cpp_mlx_random_multivariate_normal", (DL_FUNC) &_Rmlx_cpp_mlx_random_multivariate_normal, 5},
     {"_Rmlx_cpp_mlx_concat", (DL_FUNC) &_Rmlx_cpp_mlx_concat, 2},
     {"_Rmlx_cpp_mlx_stack", (DL_FUNC) &_Rmlx_cpp_mlx_stack, 3},
     {"_Rmlx_cpp_mlx_squeeze", (DL_FUNC) &_Rmlx_cpp_mlx_squeeze, 2},

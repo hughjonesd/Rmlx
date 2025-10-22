@@ -1,0 +1,162 @@
+---
+title: "Linear Regression with MLX"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Linear Regression with MLX}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Overview
+
+This vignette demonstrates linear regression using Rmlx, based on the [MLX linear regression example](https://ml-explore.github.io/mlx/build/html/examples/linear_regression.html). We'll train a linear model using automatic differentiation and stochastic gradient descent (SGD) on GPU-accelerated arrays.
+
+## Problem Setup
+
+We'll create synthetic data for linear regression with high dimensionality:
+
+```{r}
+library(Rmlx)
+
+# Problem metadata
+num_features <- 100
+num_examples <- 1000
+num_iters <- 10000  # iterations of SGD
+lr <- 0.01          # learning rate for SGD
+
+# Set seed for reproducibility
+set.seed(42)
+
+# True parameters (what we're trying to learn)
+w_star <- mlx_rand_normal(c(num_features, 1))
+
+# Input examples (design matrix)
+X <- mlx_rand_normal(c(num_examples, num_features))
+
+# Noisy labels
+eps <- 1e-2 * mlx_rand_normal(c(num_examples, 1))
+y <- X %*% w_star + eps
+```
+
+We generate:
+- A random "true" weight vector `w_star` of dimension 100
+- A random design matrix `X` of 1000 examples × 100 features
+- Noisy labels `y = X @ w_star + small_noise`
+
+## Define the Loss Function
+
+The mean squared error loss is a standard choice for regression:
+
+```{r}
+# Define loss function
+loss_fn <- function(w) {
+  preds <- X %*% w
+  residuals <- preds - y
+  0.5 * mean(residuals * residuals)
+}
+```
+
+The loss measures how well our parameters `w` predict the labels. Lower loss means better predictions.
+
+## Automatic Differentiation
+
+Rmlx provides `mlx_grad()` to compute gradients via automatic differentiation. This computes the gradient of the loss with respect to our parameters:
+
+```{r}
+# Get the gradient function
+grad_fn <- function(w) {
+  mlx_grad(loss_fn, w)[[1]]
+}
+```
+
+## Training Loop with SGD
+
+We train by repeatedly computing gradients and updating parameters:
+
+```{r}
+# Initialize parameters randomly
+w <- 1e-2 * mlx_rand_normal(c(num_features, 1))
+
+# Training loop
+for (i in seq_len(num_iters)) {
+  # Compute gradient
+  grad <- grad_fn(w)
+
+  # Update parameters: w = w - lr * grad
+  w <- w - lr * grad
+
+  # Evaluate to avoid building up computation graph
+  mlx_eval(w)
+
+  # Print progress
+  if (i %% 1000 == 0) {
+    loss <- loss_fn(w)
+    cat("Iteration", i, "- Loss:", as.vector(loss), "\n")
+  }
+}
+```
+
+In each iteration:
+1. Compute the gradient of loss with respect to `w`
+2. Update parameters using the gradient step
+3. Force evaluation to prevent the computation graph from growing unbounded
+4. Monitor progress by printing loss every 1000 iterations
+
+## Evaluation
+
+After training, we evaluate how well our learned parameters match the true parameters:
+
+```{r}
+# Compute final loss
+final_loss <- loss_fn(w)
+cat("Final loss:", as.vector(final_loss), "\n")
+
+# Compute error between learned and true parameters
+error <- w - w_star
+error_norm <- sqrt(sum(error * error))
+cat("||w - w*|| =", as.vector(error_norm), "\n")
+
+# Convert to R for detailed inspection
+w_learned <- as.matrix(w)
+w_true <- as.matrix(w_star)
+
+# Compare first few parameters
+print(cbind(learned = w_learned[1:10, 1], true = w_true[1:10, 1]))
+```
+
+We measure two things:
+- **Final loss**: How well our model fits the data
+- **Parameter error**: How close our learned weights are to the true weights
+
+## Device Selection
+
+By default, computations run on GPU for speed. Switch to CPU if needed:
+
+```{r}
+# Use CPU (useful for debugging)
+mlx_default_device("cpu")
+
+# Or back to GPU
+mlx_default_device("gpu")
+```
+
+## Related Examples
+
+For more advanced topics, see:
+- The [getting started vignette](getting-started.html) for basic Rmlx usage
+- The [performance benchmarks vignette](performance.html) for timing comparisons
+- The [original MLX linear regression example](https://ml-explore.github.io/mlx/build/html/examples/linear_regression.html) in Python
+
+## Notes
+
+- All computations use single-precision floating point (`float32`)
+- The gradient computation is entirely automatic—no hand-coded derivatives
+- Large computation graphs can accumulate; use `mlx_eval()` to force evaluation
+- For more complex models, consider using MLX modules (see the getting started vignette)
