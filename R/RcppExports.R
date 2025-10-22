@@ -137,6 +137,10 @@ cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
 }
 
+cpp_mlx_cast <- function(xp_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_cast`, xp_, dtype_str, device_str)
+}
+
 cpp_mlx_zeros <- function(dim_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_zeros`, dim_, dtype_str, device_str)
 }
@@ -175,6 +179,34 @@ cpp_mlx_random_bernoulli <- function(dim_, prob, device_str) {
 
 cpp_mlx_concat <- function(args_, axis) {
     .Call(`_Rmlx_cpp_mlx_concat`, args_, axis)
+}
+
+cpp_mlx_stack <- function(args_, axis, device_str) {
+    .Call(`_Rmlx_cpp_mlx_stack`, args_, axis, device_str)
+}
+
+cpp_mlx_squeeze <- function(xp_, axes) {
+    .Call(`_Rmlx_cpp_mlx_squeeze`, xp_, axes)
+}
+
+cpp_mlx_expand_dims <- function(xp_, axes_) {
+    .Call(`_Rmlx_cpp_mlx_expand_dims`, xp_, axes_)
+}
+
+cpp_mlx_repeat <- function(xp_, repeats, axis) {
+    .Call(`_Rmlx_cpp_mlx_repeat`, xp_, repeats, axis)
+}
+
+cpp_mlx_tile <- function(xp_, reps_) {
+    .Call(`_Rmlx_cpp_mlx_tile`, xp_, reps_)
+}
+
+cpp_mlx_roll <- function(xp_, shift_, axes_) {
+    .Call(`_Rmlx_cpp_mlx_roll`, xp_, shift_, axes_)
+}
+
+cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_where`, cond_xp_, xp_true_, xp_false_, dtype_str, device_str)
 }
 
 cpp_mlx_random_uniform <- function(dim_, low, high, dtype_str, device_str) {

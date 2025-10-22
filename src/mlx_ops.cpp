@@ -8,6 +8,7 @@
 #include <numeric>
 #include <algorithm>
 #include <limits>
+#include <set>
 #include <complex>
 
 using namespace Rcpp;
@@ -56,6 +57,50 @@ std::optional<std::vector<int>> optional_axes(
     }
   }
   return normalize_axes(arr, raw_axes);
+}
+
+Dtype promote_numeric_dtype(Dtype lhs, Dtype rhs) {
+  if (lhs == complex64 || rhs == complex64) {
+    return complex64;
+  }
+  if (lhs == float64 || rhs == float64) {
+    return float64;
+  }
+  if (lhs == float32 || rhs == float32) {
+    return float32;
+  }
+  if (lhs == bool_ && rhs == bool_) {
+    return bool_;
+  }
+  if ((lhs == bool_ && rhs == int32) || (rhs == bool_ && lhs == int32)) {
+    return int32;
+  }
+  if ((lhs == bool_ && rhs == int64) || (rhs == bool_ && lhs == int64)) {
+    return int64;
+  }
+  return float32;
+}
+
+std::vector<int> normalize_new_axes(const array& arr, const std::vector<int>& axes) {
+  int ndim = static_cast<int>(arr.ndim());
+  std::vector<int> normalized;
+  normalized.reserve(axes.size());
+  std::set<int> seen;
+  for (int axis : axes) {
+    int ax = axis;
+    if (ax < 0) {
+      ax += ndim + 1;
+    }
+    if (ax < 0 || ax > ndim) {
+      Rcpp::stop("axis %d is out of bounds for array with %d dimensions.", axis, ndim);
+    }
+    if (!seen.insert(ax).second) {
+      Rcpp::stop("axis %d is repeated.", axis);
+    }
+    normalized.push_back(ax);
+  }
+  std::sort(normalized.begin(), normalized.end());
+  return normalized;
 }
 
 }  // namespace
@@ -274,23 +319,6 @@ SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_, std::string device_str) {
   array result = clip(arr, min_arr, max_arr, target_device);
   return make_mlx_xptr(std::move(result));
 }
-
-namespace {
-
-Dtype promote_numeric_dtype(Dtype lhs, Dtype rhs) {
-  if (lhs == complex64 || rhs == complex64) {
-    return complex64;
-  }
-  if (lhs == float64 || rhs == float64) {
-    return float64;
-  }
-  if (lhs == float32 || rhs == float32) {
-    return float32;
-  }
-  return float32;
-}
-
-}  // namespace
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_, std::string device_str) {
@@ -727,6 +755,17 @@ SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
   return make_mlx_xptr(std::move(result));
 }
 
+// [[Rcpp::export]]
+SEXP cpp_mlx_cast(SEXP xp_, std::string dtype_str, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  Dtype dtype = string_to_dtype(dtype_str);
+  StreamOrDevice dev = string_to_device(device_str);
+
+  array arr = wrapper->get();
+  array result = astype(arr, dtype, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
 // Array creation helpers
 // [[Rcpp::export]]
 SEXP cpp_mlx_zeros(SEXP dim_, std::string dtype_str, std::string device_str) {
@@ -922,6 +961,150 @@ SEXP cpp_mlx_concat(SEXP args_, int axis) {
 
   StreamOrDevice dev = string_to_device(device_str);
   array result = concatenate(arrays, axis, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_stack(SEXP args_, int axis, std::string device_str) {
+  List args(args_);
+  if (args.size() == 0) {
+    Rcpp::stop("No tensors supplied for stacking.");
+  }
+
+  std::vector<array> arrays;
+  arrays.reserve(args.size());
+  for (int i = 0; i < args.size(); ++i) {
+    List obj(args[i]);
+    arrays.push_back(get_mlx_wrapper(obj["ptr"])->get());
+  }
+
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = stack(arrays, axis, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_squeeze(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = [&]() -> array {
+    if (axes.isNotNull()) {
+      Rcpp::IntegerVector axes_vec(axes.get());
+      std::vector<int> ax(axes_vec.begin(), axes_vec.end());
+      return squeeze(arr, normalize_axes(arr, ax));
+    }
+    return squeeze(arr);
+  }();
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_expand_dims(SEXP xp_, Rcpp::IntegerVector axes_) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  std::vector<int> axes(axes_.begin(), axes_.end());
+  std::vector<int> normalized = normalize_new_axes(arr, axes);
+  array result = expand_dims(arr, normalized);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_repeat(SEXP xp_, int repeats, Rcpp::Nullable<int> axis) {
+  if (repeats <= 0) {
+    Rcpp::stop("repeats must be positive.");
+  }
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = [&]() -> array {
+    if (axis.isNotNull()) {
+      int ax = normalize_axis(arr, Rcpp::as<int>(axis.get()));
+      return repeat(arr, repeats, ax);
+    }
+    return repeat(arr, repeats);
+  }();
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_tile(SEXP xp_, Rcpp::IntegerVector reps_) {
+  if (reps_.size() == 0) {
+    Rcpp::stop("reps must contain at least one element.");
+  }
+  std::vector<int> reps(reps_.begin(), reps_.end());
+  for (int value : reps) {
+    if (value <= 0) {
+      Rcpp::stop("All repetitions must be positive.");
+    }
+  }
+
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = tile(arr, reps);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_roll(SEXP xp_, SEXP shift_, Rcpp::Nullable<Rcpp::IntegerVector> axes_) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  NumericVector shifts(shift_);
+  if (shifts.size() == 0) {
+    Rcpp::stop("shift must contain at least one element.");
+  }
+
+  array result = [&]() -> array {
+    if (axes_.isNotNull()) {
+      Rcpp::IntegerVector axes_vec(axes_.get());
+      if (axes_vec.size() != shifts.size()) {
+        Rcpp::stop("shift and axis must have the same length.");
+      }
+      std::vector<int> axes(axes_vec.begin(), axes_vec.end());
+      axes = normalize_axes(arr, axes);
+      Shape shift_shape;
+      shift_shape.reserve(shifts.size());
+      for (double val : shifts) {
+        shift_shape.push_back(static_cast<int>(val));
+      }
+      if (axes.size() == 1) {
+        return roll(arr, static_cast<int>(shifts[0]), axes[0]);
+      }
+      return roll(arr, shift_shape, axes);
+    }
+
+    if (shifts.size() == 1) {
+      return roll(arr, static_cast<int>(shifts[0]));
+    }
+    Shape shift_shape;
+    shift_shape.reserve(shifts.size());
+    for (double val : shifts) {
+      shift_shape.push_back(static_cast<int>(val));
+    }
+    return roll(arr, shift_shape);
+  }();
+
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_,
+                   std::string dtype_str, std::string device_str) {
+  MlxArrayWrapper* cond_wrapper = get_mlx_wrapper(cond_xp_);
+  MlxArrayWrapper* true_wrapper = get_mlx_wrapper(xp_true_);
+  MlxArrayWrapper* false_wrapper = get_mlx_wrapper(xp_false_);
+
+  Dtype target_dtype = string_to_dtype(dtype_str);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array cond = astype(cond_wrapper->get(), bool_, target_device);
+  array x = astype(true_wrapper->get(), target_dtype, target_device);
+  array y = astype(false_wrapper->get(), target_dtype, target_device);
+
+  array result = where(cond, x, y, target_device);
   return make_mlx_xptr(std::move(result));
 }
 
