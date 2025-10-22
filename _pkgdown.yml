@@ -7,10 +7,16 @@ reference:
     contents:
       - as_mlx
       - is.mlx
+      - Rmlx-package
       - mlx_dim
       - mlx_dtype
       - mlx_eval
       - "[.mlx"
+      - dim.mlx
+      - length.mlx
+      - print.mlx
+      - str.mlx
+      - t.mlx
       - as.matrix.mlx
       - as.array.mlx
       - as.vector.mlx
@@ -44,6 +50,7 @@ reference:
       - mlx_tile
       - mlx_roll
       - mlx_where
+      - mlx_shape_helpers
       - rbind.mlx
       - cbind.mlx
   - title: Ordering & Selection
@@ -57,9 +64,12 @@ reference:
       - mlx_argpartition
   - title: Math & Reductions
     contents:
+      - Math.mlx
+      - Ops.mlx
       - mlx_sum
       - mlx_prod
       - mlx_mean
+      - mean.mlx
       - mlx_var
       - mlx_std
       - mlx_all
