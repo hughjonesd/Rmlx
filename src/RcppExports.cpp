@@ -117,6 +117,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_logical_not
+SEXP cpp_mlx_logical_not(SEXP xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_logical_not(SEXP xp_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_logical_not(xp_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_binary
 SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_binary(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP opSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -129,6 +140,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
     Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_mlx_binary(xp1_, xp2_, op, dtype_str, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_logical
+SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_logical(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP opSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp1_(xp1_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type xp2_(xp2_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type op(opSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_logical(xp1_, xp2_, op, device_str));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -724,7 +749,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_shape", (DL_FUNC) &_Rmlx_cpp_mlx_shape, 1},
     {"_Rmlx_cpp_mlx_dtype", (DL_FUNC) &_Rmlx_cpp_mlx_dtype, 1},
     {"_Rmlx_cpp_mlx_unary", (DL_FUNC) &_Rmlx_cpp_mlx_unary, 2},
+    {"_Rmlx_cpp_mlx_logical_not", (DL_FUNC) &_Rmlx_cpp_mlx_logical_not, 1},
     {"_Rmlx_cpp_mlx_binary", (DL_FUNC) &_Rmlx_cpp_mlx_binary, 5},
+    {"_Rmlx_cpp_mlx_logical", (DL_FUNC) &_Rmlx_cpp_mlx_logical, 4},
     {"_Rmlx_cpp_mlx_reduce", (DL_FUNC) &_Rmlx_cpp_mlx_reduce, 2},
     {"_Rmlx_cpp_mlx_reduce_axis", (DL_FUNC) &_Rmlx_cpp_mlx_reduce_axis, 4},
     {"_Rmlx_cpp_mlx_argmax", (DL_FUNC) &_Rmlx_cpp_mlx_argmax, 3},

@@ -102,3 +102,32 @@ test_that("binary operations align devices and dtypes", {
   expect_equal(result$dtype, "float32")
   expect_equal(as.matrix(result), matrix(c(6, 8, 10, 12), 2, 2), tolerance = 1e-6)
 })
+
+test_that("logical operators work", {
+  old_device <- mlx_default_device()
+  on.exit(mlx_default_device(old_device))
+  mlx_default_device("gpu")
+
+  a <- matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2)
+  b <- matrix(c(TRUE, TRUE, FALSE, FALSE), 2, 2)
+
+  a_mlx <- as_mlx(a, device = "gpu")
+  b_mlx <- as_mlx(b, device = "cpu")
+
+  expect_equal(as.matrix(a_mlx & b_mlx), a & b)
+  expect_equal(as.matrix(a_mlx | b_mlx), a | b)
+
+  res_and <- a_mlx & b_mlx
+  expect_equal(res_and$dtype, "bool")
+  expect_equal(res_and$device, "gpu")
+
+  # Unary not
+  expect_equal(as.matrix(!a_mlx), !a)
+
+  # Logical operators with scalar coercion
+  expect_equal(as.matrix(a_mlx & TRUE), a & TRUE)
+  expect_equal(as.matrix(a_mlx | 0), a | FALSE)
+
+  # Short-circuit variants are not S3 generic; ensure evaluation still works via base fallback
+  expect_true(isTRUE(as.vector(as.matrix(a_mlx))[1] && as.vector(as.matrix(b_mlx))[1]))
+})

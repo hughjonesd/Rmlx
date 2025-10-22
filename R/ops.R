@@ -19,6 +19,10 @@ Ops.mlx <- function(e1, e2 = NULL) {
   if (nargs() == 1) {
     if (op == "+") return(e1)
     if (op == "-") return(.mlx_unary(e1, "neg"))
+    if (op == "!") {
+      if (!is.mlx(e1)) e1 <- as_mlx(e1)
+      return(.mlx_logical_not(e1))
+    }
     stop(sprintf("Unary operator '%s' not supported for mlx", op))
   }
 
@@ -34,6 +38,11 @@ Ops.mlx <- function(e1, e2 = NULL) {
   # Comparison operators
   if (op %in% c("==", "!=", "<", "<=", ">", ">=")) {
     return(.mlx_binary(e1, e2, op))
+  }
+
+  # Logical operators
+  if (op %in% c("&", "&&", "|", "||")) {
+    return(.mlx_logical(e1, e2, op))
   }
 
   stop(sprintf("Operator '%s' not supported for mlx", op))
@@ -107,6 +116,19 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
   ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype, result_device)
   new_mlx(ptr, result_dim, result_dtype, result_device)
+}
+
+.mlx_logical <- function(x, y, op) {
+  result_dim <- .broadcast_dim(x$dim, y$dim)
+  result_device <- .common_device(x$device, y$device)
+
+  ptr <- cpp_mlx_logical(x$ptr, y$ptr, op, result_device)
+  new_mlx(ptr, result_dim, "bool", result_device)
+}
+
+.mlx_logical_not <- function(x) {
+  ptr <- cpp_mlx_logical_not(x$ptr)
+  new_mlx(ptr, x$dim, "bool", x$device)
 }
 
 #' Broadcast two dimension vectors

@@ -127,6 +127,15 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
   return make_mlx_xptr(std::move(result));
 }
 
+// [[Rcpp::export]]
+SEXP cpp_mlx_logical_not(SEXP xp_) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+  array arr_bool = astype(arr, bool_);
+  array result = logical_not(arr_bool);
+  return make_mlx_xptr(std::move(result));
+}
+
 // Binary operations
 // [[Rcpp::export]]
 SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
@@ -171,6 +180,33 @@ SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
       return greater_equal(lhs, rhs);
     } else {
       Rcpp::stop("Unsupported binary operation: " + op);
+    }
+  }();
+
+  return make_mlx_xptr(std::move(result));
+}
+
+// Logical operations
+// [[Rcpp::export]]
+SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op, std::string device_str) {
+  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
+  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array lhs = wrapper1->get();
+  array rhs = wrapper2->get();
+
+  lhs = astype(lhs, bool_, target_device);
+  rhs = astype(rhs, bool_, target_device);
+
+  array result = [&]() -> array {
+    if (op == "&" || op == "&&") {
+      return logical_and(lhs, rhs, target_device);
+    } else if (op == "|" || op == "||") {
+      return logical_or(lhs, rhs, target_device);
+    } else {
+      Rcpp::stop("Unsupported logical operation: " + op);
     }
   }();
 

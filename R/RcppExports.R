@@ -37,8 +37,16 @@ cpp_mlx_unary <- function(xp_, op) {
     .Call(`_Rmlx_cpp_mlx_unary`, xp_, op)
 }
 
+cpp_mlx_logical_not <- function(xp_) {
+    .Call(`_Rmlx_cpp_mlx_logical_not`, xp_)
+}
+
 cpp_mlx_binary <- function(xp1_, xp2_, op, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_binary`, xp1_, xp2_, op, dtype_str, device_str)
+}
+
+cpp_mlx_logical <- function(xp1_, xp2_, op, device_str) {
+    .Call(`_Rmlx_cpp_mlx_logical`, xp1_, xp2_, op, device_str)
 }
 
 cpp_mlx_reduce <- function(xp_, op) {
