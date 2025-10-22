@@ -101,124 +101,112 @@ mlx_dtype <- function(x) {
 #' @param i Row indices
 #' @param j Column indices (for matrices)
 #' @param ... Additional indices
-#' @param drop Should dimensions be dropped? (default: TRUE)
+#' @param drop Should dimensions be dropped? (default: FALSE)
 #' @return Subsetted `mlx` object
 #' @export
 #' @method [ mlx
 #' @examples
 #' x <- as_mlx(matrix(1:9, 3, 3))
 #' x[1, ]
-`[.mlx` <- function(x, i, j, ..., drop = TRUE) {
+`[.mlx` <- function(x, ..., drop = FALSE) {
   ndim <- length(x$dim)
-
-  # Handle 1D case
-  if (ndim == 1) {
-    indices <- .normalize_index(i, x$dim[1])
-    starts <- indices$start
-    stops <- indices$stop
-    strides <- indices$stride
-
-    ptr <- cpp_mlx_slice(x$ptr, starts, stops, strides)
-    new_len <- .slice_extent(starts[1], stops[1], strides[1])
-
-    return(new_mlx(ptr, as.integer(new_len), x$dtype, x$device))
+  if (ndim == 0L) {
+    stop("Cannot subset a scalar mlx tensor.", call. = FALSE)
   }
 
-  # Handle 2D case
-  if (ndim == 2) {
-    # Default to all rows/cols if not specified
-    if (missing(i)) i <- seq_len(x$dim[1])
-    if (missing(j)) j <- seq_len(x$dim[2])
+  idx_list <- vector("list", ndim)
+  dot_expr <- as.list(substitute(alist(...)))[-1]
 
-    idx_i <- .normalize_index(i, x$dim[1])
-    idx_j <- .normalize_index(j, x$dim[2])
+  if (length(dot_expr) > ndim) {
+    stop("Incorrect number of indices supplied.", call. = FALSE)
+  }
 
-    starts <- c(idx_i$start, idx_j$start)
-    stops <- c(idx_i$stop, idx_j$stop)
-    strides <- c(idx_i$stride, idx_j$stride)
-
-    ptr <- cpp_mlx_slice(x$ptr, starts, stops, strides)
-
-    new_dim <- c(
-      .slice_extent(starts[1], stops[1], strides[1]),
-      .slice_extent(starts[2], stops[2], strides[2])
-    )
-
-    if (drop) {
-      keep <- new_dim != 1L
-      new_dim <- new_dim[keep]
-      if (length(new_dim) == 0) new_dim <- 1L
+  if (length(dot_expr)) {
+    for (k in seq_along(dot_expr)) {
+      expr <- dot_expr[[k]]
+      value <- tryCatch(eval(expr, parent.frame()), error = function(e) {
+        msg <- conditionMessage(e)
+        if (grepl("missing", msg, fixed = FALSE)) {
+          return(NULL)
+        }
+        stop(e)
+      })
+      if (!is.null(value)) {
+        idx_list[[k]] <- value
+      }
     }
-
-    return(new_mlx(ptr, as.integer(new_dim), x$dtype, x$device))
   }
 
-  stop("Indexing for arrays with >2 dimensions not yet implemented")
+  out <- x
+  for (axis in seq_len(ndim)) {
+    idx <- if (axis <= length(idx_list)) idx_list[[axis]] else NULL
+    sel <- .normalize_index_vector(idx, out$dim[axis])
+    if (is.null(sel)) next
+
+    ptr <- cpp_mlx_take(out$ptr, sel, axis - 1L)
+    out <- .mlx_wrap_result(ptr, out$device)
+  }
+
+  if (drop) {
+    keep <- out$dim != 1L
+    if (!all(keep) && length(out$dim) > 0L) {
+      new_dim <- out$dim[keep]
+      ptr <- if (length(new_dim) == 0L) {
+        out$ptr
+      } else {
+        cpp_mlx_reshape(out$ptr, as.integer(new_dim))
+      }
+      out <- .mlx_wrap_result(ptr, out$device)
+      if (length(new_dim) == 0L) {
+        out$dim <- integer(0)
+      }
+    }
+  }
+
+  out
 }
 
-#' Normalize indexing parameters for slicing
-#'
-#' @param idx Index specification from R.
-#' @param dim_size Size of the dimension.
-#' @return List with `start`, `stop`, `stride` (zero-based).
-#' @noRd
-.normalize_index <- function(idx, dim_size) {
-  if (missing(idx) || is.null(idx)) {
-    # Full span
-    return(list(start = 0L, stop = as.integer(dim_size), stride = 1L))
+.normalize_index_vector <- function(idx, dim_size) {
+  if (is.null(idx)) {
+    return(NULL)
   }
 
   if (is.logical(idx)) {
+    len <- length(idx)
+    if (len == 0L) {
+      return(integer(0))
+    }
+    if (len == 1L) {
+      idx <- rep(idx, dim_size)
+    } else if (len != dim_size) {
+      stop("Logical index length must be 1 or match dimension length.", call. = FALSE)
+    }
     idx <- which(idx)
   }
 
   if (is.numeric(idx)) {
+    if (length(idx) == 0L) {
+      return(integer(0))
+    }
+    if (any(is.na(idx))) {
+      stop("Index contains NA values.", call. = FALSE)
+    }
+    if (any(idx == 0L)) {
+      stop("Index contains zeros, which are not allowed.", call. = FALSE)
+    }
     idx <- as.integer(idx)
-
-    # Handle negative indices
-    if (any(idx < 0)) {
-      stop("Negative indices not yet supported")
+    if (any(idx < 0L)) {
+      if (any(idx > 0L)) {
+        stop("Cannot mix positive and negative indices.", call. = FALSE)
+      }
+      keep <- setdiff(seq_len(dim_size), abs(idx))
+      idx <- keep
     }
-
-    # Convert to 0-indexed
-    idx <- idx - 1L
-
-    # For now, assume contiguous range
-    if (length(idx) == 0) {
-      return(list(start = 0L, stop = 0L, stride = 1L))
+    if (any(idx < 1L) || any(idx > dim_size)) {
+      stop("Index out of bounds.", call. = FALSE)
     }
-
-    start <- min(idx)
-    stop <- max(idx) + 1L
-    stride <- if (length(idx) > 1) {
-      unique_diffs <- unique(diff(idx))
-      if (length(unique_diffs) == 1) unique_diffs else 1L
-    } else {
-      1L
-    }
-
-    return(list(
-      start = as.integer(start),
-      stop = as.integer(stop),
-      stride = as.integer(stride)
-    ))
+    return(as.integer(idx - 1L))
   }
 
-  stop("Unsupported index type")
-}
-
-#' Compute the extent of a slice given start/stop/stride
-#'
-#' @param start,stop,stride Slice parameters.
-#' @return Length of the resulting slice.
-#' @noRd
-.slice_extent <- function(start, stop, stride) {
-  if (stride <= 0L) {
-    stop("Stride must be positive")
-  }
-  delta <- stop - start
-  if (delta <= 0L) {
-    return(0L)
-  }
-  as.integer(((delta - 1L) %/% stride) + 1L)
+  stop("Unsupported index type.", call. = FALSE)
 }

@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <limits>
 #include <set>
+#include <cstdint>
 #include <complex>
 
 using namespace Rcpp;
@@ -1105,6 +1106,20 @@ SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_,
   array y = astype(false_wrapper->get(), target_dtype, target_device);
 
   array result = where(cond, x, y, target_device);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_take(SEXP xp_, SEXP indices_, int axis) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  IntegerVector idx(indices_);
+  std::vector<int64_t> data(idx.begin(), idx.end());
+  Shape shape{static_cast<int>(data.size())};
+  array idx_array(data.data(), shape, int64);
+
+  array result = take(arr, idx_array, axis);
   return make_mlx_xptr(std::move(result));
 }
 

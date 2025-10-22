@@ -4,7 +4,7 @@
 \alias{[.mlx}
 \title{Subset MLX array}
 \usage{
-\method{[}{mlx}(x, i, j, ..., drop = TRUE)
+\method{[}{mlx}(x, i, j, ..., drop = FALSE)
 }
 \arguments{
 \item{x}{An \code{mlx} object}
@@ -15,7 +15,7 @@
 
 \item{...}{Additional indices}
 
-\item{drop}{Should dimensions be dropped? (default: TRUE)}
+\item{drop}{Should dimensions be dropped? (default: FALSE)}
 }
 \value{
 Subsetted \code{mlx} object

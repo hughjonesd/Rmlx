@@ -684,6 +684,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_take
+SEXP cpp_mlx_take(SEXP xp_, SEXP indices_, int axis);
+RcppExport SEXP _Rmlx_cpp_mlx_take(SEXP xp_SEXP, SEXP indices_SEXP, SEXP axisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type indices_(indices_SEXP);
+    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_take(xp_, indices_, axis));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_random_uniform
 SEXP cpp_mlx_random_uniform(SEXP dim_, double low, double high, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_random_uniform(SEXP dim_SEXP, SEXP lowSEXP, SEXP highSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -963,6 +976,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_tile", (DL_FUNC) &_Rmlx_cpp_mlx_tile, 2},
     {"_Rmlx_cpp_mlx_roll", (DL_FUNC) &_Rmlx_cpp_mlx_roll, 3},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
+    {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_random_uniform", (DL_FUNC) &_Rmlx_cpp_mlx_random_uniform, 5},
     {"_Rmlx_cpp_mlx_synchronize", (DL_FUNC) &_Rmlx_cpp_mlx_synchronize, 1},
     {"_Rmlx_cpp_mlx_slice", (DL_FUNC) &_Rmlx_cpp_mlx_slice, 4},

@@ -209,6 +209,10 @@ cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str, device_str) 
     .Call(`_Rmlx_cpp_mlx_where`, cond_xp_, xp_true_, xp_false_, dtype_str, device_str)
 }
 
+cpp_mlx_take <- function(xp_, indices_, axis) {
+    .Call(`_Rmlx_cpp_mlx_take`, xp_, indices_, axis)
+}
+
 cpp_mlx_random_uniform <- function(dim_, low, high, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_random_uniform`, dim_, low, high, dtype_str, device_str)
 }
