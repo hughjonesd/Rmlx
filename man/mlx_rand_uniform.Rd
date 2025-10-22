@@ -30,7 +30,5 @@ An \code{mlx} tensor whose entries are sampled uniformly.
 Sample from a uniform distribution on MLX tensors
 }
 \examples{
-\dontrun{
 noise <- mlx_rand_uniform(c(2, 2), min = -1, max = 1)
-}
 }

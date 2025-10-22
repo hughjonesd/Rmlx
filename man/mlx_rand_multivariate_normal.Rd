@@ -32,9 +32,7 @@ An \code{mlx} tensor with samples from the multivariate normal.
 Sample from a multivariate normal distribution on MLX tensors
 }
 \examples{
-\dontrun{
 mean <- as_mlx(c(0, 0), device = "cpu")
 cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2), device = "cpu")
 samples <- mlx_rand_multivariate_normal(c(100, 2), mean, cov, device = "cpu")
-}
 }

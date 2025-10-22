@@ -9,9 +9,7 @@
 #' @return An `mlx` tensor whose entries are sampled uniformly.
 #' @export
 #' @examples
-#' \dontrun{
 #' noise <- mlx_rand_uniform(c(2, 2), min = -1, max = 1)
-#' }
 mlx_rand_uniform <- function(dim, min = 0, max = 1,
                              dtype = c("float32", "float64"),
                              device = mlx_default_device()) {
@@ -34,9 +32,7 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
 #' @return An `mlx` tensor with normally distributed entries.
 #' @export
 #' @examples
-#' \dontrun{
 #' weights <- mlx_rand_normal(c(3, 3), mean = 0, sd = 0.1)
-#' }
 mlx_rand_normal <- function(dim, mean = 0, sd = 1,
                             dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
@@ -59,9 +55,7 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
 #' @return An `mlx` boolean tensor.
 #' @export
 #' @examples
-#' \dontrun{
 #' mask <- mlx_rand_bernoulli(c(4, 4), prob = 0.3)
-#' }
 mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
   if (length(dim) == 0L) {
     stop("dim must contain at least one element.", call. = FALSE)
@@ -82,9 +76,7 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
 #' @return An `mlx` tensor with Gumbel-distributed entries.
 #' @export
 #' @examples
-#' \dontrun{
 #' samples <- mlx_rand_gumbel(c(2, 3))
-#' }
 mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
   if (length(dim) == 0L) {
@@ -106,9 +98,7 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
 #' @return An `mlx` tensor with truncated normally distributed entries.
 #' @export
 #' @examples
-#' \dontrun{
 #' samples <- mlx_rand_truncated_normal(-1, 1, c(5, 5))
-#' }
 mlx_rand_truncated_normal <- function(lower, upper, dim,
                                       dtype = c("float32", "float64"),
                                       device = mlx_default_device()) {
@@ -141,11 +131,9 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
 #' @return An `mlx` tensor with samples from the multivariate normal.
 #' @export
 #' @examples
-#' \dontrun{
 #' mean <- as_mlx(c(0, 0), device = "cpu")
 #' cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2), device = "cpu")
 #' samples <- mlx_rand_multivariate_normal(c(100, 2), mean, cov, device = "cpu")
-#' }
 mlx_rand_multivariate_normal <- function(dim, mean, cov,
                                          dtype = c("float32", "float64"),
                                          device = mlx_default_device()) {

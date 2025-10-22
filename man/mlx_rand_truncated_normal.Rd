@@ -30,7 +30,5 @@ An \code{mlx} tensor with truncated normally distributed entries.
 Sample from a truncated normal distribution on MLX tensors
 }
 \examples{
-\dontrun{
 samples <- mlx_rand_truncated_normal(-1, 1, c(5, 5))
-}
 }

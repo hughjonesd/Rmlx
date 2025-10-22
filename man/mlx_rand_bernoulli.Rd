@@ -20,7 +20,5 @@ An \code{mlx} boolean tensor.
 Sample Bernoulli random variables on MLX tensors
 }
 \examples{
-\dontrun{
 mask <- mlx_rand_bernoulli(c(4, 4), prob = 0.3)
-}
 }

@@ -24,7 +24,5 @@ An \code{mlx} tensor with Gumbel-distributed entries.
 Sample from the Gumbel distribution on MLX tensors
 }
 \examples{
-\dontrun{
 samples <- mlx_rand_gumbel(c(2, 3))
-}
 }

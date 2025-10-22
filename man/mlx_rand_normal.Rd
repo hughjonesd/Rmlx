@@ -30,7 +30,5 @@ An \code{mlx} tensor with normally distributed entries.
 Sample from a normal distribution on MLX tensors
 }
 \examples{
-\dontrun{
 weights <- mlx_rand_normal(c(3, 3), mean = 0, sd = 0.1)
-}
 }
