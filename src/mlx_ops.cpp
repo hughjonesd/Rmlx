@@ -360,15 +360,33 @@ SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op, std::string device_st
 SEXP cpp_mlx_reduce(SEXP xp_, std::string op) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
+  array input = wrapper->get();
   array result = [&]() -> array {
     if (op == "sum") {
-      return sum(wrapper->get(), false);  // keepdims=false
+      if (input.dtype() == bool_) {
+        input = astype(input, float32);
+      }
+      return sum(input, false);
+    } else if (op == "prod") {
+      if (input.dtype() == bool_) {
+        input = astype(input, float32);
+      }
+      return prod(input, false);
     } else if (op == "mean") {
-      return mean(wrapper->get(), false);
+      if (input.dtype() == bool_) {
+        input = astype(input, float32);
+      }
+      return mean(input, false);
     } else if (op == "min") {
-      return min(wrapper->get(), false);
+      return min(input, false);
     } else if (op == "max") {
-      return max(wrapper->get(), false);
+      return max(input, false);
+    } else if (op == "all") {
+      array bool_input = astype(input, bool_);
+      return all(bool_input, false);
+    } else if (op == "any") {
+      array bool_input = astype(input, bool_);
+      return any(bool_input, false);
     } else {
       Rcpp::stop("Unsupported reduction operation: " + op);
     }
@@ -383,16 +401,34 @@ SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   std::vector<int> axes = {axis};
+  array input = wrapper->get();
 
   array result = [&]() -> array {
     if (op == "sum") {
-      return sum(wrapper->get(), axes, keepdims);
+      if (input.dtype() == bool_) {
+        input = astype(input, float32);
+      }
+      return sum(input, axes, keepdims);
+    } else if (op == "prod") {
+      if (input.dtype() == bool_) {
+        input = astype(input, float32);
+      }
+      return prod(input, axes, keepdims);
     } else if (op == "mean") {
-      return mean(wrapper->get(), axes, keepdims);
+      if (input.dtype() == bool_) {
+        input = astype(input, float32);
+      }
+      return mean(input, axes, keepdims);
     } else if (op == "min") {
-      return min(wrapper->get(), axes, keepdims);
+      return min(input, axes, keepdims);
     } else if (op == "max") {
-      return max(wrapper->get(), axes, keepdims);
+      return max(input, axes, keepdims);
+    } else if (op == "all") {
+      array bool_input = astype(input, bool_);
+      return all(bool_input, axes, keepdims);
+    } else if (op == "any") {
+      array bool_input = astype(input, bool_);
+      return any(bool_input, axes, keepdims);
     } else {
       Rcpp::stop("Unsupported axis reduction operation: " + op);
     }
