@@ -160,3 +160,16 @@ test_that("mlx_clip clamps values", {
 
   expect_error(mlx_clip(x, min = 2, max = 1), "min must be less than or equal to max")
 })
+
+test_that("floor division and modulo work", {
+  x <- as_mlx(matrix(c(5, -5, 10, -10), 2, 2))
+  y <- as_mlx(matrix(c(2, 2, -3, -3), 2, 2))
+
+  floor_res <- x %/% y
+  mod_res <- x %% y
+
+  expect_equal(as.matrix(floor_res), matrix(c(2, -3, -4, 3), 2, 2), tolerance = 1e-6)
+  expect_equal(as.matrix(mod_res), matrix(c(1, 1, -2, -1), 2, 2), tolerance = 1e-6)
+  expect_equal(floor_res$dtype, "float32")
+  expect_equal(mod_res$dtype, "float32")
+})

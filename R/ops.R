@@ -40,6 +40,14 @@ Ops.mlx <- function(e1, e2 = NULL) {
     return(.mlx_binary(e1, e2, op))
   }
 
+  # Modulo / floor division
+  if (op == "%/%") {
+    return(.mlx_floor_divide(e1, e2))
+  }
+  if (op == "%%") {
+    return(.mlx_remainder(e1, e2))
+  }
+
   # Logical operators
   if (op %in% c("&", "&&", "|", "||")) {
     return(.mlx_logical(e1, e2, op))
@@ -129,6 +137,32 @@ Ops.mlx <- function(e1, e2 = NULL) {
 .mlx_logical_not <- function(x) {
   ptr <- cpp_mlx_logical_not(x$ptr)
   new_mlx(ptr, x$dim, "bool", x$device)
+}
+
+.mlx_floor_divide <- function(x, y) {
+  result_dim <- .broadcast_dim(x$dim, y$dim)
+  result_device <- .common_device(x$device, y$device)
+  result_dtype <- .promote_dtype(x$dtype, y$dtype)
+
+  if (identical(result_dtype, "bool")) {
+    result_dtype <- "float32"
+  }
+
+  ptr <- cpp_mlx_floor_divide(x$ptr, y$ptr, result_device)
+  new_mlx(ptr, result_dim, result_dtype, result_device)
+}
+
+.mlx_remainder <- function(x, y) {
+  result_dim <- .broadcast_dim(x$dim, y$dim)
+  result_device <- .common_device(x$device, y$device)
+  result_dtype <- .promote_dtype(x$dtype, y$dtype)
+
+  if (identical(result_dtype, "bool")) {
+    result_dtype <- "float32"
+  }
+
+  ptr <- cpp_mlx_remainder(x$ptr, y$ptr, result_device)
+  new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
 #' Elementwise minimum of two MLX tensors

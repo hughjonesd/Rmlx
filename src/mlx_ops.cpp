@@ -275,6 +275,59 @@ SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_, std::string device_str) {
   return make_mlx_xptr(std::move(result));
 }
 
+namespace {
+
+Dtype promote_numeric_dtype(Dtype lhs, Dtype rhs) {
+  if (lhs == complex64 || rhs == complex64) {
+    return complex64;
+  }
+  if (lhs == float64 || rhs == float64) {
+    return float64;
+  }
+  if (lhs == float32 || rhs == float32) {
+    return float32;
+  }
+  return float32;
+}
+
+}  // namespace
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_, std::string device_str) {
+  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
+  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+
+  array lhs = wrapper1->get();
+  array rhs = wrapper2->get();
+
+  StreamOrDevice target_device = string_to_device(device_str);
+  Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
+
+  lhs = astype(lhs, target_dtype, target_device);
+  rhs = astype(rhs, target_dtype, target_device);
+
+  array result = floor_divide(lhs, rhs, target_device);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_remainder(SEXP xp1_, SEXP xp2_, std::string device_str) {
+  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
+  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+
+  array lhs = wrapper1->get();
+  array rhs = wrapper2->get();
+
+  StreamOrDevice target_device = string_to_device(device_str);
+  Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
+
+  lhs = astype(lhs, target_dtype, target_device);
+  rhs = astype(rhs, target_dtype, target_device);
+
+  array result = remainder(lhs, rhs, target_device);
+  return make_mlx_xptr(std::move(result));
+}
+
 // Logical operations
 // [[Rcpp::export]]
 SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op, std::string device_str) {
