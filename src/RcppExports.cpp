@@ -143,6 +143,46 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_minimum
+SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_minimum(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp1_(xp1_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type xp2_(xp2_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_minimum(xp1_, xp2_, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_maximum
+SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_maximum(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp1_(xp1_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type xp2_(xp2_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_maximum(xp1_, xp2_, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_clip
+SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_clip(SEXP xp_SEXP, SEXP min_SEXP, SEXP max_SEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type min_(min_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type max_(max_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_clip(xp_, min_, max_, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_logical
 SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_logical(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP opSEXP, SEXP device_strSEXP) {
@@ -751,6 +791,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_unary", (DL_FUNC) &_Rmlx_cpp_mlx_unary, 2},
     {"_Rmlx_cpp_mlx_logical_not", (DL_FUNC) &_Rmlx_cpp_mlx_logical_not, 1},
     {"_Rmlx_cpp_mlx_binary", (DL_FUNC) &_Rmlx_cpp_mlx_binary, 5},
+    {"_Rmlx_cpp_mlx_minimum", (DL_FUNC) &_Rmlx_cpp_mlx_minimum, 3},
+    {"_Rmlx_cpp_mlx_maximum", (DL_FUNC) &_Rmlx_cpp_mlx_maximum, 3},
+    {"_Rmlx_cpp_mlx_clip", (DL_FUNC) &_Rmlx_cpp_mlx_clip, 4},
     {"_Rmlx_cpp_mlx_logical", (DL_FUNC) &_Rmlx_cpp_mlx_logical, 4},
     {"_Rmlx_cpp_mlx_reduce", (DL_FUNC) &_Rmlx_cpp_mlx_reduce, 2},
     {"_Rmlx_cpp_mlx_reduce_axis", (DL_FUNC) &_Rmlx_cpp_mlx_reduce_axis, 4},

@@ -131,3 +131,32 @@ test_that("logical operators work", {
   # Short-circuit variants are not S3 generic; ensure evaluation still works via base fallback
   expect_true(isTRUE(as.vector(as.matrix(a_mlx))[1] && as.vector(as.matrix(b_mlx))[1]))
 })
+
+test_that("mlx_minimum and mlx_maximum compute elementwise extrema", {
+  x <- matrix(c(-1, 2, 3, 4), 2, 2)
+  y <- matrix(c(4, 1, 0, 5), 2, 2)
+
+  min_res <- mlx_minimum(x, y)
+  max_res <- mlx_maximum(as_mlx(x, dtype = "float32"), 1)
+
+  expect_equal(as.matrix(min_res), pmin(x, y), tolerance = 1e-6)
+  expect_equal(min_res$dtype, "float32")
+
+  expect_equal(as.matrix(max_res), pmax(x, 1), tolerance = 1e-6)
+  expect_equal(max_res$dtype, "float32")
+})
+
+test_that("mlx_clip clamps values", {
+  x <- as_mlx(matrix(seq(-2, 2, length.out = 4), 2, 2))
+
+  clipped <- mlx_clip(x, min = -1, max = 1)
+  expect_equal(as.matrix(clipped), pmin(pmax(as.matrix(x), -1), 1), tolerance = 1e-6)
+
+  clipped_upper <- mlx_clip(x, max = 0.5)
+  expect_true(all(as.matrix(clipped_upper) <= 0.5 + 1e-6))
+
+  clipped_lower <- mlx_clip(x, min = 0)
+  expect_true(all(as.matrix(clipped_lower) >= -1e-6))
+
+  expect_error(mlx_clip(x, min = 2, max = 1), "min must be less than or equal to max")
+})

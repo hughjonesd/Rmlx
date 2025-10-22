@@ -45,6 +45,18 @@ cpp_mlx_binary <- function(xp1_, xp2_, op, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_binary`, xp1_, xp2_, op, dtype_str, device_str)
 }
 
+cpp_mlx_minimum <- function(xp1_, xp2_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_minimum`, xp1_, xp2_, device_str)
+}
+
+cpp_mlx_maximum <- function(xp1_, xp2_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_maximum`, xp1_, xp2_, device_str)
+}
+
+cpp_mlx_clip <- function(xp_, min_, max_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_clip`, xp_, min_, max_, device_str)
+}
+
 cpp_mlx_logical <- function(xp1_, xp2_, op, device_str) {
     .Call(`_Rmlx_cpp_mlx_logical`, xp1_, xp2_, op, device_str)
 }

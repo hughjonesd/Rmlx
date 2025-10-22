@@ -131,6 +131,85 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, x$dim, "bool", x$device)
 }
 
+#' Elementwise minimum of two MLX tensors
+#'
+#' @param x,y `mlx` tensors or objects coercible with [as_mlx()].
+#' @return An `mlx` tensor containing the elementwise minimum.
+#' @export
+#' @examples
+#' \dontrun{
+#' a <- as_mlx(matrix(1:4, 2, 2))
+#' b <- as_mlx(matrix(c(4, 3, 2, 1), 2, 2))
+#' mlx_minimum(a, b)
+#' }
+mlx_minimum <- function(x, y) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  if (!is.mlx(y)) y <- as_mlx(y)
+
+  result_dim <- .broadcast_dim(x$dim, y$dim)
+  result_device <- .common_device(x$device, y$device)
+  result_dtype <- .promote_dtype(x$dtype, y$dtype)
+
+  if (identical(result_dtype, "bool")) {
+    result_dtype <- "float32"
+  }
+
+  ptr <- cpp_mlx_minimum(x$ptr, y$ptr, result_device)
+  new_mlx(ptr, result_dim, result_dtype, result_device)
+}
+
+#' Elementwise maximum of two MLX tensors
+#'
+#' @inheritParams mlx_minimum
+#' @return An `mlx` tensor containing the elementwise maximum.
+#' @export
+#' @examples
+#' \dontrun{
+#' mlx_maximum(1:3, c(3, 2, 1))
+#' }
+mlx_maximum <- function(x, y) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  if (!is.mlx(y)) y <- as_mlx(y)
+
+  result_dim <- .broadcast_dim(x$dim, y$dim)
+  result_device <- .common_device(x$device, y$device)
+  result_dtype <- .promote_dtype(x$dtype, y$dtype)
+
+  if (identical(result_dtype, "bool")) {
+    result_dtype <- "float32"
+  }
+
+  ptr <- cpp_mlx_maximum(x$ptr, y$ptr, result_device)
+  new_mlx(ptr, result_dim, result_dtype, result_device)
+}
+
+#' Clip MLX tensor values into a range
+#'
+#' @param x An `mlx` tensor or coercible object.
+#' @param min,max Scalar bounds. Use `NULL` to leave a bound open.
+#' @return An `mlx` tensor with values clipped to `[min, max]`.
+#' @export
+#' @examples
+#' \dontrun{
+#' x <- as_mlx(rnorm(4))
+#' mlx_clip(x, min = -1, max = 1)
+#' }
+mlx_clip <- function(x, min = NULL, max = NULL) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  if (is.null(min) && is.null(max)) {
+    stop("At least one of 'min' or 'max' must be supplied.", call. = FALSE)
+  }
+  if (!is.null(min) && length(min) != 1L) {
+    stop("'min' must be NULL or a scalar.", call. = FALSE)
+  }
+  if (!is.null(max) && length(max) != 1L) {
+    stop("'max' must be NULL or a scalar.", call. = FALSE)
+  }
+
+  ptr <- cpp_mlx_clip(x$ptr, min, max, x$device)
+  new_mlx(ptr, x$dim, if (x$dtype %in% c("float32", "float64")) x$dtype else "float32", x$device)
+}
+
 #' Broadcast two dimension vectors
 #'
 #' @param dim1,dim2 Dimension vectors.

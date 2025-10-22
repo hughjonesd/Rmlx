@@ -7,6 +7,7 @@
 #include <string>
 #include <numeric>
 #include <algorithm>
+#include <limits>
 #include <complex>
 
 using namespace Rcpp;
@@ -183,6 +184,94 @@ SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
     }
   }();
 
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_, std::string device_str) {
+  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
+  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+
+  array lhs = wrapper1->get();
+  array rhs = wrapper2->get();
+
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  Dtype target_dtype = lhs.dtype();
+  if (target_dtype == bool_) {
+    target_dtype = float32;
+  }
+  if (rhs.dtype() == float64 || target_dtype == float64) {
+    target_dtype = float64;
+  } else if (rhs.dtype() == float32 || target_dtype == float32) {
+    target_dtype = float32;
+  }
+
+  lhs = astype(lhs, target_dtype, target_device);
+  rhs = astype(rhs, target_dtype, target_device);
+
+  array result = minimum(lhs, rhs, target_device);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_, std::string device_str) {
+  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
+  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+
+  array lhs = wrapper1->get();
+  array rhs = wrapper2->get();
+
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  Dtype target_dtype = lhs.dtype();
+  if (target_dtype == bool_) {
+    target_dtype = float32;
+  }
+  if (rhs.dtype() == float64 || target_dtype == float64) {
+    target_dtype = float64;
+  } else if (rhs.dtype() == float32 || target_dtype == float32) {
+    target_dtype = float32;
+  }
+
+  lhs = astype(lhs, target_dtype, target_device);
+  rhs = astype(rhs, target_dtype, target_device);
+
+  array result = maximum(lhs, rhs, target_device);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice target_device = string_to_device(device_str);
+  Dtype original_dtype = arr.dtype();
+
+  if (!(original_dtype == float32 || original_dtype == float64)) {
+    original_dtype = float32;
+    arr = astype(arr, original_dtype, target_device);
+  } else {
+    arr = astype(arr, original_dtype, target_device);
+  }
+
+  double min_val = Rf_isNull(min_) ? -std::numeric_limits<double>::infinity()
+                                   : Rcpp::as<double>(min_);
+  double max_val = Rf_isNull(max_) ? std::numeric_limits<double>::infinity()
+                                   : Rcpp::as<double>(max_);
+
+  if (min_val > max_val) {
+    Rcpp::stop("min must be less than or equal to max.");
+  }
+
+  array min_arr = array(min_val, original_dtype);
+  array max_arr = array(max_val, original_dtype);
+
+  min_arr = astype(min_arr, original_dtype, target_device);
+  max_arr = astype(max_arr, original_dtype, target_device);
+
+  array result = clip(arr, min_arr, max_arr, target_device);
   return make_mlx_xptr(std::move(result));
 }
 
