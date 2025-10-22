@@ -4,16 +4,13 @@
 \alias{[.mlx}
 \title{Subset MLX array}
 \usage{
-\method{[}{mlx}(x, i, j, ..., drop = FALSE)
+\method{[}{mlx}(x, ..., drop = FALSE)
 }
 \arguments{
 \item{x}{An \code{mlx} object}
 
-\item{i}{Row indices}
-
-\item{j}{Column indices (for matrices)}
-
-\item{...}{Additional indices}
+\item{...}{Indices for each dimension. Provide one per axis; omitted indices
+select the full extent. Logical indices recycle to the dimension length.}
 
 \item{drop}{Should dimensions be dropped? (default: FALSE)}
 }

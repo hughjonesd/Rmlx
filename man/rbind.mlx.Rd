@@ -9,6 +9,8 @@
 \arguments{
 \item{...}{Objects to bind. MLX tensors are kept in MLX; other inputs are
 coerced via \code{as_mlx()}.}
+
+\item{deparse.level}{Compatibility argument accepted for S3 dispatch; ignored.}
 }
 \value{
 An \code{mlx} tensor stacked along the first axis.

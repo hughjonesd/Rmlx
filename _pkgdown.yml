@@ -2,3 +2,103 @@ url: https://hughjonesd.github.io/Rmlx/
 template:
   bootstrap: 5
 
+reference:
+  - title: Core Tensor API
+    contents:
+      - as_mlx
+      - is.mlx
+      - mlx_dim
+      - mlx_dtype
+      - mlx_eval
+      - "[.mlx"
+      - as.matrix.mlx
+      - as.array.mlx
+      - as.vector.mlx
+  - title: Device & Execution
+    contents:
+      - mlx_default_device
+      - with_default_device
+      - mlx_synchronize
+      - mlx_forward
+      - mlx_grad
+      - mlx_stop_gradient
+      - mlx_value_grad
+  - title: Creation & Randomness
+    contents:
+      - mlx_zeros
+      - mlx_ones
+      - mlx_full
+      - mlx_eye
+      - mlx_identity
+      - mlx_arange
+      - mlx_linspace
+      - mlx_rand_uniform
+      - mlx_rand_normal
+      - mlx_rand_bernoulli
+  - title: Shape & Indexing
+    contents:
+      - mlx_stack
+      - mlx_squeeze
+      - mlx_expand_dims
+      - mlx_repeat
+      - mlx_tile
+      - mlx_roll
+      - mlx_where
+      - rbind.mlx
+      - cbind.mlx
+  - title: Ordering & Selection
+    contents:
+      - mlx_sort
+      - mlx_argsort
+      - mlx_topk
+      - mlx_argmax
+      - mlx_argmin
+      - mlx_partition
+      - mlx_argpartition
+  - title: Math & Reductions
+    contents:
+      - mlx_sum
+      - mlx_prod
+      - mlx_mean
+      - mlx_var
+      - mlx_std
+      - mlx_all
+      - mlx_any
+      - mlx_clip
+      - mlx_maximum
+      - mlx_minimum
+      - mlx_softmax
+      - mlx_logsumexp
+      - mlx_logcumsumexp
+      - colSums
+      - rowSums
+      - colMeans
+      - rowMeans
+      - fft
+  - title: Linear Algebra
+    contents:
+      - "%*%.mlx"
+      - crossprod.mlx
+      - tcrossprod.mlx
+      - chol.mlx
+      - qr.mlx
+      - svd.mlx
+      - solve.mlx
+      - pinv
+      - mlx_norm
+      - mlx_solve_triangular
+      - mlx_eig
+      - mlx_eigh
+      - mlx_eigvals
+      - mlx_eigvalsh
+      - mlx_cross
+  - title: Neural Network Helpers
+    contents:
+      - mlx_linear
+      - mlx_relu
+      - mlx_parameters
+      - mlx_param_values
+      - mlx_param_set_values
+      - mlx_optimizer_sgd
+      - mlx_train_step
+      - mlx_sequential

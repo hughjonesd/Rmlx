@@ -2,6 +2,7 @@
 #'
 #' @param ... Objects to bind. MLX tensors are kept in MLX; other inputs are
 #'   coerced via `as_mlx()`.
+#' @param deparse.level Compatibility argument accepted for S3 dispatch; ignored.
 #' @return An `mlx` tensor stacked along the first axis.
 #' @export
 #' @examples

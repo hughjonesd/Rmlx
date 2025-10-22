@@ -98,9 +98,8 @@ mlx_dtype <- function(x) {
 #' Subset MLX array
 #'
 #' @param x An `mlx` object
-#' @param i Row indices
-#' @param j Column indices (for matrices)
-#' @param ... Additional indices
+#' @param ... Indices for each dimension. Provide one per axis; omitted indices
+#'   select the full extent. Logical indices recycle to the dimension length.
 #' @param drop Should dimensions be dropped? (default: FALSE)
 #' @return Subsetted `mlx` object
 #' @export

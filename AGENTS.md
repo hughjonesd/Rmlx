@@ -29,12 +29,9 @@
 - Each PR should link to issues when relevant, summarize API changes, and note Metal/CPU devices covered.
 - Before opening a PR, run `R -q -e 'devtools::document()'`, `R -q -e 'devtools::test()'`, and `R -q -e 'devtools::check()'`; include notable outputs or screenshots for performance-sensitive work.
 
-## Current Agent Notes (2024-08-17)
-- Sandbox constraints block `processx`, so any tooling that shells out via `callr` (e.g., `devtools::document()`, `devtools::test()`) fails unless you relaunch Codex with a less restrictive mode (`danger-full-access`). Direct commands (`R CMD build`, `R CMD INSTALL`) and `roxygen2::roxygenise(load_code = roxygen2::load_source)` still work.
-- Even with roxygen run manually, MLX runtime calls currently throw `c++ exception (unknown reason)` inside `cpp_mlx_from_r()` / `cpp_mlx_empty()`. This happens in both tests and ad hoc calls like `Rmlx::as_mlx(matrix(1:4, 2, 2))`, indicating MLX can’t create arrays in the sandbox. Installing to a local `library/` via `R CMD INSTALL --library=./library .` succeeds, but actual tensor operations fail at runtime.
-- Recent refactors:
-  * `as_mlx()` now uses `.mlx_infer_dim()` and `.mlx_coerce_payload()` helpers (R/class.R).
-  * Transform helpers rely on `.mlx_wrap_result()` instead of duplicating shape/dtype logic.
-  * Unary kernel dispatch in C++ reverted to the original `if` ladder per user request.
-- Tests (`testthat::test_local(load_package = "none")`) can run in-process but currently fail because of the MLX runtime errors above. Resolving the MLX initialization issue should restore the suite.
-- Untracked artifacts to ignore or clean before committing: `library/`, `build_tools_dump.rda`, `Rmlx_0.0.0.9000.tar.gz`.
+## Current Agent Notes (2025-10-22)
+- MLX tensor creation and any Metal-backed work (e.g., `as_mlx()`, GPU tests) only succeed when the session runs with `danger-full-access`; restricted sandboxes block the Metal device initialisation and `processx`/`callr`'s `kqueue()` calls.
+- Under restricted modes you can still build via `R CMD build`/`INSTALL` and `roxygen2::roxygenise(load_code = roxygen2::load_source)`, but expect MLX runtime calls to bail out with `c++ exception (unknown reason)`.
+- With `danger-full-access`, the full devtools workflow (`document()`, `test()`, `check()`) works end-to-end. `devtools::check()` currently reports a single NOTE about a bashism in `configure` line 33; everything else is clean.
+- Keep the workspace tidy after checks: remove `Rmlx_0.0.0.9000.tar.gz`, temporary `Rmlx.Rcheck/`, and local `library/` installs if you create them.
+- Tests now pass, but they rely on MLX availability. Avoid adding conditional skips—failures are acceptable when MLX is absent.
