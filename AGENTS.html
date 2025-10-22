@@ -80,6 +80,19 @@
 <li>Each PR should link to issues when relevant, summarize API changes, and note Metal/CPU devices covered.</li>
 <li>Before opening a PR, run <code>R -q -e 'devtools::document()'</code>, <code>R -q -e 'devtools::test()'</code>, and <code>R -q -e 'devtools::check()'</code>; include notable outputs or screenshots for performance-sensitive work.</li>
 </ul></div>
+<div class="section level2">
+<h2 id="current-agent-notes-2024-08-17">Current Agent Notes (2024-08-17)<a class="anchor" aria-label="anchor" href="#current-agent-notes-2024-08-17"></a></h2>
+<ul><li>Sandbox constraints block <code>processx</code>, so any tooling that shells out via <code>callr</code> (e.g., <code>devtools::document()</code>, <code>devtools::test()</code>) fails unless you relaunch Codex with a less restrictive mode (<code>danger-full-access</code>). Direct commands (<code>R CMD build</code>, <code>R CMD INSTALL</code>) and <code>roxygen2::roxygenise(load_code = roxygen2::load_source)</code> still work.</li>
+<li>Even with roxygen run manually, MLX runtime calls currently throw <code>c++ exception (unknown reason)</code> inside <code>cpp_mlx_from_r()</code> / <code>cpp_mlx_empty()</code>. This happens in both tests and ad hoc calls like <code>Rmlx::as_mlx(matrix(1:4, 2, 2))</code>, indicating MLX can’t create arrays in the sandbox. Installing to a local <code>library/</code> via <code>R CMD INSTALL --library=./library .</code> succeeds, but actual tensor operations fail at runtime.</li>
+<li>Recent refactors:
+<ul><li>
+<code><a href="reference/as_mlx.html">as_mlx()</a></code> now uses <code>.mlx_infer_dim()</code> and <code>.mlx_coerce_payload()</code> helpers (R/class.R).</li>
+<li>Transform helpers rely on <code>.mlx_wrap_result()</code> instead of duplicating shape/dtype logic.</li>
+<li>Unary kernel dispatch in C++ reverted to the original <code>if</code> ladder per user request.</li>
+</ul></li>
+<li>Tests (<code>testthat::test_local(load_package = "none")</code>) can run in-process but currently fail because of the MLX runtime errors above. Resolving the MLX initialization issue should restore the suite.</li>
+<li>Untracked artifacts to ignore or clean before committing: <code>library/</code>, <code>build_tools_dump.rda</code>, <code>Rmlx_0.0.0.9000.tar.gz</code>.</li>
+</ul></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
