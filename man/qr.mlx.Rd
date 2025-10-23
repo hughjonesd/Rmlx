@@ -25,3 +25,6 @@ QR decomposition for MLX tensors
 x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 3, 2))
 qr(x)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.qr}
+}

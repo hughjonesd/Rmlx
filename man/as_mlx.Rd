@@ -36,3 +36,6 @@ use base R arrays instead of \code{mlx} objects.
 \examples{
 x <- as_mlx(matrix(1:12, 3, 4))
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}
+}

@@ -17,6 +17,7 @@
 #' @param LINPACK Ignored; set to `FALSE`.
 #' @param ... Additional arguments (unused).
 #' @return Upper-triangular Cholesky factor as an `mlx` matrix.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky}
 #' @export
 #' @method chol mlx
 #' @examples
@@ -38,6 +39,7 @@ chol.mlx <- function(x, pivot = FALSE, LINPACK = FALSE, ...) {
 #' @param LAPACK Ignored; set to `FALSE`.
 #' @param ... Additional arguments (unused).
 #' @return A list with components `Q` and `R`, each an `mlx` matrix.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.qr}
 #' @export
 #' @method qr mlx
 #' @examples
@@ -71,6 +73,7 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
 #' @param LINPACK Ignored; set to `FALSE`.
 #' @param ... Additional arguments (unused).
 #' @return A list with components `d`, `u`, and `v`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.svd}
 #' @export
 #' @method svd mlx
 #' @examples
@@ -116,6 +119,7 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE, ...) {
 #'
 #' @param x An `mlx` object or coercible matrix.
 #' @return An `mlx` object containing the pseudoinverse.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
@@ -138,7 +142,7 @@ pinv <- function(x) {
 #' @param ... Passed through to the default method.
 #' @return For `mlx` inputs, an `mlx` object containing complex frequency
 #'   coefficients; otherwise the base R result.
-#' @seealso [stats::fft()]
+#' @seealso [stats::fft()], \url{https://ml-explore.github.io/mlx/build/html/python/fft.html#mlx.core.fft.fft}
 #' @export
 #' @examples
 #' z <- as_mlx(c(1, 2, 3, 4))

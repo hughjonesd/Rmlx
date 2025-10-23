@@ -27,3 +27,6 @@ Singular value decomposition for MLX tensors
 x <- as_mlx(matrix(c(1, 0, 0, 2), 2, 2))
 svd(x)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.svd}
+}

@@ -49,6 +49,7 @@
 #'   and imaginary parts). Asking for `dtype = "float64"` emits a warning and the
 #'   input is downcast to `float32`. If you require double precision arithmetic,
 #'   use base R arrays instead of `mlx` objects.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:12, 3, 4))

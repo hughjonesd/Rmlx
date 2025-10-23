@@ -22,6 +22,8 @@
 #' to base R objects (such as `as.matrix()`, `as.numeric()`, or `[[` extraction)
 #' breaks the gradient tape and results in an error.
 #'
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.grad},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.value_and_grad}
 #' @examples
 #' loss <- function(w, x, y) {
 #'   preds <- x %*% w
@@ -85,6 +87,7 @@ mlx_value_grad <- function(f, ..., argnums = NULL) {
 #' @param x An `mlx` tensor.
 #'
 #' @return A new `mlx` tensor with identical values but zero gradient.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.stop_gradient}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))

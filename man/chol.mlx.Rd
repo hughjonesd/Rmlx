@@ -25,3 +25,6 @@ Cholesky decomposition for MLX tensors
 x <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
 chol(x)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky}
+}

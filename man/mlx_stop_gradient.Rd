@@ -19,3 +19,6 @@ Stop gradient propagation through an MLX tensor
 x <- as_mlx(matrix(1:4, 2, 2))
 mlx_stop_gradient(x)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.stop_gradient}
+}
