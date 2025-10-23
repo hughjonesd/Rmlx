@@ -1,7 +1,3 @@
-#' @title Tensor shape helpers
-#' @name mlx_shape_helpers
-NULL
-
 # Internal casting helper ----------------------------------------------------
 
 #' Cast mlx tensor to different dtype or device
