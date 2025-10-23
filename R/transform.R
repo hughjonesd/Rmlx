@@ -119,11 +119,11 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Normalize multiple axes for MLX
+#' Normalize multiple axes to 0-indexed
 #'
-#' @inheritParams mlx_argmax
-#' @param axes Integer vector of axes.
-#' @return Integer vector (zero-based).
+#' @param axes Integer vector of 1-indexed axes (negatives allowed) or NULL.
+#' @param x mlx tensor providing dimensionality.
+#' @return Integer vector (0-indexed) or NULL.
 #' @noRd
 .mlx_normalize_axes <- function(axes, x) {
   if (is.null(axes)) {
@@ -136,11 +136,11 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   vapply(axes, .mlx_normalize_axis_single, integer(1), x = x)
 }
 
-#' Convert a single R axis (1-indexed) to zero-based
+#' Convert single 1-indexed axis to 0-indexed
 #'
-#' @param axis Axis to normalize.
-#' @param x An `mlx` tensor providing dimensionality.
-#' @return Integer axis (zero-based).
+#' @param axis Integer (1-indexed, negatives allowed).
+#' @param x mlx tensor providing dimensionality.
+#' @return Integer scalar (0-indexed).
 #' @noRd
 .mlx_normalize_axis_single <- function(axis, x) {
   if (is.na(axis)) {
@@ -156,11 +156,11 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   axis - 1L
 }
 
-#' Convert R axis (1-indexed) to zero-based for MLX
+#' Convert single axis to 0-indexed or return NULL
 #'
-#' @inheritParams mlx_argmax
-#' @param x An `mlx` tensor providing dimensionality.
-#' @return Integer axis (zero-based) or `NULL`.
+#' @param axis Integer (1-indexed, negatives allowed) or NULL.
+#' @param x mlx tensor providing dimensionality.
+#' @return Integer scalar (0-indexed) or NULL.
 #' @noRd
 .mlx_normalize_axis <- function(axis, x) {
   if (is.null(axis)) {

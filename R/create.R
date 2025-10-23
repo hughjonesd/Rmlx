@@ -221,6 +221,12 @@ mlx_linspace <- function(start,
 }
 
 # Helper to validate shapes ----------------------------------------------------
+
+#' Validate and coerce shape specification
+#'
+#' @param dim Integer or numeric vector of dimension sizes.
+#' @return Integer vector of positive dimensions.
+#' @noRd
 .validate_shape <- function(dim) {
   if (length(dim) == 0L) {
     stop("dim must contain at least one element.", call. = FALSE)

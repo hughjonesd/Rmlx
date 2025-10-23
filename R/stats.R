@@ -209,24 +209,26 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   x %*% t(y)
 }
 
-#' Reduce an MLX tensor over all axes
+#' Reduce mlx tensor over all axes
 #'
-#' @param x An `mlx` tensor.
-#' @param op Reduction identifier.
-#' @return Reduced `mlx` tensor.
+#' @param x mlx tensor.
+#' @param op Character string naming the reduction.
+#' @param ddof Integer delta degrees of freedom.
+#' @return mlx scalar tensor.
 #' @noRd
 .mlx_reduce <- function(x, op, ddof = 0L) {
   ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof))
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Reduce an MLX tensor along a specific axis
+#' Reduce mlx tensor along single axis
 #'
-#' @param x An `mlx` tensor.
-#' @param op Reduction identifier.
-#' @param axis Axis index (zero-based).
-#' @param keepdims Logical flag preserving reduced axis.
-#' @return Reduced `mlx` tensor.
+#' @param x mlx tensor.
+#' @param op Character string naming the reduction.
+#' @param axis Integer (1-indexed).
+#' @param keepdims Logical preserving reduced dimension.
+#' @param ddof Integer delta degrees of freedom.
+#' @return mlx tensor with reduced axis.
 #' @noRd
 .mlx_reduce_axis <- function(x, op, axis, keepdims, ddof = 0L) {
   axis0 <- as.integer(axis) - 1L
@@ -237,6 +239,15 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   .mlx_wrap_result(ptr, x$device)
 }
 
+#' Reduce mlx tensor along multiple axes
+#'
+#' @param x mlx tensor.
+#' @param op Character string naming the reduction.
+#' @param axes Integer vector of 1-indexed axes.
+#' @param drop Logical controlling dimension dropping.
+#' @param ddof Integer delta degrees of freedom.
+#' @return mlx tensor with reduced axes.
+#' @noRd
 .mlx_reduce_axes <- function(x, op, axes, drop, ddof = 0L) {
   axes <- as.integer(axes)
   if (any(is.na(axes))) {
@@ -259,6 +270,15 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   x
 }
 
+#' Dispatch reduction to appropriate handler
+#'
+#' @param x mlx tensor or coercible object.
+#' @param op Character string naming the reduction.
+#' @param axis Integer vector of axes or NULL.
+#' @param drop Logical controlling dimension dropping.
+#' @param ddof Integer delta degrees of freedom.
+#' @return mlx tensor with reduction result.
+#' @noRd
 .mlx_reduce_dispatch <- function(x, op, axis = NULL, drop = TRUE, ddof = 0L) {
   x <- if (inherits(x, "mlx")) x else as_mlx(x)
   if (is.null(axis)) {

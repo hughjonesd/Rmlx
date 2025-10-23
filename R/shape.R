@@ -4,6 +4,13 @@ NULL
 
 # Internal casting helper ----------------------------------------------------
 
+#' Cast mlx tensor to different dtype or device
+#'
+#' @param x mlx tensor.
+#' @param dtype Character string naming target dtype.
+#' @param device Character string naming target device.
+#' @return mlx tensor with requested dtype and device.
+#' @noRd
 .mlx_cast <- function(x, dtype = x$dtype, device = x$device) {
   if (!inherits(x, "mlx")) {
     stop("Expected an `mlx` tensor.", call. = FALSE)
@@ -15,6 +22,12 @@ NULL
   new_mlx(ptr, x$dim, dtype, device)
 }
 
+#' Normalize axes for insertion operations
+#'
+#' @param axes Integer vector of 1-indexed axes (negatives allowed).
+#' @param dims Integer vector of current dimensions.
+#' @return Integer vector of 0-indexed sorted unique axes.
+#' @noRd
 .mlx_normalize_new_axes <- function(axes, dims) {
   if (length(axes) == 0L) {
     stop("axes must contain at least one element.", call. = FALSE)
@@ -31,6 +44,12 @@ NULL
   sort(unique(axes0))
 }
 
+#' Normalize single axis for insertion operations
+#'
+#' @param axis Integer (1-indexed, negatives allowed).
+#' @param dims Integer vector of current dimensions.
+#' @return Integer scalar (0-indexed).
+#' @noRd
 .mlx_normalize_new_axis <- function(axis, dims) {
   axes0 <- .mlx_normalize_new_axes(axis, dims)
   if (length(axes0) != 1L) {
@@ -315,6 +334,11 @@ mlx_split <- function(x, sections, axis = 1L) {
   res
 }
 
+#' Parse padding specification into matrix format
+#'
+#' @param pad_width Scalar, length-2 vector, matrix, list, or full-length vector.
+#' @param n_axes Integer number of axes being padded.
+#' @return Integer matrix with n_axes rows and 2 columns (before, after).
 #' @noRd
 .parse_pad_width <- function(pad_width, n_axes) {
   if (n_axes <= 0L) {

@@ -92,22 +92,22 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
-#' Apply a unary MLX kernel
+#' Apply unary MLX operation
 #'
-#' @param x An `mlx` tensor.
-#' @param op Operation name forwarded to C++.
-#' @return Updated `mlx` tensor with the same shape.
+#' @param x mlx tensor.
+#' @param op Character string naming the operation.
+#' @return mlx tensor with same shape.
 #' @noRd
 .mlx_unary <- function(x, op) {
   ptr <- cpp_mlx_unary(x$ptr, op)
   new_mlx(ptr, x$dim, x$dtype, x$device)
 }
 
-#' Apply a binary MLX kernel with dtype/device alignment
+#' Apply binary MLX operation with type promotion
 #'
-#' @param x,y `mlx` tensors to combine.
-#' @param op Operation identifier.
-#' @return Resulting `mlx` tensor.
+#' @param x,y mlx tensors.
+#' @param op Character string naming the operation.
+#' @return mlx tensor with broadcasted dimensions.
 #' @noRd
 .mlx_binary <- function(x, y, op) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
@@ -126,6 +126,12 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
+#' Apply logical MLX operation
+#'
+#' @param x,y mlx tensors.
+#' @param op Character string naming the logical operation.
+#' @return mlx tensor with dtype "bool".
+#' @noRd
 .mlx_logical <- function(x, y, op) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
   result_device <- .common_device(x$device, y$device)
@@ -134,11 +140,21 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, "bool", result_device)
 }
 
+#' Apply logical NOT to mlx tensor
+#'
+#' @param x mlx tensor.
+#' @return mlx tensor with dtype "bool".
+#' @noRd
 .mlx_logical_not <- function(x) {
   ptr <- cpp_mlx_logical_not(x$ptr)
   new_mlx(ptr, x$dim, "bool", x$device)
 }
 
+#' Integer division for mlx tensors
+#'
+#' @param x,y mlx tensors.
+#' @return mlx tensor with floor-divided values.
+#' @noRd
 .mlx_floor_divide <- function(x, y) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
   result_device <- .common_device(x$device, y$device)
@@ -152,6 +168,11 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
+#' Remainder operation for mlx tensors
+#'
+#' @param x,y mlx tensors.
+#' @return mlx tensor with remainder values.
+#' @noRd
 .mlx_remainder <- function(x, y) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
   result_device <- .common_device(x$device, y$device)
@@ -247,10 +268,10 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
   new_mlx(ptr, x$dim, if (x$dtype %in% c("float32", "float64")) x$dtype else "float32", x$device)
 }
 
-#' Broadcast two dimension vectors
+#' Compute broadcast dimensions
 #'
-#' @param dim1,dim2 Dimension vectors.
-#' @return Broadcasted dimensions.
+#' @param dim1,dim2 Integer vectors of dimensions.
+#' @return Integer vector of broadcasted dimensions.
 #' @noRd
 .broadcast_dim <- function(dim1, dim2) {
   # Simplified broadcasting rules
@@ -272,10 +293,10 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
   }
 }
 
-#' Promote two MLX dtypes to a computation dtype
+#' Promote dtypes for mixed operations
 #'
-#' @param dtype1,dtype2 Character dtype names.
-#' @return Promoted dtype.
+#' @param dtype1,dtype2 Character strings naming dtypes.
+#' @return Character string of promoted dtype.
 #' @noRd
 .promote_dtype <- function(dtype1, dtype2) {
   if (dtype1 == dtype2) return(dtype1)
@@ -290,10 +311,10 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
   stop("Unsupported dtype combination: ", dtype1, " and ", dtype2)
 }
 
-#' Choose a common device for two tensors
+#' Select common device from two tensors
 #'
-#' @param device1,device2 Device strings.
-#' @return Device string.
+#' @param device1,device2 Character strings ("gpu" or "cpu").
+#' @return Character string ("gpu" or "cpu").
 #' @noRd
 .common_device <- function(device1, device2) {
   if (device1 == device2) return(device1)

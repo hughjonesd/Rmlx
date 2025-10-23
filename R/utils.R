@@ -183,6 +183,12 @@ mlx_dtype <- function(x) {
   out
 }
 
+#' Normalize subsetting index to 0-indexed integers
+#'
+#' @param idx Logical, numeric, or NULL index vector.
+#' @param dim_size Integer length of the dimension.
+#' @return Integer vector (0-indexed) or NULL.
+#' @noRd
 .normalize_index_vector <- function(idx, dim_size) {
   if (is.null(idx)) {
     return(NULL)
