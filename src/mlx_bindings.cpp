@@ -94,246 +94,6 @@ Device string_to_device(const std::string& device) {
   Rcpp::stop("Unsupported device: " + device);
 }
 
-// Helper: Reorder data from R (column-major) to MLX (row-major) for 2D arrays
-// Instead of transpose, we physically rearrange elements
-std::vector<double> reorder_col_major_to_row_major(const double* data, int nrow, int ncol) {
-  std::vector<double> result(nrow * ncol);
-  for (int i = 0; i < nrow; i++) {
-    for (int j = 0; j < ncol; j++) {
-      result[i * ncol + j] = data[j * nrow + i];  // col-major[j,i] -> row-major[i,j]
-    }
-  }
-  return result;
-}
-
-std::vector<float> reorder_col_major_to_row_major_f32(const double* data, int nrow, int ncol) {
-  std::vector<float> result(nrow * ncol);
-  for (int i = 0; i < nrow; i++) {
-    for (int j = 0; j < ncol; j++) {
-      result[i * ncol + j] = static_cast<float>(data[j * nrow + i]);
-    }
-  }
-  return result;
-}
-
-std::vector<complex64_t> reorder_col_major_to_row_major_c64(const Rcomplex* data, int nrow, int ncol) {
-  std::vector<complex64_t> result(nrow * ncol);
-  for (int i = 0; i < nrow; i++) {
-    for (int j = 0; j < ncol; j++) {
-      const Rcomplex& val = data[j * nrow + i];
-      result[i * ncol + j] = complex64_t(
-          static_cast<float>(val.r),
-          static_cast<float>(val.i));
-    }
-  }
-  return result;
-}
-
-template <typename SrcT, typename DstT>
-void reorder_col_major_to_row_major_nd(const SrcT* src,
-                                       DstT* dst,
-                                       const std::vector<int>& dims) {
-  size_t ndim = dims.size();
-  size_t total = 1;
-  for (int dim : dims) {
-    total *= static_cast<size_t>(dim);
-  }
-
-  if (ndim <= 1) {
-    for (size_t idx = 0; idx < total; ++idx) {
-      dst[idx] = static_cast<DstT>(src[idx]);
-    }
-    return;
-  }
-
-  std::vector<size_t> row_strides(ndim);
-  row_strides[ndim - 1] = 1;
-  for (int axis = static_cast<int>(ndim) - 2; axis >= 0; --axis) {
-    row_strides[axis] = row_strides[axis + 1] * static_cast<size_t>(dims[axis + 1]);
-  }
-
-  for (size_t index = 0; index < total; ++index) {
-    size_t remainder = index;
-    size_t row_index = 0;
-
-    for (size_t axis = 0; axis < ndim; ++axis) {
-      size_t coord = remainder % static_cast<size_t>(dims[axis]);
-      remainder /= static_cast<size_t>(dims[axis]);
-      row_index += coord * row_strides[axis];
-    }
-
-    dst[row_index] = static_cast<DstT>(src[index]);
-  }
-}
-
-void reorder_col_major_to_row_major_c64_nd(const Rcomplex* src,
-                                           complex64_t* dst,
-                                           const std::vector<int>& dims) {
-  size_t ndim = dims.size();
-  size_t total = 1;
-  for (int dim : dims) {
-    total *= static_cast<size_t>(dim);
-  }
-
-  if (ndim <= 1) {
-    for (size_t idx = 0; idx < total; ++idx) {
-      const Rcomplex& val = src[idx];
-    dst[idx] = complex64_t(static_cast<float>(val.r), static_cast<float>(val.i));
-    }
-    return;
-  }
-
-  std::vector<size_t> row_strides(ndim);
-  row_strides[ndim - 1] = 1;
-  for (int axis = static_cast<int>(ndim) - 2; axis >= 0; --axis) {
-    row_strides[axis] = row_strides[axis + 1] * static_cast<size_t>(dims[axis + 1]);
-  }
-
-  for (size_t index = 0; index < total; ++index) {
-    size_t remainder = index;
-    size_t row_index = 0;
-
-    for (size_t axis = 0; axis < ndim; ++axis) {
-      size_t coord = remainder % static_cast<size_t>(dims[axis]);
-      remainder /= static_cast<size_t>(dims[axis]);
-      row_index += coord * row_strides[axis];
-    }
-
-    const Rcomplex& val = src[index];
-    dst[row_index] = complex64_t(static_cast<float>(val.r), static_cast<float>(val.i));
-  }
-}
-
-// Helper: Reorder data from MLX (row-major) to R (column-major) for 2D arrays
-void reorder_row_major_to_col_major(const double* src, double* dst, int nrow, int ncol) {
-  for (int i = 0; i < nrow; i++) {
-    for (int j = 0; j < ncol; j++) {
-      dst[j * nrow + i] = src[i * ncol + j];  // row-major[i,j] -> col-major[j,i]
-    }
-  }
-}
-
-void reorder_row_major_to_col_major_f32(const float* src, double* dst, int nrow, int ncol) {
-  for (int i = 0; i < nrow; i++) {
-    for (int j = 0; j < ncol; j++) {
-      dst[j * nrow + i] = static_cast<double>(src[i * ncol + j]);
-    }
-  }
-}
-
-void reorder_row_major_to_col_major_c64(const complex64_t* src,
-                                        Rcomplex* dst,
-                                        int nrow,
-                                        int ncol) {
-  for (int i = 0; i < nrow; i++) {
-    for (int j = 0; j < ncol; j++) {
-      const complex64_t& val = src[i * ncol + j];
-      int idx = j * nrow + i;
-      dst[idx].r = static_cast<double>(val.real());
-      dst[idx].i = static_cast<double>(val.imag());
-    }
-  }
-}
-
-template <typename SrcT, typename DstT>
-void reorder_row_major_to_col_major_nd(const SrcT* src,
-                                       DstT* dst,
-                                       const std::vector<int>& dims) {
-  size_t ndim = dims.size();
-  size_t total = 1;
-  for (int dim : dims) {
-    total *= static_cast<size_t>(dim);
-  }
-
-  if (ndim <= 1) {
-    for (size_t idx = 0; idx < total; ++idx) {
-      dst[idx] = static_cast<DstT>(src[idx]);
-    }
-    return;
-  }
-
-  std::vector<size_t> col_strides(ndim);
-  col_strides[0] = 1;
-  for (size_t axis = 1; axis < ndim; ++axis) {
-    col_strides[axis] = col_strides[axis - 1] * static_cast<size_t>(dims[axis - 1]);
-  }
-
-  std::vector<size_t> row_strides(ndim);
-  row_strides[ndim - 1] = 1;
-  for (int axis = static_cast<int>(ndim) - 2; axis >= 0; --axis) {
-    row_strides[axis] = row_strides[axis + 1] * static_cast<size_t>(dims[axis + 1]);
-  }
-
-  for (size_t index = 0; index < total; ++index) {
-    size_t remainder = index;
-    size_t col_index = 0;
-
-    for (size_t axis = 0; axis < ndim; ++axis) {
-      size_t coord;
-      if (axis == ndim - 1) {
-        coord = remainder;
-      } else {
-        coord = remainder / row_strides[axis];
-        remainder %= row_strides[axis];
-      }
-      col_index += coord * col_strides[axis];
-    }
-
-    dst[col_index] = static_cast<DstT>(src[index]);
-  }
-}
-
-void reorder_row_major_to_col_major_c64_nd(const complex64_t* src,
-                                           Rcomplex* dst,
-                                           const std::vector<int>& dims) {
-  size_t ndim = dims.size();
-  size_t total = 1;
-  for (int dim : dims) {
-    total *= static_cast<size_t>(dim);
-  }
-
-  if (ndim <= 1) {
-    for (size_t idx = 0; idx < total; ++idx) {
-    const complex64_t& val = src[idx];
-      dst[idx].r = static_cast<double>(val.real());
-      dst[idx].i = static_cast<double>(val.imag());
-    }
-    return;
-  }
-
-  std::vector<size_t> col_strides(ndim);
-  col_strides[0] = 1;
-  for (size_t axis = 1; axis < ndim; ++axis) {
-    col_strides[axis] = col_strides[axis - 1] * static_cast<size_t>(dims[axis - 1]);
-  }
-
-  std::vector<size_t> row_strides(ndim);
-  row_strides[ndim - 1] = 1;
-  for (int axis = static_cast<int>(ndim) - 2; axis >= 0; --axis) {
-    row_strides[axis] = row_strides[axis + 1] * static_cast<size_t>(dims[axis + 1]);
-  }
-
-  for (size_t index = 0; index < total; ++index) {
-    size_t remainder = index;
-    size_t col_index = 0;
-
-    for (size_t axis = 0; axis < ndim; ++axis) {
-      size_t coord;
-      if (axis == ndim - 1) {
-        coord = remainder;
-      } else {
-        coord = remainder / row_strides[axis];
-        remainder %= row_strides[axis];
-      }
-      col_index += coord * col_strides[axis];
-    }
-
-    const complex64_t& val = src[index];
-    dst[col_index].r = static_cast<double>(val.real());
-    dst[col_index].i = static_cast<double>(val.imag());
-  }
-}
-
 } // namespace rmlx
 
 using namespace rmlx;
@@ -344,15 +104,16 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
   std::string dtype_str = as<std::string>(dtype_);
   std::string device_str = as<std::string>(device_);
 
-  // Convert dimensions - MLX uses Shape which is SmallVector<int>
+  // Convert dimensions
   Shape shape(dim.begin(), dim.end());
-
-  // Create MLX array
   Dtype dt = string_to_dtype(dtype_str);
   StreamOrDevice dev = string_to_device(device_str);
 
   size_t ndim = shape.size();
-  std::vector<int> dims(shape.begin(), shape.end());
+
+  // R uses column-major, MLX uses row-major
+  // Strategy: create array with reversed shape, then transpose
+  Shape reversed_shape(shape.rbegin(), shape.rend());
 
   ComplexVector cx;
   NumericVector x;
@@ -363,71 +124,42 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
     x = NumericVector(x_);
   }
 
-  auto make_array = [&](Dtype storage_dtype) -> array {
-    if (ndim == 2) {
-      if (storage_dtype == float64) {
-        std::vector<double> data_reordered = reorder_col_major_to_row_major(x.begin(), shape[0], shape[1]);
-        return array(data_reordered.data(), shape, float64);
-      } else if (storage_dtype == float32) {
-        std::vector<float> data_reordered = reorder_col_major_to_row_major_f32(x.begin(), shape[0], shape[1]);
-        return array(data_reordered.data(), shape, float32);
-      } else {
-        std::vector<complex64_t> data_reordered =
-            reorder_col_major_to_row_major_c64(cx.begin(), shape[0], shape[1]);
-        return array(data_reordered.data(), shape, complex64);
-      }
-    } else if (ndim <= 1) {
-      if (storage_dtype == float64) {
-        return array(x.begin(), shape, float64);
-      } else if (storage_dtype == float32) {
-        std::vector<float> data_f32(x.begin(), x.end());
-        return array(data_f32.begin(), shape, float32);
-      } else {
-        std::vector<complex64_t> data_c64(cx.size());
-        for (R_xlen_t idx = 0; idx < cx.size(); ++idx) {
-          const Rcomplex& val = cx[idx];
-          data_c64[idx] = complex64_t(
-              static_cast<float>(val.r),
-              static_cast<float>(val.i));
-        }
-        return array(data_c64.data(), shape, complex64);
-      }
-    } else {
-      size_t total = use_complex ? static_cast<size_t>(cx.size()) : static_cast<size_t>(x.size());
-      if (storage_dtype == float64) {
-        std::vector<double> data_reordered(total);
-        reorder_col_major_to_row_major_nd<double, double>(x.begin(), data_reordered.data(), dims);
-        return array(data_reordered.data(), shape, float64);
-      } else if (storage_dtype == float32) {
-        std::vector<float> data_reordered(total);
-        reorder_col_major_to_row_major_nd<double, float>(x.begin(), data_reordered.data(), dims);
-        return array(data_reordered.data(), shape, float32);
-      } else {
-        std::vector<complex64_t> data_reordered(total);
-        reorder_col_major_to_row_major_c64_nd(cx.begin(), data_reordered.data(), dims);
-        return array(data_reordered.data(), shape, complex64);
-      }
-    }
-  };
-
-  // Copy data from R to MLX, reordering for layout if needed
-  array arr_cpu = [&]() -> array {
-    if (dt == float64) {
-      return make_array(float64);
+  // Create array directly from R data (column-major) using reversed shape
+  // Use float32 for bool to avoid float64 GPU issues
+  array arr_temp = [&]() -> array {
+    if (dt == bool_) {
+      std::vector<float> data_f32(x.begin(), x.end());
+      return array(data_f32.data(), reversed_shape, float32);
+    } else if (dt == float64) {
+      return array(x.begin(), reversed_shape, float64);
     } else if (dt == float32) {
-      return make_array(float32);
+      std::vector<float> data_f32(x.begin(), x.end());
+      return array(data_f32.data(), reversed_shape, float32);
     } else if (dt == complex64) {
-      return make_array(complex64);
-    } else if (dt == bool_) {
-      array float_arr = make_array(float32);
-      return astype(float_arr, bool_);
+      std::vector<complex64_t> data_c64(cx.size());
+      for (R_xlen_t idx = 0; idx < cx.size(); ++idx) {
+        const Rcomplex& val = cx[idx];
+        data_c64[idx] = complex64_t(
+            static_cast<float>(val.r),
+            static_cast<float>(val.i));
+      }
+      return array(data_c64.data(), reversed_shape, complex64);
     } else {
       Rcpp::stop("Unsupported dtype for conversion from numeric");
     }
   }();
 
-  // Move to target device if needed
-  array arr = astype(arr_cpu, dt, dev);
+  // Transpose to correct orientation if multi-dimensional
+  if (ndim > 1) {
+    std::vector<int> perm(ndim);
+    for (size_t i = 0; i < ndim; ++i) {
+      perm[i] = static_cast<int>(ndim - 1 - i);
+    }
+    arr_temp = transpose(arr_temp, perm);
+  }
+
+  // Convert to target dtype and device
+  array arr = astype(arr_temp, dt, dev);
 
   return make_mlx_xptr(std::move(arr));
 }
@@ -452,201 +184,98 @@ SEXP cpp_mlx_to_r(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
+  // Move to CPU if needed
   if (arr.dtype() == float64) {
     arr = astype(arr, float64, Device(Device::cpu));
   }
 
-  // Ensure array is row-contiguous before extracting data
-  // This is important for transposed arrays which may have non-standard strides
-  if (arr.ndim() >= 2) {
-    arr = contiguous(arr);
+  size_t ndim = arr.ndim();
+
+  // Transpose to column-major layout if multi-dimensional
+  if (ndim > 1) {
+    std::vector<int> perm(ndim);
+    for (size_t i = 0; i < ndim; ++i) {
+      perm[i] = static_cast<int>(ndim - 1 - i);
+    }
+    arr = transpose(arr, perm);
   }
 
-  // Evaluate first
+  // Make contiguous and evaluate
+  arr = contiguous(arr);
   eval(arr);
 
-  // Get total size and shape
+  // Get total size
   int total_size = arr.size();
-  const auto& shape = arr.shape();
 
-  // For boolean arrays, return LogicalVector
+  // Extract data based on dtype
   if (arr.dtype() == bool_) {
     LogicalVector result(total_size);
     const bool* data = arr.data<bool>();
-    std::vector<int> dims(shape.begin(), shape.end());
-
-    if (arr.ndim() == 2) {
-      int nrow = shape[0];
-      int ncol = shape[1];
-      for (int i = 0; i < nrow; i++) {
-        for (int j = 0; j < ncol; j++) {
-          result[j * nrow + i] = data[i * ncol + j];
-        }
-      }
-    } else if (arr.ndim() <= 1) {
-      for (int i = 0; i < total_size; ++i) {
-        result[i] = data[i];
-      }
-    } else {
-      reorder_row_major_to_col_major_nd<bool, int>(data, result.begin(), dims);
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = data[i];
     }
     return result;
   }
 
   if (arr.dtype() == int32) {
     IntegerVector result(total_size);
-    std::vector<int> dims(shape.begin(), shape.end());
     const int32_t* data = arr.data<int32_t>();
-
-    if (arr.ndim() == 2) {
-      int nrow = shape[0];
-      int ncol = shape[1];
-      for (int i = 0; i < nrow; ++i) {
-        for (int j = 0; j < ncol; ++j) {
-          result[j * nrow + i] = static_cast<int>(data[i * ncol + j]);
-        }
-      }
-    } else if (arr.ndim() <= 1) {
-      for (int i = 0; i < total_size; ++i) {
-        result[i] = static_cast<int>(data[i]);
-      }
-    } else {
-      reorder_row_major_to_col_major_nd<int32_t, int>(data, result.begin(), dims);
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = static_cast<int>(data[i]);
     }
     return result;
   }
 
   if (arr.dtype() == int64) {
     NumericVector result(total_size);
-    std::vector<int> dims(shape.begin(), shape.end());
     const int64_t* data = arr.data<int64_t>();
-
-    if (arr.ndim() == 2) {
-      int nrow = shape[0];
-      int ncol = shape[1];
-      for (int i = 0; i < nrow; ++i) {
-        for (int j = 0; j < ncol; ++j) {
-          result[j * nrow + i] = static_cast<double>(data[i * ncol + j]);
-        }
-      }
-    } else if (arr.ndim() <= 1) {
-      for (int i = 0; i < total_size; ++i) {
-        result[i] = static_cast<double>(data[i]);
-      }
-    } else {
-      reorder_row_major_to_col_major_nd<int64_t, double>(data, result.begin(), dims);
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = static_cast<double>(data[i]);
     }
     return result;
   }
 
   if (arr.dtype() == uint32) {
     NumericVector result(total_size);
-    std::vector<int> dims(shape.begin(), shape.end());
     const uint32_t* data = arr.data<uint32_t>();
-
-    if (arr.ndim() == 2) {
-      int nrow = shape[0];
-      int ncol = shape[1];
-      for (int i = 0; i < nrow; ++i) {
-        for (int j = 0; j < ncol; ++j) {
-          result[j * nrow + i] = static_cast<double>(data[i * ncol + j]);
-        }
-      }
-    } else if (arr.ndim() <= 1) {
-      for (int i = 0; i < total_size; ++i) {
-        result[i] = static_cast<double>(data[i]);
-      }
-    } else {
-      reorder_row_major_to_col_major_nd<uint32_t, double>(data, result.begin(), dims);
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = static_cast<double>(data[i]);
     }
     return result;
   }
 
   if (arr.dtype() == uint64) {
     NumericVector result(total_size);
-    std::vector<int> dims(shape.begin(), shape.end());
     const uint64_t* data = arr.data<uint64_t>();
-
-    if (arr.ndim() == 2) {
-      int nrow = shape[0];
-      int ncol = shape[1];
-      for (int i = 0; i < nrow; ++i) {
-        for (int j = 0; j < ncol; ++j) {
-          result[j * nrow + i] = static_cast<double>(data[i * ncol + j]);
-        }
-      }
-    } else if (arr.ndim() <= 1) {
-      for (int i = 0; i < total_size; ++i) {
-        result[i] = static_cast<double>(data[i]);
-      }
-    } else {
-      reorder_row_major_to_col_major_nd<uint64_t, double>(data, result.begin(), dims);
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = static_cast<double>(data[i]);
     }
     return result;
   }
 
   if (arr.dtype() == complex64) {
     ComplexVector result(total_size);
-    std::vector<int> dims(shape.begin(), shape.end());
-
     const complex64_t* data = arr.data<complex64_t>();
     Rcomplex* out = reinterpret_cast<Rcomplex*>(result.begin());
-    if (arr.ndim() == 2) {
-      int nrow = shape[0];
-      int ncol = shape[1];
-      reorder_row_major_to_col_major_c64(data, out, nrow, ncol);
-    } else if (arr.ndim() <= 1) {
-      for (int i = 0; i < total_size; ++i) {
-        out[i].r = static_cast<double>(data[i].real());
-        out[i].i = static_cast<double>(data[i].imag());
-      }
-    } else {
-      reorder_row_major_to_col_major_c64_nd(data, out, dims);
+    for (int i = 0; i < total_size; ++i) {
+      out[i].r = static_cast<double>(data[i].real());
+      out[i].i = static_cast<double>(data[i].imag());
     }
     return result;
   }
 
-  // For numeric arrays, return NumericVector
+  // For float32/float64
   NumericVector result(total_size);
-  std::vector<int> dims(shape.begin(), shape.end());
-
-  // Copy data, reordering for layout if needed
-  if (arr.ndim() == 2) {
-    // 2D: reorder from row-major to column-major
-    int nrow = shape[0];
-    int ncol = shape[1];
-    if (arr.dtype() == float64) {
-      const double* data = arr.data<double>();
-      reorder_row_major_to_col_major(data, result.begin(), nrow, ncol);
-    } else if (arr.dtype() == float32) {
-      const float* data = arr.data<float>();
-      reorder_row_major_to_col_major_f32(data, result.begin(), nrow, ncol);
-    } else {
-      Rcpp::stop("Unsupported dtype for conversion to R");
-    }
-  } else if (arr.ndim() <= 1) {
-    // 1D: no reordering needed
-    if (arr.dtype() == float64) {
-      const double* data = arr.data<double>();
-      std::copy(data, data + total_size, result.begin());
-    } else if (arr.dtype() == float32) {
-      const float* data = arr.data<float>();
-      for (int i = 0; i < total_size; ++i) {
-        result[i] = static_cast<double>(data[i]);
-      }
-    } else {
-      Rcpp::stop("Unsupported dtype for conversion to R");
+  if (arr.dtype() == float64) {
+    const double* data = arr.data<double>();
+    std::copy(data, data + total_size, result.begin());
+  } else if (arr.dtype() == float32) {
+    const float* data = arr.data<float>();
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = static_cast<double>(data[i]);
     }
   } else {
-    if (arr.dtype() == float64) {
-      const double* data = arr.data<double>();
-      reorder_row_major_to_col_major_nd<double, double>(data, result.begin(), dims);
-    } else if (arr.dtype() == float32) {
-      const float* data = arr.data<float>();
-      reorder_row_major_to_col_major_nd<float, double>(data, result.begin(), dims);
-    } else {
-      Rcpp::stop("Unsupported dtype for conversion to R");
-    }
+    Rcpp::stop("Unsupported dtype for conversion to R");
   }
 
   return result;
