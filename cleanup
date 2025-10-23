@@ -2,5 +2,22 @@
 
 # Cleanup script for Rmlx
 
+# Remove generated Makevars
 rm -f src/Makevars
+
+# Clean up MLX build artifacts
+if [ -d "src/mlx-src/build" ]; then
+  echo "Removing MLX build directory..."
+  rm -rf src/mlx-src/build
+fi
+
+if [ -d "src/mlx-src/install" ]; then
+  echo "Removing MLX install directory..."
+  rm -rf src/mlx-src/install
+fi
+
+# Remove any CMake cache files
+rm -f src/mlx-src/CMakeCache.txt
+rm -rf src/mlx-src/CMakeFiles
+
 exit 0
