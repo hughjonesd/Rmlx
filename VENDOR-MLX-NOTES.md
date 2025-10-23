@@ -1,6 +1,6 @@
 # Vendoring MLX - Experimental Branch
 
-This branch explores bundling the MLX library source code with the Rmlx package.
+This branch explores bundling the MLX library source code with the Rmlx package, supporting both Metal backend (macOS) and CUDA backend (Linux).
 
 ## What Was Done
 
@@ -8,6 +8,9 @@ This branch explores bundling the MLX library source code with the Rmlx package.
 2. **Added copyright attribution**: Created `inst/COPYRIGHTS` with MLX's MIT license
 3. **Updated DESCRIPTION**: Added Apple Inc. as copyright holder for bundled MLX
 4. **Created configure script**: Builds MLX from source using CMake during package installation
+   - Detects platform (macOS or Linux)
+   - Builds Metal backend on macOS with Apple Silicon
+   - Builds CUDA backend on Linux with NVIDIA GPUs
 5. **Updated cleanup script**: Removes all generated build artifacts
 
 ## Requirements

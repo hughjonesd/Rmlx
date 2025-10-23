@@ -1,30 +1,37 @@
 #!/bin/sh
 
 # Configure script for Rmlx with bundled MLX
+# Supports Metal backend on macOS and CUDA backend on Linux
 
 echo "==============================================="
 echo "Configuring Rmlx with bundled MLX library"
 echo "==============================================="
 
-# Check system requirements
+# Detect platform
+OS=$(uname -s)
+ARCH=$(uname -m)
+
 echo ""
 echo "Checking system requirements..."
+echo "Platform: $OS $ARCH"
 
-# Check for macOS
-if [ "$(uname)" != "Darwin" ]; then
-  echo "ERROR: This package requires macOS"
+# Determine backend based on platform
+if [ "$OS" = "Darwin" ]; then
+  if [ "$ARCH" != "arm64" ]; then
+    echo "ERROR: On macOS, this package requires Apple Silicon (M1 or later)"
+    echo "Detected architecture: $ARCH"
+    exit 1
+  fi
+  BACKEND="metal"
+  echo "✓ macOS with Apple Silicon detected - will build Metal backend"
+elif [ "$OS" = "Linux" ]; then
+  BACKEND="cuda"
+  echo "✓ Linux detected - will build CUDA backend"
+else
+  echo "ERROR: Unsupported platform: $OS"
+  echo "This package supports macOS (Metal) and Linux (CUDA) only"
   exit 1
 fi
-
-# Check for Apple Silicon
-ARCH=$(uname -m)
-if [ "$ARCH" != "arm64" ]; then
-  echo "ERROR: This package requires Apple Silicon (M1 or later)"
-  echo "Detected architecture: $ARCH"
-  exit 1
-fi
-
-echo "✓ Running on macOS with Apple Silicon"
 
 # Check for CMake
 if ! command -v cmake >/dev/null 2>&1; then
@@ -32,9 +39,15 @@ if ! command -v cmake >/dev/null 2>&1; then
   echo "ERROR: CMake not found"
   echo ""
   echo "CMake is required to build the bundled MLX library."
-  echo "Please install CMake:"
-  echo "  brew install cmake"
-  echo "  or download from https://cmake.org/download/"
+  if [ "$OS" = "Darwin" ]; then
+    echo "Please install CMake:"
+    echo "  brew install cmake"
+    echo "  or download from https://cmake.org/download/"
+  else
+    echo "Please install CMake:"
+    echo "  sudo apt-get install cmake"
+    echo "  or download from https://cmake.org/download/"
+  fi
   echo ""
   exit 1
 fi
@@ -50,6 +63,33 @@ if [ "$CMAKE_MAJOR" -lt 3 ] || [ "$CMAKE_MAJOR" -eq 3 -a "$CMAKE_MINOR" -lt 24 ]
   echo "ERROR: CMake 3.24 or later required (found $CMAKE_VERSION)"
   echo "Please upgrade CMake"
   exit 1
+fi
+
+# For CUDA backend, check for CUDA toolkit
+if [ "$BACKEND" = "cuda" ]; then
+  echo ""
+  echo "Checking for CUDA toolkit..."
+
+  if ! command -v nvcc >/dev/null 2>&1; then
+    echo "ERROR: CUDA compiler (nvcc) not found"
+    echo ""
+    echo "CUDA toolkit 12.0 or later is required for GPU acceleration."
+    echo "Please install CUDA toolkit:"
+    echo "  https://developer.nvidia.com/cuda-downloads"
+    echo ""
+    echo "Or set CUDA_HOME environment variable to point to your CUDA installation."
+    exit 1
+  fi
+
+  NVCC_VERSION=$(nvcc --version | grep "release" | sed 's/.*release \([0-9.]*\).*/\1/')
+  echo "✓ CUDA toolkit found: version $NVCC_VERSION"
+
+  # Check CUDA version
+  CUDA_MAJOR=$(echo $NVCC_VERSION | cut -d. -f1)
+  if [ "$CUDA_MAJOR" -lt 12 ]; then
+    echo "WARNING: CUDA 12.0 or later is recommended (found $NVCC_VERSION)"
+    echo "Build may fail or have reduced functionality"
+  fi
 fi
 
 # Get R compiler settings
@@ -91,25 +131,47 @@ cd build || exit 1
 # Configure MLX with CMake
 # Use static library, disable unnecessary components
 echo ""
-echo "Running CMake..."
-cmake .. \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_CXX_COMPILER="$CXX" \
-  -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
-  -DCMAKE_CXX_STANDARD=17 \
-  -DBUILD_SHARED_LIBS=OFF \
-  -DMLX_BUILD_TESTS=OFF \
-  -DMLX_BUILD_EXAMPLES=OFF \
-  -DMLX_BUILD_BENCHMARKS=OFF \
-  -DMLX_BUILD_PYTHON_BINDINGS=OFF \
-  -DMLX_BUILD_METAL=ON \
-  -DMLX_BUILD_CPU=ON \
-  -DCMAKE_INSTALL_PREFIX=../install \
-  || { echo "CMake configuration failed"; cd ../..; exit 1; }
+echo "Running CMake for $BACKEND backend..."
+
+if [ "$BACKEND" = "metal" ]; then
+  # macOS Metal backend
+  cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_COMPILER="$CXX" \
+    -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DMLX_BUILD_TESTS=OFF \
+    -DMLX_BUILD_EXAMPLES=OFF \
+    -DMLX_BUILD_BENCHMARKS=OFF \
+    -DMLX_BUILD_PYTHON_BINDINGS=OFF \
+    -DMLX_BUILD_METAL=ON \
+    -DMLX_BUILD_CPU=ON \
+    -DMLX_BUILD_CUDA=OFF \
+    -DCMAKE_INSTALL_PREFIX=../install \
+    || { echo "CMake configuration failed"; cd ../..; exit 1; }
+elif [ "$BACKEND" = "cuda" ]; then
+  # Linux CUDA backend
+  cmake .. \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_COMPILER="$CXX" \
+    -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+    -DCMAKE_CXX_STANDARD=17 \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DMLX_BUILD_TESTS=OFF \
+    -DMLX_BUILD_EXAMPLES=OFF \
+    -DMLX_BUILD_BENCHMARKS=OFF \
+    -DMLX_BUILD_PYTHON_BINDINGS=OFF \
+    -DMLX_BUILD_METAL=OFF \
+    -DMLX_BUILD_CPU=ON \
+    -DMLX_BUILD_CUDA=ON \
+    -DCMAKE_INSTALL_PREFIX=../install \
+    || { echo "CMake configuration failed"; cd ../..; exit 1; }
+fi
 
 # Build MLX
 echo ""
-echo "Compiling MLX (this may take a few minutes)..."
+echo "Compiling MLX (this may take several minutes)..."
 cmake --build . --config Release --parallel || { echo "MLX build failed"; cd ../..; exit 1; }
 
 # Install to local prefix
@@ -126,13 +188,34 @@ echo "✓ MLX built successfully"
 echo ""
 echo "Generating src/Makevars..."
 
-cat > Makevars <<EOF
+if [ "$BACKEND" = "metal" ]; then
+  # macOS: link against Metal frameworks
+  cat > Makevars <<EOF
 # Generated by configure - do not edit by hand
 
 PKG_CPPFLAGS = -I./mlx-src/install/include -I./mlx-src/mlx
 PKG_LIBS = -L./mlx-src/install/lib -lmlx -framework Metal -framework Foundation -framework QuartzCore -framework Accelerate
 CXX_STD = CXX17
 EOF
+elif [ "$BACKEND" = "cuda" ]; then
+  # Linux: link against CUDA libraries
+  # Find CUDA library path
+  if [ -n "$CUDA_HOME" ]; then
+    CUDA_LIB_DIR="$CUDA_HOME/lib64"
+  elif [ -d "/usr/local/cuda/lib64" ]; then
+    CUDA_LIB_DIR="/usr/local/cuda/lib64"
+  else
+    CUDA_LIB_DIR="/usr/lib/x86_64-linux-gnu"
+  fi
+
+  cat > Makevars <<EOF
+# Generated by configure - do not edit by hand
+
+PKG_CPPFLAGS = -I./mlx-src/install/include -I./mlx-src/mlx
+PKG_LIBS = -L./mlx-src/install/lib -lmlx -L${CUDA_LIB_DIR} -lcudart -lcublas -lcublasLt
+CXX_STD = CXX17
+EOF
+fi
 
 echo "✓ src/Makevars created"
 
@@ -140,6 +223,8 @@ echo ""
 echo "==============================================="
 echo "Configuration successful!"
 echo "==============================================="
+echo ""
+echo "Backend: $BACKEND"
 echo ""
 echo "Next steps:"
 echo "  R CMD INSTALL will compile the package"
