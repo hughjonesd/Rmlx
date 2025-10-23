@@ -189,6 +189,14 @@ cpp_mlx_random_multivariate_normal <- function(mean_, cov_, dim_, dtype_str, dev
     .Call(`_Rmlx_cpp_mlx_random_multivariate_normal`, mean_, cov_, dim_, dtype_str, device_str)
 }
 
+cpp_mlx_random_laplace <- function(dim_, loc, scale, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_laplace`, dim_, loc, scale, dtype_str, device_str)
+}
+
+cpp_mlx_random_categorical <- function(logits_, axis, num_samples) {
+    .Call(`_Rmlx_cpp_mlx_random_categorical`, logits_, axis, num_samples)
+}
+
 cpp_mlx_concat <- function(args_, axis) {
     .Call(`_Rmlx_cpp_mlx_concat`, args_, axis)
 }

@@ -160,3 +160,72 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
   output_shape <- cpp_mlx_shape(ptr)
   new_mlx(ptr, output_shape, dtype, device)
 }
+
+#' Sample from the Laplace distribution on MLX tensors
+#'
+#' @inheritParams mlx_creation_params
+#' @param dtype Desired MLX dtype ("float32" or "float64").
+#' @param loc Location parameter (mean) of the Laplace distribution.
+#' @param scale Scale parameter (diversity) of the Laplace distribution.
+#' @return An `mlx` tensor with Laplace-distributed entries.
+#' @export
+#' @examples
+#' samples <- mlx_rand_laplace(c(2, 3), loc = 0, scale = 1)
+mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
+                             dtype = c("float32", "float64"),
+                             device = mlx_default_device()) {
+  if (length(dim) == 0L) {
+    stop("dim must contain at least one element.", call. = FALSE)
+  }
+  if (!is.numeric(loc) || length(loc) != 1) {
+    stop("loc must be a single numeric value.", call. = FALSE)
+  }
+  if (!is.numeric(scale) || length(scale) != 1 || scale <= 0) {
+    stop("scale must be a single positive numeric value.", call. = FALSE)
+  }
+  dim <- as.integer(dim)
+  dtype <- match.arg(dtype)
+  device <- match.arg(device, c("gpu", "cpu"))
+
+  ptr <- cpp_mlx_random_laplace(dim, loc, scale, dtype, device)
+  new_mlx(ptr, dim, dtype, device)
+}
+
+#' Sample from a categorical distribution on MLX tensors
+#'
+#' Samples indices from categorical distributions. Each row (or slice along the
+#' specified axis) represents a separate categorical distribution over classes.
+#'
+#' @param logits A matrix or `mlx` tensor of log-probabilities. The values don't
+#'   need to be normalized (the function applies softmax internally). For a single
+#'   distribution over K classes, use a 1×K matrix. For multiple independent
+#'   distributions, use an N×K matrix where each row is a distribution.
+#' @param axis The axis along which to sample. Default is -1 (last axis, typically
+#'   the class dimension).
+#' @param num_samples Number of samples to draw from each distribution.
+#' @return An `mlx` tensor of integer indices (0-indexed) sampled from the
+#'   categorical distributions.
+#' @export
+#' @examples
+#' # Single distribution over 3 classes
+#' logits <- matrix(c(0.5, 0.2, 0.3), 1, 3)
+#' samples <- mlx_rand_categorical(logits, num_samples = 10)
+#'
+#' # Multiple distributions
+#' logits <- matrix(c(1, 2, 3,
+#'                    3, 2, 1), nrow = 2, byrow = TRUE)
+#' samples <- mlx_rand_categorical(logits, num_samples = 5)
+mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
+  if (!is.mlx(logits)) {
+    logits <- as_mlx(logits)
+  }
+  axis <- as.integer(axis)
+  num_samples <- as.integer(num_samples)
+  if (num_samples < 1) {
+    stop("num_samples must be at least 1.", call. = FALSE)
+  }
+
+  ptr <- cpp_mlx_random_categorical(logits, axis, num_samples)
+  output_shape <- cpp_mlx_shape(ptr)
+  new_mlx(ptr, output_shape, "int32", logits$device)
+}

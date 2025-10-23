@@ -625,6 +625,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_random_laplace
+SEXP cpp_mlx_random_laplace(SEXP dim_, double loc, double scale, std::string dtype_str, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_random_laplace(SEXP dim_SEXP, SEXP locSEXP, SEXP scaleSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type dim_(dim_SEXP);
+    Rcpp::traits::input_parameter< double >::type loc(locSEXP);
+    Rcpp::traits::input_parameter< double >::type scale(scaleSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_random_laplace(dim_, loc, scale, dtype_str, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_random_categorical
+SEXP cpp_mlx_random_categorical(SEXP logits_, int axis, int num_samples);
+RcppExport SEXP _Rmlx_cpp_mlx_random_categorical(SEXP logits_SEXP, SEXP axisSEXP, SEXP num_samplesSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type logits_(logits_SEXP);
+    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
+    Rcpp::traits::input_parameter< int >::type num_samples(num_samplesSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_random_categorical(logits_, axis, num_samples));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_concat
 SEXP cpp_mlx_concat(SEXP args_, int axis);
 RcppExport SEXP _Rmlx_cpp_mlx_concat(SEXP args_SEXP, SEXP axisSEXP) {
@@ -1059,6 +1087,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_random_gumbel", (DL_FUNC) &_Rmlx_cpp_mlx_random_gumbel, 3},
     {"_Rmlx_cpp_mlx_random_truncated_normal", (DL_FUNC) &_Rmlx_cpp_mlx_random_truncated_normal, 5},
     {"_Rmlx_cpp_mlx_random_multivariate_normal", (DL_FUNC) &_Rmlx_cpp_mlx_random_multivariate_normal, 5},
+    {"_Rmlx_cpp_mlx_random_laplace", (DL_FUNC) &_Rmlx_cpp_mlx_random_laplace, 5},
+    {"_Rmlx_cpp_mlx_random_categorical", (DL_FUNC) &_Rmlx_cpp_mlx_random_categorical, 3},
     {"_Rmlx_cpp_mlx_concat", (DL_FUNC) &_Rmlx_cpp_mlx_concat, 2},
     {"_Rmlx_cpp_mlx_stack", (DL_FUNC) &_Rmlx_cpp_mlx_stack, 3},
     {"_Rmlx_cpp_mlx_squeeze", (DL_FUNC) &_Rmlx_cpp_mlx_squeeze, 2},

@@ -100,3 +100,52 @@ test_that("mlx_rand_multivariate_normal works with non-identity covariance", {
   mvn_vals <- as.vector(as.matrix(mx_mvn))
   expect_true(all(is.finite(mvn_vals)))
 })
+
+test_that("mlx_rand_laplace generates correct shape and values", {
+  set.seed(123)
+  shape <- c(256L, 256L)
+  mx_laplace <- mlx_rand_laplace(shape, loc = 0, scale = 1)
+
+  expect_s3_class(mx_laplace, "mlx")
+  expect_equal(mx_laplace$dim, shape)
+  laplace_vals <- as.matrix(mx_laplace)
+  expect_true(all(is.finite(laplace_vals)))
+  # Mean should be close to loc
+  expect_true(abs(mean(laplace_vals) - 0) < 0.1)
+})
+
+test_that("mlx_rand_laplace works with different parameters", {
+  set.seed(123)
+  mx_laplace <- mlx_rand_laplace(c(100L, 100L), loc = 5, scale = 2)
+
+  expect_s3_class(mx_laplace, "mlx")
+  laplace_vals <- as.matrix(mx_laplace)
+  expect_true(all(is.finite(laplace_vals)))
+  # Mean should be close to loc
+  expect_true(abs(mean(laplace_vals) - 5) < 0.3)
+})
+
+test_that("mlx_rand_categorical generates valid indices", {
+  set.seed(123)
+  # Simple categorical with 3 classes
+  logits <- as_mlx(matrix(c(0.5, 0.2, 0.3), 1, 3))
+  samples <- mlx_rand_categorical(logits, num_samples = 100)
+
+  expect_s3_class(samples, "mlx")
+  expect_equal(samples$dtype, "int32")
+  sample_vals <- as.vector(as.matrix(samples))
+  # Indices should be in valid range [0, 2] for 3 classes
+  expect_true(all(sample_vals >= 0 & sample_vals < 3))
+})
+
+test_that("mlx_rand_categorical works with multiple rows", {
+  set.seed(123)
+  # Multiple categorical distributions
+  logits <- as_mlx(matrix(c(1, 2, 3, 3, 2, 1), 2, 3, byrow = TRUE))
+  samples <- mlx_rand_categorical(logits, axis = -1L, num_samples = 10)
+
+  expect_s3_class(samples, "mlx")
+  sample_vals <- as.matrix(samples)
+  # Indices should be in valid range [0, 2] for 3 classes
+  expect_true(all(sample_vals >= 0 & sample_vals < 3))
+})

@@ -1003,6 +1003,32 @@ SEXP cpp_mlx_random_multivariate_normal(SEXP mean_, SEXP cov_, SEXP dim_,
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_random_laplace(SEXP dim_, double loc, double scale,
+                            std::string dtype_str, std::string device_str) {
+  IntegerVector dim(dim_);
+  Shape shape(dim.begin(), dim.end());
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  if (dtype != float32 && dtype != float64) {
+    Rcpp::stop("Random laplace currently supports dtype = \"float32\" or \"float64\" only.");
+  }
+  StreamOrDevice dev_input = string_to_device(device_str);
+  array result = mlx::core::random::laplace(shape, dtype, static_cast<float>(loc), static_cast<float>(scale), std::nullopt, dev_input);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_categorical(SEXP logits_, int axis, int num_samples) {
+  List logits_obj(logits_);
+  array logits_arr = get_mlx_wrapper(logits_obj["ptr"])->get();
+  std::string device_str = Rcpp::as<std::string>(logits_obj["device"]);
+
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = mlx::core::random::categorical(logits_arr, axis, num_samples, std::nullopt, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_concat(SEXP args_, int axis) {
   List args(args_);
   if (args.size() == 0) {
