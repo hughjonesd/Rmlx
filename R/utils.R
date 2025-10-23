@@ -1,13 +1,10 @@
-#' Parameters for MLX tensor creation functions
-#'
+
 #' @param dim Integer vector giving the tensor shape.
 #' @param dtype MLX dtype. Supported types vary by function (see Details).
 #' @param device Target device ("gpu" or "cpu").
 #' @name mlx_creation_params
 NULL
 
-#' Parameters for MLX array operation functions
-#'
 #' @param x An `mlx` array or object coercible to `mlx` (varies by function).
 #' @param device Target device ("gpu" or "cpu").
 #' @name mlx_array_params

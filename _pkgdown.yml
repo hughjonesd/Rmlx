@@ -38,9 +38,7 @@ reference:
       - mlx_identity
       - mlx_arange
       - mlx_linspace
-      - mlx_rand_uniform
-      - mlx_rand_normal
-      - mlx_rand_bernoulli
+      - starts_with("mlx_rand")
   - title: Shape & Indexing
     contents:
       - mlx_stack

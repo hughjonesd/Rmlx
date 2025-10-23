@@ -1,6 +1,12 @@
 
 # Rmlx
 
+<!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/hughjonesd/Rmlx/graph/badge.svg)](https://app.codecov.io/gh/hughjonesd/Rmlx)
+<!-- badges: end -->
+
 R interface to Apple’s MLX (Machine Learning eXchange) library for
 GPU-accelerated array operations on Apple Silicon.
 
@@ -159,6 +165,21 @@ random_tensor
 #>   (262144 elements, not shown)
 ```
 
+### Data Transformations
+
+Common ranking helpers are available under the `mlx_*` prefix; note that
+MLX indices are zero-based.
+
+``` r
+scores <- as_mlx(c(0.1, 0.7, 0.4, 0.9))
+as.matrix(mlx_sort(scores))
+#> [1] 0.1 0.4 0.7 0.9
+as.matrix(mlx_topk(scores, 2))
+#> [1] 0.7 0.9
+as.matrix(mlx_argmax(scores))
+#> [1] 3
+```
+
 ``` r
 qr_res <- qr(a)
 svd_res <- svd(a)
@@ -200,10 +221,10 @@ grads <- mlx_grad(loss, w, x, y)
 # Inspect gradient
 as.matrix(grads[[1]])
 #>             [,1]
-#> [1,] -0.53908861
-#> [2,]  0.03495799
-#> [3,]  0.31788656
-#> [4,]  0.08960838
+#> [1,] 0.014563746
+#> [2,] 1.036490083
+#> [3,] 1.091995597
+#> [4,] 0.007043276
 
 # Simple SGD loop
 model <- mlx_linear(4, 1, bias = FALSE)
@@ -224,7 +245,7 @@ mean((final_loss - y) * (final_loss - y))
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 0.03953141
+#> [1] 0.3989661
 ```
 
 ### Reductions
@@ -289,17 +310,28 @@ x[1:5, 1:5]
 #> [4,]    4   14   24   34   44
 #> [5,]    5   15   25   35   45
 x[1, ]
-#> mlx array [10]
+#> mlx array [1 x 10]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#>  [1]  1 11 21 31 41 51 61 71 81 91
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+#> [1,]    1   11   21   31   41   51   61   71   81    91
 x[, 1]
-#> mlx array [10]
+#> mlx array [10 x 1]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#>  [1]  1  2  3  4  5  6  7  8  9 10
+#>       [,1]
+#>  [1,]    1
+#>  [2,]    2
+#>  [3,]    3
+#>  [4,]    4
+#>  [5,]    5
+#>  [6,]    6
+#>  [7,]    7
+#>  [8,]    8
+#>  [9,]    9
+#> [10,]   10
 ```
 
 ### Device Management
