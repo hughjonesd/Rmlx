@@ -32,3 +32,6 @@ Sample from the Laplace distribution on MLX tensors
 \examples{
 samples <- mlx_rand_laplace(c(2, 3), loc = 0, scale = 1)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.laplace}
+}

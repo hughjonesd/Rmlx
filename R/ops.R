@@ -169,6 +169,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #'
 #' @param x,y `mlx` tensors or objects coercible with [as_mlx()].
 #' @return An `mlx` tensor containing the elementwise minimum.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum}
 #' @export
 #' @examples
 #' \dontrun{
@@ -196,6 +197,7 @@ mlx_minimum <- function(x, y) {
 #'
 #' @inheritParams mlx_minimum
 #' @return An `mlx` tensor containing the elementwise maximum.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum}
 #' @export
 #' @examples
 #' \dontrun{
@@ -222,6 +224,7 @@ mlx_maximum <- function(x, y) {
 #' @param x An `mlx` tensor or coercible object.
 #' @param min,max Scalar bounds. Use `NULL` to leave a bound open.
 #' @return An `mlx` tensor with values clipped to `[min, max]`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.clip}
 #' @export
 #' @examples
 #' \dontrun{

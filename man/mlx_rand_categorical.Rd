@@ -35,3 +35,6 @@ logits <- matrix(c(1, 2, 3,
                    3, 2, 1), nrow = 2, byrow = TRUE)
 samples <- mlx_rand_categorical(logits, num_samples = 5)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.categorical}
+}

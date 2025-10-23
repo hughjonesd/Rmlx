@@ -27,3 +27,6 @@ a <- as_mlx(matrix(1:4, 2, 2))
 b <- as_mlx(matrix(5:8, 2, 2))
 mlx_where(cond, a, b)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.where}
+}

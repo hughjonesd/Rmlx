@@ -22,3 +22,6 @@ b <- as_mlx(matrix(c(4, 3, 2, 1), 2, 2))
 mlx_minimum(a, b)
 }
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum}
+}

@@ -5,6 +5,7 @@
 #'   computes the matrix inverse.
 #' @param ... Additional arguments (for compatibility with base::solve)
 #' @return An `mlx` object containing the solution
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve}
 #' @export
 #' @method solve mlx
 #' @examples

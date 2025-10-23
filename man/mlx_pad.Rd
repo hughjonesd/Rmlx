@@ -56,3 +56,8 @@ padded_cols <- mlx_pad(x, pad_width = c(0, 1), axes = 2)
 parts <- mlx_split(x, sections = 2, axis = 1)
 custom_parts <- mlx_split(x, sections = c(1), axis = 2)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad}
+
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split}
+}

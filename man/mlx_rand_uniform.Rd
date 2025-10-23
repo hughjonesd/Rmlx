@@ -32,3 +32,6 @@ Sample from a uniform distribution on MLX tensors
 \examples{
 noise <- mlx_rand_uniform(c(2, 2), min = -1, max = 1)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.uniform}
+}

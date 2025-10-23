@@ -21,3 +21,6 @@ Tile a tensor
 x <- as_mlx(matrix(1:4, 2, 2))
 mlx_tile(x, reps = c(1, 2))
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tile}
+}

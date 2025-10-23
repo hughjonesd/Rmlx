@@ -25,3 +25,6 @@ a <- as_mlx(matrix(c(3, 1, 1, 2), 2, 2))
 b <- as_mlx(c(9, 8))
 solve(a, b)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve}
+}

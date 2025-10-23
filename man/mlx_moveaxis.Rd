@@ -43,3 +43,6 @@ x <- as_mlx(array(1:8, dim = c(2, 2, 2)))
 moved <- mlx_moveaxis(x, source = 1, destination = 3)
 permuted <- aperm(x, c(2, 1, 3))
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.moveaxis}
+}

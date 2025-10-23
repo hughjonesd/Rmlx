@@ -44,6 +44,7 @@ NULL
 #' @param ... One or more tensors (or a single list of tensors) coercible to `mlx`.
 #' @param axis Position of the new axis (1-indexed, negative values count from the end).
 #' @return An `mlx` tensor with one additional dimension.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.stack}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -73,6 +74,7 @@ mlx_stack <- function(..., axis = 1L) {
 #' @param axis Optional integer vector of axes (1-indexed) to remove. When `NULL`
 #'   all axes of length one are removed.
 #' @return An `mlx` tensor with the selected axes removed.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze}
 #' @export
 #' @examples
 #' x <- as_mlx(array(1:4, dim = c(1, 2, 2, 1)))
@@ -95,6 +97,7 @@ mlx_squeeze <- function(x, axis = NULL) {
 #' @param axis Integer vector of axis positions (1-indexed) where new singleton
 #'   dimensions should be inserted.
 #' @return An `mlx` tensor with additional dimensions of length one.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.expand_dims}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -113,6 +116,7 @@ mlx_expand_dims <- function(x, axis) {
 #' @param axis Optional axis along which to repeat. When `NULL`, the tensor is
 #'   flattened before repetition (matching NumPy semantics).
 #' @return An `mlx` tensor with repeated values.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.repeat}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -138,6 +142,7 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
 #' @param x An `mlx` tensor.
 #' @param reps Integer vector giving the number of repetitions for each axis.
 #' @return An `mlx` tensor with tiled content.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tile}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -159,6 +164,7 @@ mlx_tile <- function(x, reps) {
 #' @param axis Optional axis (or axes) along which elements are shifted.
 #'   When `NULL`, the tensor is flattened and shifted.
 #' @return An `mlx` tensor with elements circularly shifted.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.roll}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -206,6 +212,7 @@ mlx_roll <- function(x, shift, axis = NULL) {
 #' @param axis Axis (1-indexed, negatives count from the end) to operate on.
 #' @return For `mlx_pad()`, an `mlx` tensor; for `mlx_split()`, a list of `mlx`
 #'   tensors.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -258,6 +265,7 @@ mlx_pad <- function(x,
 }
 
 #' @rdname mlx_pad
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split}
 #' @export
 mlx_split <- function(x, sections, axis = 1L) {
   x <- if (is.mlx(x)) x else as_mlx(x)
@@ -378,6 +386,7 @@ mlx_split <- function(x, sections, axis = 1L) {
 #'   supported for MLX tensors.
 #' @param ... Additional arguments accepted for compatibility; ignored.
 #' @return An `mlx` tensor with axes permuted.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.moveaxis}
 #' @export
 #' @examples
 #' x <- as_mlx(array(1:8, dim = c(2, 2, 2)))
@@ -461,6 +470,7 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
 #' @return An `mlx` tensor where elements are drawn from `x` when
 #'   `condition` is `TRUE`, otherwise from `y`.
 #' @details Behaves like [ifelse()] for tensors, but evaluates both branches.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.where}
 #' @export
 #' @examples
 #' cond <- as_mlx(matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2))

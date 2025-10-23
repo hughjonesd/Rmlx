@@ -23,3 +23,6 @@ x <- as_mlx(array(1:4, dim = c(1, 2, 2, 1)))
 mlx_squeeze(x)
 mlx_squeeze(x, axis = 1)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze}
+}

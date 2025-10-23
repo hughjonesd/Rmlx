@@ -33,3 +33,6 @@ perm_mat <- mlx_rand_permutation(mat)
 # Permute columns instead
 perm_cols <- mlx_rand_permutation(mat, axis = 1)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.permutation}
+}

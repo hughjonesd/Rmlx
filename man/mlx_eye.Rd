@@ -34,3 +34,6 @@ Identity-like matrices on MLX devices
 eye <- mlx_eye(3)
 upper_eye <- mlx_eye(3, k = 1)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eye}
+}

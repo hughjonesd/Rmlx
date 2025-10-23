@@ -24,3 +24,6 @@ Repeat tensor elements
 x <- as_mlx(matrix(1:4, 2, 2))
 mlx_repeat(x, repeats = 2, axis = 2)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.repeat}
+}

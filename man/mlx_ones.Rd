@@ -22,3 +22,6 @@ Create tensors of ones on MLX devices
 \examples{
 ones <- mlx_ones(c(2, 2), dtype = "float64", device = "cpu")
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones}
+}

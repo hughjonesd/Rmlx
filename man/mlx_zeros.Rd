@@ -22,3 +22,6 @@ Create tensors of zeros on MLX devices
 \examples{
 zeros <- mlx_zeros(c(2, 3))
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros}
+}
