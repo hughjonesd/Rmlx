@@ -2,12 +2,13 @@
 % Please edit documentation in R/utils.R
 \name{mlx_array_params}
 \alias{mlx_array_params}
-\title{Parameters for MLX array operation functions}
+\title{Roxygen parameters for arrays}
 \arguments{
 \item{x}{An \code{mlx} array or object coercible to \code{mlx} (varies by function).}
 
 \item{device}{Target device ("gpu" or "cpu").}
 }
 \description{
-Parameters for MLX array operation functions
+Roxygen parameters for arrays
 }
+\keyword{internal}

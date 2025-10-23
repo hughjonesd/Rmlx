@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{mlx_creation_params}
 \alias{mlx_creation_params}
-\title{Parameters for MLX tensor creation functions}
+\title{Roxygen parameters for mlx creation}
 \arguments{
 \item{dim}{Integer vector giving the tensor shape.}
 
@@ -11,5 +11,6 @@
 \item{device}{Target device ("gpu" or "cpu").}
 }
 \description{
-Parameters for MLX tensor creation functions
+Roxygen parameters for mlx creation
 }
+\keyword{internal}

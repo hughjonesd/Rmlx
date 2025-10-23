@@ -1,13 +1,19 @@
 
+#' Roxygen parameters for mlx creation
+#'
 #' @param dim Integer vector giving the tensor shape.
 #' @param dtype MLX dtype. Supported types vary by function (see Details).
 #' @param device Target device ("gpu" or "cpu").
 #' @name mlx_creation_params
+#' @keywords internal
 NULL
 
+#' Roxygen parameters for arrays
+#'
 #' @param x An `mlx` array or object coercible to `mlx` (varies by function).
 #' @param device Target device ("gpu" or "cpu").
 #' @name mlx_array_params
+#' @keywords internal
 NULL
 
 #' Print MLX array
