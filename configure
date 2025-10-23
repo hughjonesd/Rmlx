@@ -1,82 +1,148 @@
 #!/bin/sh
 
-# Configure script for Rmlx: detect MLX headers and libraries
+# Configure script for Rmlx with bundled MLX
 
-echo "Checking for MLX (Apple Machine Learning eXchange)..."
+echo "==============================================="
+echo "Configuring Rmlx with bundled MLX library"
+echo "==============================================="
 
-# Allow environment variable overrides
-MLX_INCLUDE=${MLX_INCLUDE:-""}
-MLX_LIB_DIR=${MLX_LIB_DIR:-""}
-MLX_LIBS=${MLX_LIBS:-"-lmlx"}
+# Check system requirements
+echo ""
+echo "Checking system requirements..."
 
-# Search paths for headers if not specified
-if [ -z "$MLX_INCLUDE" ]; then
-  for dir in \
-    /opt/homebrew/include \
-    /usr/local/include \
-    "$(xcrun --show-sdk-path 2>/dev/null)/usr/include"
-  do
-    if [ -d "$dir" ] && [ -f "$dir/mlx/mlx.h" ]; then
-      MLX_INCLUDE="$dir"
-      echo "Found MLX headers in: $MLX_INCLUDE"
-      break
-    fi
-  done
+# Check for macOS
+if [ "$(uname)" != "Darwin" ]; then
+  echo "ERROR: This package requires macOS"
+  exit 1
 fi
 
-# Search paths for libraries if not specified
-if [ -z "$MLX_LIB_DIR" ]; then
-  for dir in \
-    /opt/homebrew/lib \
-    /usr/local/lib
-  do
-    if [ -d "$dir" ] && [ -f "$dir/libmlx.dylib" -o -f "$dir/libmlx.a" ]; then
-      MLX_LIB_DIR="$dir"
-      echo "Found MLX library in: $MLX_LIB_DIR"
-      break
-    fi
-  done
+# Check for Apple Silicon
+ARCH=$(uname -m)
+if [ "$ARCH" != "arm64" ]; then
+  echo "ERROR: This package requires Apple Silicon (M1 or later)"
+  echo "Detected architecture: $ARCH"
+  exit 1
 fi
 
-# Check if we found everything
-if [ -z "$MLX_INCLUDE" ]; then
+echo "✓ Running on macOS with Apple Silicon"
+
+# Check for CMake
+if ! command -v cmake >/dev/null 2>&1; then
   echo ""
-  echo "ERROR: MLX headers not found!"
+  echo "ERROR: CMake not found"
   echo ""
-  echo "MLX (Apple Machine Learning eXchange) is required to build this package."
-  echo "This package is designed for macOS on Apple Silicon."
-  echo ""
-  echo "To install MLX, you can:"
-  echo "  1. Use Homebrew: brew install mlx"
-  echo "  2. Build from source: https://github.com/ml-explore/mlx"
-  echo ""
-  echo "Or set environment variables:"
-  echo "  MLX_INCLUDE=/path/to/mlx/include"
-  echo "  MLX_LIB_DIR=/path/to/mlx/lib"
+  echo "CMake is required to build the bundled MLX library."
+  echo "Please install CMake:"
+  echo "  brew install cmake"
+  echo "  or download from https://cmake.org/download/"
   echo ""
   exit 1
 fi
 
-if [ -z "$MLX_LIB_DIR" ]; then
+CMAKE_VERSION=$(cmake --version | head -n1 | sed 's/cmake version //')
+echo "✓ CMake found: version $CMAKE_VERSION"
+
+# Check CMake version
+CMAKE_MAJOR=$(echo $CMAKE_VERSION | cut -d. -f1)
+CMAKE_MINOR=$(echo $CMAKE_VERSION | cut -d. -f2)
+if [ "$CMAKE_MAJOR" -lt 3 ] || [ "$CMAKE_MAJOR" -eq 3 -a "$CMAKE_MINOR" -lt 24 ]; then
   echo ""
-  echo "ERROR: MLX library not found!"
-  echo ""
-  echo "MLX (Apple Machine Learning eXchange) library is required."
-  echo "Please install MLX or set MLX_LIB_DIR environment variable."
-  echo ""
+  echo "ERROR: CMake 3.24 or later required (found $CMAKE_VERSION)"
+  echo "Please upgrade CMake"
   exit 1
 fi
 
-# Write src/Makevars
-echo "Writing src/Makevars..."
-cat > src/Makevars <<EOF
-PKG_CPPFLAGS = -I${MLX_INCLUDE}
-PKG_LIBS = -L${MLX_LIB_DIR} ${MLX_LIBS}
+# Get R compiler settings
+echo ""
+echo "Getting R compiler configuration..."
+
+# Find R
+if [ -z "$R_HOME" ]; then
+  R_HOME=$(R RHOME)
+fi
+
+CXX_FULL=$(${R_HOME}/bin/R CMD config CXX17)
+if [ -z "$CXX_FULL" ]; then
+  CXX_FULL=$(${R_HOME}/bin/R CMD config CXX)
+fi
+CXXFLAGS=$(${R_HOME}/bin/R CMD config CXX17FLAGS)
+if [ -z "$CXXFLAGS" ]; then
+  CXXFLAGS=$(${R_HOME}/bin/R CMD config CXXFLAGS)
+fi
+
+# Extract just the compiler binary (first word)
+CXX=$(echo $CXX_FULL | awk '{print $1}')
+
+echo "C++ compiler: $CXX"
+echo "C++ flags: $CXXFLAGS"
+
+# Build bundled MLX
+echo ""
+echo "==============================================="
+echo "Building bundled MLX library..."
+echo "==============================================="
+
+cd src/mlx-src || exit 1
+
+# Create build directory
+mkdir -p build
+cd build || exit 1
+
+# Configure MLX with CMake
+# Use static library, disable unnecessary components
+echo ""
+echo "Running CMake..."
+cmake .. \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_CXX_COMPILER="$CXX" \
+  -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+  -DCMAKE_CXX_STANDARD=17 \
+  -DBUILD_SHARED_LIBS=OFF \
+  -DMLX_BUILD_TESTS=OFF \
+  -DMLX_BUILD_EXAMPLES=OFF \
+  -DMLX_BUILD_BENCHMARKS=OFF \
+  -DMLX_BUILD_PYTHON_BINDINGS=OFF \
+  -DMLX_BUILD_METAL=ON \
+  -DMLX_BUILD_CPU=ON \
+  -DCMAKE_INSTALL_PREFIX=../install \
+  || { echo "CMake configuration failed"; cd ../..; exit 1; }
+
+# Build MLX
+echo ""
+echo "Compiling MLX (this may take a few minutes)..."
+cmake --build . --config Release --parallel || { echo "MLX build failed"; cd ../..; exit 1; }
+
+# Install to local prefix
+echo ""
+echo "Installing MLX locally..."
+cmake --install . || { echo "MLX install failed"; cd ../..; exit 1; }
+
+cd ../.. || exit 1
+
+echo ""
+echo "✓ MLX built successfully"
+
+# Create src/Makevars with paths to built MLX
+echo ""
+echo "Generating src/Makevars..."
+
+cat > Makevars <<EOF
+# Generated by configure - do not edit by hand
+
+PKG_CPPFLAGS = -I./mlx-src/install/include -I./mlx-src/mlx
+PKG_LIBS = -L./mlx-src/install/lib -lmlx -framework Metal -framework Foundation -framework QuartzCore -framework Accelerate
+CXX_STD = CXX17
 EOF
 
+echo "✓ src/Makevars created"
+
+echo ""
+echo "==============================================="
 echo "Configuration successful!"
-echo "  MLX_INCLUDE: $MLX_INCLUDE"
-echo "  MLX_LIB_DIR: $MLX_LIB_DIR"
-echo "  MLX_LIBS: $MLX_LIBS"
+echo "==============================================="
+echo ""
+echo "Next steps:"
+echo "  R CMD INSTALL will compile the package"
+echo ""
 
 exit 0
