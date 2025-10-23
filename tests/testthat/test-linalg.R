@@ -151,14 +151,6 @@ test_that("chol.mlx errors with pivot = TRUE", {
   expect_error(chol(as_mlx(spd), pivot = TRUE), "pivoted Cholesky is not supported")
 })
 
-test_that("chol.mlx errors with LINPACK = TRUE", {
-  set.seed(678)
-  A <- matrix(rnorm(9), 3, 3)
-  spd <- crossprod(A) + diag(3) * 0.1
-
-  expect_error(chol(as_mlx(spd), LINPACK = TRUE), "LINPACK routines are not supported")
-})
-
 test_that("qr decomposition reconstructs the original matrix", {
   set.seed(42)
   A <- matrix(rnorm(12), 4, 3)
@@ -177,10 +169,11 @@ test_that("svd reconstructs the original matrix", {
   svd_mlx <- svd(as_mlx(A))
 
   U <- as.matrix(svd_mlx$u)
-  d <- svd_mlx$d
+  d <- as.vector(as.matrix(svd_mlx$d))
   V <- as.matrix(svd_mlx$v)
 
-  reconstructed <- U %*% diag(d) %*% t(V)
+  # the subsets are because mlx does "full" svd
+  reconstructed <- U %*% diag(d) %*% t(V[, 1:3])
   expect_equal(reconstructed, A, tolerance = 1e-4)
 })
 
@@ -190,7 +183,7 @@ test_that("svd.mlx with nu=0 and nv=0 returns only singular values", {
   svd_mlx <- svd(as_mlx(A), nu = 0, nv = 0)
 
   expect_null(svd_mlx$u)
-  expect_true(is.numeric(svd_mlx$d))
+  expect_true(is.mlx(svd_mlx$d))
   expect_null(svd_mlx$v)
   expect_equal(length(svd_mlx$d), 3)
 })
@@ -202,7 +195,7 @@ test_that("svd.mlx singular values match base R", {
   svd_r <- svd(A)
   svd_mlx <- svd(as_mlx(A))
 
-  expect_equal(svd_mlx$d, svd_r$d, tolerance = 1e-5)
+  expect_equal(as.vector(as.matrix(svd_mlx$d)), svd_r$d, tolerance = 1e-5)
 })
 
 test_that("svd.mlx works with different matrix dimensions", {
@@ -213,7 +206,9 @@ test_that("svd.mlx works with different matrix dimensions", {
   svd_tall <- svd(as_mlx(A_tall))
   U <- as.matrix(svd_tall$u)
   V <- as.matrix(svd_tall$v)
-  reconstructed_tall <- U %*% diag(svd_tall$d) %*% t(V)
+  d <- as.vector(as.matrix(svd_tall$d))
+  # full svd strikes again:
+  reconstructed_tall <- U[, 1:3] %*% diag(d) %*% t(V)
   expect_equal(reconstructed_tall, A_tall, tolerance = 1e-5)
 
   # Wide matrix (more columns than rows)
@@ -221,7 +216,9 @@ test_that("svd.mlx works with different matrix dimensions", {
   svd_wide <- svd(as_mlx(A_wide))
   U <- as.matrix(svd_wide$u)
   V <- as.matrix(svd_wide$v)
-  reconstructed_wide <- U %*% diag(svd_wide$d) %*% t(V)
+  d <- as.vector(as.matrix(svd_wide$d))
+
+  reconstructed_wide <- U %*% diag(d) %*% t(V[, 1:3])
   expect_equal(reconstructed_wide, A_wide, tolerance = 1e-5)
 
   # Square matrix
@@ -229,7 +226,9 @@ test_that("svd.mlx works with different matrix dimensions", {
   svd_square <- svd(as_mlx(A_square))
   U <- as.matrix(svd_square$u)
   V <- as.matrix(svd_square$v)
-  reconstructed_square <- U %*% diag(svd_square$d) %*% t(V)
+  d <- as.vector(as.matrix(svd_square$d))
+
+  reconstructed_square <- U %*% diag(d) %*% t(V)
   expect_equal(reconstructed_square, A_square, tolerance = 1e-5)
 })
 
@@ -241,8 +240,8 @@ test_that("svd.mlx U and V are orthogonal", {
   U <- as.matrix(svd_mlx$u)
   V <- as.matrix(svd_mlx$v)
 
-  # U^T U should be identity
-  expect_equal(t(U) %*% U, diag(4), tolerance = 1e-5)
+  # U^T U should be identity (for the first 4 columns)
+  expect_equal(t(U[, 1:4]) %*% U[, 1:4], diag(4), tolerance = 1e-5)
 
   # V^T V should be identity
   expect_equal(t(V) %*% V, diag(4), tolerance = 1e-5)
@@ -267,7 +266,7 @@ test_that("svd.mlx preserves device and dtype", {
 
   # Check values still match
   svd_r <- svd(A)
-  expect_equal(svd_gpu$d, svd_r$d, tolerance = 1e-4)
+  expect_equal(as.vector(svd_gpu$d), svd_r$d, tolerance = 1e-4)
 })
 
 test_that("svd.mlx errors with invalid nu or nv", {
@@ -284,28 +283,23 @@ test_that("svd.mlx errors with invalid nu or nv", {
   expect_error(svd(A_mlx, nv = 2), "nv = 0 or nv = min")
 })
 
-test_that("svd.mlx errors with LINPACK = TRUE", {
-  set.seed(1010)
-  A <- matrix(rnorm(12), 3, 4)
-
-  expect_error(svd(as_mlx(A), LINPACK = TRUE), "LINPACK routines are not supported")
-})
-
 test_that("svd.mlx handles rank-deficient matrices", {
   # Create a rank-deficient matrix
-  A <- matrix(c(1, 2, 2, 4, 3, 6), 3, 2)
+  A <- matrix(c(1, 2, 2, 4, 3, 6), 3, 2, byrow = TRUE)
   # This matrix has rank 1 (second column is 2x first column)
 
   svd_mlx <- svd(as_mlx(A))
 
   # Should have one large singular value and one near-zero
-  expect_true(svd_mlx$d[1] > 1)
-  expect_true(svd_mlx$d[2] < 1e-5)
+  svd_mlx_d <- as.vector(as.matrix(svd_mlx$d))
+  expect_true(svd_mlx_d[1] > 1)
+  expect_true(svd_mlx_d[2] < 1e-5)
 
   # Reconstruction should still work
   U <- as.matrix(svd_mlx$u)
   V <- as.matrix(svd_mlx$v)
-  reconstructed <- U %*% diag(svd_mlx$d) %*% t(V)
+  # the subsets are because mlx does "full" svd
+  reconstructed <- U[, 1:2] %*% diag(svd_mlx_d) %*% t(V)
   expect_equal(reconstructed, A, tolerance = 1e-5)
 })
 

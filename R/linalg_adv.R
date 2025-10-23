@@ -66,8 +66,18 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   )
 }
 
+#' @export
+svd <- function(x, ...) {
+  UseMethod("svd")
+}
+
+#' @export
+svd.default <- base::svd
+
 #' Singular value decomposition for MLX tensors
 #'
+#' Note that mlx's svd returns "full" SVD, with U and V' both square matrices.
+#' This is different from R's implementation.
 #'
 #' @param x An `mlx` matrix.
 #' @param nu Number of left singular vectors to return (0 or `min(dim(x))`).

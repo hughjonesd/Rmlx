@@ -142,6 +142,23 @@ mlx_identity <- function(n,
   .mlx_wrap_result(ptr, device)
 }
 
+
+#' @export
+#' @rdname
+diag <- function(x, ...) {
+  UseMethod("diag")
+}
+
+#' @export
+diag.default <- base::diag
+
+
+#' @export
+#'
+diag.mlx <- function(x, ...) {
+  # TODO call mlx.core.diagonal
+}
+
 #' Numerical ranges on MLX devices
 #'
 #' `mlx_arange()` mirrors `base::seq()` with MLX tensors: it creates evenly spaced values

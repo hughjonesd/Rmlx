@@ -19,7 +19,8 @@
 A list with components \code{d}, \code{u}, and \code{v}.
 }
 \description{
-Singular value decomposition for MLX tensors
+Note that mlx's svd returns "full" SVD, with U and V' both square matrices.
+This is different from R's implementation.
 }
 \examples{
 x <- as_mlx(matrix(c(1, 0, 0, 2), 2, 2))
