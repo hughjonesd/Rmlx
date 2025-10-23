@@ -216,3 +216,391 @@ mlx_param_set_values <- function(params, values) {
     NULL
   }, params, values))
 }
+
+# Activation functions -------------------------------------------------------
+
+#' GELU activation
+#'
+#' Gaussian Error Linear Unit activation function.
+#'
+#' @return An `mlx_module` applying GELU activation.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.GELU}
+#' @export
+#' @examples
+#' act <- mlx_gelu()
+#' x <- as_mlx(matrix(c(-2, -1, 0, 1, 2), 5, 1))
+#' mlx_forward(act, x)
+mlx_gelu <- function() {
+  forward <- function(x) {
+    # GELU(x) = x * Phi(x) where Phi is the cumulative distribution function of standard normal
+    # Approximation: 0.5 * x * (1 + tanh(sqrt(2/pi) * (x + 0.044715 * x^3)))
+    x * 0.5 * (1 + tanh(sqrt(2 / pi) * (x + 0.044715 * x^3)))
+  }
+
+  structure(
+    list(forward = forward, parameters = function() list()),
+    class = c("mlx_gelu", "mlx_module")
+  )
+}
+
+#' Sigmoid activation
+#'
+#' @return An `mlx_module` applying sigmoid activation.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Sigmoid}
+#' @export
+#' @examples
+#' act <- mlx_sigmoid()
+#' x <- as_mlx(matrix(c(-2, -1, 0, 1, 2), 5, 1))
+#' mlx_forward(act, x)
+mlx_sigmoid <- function() {
+  forward <- function(x) {
+    1 / (1 + exp(-x))
+  }
+
+  structure(
+    list(forward = forward, parameters = function() list()),
+    class = c("mlx_sigmoid", "mlx_module")
+  )
+}
+
+#' Tanh activation
+#'
+#' @return An `mlx_module` applying hyperbolic tangent activation.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Tanh}
+#' @export
+#' @examples
+#' act <- mlx_tanh()
+#' x <- as_mlx(matrix(c(-2, -1, 0, 1, 2), 5, 1))
+#' mlx_forward(act, x)
+mlx_tanh <- function() {
+  forward <- function(x) {
+    tanh(x)
+  }
+
+  structure(
+    list(forward = forward, parameters = function() list()),
+    class = c("mlx_tanh", "mlx_module")
+  )
+}
+
+#' Leaky ReLU activation
+#'
+#' @param negative_slope Slope for negative values (default: 0.01).
+#' @return An `mlx_module` applying Leaky ReLU activation.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LeakyReLU}
+#' @export
+#' @examples
+#' act <- mlx_leaky_relu(negative_slope = 0.1)
+#' x <- as_mlx(matrix(c(-2, -1, 0, 1, 2), 5, 1))
+#' mlx_forward(act, x)
+mlx_leaky_relu <- function(negative_slope = 0.01) {
+  stopifnot(negative_slope >= 0)
+
+  forward <- function(x) {
+    mlx_maximum(x, negative_slope * x)
+  }
+
+  structure(
+    list(forward = forward, parameters = function() list()),
+    class = c("mlx_leaky_relu", "mlx_module")
+  )
+}
+
+#' SiLU (Swish) activation
+#'
+#' Sigmoid Linear Unit, also known as Swish activation.
+#'
+#' @return An `mlx_module` applying SiLU activation.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.SiLU}
+#' @export
+#' @examples
+#' act <- mlx_silu()
+#' x <- as_mlx(matrix(c(-2, -1, 0, 1, 2), 5, 1))
+#' mlx_forward(act, x)
+mlx_silu <- function() {
+  forward <- function(x) {
+    x / (1 + exp(-x))
+  }
+
+  structure(
+    list(forward = forward, parameters = function() list()),
+    class = c("mlx_silu", "mlx_module")
+  )
+}
+
+#' Softmax activation
+#'
+#' @param axis Axis along which to apply softmax (default: -1, last axis).
+#' @return An `mlx_module` applying softmax activation.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Softmax}
+#' @export
+#' @examples
+#' act <- mlx_softmax_layer()
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' mlx_forward(act, x)
+mlx_softmax_layer <- function(axis = -1L) {
+  forward <- function(x) {
+    mlx_softmax(x, axis = if (axis < 0) NULL else axis)
+  }
+
+  structure(
+    list(forward = forward, parameters = function() list()),
+    class = c("mlx_softmax_layer", "mlx_module")
+  )
+}
+
+# Regularization layers ------------------------------------------------------
+
+#' Dropout layer
+#'
+#' @param p Probability of dropping an element (default: 0.5).
+#' @return An `mlx_module` applying dropout during training.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Dropout}
+#' @export
+#' @examples
+#' set.seed(1)
+#' dropout <- mlx_dropout(p = 0.3)
+#' x <- as_mlx(matrix(1:12, 3, 4))
+#' mlx_forward(dropout, x)
+mlx_dropout <- function(p = 0.5) {
+  stopifnot(p >= 0 && p <= 1)
+
+  env <- new.env(parent = emptyenv())
+  env$training <- TRUE
+  env$p <- p
+
+  forward <- function(x) {
+    if (!env$training || env$p == 0) {
+      return(x)
+    }
+    if (env$p == 1) {
+      return(x * 0)
+    }
+    # Generate dropout mask
+    mask <- mlx_random_bernoulli(x$dim, prob = 1 - env$p, device = x$device)
+    # Scale by 1/(1-p) to maintain expected value
+    x * mask / (1 - env$p)
+  }
+
+  set_training <- function(mode = TRUE) {
+    env$training <- mode
+  }
+
+  structure(
+    list(
+      forward = forward,
+      parameters = function() list(),
+      set_training = set_training,
+      .env = env
+    ),
+    class = c("mlx_dropout", "mlx_module")
+  )
+}
+
+# Normalization layers -------------------------------------------------------
+
+#' Layer normalization
+#'
+#' Normalizes inputs across the feature dimension.
+#'
+#' @param normalized_shape Size of the feature dimension to normalize.
+#' @param eps Small constant for numerical stability (default: 1e-5).
+#' @param device Device for parameters.
+#' @return An `mlx_module` applying layer normalization.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LayerNorm}
+#' @export
+#' @examples
+#' set.seed(1)
+#' ln <- mlx_layer_norm(4)
+#' x <- as_mlx(matrix(rnorm(12), 3, 4))
+#' mlx_forward(ln, x)
+mlx_layer_norm <- function(normalized_shape, eps = 1e-5, device = mlx_default_device()) {
+  stopifnot(normalized_shape > 0)
+  stopifnot(eps > 0)
+
+  env <- new.env(parent = emptyenv())
+  env$gamma <- as_mlx(rep(1, normalized_shape), device = device)
+  env$beta <- as_mlx(rep(0, normalized_shape), device = device)
+  env$eps <- eps
+
+  forward <- function(x) {
+    # Normalize across last dimension
+    ndim <- length(x$dim)
+    last_axis <- ndim
+    mean_x <- mlx_mean(x, axis = last_axis, drop = FALSE)
+    var_x <- mlx_var(x, axis = last_axis, drop = FALSE, ddof = 0L)
+
+    # Normalize
+    x_norm <- (x - mean_x) / sqrt(var_x + env$eps)
+
+    # Scale and shift
+    x_norm * env$gamma + env$beta
+  }
+
+  parameters <- function() {
+    list(
+      mlx_param(env, "gamma"),
+      mlx_param(env, "beta")
+    )
+  }
+
+  structure(
+    list(
+      forward = forward,
+      parameters = parameters,
+      .env = env
+    ),
+    class = c("mlx_layer_norm", "mlx_module")
+  )
+}
+
+#' Batch normalization
+#'
+#' Normalizes inputs across the batch dimension.
+#'
+#' @param num_features Number of feature channels.
+#' @param eps Small constant for numerical stability (default: 1e-5).
+#' @param momentum Momentum for running statistics (default: 0.1).
+#' @param device Device for parameters.
+#' @return An `mlx_module` applying batch normalization.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.BatchNorm}
+#' @export
+#' @examples
+#' set.seed(1)
+#' bn <- mlx_batch_norm(4)
+#' x <- as_mlx(matrix(rnorm(12), 3, 4))
+#' mlx_forward(bn, x)
+mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1, device = mlx_default_device()) {
+  stopifnot(num_features > 0)
+  stopifnot(eps > 0)
+  stopifnot(momentum >= 0 && momentum <= 1)
+
+  env <- new.env(parent = emptyenv())
+  env$gamma <- as_mlx(rep(1, num_features), device = device)
+  env$beta <- as_mlx(rep(0, num_features), device = device)
+  env$running_mean <- as_mlx(rep(0, num_features), device = device)
+  env$running_var <- as_mlx(rep(1, num_features), device = device)
+  env$eps <- eps
+  env$momentum <- momentum
+  env$training <- TRUE
+
+  forward <- function(x) {
+    if (env$training) {
+      # Compute batch statistics
+      batch_mean <- mlx_mean(x, axis = 1L, drop = FALSE)
+      batch_var <- mlx_var(x, axis = 1L, drop = FALSE, ddof = 0L)
+
+      # Update running statistics
+      env$running_mean <- (1 - env$momentum) * env$running_mean + env$momentum * batch_mean
+      env$running_var <- (1 - env$momentum) * env$running_var + env$momentum * batch_var
+
+      mean_to_use <- batch_mean
+      var_to_use <- batch_var
+    } else {
+      mean_to_use <- env$running_mean
+      var_to_use <- env$running_var
+    }
+
+    # Normalize
+    x_norm <- (x - mean_to_use) / sqrt(var_to_use + env$eps)
+
+    # Scale and shift
+    x_norm * env$gamma + env$beta
+  }
+
+  parameters <- function() {
+    list(
+      mlx_param(env, "gamma"),
+      mlx_param(env, "beta")
+    )
+  }
+
+  set_training <- function(mode = TRUE) {
+    env$training <- mode
+  }
+
+  structure(
+    list(
+      forward = forward,
+      parameters = parameters,
+      set_training = set_training,
+      .env = env
+    ),
+    class = c("mlx_batch_norm", "mlx_module")
+  )
+}
+
+# Embedding layer ------------------------------------------------------------
+
+#' Embedding layer
+#'
+#' Maps discrete tokens to continuous vectors.
+#'
+#' @param num_embeddings Size of vocabulary.
+#' @param embedding_dim Dimension of embedding vectors.
+#' @param device Device for parameters.
+#' @return An `mlx_module` for token embeddings.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Embedding}
+#' @export
+#' @examples
+#' set.seed(1)
+#' emb <- mlx_embedding(num_embeddings = 100, embedding_dim = 16)
+#' # Token indices (0-indexed)
+#' tokens <- as_mlx(matrix(c(5, 10, 3, 7), 2, 2))
+#' mlx_forward(emb, tokens)
+mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_device()) {
+  stopifnot(num_embeddings > 0, embedding_dim > 0)
+
+  env <- new.env(parent = emptyenv())
+  # Initialize with small random values
+  weight_init <- matrix(
+    rnorm(num_embeddings * embedding_dim, sd = 0.01),
+    num_embeddings,
+    embedding_dim
+  )
+  env$weight <- as_mlx(weight_init, device = device)
+  env$num_embeddings <- num_embeddings
+  env$embedding_dim <- embedding_dim
+
+  forward <- function(indices) {
+    if (!is.mlx(indices)) indices <- as_mlx(indices)
+
+    # indices are 0-based token IDs
+    # We need to gather embeddings - for now use a simple R loop
+    # In real implementation this would use MLX's take/gather
+    indices_r <- as.integer(as.matrix(indices))
+    shape <- dim(indices_r)
+
+    # Take embeddings
+    result_list <- lapply(indices_r, function(idx) {
+      if (idx < 0 || idx >= env$num_embeddings) {
+        stop("Index out of range: ", idx, call. = FALSE)
+      }
+      env$weight[idx + 1, , drop = FALSE]
+    })
+
+    # Stack results
+    if (length(shape) == 0) {
+      # Scalar index
+      result_list[[1]]
+    } else {
+      # Reshape to match input + embedding dimension
+      result <- do.call(rbind, result_list)
+      new_shape <- c(shape, env$embedding_dim)
+      mlx_reshape(result, new_shape)
+    }
+  }
+
+  parameters <- function() {
+    list(mlx_param(env, "weight"))
+  }
+
+  structure(
+    list(
+      forward = forward,
+      parameters = parameters,
+      .env = env
+    ),
+    class = c("mlx_embedding", "mlx_module")
+  )
+}
