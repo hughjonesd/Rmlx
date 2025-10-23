@@ -125,6 +125,17 @@ test_that("svd reconstructs the original matrix", {
   expect_equal(reconstructed, A, tolerance = 1e-4)
 })
 
+test_that("svd.mlx with nu=0 and nv=0 returns only singular values", {
+  set.seed(404)
+  A <- matrix(rnorm(12), 3, 4)
+  svd_mlx <- svd(as_mlx(A), nu = 0, nv = 0)
+
+  expect_null(svd_mlx$u)
+  expect_true(is.numeric(svd_mlx$d))
+  expect_null(svd_mlx$v)
+  expect_equal(length(svd_mlx$d), 3)
+})
+
 test_that("pinv matches analytical pseudoinverse for full-rank matrix", {
   set.seed(202)
   A <- matrix(rnorm(12), 4, 3)
