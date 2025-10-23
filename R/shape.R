@@ -24,18 +24,9 @@ NULL
     stop("axes cannot contain NA values.", call. = FALSE)
   }
   result_ndim <- length(dims) + 1L
-  axes0 <- integer(length(axes))
-  for (i in seq_along(axes)) {
-    ax <- axes[[i]]
-    if (ax < 0L) {
-      ax <- ax + result_ndim
-    } else {
-      ax <- ax - 1L
-    }
-    if (ax < 0L || ax >= result_ndim) {
-      stop("axis values are out of bounds.", call. = FALSE)
-    }
-    axes0[[i]] <- ax
+  axes0 <- ifelse(axes < 0L, axes + result_ndim, axes - 1L)
+  if (any(axes0 < 0L | axes0 >= result_ndim)) {
+    stop("axis values are out of bounds.", call. = FALSE)
   }
   sort(unique(axes0))
 }
@@ -350,14 +341,13 @@ mlx_split <- function(x, sections, axis = 1L) {
     if (length(pad_width) != n_axes) {
       stop("pad_width list must have one element per axis.", call. = FALSE)
     }
-    mat <- matrix(0L, nrow = n_axes, ncol = 2)
-    for (i in seq_len(n_axes)) {
-      vals <- pad_width[[i]]
-      if (!is.numeric(vals) || length(vals) != 2L) {
-        stop("Each pad_width list element must be a length-two numeric vector.", call. = FALSE)
-      }
-      mat[i, ] <- as.integer(vals)
+    if (any(!vapply(pad_width, is.numeric, logical(1)))) {
+      stop("Each pad_width list element must be a length-two numeric vector.", call. = FALSE)
     }
+    if (any(lengths(pad_width) != 2L)) {
+      stop("Each pad_width list element must be a length-two numeric vector.", call. = FALSE)
+    }
+    mat <- matrix(as.integer(unlist(pad_width)), nrow = n_axes, ncol = 2, byrow = TRUE)
     return(mat)
   }
 
