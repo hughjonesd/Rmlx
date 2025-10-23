@@ -229,3 +229,89 @@ mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
   output_shape <- cpp_mlx_shape(ptr)
   new_mlx(ptr, output_shape, "int32", logits$device)
 }
+
+#' Sample random integers on MLX tensors
+#'
+#' Generates random integers uniformly distributed over the interval [low, high).
+#'
+#' @inheritParams mlx_creation_params
+#' @param low Lower bound (inclusive).
+#' @param high Upper bound (exclusive).
+#' @param dtype Desired integer dtype ("int32", "int64", "uint32", "uint64").
+#' @return An `mlx` tensor of random integers.
+#' @export
+#' @examples
+#' # Random integers from 0 to 9
+#' samples <- mlx_rand_randint(c(3, 3), low = 0, high = 10)
+#'
+#' # Random integers from -5 to 4
+#' samples <- mlx_rand_randint(c(2, 5), low = -5, high = 5)
+mlx_rand_randint <- function(dim, low, high,
+                             dtype = c("int32", "int64", "uint32", "uint64"),
+                             device = mlx_default_device()) {
+  if (length(dim) == 0L) {
+    stop("dim must contain at least one element.", call. = FALSE)
+  }
+  if (!is.numeric(low) || length(low) != 1) {
+    stop("low must be a single numeric value.", call. = FALSE)
+  }
+  if (!is.numeric(high) || length(high) != 1) {
+    stop("high must be a single numeric value.", call. = FALSE)
+  }
+  if (low >= high) {
+    stop("low must be less than high.", call. = FALSE)
+  }
+  dim <- as.integer(dim)
+  low <- as.integer(low)
+  high <- as.integer(high)
+  dtype <- match.arg(dtype)
+  device <- match.arg(device, c("gpu", "cpu"))
+
+  ptr <- cpp_mlx_random_randint(dim, low, high, dtype, device)
+  new_mlx(ptr, dim, dtype, device)
+}
+
+#' Generate random permutations on MLX tensors
+#'
+#' Generate a random permutation of integers or permute the entries of an array
+#' along a specified axis.
+#'
+#' @param x Either an integer n (to generate a permutation of 0:(n-1)), or an
+#'   `mlx` tensor or matrix to permute.
+#' @param axis The axis along which to permute when x is an array. Default is 0
+#'   (permute rows).
+#' @param device Target device ("gpu" or "cpu"). Only used when x is an integer.
+#' @return An `mlx` tensor containing the random permutation.
+#' @export
+#' @examples
+#' # Generate a random permutation of 0:9
+#' perm <- mlx_rand_permutation(10)
+#'
+#' # Permute the rows of a matrix
+#' mat <- matrix(1:12, 4, 3)
+#' perm_mat <- mlx_rand_permutation(mat)
+#'
+#' # Permute columns instead
+#' perm_cols <- mlx_rand_permutation(mat, axis = 1)
+mlx_rand_permutation <- function(x, axis = 0L, device = mlx_default_device()) {
+  axis <- as.integer(axis)
+
+  if (is.numeric(x) && length(x) == 1) {
+    # Generate permutation of 0:(x-1)
+    n <- as.integer(x)
+    if (n < 1) {
+      stop("n must be at least 1.", call. = FALSE)
+    }
+    device <- match.arg(device, c("gpu", "cpu"))
+    ptr <- cpp_mlx_random_permutation_n(n, device)
+    new_mlx(ptr, n, "int32", device)
+  } else {
+    # Permute array along axis
+    if (!is.mlx(x)) {
+      x <- as_mlx(x)
+    }
+    ptr <- cpp_mlx_random_permutation(x, axis)
+    output_shape <- cpp_mlx_shape(ptr)
+    new_mlx(ptr, output_shape, x$dtype, x$device)
+  }
+}

@@ -197,6 +197,18 @@ cpp_mlx_random_categorical <- function(logits_, axis, num_samples) {
     .Call(`_Rmlx_cpp_mlx_random_categorical`, logits_, axis, num_samples)
 }
 
+cpp_mlx_random_randint <- function(dim_, low, high, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_randint`, dim_, low, high, dtype_str, device_str)
+}
+
+cpp_mlx_random_permutation_n <- function(n, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_permutation_n`, n, device_str)
+}
+
+cpp_mlx_random_permutation <- function(x_, axis) {
+    .Call(`_Rmlx_cpp_mlx_random_permutation`, x_, axis)
+}
+
 cpp_mlx_concat <- function(args_, axis) {
     .Call(`_Rmlx_cpp_mlx_concat`, args_, axis)
 }

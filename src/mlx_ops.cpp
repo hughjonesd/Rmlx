@@ -1029,6 +1029,36 @@ SEXP cpp_mlx_random_categorical(SEXP logits_, int axis, int num_samples) {
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_random_randint(SEXP dim_, int low, int high,
+                            std::string dtype_str, std::string device_str) {
+  IntegerVector dim(dim_);
+  Shape shape(dim.begin(), dim.end());
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  StreamOrDevice dev_input = string_to_device(device_str);
+  array result = mlx::core::random::randint(low, high, shape, dtype, std::nullopt, dev_input);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_permutation_n(int n, std::string device_str) {
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = mlx::core::random::permutation(n, std::nullopt, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_permutation(SEXP x_, int axis) {
+  List x_obj(x_);
+  array x_arr = get_mlx_wrapper(x_obj["ptr"])->get();
+  std::string device_str = Rcpp::as<std::string>(x_obj["device"]);
+
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = mlx::core::random::permutation(x_arr, axis, std::nullopt, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_concat(SEXP args_, int axis) {
   List args(args_);
   if (args.size() == 0) {

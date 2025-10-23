@@ -149,3 +149,73 @@ test_that("mlx_rand_categorical works with multiple rows", {
   # Indices should be in valid range [0, 2] for 3 classes
   expect_true(all(sample_vals >= 0 & sample_vals < 3))
 })
+
+test_that("mlx_rand_randint generates integers in range", {
+  set.seed(123)
+  samples <- mlx_rand_randint(c(100L, 100L), low = 0, high = 10)
+
+  expect_s3_class(samples, "mlx")
+  expect_equal(samples$dim, c(100L, 100L))
+  expect_equal(samples$dtype, "int32")
+  sample_vals <- as.matrix(samples)
+  expect_true(all(sample_vals >= 0 & sample_vals < 10))
+})
+
+test_that("mlx_rand_randint works with negative range", {
+  set.seed(123)
+  samples <- mlx_rand_randint(c(50L, 50L), low = -5, high = 5)
+
+  expect_s3_class(samples, "mlx")
+  sample_vals <- as.matrix(samples)
+  expect_true(all(sample_vals >= -5 & sample_vals < 5))
+})
+
+test_that("mlx_rand_randint works with different dtypes", {
+  set.seed(123)
+  samples64 <- mlx_rand_randint(c(10L, 10L), low = 0, high = 100, dtype = "int64")
+
+  expect_s3_class(samples64, "mlx")
+  expect_equal(samples64$dtype, "int64")
+})
+
+test_that("mlx_rand_permutation generates valid permutation", {
+  set.seed(123)
+  perm <- mlx_rand_permutation(10)
+
+  expect_s3_class(perm, "mlx")
+  expect_equal(perm$dtype, "int32")
+  expect_equal(length(perm$dim), 1)
+  expect_equal(perm$dim, 10L)
+
+  perm_vals <- as.vector(as.matrix(perm))
+  # Should contain each of 0:9 exactly once
+  expect_equal(sort(perm_vals), 0:9)
+})
+
+test_that("mlx_rand_permutation permutes array rows", {
+  set.seed(123)
+  mat <- matrix(1:12, 4, 3)
+  perm_mat <- mlx_rand_permutation(mat)
+
+  expect_s3_class(perm_mat, "mlx")
+  expect_equal(dim(as.matrix(perm_mat)), c(4L, 3L))
+
+  # Each row of original should appear in permuted version
+  original_rows <- as.matrix(as_mlx(mat))
+  perm_rows <- as.matrix(perm_mat)
+
+  # Check all values still present
+  expect_equal(sort(as.vector(perm_rows)), 1:12)
+})
+
+test_that("mlx_rand_permutation permutes along specified axis", {
+  set.seed(123)
+  mat <- matrix(1:12, 4, 3)
+  perm_cols <- mlx_rand_permutation(mat, axis = 1)
+
+  expect_s3_class(perm_cols, "mlx")
+  expect_equal(dim(as.matrix(perm_cols)), c(4L, 3L))
+
+  # Check all values still present
+  expect_equal(sort(as.vector(as.matrix(perm_cols))), 1:12)
+})
