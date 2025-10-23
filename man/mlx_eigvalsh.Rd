@@ -21,3 +21,6 @@ Eigenvalues of Hermitian MLX tensors
 x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
 mlx_eigvalsh(x)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvalsh}
+}

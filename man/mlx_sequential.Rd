@@ -21,3 +21,6 @@ net <- mlx_sequential(mlx_linear(2, 3), mlx_relu(), mlx_linear(3, 1))
 input <- as_mlx(matrix(c(1, 2), 1, 2))
 mlx_forward(net, input)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Sequential}
+}

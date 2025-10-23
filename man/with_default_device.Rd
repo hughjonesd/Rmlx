@@ -22,3 +22,6 @@ old <- mlx_default_device()
 with_default_device("cpu", mlx_default_device())
 mlx_default_device(old)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/metal.html}
+}

@@ -3,6 +3,7 @@
 #' @param e1 First operand (mlx or numeric)
 #' @param e2 Second operand (mlx or numeric)
 #' @return An `mlx` object
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html}
 #' @export
 #' @method Ops mlx
 #' @examples
@@ -60,6 +61,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #'
 #' @inheritParams base::`%*%`
 #' @return An `mlx` object
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul}
 #' @export
 #' @method %*% mlx
 #' @examples

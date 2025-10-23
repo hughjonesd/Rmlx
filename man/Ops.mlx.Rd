@@ -25,3 +25,6 @@ x + y
 x < y
 }
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html}
+}

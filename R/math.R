@@ -3,6 +3,7 @@
 #' @param x An `mlx` object
 #' @param ... Additional arguments (ignored)
 #' @return An `mlx` object with the result
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html}
 #' @export
 #' @method Math mlx
 #' @examples

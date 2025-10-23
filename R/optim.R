@@ -3,6 +3,7 @@
 #' @param params List of parameters (from `mlx_parameters()`).
 #' @param lr Learning rate.
 #' @return An optimizer object with a `step()` method.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.optimizers.SGD}
 #' @export
 #' @examples
 #' set.seed(1)
@@ -40,6 +41,7 @@ mlx_optimizer_sgd <- function(params, lr = 0.01) {
 #' @param optimizer Optimizer object from `mlx_optimizer_sgd()`.
 #' @param ... Additional data passed to `loss_fn`.
 #' @return A list with the current loss.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.optimizers.Optimizer}
 #' @export
 #' @examples
 #' set.seed(1)

@@ -23,3 +23,6 @@ layer <- mlx_linear(2, 1)
 input <- as_mlx(matrix(c(1, 2), 1, 2))
 mlx_forward(layer, input)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module}
+}

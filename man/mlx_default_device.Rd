@@ -21,3 +21,6 @@ mlx_default_device("cpu")  # Set to CPU
 mlx_default_device("gpu")  # Set back to GPU
 mlx_default_device()
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/metal.html}
+}

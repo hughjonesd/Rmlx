@@ -16,3 +16,6 @@ Waits for all outstanding operations on the specified device to complete.
 x <- as_mlx(matrix(1:4, 2, 2))
 mlx_synchronize("gpu")
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/metal.html}
+}

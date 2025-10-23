@@ -27,3 +27,6 @@ mlx_norm(x)
 mlx_norm(x, ord = 2)
 mlx_norm(x, axis = 2)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.norm}
+}

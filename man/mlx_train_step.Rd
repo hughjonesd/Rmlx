@@ -34,3 +34,6 @@ loss_fn <- function(mod, x, y) {
 }
 mlx_train_step(model, loss_fn, opt, data_x, data_y)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.optimizers.Optimizer}
+}

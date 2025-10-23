@@ -176,6 +176,7 @@ fft.mlx <- function(z, inverse = FALSE, ...) {
 #' @param axis Optional integer vector of axes (1-indexed) along which to compute the norm.
 #' @param keepdims Logical; retain reduced axes with length one.
 #' @return An `mlx` tensor containing the requested norm.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.norm}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -199,6 +200,7 @@ mlx_norm <- function(x, ord = NULL, axis = NULL, keepdims = FALSE) {
 #'
 #' @param x An `mlx` square matrix.
 #' @return A list with components `values` and `vectors`, both `mlx` tensors.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eig}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(2, -1, 0, 2), 2, 2))
@@ -220,6 +222,7 @@ mlx_eig <- function(x) {
 #'
 #' @inheritParams mlx_eig
 #' @return An `mlx` tensor containing eigenvalues.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvals}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(3, 1, 0, 2), 2, 2))
@@ -236,6 +239,7 @@ mlx_eigvals <- function(x) {
 #' @inheritParams mlx_eig
 #' @param uplo Character string indicating which triangle to use ("L" or "U").
 #' @return An `mlx` tensor containing eigenvalues.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvalsh}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
@@ -252,6 +256,7 @@ mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
 #'
 #' @inheritParams mlx_eigvalsh
 #' @return A list with components `values` and `vectors`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigh}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
@@ -273,6 +278,7 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
 #' @param b Right-hand side matrix or vector.
 #' @param upper Logical; if `TRUE`, `a` is upper triangular, otherwise lower.
 #' @return An `mlx` tensor solution.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular}
 #' @export
 #' @examples
 #' a <- as_mlx(matrix(c(2, 1, 0, 3), 2, 2))
@@ -291,6 +297,7 @@ mlx_solve_triangular <- function(a, b, upper = FALSE) {
 #' @param a,b Input `mlx` tensors containing 3D vectors.
 #' @param axis Axis along which to compute the cross product (1-indexed, default last).
 #' @return An `mlx` tensor of cross products.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cross}
 #' @export
 #' @examples
 #' u <- as_mlx(c(1, 0, 0))

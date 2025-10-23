@@ -86,6 +86,7 @@ mlx_relu <- function() {
 #'
 #' @param ... Modules to compose.
 #' @return An `mlx_module`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Sequential}
 #' @export
 #' @examples
 #' set.seed(1)
@@ -128,6 +129,7 @@ mlx_sequential <- function(...) {
 #' @param module An `mlx_module`.
 #' @param x Input tensor.
 #' @return Output tensor.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module}
 #' @export
 #' @examples
 #' set.seed(1)
@@ -145,6 +147,7 @@ mlx_forward <- function(module, x) {
 #'
 #' @param module An `mlx_module` or list of modules.
 #' @return A list of `mlx_param` objects.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.parameters}
 #' @export
 #' @examples
 #' set.seed(1)
@@ -180,6 +183,7 @@ mlx_param <- function(env, name) {
 #'
 #' @param params A list of `mlx_param`.
 #' @return List of `mlx` tensors.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.parameters}
 #' @export
 #' @examples
 #' set.seed(1)
@@ -196,6 +200,7 @@ mlx_param_values <- function(params) {
 #'
 #' @param params A list of `mlx_param`.
 #' @param values A list of tensors.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.update}
 #' @export
 #' @examples
 #' set.seed(1)

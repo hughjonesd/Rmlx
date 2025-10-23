@@ -24,3 +24,6 @@ a <- as_mlx(matrix(c(2, 1, 0, 3), 2, 2))
 b <- as_mlx(matrix(c(1, 5), 2, 1))
 mlx_solve_triangular(a, b, upper = FALSE)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular}
+}

@@ -21,3 +21,6 @@ params <- mlx_parameters(layer)
 current <- mlx_param_values(params)
 mlx_param_set_values(params, current)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.update}
+}

@@ -22,3 +22,6 @@ x <- as_mlx(matrix(c(-1, 0, 1), 3, 1))
 sin(x)
 round(x + 0.4)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html}
+}
