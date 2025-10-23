@@ -70,6 +70,8 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_laplace.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_multivariate_normal.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_normal.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_permutation.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_randint.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_truncated_normal.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_uniform.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_reduction_base.html</loc></url>
