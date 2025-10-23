@@ -1,0 +1,220 @@
+---
+title: "Neural Networks with Rmlx"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Neural Networks with Rmlx}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette demonstrates how to build and train neural networks using Rmlx's neural network layers and automatic differentiation capabilities.
+
+## Building a Neural Network
+
+Rmlx provides modular neural network components that can be combined using `mlx_sequential()`. Here's a simple multi-layer perceptron (MLP) for binary classification:
+
+```{r setup, eval = FALSE}
+library(Rmlx)
+
+# Create a 3-layer MLP
+mlp <- mlx_sequential(
+  mlx_linear(2, 32),    # Input: 2 features
+  mlx_relu(),
+  mlx_dropout(p = 0.2),
+  mlx_linear(32, 16),
+  mlx_relu(),
+  mlx_linear(16, 1),    # Output: 1 logit
+  mlx_sigmoid()         # Probability output
+)
+```
+
+## Generating Training Data
+
+Let's create a simple binary classification dataset:
+
+```{r data, eval = FALSE}
+set.seed(42)
+
+# Generate spiral dataset
+n_samples <- 200
+noise <- 0.2
+
+# Class 0: outer spiral
+theta0 <- runif(n_samples/2, 0, 4*pi)
+r0 <- theta0 / (4*pi) + rnorm(n_samples/2, 0, noise)
+x0 <- cbind(r0 * cos(theta0), r0 * sin(theta0))
+y0 <- rep(0, n_samples/2)
+
+# Class 1: inner spiral
+theta1 <- runif(n_samples/2, 0, 4*pi)
+r1 <- theta1 / (4*pi) + rnorm(n_samples/2, 0, noise) + 0.5
+x1 <- cbind(r1 * cos(theta1), r1 * sin(theta1))
+y1 <- rep(1, n_samples/2)
+
+# Combine
+x_train <- rbind(x0, x1)
+y_train <- c(y0, y1)
+
+# Convert to MLX tensors
+x_mlx <- as_mlx(x_train)
+y_mlx <- as_mlx(matrix(y_train, ncol = 1))
+```
+
+## Training Loop
+
+Define a loss function and train using gradient descent:
+
+```{r training, eval = FALSE}
+# Loss function
+loss_fn <- function(params_list, x, y) {
+  # Forward pass
+  y_pred <- mlx_forward(mlp, x)
+  # Binary cross-entropy loss
+  mlx_binary_cross_entropy(y_pred, y)
+}
+
+# Training parameters
+learning_rate <- 0.01
+n_epochs <- 100
+
+# Get model parameters
+params <- mlx_parameters(mlp)
+
+# Training loop
+for (epoch in 1:n_epochs) {
+  # Compute loss and gradients
+  grads <- mlx_grad(loss_fn, params, x_mlx, y_mlx, argnums = 1)
+
+  # Update parameters
+  for (i in seq_along(params)) {
+    new_value <- params[[i]]$get() - learning_rate * grads[[i]]
+    params[[i]]$set(new_value)
+    mlx_eval(new_value)  # Force evaluation
+  }
+
+  # Print progress
+  if (epoch %% 10 == 0) {
+    loss <- loss_fn(params, x_mlx, y_mlx)
+    cat(sprintf("Epoch %d, Loss: %.4f\n", epoch, as.numeric(as.matrix(loss))))
+  }
+}
+```
+
+## Making Predictions
+
+After training, use the model for predictions:
+
+```{r prediction, eval = FALSE}
+# Generate test points
+x_test <- as_mlx(matrix(c(0.5, 0.5, -0.5, -0.5), 2, 2))
+
+# Forward pass
+mlp$set_training(FALSE)  # Set to evaluation mode (disables dropout)
+predictions <- mlx_forward(mlp, x_test)
+
+# Convert to probabilities
+probs <- as.matrix(predictions)
+classes <- ifelse(probs > 0.5, 1, 0)
+print(classes)
+```
+
+## Using Different Architectures
+
+Rmlx provides various layer types for different architectures:
+
+### Convolutional Features
+
+While full convolution layers require C++ implementation, you can combine linear layers with reshape operations:
+
+```{r architecture1, eval = FALSE}
+# Classifier with normalization
+classifier <- mlx_sequential(
+  mlx_linear(10, 64),
+  mlx_layer_norm(64),
+  mlx_relu(),
+  mlx_dropout(p = 0.5),
+  mlx_linear(64, 32),
+  mlx_batch_norm(32),
+  mlx_relu(),
+  mlx_linear(32, 3),
+  mlx_softmax_layer()  # Multi-class output
+)
+```
+
+### Embeddings for Categorical Data
+
+Use `mlx_embedding()` for categorical inputs:
+
+```{r embeddings, eval = FALSE}
+# Text/token embeddings
+vocab_size <- 10000
+embed_dim <- 128
+
+embedding_net <- mlx_sequential(
+  mlx_embedding(vocab_size, embed_dim),
+  mlx_linear(embed_dim, 64),
+  mlx_relu(),
+  mlx_linear(64, 1)
+)
+
+# Input: token indices (0-indexed)
+tokens <- as_mlx(c(42, 17, 99))
+output <- mlx_forward(embedding_net, tokens)
+```
+
+## Available Loss Functions
+
+Rmlx implements common loss functions:
+
+- `mlx_mse_loss()`: Mean squared error (regression)
+- `mlx_l1_loss()`: Mean absolute error (robust regression)
+- `mlx_binary_cross_entropy()`: Binary classification
+- `mlx_cross_entropy()`: Multi-class classification
+
+Each supports `reduction = "mean"`, `"sum"`, or `"none"`.
+
+## Available Activation Functions
+
+- `mlx_relu()`: Rectified Linear Unit
+- `mlx_gelu()`: Gaussian Error Linear Unit
+- `mlx_sigmoid()`: Logistic sigmoid
+- `mlx_tanh()`: Hyperbolic tangent
+- `mlx_silu()`: Sigmoid Linear Unit (Swish)
+- `mlx_leaky_relu()`: Leaky ReLU with configurable slope
+- `mlx_softmax_layer()`: Softmax normalization
+
+## Regularization and Normalization
+
+- `mlx_dropout()`: Dropout regularization
+- `mlx_layer_norm()`: Layer normalization
+- `mlx_batch_norm()`: Batch normalization
+
+Remember to set training mode appropriately:
+
+```{r training_mode, eval = FALSE}
+# Training
+model$set_training(TRUE)
+
+# Evaluation
+model$set_training(FALSE)
+```
+
+## Best Practices
+
+1. **Always evaluate**: Call `mlx_eval()` after parameter updates to trigger computation
+2. **Training mode**: Set models to training mode during training, evaluation mode during inference
+3. **Gradient computation**: Use `argnums` in `mlx_grad()` to specify which arguments to differentiate
+4. **Device management**: Ensure all tensors are on the same device (GPU/CPU)
+
+## Further Reading
+
+- See `vignette("linear-regression")` for a simpler optimization example
+- Check `?mlx_grad` for automatic differentiation details
+- Refer to the [MLX Python documentation](https://ml-explore.github.io/mlx/build/html/python/nn.html) for more advanced patterns

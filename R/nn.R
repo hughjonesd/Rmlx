@@ -340,7 +340,9 @@ mlx_silu <- function() {
 #' mlx_forward(act, x)
 mlx_softmax_layer <- function(axis = -1L) {
   forward <- function(x) {
-    mlx_softmax(x, axis = if (axis < 0) NULL else axis)
+    # Convert negative axis to positive (Python convention: -1 = last axis)
+    ax <- if (axis < 0) length(x$dim) + axis + 1L else axis
+    mlx_softmax(x, axis = ax)
   }
 
   structure(
@@ -377,7 +379,7 @@ mlx_dropout <- function(p = 0.5) {
       return(x * 0)
     }
     # Generate dropout mask
-    mask <- mlx_random_bernoulli(x$dim, prob = 1 - env$p, device = x$device)
+    mask <- mlx_rand_bernoulli(x$dim, prob = 1 - env$p, device = x$device)
     # Scale by 1/(1-p) to maintain expected value
     x * mask / (1 - env$p)
   }
@@ -566,28 +568,27 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
     if (!is.mlx(indices)) indices <- as_mlx(indices)
 
     # indices are 0-based token IDs
-    # We need to gather embeddings - for now use a simple R loop
-    # In real implementation this would use MLX's take/gather
+    orig_shape <- indices$dim
     indices_r <- as.integer(as.matrix(indices))
-    shape <- dim(indices_r)
 
     # Take embeddings
     result_list <- lapply(indices_r, function(idx) {
       if (idx < 0 || idx >= env$num_embeddings) {
         stop("Index out of range: ", idx, call. = FALSE)
       }
-      env$weight[idx + 1, , drop = FALSE]
+      as.numeric(as.matrix(env$weight[idx + 1, ]))
     })
 
-    # Stack results
-    if (length(shape) == 0) {
-      # Scalar index
-      result_list[[1]]
+    # Stack results and reshape
+    if (length(orig_shape) == 0) {
+      # Scalar index - return (1, embedding_dim)
+      as_mlx(matrix(result_list[[1]], 1, env$embedding_dim), device = indices$device)
     } else {
-      # Reshape to match input + embedding dimension
-      result <- do.call(rbind, result_list)
-      new_shape <- c(shape, env$embedding_dim)
-      mlx_reshape(result, new_shape)
+      # Stack into matrix then reshape to match input shape + embedding dimension
+      result_mat <- do.call(rbind, lapply(result_list, function(x) matrix(x, 1, env$embedding_dim)))
+      new_shape <- c(orig_shape, env$embedding_dim)
+      result_array <- array(as.numeric(result_mat), dim = new_shape)
+      as_mlx(result_array, device = indices$device)
     }
   }
 

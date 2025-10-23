@@ -60,7 +60,7 @@ mlx_l1_loss <- function(predictions, targets, reduction = c("mean", "sum", "none
 #'
 #' Computes binary cross-entropy loss between predictions and binary targets.
 #'
-#' @param predictions Predicted probabilities as an `mlx` tensor (values in [0,1]).
+#' @param predictions Predicted probabilities as an `mlx` tensor (values in \[0,1\]).
 #' @param targets Binary target values as an `mlx` tensor (0 or 1).
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
 #' @return An `mlx` tensor containing the loss.

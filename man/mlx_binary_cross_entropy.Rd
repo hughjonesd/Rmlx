@@ -11,7 +11,7 @@ mlx_binary_cross_entropy(
 )
 }
 \arguments{
-\item{predictions}{Predicted probabilities as an \code{mlx} tensor (values in \link{0,1}).}
+\item{predictions}{Predicted probabilities as an \code{mlx} tensor (values in [0,1]).}
 
 \item{targets}{Binary target values as an \code{mlx} tensor (0 or 1).}
 

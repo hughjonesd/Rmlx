@@ -104,13 +104,35 @@ reference:
       - mlx_eigvals
       - mlx_eigvalsh
       - mlx_cross
-  - title: Neural Network Helpers
+  - title: Neural Network Layers
     contents:
       - mlx_linear
+      - mlx_sequential
+      - mlx_embedding
+  - title: Activation Functions
+    contents:
       - mlx_relu
+      - mlx_gelu
+      - mlx_sigmoid
+      - mlx_tanh
+      - mlx_silu
+      - mlx_leaky_relu
+      - mlx_softmax_layer
+  - title: Regularization & Normalization
+    contents:
+      - mlx_dropout
+      - mlx_layer_norm
+      - mlx_batch_norm
+  - title: Loss Functions
+    contents:
+      - mlx_mse_loss
+      - mlx_l1_loss
+      - mlx_binary_cross_entropy
+      - mlx_cross_entropy
+  - title: Training Utilities
+    contents:
       - mlx_parameters
       - mlx_param_values
       - mlx_param_set_values
       - mlx_optimizer_sgd
       - mlx_train_step
-      - mlx_sequential
