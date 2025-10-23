@@ -11,6 +11,10 @@ knitr::opts_chunk$set(
 
 # Rmlx
 
+<!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/hughjonesd/Rmlx/graph/badge.svg)](https://app.codecov.io/gh/hughjonesd/Rmlx)
+<!-- badges: end -->
+
 R interface to Apple's MLX (Machine Learning eXchange) library for GPU-accelerated array operations on Apple Silicon.
 
 ## Overview

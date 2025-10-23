@@ -14,3 +14,4 @@
 ^\.github$
 ^\.claude/?$
 ^LICENSE\.md$
+^codecov\.yml$
