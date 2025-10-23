@@ -1,6 +1,7 @@
 #' Sample from a uniform distribution on MLX tensors
 #'
-#' @inheritParams mlx_params
+#' @inheritParams mlx_creation_params
+#' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param min Lower bound for the uniform distribution.
 #' @param max Upper bound for the uniform distribution.
 #'
@@ -24,7 +25,8 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
 
 #' Sample from a normal distribution on MLX tensors
 #'
-#' @inheritParams mlx_params
+#' @inheritParams mlx_creation_params
+#' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param mean Mean of the normal distribution.
 #' @param sd Standard deviation of the normal distribution.
 #' @return An `mlx` tensor with normally distributed entries.
@@ -47,7 +49,8 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
 
 #' Sample Bernoulli random variables on MLX tensors
 #'
-#' @inheritParams mlx_params
+#' @inheritParams mlx_creation_params
+#' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param prob Probability of a one.
 #' @return An `mlx` boolean tensor.
 #' @export
@@ -69,7 +72,8 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
 
 #' Sample from the Gumbel distribution on MLX tensors
 #'
-#' @inheritParams mlx_params
+#' @inheritParams mlx_creation_params
+#' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @return An `mlx` tensor with Gumbel-distributed entries.
 #' @export
 #' @examples
@@ -89,7 +93,8 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
 
 #' Sample from a truncated normal distribution on MLX tensors
 #'
-#' @inheritParams mlx_params
+#' @inheritParams mlx_creation_params
+#' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param lower Lower bound of the truncated normal.
 #' @param upper Upper bound of the truncated normal.
 #' @return An `mlx` tensor with truncated normally distributed entries.
@@ -118,7 +123,8 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
 
 #' Sample from a multivariate normal distribution on MLX tensors
 #'
-#' @inheritParams mlx_params
+#' @inheritParams mlx_creation_params
+#' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param mean An `mlx` tensor or vector for the mean.
 #' @param cov An `mlx` tensor or matrix for the covariance.
 #' @param device Target device ("cpu" only). Note: this function requires CPU

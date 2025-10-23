@@ -12,6 +12,8 @@ mlx_rand_bernoulli(dim, prob = 0.5, device = mlx_default_device())
 \item{prob}{Probability of a one.}
 
 \item{device}{Target device ("gpu" or "cpu").}
+
+\item{dtype}{Desired MLX dtype ("float32" or "float64").}
 }
 \value{
 An \code{mlx} boolean tensor.

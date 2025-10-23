@@ -1,6 +1,7 @@
 #' Create tensors of zeros on MLX devices
 #'
-#' @inheritParams mlx_params
+#' @inheritParams mlx_creation_params
+#' @param dtype MLX dtype to use (`"float32"` or `"float64"`).
 #' @return An `mlx` tensor filled with zeros.
 #' @export
 #' @examples
