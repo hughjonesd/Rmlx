@@ -65,7 +65,9 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_parameters.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_bernoulli.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_categorical.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_gumbel.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_laplace.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_multivariate_normal.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_normal.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_truncated_normal.html</loc></url>
