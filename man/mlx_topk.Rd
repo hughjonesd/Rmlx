@@ -40,3 +40,8 @@ mlx_partition(scores, kth = 1)
 mlx_argpartition(scores, kth = 1)
 mlx_topk(as_mlx(matrix(1:6, 2, 3)), k = 1, axis = 1)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.topk},
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.partition},
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argpartition}
+}

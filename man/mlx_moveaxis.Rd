@@ -32,8 +32,7 @@ An \code{mlx} tensor with axes permuted.
 }
 \description{
 \itemize{
-\item \code{mlx_moveaxis()} mirrors MLX's native \href{https://ml-explore.github.io/mlx/build/html/python/array_api/generated/mlx.core.moveaxis.html}{moveaxis}
-primitive, repositioning one or more axes to new locations.
+\item \code{mlx_moveaxis()} repositions one or more axes to new locations.
 \item \code{aperm.mlx()} provides the familiar R interface, permuting axes according
 to \code{perm} via repeated calls to \code{mlx_moveaxis()}.
 }

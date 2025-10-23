@@ -32,3 +32,7 @@ mlx_sort(x)
 mlx_argsort(x)
 mlx_sort(as_mlx(matrix(1:6, 2, 3)), axis = 1)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sort},
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argsort}
+}

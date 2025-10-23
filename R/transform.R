@@ -6,6 +6,9 @@
 #' @param keepdims Logical; retain reduced dimensions with length one.
 #'
 #' @return An `mlx` tensor of indices.
+#' @seealso
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmax},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmin}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(1, 5, 3, 2), 2, 2))
@@ -36,6 +39,9 @@ mlx_argmin <- function(x, axis = NULL, keepdims = FALSE) {
 #'   (for `mlx_argsort`).
 #' @details Indices returned by `mlx_argsort()` and `mlx_argpartition()` use
 #'   zero-based offsets, matching MLX's native conventions.
+#' @seealso
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sort},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argsort}
 #' @export
 #' @examples
 #' x <- as_mlx(c(3, 1, 4, 2))
@@ -68,6 +74,10 @@ mlx_argsort <- function(x, axis = NULL) {
 #' @return An `mlx` tensor.
 #' @details `mlx_topk()` returns the largest `k` values as reported by MLX. Use
 #'   `mlx_argsort()` if you need the associated indices.
+#' @seealso
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.topk},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.partition},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argpartition}
 #' @export
 #' @examples
 #' scores <- as_mlx(c(0.7, 0.2, 0.9, 0.4))
@@ -168,6 +178,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 #' @inheritParams mlx_argmax
 #' @param keepdims Logical indicating whether reduced axes are retained.
 #' @return An `mlx` tensor containing log-sum-exp results.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 2, 3))
@@ -187,6 +198,7 @@ mlx_logsumexp <- function(x, axis = NULL, keepdims = FALSE) {
 #' @param reverse Logical flag for reverse accumulation.
 #' @param inclusive Logical flag controlling inclusivity.
 #' @return An `mlx` tensor.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logaddexp}
 #' @export
 #' @examples
 #' x <- as_mlx(1:4)
@@ -205,6 +217,7 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
 #' @inheritParams mlx_argmax
 #' @param precise Logical; compute in higher precision for stability.
 #' @return An `mlx` tensor with normalized probabilities.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 2, 3))

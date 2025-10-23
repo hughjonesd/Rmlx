@@ -4,6 +4,7 @@
 #'   coerced via `as_mlx()`.
 #' @param deparse.level Compatibility argument accepted for S3 dispatch; ignored.
 #' @return An `mlx` tensor stacked along the first axis.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -23,6 +24,7 @@ rbind.mlx <- function(..., deparse.level = 1) {
 #'
 #' @inheritParams rbind.mlx
 #' @return An `mlx` tensor stacked along the second axis.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))

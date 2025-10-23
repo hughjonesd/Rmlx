@@ -23,6 +23,14 @@ NULL
 #' @param ddof Non-negative integer delta degrees of freedom for variance or
 #'   standard deviation reductions.
 #' @return An `mlx` tensor containing the reduction result.
+#' @seealso
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.prod},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.all},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.any},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.var},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.std}
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_sum(x)

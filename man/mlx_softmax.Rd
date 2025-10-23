@@ -25,3 +25,6 @@ x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 2, 3))
 sm <- mlx_softmax(x, axis = 2)
 rowSums(as.matrix(sm))
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax}
+}

@@ -1,10 +1,11 @@
 #' Create a learnable linear transformation
-#' 
+#'
 #' @param in_features Number of input features.
 #' @param out_features Number of output features.
 #' @param bias Should a bias term be included?
 #' @param device Device for the parameters.
 #' @return An object of class `mlx_module`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Linear}
 #' @importFrom stats rnorm
 #' @export
 #' @examples
@@ -60,6 +61,7 @@ mlx_linear <- function(in_features,
 #' Rectified linear activation module
 #'
 #' @return An `mlx_module` applying ReLU.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.ReLU}
 #' @export
 #' @examples
 #' act <- mlx_relu()

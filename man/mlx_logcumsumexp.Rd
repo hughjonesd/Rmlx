@@ -27,3 +27,6 @@ as.vector(as.matrix(mlx_logcumsumexp(x)))
 m <- as_mlx(matrix(1:6, 2, 3))
 as.matrix(mlx_logcumsumexp(m, axis = 2))
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logaddexp}
+}

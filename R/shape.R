@@ -369,8 +369,7 @@ mlx_split <- function(x, sections, axis = 1L) {
 #' Reorder MLX tensor axes
 #'
 #' @description
-#' * `mlx_moveaxis()` mirrors MLX's native [moveaxis](https://ml-explore.github.io/mlx/build/html/python/array_api/generated/mlx.core.moveaxis.html)
-#'   primitive, repositioning one or more axes to new locations.
+#' * `mlx_moveaxis()` repositions one or more axes to new locations.
 #' * `aperm.mlx()` provides the familiar R interface, permuting axes according
 #'   to `perm` via repeated calls to `mlx_moveaxis()`.
 #'

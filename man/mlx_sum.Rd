@@ -55,3 +55,12 @@ mlx_mean(x, axis = 1)
 mlx_var(x, axis = 2)
 mlx_std(x, ddof = 1)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum},
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.prod},
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.all},
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.any},
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean},
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.var},
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.std}
+}
