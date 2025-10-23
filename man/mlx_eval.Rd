@@ -19,3 +19,6 @@ Force evaluation of lazy MLX operations
 x <- as_mlx(matrix(1:4, 2, 2))
 mlx_eval(x)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eval}
+}

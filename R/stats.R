@@ -92,6 +92,7 @@ mlx_std <- function(x, axis = NULL, drop = TRUE, ddof = 0L) {
 #' @param x An `mlx` object
 #' @param ... Additional arguments (ignored)
 #' @return An `mlx` scalar
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
 #' @export
 #' @method mean mlx
 #' @examples
@@ -105,6 +106,7 @@ mean.mlx <- function(x, ...) {
 #'
 #' @inheritParams mlx_reduction_base
 #' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
@@ -120,6 +122,7 @@ rowMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
 #'
 #' @inheritParams mlx_reduction_base
 #' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
@@ -135,6 +138,7 @@ colMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
 #'
 #' @inheritParams mlx_reduction_base
 #' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
@@ -150,6 +154,7 @@ rowSums <- function(x, na.rm = FALSE, dims = 1, ...) {
 #'
 #' @inheritParams mlx_reduction_base
 #' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
@@ -165,6 +170,7 @@ colSums <- function(x, na.rm = FALSE, dims = 1, ...) {
 #'
 #' @param x An `mlx` matrix
 #' @return Transposed `mlx` matrix
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.transpose}
 #' @export
 #' @method t mlx
 #' @examples
@@ -183,6 +189,7 @@ t.mlx <- function(x) {
 #' @param y An `mlx` matrix (default: NULL, uses x)
 #' @return `t(x) %*% y` as an `mlx` object
 #' @param ... Additional arguments passed to base::crossprod.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul}
 #' @export
 #' @method crossprod mlx
 #' @examples
@@ -199,6 +206,7 @@ crossprod.mlx <- function(x, y = NULL, ...) {
 #' @param y An `mlx` matrix (default: NULL, uses x)
 #' @return `x %*% t(y)` as an `mlx` object
 #' @param ... Additional arguments passed to base::tcrossprod.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul}
 #' @export
 #' @method tcrossprod mlx
 #' @examples

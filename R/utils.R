@@ -120,6 +120,7 @@ mlx_dtype <- function(x) {
 #'   select the full extent. Logical indices recycle to the dimension length.
 #' @param drop Should dimensions be dropped? (default: FALSE)
 #' @return Subsetted `mlx` object
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.take}
 #' @export
 #' @method [ mlx
 #' @examples

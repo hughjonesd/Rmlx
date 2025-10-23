@@ -21,3 +21,6 @@ Mean of MLX array elements
 x <- as_mlx(matrix(1:4, 2, 2))
 mean(x)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
+}

@@ -26,3 +26,6 @@ Row sums for MLX tensors
 x <- as_mlx(matrix(1:6, 3, 2))
 rowSums(x)
 }
+\seealso{
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum}
+}
