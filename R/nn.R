@@ -174,28 +174,6 @@ mlx_param <- function(env, name) {
   )
 }
 
-#' Retrieve a tensor from an `mlx_param`
-#'
-#' @param param Parameter wrapper.
-#' @return An `mlx` tensor.
-#' @noRd
-mlx_param_get <- function(param) {
-  stopifnot(inherits(param, "mlx_param"))
-  param$env[[param$name]]
-}
-
-#' Assign a tensor to an `mlx_param`
-#'
-#' @param param Parameter wrapper.
-#' @param value An `mlx` tensor.
-#' @return `NULL` (invisibly).
-#' @noRd
-mlx_param_set <- function(param, value) {
-  stopifnot(inherits(param, "mlx_param"), is.mlx(value))
-  param$env[[param$name]] <- value
-  invisible(NULL)
-}
-
 #' Retrieve parameter tensors
 #'
 #' @param params A list of `mlx_param`.
@@ -206,7 +184,10 @@ mlx_param_set <- function(param, value) {
 #' layer <- mlx_linear(2, 1)
 #' vals <- mlx_param_values(mlx_parameters(layer))
 mlx_param_values <- function(params) {
-  lapply(params, mlx_param_get)
+  lapply(params, function(param) {
+    stopifnot(inherits(param, "mlx_param"))
+    param$env[[param$name]]
+  })
 }
 
 #' Assign tensors back to parameters
@@ -222,8 +203,9 @@ mlx_param_values <- function(params) {
 #' mlx_param_set_values(params, current)
 mlx_param_set_values <- function(params, values) {
   stopifnot(length(params) == length(values))
-  for (i in seq_along(params)) {
-    mlx_param_set(params[[i]], values[[i]])
-  }
-  invisible(NULL)
+  invisible(Map(function(param, value) {
+    stopifnot(inherits(param, "mlx_param"), is.mlx(value))
+    param$env[[param$name]] <- value
+    NULL
+  }, params, values))
 }

@@ -21,11 +21,9 @@ mlx_optimizer_sgd <- function(params, lr = 0.01) {
     if (length(grads) != length(params)) {
       stop("Gradient list length does not match parameters.", call. = FALSE)
     }
-    for (i in seq_along(params)) {
-      p_val <- mlx_param_get(params[[i]])
-      update <- p_val - lr * grads[[i]]
-      mlx_param_set(params[[i]], update)
-    }
+    param_vals <- mlx_param_values(params)
+    updates <- Map(function(p_val, g) p_val - lr * g, param_vals, grads)
+    mlx_param_set_values(params, updates)
     invisible(TRUE)
   }
 
