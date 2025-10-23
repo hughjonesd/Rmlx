@@ -12,9 +12,11 @@
 
 #' Cholesky decomposition for MLX tensors
 #'
-#' @param x An `mlx` positive-definite matrix.
+#'
+#' @param x An `mlx` matrix. Note: if `x` is not symmetric
+#'   positive semi-definite, "behaviour is undefined" according to the MLX
+#'   documentation.
 #' @param pivot Ignored; pivoted decomposition is not supported.
-#' @param LINPACK Ignored; set to `FALSE`.
 #' @param ... Additional arguments (unused).
 #' @return Upper-triangular Cholesky factor as an `mlx` matrix.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky}
@@ -23,10 +25,9 @@
 #' @examples
 #' x <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
 #' chol(x)
-chol.mlx <- function(x, pivot = FALSE, LINPACK = FALSE, ...) {
+chol.mlx <- function(x, pivot = FALSE, ...) {
   if (!is.mlx(x)) x <- as_mlx(x)
   if (pivot) stop("pivoted Cholesky is not supported for mlx objects.", call. = FALSE)
-  if (LINPACK) stop("LINPACK routines are not supported for mlx objects.", call. = FALSE)
 
   ptr <- cpp_mlx_cholesky(x$ptr, TRUE, x$dtype, x$device)
   .mlx_wrap_result(ptr, x$device)
@@ -67,10 +68,10 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
 
 #' Singular value decomposition for MLX tensors
 #'
+#'
 #' @param x An `mlx` matrix.
 #' @param nu Number of left singular vectors to return (0 or `min(dim(x))`).
 #' @param nv Number of right singular vectors to return (0 or `min(dim(x))`).
-#' @param LINPACK Ignored; set to `FALSE`.
 #' @param ... Additional arguments (unused).
 #' @return A list with components `d`, `u`, and `v`.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.svd}
@@ -79,11 +80,9 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
 #' @examples
 #' x <- as_mlx(matrix(c(1, 0, 0, 2), 2, 2))
 #' svd(x)
-svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE, ...) {
+svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
   if (!is.mlx(x)) x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L)
-
-  if (LINPACK) stop("LINPACK routines are not supported for mlx objects.", call. = FALSE)
 
   n <- x$dim[1]
   p <- x$dim[2]
@@ -101,7 +100,7 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE, ...) {
 
   if (!compute_uv) {
     s_ptr <- res[[1L]]
-    d <- as.numeric(as.matrix(.mlx_wrap_result(s_ptr, x$device)))
+    d <- .mlx_wrap_result(s_ptr, x$device)
     return(list(d = d, u = NULL, v = NULL))
   }
 
@@ -109,7 +108,7 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE, ...) {
   S <- .mlx_wrap_result(res$S, x$device)
   Vh <- .mlx_wrap_result(res$Vh, x$device)
 
-  d <- as.numeric(as.matrix(S))
+  d <- S
   V <- .mlx_wrap_result(cpp_mlx_transpose(Vh$ptr), Vh$device)
 
   list(d = d, u = U, v = V)

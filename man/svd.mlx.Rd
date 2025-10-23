@@ -4,7 +4,7 @@
 \alias{svd.mlx}
 \title{Singular value decomposition for MLX tensors}
 \usage{
-\method{svd}{mlx}(x, nu = min(n, p), nv = min(n, p), LINPACK = FALSE, ...)
+\method{svd}{mlx}(x, nu = min(n, p), nv = min(n, p), ...)
 }
 \arguments{
 \item{x}{An \code{mlx} matrix.}
@@ -12,8 +12,6 @@
 \item{nu}{Number of left singular vectors to return (0 or \code{min(dim(x))}).}
 
 \item{nv}{Number of right singular vectors to return (0 or \code{min(dim(x))}).}
-
-\item{LINPACK}{Ignored; set to \code{FALSE}.}
 
 \item{...}{Additional arguments (unused).}
 }

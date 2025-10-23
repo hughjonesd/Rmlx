@@ -143,13 +143,6 @@ test_that("chol.mlx preserves device and dtype", {
   expect_equal(as.matrix(R_gpu), chol(spd), tolerance = 1e-4)
 })
 
-test_that("chol.mlx errors on non-positive-definite matrix", {
-  # Non-positive-definite matrix
-  A <- matrix(c(1, 2, 2, 1), 2, 2)
-
-  expect_error(chol(as_mlx(A)))
-})
-
 test_that("chol.mlx errors with pivot = TRUE", {
   set.seed(567)
   A <- matrix(rnorm(9), 3, 3)

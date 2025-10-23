@@ -4,14 +4,14 @@
 \alias{chol.mlx}
 \title{Cholesky decomposition for MLX tensors}
 \usage{
-\method{chol}{mlx}(x, pivot = FALSE, LINPACK = FALSE, ...)
+\method{chol}{mlx}(x, pivot = FALSE, ...)
 }
 \arguments{
-\item{x}{An \code{mlx} positive-definite matrix.}
+\item{x}{An \code{mlx} matrix. Note: if \code{x} is not symmetric
+positive semi-definite, "behaviour is undefined" according to the MLX
+documentation.}
 
 \item{pivot}{Ignored; pivoted decomposition is not supported.}
-
-\item{LINPACK}{Ignored; set to \code{FALSE}.}
 
 \item{...}{Additional arguments (unused).}
 }
