@@ -189,6 +189,14 @@ cpp_mlx_logical <- function(xp1_, xp2_, op, device_str) {
     .Call(`_Rmlx_cpp_mlx_logical`, xp1_, xp2_, op, device_str)
 }
 
+cpp_mlx_isclose <- function(xp1_, xp2_, rtol, atol, equal_nan, device_str) {
+    .Call(`_Rmlx_cpp_mlx_isclose`, xp1_, xp2_, rtol, atol, equal_nan, device_str)
+}
+
+cpp_mlx_allclose <- function(xp1_, xp2_, rtol, atol, equal_nan, device_str) {
+    .Call(`_Rmlx_cpp_mlx_allclose`, xp1_, xp2_, rtol, atol, equal_nan, device_str)
+}
+
 cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
 }

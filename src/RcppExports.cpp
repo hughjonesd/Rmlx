@@ -630,6 +630,38 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_isclose
+SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_isclose(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP rtolSEXP, SEXP atolSEXP, SEXP equal_nanSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp1_(xp1_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type xp2_(xp2_SEXP);
+    Rcpp::traits::input_parameter< double >::type rtol(rtolSEXP);
+    Rcpp::traits::input_parameter< double >::type atol(atolSEXP);
+    Rcpp::traits::input_parameter< bool >::type equal_nan(equal_nanSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_isclose(xp1_, xp2_, rtol, atol, equal_nan, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_allclose
+SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_allclose(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP rtolSEXP, SEXP atolSEXP, SEXP equal_nanSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp1_(xp1_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type xp2_(xp2_SEXP);
+    Rcpp::traits::input_parameter< double >::type rtol(rtolSEXP);
+    Rcpp::traits::input_parameter< double >::type atol(atolSEXP);
+    Rcpp::traits::input_parameter< bool >::type equal_nan(equal_nanSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_allclose(xp1_, xp2_, rtol, atol, equal_nan, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_matmul
 SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_matmul(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1274,6 +1306,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_floor_divide", (DL_FUNC) &_Rmlx_cpp_mlx_floor_divide, 3},
     {"_Rmlx_cpp_mlx_remainder", (DL_FUNC) &_Rmlx_cpp_mlx_remainder, 3},
     {"_Rmlx_cpp_mlx_logical", (DL_FUNC) &_Rmlx_cpp_mlx_logical, 4},
+    {"_Rmlx_cpp_mlx_isclose", (DL_FUNC) &_Rmlx_cpp_mlx_isclose, 6},
+    {"_Rmlx_cpp_mlx_allclose", (DL_FUNC) &_Rmlx_cpp_mlx_allclose, 6},
     {"_Rmlx_cpp_mlx_matmul", (DL_FUNC) &_Rmlx_cpp_mlx_matmul, 4},
     {"_Rmlx_cpp_mlx_cast", (DL_FUNC) &_Rmlx_cpp_mlx_cast, 3},
     {"_Rmlx_cpp_mlx_cumulative", (DL_FUNC) &_Rmlx_cpp_mlx_cumulative, 2},

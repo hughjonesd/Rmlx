@@ -282,3 +282,35 @@ SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op, std::string device_st
   return make_mlx_xptr(std::move(result));
 }
 
+// [[Rcpp::export]]
+SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan,
+                     std::string device_str) {
+  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
+  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array lhs = astype(wrapper1->get(), wrapper1->get().dtype(), target_device);
+  array rhs = astype(wrapper2->get(), wrapper2->get().dtype(), target_device);
+
+  array result = isclose(lhs, rhs, rtol, atol, equal_nan, target_device);
+
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan,
+                      std::string device_str) {
+  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
+  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array lhs = astype(wrapper1->get(), wrapper1->get().dtype(), target_device);
+  array rhs = astype(wrapper2->get(), wrapper2->get().dtype(), target_device);
+
+  array result = allclose(lhs, rhs, rtol, atol, equal_nan, target_device);
+
+  return make_mlx_xptr(std::move(result));
+}
+

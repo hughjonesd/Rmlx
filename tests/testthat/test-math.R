@@ -193,3 +193,91 @@ test_that("unsupported Math functions fall back to R", {
   )
   expect_equal(result_lgamma, lgamma(x_pos), tolerance = 1e-6)
 })
+
+test_that("mlx_isclose returns element-wise comparison", {
+  a <- as_mlx(c(1.0, 2.0, 3.0))
+  b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-3))
+
+  # Default tolerance should pass for small differences
+  result <- mlx_isclose(a, b)
+  expect_s3_class(result, "mlx")
+  close_vals <- as.vector(as.matrix(result))
+  expect_equal(close_vals[1:2], c(TRUE, TRUE))
+  expect_equal(close_vals[3], FALSE)  # 1e-3 is too large
+
+  # Tighter tolerance
+  result_strict <- mlx_isclose(a, b, rtol = 1e-7, atol = 1e-9)
+  close_strict <- as.vector(as.matrix(result_strict))
+  expect_equal(close_strict, c(FALSE, FALSE, FALSE))
+
+  # Broadcasting
+  a_mat <- as_mlx(matrix(1:6, 2, 3))
+  b_scalar <- as_mlx(3.0)
+  result_bcast <- mlx_isclose(a_mat, b_scalar)
+  expect_equal(dim(as.matrix(result_bcast)), c(2L, 3L))
+})
+
+test_that("mlx_allclose returns scalar boolean", {
+  a <- as_mlx(c(1.0, 2.0, 3.0))
+  b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-6))
+
+  # All elements close with default tolerance
+  result <- mlx_allclose(a, b)
+  expect_s3_class(result, "mlx")
+  expect_true(as.logical(as.matrix(result)))
+
+  # Not all close with stricter tolerance
+  result_strict <- mlx_allclose(a, b, rtol = 1e-7, atol = 1e-9)
+  expect_false(as.logical(as.matrix(result_strict)))
+
+  # Test with one element far off
+  c <- as_mlx(c(1.0, 2.0, 100.0))
+  result_diff <- mlx_allclose(a, c)
+  expect_false(as.logical(as.matrix(result_diff)))
+})
+
+test_that("mlx_isclose handles NaN with equal_nan parameter", {
+  a <- as_mlx(c(1.0, NaN, 3.0))
+  b <- as_mlx(c(1.0, NaN, 3.0))
+
+  # By default, NaN != NaN
+  result_default <- mlx_isclose(a, b)
+  close_vals <- as.vector(as.matrix(result_default))
+  expect_equal(close_vals[1], TRUE)
+  expect_equal(close_vals[2], FALSE)  # NaN not equal to NaN
+  expect_equal(close_vals[3], TRUE)
+
+  # With equal_nan = TRUE
+  result_equal_nan <- mlx_isclose(a, b, equal_nan = TRUE)
+  close_vals_nan <- as.vector(as.matrix(result_equal_nan))
+  expect_equal(close_vals_nan, c(TRUE, TRUE, TRUE))
+})
+
+test_that("all.equal.mlx follows R semantics", {
+  a <- as_mlx(c(1.0, 2.0, 3.0))
+  b <- as_mlx(c(1.0 + 1e-9, 2.0 + 1e-9, 3.0 + 1e-9))
+
+  # Should return TRUE when all close (within default tolerance)
+  result <- all.equal(a, b)
+  expect_true(isTRUE(result))
+
+  # Should return character vector describing differences when not close
+  c <- as_mlx(c(1.0, 2.0, 10.0))
+  result_diff <- all.equal(a, c)
+  expect_type(result_diff, "character")
+  expect_match(result_diff, "not all close", ignore.case = TRUE)
+
+  # Test with tolerance parameter
+  d <- as_mlx(c(1.0, 2.0, 3.01))
+  result_tol <- all.equal(a, d, tolerance = 0.02)
+  expect_true(isTRUE(result_tol))
+
+  result_notol <- all.equal(a, d, tolerance = 0.001)
+  expect_type(result_notol, "character")
+
+  # Test shape mismatch
+  e <- as_mlx(c(1.0, 2.0))
+  result_shape <- all.equal(a, e)
+  expect_type(result_shape, "character")
+  expect_match(result_shape, "shape|length|dim", ignore.case = TRUE)
+})
