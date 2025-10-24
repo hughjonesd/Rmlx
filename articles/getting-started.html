@@ -35,6 +35,7 @@
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/linear-regression.html">Linear Regression with MLX</a></li>
+    <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/performance.html">Performance Benchmarks</a></li>
   </ul>
 </li>
@@ -85,8 +86,11 @@ familiar R syntax.</li>
 helpers.</li>
 </ul>
 <p>All heavy computation stays in MLX land; you only copy back to base R
-when you call functions like <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix()</a></code>. ## System
-Requirements</p>
+when you call functions like <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix()</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="system-requirements">System Requirements<a class="anchor" aria-label="anchor" href="#system-requirements"></a>
+</h2>
 <p>Before using Rmlx, ensure MLX is installed:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Using Homebrew (if available)</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ex">brew</span> install mlx</span>
@@ -109,7 +113,7 @@ Requirements</p>
 <span><span class="co">#&gt;     fft</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     colMeans, colSums, rowMeans, rowSums</span></span>
+<span><span class="co">#&gt;     chol2inv, colMeans, colSums, diag, outer, rowMeans, rowSums, svd</span></span>
 <span></span>
 <span><span class="co"># From a vector</span></span>
 <span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
@@ -421,9 +425,9 @@ multiplication:</p>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Base R:"</span>, <span class="va">t1</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Base R: 0.366 seconds</span></span>
+<span><span class="co">#&gt; Base R: 0.361 seconds</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"MLX:"</span>, <span class="va">t2</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; MLX: 0.013 seconds</span></span></code></pre></div>
+<span><span class="co">#&gt; MLX: 0.024 seconds</span></span></code></pre></div>
 <p>Note: This is an informal comparison, not a rigorous benchmark.
 Performance gains depend on array size, operation type, and
 hardware.</p>

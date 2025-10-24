@@ -20,6 +20,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/linear-regression.html">Linear Regression with MLX</a></li>
+    <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/performance.html">Performance Benchmarks</a></li>
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -94,6 +95,12 @@
 
         </dt>
         <dd>Get dimensions of MLX array</dd>
+      </dl><dl><dt>
+
+          <code><a href="dim-set-.mlx.html">`dim&lt;-`(<i>&lt;mlx&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Set dimensions of MLX array</dd>
       </dl><dl><dt>
 
           <code><a href="length.mlx.html">length(<i>&lt;mlx&gt;</i>)</a></code>
@@ -357,16 +364,16 @@
         <dd>Reorder MLX tensor axes</dd>
       </dl><dl><dt>
 
+          <code><a href="mlx_unflatten.html">mlx_unflatten()</a></code>
+
+        </dt>
+        <dd>Unflatten an axis into multiple axes</dd>
+      </dl><dl><dt>
+
           <code><a href="mlx_where.html">mlx_where()</a></code>
 
         </dt>
         <dd>Elementwise conditional selection</dd>
-      </dl><dl><dt>
-
-          <code><a href="mlx_shape_helpers.html">mlx_shape_helpers</a></code>
-
-        </dt>
-        <dd>Tensor shape helpers</dd>
       </dl><dl><dt>
 
           <code><a href="rbind.mlx.html">rbind(<i>&lt;mlx&gt;</i>)</a></code>
@@ -443,6 +450,12 @@
 
         </dt>
         <dd>Mean of MLX array elements</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_cumsum.html">mlx_cumsum()</a></code> <code><a href="mlx_cumsum.html">mlx_cumprod()</a></code>
+
+        </dt>
+        <dd>Cumulative sum and product</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_clip.html">mlx_clip()</a></code>
@@ -540,10 +553,22 @@
         <dd>Transposed cross product</dd>
       </dl><dl><dt>
 
+          <code><a href="outer.html">outer()</a></code>
+
+        </dt>
+        <dd>Outer product of two vectors</dd>
+      </dl><dl><dt>
+
           <code><a href="chol.mlx.html">chol(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
         <dd>Cholesky decomposition for MLX tensors</dd>
+      </dl><dl><dt>
+
+          <code><a href="chol2inv.html">chol2inv()</a></code>
+
+        </dt>
+        <dd>Inverse from Cholesky decomposition</dd>
       </dl><dl><dt>
 
           <code><a href="qr.mlx.html">qr(<i>&lt;mlx&gt;</i>)</a></code>
@@ -570,6 +595,30 @@
         <dd>Moore-Penrose pseudoinverse for MLX arrays</dd>
       </dl><dl><dt>
 
+          <code><a href="mlx_inv.html">mlx_inv()</a></code>
+
+        </dt>
+        <dd>Compute matrix inverse</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_tri_inv.html">mlx_tri_inv()</a></code>
+
+        </dt>
+        <dd>Compute triangular matrix inverse</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_cholesky_inv.html">mlx_cholesky_inv()</a></code>
+
+        </dt>
+        <dd>Compute matrix inverse via Cholesky decomposition</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_lu.html">mlx_lu()</a></code>
+
+        </dt>
+        <dd>LU factorization</dd>
+      </dl><dl><dt>
+
           <code><a href="mlx_norm.html">mlx_norm()</a></code>
 
         </dt>
@@ -580,6 +629,18 @@
 
         </dt>
         <dd>Solve triangular systems with MLX tensors</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_trace.html">mlx_trace()</a></code>
+
+        </dt>
+        <dd>Matrix trace for MLX tensors</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_diagonal.html">diag(<i>&lt;mlx&gt;</i>)</a></code> <code><a href="mlx_diagonal.html">mlx_diagonal()</a></code>
+
+        </dt>
+        <dd>Extract diagonal or construct diagonal matrix for MLX tensors</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_eig.html">mlx_eig()</a></code>
@@ -611,7 +672,7 @@
         </dt>
         <dd>Vector cross product with MLX tensors</dd>
       </dl></div><div class="section level2">
-      <h2 id="neural-network-helpers">Neural Network Helpers<a class="anchor" aria-label="anchor" href="#neural-network-helpers"></a></h2>
+      <h2 id="neural-network-layers">Neural Network Layers<a class="anchor" aria-label="anchor" href="#neural-network-layers"></a></h2>
 
 
 
@@ -629,11 +690,145 @@
         <dd>Create a learnable linear transformation</dd>
       </dl><dl><dt>
 
+          <code><a href="mlx_sequential.html">mlx_sequential()</a></code>
+
+        </dt>
+        <dd>Compose modules sequentially</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_embedding.html">mlx_embedding()</a></code>
+
+        </dt>
+        <dd>Embedding layer</dd>
+      </dl></div><div class="section level2">
+      <h2 id="activation-functions">Activation Functions<a class="anchor" aria-label="anchor" href="#activation-functions"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
           <code><a href="mlx_relu.html">mlx_relu()</a></code>
 
         </dt>
         <dd>Rectified linear activation module</dd>
       </dl><dl><dt>
+
+          <code><a href="mlx_gelu.html">mlx_gelu()</a></code>
+
+        </dt>
+        <dd>GELU activation</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_sigmoid.html">mlx_sigmoid()</a></code>
+
+        </dt>
+        <dd>Sigmoid activation</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_tanh.html">mlx_tanh()</a></code>
+
+        </dt>
+        <dd>Tanh activation</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_silu.html">mlx_silu()</a></code>
+
+        </dt>
+        <dd>SiLU (Swish) activation</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_leaky_relu.html">mlx_leaky_relu()</a></code>
+
+        </dt>
+        <dd>Leaky ReLU activation</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_softmax_layer.html">mlx_softmax_layer()</a></code>
+
+        </dt>
+        <dd>Softmax activation</dd>
+      </dl></div><div class="section level2">
+      <h2 id="regularization-normalization">Regularization &amp; Normalization<a class="anchor" aria-label="anchor" href="#regularization-normalization"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="mlx_dropout.html">mlx_dropout()</a></code>
+
+        </dt>
+        <dd>Dropout layer</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_layer_norm.html">mlx_layer_norm()</a></code>
+
+        </dt>
+        <dd>Layer normalization</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_batch_norm.html">mlx_batch_norm()</a></code>
+
+        </dt>
+        <dd>Batch normalization</dd>
+      </dl></div><div class="section level2">
+      <h2 id="loss-functions">Loss Functions<a class="anchor" aria-label="anchor" href="#loss-functions"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="mlx_mse_loss.html">mlx_mse_loss()</a></code>
+
+        </dt>
+        <dd>Mean squared error loss</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_l1_loss.html">mlx_l1_loss()</a></code>
+
+        </dt>
+        <dd>L1 loss (Mean Absolute Error)</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_binary_cross_entropy.html">mlx_binary_cross_entropy()</a></code>
+
+        </dt>
+        <dd>Binary cross-entropy loss</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_cross_entropy.html">mlx_cross_entropy()</a></code>
+
+        </dt>
+        <dd>Cross-entropy loss</dd>
+      </dl></div><div class="section level2">
+      <h2 id="training-utilities">Training Utilities<a class="anchor" aria-label="anchor" href="#training-utilities"></a></h2>
+
+
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="mlx_parameters.html">mlx_parameters()</a></code>
 
@@ -663,12 +858,6 @@
 
         </dt>
         <dd>Single training step helper</dd>
-      </dl><dl><dt>
-
-          <code><a href="mlx_sequential.html">mlx_sequential()</a></code>
-
-        </dt>
-        <dd>Compose modules sequentially</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
