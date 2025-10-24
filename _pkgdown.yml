@@ -13,6 +13,7 @@ reference:
       - mlx_eval
       - "[.mlx"
       - dim.mlx
+      - "dim<-.mlx"
       - length.mlx
       - print.mlx
       - str.mlx
@@ -51,8 +52,8 @@ reference:
       - mlx_moveaxis
       - aperm.mlx
       - mlx_split
+      - mlx_unflatten
       - mlx_where
-      - mlx_shape_helpers
       - rbind.mlx
       - cbind.mlx
   - title: Ordering & Selection
@@ -92,6 +93,7 @@ reference:
       - "%*%.mlx"
       - crossprod.mlx
       - tcrossprod.mlx
+      - outer
       - chol.mlx
       - chol2inv
       - qr.mlx
@@ -104,6 +106,8 @@ reference:
       - mlx_lu
       - mlx_norm
       - mlx_solve_triangular
+      - mlx_trace
+      - mlx_diagonal
       - mlx_eig
       - mlx_eigh
       - mlx_eigvals
