@@ -119,3 +119,10 @@ SEXP cpp_mlx_cumprod(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inc
   return make_mlx_xptr(std::move(result));
 }
 
+// [[Rcpp::export]]
+void cpp_mlx_synchronize(std::string device_str) {
+  Device dev = string_to_device(device_str);
+  Stream stream = default_stream(dev);
+  synchronize(stream);
+}
+

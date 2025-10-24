@@ -710,6 +710,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_synchronize
+void cpp_mlx_synchronize(std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_synchronize(SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    cpp_mlx_synchronize(device_str);
+    return R_NilValue;
+END_RCPP
+}
 // cpp_mlx_random_normal
 SEXP cpp_mlx_random_normal(SEXP dim_, double mean, double std, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_random_normal(SEXP dim_SEXP, SEXP meanSEXP, SEXP stdSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1270,6 +1280,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_fft", (DL_FUNC) &_Rmlx_cpp_mlx_fft, 3},
     {"_Rmlx_cpp_mlx_cumsum", (DL_FUNC) &_Rmlx_cpp_mlx_cumsum, 4},
     {"_Rmlx_cpp_mlx_cumprod", (DL_FUNC) &_Rmlx_cpp_mlx_cumprod, 4},
+    {"_Rmlx_cpp_mlx_synchronize", (DL_FUNC) &_Rmlx_cpp_mlx_synchronize, 1},
     {"_Rmlx_cpp_mlx_random_normal", (DL_FUNC) &_Rmlx_cpp_mlx_random_normal, 5},
     {"_Rmlx_cpp_mlx_random_uniform", (DL_FUNC) &_Rmlx_cpp_mlx_random_uniform, 5},
     {"_Rmlx_cpp_mlx_random_bernoulli", (DL_FUNC) &_Rmlx_cpp_mlx_random_bernoulli, 3},
