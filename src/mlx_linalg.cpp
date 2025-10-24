@@ -340,3 +340,76 @@ SEXP cpp_mlx_outer(SEXP a_xp_, SEXP b_xp_, std::string device_str) {
   return make_mlx_xptr(std::move(result_target));
 }
 
+// [[Rcpp::export]]
+SEXP cpp_mlx_inv(SEXP a_xp_, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+  array result_cpu = linalg::inv(a_cpu, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_tri_inv(SEXP a_xp_, bool upper, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+  array result_cpu = linalg::tri_inv(a_cpu, upper, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_cholesky_inv(SEXP a_xp_, bool upper, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+  array result_cpu = linalg::cholesky_inv(a_cpu, upper, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_lu(SEXP a_xp_, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+
+  // lu() returns a vector of arrays [P, L, U]
+  auto lu_result = linalg::lu(a_cpu, cpu_stream);
+
+  if (lu_result.size() != 3) {
+    Rcpp::stop("Unexpected LU result size");
+  }
+
+  array p_cpu = lu_result[0];  // Pivot indices
+  array l_cpu = lu_result[1];  // Lower triangular
+  array u_cpu = lu_result[2];  // Upper triangular
+
+  array p_target = astype(p_cpu, p_cpu.dtype(), target_device);
+  array l_target = astype(l_cpu, l_cpu.dtype(), target_device);
+  array u_target = astype(u_cpu, u_cpu.dtype(), target_device);
+
+  return List::create(
+    Named("p") = make_mlx_xptr(std::move(p_target)),
+    Named("l") = make_mlx_xptr(std::move(l_target)),
+    Named("u") = make_mlx_xptr(std::move(u_target))
+  );
+}
+

@@ -311,3 +311,129 @@ test_that("pinv matches analytical pseudoinverse for full-rank matrix", {
   pseudo_mlx <- pinv(as_mlx(A))
   expect_equal(as.matrix(pseudo_mlx), pseudo_r, tolerance = 1e-4)
 })
+
+test_that("mlx_inv computes matrix inverse", {
+  set.seed(301)
+  A <- matrix(rnorm(16), 4, 4)
+
+  A_inv_mlx <- mlx_inv(as_mlx(A))
+  A_inv_r <- solve(A)
+
+  expect_equal(as.matrix(A_inv_mlx), A_inv_r, tolerance = 1e-5)
+
+  # Verify: A %*% A_inv should be identity
+  I_mlx <- as_mlx(A) %*% A_inv_mlx
+  I_expected <- diag(4)
+  expect_equal(as.matrix(I_mlx), I_expected, tolerance = 1e-5)
+})
+
+test_that("mlx_inv works with different matrix sizes", {
+  set.seed(302)
+
+  # 2x2 matrix
+  A2 <- matrix(rnorm(4), 2, 2)
+  A2_inv_mlx <- mlx_inv(as_mlx(A2))
+  expect_equal(as.matrix(A2_inv_mlx), solve(A2), tolerance = 1e-5)
+
+  # 5x5 matrix
+  A5 <- matrix(rnorm(25), 5, 5)
+  A5_inv_mlx <- mlx_inv(as_mlx(A5))
+  expect_equal(as.matrix(A5_inv_mlx), solve(A5), tolerance = 1e-5)
+})
+
+test_that("mlx_tri_inv computes triangular matrix inverse", {
+  set.seed(303)
+  A <- matrix(rnorm(16), 4, 4)
+
+  # Lower triangular
+  L <- A
+  L[upper.tri(L)] <- 0
+  L_inv_mlx <- mlx_tri_inv(as_mlx(L), upper = FALSE)
+  L_inv_r <- solve(L)
+  expect_equal(as.matrix(L_inv_mlx), L_inv_r, tolerance = 1e-5)
+
+  # Upper triangular
+  U <- A
+  U[lower.tri(U)] <- 0
+  U_inv_mlx <- mlx_tri_inv(as_mlx(U), upper = TRUE)
+  U_inv_r <- solve(U)
+  expect_equal(as.matrix(U_inv_mlx), U_inv_r, tolerance = 1e-5)
+})
+
+test_that("mlx_cholesky_inv computes inverse via Cholesky", {
+  set.seed(304)
+  # Create a positive definite matrix
+  A <- matrix(rnorm(16), 4, 4)
+  A <- t(A) %*% A  # Make it positive definite
+
+  # R's chol() returns upper triangular by default
+  U <- chol(A)
+
+  # Get inverse from Cholesky factor
+  A_inv_mlx <- mlx_cholesky_inv(as_mlx(U), upper = TRUE)
+  A_inv_r <- solve(A)
+
+  expect_equal(as.matrix(A_inv_mlx), A_inv_r, tolerance = 1e-4)
+
+  # Verify inverse
+  I_mlx <- as_mlx(A) %*% A_inv_mlx
+  expect_equal(as.matrix(I_mlx), diag(4), tolerance = 1e-3)
+})
+
+test_that("mlx_cholesky_inv works with lower triangle", {
+  set.seed(305)
+  A <- matrix(rnorm(9), 3, 3)
+  A <- t(A) %*% A  # Positive definite
+
+  # Get upper triangular Cholesky factor and transpose to get lower
+  U <- chol(A)
+  L <- t(U)
+
+  A_inv_mlx <- mlx_cholesky_inv(as_mlx(L), upper = FALSE)
+  A_inv_r <- solve(A)
+
+  expect_equal(as.matrix(A_inv_mlx), A_inv_r, tolerance = 1e-4)
+})
+
+test_that("mlx_lu returns P, L and U factors", {
+  set.seed(306)
+  A <- matrix(rnorm(16), 4, 4)
+
+  lu_mlx <- mlx_lu(as_mlx(A))
+
+  expect_true(is.list(lu_mlx))
+  expect_true("p" %in% names(lu_mlx))
+  expect_true("l" %in% names(lu_mlx))
+  expect_true("u" %in% names(lu_mlx))
+
+  P <- as.vector(as.matrix(lu_mlx$p))
+  L <- as.matrix(lu_mlx$l)
+  U <- as.matrix(lu_mlx$u)
+
+  # L should be lower triangular with 1s on diagonal
+  expect_true(all(L[upper.tri(L)] == 0))
+  expect_equal(diag(L), rep(1, 4), tolerance = 1e-10)
+
+  # U should be upper triangular
+  expect_true(all(U[lower.tri(U)] == 0))
+
+  # P should be pivot indices (length matching dimensions)
+  expect_equal(length(P), 4)
+})
+
+test_that("mlx_lu works with rectangular matrices", {
+  set.seed(307)
+
+  # Tall matrix
+  A_tall <- matrix(rnorm(12), 4, 3)
+  lu_tall <- mlx_lu(as_mlx(A_tall))
+  # Check that we get results with expected structure
+  expect_true(is.list(lu_tall))
+  expect_true(all(c("p", "l", "u") %in% names(lu_tall)))
+
+  # Wide matrix
+  A_wide <- matrix(rnorm(12), 3, 4)
+  lu_wide <- mlx_lu(as_mlx(A_wide))
+  expect_true(is.list(lu_wide))
+  expect_true(all(c("p", "l", "u") %in% names(lu_wide)))
+})

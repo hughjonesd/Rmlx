@@ -411,3 +411,90 @@ mlx_unflatten <- function(x, axis, shape) {
   ptr <- cpp_mlx_unflatten(x$ptr, as.integer(axis), as.integer(shape), x$device)
   .mlx_wrap_result(ptr, x$device)
 }
+
+#' Compute matrix inverse
+#'
+#' Computes the inverse of a square matrix.
+#'
+#' @param x An `mlx` array (must be square).
+#' @return The inverse of `x`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.inv}
+#' @export
+#' @examples
+#' A <- as_mlx(matrix(c(4, 7, 2, 6), 2, 2))
+#' A_inv <- mlx_inv(A)
+#' # Verify: A %*% A_inv should be identity
+#' as.matrix(A %*% A_inv)
+mlx_inv <- function(x) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  ptr <- cpp_mlx_inv(x$ptr, x$device)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' Compute triangular matrix inverse
+#'
+#' Computes the inverse of a triangular matrix.
+#'
+#' @param x An `mlx` array (triangular matrix).
+#' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
+#' @return The inverse of the triangular matrix `x`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.tri_inv}
+#' @export
+#' @examples
+#' # Lower triangular matrix
+#' L <- as_mlx(matrix(c(1, 2, 0, 3, 0, 0, 4, 5, 6), 3, 3, byrow = TRUE))
+#' L_inv <- mlx_tri_inv(L, upper = FALSE)
+mlx_tri_inv <- function(x, upper = FALSE) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  ptr <- cpp_mlx_tri_inv(x$ptr, upper, x$device)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' Compute matrix inverse via Cholesky decomposition
+#'
+#' Computes the inverse of a positive definite matrix from its Cholesky factor.
+#' Note: `x` should be the Cholesky factor (L or U), not the original matrix.
+#'
+#' @param x An `mlx` array containing the Cholesky factor (lower or upper triangular).
+#' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
+#' @return The inverse of the original matrix (A^-1 where A = LL' or A = U'U).
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}
+#' @export
+#' @examples
+#' # Create a positive definite matrix
+#' A <- matrix(rnorm(9), 3, 3)
+#' A <- t(A) %*% A
+#' # Compute Cholesky factor
+#' L <- chol(A, pivot = FALSE, upper = FALSE)
+#' # Get inverse from Cholesky factor
+#' A_inv <- mlx_cholesky_inv(as_mlx(L))
+mlx_cholesky_inv <- function(x, upper = FALSE) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  ptr <- cpp_mlx_cholesky_inv(x$ptr, upper, x$device)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' LU factorization
+#'
+#' Computes the LU factorization of a matrix.
+#'
+#' @param x An `mlx` array.
+#' @return A list with components `p` (pivot indices), `l` (lower triangular),
+#'   and `u` (upper triangular). The relationship is A = L[P, :] \%*\% U.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.lu}
+#' @export
+#' @examples
+#' A <- as_mlx(matrix(rnorm(16), 4, 4))
+#' lu_result <- mlx_lu(A)
+#' P <- lu_result$p  # Pivot indices
+#' L <- lu_result$l  # Lower triangular
+#' U <- lu_result$u  # Upper triangular
+mlx_lu <- function(x) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  result <- cpp_mlx_lu(x$ptr, x$device)
+  list(
+    p = .mlx_wrap_result(result$p, x$device),
+    l = .mlx_wrap_result(result$l, x$device),
+    u = .mlx_wrap_result(result$u, x$device)
+  )
+}
