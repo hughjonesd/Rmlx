@@ -1757,3 +1757,98 @@ SEXP cpp_mlx_cross(SEXP a_xp_, SEXP b_xp_, int axis, std::string device_str) {
   array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
   return make_mlx_xptr(std::move(result_target));
 }
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_trace(SEXP a_xp_, int offset, int axis1, int axis2, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+
+  // Convert 1-indexed to 0-indexed
+  int ax1 = axis1 - 1;
+  int ax2 = axis2 - 1;
+
+  ax1 = normalize_axis(a_cpu, ax1);
+  ax2 = normalize_axis(a_cpu, ax2);
+
+  array result_cpu = trace(a_cpu, offset, ax1, ax2, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_diagonal(SEXP a_xp_, int offset, int axis1, int axis2, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+
+  // Convert 1-indexed to 0-indexed
+  int ax1 = axis1 - 1;
+  int ax2 = axis2 - 1;
+
+  ax1 = normalize_axis(a_cpu, ax1);
+  ax2 = normalize_axis(a_cpu, ax2);
+
+  array result_cpu = diagonal(a_cpu, offset, ax1, ax2, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_diag(SEXP a_xp_, int k, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+  array result_cpu = diag(a_cpu, k, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_outer(SEXP a_xp_, SEXP b_xp_, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+  MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+  array b_cpu = astype(b_wrapper->get(), b_wrapper->get().dtype(), cpu_stream);
+
+  array result_cpu = outer(a_cpu, b_cpu, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(result_target));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+
+  StreamOrDevice cpu_stream = Device(Device::cpu);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+
+  // Convert 1-indexed to 0-indexed
+  int ax = axis - 1;
+  ax = normalize_axis(a_cpu, ax);
+
+  // Convert shape to SmallVector
+  Shape new_shape;
+  for (int i = 0; i < shape.size(); i++) {
+    new_shape.push_back(shape[i]);
+  }
+
+  array result_cpu = unflatten(a_cpu, ax, new_shape, cpu_stream);
+  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
+  return make_mlx_xptr(std::move(result_target));
+}

@@ -318,3 +318,96 @@ mlx_cross <- function(a, b, axis = -1L) {
   ptr <- cpp_mlx_cross(a$ptr, b$ptr, as.integer(axis), a$device)
   .mlx_wrap_result(ptr, a$device)
 }
+
+#' Matrix trace for MLX tensors
+#'
+#' Computes the sum of the diagonal elements of a 2D array, or the sum along
+#' diagonals of a higher dimensional array.
+#'
+#' @param x An `mlx` array.
+#' @param offset Offset of the diagonal (0 for main diagonal, positive for above, negative for below).
+#' @param axis1,axis2 Axes along which the diagonals are taken (1-indexed, default 1 and 2).
+#' @return An `mlx` scalar or array containing the trace.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.trace.html}
+#' @export
+#' @examples
+#' x <- as_mlx(matrix(1:9, 3, 3))
+#' mlx_trace(x)
+#' mlx_trace(x, offset = 1)
+mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  ptr <- cpp_mlx_trace(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), x$device)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' Extract diagonal or construct diagonal matrix for MLX tensors
+#'
+#' Extract a diagonal from a matrix or construct a diagonal matrix from a vector.
+#'
+#' @param x An `mlx` array. If 1D, creates a diagonal matrix. If 2D or higher, extracts the diagonal.
+#' @param offset Diagonal offset (0 for main diagonal, positive for above, negative for below).
+#' @param axis1,axis2 For multi-dimensional arrays, which axes define the 2D planes (1-indexed).
+#' @return An `mlx` tensor.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.diagonal.html}
+#' @export
+#' @examples
+#' # Extract diagonal
+#' x <- as_mlx(matrix(1:9, 3, 3))
+#' mlx_diagonal(x)
+#'
+#' # Create diagonal matrix
+#' v <- as_mlx(c(1, 2, 3))
+#' mlx_diagonal(v)
+mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  ptr <- cpp_mlx_diagonal(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), x$device)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' Outer product of two vectors
+#'
+#' @param x,y Numeric vectors or `mlx` arrays.
+#' @param ... Additional arguments passed to methods.
+#' @return For `mlx` inputs, an `mlx` matrix. Otherwise delegates to `base::outer`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.outer.html}
+#' @export
+#' @examples
+#' x <- as_mlx(c(1, 2, 3))
+#' y <- as_mlx(c(4, 5))
+#' outer(x, y)
+outer <- function(x, y, ...) {
+  UseMethod("outer")
+}
+
+#' @export
+outer.default <- base::outer
+
+#' @export
+#' @rdname outer
+outer.mlx <- function(x, y, ...) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  if (!is.mlx(y)) y <- as_mlx(y)
+  ptr <- cpp_mlx_outer(x$ptr, y$ptr, x$device)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' Unflatten an axis into multiple axes
+#'
+#' The reverse of flattening: expands a single axis into multiple axes with the given shape.
+#'
+#' @param x An `mlx` array.
+#' @param axis Which axis to unflatten (1-indexed).
+#' @param shape Integer vector specifying the new shape for the unflattened axis.
+#' @return An `mlx` array with the axis expanded.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.unflatten.html}
+#' @export
+#' @examples
+#' # Flatten and unflatten
+#' x <- as_mlx(array(1:24, c(2, 3, 4)))
+#' x_flat <- mlx_reshape(x, c(2, 12))  # flatten last two dims
+#' mlx_unflatten(x_flat, axis = 2, shape = c(3, 4))  # restore original shape
+mlx_unflatten <- function(x, axis, shape) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  ptr <- cpp_mlx_unflatten(x$ptr, as.integer(axis), as.integer(shape), x$device)
+  .mlx_wrap_result(ptr, x$device)
+}

@@ -154,9 +154,20 @@ diag.default <- base::diag
 
 
 #' @export
-#'
-diag.mlx <- function(x, ...) {
-  # TODO call mlx.core.diagonal
+#' @rdname diag
+diag.mlx <- function(x, nrow, ncol, names = TRUE) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+
+  # Determine k offset if nrow is specified
+  k <- 0L
+  if (!missing(nrow)) {
+    k <- as.integer(nrow)
+  }
+
+  ptr <- cpp_mlx_diag(x$ptr, k, x$device)
+  dim <- cpp_mlx_shape(ptr)
+  dtype <- cpp_mlx_dtype(ptr)
+  new_mlx(ptr, dim, dtype, x$device)
 }
 
 #' Numerical ranges on MLX devices
