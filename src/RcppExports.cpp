@@ -682,6 +682,34 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_cumsum
+SEXP cpp_mlx_cumsum(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive);
+RcppExport SEXP _Rmlx_cpp_mlx_cumsum(SEXP xp_SEXP, SEXP axis_SEXP, SEXP reverseSEXP, SEXP inclusiveSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<int> >::type axis_(axis_SEXP);
+    Rcpp::traits::input_parameter< bool >::type reverse(reverseSEXP);
+    Rcpp::traits::input_parameter< bool >::type inclusive(inclusiveSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_cumsum(xp_, axis_, reverse, inclusive));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_cumprod
+SEXP cpp_mlx_cumprod(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive);
+RcppExport SEXP _Rmlx_cpp_mlx_cumprod(SEXP xp_SEXP, SEXP axis_SEXP, SEXP reverseSEXP, SEXP inclusiveSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<int> >::type axis_(axis_SEXP);
+    Rcpp::traits::input_parameter< bool >::type reverse(reverseSEXP);
+    Rcpp::traits::input_parameter< bool >::type inclusive(inclusiveSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_cumprod(xp_, axis_, reverse, inclusive));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_random_normal
 SEXP cpp_mlx_random_normal(SEXP dim_, double mean, double std, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_random_normal(SEXP dim_SEXP, SEXP meanSEXP, SEXP stdSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1240,6 +1268,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_cast", (DL_FUNC) &_Rmlx_cpp_mlx_cast, 3},
     {"_Rmlx_cpp_mlx_cumulative", (DL_FUNC) &_Rmlx_cpp_mlx_cumulative, 2},
     {"_Rmlx_cpp_mlx_fft", (DL_FUNC) &_Rmlx_cpp_mlx_fft, 3},
+    {"_Rmlx_cpp_mlx_cumsum", (DL_FUNC) &_Rmlx_cpp_mlx_cumsum, 4},
+    {"_Rmlx_cpp_mlx_cumprod", (DL_FUNC) &_Rmlx_cpp_mlx_cumprod, 4},
     {"_Rmlx_cpp_mlx_random_normal", (DL_FUNC) &_Rmlx_cpp_mlx_random_normal, 5},
     {"_Rmlx_cpp_mlx_random_uniform", (DL_FUNC) &_Rmlx_cpp_mlx_random_uniform, 5},
     {"_Rmlx_cpp_mlx_random_bernoulli", (DL_FUNC) &_Rmlx_cpp_mlx_random_bernoulli, 3},

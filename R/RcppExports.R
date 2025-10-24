@@ -205,6 +205,14 @@ cpp_mlx_fft <- function(xp_, inverse, device_str) {
     .Call(`_Rmlx_cpp_mlx_fft`, xp_, inverse, device_str)
 }
 
+cpp_mlx_cumsum <- function(xp_, axis_, reverse, inclusive) {
+    .Call(`_Rmlx_cpp_mlx_cumsum`, xp_, axis_, reverse, inclusive)
+}
+
+cpp_mlx_cumprod <- function(xp_, axis_, reverse, inclusive) {
+    .Call(`_Rmlx_cpp_mlx_cumprod`, xp_, axis_, reverse, inclusive)
+}
+
 cpp_mlx_random_normal <- function(dim_, mean, std, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_random_normal`, dim_, mean, std, dtype_str, device_str)
 }

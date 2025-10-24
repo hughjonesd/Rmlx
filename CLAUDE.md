@@ -122,3 +122,5 @@ R -q -e 'devtools::document()'
 ```
 - Where possible, use usethis:: package commands to do things the canonical way.
 - the array type doesn't have a default constructor!
+- When you add a function, update the pkgdown reference index.
+- When you add a new function, include a @seealso link to the online mlx documentation, where appropriate.

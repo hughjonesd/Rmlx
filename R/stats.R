@@ -355,3 +355,44 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
   }
   result
 }
+
+#' Cumulative sum and product
+#'
+#' Compute cumulative sums or products along an axis.
+#'
+#' @param x An `mlx` array.
+#' @param axis Optional axis along which to compute cumulative operation.
+#'   If `NULL` (default), the array is flattened first.
+#' @param reverse If `TRUE`, compute in reverse order.
+#' @param inclusive If `TRUE` (default), include the current element in the cumulative operation.
+#'   If `FALSE`, the cumulative operation is exclusive (starts from identity element).
+#' @return An `mlx` array with cumulative sums or products.
+#' @seealso [cumsum()], [cumprod()],
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumsum},
+#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumprod}
+#' @export
+#' @examples
+#' x <- as_mlx(1:5)
+#' mlx_cumsum(x)  # [1, 3, 6, 10, 15]
+#'
+#' mat <- as_mlx(matrix(1:12, 3, 4))
+#' mlx_cumsum(mat, axis = 1)  # cumsum down rows
+mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+
+  axis_mlx <- .mlx_normalize_axis(axis, x)
+
+  ptr <- cpp_mlx_cumsum(x$ptr, axis_mlx, reverse, inclusive)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_cumsum
+#' @export
+mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+
+  axis_mlx <- .mlx_normalize_axis(axis, x)
+
+  ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive)
+  .mlx_wrap_result(ptr, x$device)
+}

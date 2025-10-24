@@ -50,3 +50,61 @@ test_that("mlx_mean/var/std support axes and ddof", {
   overall_std <- as.vector(as.matrix(mlx_std(x, ddof = 1)))
   expect_equal(overall_std, stats::sd(as.vector(arr)), tolerance = 1e-6)
 })
+
+test_that("mlx_cumsum computes cumulative sum", {
+  # 1D case
+  x <- as_mlx(1:5)
+  result <- mlx_cumsum(x)
+  expect_equal(as.vector(as.matrix(result)), cumsum(1:5))
+
+  # 2D case with axis
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  # Cumsum along rows (axis 1)
+  result_rows <- mlx_cumsum(x, axis = 1)
+  expect_equal(as.matrix(result_rows), apply(mat, 2, cumsum))
+
+  # Cumsum along columns (axis 2)
+  result_cols <- mlx_cumsum(x, axis = 2)
+  expect_equal(as.matrix(result_cols), t(apply(mat, 1, cumsum)))
+
+  # Reverse cumsum
+  result_rev <- mlx_cumsum(x, axis = 1, reverse = TRUE)
+  expected_rev <- apply(mat, 2, function(col) rev(cumsum(rev(col))))
+  expect_equal(as.matrix(result_rev), expected_rev)
+
+  # Exclusive cumsum (not inclusive)
+  result_excl <- mlx_cumsum(x, axis = 1, inclusive = FALSE)
+  expected_excl <- apply(mat, 2, function(col) c(0, cumsum(col[-length(col)])))
+  expect_equal(as.matrix(result_excl), expected_excl)
+})
+
+test_that("mlx_cumprod computes cumulative product", {
+  # 1D case
+  x <- as_mlx(1:5)
+  result <- mlx_cumprod(x)
+  expect_equal(as.vector(as.matrix(result)), cumprod(1:5))
+
+  # 2D case with axis
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  # Cumprod along rows (axis 1)
+  result_rows <- mlx_cumprod(x, axis = 1)
+  expect_equal(as.matrix(result_rows), apply(mat, 2, cumprod))
+
+  # Cumprod along columns (axis 2)
+  result_cols <- mlx_cumprod(x, axis = 2)
+  expect_equal(as.matrix(result_cols), t(apply(mat, 1, cumprod)))
+
+  # Reverse cumprod
+  result_rev <- mlx_cumprod(x, axis = 1, reverse = TRUE)
+  expected_rev <- apply(mat, 2, function(col) rev(cumprod(rev(col))))
+  expect_equal(as.matrix(result_rev), expected_rev)
+
+  # Exclusive cumprod (not inclusive)
+  result_excl <- mlx_cumprod(x, axis = 1, inclusive = FALSE)
+  expected_excl <- apply(mat, 2, function(col) c(1, cumprod(col[-length(col)])))
+  expect_equal(as.matrix(result_excl), expected_excl)
+})

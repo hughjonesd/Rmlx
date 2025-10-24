@@ -77,6 +77,8 @@ reference:
       - mlx_std
       - mlx_all
       - mlx_any
+      - mlx_cumsum
+      - mlx_cumprod
       - mlx_clip
       - mlx_maximum
       - mlx_minimum

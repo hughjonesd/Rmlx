@@ -95,3 +95,27 @@ SEXP cpp_mlx_fft(SEXP xp_, bool inverse, std::string device_str) {
   return make_mlx_xptr(std::move(result_target));
 }
 
+// [[Rcpp::export]]
+SEXP cpp_mlx_cumsum(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = axis_.isNull()
+    ? cumsum(arr, reverse, inclusive)
+    : cumsum(arr, Rcpp::as<int>(axis_), reverse, inclusive);
+
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_cumprod(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = axis_.isNull()
+    ? cumprod(arr, reverse, inclusive)
+    : cumprod(arr, Rcpp::as<int>(axis_), reverse, inclusive);
+
+  return make_mlx_xptr(std::move(result));
+}
+
