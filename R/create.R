@@ -144,7 +144,7 @@ mlx_identity <- function(n,
 
 
 #' @export
-#' @rdname
+#' @rdname diag
 diag <- function(x, ...) {
   UseMethod("diag")
 }
