@@ -66,6 +66,49 @@ dim.mlx <- function(x) {
   x$dim
 }
 
+#' Set dimensions of MLX array
+#'
+#' Reshapes the MLX array to the specified dimensions. The total number of
+#' elements must remain the same.
+#'
+#' @param x An `mlx` object
+#' @param value Integer vector of new dimensions
+#' @return Reshaped `mlx` object
+#' @export
+#' @method dim<- mlx
+#' @examples
+#' x <- as_mlx(1:12)
+#' dim(x) <- c(3, 4)
+#' dim(x)
+`dim<-.mlx` <- function(x, value) {
+  if (!is.numeric(value) || any(is.na(value))) {
+    stop("dims must be a numeric vector without NAs", call. = FALSE)
+  }
+
+  value <- as.integer(value)
+
+  if (any(value < 0)) {
+    stop("dims cannot be negative", call. = FALSE)
+  }
+
+  # Check that product matches
+  current_size <- prod(x$dim)
+  new_size <- prod(value)
+
+  if (current_size != new_size) {
+    stop(sprintf(
+      "dims [product %d] do not match the length of object [%d]",
+      new_size, current_size
+    ), call. = FALSE)
+  }
+
+  # Use reshape
+  ptr <- cpp_mlx_reshape(x$ptr, value)
+  dim_result <- cpp_mlx_shape(ptr)
+  dtype_result <- cpp_mlx_dtype(ptr)
+  new_mlx(ptr, dim_result, dtype_result, x$device)
+}
+
 #' Get length of MLX array
 #'
 #' @param x An `mlx` object

@@ -2,6 +2,7 @@
 
 S3method("%*%",mlx)
 S3method("[",mlx)
+S3method("dim<-",mlx)
 S3method(Math,mlx)
 S3method(Ops,mlx)
 S3method(Summary,mlx)
