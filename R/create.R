@@ -144,7 +144,6 @@ mlx_identity <- function(n,
 
 
 #' @export
-#' @rdname diag
 diag <- function(x, ...) {
   UseMethod("diag")
 }
@@ -154,7 +153,11 @@ diag.default <- base::diag
 
 
 #' @export
-#' @rdname diag
+#' @rdname mlx_diagonal
+#' @param names Unused.
+#'
+#' `diag.mlx()` is an R interface to `mlx_diagonal()` with the same semantics
+#' as [base::diag()].
 diag.mlx <- function(x, nrow, ncol, names = TRUE) {
   if (!is.mlx(x)) x <- as_mlx(x)
 

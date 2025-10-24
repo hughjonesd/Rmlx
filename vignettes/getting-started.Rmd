@@ -27,6 +27,7 @@ Apple MLX (Machine Learning eXchange) is Apple’s high-performance array and ma
 * Build simple models with MLX modules and update them using SGD helpers.
 
 All heavy computation stays in MLX land; you only copy back to base R when you call functions like `as.matrix()`.
+
 ## System Requirements
 
 Before using Rmlx, ensure MLX is installed:
