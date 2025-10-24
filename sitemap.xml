@@ -15,6 +15,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/Math.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/Ops.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/Rmlx-package.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/all.equal.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.array.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.html</loc></url>
@@ -33,6 +34,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/is.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/length.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mean.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_allclose.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_arange.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_argmax.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_batch_norm.html</loc></url>
@@ -62,6 +64,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_grad.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_identity.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_inv.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_isclose.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_l1_loss.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_layer_norm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_leaky_relu.html</loc></url>
