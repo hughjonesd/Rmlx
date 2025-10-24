@@ -33,6 +33,43 @@ chol.mlx <- function(x, pivot = FALSE, ...) {
   .mlx_wrap_result(ptr, x$device)
 }
 
+#' Inverse from Cholesky decomposition
+#'
+#' Compute the inverse of a symmetric, positive definite matrix from its
+#' Cholesky decomposition.
+#'
+#' @param x An `mlx` matrix containing the Cholesky decomposition (upper triangular).
+#'   This should be the result of `chol()`.
+#' @param size Ignored; included for compatibility with base R.
+#' @param ... Additional arguments (unused).
+#' @return The inverse of the original matrix (before Cholesky decomposition).
+#' @seealso [chol()], [solve()], [mlx_cholesky_inv()]
+#' @export
+#' @examples
+#' A <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
+#' U <- chol(A)
+#' A_inv <- chol2inv(U)
+#' # Verify: A %*% A_inv should be identity
+#' as.matrix(A %*% A_inv)
+chol2inv <- function(x, size = NCOL(x), ...) {
+  UseMethod("chol2inv")
+}
+
+#' @export
+#' @rdname chol2inv
+chol2inv.default <- function(x, size = NCOL(x), ...) {
+  # Call base R's chol2inv
+  base::chol2inv(x, size = size, ...)
+}
+
+#' @export
+#' @rdname chol2inv
+chol2inv.mlx <- function(x, size = NCOL(x), ...) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  # R's chol() always returns upper triangular, so we always use upper=TRUE
+  mlx_cholesky_inv(x, upper = TRUE)
+}
+
 #' QR decomposition for MLX tensors
 #'
 #' @param x An `mlx` matrix.
@@ -455,10 +492,12 @@ mlx_tri_inv <- function(x, upper = FALSE) {
 #' Computes the inverse of a positive definite matrix from its Cholesky factor.
 #' Note: `x` should be the Cholesky factor (L or U), not the original matrix.
 #'
+#' For a more R-like interface, see [chol2inv()].
+#'
 #' @param x An `mlx` array containing the Cholesky factor (lower or upper triangular).
 #' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
 #' @return The inverse of the original matrix (A^-1 where A = LL' or A = U'U).
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}
+#' @seealso [chol2inv()], \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}
 #' @export
 #' @examples
 #' # Create a positive definite matrix

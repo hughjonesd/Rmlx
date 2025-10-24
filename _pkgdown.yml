@@ -93,10 +93,15 @@ reference:
       - crossprod.mlx
       - tcrossprod.mlx
       - chol.mlx
+      - chol2inv
       - qr.mlx
       - svd.mlx
       - solve.mlx
       - pinv
+      - mlx_inv
+      - mlx_tri_inv
+      - mlx_cholesky_inv
+      - mlx_lu
       - mlx_norm
       - mlx_solve_triangular
       - mlx_eig

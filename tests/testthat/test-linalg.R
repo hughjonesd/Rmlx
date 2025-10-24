@@ -395,6 +395,27 @@ test_that("mlx_cholesky_inv works with lower triangle", {
   expect_equal(as.matrix(A_inv_mlx), A_inv_r, tolerance = 1e-4)
 })
 
+test_that("chol2inv.mlx works like base R chol2inv", {
+  set.seed(305)
+  A <- matrix(rnorm(16), 4, 4)
+  A <- t(A) %*% A  # Make it positive definite
+
+  # Base R
+  U_r <- chol(A)
+  A_inv_r <- chol2inv(U_r)
+
+  # MLX
+  A_mlx <- as_mlx(A)
+  U_mlx <- chol(A_mlx)
+  A_inv_mlx <- chol2inv(U_mlx)
+
+  expect_equal(as.matrix(A_inv_mlx), A_inv_r, tolerance = 1e-4)
+
+  # Verify inverse
+  I_mlx <- A_mlx %*% A_inv_mlx
+  expect_equal(as.matrix(I_mlx), diag(4), tolerance = 1e-3)
+})
+
 test_that("mlx_lu returns P, L and U factors", {
   set.seed(306)
   A <- matrix(rnorm(16), 4, 4)

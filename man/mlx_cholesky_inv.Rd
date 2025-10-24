@@ -7,22 +7,29 @@
 mlx_cholesky_inv(x, upper = FALSE)
 }
 \arguments{
-\item{x}{An \code{mlx} array (positive definite matrix).}
+\item{x}{An \code{mlx} array containing the Cholesky factor (lower or upper triangular).}
 
-\item{upper}{Logical; if \code{TRUE}, use upper triangle, otherwise lower triangle.}
+\item{upper}{Logical; if \code{TRUE}, \code{x} is upper triangular, otherwise lower triangular.}
 }
 \value{
-The inverse of \code{x}.
+The inverse of the original matrix (A^-1 where A = LL' or A = U'U).
 }
 \description{
-Computes the inverse of a positive definite matrix using Cholesky decomposition.
+Computes the inverse of a positive definite matrix from its Cholesky factor.
+Note: \code{x} should be the Cholesky factor (L or U), not the original matrix.
+}
+\details{
+For a more R-like interface, see \code{\link[=chol2inv]{chol2inv()}}.
 }
 \examples{
 # Create a positive definite matrix
 A <- matrix(rnorm(9), 3, 3)
 A <- t(A) \%*\% A
-A_inv <- mlx_cholesky_inv(as_mlx(A))
+# Compute Cholesky factor
+L <- chol(A, pivot = FALSE, upper = FALSE)
+# Get inverse from Cholesky factor
+A_inv <- mlx_cholesky_inv(as_mlx(L))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}
+\code{\link[=chol2inv]{chol2inv()}}, \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}
 }
