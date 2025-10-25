@@ -66,6 +66,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_eye.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_forward.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_full.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gather_qmm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gelu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_grad.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_identity.html</loc></url>
@@ -90,6 +91,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_set_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_parameters.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_quantized_matmul.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_bernoulli.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_categorical.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_gumbel.html</loc></url>
