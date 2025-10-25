@@ -61,6 +61,22 @@ cpp_mlx_dtype <- function(xp_) {
     .Call(`_Rmlx_cpp_mlx_dtype`, xp_)
 }
 
+cpp_mlx_compile_create <- function(fun_sexp, shapeless) {
+    .Call(`_Rmlx_cpp_mlx_compile_create`, fun_sexp, shapeless)
+}
+
+cpp_mlx_compile_call <- function(compiled_xp, mlx_args) {
+    .Call(`_Rmlx_cpp_mlx_compile_call`, compiled_xp, mlx_args)
+}
+
+cpp_mlx_disable_compile <- function() {
+    invisible(.Call(`_Rmlx_cpp_mlx_disable_compile`))
+}
+
+cpp_mlx_enable_compile <- function() {
+    invisible(.Call(`_Rmlx_cpp_mlx_enable_compile`))
+}
+
 cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_where`, cond_xp_, xp_true_, xp_false_, dtype_str, device_str)
 }

@@ -30,6 +30,9 @@ reference:
       - mlx_grad
       - mlx_stop_gradient
       - mlx_value_grad
+      - mlx_compile
+      - mlx_disable_compile
+      - mlx_enable_compile
   - title: Creation & Randomness
     contents:
       - mlx_zeros

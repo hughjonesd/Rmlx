@@ -126,3 +126,4 @@ R -q -e 'devtools::document()'
 - When you add a new function, include a @seealso link to the online mlx documentation, where appropriate.
 - You can use library(help = "Rmlx") to find exported R functions in the package, with descriptions of what they do. You can use ls(envir = asNamespace("Rmlx"), all.names = TRUE) to find all functions including unexported ones.
 - The url https://ml-explore.github.io/mlx/build/html/search.html?q=foobar will search the documentation for foobar
+- Always use markdown in roxygen where possible (e.g. markdown lists rather than \item).

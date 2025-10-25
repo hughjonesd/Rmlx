@@ -203,6 +203,48 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_compile_create
+SEXP cpp_mlx_compile_create(SEXP fun_sexp, bool shapeless);
+RcppExport SEXP _Rmlx_cpp_mlx_compile_create(SEXP fun_sexpSEXP, SEXP shapelessSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type fun_sexp(fun_sexpSEXP);
+    Rcpp::traits::input_parameter< bool >::type shapeless(shapelessSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_compile_create(fun_sexp, shapeless));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_compile_call
+List cpp_mlx_compile_call(SEXP compiled_xp, List mlx_args);
+RcppExport SEXP _Rmlx_cpp_mlx_compile_call(SEXP compiled_xpSEXP, SEXP mlx_argsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type compiled_xp(compiled_xpSEXP);
+    Rcpp::traits::input_parameter< List >::type mlx_args(mlx_argsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_compile_call(compiled_xp, mlx_args));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_disable_compile
+void cpp_mlx_disable_compile();
+RcppExport SEXP _Rmlx_cpp_mlx_disable_compile() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    cpp_mlx_disable_compile();
+    return R_NilValue;
+END_RCPP
+}
+// cpp_mlx_enable_compile
+void cpp_mlx_enable_compile();
+RcppExport SEXP _Rmlx_cpp_mlx_enable_compile() {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    cpp_mlx_enable_compile();
+    return R_NilValue;
+END_RCPP
+}
 // cpp_mlx_where
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_where(SEXP cond_xp_SEXP, SEXP xp_true_SEXP, SEXP xp_false_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1452,6 +1494,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_eval", (DL_FUNC) &_Rmlx_cpp_mlx_eval, 1},
     {"_Rmlx_cpp_mlx_shape", (DL_FUNC) &_Rmlx_cpp_mlx_shape, 1},
     {"_Rmlx_cpp_mlx_dtype", (DL_FUNC) &_Rmlx_cpp_mlx_dtype, 1},
+    {"_Rmlx_cpp_mlx_compile_create", (DL_FUNC) &_Rmlx_cpp_mlx_compile_create, 2},
+    {"_Rmlx_cpp_mlx_compile_call", (DL_FUNC) &_Rmlx_cpp_mlx_compile_call, 2},
+    {"_Rmlx_cpp_mlx_disable_compile", (DL_FUNC) &_Rmlx_cpp_mlx_disable_compile, 0},
+    {"_Rmlx_cpp_mlx_enable_compile", (DL_FUNC) &_Rmlx_cpp_mlx_enable_compile, 0},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_slice", (DL_FUNC) &_Rmlx_cpp_mlx_slice, 4},
