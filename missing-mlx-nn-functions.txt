@@ -105,7 +105,8 @@ hard_tanh, hardswish, prelu, step, gelu_approx, gelu_fast_approx)
 
 ### Medium Priority - Specialized Layers
 
-- **QuantizedLinear** - Quantized linear layer
+- ✅ **quantized_matmul, gather_qmm** - Quantized matrix multiplication (IMPLEMENTED - requires properly quantized weights)
+- **QuantizedLinear** - Quantized linear layer (would need R wrapper around quantized_matmul)
 - **QuantizedEmbedding** - Quantized embedding layer
 - **Dropout2d, Dropout3d** - Dimensional dropout variants
 - **Upsample** - Upsampling layer

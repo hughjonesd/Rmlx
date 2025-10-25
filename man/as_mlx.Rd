@@ -6,7 +6,8 @@
 \usage{
 as_mlx(
   x,
-  dtype = c("float32", "float64", "bool", "complex64"),
+  dtype = c("float32", "float64", "bool", "complex64", "uint32", "int32", "int8",
+    "uint8"),
   device = mlx_default_device()
 )
 }

@@ -813,3 +813,122 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
                                    device)
   .mlx_wrap_result(ptr, device)
 }
+
+#' Quantized Matrix Multiplication
+#'
+#' Performs matrix multiplication with a quantized weight matrix. This operation
+#' is essential for efficient inference with quantized models, significantly reducing
+#' memory usage and computation time while maintaining reasonable accuracy.
+#'
+#' @param x An mlx array (the input matrix)
+#' @param w An mlx array (the quantized weight matrix)
+#' @param scales An mlx array (the quantization scales)
+#' @param biases An optional mlx array (biases to add). Default: NULL
+#' @param transpose Whether to transpose the weight matrix. Default: TRUE
+#' @param group_size The group size for quantization. Default: 64
+#' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
+#' @param mode The quantization mode, either "affine" or "symmetric". Default: "affine"
+#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#'
+#' @return An mlx array with the result of the quantized matrix multiplication
+#'
+#' @details
+#' Quantized matrix multiplication uses low-precision representations (typically 4-bit or
+#' 8-bit integers) for weights, which reduces memory footprint by up to 8x compared to
+#' float32. The scales parameter contains the dequantization factors needed to reconstruct
+#' approximate float values during computation.
+#'
+#' The group_size parameter controls the granularity of quantization - smaller groups
+#' provide better accuracy but slightly higher memory usage.
+#'
+#' **Note:** This function requires properly quantized and packed weights. Users should
+#' use MLX quantization utilities to prepare weights in the correct format. The weight
+#' matrix must be uint32 type with values packed according to the bits parameter.
+#'
+#' @seealso [mlx_gather_qmm()]
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @export
+mlx_quantized_matmul <- function(x, w, scales, biases = NULL, transpose = TRUE,
+                                  group_size = 64L, bits = 4L, mode = "affine",
+                                  device = mlx_default_device()) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  if (!is.mlx(w)) w <- as_mlx(w)
+  if (!is.mlx(scales)) scales <- as_mlx(scales)
+
+  biases_ptr <- NULL
+  if (!is.null(biases)) {
+    if (!is.mlx(biases)) biases <- as_mlx(biases)
+    biases_ptr <- biases$ptr
+  }
+
+  ptr <- cpp_mlx_quantized_matmul(x$ptr, w$ptr, scales$ptr, biases_ptr,
+                                   transpose, as.integer(group_size),
+                                   as.integer(bits), mode, device)
+  .mlx_wrap_result(ptr, device)
+}
+
+#' Gather-based Quantized Matrix Multiplication
+#'
+#' Performs quantized matrix multiplication with optional gather operations on inputs.
+#' This is useful for combining embedding lookups with quantized linear transformations,
+#' a common pattern in transformer models.
+#'
+#' @param x An mlx array (the input matrix)
+#' @param w An mlx array (the quantized weight matrix)
+#' @param scales An mlx array (the quantization scales)
+#' @param biases An optional mlx array (biases to add). Default: NULL
+#' @param lhs_indices An optional mlx array (indices for gathering from x). Default: NULL
+#' @param rhs_indices An optional mlx array (indices for gathering from w). Default: NULL
+#' @param transpose Whether to transpose the weight matrix. Default: TRUE
+#' @param group_size The group size for quantization. Default: 64
+#' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
+#' @param mode The quantization mode, either "affine" or "symmetric". Default: "affine"
+#' @param sorted_indices Whether the indices are sorted (enables optimizations). Default: FALSE
+#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#'
+#' @return An mlx array with the result of the gather-based quantized matrix multiplication
+#'
+#' @details
+#' This function combines gather operations (indexed lookups) with quantized matrix
+#' multiplication. When lhs_indices is provided, it performs `x[lhs_indices]` before
+#' the multiplication. Similarly, rhs_indices gathers from the weight matrix.
+#'
+#' This is particularly efficient for transformer models where you need to look up
+#' token embeddings and then apply a quantized linear transformation in one fused
+#' operation.
+#'
+#' @seealso [mlx_quantized_matmul()]
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @export
+mlx_gather_qmm <- function(x, w, scales, biases = NULL, lhs_indices = NULL,
+                            rhs_indices = NULL, transpose = TRUE, group_size = 64L,
+                            bits = 4L, mode = "affine", sorted_indices = FALSE,
+                            device = mlx_default_device()) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+  if (!is.mlx(w)) w <- as_mlx(w)
+  if (!is.mlx(scales)) scales <- as_mlx(scales)
+
+  biases_ptr <- NULL
+  if (!is.null(biases)) {
+    if (!is.mlx(biases)) biases <- as_mlx(biases)
+    biases_ptr <- biases$ptr
+  }
+
+  lhs_indices_ptr <- NULL
+  if (!is.null(lhs_indices)) {
+    if (!is.mlx(lhs_indices)) lhs_indices <- as_mlx(lhs_indices)
+    lhs_indices_ptr <- lhs_indices$ptr
+  }
+
+  rhs_indices_ptr <- NULL
+  if (!is.null(rhs_indices)) {
+    if (!is.mlx(rhs_indices)) rhs_indices <- as_mlx(rhs_indices)
+    rhs_indices_ptr <- rhs_indices$ptr
+  }
+
+  ptr <- cpp_mlx_gather_qmm(x$ptr, w$ptr, scales$ptr, biases_ptr,
+                            lhs_indices_ptr, rhs_indices_ptr, transpose,
+                            as.integer(group_size), as.integer(bits), mode,
+                            sorted_indices, device)
+  .mlx_wrap_result(ptr, device)
+}

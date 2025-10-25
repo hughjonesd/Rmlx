@@ -767,6 +767,47 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_quantized_matmul
+SEXP cpp_mlx_quantized_matmul(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_, SEXP biases_xp_, bool transpose, int group_size, int bits, std::string mode, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_quantized_matmul(SEXP x_xp_SEXP, SEXP w_xp_SEXP, SEXP scales_xp_SEXP, SEXP biases_xp_SEXP, SEXP transposeSEXP, SEXP group_sizeSEXP, SEXP bitsSEXP, SEXP modeSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x_xp_(x_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type w_xp_(w_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type scales_xp_(scales_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type biases_xp_(biases_xp_SEXP);
+    Rcpp::traits::input_parameter< bool >::type transpose(transposeSEXP);
+    Rcpp::traits::input_parameter< int >::type group_size(group_sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type bits(bitsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type mode(modeSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_quantized_matmul(x_xp_, w_xp_, scales_xp_, biases_xp_, transpose, group_size, bits, mode, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_gather_qmm
+SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_, SEXP biases_xp_, SEXP lhs_indices_xp_, SEXP rhs_indices_xp_, bool transpose, int group_size, int bits, std::string mode, bool sorted_indices, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_gather_qmm(SEXP x_xp_SEXP, SEXP w_xp_SEXP, SEXP scales_xp_SEXP, SEXP biases_xp_SEXP, SEXP lhs_indices_xp_SEXP, SEXP rhs_indices_xp_SEXP, SEXP transposeSEXP, SEXP group_sizeSEXP, SEXP bitsSEXP, SEXP modeSEXP, SEXP sorted_indicesSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type x_xp_(x_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type w_xp_(w_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type scales_xp_(scales_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type biases_xp_(biases_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type lhs_indices_xp_(lhs_indices_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type rhs_indices_xp_(rhs_indices_xp_SEXP);
+    Rcpp::traits::input_parameter< bool >::type transpose(transposeSEXP);
+    Rcpp::traits::input_parameter< int >::type group_size(group_sizeSEXP);
+    Rcpp::traits::input_parameter< int >::type bits(bitsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type mode(modeSEXP);
+    Rcpp::traits::input_parameter< bool >::type sorted_indices(sorted_indicesSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_gather_qmm(x_xp_, w_xp_, scales_xp_, biases_xp_, lhs_indices_xp_, rhs_indices_xp_, transpose, group_size, bits, mode, sorted_indices, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_matmul
 SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_matmul(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1419,6 +1460,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_conv_transpose1d", (DL_FUNC) &_Rmlx_cpp_mlx_conv_transpose1d, 8},
     {"_Rmlx_cpp_mlx_conv_transpose2d", (DL_FUNC) &_Rmlx_cpp_mlx_conv_transpose2d, 8},
     {"_Rmlx_cpp_mlx_conv_transpose3d", (DL_FUNC) &_Rmlx_cpp_mlx_conv_transpose3d, 8},
+    {"_Rmlx_cpp_mlx_quantized_matmul", (DL_FUNC) &_Rmlx_cpp_mlx_quantized_matmul, 9},
+    {"_Rmlx_cpp_mlx_gather_qmm", (DL_FUNC) &_Rmlx_cpp_mlx_gather_qmm, 12},
     {"_Rmlx_cpp_mlx_matmul", (DL_FUNC) &_Rmlx_cpp_mlx_matmul, 4},
     {"_Rmlx_cpp_mlx_cast", (DL_FUNC) &_Rmlx_cpp_mlx_cast, 3},
     {"_Rmlx_cpp_mlx_cumulative", (DL_FUNC) &_Rmlx_cpp_mlx_cumulative, 2},

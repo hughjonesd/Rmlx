@@ -129,6 +129,8 @@ reference:
       - mlx_conv_transpose1d
       - mlx_conv_transpose2d
       - mlx_conv_transpose3d
+      - mlx_quantized_matmul
+      - mlx_gather_qmm
   - title: Activation Functions
     contents:
       - mlx_relu

@@ -53,7 +53,7 @@
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:12, 3, 4))
-as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64"), device = mlx_default_device()) {
+as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64", "uint32", "int32", "int8", "uint8"), device = mlx_default_device()) {
   device <- match.arg(device, c("gpu", "cpu"))
   dtype_val <- if (missing(dtype)) {
     if (is.logical(x)) {

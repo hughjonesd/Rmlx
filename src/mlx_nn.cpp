@@ -134,3 +134,73 @@ SEXP cpp_mlx_conv_transpose3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector str
 
   return make_mlx_xptr(std::move(result));
 }
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_quantized_matmul(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
+                               SEXP biases_xp_,
+                               bool transpose, int group_size, int bits,
+                               std::string mode, std::string device_str) {
+  MlxArrayWrapper* x_wrapper = get_mlx_wrapper(x_xp_);
+  MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
+  MlxArrayWrapper* scales_wrapper = get_mlx_wrapper(scales_xp_);
+
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array x = x_wrapper->get();
+  array w = w_wrapper->get();
+  array scales = scales_wrapper->get();
+
+  std::optional<array> biases = std::nullopt;
+  if (biases_xp_ != R_NilValue) {
+    MlxArrayWrapper* biases_wrapper = get_mlx_wrapper(biases_xp_);
+    biases = biases_wrapper->get();
+  }
+
+  array result = quantized_matmul(x, w, scales, biases, transpose, group_size,
+                                   bits, mode, target_device);
+
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
+                         SEXP biases_xp_,
+                         SEXP lhs_indices_xp_,
+                         SEXP rhs_indices_xp_,
+                         bool transpose, int group_size, int bits,
+                         std::string mode, bool sorted_indices,
+                         std::string device_str) {
+  MlxArrayWrapper* x_wrapper = get_mlx_wrapper(x_xp_);
+  MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
+  MlxArrayWrapper* scales_wrapper = get_mlx_wrapper(scales_xp_);
+
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array x = x_wrapper->get();
+  array w = w_wrapper->get();
+  array scales = scales_wrapper->get();
+
+  std::optional<array> biases = std::nullopt;
+  if (biases_xp_ != R_NilValue) {
+    MlxArrayWrapper* biases_wrapper = get_mlx_wrapper(biases_xp_);
+    biases = biases_wrapper->get();
+  }
+
+  std::optional<array> lhs_indices = std::nullopt;
+  if (lhs_indices_xp_ != R_NilValue) {
+    MlxArrayWrapper* lhs_wrapper = get_mlx_wrapper(lhs_indices_xp_);
+    lhs_indices = lhs_wrapper->get();
+  }
+
+  std::optional<array> rhs_indices = std::nullopt;
+  if (rhs_indices_xp_ != R_NilValue) {
+    MlxArrayWrapper* rhs_wrapper = get_mlx_wrapper(rhs_indices_xp_);
+    rhs_indices = rhs_wrapper->get();
+  }
+
+  array result = gather_qmm(x, w, scales, biases, lhs_indices, rhs_indices,
+                            transpose, group_size, bits, mode, sorted_indices,
+                            target_device);
+
+  return make_mlx_xptr(std::move(result));
+}

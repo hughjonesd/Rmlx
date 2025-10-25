@@ -65,6 +65,9 @@ Dtype string_to_dtype(const std::string& dtype) {
   if (dtype == "float64") return float64;
   if (dtype == "int32") return int32;
   if (dtype == "int64") return int64;
+  if (dtype == "int8") return int8;
+  if (dtype == "uint8") return uint8;
+  if (dtype == "uint32") return uint32;
   if (dtype == "complex64") return complex64;
   if (dtype == "bool") return bool_;
   Rcpp::stop("Unsupported dtype: " + dtype);
@@ -135,6 +138,18 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
     } else if (dt == float32) {
       std::vector<float> data_f32(x.begin(), x.end());
       return array(data_f32.data(), reversed_shape, float32);
+    } else if (dt == int32) {
+      std::vector<int32_t> data_i32(x.begin(), x.end());
+      return array(data_i32.data(), reversed_shape, int32);
+    } else if (dt == uint32) {
+      std::vector<uint32_t> data_u32(x.begin(), x.end());
+      return array(data_u32.data(), reversed_shape, uint32);
+    } else if (dt == int8) {
+      std::vector<int8_t> data_i8(x.begin(), x.end());
+      return array(data_i8.data(), reversed_shape, int8);
+    } else if (dt == uint8) {
+      std::vector<uint8_t> data_u8(x.begin(), x.end());
+      return array(data_u8.data(), reversed_shape, uint8);
     } else if (dt == complex64) {
       std::vector<complex64_t> data_c64(cx.size());
       for (R_xlen_t idx = 0; idx < cx.size(); ++idx) {

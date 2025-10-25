@@ -221,6 +221,14 @@ cpp_mlx_conv_transpose3d <- function(input_xp_, weight_xp_, stride, padding, dil
     .Call(`_Rmlx_cpp_mlx_conv_transpose3d`, input_xp_, weight_xp_, stride, padding, dilation, output_padding, groups, device_str)
 }
 
+cpp_mlx_quantized_matmul <- function(x_xp_, w_xp_, scales_xp_, biases_xp_, transpose, group_size, bits, mode, device_str) {
+    .Call(`_Rmlx_cpp_mlx_quantized_matmul`, x_xp_, w_xp_, scales_xp_, biases_xp_, transpose, group_size, bits, mode, device_str)
+}
+
+cpp_mlx_gather_qmm <- function(x_xp_, w_xp_, scales_xp_, biases_xp_, lhs_indices_xp_, rhs_indices_xp_, transpose, group_size, bits, mode, sorted_indices, device_str) {
+    .Call(`_Rmlx_cpp_mlx_gather_qmm`, x_xp_, w_xp_, scales_xp_, biases_xp_, lhs_indices_xp_, rhs_indices_xp_, transpose, group_size, bits, mode, sorted_indices, device_str)
+}
+
 cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
 }
