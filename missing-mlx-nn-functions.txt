@@ -1,0 +1,161 @@
+# Missing MLX Neural Network (mlx.nn) Functions in Rmlx
+
+Based on MLX Python nn module documentation vs current Rmlx implementation.
+
+## Current Rmlx mlx.nn Coverage
+
+**Layers:**
+✅ mlx_linear - Linear transformation layer
+✅ mlx_sequential - Sequential layer composition
+✅ mlx_embedding - Embedding layer
+
+**Activations:**
+✅ mlx_relu - ReLU activation
+✅ mlx_gelu - GELU activation
+✅ mlx_sigmoid - Sigmoid activation
+✅ mlx_tanh - Tanh activation
+✅ mlx_silu - SiLU (Swish) activation
+✅ mlx_leaky_relu - Leaky ReLU activation
+✅ mlx_softmax_layer - Softmax activation layer
+
+**Normalization:**
+✅ mlx_layer_norm - Layer normalization
+✅ mlx_batch_norm - Batch normalization
+✅ mlx_dropout - Dropout regularization
+
+**Loss Functions:**
+✅ mlx_mse_loss - Mean squared error
+✅ mlx_l1_loss - L1 loss (MAE)
+✅ mlx_binary_cross_entropy - Binary cross-entropy
+✅ mlx_cross_entropy - Cross-entropy
+
+**Training:**
+✅ mlx_optimizer_sgd - SGD optimizer
+✅ mlx_train_step - Training step helper
+✅ mlx_parameters - Parameter extraction
+✅ mlx_param_values - Get parameter values
+✅ mlx_param_set_values - Set parameter values
+
+---
+
+## MISSING from Rmlx
+
+### High Priority - Core Layers
+
+#### Convolutional Layers
+- ✅ **Conv1d, Conv2d, Conv3d** - Standard convolution layers (IMPLEMENTED via mlx_conv1d, mlx_conv2d, mlx_conv3d)
+- **ConvTranspose1d, ConvTranspose2d, ConvTranspose3d** - Transposed convolution (deconvolution) [C++ API available but not yet wrapped]
+
+#### Pooling Layers
+- **MaxPool1d, MaxPool2d, MaxPool3d** - Max pooling
+- **AvgPool1d, AvgPool2d, AvgPool3d** - Average pooling
+
+#### Recurrent Layers
+- **RNN** - Basic recurrent neural network
+- **LSTM** - Long Short-Term Memory
+- **GRU** - Gated Recurrent Unit
+
+#### Attention Mechanisms
+- **MultiHeadAttention** - Multi-head attention layer
+- **Transformer** - Full transformer layer
+- **RoPE** - Rotary Position Embedding
+- **ALiBi** - Attention with Linear Biases
+- **SinusoidalPositionalEncoding** - Sinusoidal positional encoding
+
+### Medium Priority - Additional Normalization
+
+- **GroupNorm** - Group normalization
+- **InstanceNorm** - Instance normalization
+- **RMSNorm** - Root Mean Square layer normalization
+
+### Medium Priority - Additional Activations
+
+**Activation Layers:**
+- **ReLU2, ReLU6** - ReLU variants with caps
+- **ELU, CELU, SELU** - Exponential linear unit variants
+- **LogSigmoid** - Log of sigmoid
+- **Softmin** - Softmin (negative softmax)
+- **LogSoftmax** - Log softmax
+- **Mish** - Mish activation
+- **GLU** - Gated Linear Unit
+- **Softplus** - Smooth approximation to ReLU
+- **Softshrink, HardShrink** - Soft/hard shrinkage functions
+- **HardTanh** - Hard hyperbolic tangent
+- **Hardswish** - Hard swish activation
+- **PReLU** - Parametric ReLU
+- **Step** - Step function
+
+**Functional Activations (if not already implemented):**
+Most of the above also have functional versions (relu2, relu6, elu, celu, selu,
+log_sigmoid, softmin, log_softmax, mish, glu, softplus, softshrink, hard_shrink,
+hard_tanh, hardswish, prelu, step, gelu_approx, gelu_fast_approx)
+
+### Medium Priority - Additional Loss Functions
+
+- **nll_loss** - Negative log-likelihood loss
+- **kl_div_loss** - Kullback-Leibler divergence loss
+- **cosine_similarity_loss** - Cosine similarity loss
+- **hinge_loss** - Hinge loss (SVM)
+- **margin_ranking_loss** - Margin ranking loss
+- **triplet_loss** - Triplet loss for metric learning
+- **smooth_l1_loss** - Smooth L1 loss (Huber-like)
+- **huber_loss** - Huber loss
+- **gaussian_nll_loss** - Gaussian negative log-likelihood
+- **log_cosh_loss** - Log-cosh loss
+
+### Medium Priority - Specialized Layers
+
+- **QuantizedLinear** - Quantized linear layer
+- **QuantizedEmbedding** - Quantized embedding layer
+- **Dropout2d, Dropout3d** - Dimensional dropout variants
+- **Upsample** - Upsampling layer
+
+### Low Priority - Initializers
+
+Currently no weight initialization functions exposed in Rmlx.
+
+**Weight Initializers:**
+- **constant()** - Constant initialization
+- **normal()** - Normal distribution initialization
+- **uniform()** - Uniform distribution initialization
+- **identity()** - Identity matrix initialization
+- **glorot_normal()** - Glorot/Xavier normal initialization
+- **glorot_uniform()** - Glorot/Xavier uniform initialization
+- **he_normal()** - He normal initialization
+- **he_uniform()** - He uniform initialization
+
+### Low Priority - Advanced Utilities
+
+- **quantize()** - Model quantization utility
+- **average_gradients()** - Distributed gradient averaging
+
+---
+
+## Implementation Notes
+
+1. **Convolutional layers** are essential for computer vision tasks - high priority
+2. **Recurrent layers** (RNN/LSTM/GRU) needed for sequence modeling - high priority
+3. **Attention mechanisms** critical for transformer models - high priority
+4. **Additional activations** can be added incrementally - medium priority
+5. **Initializers** would require exposing parameter initialization API - lower priority
+6. **Quantization** is advanced feature - lower priority
+
+## Recommendation: Focus Areas
+
+**Phase 1 (Critical):**
+- ✅ Conv1d, Conv2d, Conv3d - DONE!
+- MaxPool2d, AvgPool2d - NO C++ API (would need R implementation)
+- MultiHeadAttention - NO C++ API (would need R implementation)
+- LSTM, GRU - NO C++ API (would need R implementation)
+
+**Phase 2 (Important):**
+- Additional normalization (GroupNorm, RMSNorm)
+- Transformer layer
+- Additional loss functions (kl_div_loss, triplet_loss, smooth_l1_loss)
+- More activation variants (ELU, Mish, GLU)
+
+**Phase 3 (Nice to have):**
+- Positional encodings (RoPE, ALiBi)
+- Quantized layers
+- Weight initializers
+- Advanced utilities

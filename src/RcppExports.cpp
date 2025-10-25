@@ -662,6 +662,57 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_conv1d
+SEXP cpp_mlx_conv1d(SEXP input_xp_, SEXP weight_xp_, int stride, int padding, int dilation, int groups, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_conv1d(SEXP input_xp_SEXP, SEXP weight_xp_SEXP, SEXP strideSEXP, SEXP paddingSEXP, SEXP dilationSEXP, SEXP groupsSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type input_xp_(input_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type weight_xp_(weight_xp_SEXP);
+    Rcpp::traits::input_parameter< int >::type stride(strideSEXP);
+    Rcpp::traits::input_parameter< int >::type padding(paddingSEXP);
+    Rcpp::traits::input_parameter< int >::type dilation(dilationSEXP);
+    Rcpp::traits::input_parameter< int >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_conv1d(input_xp_, weight_xp_, stride, padding, dilation, groups, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_conv2d
+SEXP cpp_mlx_conv2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride, IntegerVector padding, IntegerVector dilation, int groups, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_conv2d(SEXP input_xp_SEXP, SEXP weight_xp_SEXP, SEXP strideSEXP, SEXP paddingSEXP, SEXP dilationSEXP, SEXP groupsSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type input_xp_(input_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type weight_xp_(weight_xp_SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type stride(strideSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type padding(paddingSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type dilation(dilationSEXP);
+    Rcpp::traits::input_parameter< int >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_conv2d(input_xp_, weight_xp_, stride, padding, dilation, groups, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_conv3d
+SEXP cpp_mlx_conv3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride, IntegerVector padding, IntegerVector dilation, int groups, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_conv3d(SEXP input_xp_SEXP, SEXP weight_xp_SEXP, SEXP strideSEXP, SEXP paddingSEXP, SEXP dilationSEXP, SEXP groupsSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type input_xp_(input_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type weight_xp_(weight_xp_SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type stride(strideSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type padding(paddingSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type dilation(dilationSEXP);
+    Rcpp::traits::input_parameter< int >::type groups(groupsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_conv3d(input_xp_, weight_xp_, stride, padding, dilation, groups, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_matmul
 SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_matmul(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1308,6 +1359,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_logical", (DL_FUNC) &_Rmlx_cpp_mlx_logical, 4},
     {"_Rmlx_cpp_mlx_isclose", (DL_FUNC) &_Rmlx_cpp_mlx_isclose, 6},
     {"_Rmlx_cpp_mlx_allclose", (DL_FUNC) &_Rmlx_cpp_mlx_allclose, 6},
+    {"_Rmlx_cpp_mlx_conv1d", (DL_FUNC) &_Rmlx_cpp_mlx_conv1d, 7},
+    {"_Rmlx_cpp_mlx_conv2d", (DL_FUNC) &_Rmlx_cpp_mlx_conv2d, 7},
+    {"_Rmlx_cpp_mlx_conv3d", (DL_FUNC) &_Rmlx_cpp_mlx_conv3d, 7},
     {"_Rmlx_cpp_mlx_matmul", (DL_FUNC) &_Rmlx_cpp_mlx_matmul, 4},
     {"_Rmlx_cpp_mlx_cast", (DL_FUNC) &_Rmlx_cpp_mlx_cast, 3},
     {"_Rmlx_cpp_mlx_cumulative", (DL_FUNC) &_Rmlx_cpp_mlx_cumulative, 2},

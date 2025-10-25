@@ -605,3 +605,104 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
     class = c("mlx_embedding", "mlx_module")
   )
 }
+
+#' 1D Convolution
+#'
+#' Applies a 1D convolution over the input signal.
+#'
+#' @param input Input array of shape `(N, L, C_in)` where N is batch size,
+#'   L is sequence length, and C_in is number of input channels
+#' @param weight Weight tensor of shape `(C_out, kernel_size, C_in)`
+#' @param stride Stride of the convolution (default: 1)
+#' @param padding Amount of zero padding (default: 0)
+#' @param dilation Spacing between kernel elements (default: 1)
+#' @param groups Number of blocked connections (default: 1)
+#' @param device Device to use for computation
+#' @return Convolved output array
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv1d.html}
+#' @export
+mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
+                       groups = 1L, device = mlx_default_device()) {
+  if (!is.mlx(input)) input <- as_mlx(input)
+  if (!is.mlx(weight)) weight <- as_mlx(weight)
+
+  ptr <- cpp_mlx_conv1d(input$ptr, weight$ptr, as.integer(stride),
+                       as.integer(padding), as.integer(dilation),
+                       as.integer(groups), device)
+  .mlx_wrap_result(ptr, device)
+}
+
+#' 2D Convolution
+#'
+#' Applies a 2D convolution over the input image.
+#'
+#' @param input Input array of shape `(N, H, W, C_in)` where N is batch size,
+#'   H and W are height and width, and C_in is number of input channels
+#' @param weight Weight tensor of shape `(C_out, kernel_h, kernel_w, C_in)`
+#' @param stride Stride of the convolution. Can be a single integer or a vector of
+#'   length 2 for (stride_h, stride_w). Default: c(1, 1)
+#' @param padding Amount of zero padding. Can be a single integer or a vector of
+#'   length 2 for (padding_h, padding_w). Default: c(0, 0)
+#' @param dilation Spacing between kernel elements. Can be a single integer or a vector of
+#'   length 2 for (dilation_h, dilation_w). Default: c(1, 1)
+#' @param groups Number of blocked connections from input to output channels (default: 1)
+#' @param device Device to use for computation
+#' @return Convolved output array
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv2d.html}
+#' @export
+#' @examples
+#' # Create a simple 2D convolution
+#' input <- as_mlx(array(rnorm(1*28*28*3), dim = c(1, 28, 28, 3)))  # Batch of 1 RGB image
+#' weight <- as_mlx(array(rnorm(16*3*3*3), dim = c(16, 3, 3, 3)))  # 16 filters, 3x3 kernel
+#' output <- mlx_conv2d(input, weight, stride = c(1, 1), padding = c(1, 1))
+mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
+                       dilation = c(1L, 1L), groups = 1L,
+                       device = mlx_default_device()) {
+  if (!is.mlx(input)) input <- as_mlx(input)
+  if (!is.mlx(weight)) weight <- as_mlx(weight)
+
+  # Handle scalar inputs
+  if (length(stride) == 1) stride <- rep(stride, 2)
+  if (length(padding) == 1) padding <- rep(padding, 2)
+  if (length(dilation) == 1) dilation <- rep(dilation, 2)
+
+  ptr <- cpp_mlx_conv2d(input$ptr, weight$ptr, as.integer(stride),
+                       as.integer(padding), as.integer(dilation),
+                       as.integer(groups), device)
+  .mlx_wrap_result(ptr, device)
+}
+
+#' 3D Convolution
+#'
+#' Applies a 3D convolution over the input volume.
+#'
+#' @param input Input array of shape `(N, D, H, W, C_in)` where N is batch size,
+#'   D, H, W are depth, height and width, and C_in is number of input channels
+#' @param weight Weight tensor of shape `(C_out, kernel_d, kernel_h, kernel_w, C_in)`
+#' @param stride Stride of the convolution. Can be a single integer or a vector of
+#'   length 3 for (stride_d, stride_h, stride_w). Default: c(1, 1, 1)
+#' @param padding Amount of zero padding. Can be a single integer or a vector of
+#'   length 3 for (padding_d, padding_h, padding_w). Default: c(0, 0, 0)
+#' @param dilation Spacing between kernel elements. Can be a single integer or a vector of
+#'   length 3 for (dilation_d, dilation_h, dilation_w). Default: c(1, 1, 1)
+#' @param groups Number of blocked connections from input to output channels (default: 1)
+#' @param device Device to use for computation
+#' @return Convolved output array
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv3d.html}
+#' @export
+mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L, 0L),
+                       dilation = c(1L, 1L, 1L), groups = 1L,
+                       device = mlx_default_device()) {
+  if (!is.mlx(input)) input <- as_mlx(input)
+  if (!is.mlx(weight)) weight <- as_mlx(weight)
+
+  # Handle scalar inputs
+  if (length(stride) == 1) stride <- rep(stride, 3)
+  if (length(padding) == 1) padding <- rep(padding, 3)
+  if (length(dilation) == 1) dilation <- rep(dilation, 3)
+
+  ptr <- cpp_mlx_conv3d(input$ptr, weight$ptr, as.integer(stride),
+                       as.integer(padding), as.integer(dilation),
+                       as.integer(groups), device)
+  .mlx_wrap_result(ptr, device)
+}

@@ -197,6 +197,18 @@ cpp_mlx_allclose <- function(xp1_, xp2_, rtol, atol, equal_nan, device_str) {
     .Call(`_Rmlx_cpp_mlx_allclose`, xp1_, xp2_, rtol, atol, equal_nan, device_str)
 }
 
+cpp_mlx_conv1d <- function(input_xp_, weight_xp_, stride, padding, dilation, groups, device_str) {
+    .Call(`_Rmlx_cpp_mlx_conv1d`, input_xp_, weight_xp_, stride, padding, dilation, groups, device_str)
+}
+
+cpp_mlx_conv2d <- function(input_xp_, weight_xp_, stride, padding, dilation, groups, device_str) {
+    .Call(`_Rmlx_cpp_mlx_conv2d`, input_xp_, weight_xp_, stride, padding, dilation, groups, device_str)
+}
+
+cpp_mlx_conv3d <- function(input_xp_, weight_xp_, stride, padding, dilation, groups, device_str) {
+    .Call(`_Rmlx_cpp_mlx_conv3d`, input_xp_, weight_xp_, stride, padding, dilation, groups, device_str)
+}
+
 cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
 }
