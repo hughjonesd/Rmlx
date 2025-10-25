@@ -166,16 +166,16 @@ parameters:</p>
 <span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Iteration"</span>, <span class="va">i</span>, <span class="st">"- Loss:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">loss</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; Iteration 1000 - Loss: 0.0001076839 </span></span>
-<span><span class="co">#&gt; Iteration 2000 - Loss: 4.222868e-05 </span></span>
-<span><span class="co">#&gt; Iteration 3000 - Loss: 4.222658e-05 </span></span>
-<span><span class="co">#&gt; Iteration 4000 - Loss: 4.222658e-05 </span></span>
-<span><span class="co">#&gt; Iteration 5000 - Loss: 4.222658e-05 </span></span>
-<span><span class="co">#&gt; Iteration 6000 - Loss: 4.222658e-05 </span></span>
-<span><span class="co">#&gt; Iteration 7000 - Loss: 4.222658e-05 </span></span>
-<span><span class="co">#&gt; Iteration 8000 - Loss: 4.222658e-05 </span></span>
-<span><span class="co">#&gt; Iteration 9000 - Loss: 4.222658e-05 </span></span>
-<span><span class="co">#&gt; Iteration 10000 - Loss: 4.222658e-05</span></span></code></pre></div>
+<span><span class="co">#&gt; Iteration 1000 - Loss: 0.0001515067 </span></span>
+<span><span class="co">#&gt; Iteration 2000 - Loss: 4.262337e-05 </span></span>
+<span><span class="co">#&gt; Iteration 3000 - Loss: 4.262007e-05 </span></span>
+<span><span class="co">#&gt; Iteration 4000 - Loss: 4.262007e-05 </span></span>
+<span><span class="co">#&gt; Iteration 5000 - Loss: 4.262007e-05 </span></span>
+<span><span class="co">#&gt; Iteration 6000 - Loss: 4.262007e-05 </span></span>
+<span><span class="co">#&gt; Iteration 7000 - Loss: 4.262007e-05 </span></span>
+<span><span class="co">#&gt; Iteration 8000 - Loss: 4.262007e-05 </span></span>
+<span><span class="co">#&gt; Iteration 9000 - Loss: 4.262007e-05 </span></span>
+<span><span class="co">#&gt; Iteration 10000 - Loss: 4.262007e-05</span></span></code></pre></div>
 <p>In each iteration: 1. Compute the gradient of loss with respect to
 <code>w</code> 2. Update parameters using the gradient step 3. Force
 evaluation to prevent the computation graph from growing unbounded 4.
@@ -190,13 +190,13 @@ true parameters:</p>
 <code class="sourceCode R"><span><span class="co"># Compute final loss</span></span>
 <span><span class="va">final_loss</span> <span class="op">&lt;-</span> <span class="fu">loss_fn</span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Final loss:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">final_loss</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Final loss: 4.222658e-05</span></span>
+<span><span class="co">#&gt; Final loss: 4.262007e-05</span></span>
 <span></span>
 <span><span class="co"># Compute error between learned and true parameters</span></span>
 <span><span class="va">error</span> <span class="op">&lt;-</span> <span class="va">w</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">error</span> <span class="op">*</span> <span class="va">error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ||w - w*|| = 0.003412871</span></span>
+<span><span class="co">#&gt; ||w - w*|| = 0.003499706</span></span>
 <span></span>
 <span><span class="co"># Convert to R for detailed inspection</span></span>
 <span><span class="va">w_learned</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
@@ -205,16 +205,16 @@ true parameters:</p>
 <span><span class="co"># Compare first few parameters</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>learned <span class="op">=</span> <span class="va">w_learned</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">]</span>, true <span class="op">=</span> <span class="va">w_true</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;           learned        true</span></span>
-<span><span class="co">#&gt;  [1,]  0.23015974  0.22960816</span></span>
-<span><span class="co">#&gt;  [2,] -0.41138166 -0.41153261</span></span>
-<span><span class="co">#&gt;  [3,] -0.84843582 -0.84859532</span></span>
-<span><span class="co">#&gt;  [4,]  1.41819632  1.41808367</span></span>
-<span><span class="co">#&gt;  [5,]  0.33305103  0.33283976</span></span>
-<span><span class="co">#&gt;  [6,] -0.03666484 -0.03689067</span></span>
-<span><span class="co">#&gt;  [7,]  1.21189332  1.21213961</span></span>
-<span><span class="co">#&gt;  [8,]  0.26034814  0.25994825</span></span>
-<span><span class="co">#&gt;  [9,] -0.49220088 -0.49226135</span></span>
-<span><span class="co">#&gt; [10,]  0.89392084  0.89373916</span></span></code></pre></div>
+<span><span class="co">#&gt;  [1,] -2.06893063 -2.06882095</span></span>
+<span><span class="co">#&gt;  [2,]  0.27200630  0.27214926</span></span>
+<span><span class="co">#&gt;  [3,]  0.49228200  0.49202701</span></span>
+<span><span class="co">#&gt;  [4,] -2.26466107 -2.26420736</span></span>
+<span><span class="co">#&gt;  [5,] -0.84852481 -0.84915936</span></span>
+<span><span class="co">#&gt;  [6,] -0.70185316 -0.70210135</span></span>
+<span><span class="co">#&gt;  [7,]  0.03166236  0.03194402</span></span>
+<span><span class="co">#&gt;  [8,] -1.94003963 -1.93972147</span></span>
+<span><span class="co">#&gt;  [9,] -2.17730117 -2.17735815</span></span>
+<span><span class="co">#&gt; [10,]  0.55678040  0.55718738</span></span></code></pre></div>
 <p>We measure two things: - <strong>Final loss</strong>: How well our
 model fits the data - <strong>Parameter error</strong>: How close our
 learned weights are to the true weights</p>
