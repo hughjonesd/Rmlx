@@ -44,6 +44,9 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv1d.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv2d.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv3d.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv_transpose1d.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv_transpose2d.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv_transpose3d.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_creation_params.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_cross.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_cross_entropy.html</loc></url>
