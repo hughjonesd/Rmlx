@@ -7,7 +7,7 @@
 mlx_quantized_matmul(
   x,
   w,
-  scales,
+  scales = NULL,
   biases = NULL,
   transpose = TRUE,
   group_size = 64L,
@@ -19,11 +19,17 @@ mlx_quantized_matmul(
 \arguments{
 \item{x}{An mlx array (the input matrix)}
 
-\item{w}{An mlx array (the quantized weight matrix)}
+\item{w}{An mlx array. Either:
+\itemize{
+\item A quantized weight matrix (uint32) from \code{\link[=mlx_quantize]{mlx_quantize()}}, or
+\item An unquantized weight matrix that will be quantized automatically
+}}
 
-\item{scales}{An mlx array (the quantization scales)}
+\item{scales}{An optional mlx array (the quantization scales). If NULL and w is
+unquantized, w will be quantized automatically. Default: NULL}
 
-\item{biases}{An optional mlx array (biases to add). Default: NULL}
+\item{biases}{An optional mlx array (biases to add). For affine quantization, this
+should be the quantization biases if w is pre-quantized. Default: NULL}
 
 \item{transpose}{Whether to transpose the weight matrix. Default: TRUE}
 
@@ -31,7 +37,7 @@ mlx_quantized_matmul(
 
 \item{bits}{The number of bits for quantization (typically 4 or 8). Default: 4}
 
-\item{mode}{The quantization mode, either "affine" or "symmetric". Default: "affine"}
+\item{mode}{The quantization mode, either "affine" or "mxfp4". Default: "affine"}
 
 \item{device}{Device to perform computation on. Default: \code{mlx_default_device()}}
 }
@@ -52,12 +58,24 @@ approximate float values during computation.
 The group_size parameter controls the granularity of quantization - smaller groups
 provide better accuracy but slightly higher memory usage.
 
-\strong{Note:} This function requires properly quantized and packed weights. Users should
-use MLX quantization utilities to prepare weights in the correct format. The weight
-matrix must be uint32 type with values packed according to the bits parameter.
+\strong{Automatic Quantization}: If only w is provided (without scales), the function will
+automatically quantize w using \code{\link[=mlx_quantize]{mlx_quantize()}} before performing the multiplication.
+For repeated operations, it's more efficient to pre-quantize weights once using
+\code{\link[=mlx_quantize]{mlx_quantize()}} and reuse them.
+}
+\examples{
+\dontrun{
+# Automatic quantization (convenient but slower for repeated use)
+x <- mlx_random_normal(c(10, 256))
+w <- mlx_random_normal(c(512, 256))
+result <- mlx_quantized_matmul(x, w)
+
+# Pre-quantized weights (faster for repeated operations)
+quant <- mlx_quantize(w, group_size = 64, bits = 4)
+result <- mlx_quantized_matmul(x, quant$w_q, quant$scales, quant$biases)
+}
+
 }
 \seealso{
-\code{\link[=mlx_gather_qmm]{mlx_gather_qmm()}}
-
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+\code{\link[=mlx_quantize]{mlx_quantize()}}, \code{\link[=mlx_dequantize]{mlx_dequantize()}}, \code{\link[=mlx_gather_qmm]{mlx_gather_qmm()}}
 }

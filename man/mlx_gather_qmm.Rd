@@ -38,7 +38,7 @@ mlx_gather_qmm(
 
 \item{bits}{The number of bits for quantization (typically 4 or 8). Default: 4}
 
-\item{mode}{The quantization mode, either "affine" or "symmetric". Default: "affine"}
+\item{mode}{The quantization mode, either "affine" or "mxfp4". Default: "affine"}
 
 \item{sorted_indices}{Whether the indices are sorted (enables optimizations). Default: FALSE}
 

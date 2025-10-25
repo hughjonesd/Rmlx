@@ -814,6 +814,103 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
   .mlx_wrap_result(ptr, device)
 }
 
+#' Quantize a Matrix
+#'
+#' Quantizes a weight matrix to low-precision representation (typically 4-bit or 8-bit).
+#' This reduces memory usage and enables faster computation during inference.
+#'
+#' @param w An mlx array (the weight matrix to quantize)
+#' @param group_size The group size for quantization. Smaller groups provide better
+#'   accuracy but slightly higher memory. Default: 64
+#' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
+#' @param mode The quantization mode: "affine" (with scales and biases) or "mxfp4"
+#'   (4-bit floating point with group_size=32). Default: "affine"
+#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#'
+#' @return A list containing:
+#'   \item{w_q}{The quantized weight matrix (packed as uint32)}
+#'   \item{scales}{The quantization scales for dequantization}
+#'   \item{biases}{The quantization biases (NULL for symmetric mode)}
+#'
+#' @details
+#' Quantization converts floating-point weights to low-precision integers, reducing
+#' memory by up to 8x for 4-bit quantization. The scales (and optionally biases) are
+#' stored to enable approximate reconstruction of the original values.
+#'
+#' @examples
+#' \dontrun{
+#' w <- mlx_random_normal(c(512, 256))
+#' quant <- mlx_quantize(w, group_size = 64, bits = 4)
+#' # Use quant$w_q, quant$scales, quant$biases with mlx_quantized_matmul()
+#' }
+#'
+#' @seealso [mlx_dequantize()], [mlx_quantized_matmul()]
+#' @export
+mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
+                         device = mlx_default_device()) {
+  if (!is.mlx(w)) w <- as_mlx(w)
+
+  result <- cpp_mlx_quantize(w$ptr, as.integer(group_size), as.integer(bits),
+                              mode, device)
+
+  # Wrap the returned pointers as mlx objects
+  out <- list()
+  out$w_q <- .mlx_wrap_result(result$w_q, device)
+  out$scales <- .mlx_wrap_result(result$scales, device)
+  if (!is.null(result$biases)) {
+    out$biases <- .mlx_wrap_result(result$biases, device)
+  } else {
+    out$biases <- NULL
+  }
+
+  out
+}
+
+#' Dequantize a Matrix
+#'
+#' Reconstructs an approximate floating-point matrix from a quantized representation
+#' produced by [mlx_quantize()].
+#'
+#' @param w An mlx array (the quantized weight matrix)
+#' @param scales An mlx array (the quantization scales)
+#' @param biases An optional mlx array (the quantization biases for affine mode). Default: NULL
+#' @param group_size The group size used during quantization. Default: 64
+#' @param bits The number of bits used during quantization. Default: 4
+#' @param mode The quantization mode used: "affine" or "mxfp4". Default: "affine"
+#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#'
+#' @return An mlx array with the dequantized (approximate) floating-point weights
+#'
+#' @details
+#' Dequantization unpacks the low-precision quantized weights and applies the scales
+#' (and biases) to reconstruct approximate floating-point values. Note that some
+#' precision is lost during quantization and cannot be recovered.
+#'
+#' @examples
+#' \dontrun{
+#' w <- mlx_random_normal(c(512, 256))
+#' quant <- mlx_quantize(w)
+#' w_reconstructed <- mlx_dequantize(quant$w_q, quant$scales, quant$biases)
+#' }
+#'
+#' @seealso [mlx_quantize()], [mlx_quantized_matmul()]
+#' @export
+mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L,
+                            mode = "affine", device = mlx_default_device()) {
+  if (!is.mlx(w)) w <- as_mlx(w)
+  if (!is.mlx(scales)) scales <- as_mlx(scales)
+
+  biases_ptr <- NULL
+  if (!is.null(biases)) {
+    if (!is.mlx(biases)) biases <- as_mlx(biases)
+    biases_ptr <- biases$ptr
+  }
+
+  ptr <- cpp_mlx_dequantize(w$ptr, scales$ptr, biases_ptr,
+                            as.integer(group_size), as.integer(bits), mode, device)
+  .mlx_wrap_result(ptr, device)
+}
+
 #' Quantized Matrix Multiplication
 #'
 #' Performs matrix multiplication with a quantized weight matrix. This operation
@@ -821,13 +918,19 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
 #' memory usage and computation time while maintaining reasonable accuracy.
 #'
 #' @param x An mlx array (the input matrix)
-#' @param w An mlx array (the quantized weight matrix)
-#' @param scales An mlx array (the quantization scales)
-#' @param biases An optional mlx array (biases to add). Default: NULL
+#' @param w An mlx array. Either:
+#'   \itemize{
+#'     \item A quantized weight matrix (uint32) from [mlx_quantize()], or
+#'     \item An unquantized weight matrix that will be quantized automatically
+#'   }
+#' @param scales An optional mlx array (the quantization scales). If NULL and w is
+#'   unquantized, w will be quantized automatically. Default: NULL
+#' @param biases An optional mlx array (biases to add). For affine quantization, this
+#'   should be the quantization biases if w is pre-quantized. Default: NULL
 #' @param transpose Whether to transpose the weight matrix. Default: TRUE
 #' @param group_size The group size for quantization. Default: 64
 #' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
-#' @param mode The quantization mode, either "affine" or "symmetric". Default: "affine"
+#' @param mode The quantization mode, either "affine" or "mxfp4". Default: "affine"
 #' @param device Device to perform computation on. Default: `mlx_default_device()`
 #'
 #' @return An mlx array with the result of the quantized matrix multiplication
@@ -841,19 +944,42 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
 #' The group_size parameter controls the granularity of quantization - smaller groups
 #' provide better accuracy but slightly higher memory usage.
 #'
-#' **Note:** This function requires properly quantized and packed weights. Users should
-#' use MLX quantization utilities to prepare weights in the correct format. The weight
-#' matrix must be uint32 type with values packed according to the bits parameter.
+#' **Automatic Quantization**: If only w is provided (without scales), the function will
+#' automatically quantize w using [mlx_quantize()] before performing the multiplication.
+#' For repeated operations, it's more efficient to pre-quantize weights once using
+#' [mlx_quantize()] and reuse them.
 #'
-#' @seealso [mlx_gather_qmm()]
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @examples
+#' \dontrun{
+#' # Automatic quantization (convenient but slower for repeated use)
+#' x <- mlx_random_normal(c(10, 256))
+#' w <- mlx_random_normal(c(512, 256))
+#' result <- mlx_quantized_matmul(x, w)
+#'
+#' # Pre-quantized weights (faster for repeated operations)
+#' quant <- mlx_quantize(w, group_size = 64, bits = 4)
+#' result <- mlx_quantized_matmul(x, quant$w_q, quant$scales, quant$biases)
+#' }
+#'
+#' @seealso [mlx_quantize()], [mlx_dequantize()], [mlx_gather_qmm()]
 #' @export
-mlx_quantized_matmul <- function(x, w, scales, biases = NULL, transpose = TRUE,
+mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose = TRUE,
                                   group_size = 64L, bits = 4L, mode = "affine",
                                   device = mlx_default_device()) {
   if (!is.mlx(x)) x <- as_mlx(x)
   if (!is.mlx(w)) w <- as_mlx(w)
-  if (!is.mlx(scales)) scales <- as_mlx(scales)
+
+  # Auto-quantize if scales not provided
+  if (is.null(scales)) {
+    quant <- mlx_quantize(w, group_size, bits, mode, device)
+    w <- quant$w_q
+    scales <- quant$scales
+    if (is.null(biases) && !is.null(quant$biases)) {
+      biases <- quant$biases
+    }
+  } else {
+    if (!is.mlx(scales)) scales <- as_mlx(scales)
+  }
 
   biases_ptr <- NULL
   if (!is.null(biases)) {
@@ -882,7 +1008,7 @@ mlx_quantized_matmul <- function(x, w, scales, biases = NULL, transpose = TRUE,
 #' @param transpose Whether to transpose the weight matrix. Default: TRUE
 #' @param group_size The group size for quantization. Default: 64
 #' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
-#' @param mode The quantization mode, either "affine" or "symmetric". Default: "affine"
+#' @param mode The quantization mode, either "affine" or "mxfp4". Default: "affine"
 #' @param sorted_indices Whether the indices are sorted (enables optimizations). Default: FALSE
 #' @param device Device to perform computation on. Default: `mlx_default_device()`
 #'

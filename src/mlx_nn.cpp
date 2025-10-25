@@ -204,3 +204,48 @@ SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
 
   return make_mlx_xptr(std::move(result));
 }
+
+// [[Rcpp::export]]
+List cpp_mlx_quantize(SEXP w_xp_, int group_size, int bits,
+                      std::string mode, std::string device_str) {
+  MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array w = w_wrapper->get();
+  std::vector<array> result = quantize(w, group_size, bits, mode, target_device);
+
+  // quantize returns a vector with 2 or 3 elements: [w_q, scales, biases (optional)]
+  List out;
+  out["w_q"] = make_mlx_xptr(std::move(result[0]));
+  out["scales"] = make_mlx_xptr(std::move(result[1]));
+  if (result.size() > 2) {
+    out["biases"] = make_mlx_xptr(std::move(result[2]));
+  } else {
+    out["biases"] = R_NilValue;
+  }
+
+  return out;
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_dequantize(SEXP w_xp_, SEXP scales_xp_, SEXP biases_xp_,
+                        int group_size, int bits, std::string mode,
+                        std::string device_str) {
+  MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
+  MlxArrayWrapper* scales_wrapper = get_mlx_wrapper(scales_xp_);
+
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array w = w_wrapper->get();
+  array scales = scales_wrapper->get();
+
+  std::optional<array> biases = std::nullopt;
+  if (biases_xp_ != R_NilValue) {
+    MlxArrayWrapper* biases_wrapper = get_mlx_wrapper(biases_xp_);
+    biases = biases_wrapper->get();
+  }
+
+  array result = dequantize(w, scales, biases, group_size, bits, mode, target_device);
+
+  return make_mlx_xptr(std::move(result));
+}
