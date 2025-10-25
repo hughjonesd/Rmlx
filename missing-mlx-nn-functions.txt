@@ -44,7 +44,7 @@ Based on MLX Python nn module documentation vs current Rmlx implementation.
 
 #### Convolutional Layers
 - ✅ **Conv1d, Conv2d, Conv3d** - Standard convolution layers (IMPLEMENTED via mlx_conv1d, mlx_conv2d, mlx_conv3d)
-- **ConvTranspose1d, ConvTranspose2d, ConvTranspose3d** - Transposed convolution (deconvolution) [C++ API available but not yet wrapped]
+- ✅ **ConvTranspose1d, ConvTranspose2d, ConvTranspose3d** - Transposed convolution (IMPLEMENTED via mlx_conv_transpose1d, mlx_conv_transpose2d, mlx_conv_transpose3d)
 
 #### Pooling Layers
 - **MaxPool1d, MaxPool2d, MaxPool3d** - Max pooling

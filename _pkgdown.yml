@@ -126,6 +126,9 @@ reference:
       - mlx_conv1d
       - mlx_conv2d
       - mlx_conv3d
+      - mlx_conv_transpose1d
+      - mlx_conv_transpose2d
+      - mlx_conv_transpose3d
   - title: Activation Functions
     contents:
       - mlx_relu

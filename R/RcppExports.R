@@ -209,6 +209,18 @@ cpp_mlx_conv3d <- function(input_xp_, weight_xp_, stride, padding, dilation, gro
     .Call(`_Rmlx_cpp_mlx_conv3d`, input_xp_, weight_xp_, stride, padding, dilation, groups, device_str)
 }
 
+cpp_mlx_conv_transpose1d <- function(input_xp_, weight_xp_, stride, padding, dilation, output_padding, groups, device_str) {
+    .Call(`_Rmlx_cpp_mlx_conv_transpose1d`, input_xp_, weight_xp_, stride, padding, dilation, output_padding, groups, device_str)
+}
+
+cpp_mlx_conv_transpose2d <- function(input_xp_, weight_xp_, stride, padding, dilation, output_padding, groups, device_str) {
+    .Call(`_Rmlx_cpp_mlx_conv_transpose2d`, input_xp_, weight_xp_, stride, padding, dilation, output_padding, groups, device_str)
+}
+
+cpp_mlx_conv_transpose3d <- function(input_xp_, weight_xp_, stride, padding, dilation, output_padding, groups, device_str) {
+    .Call(`_Rmlx_cpp_mlx_conv_transpose3d`, input_xp_, weight_xp_, stride, padding, dilation, output_padding, groups, device_str)
+}
+
 cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
 }

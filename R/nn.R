@@ -706,3 +706,110 @@ mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L
                        as.integer(groups), device)
   .mlx_wrap_result(ptr, device)
 }
+
+#' 1D Transposed Convolution
+#'
+#' Applies a 1D transposed convolution (also called deconvolution) over an input signal.
+#' Transposed convolutions are used to upsample the spatial dimensions of the input.
+#'
+#' @param input An mlx array with shape `(batch, length, in_channels)` for 'NWC' layout
+#' @param weight An mlx array with shape `(out_channels, kernel_size, in_channels)`
+#' @param stride Stride of the convolution. Default: 1
+#' @param padding Amount of zero padding. Default: 0
+#' @param dilation Dilation factor for the kernel. Default: 1
+#' @param output_padding Additional size added to output shape. Default: 0
+#' @param groups Number of blocked connections from input to output channels. Default: 1
+#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#'
+#' @return An mlx array with the transposed convolution result
+#' @seealso [mlx_conv1d()], [mlx_conv_transpose2d()], [mlx_conv_transpose3d()]
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @export
+mlx_conv_transpose1d <- function(input, weight, stride = 1L, padding = 0L,
+                                  dilation = 1L, output_padding = 0L, groups = 1L,
+                                  device = mlx_default_device()) {
+  if (!is.mlx(input)) input <- as_mlx(input)
+  if (!is.mlx(weight)) weight <- as_mlx(weight)
+
+  ptr <- cpp_mlx_conv_transpose1d(input$ptr, weight$ptr, as.integer(stride),
+                                   as.integer(padding), as.integer(dilation),
+                                   as.integer(output_padding), as.integer(groups),
+                                   device)
+  .mlx_wrap_result(ptr, device)
+}
+
+#' 2D Transposed Convolution
+#'
+#' Applies a 2D transposed convolution (also called deconvolution) over an input signal.
+#' Transposed convolutions are commonly used in image generation and upsampling tasks.
+#'
+#' @param input An mlx array with shape `(batch, height, width, in_channels)` for 'NHWC' layout
+#' @param weight An mlx array with shape `(out_channels, kernel_h, kernel_w, in_channels)`
+#' @param stride Stride of the convolution. Can be a scalar or length-2 vector. Default: c(1, 1)
+#' @param padding Amount of zero padding. Can be a scalar or length-2 vector. Default: c(0, 0)
+#' @param dilation Dilation factor for the kernel. Can be a scalar or length-2 vector. Default: c(1, 1)
+#' @param output_padding Additional size added to output shape. Can be a scalar or length-2 vector. Default: c(0, 0)
+#' @param groups Number of blocked connections from input to output channels. Default: 1
+#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#'
+#' @return An mlx array with the transposed convolution result
+#' @seealso [mlx_conv2d()], [mlx_conv_transpose1d()], [mlx_conv_transpose3d()]
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @export
+mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
+                                  padding = c(0L, 0L), dilation = c(1L, 1L),
+                                  output_padding = c(0L, 0L), groups = 1L,
+                                  device = mlx_default_device()) {
+  if (!is.mlx(input)) input <- as_mlx(input)
+  if (!is.mlx(weight)) weight <- as_mlx(weight)
+
+  # Handle scalar inputs
+  if (length(stride) == 1) stride <- rep(stride, 2)
+  if (length(padding) == 1) padding <- rep(padding, 2)
+  if (length(dilation) == 1) dilation <- rep(dilation, 2)
+  if (length(output_padding) == 1) output_padding <- rep(output_padding, 2)
+
+  ptr <- cpp_mlx_conv_transpose2d(input$ptr, weight$ptr, as.integer(stride),
+                                   as.integer(padding), as.integer(dilation),
+                                   as.integer(output_padding), as.integer(groups),
+                                   device)
+  .mlx_wrap_result(ptr, device)
+}
+
+#' 3D Transposed Convolution
+#'
+#' Applies a 3D transposed convolution (also called deconvolution) over an input signal.
+#' Useful for 3D volumetric data upsampling, such as in medical imaging or video generation.
+#'
+#' @param input An mlx array with shape `(batch, depth, height, width, in_channels)` for 'NDHWC' layout
+#' @param weight An mlx array with shape `(out_channels, kernel_d, kernel_h, kernel_w, in_channels)`
+#' @param stride Stride of the convolution. Can be a scalar or length-3 vector. Default: c(1, 1, 1)
+#' @param padding Amount of zero padding. Can be a scalar or length-3 vector. Default: c(0, 0, 0)
+#' @param dilation Dilation factor for the kernel. Can be a scalar or length-3 vector. Default: c(1, 1, 1)
+#' @param output_padding Additional size added to output shape. Can be a scalar or length-3 vector. Default: c(0, 0, 0)
+#' @param groups Number of blocked connections from input to output channels. Default: 1
+#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#'
+#' @return An mlx array with the transposed convolution result
+#' @seealso [mlx_conv3d()], [mlx_conv_transpose1d()], [mlx_conv_transpose2d()]
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @export
+mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
+                                  padding = c(0L, 0L, 0L), dilation = c(1L, 1L, 1L),
+                                  output_padding = c(0L, 0L, 0L), groups = 1L,
+                                  device = mlx_default_device()) {
+  if (!is.mlx(input)) input <- as_mlx(input)
+  if (!is.mlx(weight)) weight <- as_mlx(weight)
+
+  # Handle scalar inputs
+  if (length(stride) == 1) stride <- rep(stride, 3)
+  if (length(padding) == 1) padding <- rep(padding, 3)
+  if (length(dilation) == 1) dilation <- rep(dilation, 3)
+  if (length(output_padding) == 1) output_padding <- rep(output_padding, 3)
+
+  ptr <- cpp_mlx_conv_transpose3d(input$ptr, weight$ptr, as.integer(stride),
+                                   as.integer(padding), as.integer(dilation),
+                                   as.integer(output_padding), as.integer(groups),
+                                   device)
+  .mlx_wrap_result(ptr, device)
+}
