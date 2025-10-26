@@ -24,10 +24,10 @@ jobs:
           r-version: 'release'
           use-public-rspm: true
 
-      - name: Install CMake
+      - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake
+          sudo apt-get install -y cmake libblas-dev liblapack-dev
           cmake --version
 
       - uses: r-lib/actions/setup-r-dependencies@v2
