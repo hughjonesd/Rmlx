@@ -2,21 +2,21 @@
 % Please edit documentation in R/concat.R
 \name{rbind.mlx}
 \alias{rbind.mlx}
-\title{Row-bind MLX tensors}
+\title{Row-bind mlx arrays}
 \usage{
 \method{rbind}{mlx}(..., deparse.level = 1)
 }
 \arguments{
-\item{...}{Objects to bind. MLX tensors are kept in MLX; other inputs are
+\item{...}{Objects to bind. mlx arrays are kept in MLX; other inputs are
 coerced via \code{as_mlx()}.}
 
 \item{deparse.level}{Compatibility argument accepted for S3 dispatch; ignored.}
 }
 \value{
-An \code{mlx} tensor stacked along the first axis.
+An mlx array stacked along the first axis.
 }
 \description{
-Row-bind MLX tensors
+Row-bind mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

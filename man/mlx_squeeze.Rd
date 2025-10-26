@@ -7,13 +7,13 @@
 mlx_squeeze(x, axis = NULL)
 }
 \arguments{
-\item{x}{An \code{mlx} tensor.}
+\item{x}{An mlx array.}
 
 \item{axis}{Optional integer vector of axes (1-indexed) to remove. When \code{NULL}
 all axes of length one are removed.}
 }
 \value{
-An \code{mlx} tensor with the selected axes removed.
+An mlx array with the selected axes removed.
 }
 \description{
 Remove singleton dimensions

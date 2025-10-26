@@ -37,7 +37,7 @@ mlx_optimizer_sgd <- function(params, lr = 0.01) {
 #' Single training step helper
 #'
 #' @param module An `mlx_module`.
-#' @param loss_fn Function of `module` and data returning an `mlx` scalar.
+#' @param loss_fn Function of `module` and data returning an mlx scalar.
 #' @param optimizer Optimizer object from `mlx_optimizer_sgd()`.
 #' @param ... Additional data passed to `loss_fn`.
 #' @return A list with the current loss.
@@ -81,7 +81,7 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
     mlx_param_set_values(params, param_inputs)
     loss <- do.call(loss_fn, c(list(module), data_inputs))
     if (!is.mlx(loss)) {
-      stop("loss_fn must return an `mlx` tensor.", call. = FALSE)
+      stop("loss_fn must return an mlx array.", call. = FALSE)
     }
     loss
   }

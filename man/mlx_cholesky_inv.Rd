@@ -7,7 +7,7 @@
 mlx_cholesky_inv(x, upper = FALSE)
 }
 \arguments{
-\item{x}{An \code{mlx} array containing the Cholesky factor (lower or upper triangular).}
+\item{x}{An mlx array.}
 
 \item{upper}{Logical; if \code{TRUE}, \code{x} is upper triangular, otherwise lower triangular.}
 }

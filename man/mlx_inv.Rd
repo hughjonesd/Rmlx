@@ -7,7 +7,7 @@
 mlx_inv(x)
 }
 \arguments{
-\item{x}{An \code{mlx} array (must be square).}
+\item{x}{An mlx array.}
 }
 \value{
 The inverse of \code{x}.

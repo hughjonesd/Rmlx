@@ -7,7 +7,7 @@
 mlx_eval(x)
 }
 \arguments{
-\item{x}{An \code{mlx} object}
+\item{x}{An mlx array.}
 }
 \value{
 The input object (invisibly)

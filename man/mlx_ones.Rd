@@ -2,22 +2,23 @@
 % Please edit documentation in R/create.R
 \name{mlx_ones}
 \alias{mlx_ones}
-\title{Create tensors of ones on MLX devices}
+\title{Create arrays of ones on MLX devices}
 \usage{
 mlx_ones(dim, dtype = c("float32", "float64"), device = mlx_default_device())
 }
 \arguments{
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
 \item{dtype}{MLX dtype to use (\code{"float32"} or \code{"float64"}).}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} tensor filled with ones.
+An mlx array filled with ones.
 }
 \description{
-Create tensors of ones on MLX devices
+Create arrays of ones on MLX devices
 }
 \examples{
 ones <- mlx_ones(c(2, 2), dtype = "float64", device = "cpu")

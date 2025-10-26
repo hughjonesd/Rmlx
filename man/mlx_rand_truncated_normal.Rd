@@ -2,7 +2,7 @@
 % Please edit documentation in R/random.R
 \name{mlx_rand_truncated_normal}
 \alias{mlx_rand_truncated_normal}
-\title{Sample from a truncated normal distribution on MLX tensors}
+\title{Sample from a truncated normal distribution on mlx arrays}
 \usage{
 mlx_rand_truncated_normal(
   lower,
@@ -17,17 +17,18 @@ mlx_rand_truncated_normal(
 
 \item{upper}{Upper bound of the truncated normal.}
 
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
 \item{dtype}{Desired MLX dtype ("float32" or "float64").}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} tensor with truncated normally distributed entries.
+An mlx array with truncated normally distributed entries.
 }
 \description{
-Sample from a truncated normal distribution on MLX tensors
+Sample from a truncated normal distribution on mlx arrays
 }
 \examples{
 samples <- mlx_rand_truncated_normal(-1, 1, c(5, 5))

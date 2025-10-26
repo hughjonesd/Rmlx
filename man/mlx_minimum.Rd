@@ -2,18 +2,18 @@
 % Please edit documentation in R/ops.R
 \name{mlx_minimum}
 \alias{mlx_minimum}
-\title{Elementwise minimum of two MLX tensors}
+\title{Elementwise minimum of two mlx arrays}
 \usage{
 mlx_minimum(x, y)
 }
 \arguments{
-\item{x, y}{\code{mlx} tensors or objects coercible with \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x, y}{mlx arrays or objects coercible with \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
-An \code{mlx} tensor containing the elementwise minimum.
+An mlx array containing the elementwise minimum.
 }
 \description{
-Elementwise minimum of two MLX tensors
+Elementwise minimum of two mlx arrays
 }
 \examples{
 \dontrun{

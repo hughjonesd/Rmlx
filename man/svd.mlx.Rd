@@ -2,12 +2,12 @@
 % Please edit documentation in R/linalg_adv.R
 \name{svd.mlx}
 \alias{svd.mlx}
-\title{Singular value decomposition for MLX tensors}
+\title{Singular value decomposition for mlx arrays}
 \usage{
 \method{svd}{mlx}(x, nu = min(n, p), nv = min(n, p), ...)
 }
 \arguments{
-\item{x}{An \code{mlx} matrix.}
+\item{x}{An mlx matrix (2-dimensional array).}
 
 \item{nu}{Number of left singular vectors to return (0 or \code{min(dim(x))}).}
 

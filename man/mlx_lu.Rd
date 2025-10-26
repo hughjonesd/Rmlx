@@ -7,7 +7,7 @@
 mlx_lu(x)
 }
 \arguments{
-\item{x}{An \code{mlx} array.}
+\item{x}{An mlx array.}
 }
 \value{
 A list with components \code{p} (pivot indices), \code{l} (lower triangular),

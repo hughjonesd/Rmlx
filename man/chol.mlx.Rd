@@ -2,24 +2,23 @@
 % Please edit documentation in R/linalg_adv.R
 \name{chol.mlx}
 \alias{chol.mlx}
-\title{Cholesky decomposition for MLX tensors}
+\title{Cholesky decomposition for mlx arrays}
 \usage{
 \method{chol}{mlx}(x, pivot = FALSE, ...)
 }
 \arguments{
-\item{x}{An \code{mlx} matrix. Note: if \code{x} is not symmetric
-positive semi-definite, "behaviour is undefined" according to the MLX
-documentation.}
+\item{x}{An mlx matrix (2-dimensional array).}
 
 \item{pivot}{Ignored; pivoted decomposition is not supported.}
 
 \item{...}{Additional arguments (unused).}
 }
 \value{
-Upper-triangular Cholesky factor as an \code{mlx} matrix.
+Upper-triangular Cholesky factor as an mlx matrix.
 }
 \description{
-Cholesky decomposition for MLX tensors
+If \code{x} is not symmetric positive semi-definite, "behaviour is undefined"
+according to the MLX documentation.
 }
 \examples{
 x <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))

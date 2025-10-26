@@ -2,22 +2,23 @@
 % Please edit documentation in R/create.R
 \name{mlx_zeros}
 \alias{mlx_zeros}
-\title{Create tensors of zeros on MLX devices}
+\title{Create arrays of zeros on MLX devices}
 \usage{
 mlx_zeros(dim, dtype = c("float32", "float64"), device = mlx_default_device())
 }
 \arguments{
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
 \item{dtype}{MLX dtype to use (\code{"float32"} or \code{"float64"}).}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} tensor filled with zeros.
+An mlx array filled with zeros.
 }
 \description{
-Create tensors of zeros on MLX devices
+Create arrays of zeros on MLX devices
 }
 \examples{
 zeros <- mlx_zeros(c(2, 3))

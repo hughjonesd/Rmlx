@@ -16,21 +16,24 @@ mlx_conv_transpose1d(
 )
 }
 \arguments{
-\item{input}{An mlx array with shape \verb{(batch, length, in_channels)} for 'NWC' layout}
+\item{input}{Input mlx array. Shape depends on dimensionality (see individual functions).}
 
-\item{weight}{An mlx array with shape \verb{(out_channels, kernel_size, in_channels)}}
+\item{weight}{Weight array. Shape depends on dimensionality (see individual functions).}
 
-\item{stride}{Stride of the convolution. Default: 1}
+\item{stride}{Stride of the convolution. Can be a scalar or vector (length depends
+on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.}
 
-\item{padding}{Amount of zero padding. Default: 0}
+\item{padding}{Amount of zero padding. Can be a scalar or vector (length depends
+on dimensionality). Default: 0 for 1D, c(0,0) for 2D, c(0,0,0) for 3D.}
 
-\item{dilation}{Dilation factor for the kernel. Default: 1}
+\item{dilation}{Spacing between kernel elements. Can be a scalar or vector (length
+depends on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.}
 
 \item{output_padding}{Additional size added to output shape. Default: 0}
 
-\item{groups}{Number of blocked connections from input to output channels. Default: 1}
+\item{groups}{Number of blocked connections from input to output channels. Default: 1.}
 
-\item{device}{Device to perform computation on. Default: \code{mlx_default_device()}}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array with the transposed convolution result
@@ -38,6 +41,10 @@ An mlx array with the transposed convolution result
 \description{
 Applies a 1D transposed convolution (also called deconvolution) over an input signal.
 Transposed convolutions are used to upsample the spatial dimensions of the input.
+}
+\details{
+Input has shape \verb{(batch, length, in_channels)} for 'NWC' layout. Weight has shape
+\verb{(out_channels, kernel_size, in_channels)}.
 }
 \seealso{
 \code{\link[=mlx_conv1d]{mlx_conv1d()}}, \code{\link[=mlx_conv_transpose2d]{mlx_conv_transpose2d()}}, \code{\link[=mlx_conv_transpose3d]{mlx_conv_transpose3d()}}

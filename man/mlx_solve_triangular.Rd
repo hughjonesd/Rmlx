@@ -2,22 +2,22 @@
 % Please edit documentation in R/linalg_adv.R
 \name{mlx_solve_triangular}
 \alias{mlx_solve_triangular}
-\title{Solve triangular systems with MLX tensors}
+\title{Solve triangular systems with mlx arrays}
 \usage{
 mlx_solve_triangular(a, b, upper = FALSE)
 }
 \arguments{
-\item{a}{An \code{mlx} triangular matrix.}
+\item{a}{An mlx triangular matrix.}
 
 \item{b}{Right-hand side matrix or vector.}
 
 \item{upper}{Logical; if \code{TRUE}, \code{a} is upper triangular, otherwise lower.}
 }
 \value{
-An \code{mlx} tensor solution.
+An mlx array solution.
 }
 \description{
-Solve triangular systems with MLX tensors
+Solve triangular systems with mlx arrays
 }
 \examples{
 a <- as_mlx(matrix(c(2, 1, 0, 3), 2, 2))

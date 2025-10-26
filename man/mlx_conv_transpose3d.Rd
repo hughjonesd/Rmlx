@@ -16,21 +16,25 @@ mlx_conv_transpose3d(
 )
 }
 \arguments{
-\item{input}{An mlx array with shape \verb{(batch, depth, height, width, in_channels)} for 'NDHWC' layout}
+\item{input}{Input mlx array. Shape depends on dimensionality (see individual functions).}
 
-\item{weight}{An mlx array with shape \verb{(out_channels, kernel_d, kernel_h, kernel_w, in_channels)}}
+\item{weight}{Weight array. Shape depends on dimensionality (see individual functions).}
 
-\item{stride}{Stride of the convolution. Can be a scalar or length-3 vector. Default: c(1, 1, 1)}
+\item{stride}{Stride of the convolution. Can be a scalar or vector (length depends
+on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.}
 
-\item{padding}{Amount of zero padding. Can be a scalar or length-3 vector. Default: c(0, 0, 0)}
+\item{padding}{Amount of zero padding. Can be a scalar or vector (length depends
+on dimensionality). Default: 0 for 1D, c(0,0) for 2D, c(0,0,0) for 3D.}
 
-\item{dilation}{Dilation factor for the kernel. Can be a scalar or length-3 vector. Default: c(1, 1, 1)}
+\item{dilation}{Spacing between kernel elements. Can be a scalar or vector (length
+depends on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.}
 
-\item{output_padding}{Additional size added to output shape. Can be a scalar or length-3 vector. Default: c(0, 0, 0)}
+\item{output_padding}{Additional size added to output shape. Can be a scalar or
+length-3 vector. Default: c(0, 0, 0)}
 
-\item{groups}{Number of blocked connections from input to output channels. Default: 1}
+\item{groups}{Number of blocked connections from input to output channels. Default: 1.}
 
-\item{device}{Device to perform computation on. Default: \code{mlx_default_device()}}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array with the transposed convolution result
@@ -38,6 +42,10 @@ An mlx array with the transposed convolution result
 \description{
 Applies a 3D transposed convolution (also called deconvolution) over an input signal.
 Useful for 3D volumetric data upsampling, such as in medical imaging or video generation.
+}
+\details{
+Input has shape \verb{(batch, depth, height, width, in_channels)} for 'NDHWC' layout.
+Weight has shape \verb{(out_channels, kernel_d, kernel_h, kernel_w, in_channels)}.
 }
 \seealso{
 \code{\link[=mlx_conv3d]{mlx_conv3d()}}, \code{\link[=mlx_conv_transpose1d]{mlx_conv_transpose1d()}}, \code{\link[=mlx_conv_transpose2d]{mlx_conv_transpose2d()}}

@@ -26,7 +26,7 @@
 #' 
 #' # Device Management
 #' Use [mlx_default_device()] to control whether arrays are created
-#' on GPU (default) or CPU. All `mlx` arrays are stored in `float32`
+#' on GPU (default) or CPU. All mlx arrays are stored in `float32`
 #' regardless of device. Use base R arrays if you require `float64` math.
 #'
 #' @docType package

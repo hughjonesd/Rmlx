@@ -2,18 +2,18 @@
 % Please edit documentation in R/autograd.R
 \name{mlx_stop_gradient}
 \alias{mlx_stop_gradient}
-\title{Stop gradient propagation through an MLX tensor}
+\title{Stop gradient propagation through an mlx array}
 \usage{
 mlx_stop_gradient(x)
 }
 \arguments{
-\item{x}{An \code{mlx} tensor.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
-A new \code{mlx} tensor with identical values but zero gradient.
+A new mlx array with identical values but zero gradient.
 }
 \description{
-Stop gradient propagation through an MLX tensor
+Stop gradient propagation through an mlx array
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

@@ -2,18 +2,18 @@
 % Please edit documentation in R/linalg_adv.R
 \name{mlx_eig}
 \alias{mlx_eig}
-\title{Eigen decomposition for MLX tensors}
+\title{Eigen decomposition for mlx arrays}
 \usage{
 mlx_eig(x)
 }
 \arguments{
-\item{x}{An \code{mlx} square matrix.}
+\item{x}{An mlx matrix (2-dimensional array).}
 }
 \value{
-A list with components \code{values} and \code{vectors}, both \code{mlx} tensors.
+A list with components \code{values} and \code{vectors}, both mlx arrays.
 }
 \description{
-Eigen decomposition for MLX tensors
+Eigen decomposition for mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(c(2, -1, 0, 2), 2, 2))

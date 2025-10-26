@@ -2,20 +2,20 @@
 % Please edit documentation in R/ops.R
 \name{mlx_clip}
 \alias{mlx_clip}
-\title{Clip MLX tensor values into a range}
+\title{Clip mlx array values into a range}
 \usage{
 mlx_clip(x, min = NULL, max = NULL)
 }
 \arguments{
-\item{x}{An \code{mlx} tensor or coercible object.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{min, max}{Scalar bounds. Use \code{NULL} to leave a bound open.}
 }
 \value{
-An \code{mlx} tensor with values clipped to \verb{[min, max]}.
+An mlx array with values clipped to \verb{[min, max]}.
 }
 \description{
-Clip MLX tensor values into a range
+Clip mlx array values into a range
 }
 \examples{
 \dontrun{

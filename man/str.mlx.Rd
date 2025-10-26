@@ -7,7 +7,7 @@
 \method{str}{mlx}(object, ...)
 }
 \arguments{
-\item{object}{An \code{mlx} object}
+\item{object}{An mlx object}
 
 \item{...}{Additional arguments (ignored)}
 }

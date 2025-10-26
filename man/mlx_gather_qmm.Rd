@@ -20,7 +20,7 @@ mlx_gather_qmm(
 )
 }
 \arguments{
-\item{x}{An mlx array (the input matrix)}
+\item{x}{An mlx array.}
 
 \item{w}{An mlx array (the quantized weight matrix)}
 
@@ -42,7 +42,7 @@ mlx_gather_qmm(
 
 \item{sorted_indices}{Whether the indices are sorted (enables optimizations). Default: FALSE}
 
-\item{device}{Device to perform computation on. Default: \code{mlx_default_device()}}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array with the result of the gather-based quantized matrix multiplication

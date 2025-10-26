@@ -2,12 +2,12 @@
 % Please edit documentation in R/transform.R
 \name{mlx_logcumsumexp}
 \alias{mlx_logcumsumexp}
-\title{Log cumulative sum exponential for MLX tensors}
+\title{Log cumulative sum exponential for mlx arrays}
 \usage{
 mlx_logcumsumexp(x, axis = NULL, reverse = FALSE, inclusive = TRUE)
 }
 \arguments{
-\item{x}{An object coercible to \code{mlx}.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Optional axis (single integer) to operate over.}
 
@@ -16,10 +16,10 @@ mlx_logcumsumexp(x, axis = NULL, reverse = FALSE, inclusive = TRUE)
 \item{inclusive}{Logical flag controlling inclusivity.}
 }
 \value{
-An \code{mlx} tensor.
+An mlx array.
 }
 \description{
-Log cumulative sum exponential for MLX tensors
+Log cumulative sum exponential for mlx arrays
 }
 \examples{
 x <- as_mlx(1:4)

@@ -1,11 +1,11 @@
-#' Sample from a uniform distribution on MLX tensors
+#' Sample from a uniform distribution on mlx arrays
 #'
 #' @inheritParams mlx_creation_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param min Lower bound for the uniform distribution.
 #' @param max Upper bound for the uniform distribution.
 #'
-#' @return An `mlx` tensor whose entries are sampled uniformly.
+#' @return An mlx array whose entries are sampled uniformly.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.uniform}
 #' @export
 #' @examples
@@ -24,13 +24,13 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
   new_mlx(ptr, dim, dtype, device)
 }
 
-#' Sample from a normal distribution on MLX tensors
+#' Sample from a normal distribution on mlx arrays
 #'
 #' @inheritParams mlx_creation_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param mean Mean of the normal distribution.
 #' @param sd Standard deviation of the normal distribution.
-#' @return An `mlx` tensor with normally distributed entries.
+#' @return An mlx array with normally distributed entries.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.normal}
 #' @export
 #' @examples
@@ -49,11 +49,11 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
   new_mlx(ptr, dim, dtype, device)
 }
 
-#' Sample Bernoulli random variables on MLX tensors
+#' Sample Bernoulli random variables on mlx arrays
 #'
 #' @inheritParams mlx_creation_params
 #' @param prob Probability of a one.
-#' @return An `mlx` boolean tensor.
+#' @return An mlx boolean array.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bernoulli}
 #' @export
 #' @examples
@@ -72,11 +72,11 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
   new_mlx(ptr, dim, "bool", device)
 }
 
-#' Sample from the Gumbel distribution on MLX tensors
+#' Sample from the Gumbel distribution on mlx arrays
 #'
 #' @inheritParams mlx_creation_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
-#' @return An `mlx` tensor with Gumbel-distributed entries.
+#' @return An mlx array with Gumbel-distributed entries.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.gumbel}
 #' @export
 #' @examples
@@ -94,13 +94,13 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
   new_mlx(ptr, dim, dtype, device)
 }
 
-#' Sample from a truncated normal distribution on MLX tensors
+#' Sample from a truncated normal distribution on mlx arrays
 #'
 #' @inheritParams mlx_creation_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param lower Lower bound of the truncated normal.
 #' @param upper Upper bound of the truncated normal.
-#' @return An `mlx` tensor with truncated normally distributed entries.
+#' @return An mlx array with truncated normally distributed entries.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.truncated_normal}
 #' @export
 #' @examples
@@ -125,16 +125,16 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
   new_mlx(ptr, dim, dtype, device)
 }
 
-#' Sample from a multivariate normal distribution on MLX tensors
+#' Sample from a multivariate normal distribution on mlx arrays
 #'
 #' @inheritParams mlx_creation_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
-#' @param mean An `mlx` tensor or vector for the mean.
-#' @param cov An `mlx` tensor or matrix for the covariance.
+#' @param mean An mlx array or vector for the mean.
+#' @param cov An mlx array or matrix for the covariance.
 #' @param device Target device ("cpu" only). Note: this function requires CPU
 #'   due to SVD decomposition of the covariance matrix; GPU device is not currently
 #'   supported.
-#' @return An `mlx` tensor with samples from the multivariate normal.
+#' @return An mlx array with samples from the multivariate normal.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.multivariate_normal}
 #' @export
 #' @examples
@@ -166,13 +166,13 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
   new_mlx(ptr, output_shape, dtype, device)
 }
 
-#' Sample from the Laplace distribution on MLX tensors
+#' Sample from the Laplace distribution on mlx arrays
 #'
 #' @inheritParams mlx_creation_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param loc Location parameter (mean) of the Laplace distribution.
 #' @param scale Scale parameter (diversity) of the Laplace distribution.
-#' @return An `mlx` tensor with Laplace-distributed entries.
+#' @return An mlx array with Laplace-distributed entries.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.laplace}
 #' @export
 #' @examples
@@ -197,19 +197,19 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
   new_mlx(ptr, dim, dtype, device)
 }
 
-#' Sample from a categorical distribution on MLX tensors
+#' Sample from a categorical distribution on mlx arrays
 #'
 #' Samples indices from categorical distributions. Each row (or slice along the
 #' specified axis) represents a separate categorical distribution over classes.
 #'
-#' @param logits A matrix or `mlx` tensor of log-probabilities. The values don't
+#' @param logits A matrix or mlx array of log-probabilities. The values don't
 #'   need to be normalized (the function applies softmax internally). For a single
 #'   distribution over K classes, use a 1×K matrix. For multiple independent
 #'   distributions, use an N×K matrix where each row is a distribution.
 #' @param axis The axis along which to sample. Default is -1 (last axis, typically
 #'   the class dimension).
 #' @param num_samples Number of samples to draw from each distribution.
-#' @return An `mlx` tensor of integer indices (0-indexed) sampled from the
+#' @return An mlx array of integer indices (0-indexed) sampled from the
 #'   categorical distributions.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.categorical}
 #' @export
@@ -237,7 +237,7 @@ mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
   new_mlx(ptr, output_shape, "int32", logits$device)
 }
 
-#' Sample random integers on MLX tensors
+#' Sample random integers on mlx arrays
 #'
 #' Generates random integers uniformly distributed over the interval [low, high).
 #'
@@ -245,7 +245,7 @@ mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
 #' @param low Lower bound (inclusive).
 #' @param high Upper bound (exclusive).
 #' @param dtype Desired integer dtype ("int32", "int64", "uint32", "uint64").
-#' @return An `mlx` tensor of random integers.
+#' @return An mlx array of random integers.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.randint}
 #' @export
 #' @examples
@@ -279,17 +279,17 @@ mlx_rand_randint <- function(dim, low, high,
   new_mlx(ptr, dim, dtype, device)
 }
 
-#' Generate random permutations on MLX tensors
+#' Generate random permutations on mlx arrays
 #'
 #' Generate a random permutation of integers or permute the entries of an array
 #' along a specified axis.
 #'
 #' @param x Either an integer n (to generate a permutation of 0:(n-1)), or an
-#'   `mlx` tensor or matrix to permute.
+#'   mlx array or matrix to permute.
 #' @param axis The axis along which to permute when x is an array. Default is 0
 #'   (permute rows).
 #' @param device Target device ("gpu" or "cpu"). Only used when x is an integer.
-#' @return An `mlx` tensor containing the random permutation.
+#' @return An mlx array containing the random permutation.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.permutation}
 #' @export
 #' @examples

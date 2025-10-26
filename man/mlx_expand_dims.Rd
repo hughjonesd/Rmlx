@@ -7,13 +7,13 @@
 mlx_expand_dims(x, axis)
 }
 \arguments{
-\item{x}{An \code{mlx} tensor.}
+\item{x}{An mlx array.}
 
 \item{axis}{Integer vector of axis positions (1-indexed) where new singleton
 dimensions should be inserted.}
 }
 \value{
-An \code{mlx} tensor with additional dimensions of length one.
+An mlx array with additional dimensions of length one.
 }
 \description{
 Insert singleton dimensions

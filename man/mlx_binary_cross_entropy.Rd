@@ -11,14 +11,14 @@ mlx_binary_cross_entropy(
 )
 }
 \arguments{
-\item{predictions}{Predicted probabilities as an \code{mlx} tensor (values in [0,1]).}
+\item{predictions}{Predicted probabilities as an mlx array (values in [0,1]).}
 
-\item{targets}{Binary target values as an \code{mlx} tensor (0 or 1).}
+\item{targets}{Binary target values as an mlx array (0 or 1).}
 
 \item{reduction}{Type of reduction: "mean" (default), "sum", or "none".}
 }
 \value{
-An \code{mlx} tensor containing the loss.
+An mlx array containing the loss.
 }
 \description{
 Computes binary cross-entropy loss between predictions and binary targets.

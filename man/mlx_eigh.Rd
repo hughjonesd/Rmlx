@@ -2,12 +2,12 @@
 % Please edit documentation in R/linalg_adv.R
 \name{mlx_eigh}
 \alias{mlx_eigh}
-\title{Eigen decomposition of Hermitian MLX tensors}
+\title{Eigen decomposition of Hermitian mlx arrays}
 \usage{
 mlx_eigh(x, uplo = c("L", "U"))
 }
 \arguments{
-\item{x}{An \code{mlx} square matrix.}
+\item{x}{An mlx matrix (2-dimensional array).}
 
 \item{uplo}{Character string indicating which triangle to use ("L" or "U").}
 }
@@ -15,7 +15,7 @@ mlx_eigh(x, uplo = c("L", "U"))
 A list with components \code{values} and \code{vectors}.
 }
 \description{
-Eigen decomposition of Hermitian MLX tensors
+Eigen decomposition of Hermitian mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))

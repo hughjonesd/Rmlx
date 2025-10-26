@@ -10,7 +10,7 @@
 \item{x, y}{numeric or complex matrices or vectors.}
 }
 \value{
-An \code{mlx} object
+An mlx object
 }
 \description{
 Matrix multiplication for MLX arrays

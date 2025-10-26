@@ -1,24 +1,24 @@
 #' Automatic differentiation for MLX functions
 #'
 #' @description
-#' `mlx_grad()` computes gradients of an R function that operates on `mlx`
-#' tensors. The function must keep all differentiable computations in MLX
-#' (e.g., via `as_mlx()` and MLX operators) and return an `mlx` object.
+#' `mlx_grad()` computes gradients of an R function that operates on mlx
+#' arrays. The function must keep all differentiable computations in MLX
+#' (e.g., via `as_mlx()` and MLX operators) and return an mlx object.
 #'
-#' @param f An R function. Its arguments should be `mlx` objects, and its return
-#'   value must be an `mlx` tensor (typically a scalar loss).
-#' @param ... Arguments to pass to `f`. They will be coerced to `mlx` if needed.
+#' @param f An R function. Its arguments should be mlx objects, and its return
+#'   value must be an mlx array (typically a scalar loss).
+#' @param ... Arguments to pass to `f`. They will be coerced to mlx if needed.
 #' @param argnums Indices (1-based) identifying which arguments to
 #'   differentiate with respect to. Defaults to all arguments.
 #' @param value Should the function value be returned alongside gradients?
 #'   Set to `TRUE` to receive a list with components `value` and `grads`.
 #'
-#' @return When `value = FALSE` (default), a list of `mlx` tensors containing the
+#' @return When `value = FALSE` (default), a list of mlx arrays containing the
 #'   gradients in the same order as `argnums`. When `value = TRUE`, a list with
-#'   elements `value` (the function output as `mlx`) and `grads`.
+#'   elements `value` (the function output as mlx) and `grads`.
 #'
 #' @details
-#' Keep the differentiated closure inside MLX operations. Coercing tensors back
+#' Keep the differentiated closure inside MLX operations. Coercing arrays back
 #' to base R objects (such as `as.matrix()`, `as.numeric()`, or `[[` extraction)
 #' breaks the gradient tape and results in an error.
 #'
@@ -82,11 +82,11 @@ mlx_value_grad <- function(f, ..., argnums = NULL) {
   mlx_grad(f, ..., argnums = argnums, value = TRUE)
 }
 
-#' Stop gradient propagation through an MLX tensor
+#' Stop gradient propagation through an mlx array
 #'
-#' @param x An `mlx` tensor.
+#' @inheritParams common_params
 #'
-#' @return A new `mlx` tensor with identical values but zero gradient.
+#' @return A new mlx array with identical values but zero gradient.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.stop_gradient}
 #' @export
 #' @examples

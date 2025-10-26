@@ -10,12 +10,12 @@ outer(x, y, ...)
 \method{outer}{mlx}(x, y, ...)
 }
 \arguments{
-\item{x, y}{Numeric vectors or \code{mlx} arrays.}
+\item{x, y}{Numeric vectors or mlx arrays.}
 
 \item{...}{Additional arguments passed to methods.}
 }
 \value{
-For \code{mlx} inputs, an \code{mlx} matrix. Otherwise delegates to \code{base::outer}.
+For mlx inputs, an mlx matrix. Otherwise delegates to \code{base::outer}.
 }
 \description{
 Outer product of two vectors

@@ -7,15 +7,15 @@
 \method{solve}{mlx}(a, b = NULL, ...)
 }
 \arguments{
-\item{a}{An \code{mlx} matrix (the coefficient matrix)}
+\item{a}{An mlx matrix (the coefficient matrix)}
 
-\item{b}{An \code{mlx} vector or matrix (the right-hand side). If omitted,
+\item{b}{An mlx vector or matrix (the right-hand side). If omitted,
 computes the matrix inverse.}
 
 \item{...}{Additional arguments (for compatibility with base::solve)}
 }
 \value{
-An \code{mlx} object containing the solution
+An mlx object containing the solution
 }
 \description{
 Solve a system of linear equations

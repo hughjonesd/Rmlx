@@ -2,18 +2,18 @@
 % Please edit documentation in R/ops.R
 \name{mlx_maximum}
 \alias{mlx_maximum}
-\title{Elementwise maximum of two MLX tensors}
+\title{Elementwise maximum of two mlx arrays}
 \usage{
 mlx_maximum(x, y)
 }
 \arguments{
-\item{x, y}{\code{mlx} tensors or objects coercible with \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x, y}{mlx arrays or objects coercible with \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
-An \code{mlx} tensor containing the elementwise maximum.
+An mlx array containing the elementwise maximum.
 }
 \description{
-Elementwise maximum of two MLX tensors
+Elementwise maximum of two mlx arrays
 }
 \examples{
 \dontrun{

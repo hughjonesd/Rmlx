@@ -3,25 +3,25 @@
 \name{mlx_argmax}
 \alias{mlx_argmax}
 \alias{mlx_argmin}
-\title{Argmax and argmin on MLX tensors}
+\title{Argmax and argmin on mlx arrays}
 \usage{
 mlx_argmax(x, axis = NULL, keepdims = FALSE)
 
 mlx_argmin(x, axis = NULL, keepdims = FALSE)
 }
 \arguments{
-\item{x}{An object coercible to \code{mlx}.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-tensor is flattened first.}
+array is flattened first.}
 
 \item{keepdims}{Logical; retain reduced dimensions with length one.}
 }
 \value{
-An \code{mlx} tensor of indices.
+An mlx array of indices.
 }
 \description{
-Argmax and argmin on MLX tensors
+Argmax and argmin on mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(c(1, 5, 3, 2), 2, 2))

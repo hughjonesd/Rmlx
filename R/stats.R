@@ -1,28 +1,28 @@
 #' Shared arguments for MLX/base reduction helpers.
 #'
-#' @param x An array or `mlx` tensor.
-#' @param na.rm Logical; currently ignored for `mlx` tensors.
+#' @param x An array or mlx array.
+#' @param na.rm Logical; currently ignored for mlx arrays.
 #' @param dims Dimensions passed through to the base implementation when
-#'   `x` is not an `mlx` tensor.
+#'   `x` is not an mlx array.
 #' @param ... Additional arguments forwarded to the base implementation.
 #' @keywords internal
 #' @name mlx_reduction_base
 NULL
 
-#' Reduce MLX tensors
+#' Reduce mlx arrays
 #'
 #' These helpers mirror NumPy-style reductions, optionally collapsing one or
 #' more axes. Use `drop = FALSE` to retain reduced axes with length one
 #' (akin to `keepdims = TRUE` in NumPy).
 #'
-#' @param x An object coercible to `mlx` via [as_mlx()].
+#' @inheritParams common_params
 #' @param axis Optional integer vector of axes (1-indexed) to reduce.
 #'   When `NULL`, the reduction is performed over all elements.
 #' @param drop Logical flag controlling dimension dropping: `TRUE` (default)
 #'   removes reduced axes, while `FALSE` retains them with length one.
 #' @param ddof Non-negative integer delta degrees of freedom for variance or
 #'   standard deviation reductions.
-#' @return An `mlx` tensor containing the reduction result.
+#' @return An mlx array containing the reduction result.
 #' @seealso
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum},
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.prod},
@@ -89,9 +89,9 @@ mlx_std <- function(x, axis = NULL, drop = TRUE, ddof = 0L) {
 
 #' Mean of MLX array elements
 #'
-#' @param x An `mlx` object
+#' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
-#' @return An `mlx` scalar
+#' @return An mlx scalar
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
 #' @export
 #' @method mean mlx
@@ -102,10 +102,10 @@ mean.mlx <- function(x, ...) {
   .mlx_reduce(x, "mean")
 }
 
-#' Row means for MLX tensors
+#' Row means for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
-#' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
+#' @return An mlx array if `x` is mlx, otherwise a numeric vector.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
 #' @export
 #' @examples
@@ -118,10 +118,10 @@ rowMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::rowMeans(x, na.rm = na.rm, dims = dims, ...)
 }
 
-#' Column means for MLX tensors
+#' Column means for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
-#' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
+#' @return An mlx array if `x` is mlx, otherwise a numeric vector.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
 #' @export
 #' @examples
@@ -134,10 +134,10 @@ colMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::colMeans(x, na.rm = na.rm, dims = dims, ...)
 }
 
-#' Row sums for MLX tensors
+#' Row sums for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
-#' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
+#' @return An mlx array if `x` is mlx, otherwise a numeric vector.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum}
 #' @export
 #' @examples
@@ -150,10 +150,10 @@ rowSums <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::rowSums(x, na.rm = na.rm, dims = dims, ...)
 }
 
-#' Column sums for MLX tensors
+#' Column sums for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
-#' @return An `mlx` tensor if `x` is `mlx`, otherwise a numeric vector.
+#' @return An mlx array if `x` is mlx, otherwise a numeric vector.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum}
 #' @export
 #' @examples
@@ -168,8 +168,8 @@ colSums <- function(x, na.rm = FALSE, dims = 1, ...) {
 
 #' Transpose of MLX matrix
 #'
-#' @param x An `mlx` matrix
-#' @return Transposed `mlx` matrix
+#' @inheritParams mlx_matrix_required
+#' @return Transposed mlx matrix
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.transpose}
 #' @export
 #' @method t mlx
@@ -185,9 +185,9 @@ t.mlx <- function(x) {
 
 #' Cross product
 #'
-#' @param x An `mlx` matrix
-#' @param y An `mlx` matrix (default: NULL, uses x)
-#' @return `t(x) %*% y` as an `mlx` object
+#' @inheritParams mlx_matrix_required
+#' @param y An mlx matrix (default: NULL, uses x)
+#' @return `t(x) %*% y` as an mlx object
 #' @param ... Additional arguments passed to base::crossprod.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul}
 #' @export
@@ -202,9 +202,9 @@ crossprod.mlx <- function(x, y = NULL, ...) {
 
 #' Transposed cross product
 #'
-#' @param x An `mlx` matrix
-#' @param y An `mlx` matrix (default: NULL, uses x)
-#' @return `x %*% t(y)` as an `mlx` object
+#' @inheritParams mlx_matrix_required
+#' @param y An mlx matrix (default: NULL, uses x)
+#' @return `x %*% t(y)` as an mlx object
 #' @param ... Additional arguments passed to base::tcrossprod.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul}
 #' @export
@@ -217,44 +217,44 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   x %*% t(y)
 }
 
-#' Reduce mlx tensor over all axes
+#' Reduce mlx array over all axes
 #'
-#' @param x mlx tensor.
+#' @param x mlx array.
 #' @param op Character string naming the reduction.
 #' @param ddof Integer delta degrees of freedom.
-#' @return mlx scalar tensor.
+#' @return mlx scalar array.
 #' @noRd
 .mlx_reduce <- function(x, op, ddof = 0L) {
   ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof))
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Reduce mlx tensor along single axis
+#' Reduce mlx array along single axis
 #'
-#' @param x mlx tensor.
+#' @param x mlx array.
 #' @param op Character string naming the reduction.
 #' @param axis Integer (1-indexed).
 #' @param keepdims Logical preserving reduced dimension.
 #' @param ddof Integer delta degrees of freedom.
-#' @return mlx tensor with reduced axis.
+#' @return mlx array with reduced axis.
 #' @noRd
 .mlx_reduce_axis <- function(x, op, axis, keepdims, ddof = 0L) {
   axis0 <- as.integer(axis) - 1L
   if (axis0 < 0L || axis0 >= length(x$dim)) {
-    stop("axis is out of bounds for input tensor", call. = FALSE)
+    stop("axis is out of bounds for input array", call. = FALSE)
   }
   ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, keepdims, as.integer(ddof))
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Reduce mlx tensor along multiple axes
+#' Reduce mlx array along multiple axes
 #'
-#' @param x mlx tensor.
+#' @param x mlx array.
 #' @param op Character string naming the reduction.
 #' @param axes Integer vector of 1-indexed axes.
 #' @param drop Logical controlling dimension dropping.
 #' @param ddof Integer delta degrees of freedom.
-#' @return mlx tensor with reduced axes.
+#' @return mlx array with reduced axes.
 #' @noRd
 .mlx_reduce_axes <- function(x, op, axes, drop, ddof = 0L) {
   axes <- as.integer(axes)
@@ -263,7 +263,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   }
   ndim <- length(x$dim)
   if (any(axes < 1L | axes > ndim)) {
-    stop("axis is out of bounds for input tensor", call. = FALSE)
+    stop("axis is out of bounds for input array", call. = FALSE)
   }
   axes <- unique(axes)
   if (!drop) {
@@ -280,12 +280,12 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 
 #' Dispatch reduction to appropriate handler
 #'
-#' @param x mlx tensor or coercible object.
+#' @param x mlx array or coercible object.
 #' @param op Character string naming the reduction.
 #' @param axis Integer vector of axes or NULL.
 #' @param drop Logical controlling dimension dropping.
 #' @param ddof Integer delta degrees of freedom.
-#' @return mlx tensor with reduction result.
+#' @return mlx array with reduction result.
 #' @noRd
 .mlx_reduce_dispatch <- function(x, op, axis = NULL, drop = TRUE, ddof = 0L) {
   x <- if (inherits(x, "mlx")) x else as_mlx(x)
@@ -306,7 +306,7 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
     stop("Operation not implemented for mlx objects: ", op, call. = FALSE)
   }
   if (na.rm) {
-    warning("na.rm is ignored for mlx tensors", call. = FALSE)
+    warning("na.rm is ignored for mlx arrays", call. = FALSE)
   }
 
   dots <- list(...)
@@ -320,7 +320,7 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
   # If axis/drop specified, limit to single operand
   if (!is.null(axis) || !is.null(drop_arg)) {
     if (length(args) > 1L) {
-      stop("axis/drop arguments are only supported when reducing a single tensor", call. = FALSE)
+      stop("axis/drop arguments are only supported when reducing a single array", call. = FALSE)
     }
     drop_val <- if (is.null(drop_arg)) TRUE else drop_arg
     return(.mlx_reduce_dispatch(args[[1L]], switch(op,
@@ -360,13 +360,13 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
 #'
 #' Compute cumulative sums or products along an axis.
 #'
-#' @param x An `mlx` array.
+#' @inheritParams mlx_array_required
 #' @param axis Optional axis along which to compute cumulative operation.
 #'   If `NULL` (default), the array is flattened first.
 #' @param reverse If `TRUE`, compute in reverse order.
 #' @param inclusive If `TRUE` (default), include the current element in the cumulative operation.
 #'   If `FALSE`, the cumulative operation is exclusive (starts from identity element).
-#' @return An `mlx` array with cumulative sums or products.
+#' @return An mlx array with cumulative sums or products.
 #' @seealso [cumsum()], [cumprod()],
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumsum},
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumprod}

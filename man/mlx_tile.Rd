@@ -2,20 +2,20 @@
 % Please edit documentation in R/shape.R
 \name{mlx_tile}
 \alias{mlx_tile}
-\title{Tile a tensor}
+\title{Tile an array}
 \usage{
 mlx_tile(x, reps)
 }
 \arguments{
-\item{x}{An \code{mlx} tensor.}
+\item{x}{An mlx array.}
 
 \item{reps}{Integer vector giving the number of repetitions for each axis.}
 }
 \value{
-An \code{mlx} tensor with tiled content.
+An mlx array with tiled content.
 }
 \description{
-Tile a tensor
+Tile an array
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

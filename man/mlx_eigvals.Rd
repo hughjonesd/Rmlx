@@ -2,18 +2,18 @@
 % Please edit documentation in R/linalg_adv.R
 \name{mlx_eigvals}
 \alias{mlx_eigvals}
-\title{Eigenvalues of MLX tensors}
+\title{Eigenvalues of mlx arrays}
 \usage{
 mlx_eigvals(x)
 }
 \arguments{
-\item{x}{An \code{mlx} square matrix.}
+\item{x}{An mlx matrix (2-dimensional array).}
 }
 \value{
-An \code{mlx} tensor containing eigenvalues.
+An mlx array containing eigenvalues.
 }
 \description{
-Eigenvalues of MLX tensors
+Eigenvalues of mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(c(3, 1, 0, 2), 2, 2))

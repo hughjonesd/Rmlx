@@ -7,18 +7,18 @@
 fft(z, inverse = FALSE, ...)
 }
 \arguments{
-\item{z}{Input to transform. May be a numeric, complex, or \code{mlx} object.}
+\item{z}{Input to transform. May be a numeric, complex, or mlx object.}
 
 \item{inverse}{Logical flag; if \code{TRUE} compute the inverse transform.}
 
 \item{...}{Passed through to the default method.}
 }
 \value{
-For \code{mlx} inputs, an \code{mlx} object containing complex frequency
+For mlx inputs, an mlx object containing complex frequency
 coefficients; otherwise the base R result.
 }
 \description{
-Extends \code{\link[stats:fft]{stats::fft()}} to work with \code{mlx} objects while delegating to the
+Extends \code{\link[stats:fft]{stats::fft()}} to work with mlx objects while delegating to the
 standard R implementation for other inputs.
 }
 \examples{

@@ -10,10 +10,10 @@ mlx_grad(f, ..., argnums = NULL, value = FALSE)
 mlx_value_grad(f, ..., argnums = NULL)
 }
 \arguments{
-\item{f}{An R function. Its arguments should be \code{mlx} objects, and its return
-value must be an \code{mlx} tensor (typically a scalar loss).}
+\item{f}{An R function. Its arguments should be mlx objects, and its return
+value must be an mlx array (typically a scalar loss).}
 
-\item{...}{Arguments to pass to \code{f}. They will be coerced to \code{mlx} if needed.}
+\item{...}{Arguments to pass to \code{f}. They will be coerced to mlx if needed.}
 
 \item{argnums}{Indices (1-based) identifying which arguments to
 differentiate with respect to. Defaults to all arguments.}
@@ -22,17 +22,17 @@ differentiate with respect to. Defaults to all arguments.}
 Set to \code{TRUE} to receive a list with components \code{value} and \code{grads}.}
 }
 \value{
-When \code{value = FALSE} (default), a list of \code{mlx} tensors containing the
+When \code{value = FALSE} (default), a list of mlx arrays containing the
 gradients in the same order as \code{argnums}. When \code{value = TRUE}, a list with
-elements \code{value} (the function output as \code{mlx}) and \code{grads}.
+elements \code{value} (the function output as mlx) and \code{grads}.
 }
 \description{
-\code{mlx_grad()} computes gradients of an R function that operates on \code{mlx}
-tensors. The function must keep all differentiable computations in MLX
-(e.g., via \code{as_mlx()} and MLX operators) and return an \code{mlx} object.
+\code{mlx_grad()} computes gradients of an R function that operates on mlx
+arrays. The function must keep all differentiable computations in MLX
+(e.g., via \code{as_mlx()} and MLX operators) and return an mlx object.
 }
 \details{
-Keep the differentiated closure inside MLX operations. Coercing tensors back
+Keep the differentiated closure inside MLX operations. Coercing arrays back
 to base R objects (such as \code{as.matrix()}, \code{as.numeric()}, or \code{[[} extraction)
 breaks the gradient tape and results in an error.
 }

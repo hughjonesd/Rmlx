@@ -7,10 +7,10 @@
 pinv(x)
 }
 \arguments{
-\item{x}{An \code{mlx} object or coercible matrix.}
+\item{x}{An mlx object or coercible matrix.}
 }
 \value{
-An \code{mlx} object containing the pseudoinverse.
+An mlx object containing the pseudoinverse.
 }
 \description{
 Moore-Penrose pseudoinverse for MLX arrays

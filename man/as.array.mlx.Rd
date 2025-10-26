@@ -7,7 +7,7 @@
 \method{as.array}{mlx}(x, ...)
 }
 \arguments{
-\item{x}{An \code{mlx} object}
+\item{x}{An mlx array.}
 
 \item{...}{Additional arguments (ignored)}
 }

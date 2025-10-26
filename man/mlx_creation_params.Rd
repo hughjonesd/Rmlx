@@ -2,15 +2,24 @@
 % Please edit documentation in R/utils.R
 \name{mlx_creation_params}
 \alias{mlx_creation_params}
-\title{Roxygen parameters for mlx creation}
+\title{Common Parameters for MLX Tensor Creation}
 \arguments{
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
-\item{dtype}{MLX dtype. Supported types vary by function (see Details).}
+\item{dtype}{Character string specifying the MLX data type. Common options:
+\itemize{
+\item Floating point: \code{"float32"}, \code{"float64"}
+\item Integer: \code{"int8"}, \code{"int16"}, \code{"int32"}, \code{"int64"}, \code{"uint8"}, \code{"uint16"},
+\code{"uint32"}, \code{"uint64"}
+\item Other: \code{"bool"}, \code{"complex64"}
+}
 
-\item{device}{Target device ("gpu" or "cpu").}
+Supported types vary by function; see individual function documentation.}
+
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \description{
-Roxygen parameters for mlx creation
+Common Parameters for MLX Tensor Creation
 }
 \keyword{internal}

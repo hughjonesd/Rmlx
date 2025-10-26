@@ -15,29 +15,33 @@ mlx_conv3d(
 )
 }
 \arguments{
-\item{input}{Input array of shape \verb{(N, D, H, W, C_in)} where N is batch size,
-D, H, W are depth, height and width, and C_in is number of input channels}
+\item{input}{Input mlx array. Shape depends on dimensionality (see individual functions).}
 
-\item{weight}{Weight tensor of shape \verb{(C_out, kernel_d, kernel_h, kernel_w, C_in)}}
+\item{weight}{Weight array. Shape depends on dimensionality (see individual functions).}
 
-\item{stride}{Stride of the convolution. Can be a single integer or a vector of
-length 3 for (stride_d, stride_h, stride_w). Default: c(1, 1, 1)}
+\item{stride}{Stride of the convolution. Can be a scalar or vector (length depends
+on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.}
 
-\item{padding}{Amount of zero padding. Can be a single integer or a vector of
-length 3 for (padding_d, padding_h, padding_w). Default: c(0, 0, 0)}
+\item{padding}{Amount of zero padding. Can be a scalar or vector (length depends
+on dimensionality). Default: 0 for 1D, c(0,0) for 2D, c(0,0,0) for 3D.}
 
-\item{dilation}{Spacing between kernel elements. Can be a single integer or a vector of
-length 3 for (dilation_d, dilation_h, dilation_w). Default: c(1, 1, 1)}
+\item{dilation}{Spacing between kernel elements. Can be a scalar or vector (length
+depends on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.}
 
-\item{groups}{Number of blocked connections from input to output channels (default: 1)}
+\item{groups}{Number of blocked connections from input to output channels. Default: 1.}
 
-\item{device}{Device to use for computation}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 Convolved output array
 }
 \description{
 Applies a 3D convolution over the input volume.
+}
+\details{
+Input has shape \verb{(N, D, H, W, C_in)} where N is batch size, D, H, W are depth,
+height and width, and C_in is number of input channels. Weight has shape
+\verb{(C_out, kernel_d, kernel_h, kernel_w, C_in)}.
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv3d.html}

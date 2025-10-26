@@ -2,20 +2,20 @@
 % Please edit documentation in R/linalg_adv.R
 \name{mlx_cross}
 \alias{mlx_cross}
-\title{Vector cross product with MLX tensors}
+\title{Vector cross product with mlx arrays}
 \usage{
 mlx_cross(a, b, axis = -1L)
 }
 \arguments{
-\item{a, b}{Input \code{mlx} tensors containing 3D vectors.}
+\item{a, b}{Input mlx arrays containing 3D vectors.}
 
 \item{axis}{Axis along which to compute the cross product (1-indexed, default last).}
 }
 \value{
-An \code{mlx} tensor of cross products.
+An mlx array of cross products.
 }
 \description{
-Vector cross product with MLX tensors
+Vector cross product with mlx arrays
 }
 \examples{
 u <- as_mlx(c(1, 0, 0))

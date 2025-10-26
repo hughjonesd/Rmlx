@@ -2,7 +2,7 @@
 % Please edit documentation in R/random.R
 \name{mlx_rand_randint}
 \alias{mlx_rand_randint}
-\title{Sample random integers on MLX tensors}
+\title{Sample random integers on mlx arrays}
 \usage{
 mlx_rand_randint(
   dim,
@@ -13,7 +13,7 @@ mlx_rand_randint(
 )
 }
 \arguments{
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
 \item{low}{Lower bound (inclusive).}
 
@@ -21,10 +21,11 @@ mlx_rand_randint(
 
 \item{dtype}{Desired integer dtype ("int32", "int64", "uint32", "uint64").}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} tensor of random integers.
+An mlx array of random integers.
 }
 \description{
 Generates random integers uniformly distributed over the interval [low, high).

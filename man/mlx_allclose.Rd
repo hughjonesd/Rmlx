@@ -22,10 +22,10 @@ mlx_allclose(
 
 \item{equal_nan}{If \code{TRUE}, NaN values are considered equal (default: \code{FALSE})}
 
-\item{device}{Device to use for computation}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} array containing a single boolean value
+An mlx array containing a single boolean value
 }
 \description{
 Returns a boolean scalar indicating whether all elements of two arrays

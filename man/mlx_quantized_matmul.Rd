@@ -17,7 +17,7 @@ mlx_quantized_matmul(
 )
 }
 \arguments{
-\item{x}{An mlx array (the input matrix)}
+\item{x}{An mlx array.}
 
 \item{w}{An mlx array. Either:
 \itemize{
@@ -39,7 +39,7 @@ should be the quantization biases if w is pre-quantized. Default: NULL}
 
 \item{mode}{The quantization mode, either "affine" or "mxfp4". Default: "affine"}
 
-\item{device}{Device to perform computation on. Default: \code{mlx_default_device()}}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array with the result of the quantized matrix multiplication

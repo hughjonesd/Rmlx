@@ -2,17 +2,17 @@
 % Please edit documentation in R/nn.R
 \name{mlx_param_set_values}
 \alias{mlx_param_set_values}
-\title{Assign tensors back to parameters}
+\title{Assign arrays back to parameters}
 \usage{
 mlx_param_set_values(params, values)
 }
 \arguments{
 \item{params}{A list of \code{mlx_param}.}
 
-\item{values}{A list of tensors.}
+\item{values}{A list of arrays.}
 }
 \description{
-Assign tensors back to parameters
+Assign arrays back to parameters
 }
 \examples{
 set.seed(1)

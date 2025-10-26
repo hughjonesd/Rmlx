@@ -4,7 +4,7 @@
 \alias{mlx_topk}
 \alias{mlx_partition}
 \alias{mlx_argpartition}
-\title{Top-k selection and partitioning on MLX tensors}
+\title{Top-k selection and partitioning on mlx arrays}
 \usage{
 mlx_topk(x, k, axis = NULL)
 
@@ -13,21 +13,21 @@ mlx_partition(x, kth, axis = NULL)
 mlx_argpartition(x, kth, axis = NULL)
 }
 \arguments{
-\item{x}{An object coercible to \code{mlx}.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{k}{Positive integer specifying the number of elements to select.}
 
 \item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-tensor is flattened first.}
+array is flattened first.}
 
 \item{kth}{Zero-based index of the element that should be placed in-order
 after partitioning.}
 }
 \value{
-An \code{mlx} tensor.
+An mlx array.
 }
 \description{
-Top-k selection and partitioning on MLX tensors
+Top-k selection and partitioning on mlx arrays
 }
 \details{
 \code{mlx_topk()} returns the largest \code{k} values as reported by MLX. Use

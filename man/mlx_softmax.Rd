@@ -2,23 +2,23 @@
 % Please edit documentation in R/transform.R
 \name{mlx_softmax}
 \alias{mlx_softmax}
-\title{Softmax for MLX tensors}
+\title{Softmax for mlx arrays}
 \usage{
 mlx_softmax(x, axis = NULL, precise = FALSE)
 }
 \arguments{
-\item{x}{An object coercible to \code{mlx}.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-tensor is flattened first.}
+array is flattened first.}
 
 \item{precise}{Logical; compute in higher precision for stability.}
 }
 \value{
-An \code{mlx} tensor with normalized probabilities.
+An mlx array with normalized probabilities.
 }
 \description{
-Softmax for MLX tensors
+Softmax for mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 2, 3))

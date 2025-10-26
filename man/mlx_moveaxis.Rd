@@ -3,14 +3,14 @@
 \name{mlx_moveaxis}
 \alias{mlx_moveaxis}
 \alias{aperm.mlx}
-\title{Reorder MLX tensor axes}
+\title{Reorder mlx array axes}
 \usage{
 mlx_moveaxis(x, source, destination)
 
 \method{aperm}{mlx}(a, perm = NULL, resize = TRUE, ...)
 }
 \arguments{
-\item{x, a}{An object coercible to \code{mlx} via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x, a}{An object coercible to mlx via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{source}{Integer vector of axis indices to move (1-indexed; negatives
 count from the end).}
@@ -23,12 +23,12 @@ axes (1-indexed; negatives count from the end). Must be the same length as
 the semantics of \code{\link[base:aperm]{base::aperm()}}.}
 
 \item{resize}{Logical flag from \code{\link[base:aperm]{base::aperm()}}. Only \code{TRUE} is currently
-supported for MLX tensors.}
+supported for mlx arrays.}
 
 \item{...}{Additional arguments accepted for compatibility; ignored.}
 }
 \value{
-An \code{mlx} tensor with axes permuted.
+An mlx array with axes permuted.
 }
 \description{
 \itemize{

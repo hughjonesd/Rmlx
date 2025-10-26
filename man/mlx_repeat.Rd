@@ -2,23 +2,23 @@
 % Please edit documentation in R/shape.R
 \name{mlx_repeat}
 \alias{mlx_repeat}
-\title{Repeat tensor elements}
+\title{Repeat array elements}
 \usage{
 mlx_repeat(x, repeats, axis = NULL)
 }
 \arguments{
-\item{x}{An \code{mlx} tensor.}
+\item{x}{An mlx array.}
 
 \item{repeats}{Number of repetitions.}
 
-\item{axis}{Optional axis along which to repeat. When \code{NULL}, the tensor is
+\item{axis}{Optional axis along which to repeat. When \code{NULL}, the array is
 flattened before repetition (matching NumPy semantics).}
 }
 \value{
-An \code{mlx} tensor with repeated values.
+An mlx array with repeated values.
 }
 \description{
-Repeat tensor elements
+Repeat array elements
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

@@ -7,12 +7,12 @@
 \method{Math}{mlx}(x, ...)
 }
 \arguments{
-\item{x}{An \code{mlx} object}
+\item{x}{An mlx array.}
 
 \item{...}{Additional arguments (ignored)}
 }
 \value{
-An \code{mlx} object with the result
+An mlx object with the result
 }
 \description{
 Math operations for MLX arrays

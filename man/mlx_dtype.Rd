@@ -7,7 +7,7 @@
 mlx_dtype(x)
 }
 \arguments{
-\item{x}{An \code{mlx} object}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
 Data type string

@@ -7,14 +7,14 @@
 mlx_unflatten(x, axis, shape)
 }
 \arguments{
-\item{x}{An \code{mlx} array.}
+\item{x}{An mlx array.}
 
 \item{axis}{Which axis to unflatten (1-indexed).}
 
 \item{shape}{Integer vector specifying the new shape for the unflattened axis.}
 }
 \value{
-An \code{mlx} array with the axis expanded.
+An mlx array with the axis expanded.
 }
 \description{
 The reverse of flattening: expands a single axis into multiple axes with the given shape.

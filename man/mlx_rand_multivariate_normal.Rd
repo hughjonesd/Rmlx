@@ -2,7 +2,7 @@
 % Please edit documentation in R/random.R
 \name{mlx_rand_multivariate_normal}
 \alias{mlx_rand_multivariate_normal}
-\title{Sample from a multivariate normal distribution on MLX tensors}
+\title{Sample from a multivariate normal distribution on mlx arrays}
 \usage{
 mlx_rand_multivariate_normal(
   dim,
@@ -13,11 +13,11 @@ mlx_rand_multivariate_normal(
 )
 }
 \arguments{
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
-\item{mean}{An \code{mlx} tensor or vector for the mean.}
+\item{mean}{An mlx array or vector for the mean.}
 
-\item{cov}{An \code{mlx} tensor or matrix for the covariance.}
+\item{cov}{An mlx array or matrix for the covariance.}
 
 \item{dtype}{Desired MLX dtype ("float32" or "float64").}
 
@@ -26,10 +26,10 @@ due to SVD decomposition of the covariance matrix; GPU device is not currently
 supported.}
 }
 \value{
-An \code{mlx} tensor with samples from the multivariate normal.
+An mlx array with samples from the multivariate normal.
 }
 \description{
-Sample from a multivariate normal distribution on MLX tensors
+Sample from a multivariate normal distribution on mlx arrays
 }
 \examples{
 mean <- as_mlx(c(0, 0), device = "cpu")

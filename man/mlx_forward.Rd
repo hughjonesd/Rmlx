@@ -9,10 +9,10 @@ mlx_forward(module, x)
 \arguments{
 \item{module}{An \code{mlx_module}.}
 
-\item{x}{Input tensor.}
+\item{x}{An mlx array.}
 }
 \value{
-Output tensor.
+Output array.
 }
 \description{
 Forward pass utility

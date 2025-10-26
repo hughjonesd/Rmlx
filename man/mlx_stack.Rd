@@ -2,20 +2,20 @@
 % Please edit documentation in R/shape.R
 \name{mlx_stack}
 \alias{mlx_stack}
-\title{Stack MLX tensors along a new axis}
+\title{Stack mlx arrays along a new axis}
 \usage{
 mlx_stack(..., axis = 1L)
 }
 \arguments{
-\item{...}{One or more tensors (or a single list of tensors) coercible to \code{mlx}.}
+\item{...}{One or more arrays (or a single list of arrays) coercible to mlx.}
 
 \item{axis}{Position of the new axis (1-indexed, negative values count from the end).}
 }
 \value{
-An \code{mlx} tensor with one additional dimension.
+An mlx array with one additional dimension.
 }
 \description{
-Stack MLX tensors along a new axis
+Stack mlx arrays along a new axis
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

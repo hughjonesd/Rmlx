@@ -9,7 +9,7 @@ mlx_train_step(module, loss_fn, optimizer, ...)
 \arguments{
 \item{module}{An \code{mlx_module}.}
 
-\item{loss_fn}{Function of \code{module} and data returning an \code{mlx} scalar.}
+\item{loss_fn}{Function of \code{module} and data returning an mlx scalar.}
 
 \item{optimizer}{Optimizer object from \code{mlx_optimizer_sgd()}.}
 

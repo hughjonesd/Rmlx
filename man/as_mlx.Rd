@@ -29,10 +29,10 @@ Create MLX array from R object
 \details{
 Apple MLX executes in single precision. Numeric inputs are stored in
 \code{float32} regardless of the requested dtype. Logical inputs are mapped to
-MLX boolean tensors. Complex inputs are stored as \code{complex64} (float32 real
+MLX boolean arrays. Complex inputs are stored as \code{complex64} (float32 real
 and imaginary parts). Asking for \code{dtype = "float64"} emits a warning and the
 input is downcast to \code{float32}. If you require double precision arithmetic,
-use base R arrays instead of \code{mlx} objects.
+use base R arrays instead of mlx objects.
 }
 \examples{
 x <- as_mlx(matrix(1:12, 3, 4))

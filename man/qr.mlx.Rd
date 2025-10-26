@@ -2,12 +2,12 @@
 % Please edit documentation in R/linalg_adv.R
 \name{qr.mlx}
 \alias{qr.mlx}
-\title{QR decomposition for MLX tensors}
+\title{QR decomposition for mlx arrays}
 \usage{
 \method{qr}{mlx}(x, tol = 1e-07, LAPACK = FALSE, ...)
 }
 \arguments{
-\item{x}{An \code{mlx} matrix.}
+\item{x}{An mlx matrix (2-dimensional array).}
 
 \item{tol}{Ignored; custom tolerances are not supported.}
 
@@ -16,10 +16,10 @@
 \item{...}{Additional arguments (unused).}
 }
 \value{
-A list with components \code{Q} and \code{R}, each an \code{mlx} matrix.
+A list with components \code{Q} and \code{R}, each an mlx matrix.
 }
 \description{
-QR decomposition for MLX tensors
+QR decomposition for mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 3, 2))

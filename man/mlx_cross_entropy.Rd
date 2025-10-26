@@ -7,14 +7,14 @@
 mlx_cross_entropy(logits, targets, reduction = c("mean", "sum", "none"))
 }
 \arguments{
-\item{logits}{Unnormalized predictions (logits) as an \code{mlx} tensor.}
+\item{logits}{Unnormalized predictions (logits) as an mlx array.}
 
-\item{targets}{Target class indices as an \code{mlx} tensor or integer vector.}
+\item{targets}{Target class indices as an mlx array or integer vector.}
 
 \item{reduction}{Type of reduction: "mean" (default), "sum", or "none".}
 }
 \value{
-An \code{mlx} tensor containing the loss.
+An mlx array containing the loss.
 }
 \description{
 Computes cross-entropy loss for multi-class classification.

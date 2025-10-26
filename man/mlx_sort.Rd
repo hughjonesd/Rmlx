@@ -3,24 +3,24 @@
 \name{mlx_sort}
 \alias{mlx_sort}
 \alias{mlx_argsort}
-\title{Sort and argsort for MLX tensors}
+\title{Sort and argsort for mlx arrays}
 \usage{
 mlx_sort(x, axis = NULL)
 
 mlx_argsort(x, axis = NULL)
 }
 \arguments{
-\item{x}{An object coercible to \code{mlx}.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-tensor is flattened first.}
+array is flattened first.}
 }
 \value{
-An \code{mlx} tensor containing sorted values (for \code{mlx_sort}) or indices
+An mlx array containing sorted values (for \code{mlx_sort}) or indices
 (for \code{mlx_argsort}).
 }
 \description{
-Sort and argsort for MLX tensors
+Sort and argsort for mlx arrays
 }
 \details{
 Indices returned by \code{mlx_argsort()} and \code{mlx_argpartition()} use

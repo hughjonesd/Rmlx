@@ -12,7 +12,7 @@
 \item{e2}{Second operand (mlx or numeric)}
 }
 \value{
-An \code{mlx} object
+An mlx object
 }
 \description{
 Arithmetic and comparison operators for MLX arrays

@@ -11,7 +11,7 @@ mlx_embedding(num_embeddings, embedding_dim, device = mlx_default_device())
 
 \item{embedding_dim}{Dimension of embedding vectors.}
 
-\item{device}{Device for parameters.}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An \code{mlx_module} for token embeddings.

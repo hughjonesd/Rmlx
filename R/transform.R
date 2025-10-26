@@ -1,11 +1,11 @@
-#' Argmax and argmin on MLX tensors
+#' Argmax and argmin on mlx arrays
 #'
-#' @param x An object coercible to `mlx`.
+#' @inheritParams common_params
 #' @param axis Optional axis to operate over (1-indexed like R). When `NULL`, the
-#'   tensor is flattened first.
+#'   array is flattened first.
 #' @param keepdims Logical; retain reduced dimensions with length one.
 #'
-#' @return An `mlx` tensor of indices.
+#' @return An mlx array of indices.
 #' @seealso
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmax},
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmin}
@@ -31,11 +31,11 @@ mlx_argmin <- function(x, axis = NULL, keepdims = FALSE) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Sort and argsort for MLX tensors
+#' Sort and argsort for mlx arrays
 #'
 #' @inheritParams mlx_argmax
 #'
-#' @return An `mlx` tensor containing sorted values (for `mlx_sort`) or indices
+#' @return An mlx array containing sorted values (for `mlx_sort`) or indices
 #'   (for `mlx_argsort`).
 #' @details Indices returned by `mlx_argsort()` and `mlx_argpartition()` use
 #'   zero-based offsets, matching MLX's native conventions.
@@ -64,14 +64,14 @@ mlx_argsort <- function(x, axis = NULL) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Top-k selection and partitioning on MLX tensors
+#' Top-k selection and partitioning on mlx arrays
 #'
 #' @inheritParams mlx_argmax
 #' @param k Positive integer specifying the number of elements to select.
 #' @param kth Zero-based index of the element that should be placed in-order
 #'   after partitioning.
 #'
-#' @return An `mlx` tensor.
+#' @return An mlx array.
 #' @details `mlx_topk()` returns the largest `k` values as reported by MLX. Use
 #'   `mlx_argsort()` if you need the associated indices.
 #' @seealso
@@ -122,7 +122,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 #' Normalize multiple axes to 0-indexed
 #'
 #' @param axes Integer vector of 1-indexed axes (negatives allowed) or NULL.
-#' @param x mlx tensor providing dimensionality.
+#' @param x mlx array providing dimensionality.
 #' @return Integer vector (0-indexed) or NULL.
 #' @noRd
 .mlx_normalize_axes <- function(axes, x) {
@@ -139,7 +139,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 #' Convert single 1-indexed axis to 0-indexed
 #'
 #' @param axis Integer (1-indexed, negatives allowed).
-#' @param x mlx tensor providing dimensionality.
+#' @param x mlx array providing dimensionality.
 #' @return Integer scalar (0-indexed).
 #' @noRd
 .mlx_normalize_axis_single <- function(axis, x) {
@@ -159,7 +159,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 #' Convert single axis to 0-indexed or return NULL
 #'
 #' @param axis Integer (1-indexed, negatives allowed) or NULL.
-#' @param x mlx tensor providing dimensionality.
+#' @param x mlx array providing dimensionality.
 #' @return Integer scalar (0-indexed) or NULL.
 #' @noRd
 .mlx_normalize_axis <- function(axis, x) {
@@ -173,11 +173,11 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   .mlx_normalize_axis_single(axis, x)
 }
 
-#' Log-sum-exp reduction for MLX tensors
+#' Log-sum-exp reduction for mlx arrays
 #'
 #' @inheritParams mlx_argmax
 #' @param keepdims Logical indicating whether reduced axes are retained.
-#' @return An `mlx` tensor containing log-sum-exp results.
+#' @return An mlx array containing log-sum-exp results.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp}
 #' @export
 #' @examples
@@ -191,13 +191,13 @@ mlx_logsumexp <- function(x, axis = NULL, keepdims = FALSE) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Log cumulative sum exponential for MLX tensors
+#' Log cumulative sum exponential for mlx arrays
 #'
 #' @inheritParams mlx_argmax
 #' @param axis Optional axis (single integer) to operate over.
 #' @param reverse Logical flag for reverse accumulation.
 #' @param inclusive Logical flag controlling inclusivity.
-#' @return An `mlx` tensor.
+#' @return An mlx array.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logaddexp}
 #' @export
 #' @examples
@@ -212,11 +212,11 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Softmax for MLX tensors
+#' Softmax for mlx arrays
 #'
 #' @inheritParams mlx_argmax
 #' @param precise Logical; compute in higher precision for stability.
-#' @return An `mlx` tensor with normalized probabilities.
+#' @return An mlx array with normalized probabilities.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax}
 #' @export
 #' @examples

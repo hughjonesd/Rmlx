@@ -1,8 +1,8 @@
 #' Math operations for MLX arrays
 #'
-#' @param x An `mlx` object
+#' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
-#' @return An `mlx` object with the result
+#' @return An mlx object with the result
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html}
 #' @export
 #' @method Math mlx
@@ -71,7 +71,7 @@ Math.mlx <- function(x, ...) {
 #' @param rtol Relative tolerance (default: 1e-5)
 #' @param atol Absolute tolerance (default: 1e-8)
 #' @param equal_nan If `TRUE`, NaN values are considered equal (default: `FALSE`)
-#' @param device Device to use for computation
+#' @inheritParams common_params
 #'
 #' @details
 #' Two values are considered close if:
@@ -80,7 +80,7 @@ Math.mlx <- function(x, ...) {
 #' Infinite values with matching signs are considered equal.
 #' Supports NumPy-style broadcasting.
 #'
-#' @return An `mlx` array of booleans with element-wise comparison results
+#' @return An mlx array of booleans with element-wise comparison results
 #'
 #' @seealso [mlx_allclose()], [all.equal.mlx()],
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.isclose.html}
@@ -107,7 +107,7 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #' @param rtol Relative tolerance (default: 1e-5)
 #' @param atol Absolute tolerance (default: 1e-8)
 #' @param equal_nan If `TRUE`, NaN values are considered equal (default: `FALSE`)
-#' @param device Device to use for computation
+#' @inheritParams common_params
 #'
 #' @details
 #' Two values are considered close if:
@@ -116,7 +116,7 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #' This function returns `TRUE` only if all elements are close.
 #' Supports NumPy-style broadcasting.
 #'
-#' @return An `mlx` array containing a single boolean value
+#' @return An mlx array containing a single boolean value
 #'
 #' @seealso [mlx_isclose()], [all.equal.mlx()],
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.allclose.html}

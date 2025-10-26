@@ -1,16 +1,23 @@
 
-#' Roxygen parameters for mlx creation
+#' Common Parameters for MLX Tensor Creation
 #'
-#' @param dim Integer vector giving the tensor shape.
-#' @param dtype MLX dtype. Supported types vary by function (see Details).
-#' @param device Target device ("gpu" or "cpu").
+#' @param dim Integer vector specifying the array shape/dimensions.
+#' @param dtype Character string specifying the MLX data type. Common options:
+#'   - Floating point: `"float32"`, `"float64"`
+#'   - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`,
+#'     `"uint32"`, `"uint64"`
+#'   - Other: `"bool"`, `"complex64"`
+#'
+#'   Supported types vary by function; see individual function documentation.
+#' @param device Character string specifying the device for computation.
+#'   Options: `"gpu"` (default) or `"cpu"`. Default: `mlx_default_device()`.
 #' @name mlx_creation_params
 #' @keywords internal
 NULL
 
 #' Print MLX array
 #'
-#' @param x An `mlx` object
+#' @inheritParams common_params
 #' @param ... Additional arguments (ignored)
 #' @export
 #' @method print mlx
@@ -37,7 +44,7 @@ print.mlx <- function(x, ...) {
 
 #' Object structure for MLX array
 #'
-#' @param object An `mlx` object
+#' @param object An mlx object
 #' @param ... Additional arguments (ignored)
 #' @export
 #' @examples
@@ -55,7 +62,7 @@ str.mlx <- function(object, ...) {
 
 #' Get dimensions of MLX array
 #'
-#' @param x An `mlx` object
+#' @inheritParams common_params
 #' @return Integer vector of dimensions
 #' @export
 #' @method dim mlx
@@ -71,9 +78,9 @@ dim.mlx <- function(x) {
 #' Reshapes the MLX array to the specified dimensions. The total number of
 #' elements must remain the same.
 #'
-#' @param x An `mlx` object
+#' @inheritParams common_params
 #' @param value Integer vector of new dimensions
-#' @return Reshaped `mlx` object
+#' @return Reshaped mlx object
 #' @export
 #' @method dim<- mlx
 #' @examples
@@ -111,7 +118,7 @@ dim.mlx <- function(x) {
 
 #' Get length of MLX array
 #'
-#' @param x An `mlx` object
+#' @inheritParams common_params
 #' @return Total number of elements
 #' @export
 #' @method length mlx
@@ -124,7 +131,7 @@ length.mlx <- function(x) {
 
 #' Get dimensions helper
 #'
-#' @param x An `mlx` object
+#' @inheritParams common_params
 #' @return Dimensions
 #' @export
 #' @examples
@@ -137,7 +144,7 @@ mlx_dim <- function(x) {
 
 #' Get data type helper
 #'
-#' @param x An `mlx` object
+#' @inheritParams common_params
 #' @return Data type string
 #' @export
 #' @examples
@@ -150,11 +157,11 @@ mlx_dtype <- function(x) {
 
 #' Subset MLX array
 #'
-#' @param x An `mlx` object
+#' @inheritParams common_params
 #' @param ... Indices for each dimension. Provide one per axis; omitted indices
 #'   select the full extent. Logical indices recycle to the dimension length.
 #' @param drop Should dimensions be dropped? (default: FALSE)
-#' @return Subsetted `mlx` object
+#' @return Subsetted mlx object
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.take}
 #' @export
 #' @method [ mlx
@@ -164,7 +171,7 @@ mlx_dtype <- function(x) {
 `[.mlx` <- function(x, ..., drop = FALSE) {
   ndim <- length(x$dim)
   if (ndim == 0L) {
-    stop("Cannot subset a scalar mlx tensor.", call. = FALSE)
+    stop("Cannot subset a scalar mlx array.", call. = FALSE)
   }
 
   idx_list <- vector("list", ndim)

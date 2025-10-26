@@ -2,21 +2,21 @@
 % Please edit documentation in R/concat.R
 \name{cbind.mlx}
 \alias{cbind.mlx}
-\title{Column-bind MLX tensors}
+\title{Column-bind mlx arrays}
 \usage{
 \method{cbind}{mlx}(..., deparse.level = 1)
 }
 \arguments{
-\item{...}{Objects to bind. MLX tensors are kept in MLX; other inputs are
+\item{...}{Objects to bind. mlx arrays are kept in MLX; other inputs are
 coerced via \code{as_mlx()}.}
 
 \item{deparse.level}{Compatibility argument accepted for S3 dispatch; ignored.}
 }
 \value{
-An \code{mlx} tensor stacked along the second axis.
+An mlx array stacked along the second axis.
 }
 \description{
-Column-bind MLX tensors
+Column-bind mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

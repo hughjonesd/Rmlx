@@ -1,8 +1,8 @@
-#' Wrap a raw MLX pointer into an `mlx` object
+#' Wrap a raw MLX pointer into an mlx object
 #'
 #' @param ptr External pointer returned by C++ bindings.
-#' @param device Device string associated with the tensor.
-#' @return An `mlx` tensor.
+#' @param device Device string associated with the array.
+#' @return An mlx array.
 #' @noRd
 .mlx_wrap_result <- function(ptr, device) {
   dim <- cpp_mlx_shape(ptr)
@@ -10,15 +10,15 @@
   new_mlx(ptr, dim, dtype, device)
 }
 
-#' Cholesky decomposition for MLX tensors
+#' Cholesky decomposition for mlx arrays
 #'
+#' If `x` is not symmetric positive semi-definite, "behaviour is undefined"
+#' according to the MLX documentation.
 #'
-#' @param x An `mlx` matrix. Note: if `x` is not symmetric
-#'   positive semi-definite, "behaviour is undefined" according to the MLX
-#'   documentation.
+#' @inheritParams mlx_matrix_required
 #' @param pivot Ignored; pivoted decomposition is not supported.
 #' @param ... Additional arguments (unused).
-#' @return Upper-triangular Cholesky factor as an `mlx` matrix.
+#' @return Upper-triangular Cholesky factor as an mlx matrix.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky}
 #' @export
 #' @method chol mlx
@@ -36,10 +36,10 @@ chol.mlx <- function(x, pivot = FALSE, ...) {
 #' Inverse from Cholesky decomposition
 #'
 #' Compute the inverse of a symmetric, positive definite matrix from its
-#' Cholesky decomposition.
+#' Cholesky decomposition. The input `x` should be an upper triangular matrix
+#' from `chol()`.
 #'
-#' @param x An `mlx` matrix containing the Cholesky decomposition (upper triangular).
-#'   This should be the result of `chol()`.
+#' @inheritParams mlx_matrix_required
 #' @param size Ignored; included for compatibility with base R.
 #' @param ... Additional arguments (unused).
 #' @return The inverse of the original matrix (before Cholesky decomposition).
@@ -70,13 +70,13 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
   mlx_cholesky_inv(x, upper = TRUE)
 }
 
-#' QR decomposition for MLX tensors
+#' QR decomposition for mlx arrays
 #'
-#' @param x An `mlx` matrix.
+#' @inheritParams mlx_matrix_required
 #' @param tol Ignored; custom tolerances are not supported.
 #' @param LAPACK Ignored; set to `FALSE`.
 #' @param ... Additional arguments (unused).
-#' @return A list with components `Q` and `R`, each an `mlx` matrix.
+#' @return A list with components `Q` and `R`, each an mlx matrix.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.qr}
 #' @export
 #' @method qr mlx
@@ -111,12 +111,12 @@ svd <- function(x, ...) {
 #' @export
 svd.default <- base::svd
 
-#' Singular value decomposition for MLX tensors
+#' Singular value decomposition for mlx arrays
 #'
 #' Note that mlx's svd returns "full" SVD, with U and V' both square matrices.
 #' This is different from R's implementation.
 #'
-#' @param x An `mlx` matrix.
+#' @inheritParams mlx_matrix_required
 #' @param nu Number of left singular vectors to return (0 or `min(dim(x))`).
 #' @param nv Number of right singular vectors to return (0 or `min(dim(x))`).
 #' @param ... Additional arguments (unused).
@@ -163,8 +163,8 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
 
 #' Moore-Penrose pseudoinverse for MLX arrays
 #'
-#' @param x An `mlx` object or coercible matrix.
-#' @return An `mlx` object containing the pseudoinverse.
+#' @param x An mlx object or coercible matrix.
+#' @return An mlx object containing the pseudoinverse.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv}
 #' @export
 #' @examples
@@ -180,13 +180,13 @@ pinv <- function(x) {
 
 #' Fast Fourier Transform
 #'
-#' Extends [stats::fft()] to work with `mlx` objects while delegating to the
+#' Extends [stats::fft()] to work with mlx objects while delegating to the
 #' standard R implementation for other inputs.
 #'
-#' @param z Input to transform. May be a numeric, complex, or `mlx` object.
+#' @param z Input to transform. May be a numeric, complex, or mlx object.
 #' @param inverse Logical flag; if `TRUE` compute the inverse transform.
 #' @param ... Passed through to the default method.
-#' @return For `mlx` inputs, an `mlx` object containing complex frequency
+#' @return For mlx inputs, an mlx object containing complex frequency
 #'   coefficients; otherwise the base R result.
 #' @seealso [stats::fft()], \url{https://ml-explore.github.io/mlx/build/html/python/fft.html#mlx.core.fft.fft}
 #' @export
@@ -215,13 +215,13 @@ fft.mlx <- function(z, inverse = FALSE, ...) {
   out
 }
 
-#' Matrix and vector norms for MLX tensors
+#' Matrix and vector norms for mlx arrays
 #'
-#' @param x An `mlx` array.
+#' @inheritParams mlx_array_required
 #' @param ord Numeric or character norm order. Use `NULL` for the default 2-norm.
 #' @param axis Optional integer vector of axes (1-indexed) along which to compute the norm.
-#' @param keepdims Logical; retain reduced axes with length one.
-#' @return An `mlx` tensor containing the requested norm.
+#' @inheritParams common_params
+#' @return An mlx array containing the requested norm.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.norm}
 #' @export
 #' @examples
@@ -242,10 +242,10 @@ mlx_norm <- function(x, ord = NULL, axis = NULL, keepdims = FALSE) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Eigen decomposition for MLX tensors
+#' Eigen decomposition for mlx arrays
 #'
-#' @param x An `mlx` square matrix.
-#' @return A list with components `values` and `vectors`, both `mlx` tensors.
+#' @inheritParams mlx_matrix_required
+#' @return A list with components `values` and `vectors`, both mlx arrays.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eig}
 #' @export
 #' @examples
@@ -264,10 +264,10 @@ mlx_eig <- function(x) {
   )
 }
 
-#' Eigenvalues of MLX tensors
+#' Eigenvalues of mlx arrays
 #'
 #' @inheritParams mlx_eig
-#' @return An `mlx` tensor containing eigenvalues.
+#' @return An mlx array containing eigenvalues.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvals}
 #' @export
 #' @examples
@@ -280,11 +280,11 @@ mlx_eigvals <- function(x) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Eigenvalues of Hermitian MLX tensors
+#' Eigenvalues of Hermitian mlx arrays
 #'
 #' @inheritParams mlx_eig
 #' @param uplo Character string indicating which triangle to use ("L" or "U").
-#' @return An `mlx` tensor containing eigenvalues.
+#' @return An mlx array containing eigenvalues.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvalsh}
 #' @export
 #' @examples
@@ -298,7 +298,7 @@ mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Eigen decomposition of Hermitian MLX tensors
+#' Eigen decomposition of Hermitian mlx arrays
 #'
 #' @inheritParams mlx_eigvalsh
 #' @return A list with components `values` and `vectors`.
@@ -318,12 +318,12 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
   )
 }
 
-#' Solve triangular systems with MLX tensors
+#' Solve triangular systems with mlx arrays
 #'
-#' @param a An `mlx` triangular matrix.
+#' @param a An mlx triangular matrix.
 #' @param b Right-hand side matrix or vector.
 #' @param upper Logical; if `TRUE`, `a` is upper triangular, otherwise lower.
-#' @return An `mlx` tensor solution.
+#' @return An mlx array solution.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular}
 #' @export
 #' @examples
@@ -338,11 +338,11 @@ mlx_solve_triangular <- function(a, b, upper = FALSE) {
   .mlx_wrap_result(ptr, a$device)
 }
 
-#' Vector cross product with MLX tensors
+#' Vector cross product with mlx arrays
 #'
-#' @param a,b Input `mlx` tensors containing 3D vectors.
+#' @param a,b Input mlx arrays containing 3D vectors.
 #' @param axis Axis along which to compute the cross product (1-indexed, default last).
-#' @return An `mlx` tensor of cross products.
+#' @return An mlx array of cross products.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cross}
 #' @export
 #' @examples
@@ -356,15 +356,15 @@ mlx_cross <- function(a, b, axis = -1L) {
   .mlx_wrap_result(ptr, a$device)
 }
 
-#' Matrix trace for MLX tensors
+#' Matrix trace for mlx arrays
 #'
 #' Computes the sum of the diagonal elements of a 2D array, or the sum along
 #' diagonals of a higher dimensional array.
 #'
-#' @param x An `mlx` array.
+#' @inheritParams mlx_array_required
 #' @param offset Offset of the diagonal (0 for main diagonal, positive for above, negative for below).
 #' @param axis1,axis2 Axes along which the diagonals are taken (1-indexed, default 1 and 2).
-#' @return An `mlx` scalar or array containing the trace.
+#' @return An mlx scalar or array containing the trace.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.trace.html}
 #' @export
 #' @examples
@@ -377,14 +377,14 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Extract diagonal or construct diagonal matrix for MLX tensors
+#' Extract diagonal or construct diagonal matrix for mlx arrays
 #'
 #' Extract a diagonal from a matrix or construct a diagonal matrix from a vector.
 #'
-#' @param x An `mlx` array. If 1D, creates a diagonal matrix. If 2D or higher, extracts the diagonal.
+#' @param x An mlx array. If 1D, creates a diagonal matrix. If 2D or higher, extracts the diagonal.
 #' @param offset Diagonal offset (0 for main diagonal, positive for above, negative for below).
 #' @param axis1,axis2 For multi-dimensional arrays, which axes define the 2D planes (1-indexed).
-#' @return An `mlx` tensor.
+#' @return An mlx array.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.diagonal.html}
 #' @export
 #' @examples
@@ -403,9 +403,9 @@ mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 
 #' Outer product of two vectors
 #'
-#' @param x,y Numeric vectors or `mlx` arrays.
+#' @param x,y Numeric vectors or mlx arrays.
 #' @param ... Additional arguments passed to methods.
-#' @return For `mlx` inputs, an `mlx` matrix. Otherwise delegates to `base::outer`.
+#' @return For mlx inputs, an mlx matrix. Otherwise delegates to `base::outer`.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.outer.html}
 #' @export
 #' @examples
@@ -432,10 +432,10 @@ outer.mlx <- function(x, y, ...) {
 #'
 #' The reverse of flattening: expands a single axis into multiple axes with the given shape.
 #'
-#' @param x An `mlx` array.
+#' @inheritParams mlx_array_required
 #' @param axis Which axis to unflatten (1-indexed).
 #' @param shape Integer vector specifying the new shape for the unflattened axis.
-#' @return An `mlx` array with the axis expanded.
+#' @return An mlx array with the axis expanded.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.unflatten.html}
 #' @export
 #' @examples
@@ -453,7 +453,7 @@ mlx_unflatten <- function(x, axis, shape) {
 #'
 #' Computes the inverse of a square matrix.
 #'
-#' @param x An `mlx` array (must be square).
+#' @inheritParams mlx_array_required
 #' @return The inverse of `x`.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.inv}
 #' @export
@@ -472,7 +472,7 @@ mlx_inv <- function(x) {
 #'
 #' Computes the inverse of a triangular matrix.
 #'
-#' @param x An `mlx` array (triangular matrix).
+#' @inheritParams mlx_array_required
 #' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
 #' @return The inverse of the triangular matrix `x`.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.tri_inv}
@@ -494,7 +494,7 @@ mlx_tri_inv <- function(x, upper = FALSE) {
 #'
 #' For a more R-like interface, see [chol2inv()].
 #'
-#' @param x An `mlx` array containing the Cholesky factor (lower or upper triangular).
+#' @inheritParams mlx_array_required
 #' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
 #' @return The inverse of the original matrix (A^-1 where A = LL' or A = U'U).
 #' @seealso [chol2inv()], \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}
@@ -517,7 +517,7 @@ mlx_cholesky_inv <- function(x, upper = FALSE) {
 #'
 #' Computes the LU factorization of a matrix.
 #'
-#' @param x An `mlx` array.
+#' @inheritParams mlx_array_required
 #' @return A list with components `p` (pivot indices), `l` (lower triangular),
 #'   and `u` (upper triangular). The relationship is A = L[P, :] \%*\% U.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.lu}

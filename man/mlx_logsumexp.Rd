@@ -2,23 +2,23 @@
 % Please edit documentation in R/transform.R
 \name{mlx_logsumexp}
 \alias{mlx_logsumexp}
-\title{Log-sum-exp reduction for MLX tensors}
+\title{Log-sum-exp reduction for mlx arrays}
 \usage{
 mlx_logsumexp(x, axis = NULL, keepdims = FALSE)
 }
 \arguments{
-\item{x}{An object coercible to \code{mlx}.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-tensor is flattened first.}
+array is flattened first.}
 
 \item{keepdims}{Logical indicating whether reduced axes are retained.}
 }
 \value{
-An \code{mlx} tensor containing log-sum-exp results.
+An mlx array containing log-sum-exp results.
 }
 \description{
-Log-sum-exp reduction for MLX tensors
+Log-sum-exp reduction for mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(1:6, 2, 3))

@@ -7,14 +7,14 @@
 \method{tcrossprod}{mlx}(x, y = NULL, ...)
 }
 \arguments{
-\item{x}{An \code{mlx} matrix}
+\item{x}{An mlx matrix (2-dimensional array).}
 
-\item{y}{An \code{mlx} matrix (default: NULL, uses x)}
+\item{y}{An mlx matrix (default: NULL, uses x)}
 
 \item{...}{Additional arguments passed to base::tcrossprod.}
 }
 \value{
-\code{x \%*\% t(y)} as an \code{mlx} object
+\code{x \%*\% t(y)} as an mlx object
 }
 \description{
 Transposed cross product

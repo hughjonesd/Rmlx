@@ -3,7 +3,7 @@
 \name{mlx_pad}
 \alias{mlx_pad}
 \alias{mlx_split}
-\title{Pad or split MLX tensors}
+\title{Pad or split mlx arrays}
 \usage{
 mlx_pad(
   x,
@@ -16,7 +16,7 @@ mlx_pad(
 mlx_split(x, sections, axis = 1L)
 }
 \arguments{
-\item{x}{An object coercible to \code{mlx} via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{pad_width}{Padding extents. Supply a single integer, a length-two
 numeric vector, or a matrix/list with one \verb{(before, after)} pair per padded
@@ -36,17 +36,17 @@ vector of 1-based split points along \code{axis}.}
 \item{axis}{Axis (1-indexed, negatives count from the end) to operate on.}
 }
 \value{
-For \code{mlx_pad()}, an \code{mlx} tensor; for \code{mlx_split()}, a list of \code{mlx}
-tensors.
+For \code{mlx_pad()}, an mlx array; for \code{mlx_split()}, a list of mlx
+arrays.
 }
 \description{
 \itemize{
 \item \code{mlx_pad()} mirrors the MLX padding primitive, enlarging each axis according
 to \code{pad_width}. Values are added symmetrically (\code{pad_width[i, 1]} before,
 \code{pad_width[i, 2]} after) using the specified \code{mode}.
-\item \code{mlx_split()} divides a tensor along an axis either into equal sections
+\item \code{mlx_split()} divides an array along an axis either into equal sections
 (\code{sections} scalar) or at explicit 1-based split points (\code{sections} vector),
-returning a list of \code{mlx} tensors.
+returning a list of mlx arrays.
 }
 }
 \examples{

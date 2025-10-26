@@ -7,10 +7,10 @@
 \method{t}{mlx}(x)
 }
 \arguments{
-\item{x}{An \code{mlx} matrix}
+\item{x}{An mlx matrix (2-dimensional array).}
 }
 \value{
-Transposed \code{mlx} matrix
+Transposed mlx matrix
 }
 \description{
 Transpose of MLX matrix

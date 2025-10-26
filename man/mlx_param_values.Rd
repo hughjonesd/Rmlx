@@ -2,7 +2,7 @@
 % Please edit documentation in R/nn.R
 \name{mlx_param_values}
 \alias{mlx_param_values}
-\title{Retrieve parameter tensors}
+\title{Retrieve parameter arrays}
 \usage{
 mlx_param_values(params)
 }
@@ -10,10 +10,10 @@ mlx_param_values(params)
 \item{params}{A list of \code{mlx_param}.}
 }
 \value{
-List of \code{mlx} tensors.
+List of mlx arrays.
 }
 \description{
-Retrieve parameter tensors
+Retrieve parameter arrays
 }
 \examples{
 set.seed(1)

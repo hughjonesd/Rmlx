@@ -18,7 +18,7 @@ mlx_linear(
 
 \item{bias}{Should a bias term be included?}
 
-\item{device}{Device for the parameters.}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An object of class \code{mlx_module}.

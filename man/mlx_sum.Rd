@@ -8,7 +8,7 @@
 \alias{mlx_mean}
 \alias{mlx_var}
 \alias{mlx_std}
-\title{Reduce MLX tensors}
+\title{Reduce mlx arrays}
 \usage{
 mlx_sum(x, axis = NULL, drop = TRUE)
 
@@ -25,7 +25,7 @@ mlx_var(x, axis = NULL, drop = TRUE, ddof = 0L)
 mlx_std(x, axis = NULL, drop = TRUE, ddof = 0L)
 }
 \arguments{
-\item{x}{An object coercible to \code{mlx} via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Optional integer vector of axes (1-indexed) to reduce.
 When \code{NULL}, the reduction is performed over all elements.}
@@ -37,7 +37,7 @@ removes reduced axes, while \code{FALSE} retains them with length one.}
 standard deviation reductions.}
 }
 \value{
-An \code{mlx} tensor containing the reduction result.
+An mlx array containing the reduction result.
 }
 \description{
 These helpers mirror NumPy-style reductions, optionally collapsing one or

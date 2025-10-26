@@ -1,8 +1,8 @@
-#' Create tensors of zeros on MLX devices
+#' Create arrays of zeros on MLX devices
 #'
 #' @inheritParams mlx_creation_params
 #' @param dtype MLX dtype to use (`"float32"` or `"float64"`).
-#' @return An `mlx` tensor filled with zeros.
+#' @return An mlx array filled with zeros.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros}
 #' @export
 #' @examples
@@ -18,10 +18,10 @@ mlx_zeros <- function(dim,
   .mlx_wrap_result(ptr, device)
 }
 
-#' Create tensors of ones on MLX devices
+#' Create arrays of ones on MLX devices
 #'
 #' @inheritParams mlx_zeros
-#' @return An `mlx` tensor filled with ones.
+#' @return An mlx array filled with ones.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones}
 #' @export
 #' @examples
@@ -37,14 +37,14 @@ mlx_ones <- function(dim,
   .mlx_wrap_result(ptr, device)
 }
 
-#' Fill an MLX tensor with a constant value
+#' Fill an mlx array with a constant value
 #'
-#' @param value Scalar value used to fill the tensor. Numeric, logical, or complex.
+#' @param value Scalar value used to fill the array. Numeric, logical, or complex.
 #' @inheritParams mlx_zeros
 #' @param dtype MLX dtype (`"float32"`, `"float64"`, `"bool"`, or `"complex64"`).
 #'   If omitted, defaults to `"complex64"` for complex scalars, `"bool"` for logical scalars,
 #'   and `"float32"` otherwise.
-#' @return An `mlx` tensor filled with the supplied value.
+#' @return An mlx array filled with the supplied value.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.full}
 #' @export
 #' @examples
@@ -89,7 +89,7 @@ mlx_full <- function(dim,
 #' @param k Diagonal index: `0` is the main diagonal, positive values shift upward,
 #'   negative values shift downward.
 #' @inheritParams mlx_zeros
-#' @return An `mlx` matrix with ones on the selected diagonal and zeros elsewhere.
+#' @return An mlx matrix with ones on the selected diagonal and zeros elsewhere.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eye}
 #' @export
 #' @examples
@@ -122,7 +122,7 @@ mlx_eye <- function(n,
 #'
 #' @param n Size of the square matrix.
 #' @inheritParams mlx_eye
-#' @return An `mlx` identity matrix.
+#' @return An mlx identity matrix.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.identity}
 #' @export
 #' @examples
@@ -175,7 +175,7 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
 
 #' Numerical ranges on MLX devices
 #'
-#' `mlx_arange()` mirrors `base::seq()` with MLX tensors: it creates evenly spaced values
+#' `mlx_arange()` mirrors `base::seq()` with mlx arrays: it creates evenly spaced values
 #' starting at `start` (default `0`), stepping by `step` (default `1`), and stopping before `stop`.
 #'
 #' @param stop Exclusive upper bound.
@@ -183,7 +183,7 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
 #' @param step Optional step size (defaults to 1).
 #' @param dtype MLX dtype (`"float32"` or `"float64"`).
 #' @inheritParams mlx_zeros
-#' @return A 1D `mlx` tensor.
+#' @return A 1D mlx array.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.arange}
 #' @export
 #' @examples
@@ -224,7 +224,7 @@ mlx_arange <- function(stop,
 #' @param stop Final value (inclusive).
 #' @param num Number of samples to generate.
 #' @inheritParams mlx_arange
-#' @return A 1D `mlx` tensor.
+#' @return A 1D mlx array.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.linspace}
 #' @export
 #' @examples

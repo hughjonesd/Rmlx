@@ -2,24 +2,25 @@
 % Please edit documentation in R/linalg_adv.R
 \name{mlx_norm}
 \alias{mlx_norm}
-\title{Matrix and vector norms for MLX tensors}
+\title{Matrix and vector norms for mlx arrays}
 \usage{
 mlx_norm(x, ord = NULL, axis = NULL, keepdims = FALSE)
 }
 \arguments{
-\item{x}{An \code{mlx} array.}
+\item{x}{An mlx array.}
 
 \item{ord}{Numeric or character norm order. Use \code{NULL} for the default 2-norm.}
 
 \item{axis}{Optional integer vector of axes (1-indexed) along which to compute the norm.}
 
-\item{keepdims}{Logical; retain reduced axes with length one.}
+\item{keepdims}{If \code{TRUE}, keep reduced axes as size-1 dimensions
+(\code{keepdims = TRUE} is equivalent to \code{drop = FALSE} in base R).}
 }
 \value{
-An \code{mlx} tensor containing the requested norm.
+An mlx array containing the requested norm.
 }
 \description{
-Matrix and vector norms for MLX tensors
+Matrix and vector norms for mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

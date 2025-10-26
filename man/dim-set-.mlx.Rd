@@ -7,12 +7,12 @@
 \method{dim}{mlx}(x) <- value
 }
 \arguments{
-\item{x}{An \code{mlx} object}
+\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{value}{Integer vector of new dimensions}
 }
 \value{
-Reshaped \code{mlx} object
+Reshaped mlx object
 }
 \description{
 Reshapes the MLX array to the specified dimensions. The total number of

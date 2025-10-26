@@ -1,15 +1,15 @@
 # Internal casting helper ----------------------------------------------------
 
-#' Cast mlx tensor to different dtype or device
+#' Cast mlx array to different dtype or device
 #'
-#' @param x mlx tensor.
+#' @inheritParams mlx_array_required
 #' @param dtype Character string naming target dtype.
 #' @param device Character string naming target device.
-#' @return mlx tensor with requested dtype and device.
+#' @return mlx array with requested dtype and device.
 #' @noRd
 .mlx_cast <- function(x, dtype = x$dtype, device = x$device) {
   if (!inherits(x, "mlx")) {
-    stop("Expected an `mlx` tensor.", call. = FALSE)
+    stop("Expected an mlx array.", call. = FALSE)
   }
   if (identical(dtype, x$dtype) && identical(device, x$device)) {
     return(x)
@@ -54,11 +54,11 @@
   axes0
 }
 
-#' Stack MLX tensors along a new axis
+#' Stack mlx arrays along a new axis
 #'
-#' @param ... One or more tensors (or a single list of tensors) coercible to `mlx`.
+#' @param ... One or more arrays (or a single list of arrays) coercible to mlx.
 #' @param axis Position of the new axis (1-indexed, negative values count from the end).
-#' @return An `mlx` tensor with one additional dimension.
+#' @return An mlx array with one additional dimension.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.stack}
 #' @export
 #' @examples
@@ -66,29 +66,29 @@
 #' y <- as_mlx(matrix(5:8, 2, 2))
 #' stacked <- mlx_stack(x, y, axis = 1)
 mlx_stack <- function(..., axis = 1L) {
-  tensors <- list(...)
-  if (length(tensors) == 1L && is.list(tensors[[1]]) && !is.mlx(tensors[[1]])) {
-    tensors <- tensors[[1]]
+  arrays <- list(...)
+  if (length(arrays) == 1L && is.list(arrays[[1]]) && !is.mlx(arrays[[1]])) {
+    arrays <- arrays[[1]]
   }
-  if (!length(tensors)) {
-    stop("No tensors supplied.", call. = FALSE)
+  if (!length(arrays)) {
+    stop("No arrays supplied.", call. = FALSE)
   }
-  tensors <- lapply(tensors, function(x) if (is.mlx(x)) x else as_mlx(x))
-  dtype <- Reduce(.promote_dtype, lapply(tensors, `[[`, "dtype"))
-  device <- Reduce(.common_device, lapply(tensors, `[[`, "device"))
-  tensors <- lapply(tensors, .mlx_cast, dtype = dtype, device = device)
+  arrays <- lapply(arrays, function(x) if (is.mlx(x)) x else as_mlx(x))
+  dtype <- Reduce(.promote_dtype, lapply(arrays, `[[`, "dtype"))
+  device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
+  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = device)
 
-  axis0 <- .mlx_normalize_new_axis(axis, tensors[[1]]$dim)
-  ptr <- cpp_mlx_stack(tensors, axis0, device)
+  axis0 <- .mlx_normalize_new_axis(axis, arrays[[1]]$dim)
+  ptr <- cpp_mlx_stack(arrays, axis0, device)
   .mlx_wrap_result(ptr, device)
 }
 
 #' Remove singleton dimensions
 #'
-#' @param x An `mlx` tensor.
+#' @inheritParams mlx_array_required
 #' @param axis Optional integer vector of axes (1-indexed) to remove. When `NULL`
 #'   all axes of length one are removed.
-#' @return An `mlx` tensor with the selected axes removed.
+#' @return An mlx array with the selected axes removed.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze}
 #' @export
 #' @examples
@@ -108,10 +108,10 @@ mlx_squeeze <- function(x, axis = NULL) {
 
 #' Insert singleton dimensions
 #'
-#' @param x An `mlx` tensor.
+#' @inheritParams mlx_array_required
 #' @param axis Integer vector of axis positions (1-indexed) where new singleton
 #'   dimensions should be inserted.
-#' @return An `mlx` tensor with additional dimensions of length one.
+#' @return An mlx array with additional dimensions of length one.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.expand_dims}
 #' @export
 #' @examples
@@ -124,13 +124,13 @@ mlx_expand_dims <- function(x, axis) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Repeat tensor elements
+#' Repeat array elements
 #'
-#' @param x An `mlx` tensor.
+#' @inheritParams mlx_array_required
 #' @param repeats Number of repetitions.
-#' @param axis Optional axis along which to repeat. When `NULL`, the tensor is
+#' @param axis Optional axis along which to repeat. When `NULL`, the array is
 #'   flattened before repetition (matching NumPy semantics).
-#' @return An `mlx` tensor with repeated values.
+#' @return An mlx array with repeated values.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.repeat}
 #' @export
 #' @examples
@@ -152,11 +152,11 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Tile a tensor
+#' Tile an array
 #'
-#' @param x An `mlx` tensor.
+#' @inheritParams mlx_array_required
 #' @param reps Integer vector giving the number of repetitions for each axis.
-#' @return An `mlx` tensor with tiled content.
+#' @return An mlx array with tiled content.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tile}
 #' @export
 #' @examples
@@ -172,13 +172,13 @@ mlx_tile <- function(x, reps) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Roll tensor elements
+#' Roll array elements
 #'
-#' @param x An `mlx` tensor.
+#' @inheritParams mlx_array_required
 #' @param shift Integer vector giving the number of places by which elements are shifted.
 #' @param axis Optional axis (or axes) along which elements are shifted.
-#'   When `NULL`, the tensor is flattened and shifted.
-#' @return An `mlx` tensor with elements circularly shifted.
+#'   When `NULL`, the array is flattened and shifted.
+#' @return An mlx array with elements circularly shifted.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.roll}
 #' @export
 #' @examples
@@ -203,17 +203,17 @@ mlx_roll <- function(x, shift, axis = NULL) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Pad or split MLX tensors
+#' Pad or split mlx arrays
 #'
 #' @description
 #' * `mlx_pad()` mirrors the MLX padding primitive, enlarging each axis according
 #'   to `pad_width`. Values are added symmetrically (`pad_width[i, 1]` before,
 #'   `pad_width[i, 2]` after) using the specified `mode`.
-#' * `mlx_split()` divides a tensor along an axis either into equal sections
+#' * `mlx_split()` divides an array along an axis either into equal sections
 #'   (`sections` scalar) or at explicit 1-based split points (`sections` vector),
-#'   returning a list of `mlx` tensors.
+#'   returning a list of mlx arrays.
 #'
-#' @param x An object coercible to `mlx` via [as_mlx()].
+#' @inheritParams common_params
 #' @param pad_width Padding extents. Supply a single integer, a length-two
 #'   numeric vector, or a matrix/list with one `(before, after)` pair per padded
 #'   axis.
@@ -225,8 +225,8 @@ mlx_roll <- function(x, shift, axis = NULL) {
 #' @param sections Either a single integer (number of equal parts) or an integer
 #'   vector of 1-based split points along `axis`.
 #' @param axis Axis (1-indexed, negatives count from the end) to operate on.
-#' @return For `mlx_pad()`, an `mlx` tensor; for `mlx_split()`, a list of `mlx`
-#'   tensors.
+#' @return For `mlx_pad()`, an mlx array; for `mlx_split()`, a list of mlx
+#'   arrays.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad}
 #' @export
 #' @examples
@@ -245,7 +245,7 @@ mlx_pad <- function(x,
 
   ndim <- length(x$dim)
   if (ndim == 0L) {
-    stop("Cannot pad a scalar mlx tensor.", call. = FALSE)
+    stop("Cannot pad a scalar mlx array.", call. = FALSE)
   }
   if (length(value) != 1L || !is.finite(value)) {
     stop("value must be a single finite numeric scalar.", call. = FALSE)
@@ -386,14 +386,14 @@ mlx_split <- function(x, sections, axis = 1L) {
   stop("Unsupported pad_width specification.", call. = FALSE)
 }
 
-#' Reorder MLX tensor axes
+#' Reorder mlx array axes
 #'
 #' @description
 #' * `mlx_moveaxis()` repositions one or more axes to new locations.
 #' * `aperm.mlx()` provides the familiar R interface, permuting axes according
 #'   to `perm` via repeated calls to `mlx_moveaxis()`.
 #'
-#' @param x,a An object coercible to `mlx` via [as_mlx()].
+#' @param x,a An object coercible to mlx via [as_mlx()].
 #' @param source Integer vector of axis indices to move (1-indexed; negatives
 #'   count from the end).
 #' @param destination Integer vector giving the target positions for `source`
@@ -402,9 +402,9 @@ mlx_split <- function(x, sections, axis = 1L) {
 #' @param perm Integer permutation describing the desired axis order, matching
 #'   the semantics of [base::aperm()].
 #' @param resize Logical flag from [base::aperm()]. Only `TRUE` is currently
-#'   supported for MLX tensors.
+#'   supported for mlx arrays.
 #' @param ... Additional arguments accepted for compatibility; ignored.
-#' @return An `mlx` tensor with axes permuted.
+#' @return An mlx array with axes permuted.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.moveaxis}
 #' @export
 #' @examples
@@ -444,7 +444,7 @@ mlx_moveaxis <- function(x, source, destination) {
 aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
   x <- if (is.mlx(a)) a else as_mlx(a)
   if (!isTRUE(resize)) {
-    stop("`resize = FALSE` is not supported for mlx tensors.", call. = FALSE)
+    stop("`resize = FALSE` is not supported for mlx arrays.", call. = FALSE)
   }
 
   ndim <- length(x$dim)
@@ -484,11 +484,11 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
 
 #' Elementwise conditional selection
 #'
-#' @param condition Logical `mlx` tensor (non-zero values are treated as `TRUE`).
+#' @param condition Logical mlx array (non-zero values are treated as `TRUE`).
 #' @param x,y Tensors broadcastable to the shape of `condition`.
-#' @return An `mlx` tensor where elements are drawn from `x` when
+#' @return An mlx array where elements are drawn from `x` when
 #'   `condition` is `TRUE`, otherwise from `y`.
-#' @details Behaves like [ifelse()] for tensors, but evaluates both branches.
+#' @details Behaves like [ifelse()] for arrays, but evaluates both branches.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.where}
 #' @export
 #' @examples

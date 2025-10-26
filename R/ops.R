@@ -2,7 +2,7 @@
 #'
 #' @param e1 First operand (mlx or numeric)
 #' @param e2 Second operand (mlx or numeric)
-#' @return An `mlx` object
+#' @return An mlx object
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html}
 #' @export
 #' @method Ops mlx
@@ -60,7 +60,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' Matrix multiplication for MLX arrays
 #'
 #' @inheritParams base::`%*%`
-#' @return An `mlx` object
+#' @return An mlx object
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul}
 #' @export
 #' @method %*% mlx
@@ -96,9 +96,9 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
 #' Apply unary MLX operation
 #'
-#' @param x mlx tensor.
+#' @inheritParams mlx_array_required
 #' @param op Character string naming the operation.
-#' @return mlx tensor with same shape.
+#' @return mlx array with same shape.
 #' @noRd
 .mlx_unary <- function(x, op) {
   ptr <- cpp_mlx_unary(x$ptr, op)
@@ -107,9 +107,9 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
 #' Apply binary MLX operation with type promotion
 #'
-#' @param x,y mlx tensors.
+#' @param x,y mlx arrays.
 #' @param op Character string naming the operation.
-#' @return mlx tensor with broadcasted dimensions.
+#' @return mlx array with broadcasted dimensions.
 #' @noRd
 .mlx_binary <- function(x, y, op) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
@@ -130,9 +130,9 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
 #' Apply logical MLX operation
 #'
-#' @param x,y mlx tensors.
+#' @param x,y mlx arrays.
 #' @param op Character string naming the logical operation.
-#' @return mlx tensor with dtype "bool".
+#' @return mlx array with dtype "bool".
 #' @noRd
 .mlx_logical <- function(x, y, op) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
@@ -142,20 +142,20 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, "bool", result_device)
 }
 
-#' Apply logical NOT to mlx tensor
+#' Apply logical NOT to mlx array
 #'
-#' @param x mlx tensor.
-#' @return mlx tensor with dtype "bool".
+#' @inheritParams mlx_array_required
+#' @return mlx array with dtype "bool".
 #' @noRd
 .mlx_logical_not <- function(x) {
   ptr <- cpp_mlx_logical_not(x$ptr)
   new_mlx(ptr, x$dim, "bool", x$device)
 }
 
-#' Integer division for mlx tensors
+#' Integer division for mlx arrays
 #'
-#' @param x,y mlx tensors.
-#' @return mlx tensor with floor-divided values.
+#' @param x,y mlx arrays.
+#' @return mlx array with floor-divided values.
 #' @noRd
 .mlx_floor_divide <- function(x, y) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
@@ -170,10 +170,10 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
-#' Remainder operation for mlx tensors
+#' Remainder operation for mlx arrays
 #'
-#' @param x,y mlx tensors.
-#' @return mlx tensor with remainder values.
+#' @param x,y mlx arrays.
+#' @return mlx array with remainder values.
 #' @noRd
 .mlx_remainder <- function(x, y) {
   result_dim <- .broadcast_dim(x$dim, y$dim)
@@ -188,10 +188,10 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
-#' Elementwise minimum of two MLX tensors
+#' Elementwise minimum of two mlx arrays
 #'
-#' @param x,y `mlx` tensors or objects coercible with [as_mlx()].
-#' @return An `mlx` tensor containing the elementwise minimum.
+#' @param x,y mlx arrays or objects coercible with [as_mlx()].
+#' @return An mlx array containing the elementwise minimum.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum}
 #' @export
 #' @examples
@@ -216,10 +216,10 @@ mlx_minimum <- function(x, y) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
-#' Elementwise maximum of two MLX tensors
+#' Elementwise maximum of two mlx arrays
 #'
 #' @inheritParams mlx_minimum
-#' @return An `mlx` tensor containing the elementwise maximum.
+#' @return An mlx array containing the elementwise maximum.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum}
 #' @export
 #' @examples
@@ -242,11 +242,11 @@ mlx_maximum <- function(x, y) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
-#' Clip MLX tensor values into a range
+#' Clip mlx array values into a range
 #'
-#' @param x An `mlx` tensor or coercible object.
+#' @inheritParams common_params
 #' @param min,max Scalar bounds. Use `NULL` to leave a bound open.
-#' @return An `mlx` tensor with values clipped to `[min, max]`.
+#' @return An mlx array with values clipped to `[min, max]`.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.clip}
 #' @export
 #' @examples
@@ -313,7 +313,7 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
   stop("Unsupported dtype combination: ", dtype1, " and ", dtype2)
 }
 
-#' Select common device from two tensors
+#' Select common device from two arrays
 #'
 #' @param device1,device2 Character strings ("gpu" or "cpu").
 #' @return Character string ("gpu" or "cpu").

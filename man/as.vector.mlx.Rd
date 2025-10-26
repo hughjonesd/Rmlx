@@ -7,7 +7,7 @@
 \method{as.vector}{mlx}(x, mode = "any")
 }
 \arguments{
-\item{x}{An \code{mlx} object}
+\item{x}{An mlx array.}
 
 \item{mode}{Character string specifying the mode (ignored)}
 }

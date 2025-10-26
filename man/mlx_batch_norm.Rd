@@ -18,7 +18,7 @@ mlx_batch_norm(
 
 \item{momentum}{Momentum for running statistics (default: 0.1).}
 
-\item{device}{Device for parameters.}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An \code{mlx_module} applying batch normalization.

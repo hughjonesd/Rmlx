@@ -2,23 +2,23 @@
 % Please edit documentation in R/shape.R
 \name{mlx_roll}
 \alias{mlx_roll}
-\title{Roll tensor elements}
+\title{Roll array elements}
 \usage{
 mlx_roll(x, shift, axis = NULL)
 }
 \arguments{
-\item{x}{An \code{mlx} tensor.}
+\item{x}{An mlx array.}
 
 \item{shift}{Integer vector giving the number of places by which elements are shifted.}
 
 \item{axis}{Optional axis (or axes) along which elements are shifted.
-When \code{NULL}, the tensor is flattened and shifted.}
+When \code{NULL}, the array is flattened and shifted.}
 }
 \value{
-An \code{mlx} tensor with elements circularly shifted.
+An mlx array with elements circularly shifted.
 }
 \description{
-Roll tensor elements
+Roll array elements
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

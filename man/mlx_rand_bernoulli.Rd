@@ -2,22 +2,23 @@
 % Please edit documentation in R/random.R
 \name{mlx_rand_bernoulli}
 \alias{mlx_rand_bernoulli}
-\title{Sample Bernoulli random variables on MLX tensors}
+\title{Sample Bernoulli random variables on mlx arrays}
 \usage{
 mlx_rand_bernoulli(dim, prob = 0.5, device = mlx_default_device())
 }
 \arguments{
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
 \item{prob}{Probability of a one.}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} boolean tensor.
+An mlx boolean array.
 }
 \description{
-Sample Bernoulli random variables on MLX tensors
+Sample Bernoulli random variables on mlx arrays
 }
 \examples{
 mask <- mlx_rand_bernoulli(c(4, 4), prob = 0.3)

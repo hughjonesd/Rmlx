@@ -27,7 +27,7 @@ mlx_dequantize(
 
 \item{mode}{The quantization mode used: "affine" or "mxfp4". Default: "affine"}
 
-\item{device}{Device to perform computation on. Default: \code{mlx_default_device()}}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array with the dequantized (approximate) floating-point weights

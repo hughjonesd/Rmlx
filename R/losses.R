@@ -2,10 +2,10 @@
 #'
 #' Computes the mean squared error between predictions and targets.
 #'
-#' @param predictions Predicted values as an `mlx` tensor.
-#' @param targets Target values as an `mlx` tensor.
+#' @param predictions Predicted values as an mlx array.
+#' @param targets Target values as an mlx array.
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
-#' @return An `mlx` tensor containing the loss.
+#' @return An mlx array containing the loss.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.mse_loss}
 #' @export
 #' @examples
@@ -31,10 +31,10 @@ mlx_mse_loss <- function(predictions, targets, reduction = c("mean", "sum", "non
 #'
 #' Computes the mean absolute error between predictions and targets.
 #'
-#' @param predictions Predicted values as an `mlx` tensor.
-#' @param targets Target values as an `mlx` tensor.
+#' @param predictions Predicted values as an mlx array.
+#' @param targets Target values as an mlx array.
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
-#' @return An `mlx` tensor containing the loss.
+#' @return An mlx array containing the loss.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.l1_loss}
 #' @export
 #' @examples
@@ -60,10 +60,10 @@ mlx_l1_loss <- function(predictions, targets, reduction = c("mean", "sum", "none
 #'
 #' Computes binary cross-entropy loss between predictions and binary targets.
 #'
-#' @param predictions Predicted probabilities as an `mlx` tensor (values in \[0,1\]).
-#' @param targets Binary target values as an `mlx` tensor (0 or 1).
+#' @param predictions Predicted probabilities as an mlx array (values in \[0,1\]).
+#' @param targets Binary target values as an mlx array (0 or 1).
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
-#' @return An `mlx` tensor containing the loss.
+#' @return An mlx array containing the loss.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.binary_cross_entropy}
 #' @export
 #' @examples
@@ -94,10 +94,10 @@ mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean",
 #'
 #' Computes cross-entropy loss for multi-class classification.
 #'
-#' @param logits Unnormalized predictions (logits) as an `mlx` tensor.
-#' @param targets Target class indices as an `mlx` tensor or integer vector.
+#' @param logits Unnormalized predictions (logits) as an mlx array.
+#' @param targets Target class indices as an mlx array or integer vector.
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
-#' @return An `mlx` tensor containing the loss.
+#' @return An mlx array containing the loss.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.cross_entropy}
 #' @export
 #' @examples

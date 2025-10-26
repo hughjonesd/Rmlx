@@ -13,8 +13,7 @@ chol2inv(x, size = NCOL(x), ...)
 \method{chol2inv}{mlx}(x, size = NCOL(x), ...)
 }
 \arguments{
-\item{x}{An \code{mlx} matrix containing the Cholesky decomposition (upper triangular).
-This should be the result of \code{chol()}.}
+\item{x}{An mlx matrix (2-dimensional array).}
 
 \item{size}{Ignored; included for compatibility with base R.}
 
@@ -25,7 +24,8 @@ The inverse of the original matrix (before Cholesky decomposition).
 }
 \description{
 Compute the inverse of a symmetric, positive definite matrix from its
-Cholesky decomposition.
+Cholesky decomposition. The input \code{x} should be an upper triangular matrix
+from \code{chol()}.
 }
 \examples{
 A <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))

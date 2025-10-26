@@ -2,13 +2,13 @@
 % Please edit documentation in R/random.R
 \name{mlx_rand_permutation}
 \alias{mlx_rand_permutation}
-\title{Generate random permutations on MLX tensors}
+\title{Generate random permutations on mlx arrays}
 \usage{
 mlx_rand_permutation(x, axis = 0L, device = mlx_default_device())
 }
 \arguments{
 \item{x}{Either an integer n (to generate a permutation of 0:(n-1)), or an
-\code{mlx} tensor or matrix to permute.}
+mlx array or matrix to permute.}
 
 \item{axis}{The axis along which to permute when x is an array. Default is 0
 (permute rows).}
@@ -16,7 +16,7 @@ mlx_rand_permutation(x, axis = 0L, device = mlx_default_device())
 \item{device}{Target device ("gpu" or "cpu"). Only used when x is an integer.}
 }
 \value{
-An \code{mlx} tensor containing the random permutation.
+An mlx array containing the random permutation.
 }
 \description{
 Generate a random permutation of integers or permute the entries of an array

@@ -1,9 +1,9 @@
-#' Row-bind MLX tensors
+#' Row-bind mlx arrays
 #'
-#' @param ... Objects to bind. MLX tensors are kept in MLX; other inputs are
+#' @param ... Objects to bind. mlx arrays are kept in MLX; other inputs are
 #'   coerced via `as_mlx()`.
 #' @param deparse.level Compatibility argument accepted for S3 dispatch; ignored.
-#' @return An `mlx` tensor stacked along the first axis.
+#' @return An mlx array stacked along the first axis.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
 #' @export
 #' @examples
@@ -20,10 +20,10 @@ rbind.mlx <- function(..., deparse.level = 1) {
   new_mlx(ptr, new_dim, ref$dtype, ref$device)
 }
 
-#' Column-bind MLX tensors
+#' Column-bind mlx arrays
 #'
 #' @inheritParams rbind.mlx
-#' @return An `mlx` tensor stacked along the second axis.
+#' @return An mlx array stacked along the second axis.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
 #' @export
 #' @examples

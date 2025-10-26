@@ -3,7 +3,7 @@
 #' @param in_features Number of input features.
 #' @param out_features Number of output features.
 #' @param bias Should a bias term be included?
-#' @param device Device for the parameters.
+#' @inheritParams common_params
 #' @return An object of class `mlx_module`.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Linear}
 #' @importFrom stats rnorm
@@ -127,8 +127,8 @@ mlx_sequential <- function(...) {
 #' Forward pass utility
 #'
 #' @param module An `mlx_module`.
-#' @param x Input tensor.
-#' @return Output tensor.
+#' @inheritParams mlx_array_required
+#' @return Output array.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module}
 #' @export
 #' @examples
@@ -168,7 +168,7 @@ mlx_parameters <- function(module) {
 
 #' Wrap an environment entry as a learnable parameter
 #'
-#' @param env Environment storing tensors.
+#' @param env Environment storing arrays.
 #' @param name Field name within the environment.
 #' @return An object of class `mlx_param`.
 #' @noRd
@@ -179,10 +179,10 @@ mlx_param <- function(env, name) {
   )
 }
 
-#' Retrieve parameter tensors
+#' Retrieve parameter arrays
 #'
 #' @param params A list of `mlx_param`.
-#' @return List of `mlx` tensors.
+#' @return List of mlx arrays.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.parameters}
 #' @export
 #' @examples
@@ -196,10 +196,10 @@ mlx_param_values <- function(params) {
   })
 }
 
-#' Assign tensors back to parameters
+#' Assign arrays back to parameters
 #'
 #' @param params A list of `mlx_param`.
-#' @param values A list of tensors.
+#' @param values A list of arrays.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.update}
 #' @export
 #' @examples
@@ -407,7 +407,7 @@ mlx_dropout <- function(p = 0.5) {
 #'
 #' @param normalized_shape Size of the feature dimension to normalize.
 #' @param eps Small constant for numerical stability (default: 1e-5).
-#' @param device Device for parameters.
+#' @inheritParams common_params
 #' @return An `mlx_module` applying layer normalization.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LayerNorm}
 #' @export
@@ -463,7 +463,7 @@ mlx_layer_norm <- function(normalized_shape, eps = 1e-5, device = mlx_default_de
 #' @param num_features Number of feature channels.
 #' @param eps Small constant for numerical stability (default: 1e-5).
 #' @param momentum Momentum for running statistics (default: 0.1).
-#' @param device Device for parameters.
+#' @inheritParams common_params
 #' @return An `mlx_module` applying batch normalization.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.BatchNorm}
 #' @export
@@ -540,7 +540,7 @@ mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1, device = ml
 #'
 #' @param num_embeddings Size of vocabulary.
 #' @param embedding_dim Dimension of embedding vectors.
-#' @param device Device for parameters.
+#' @inheritParams common_params
 #' @return An `mlx_module` for token embeddings.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Embedding}
 #' @export
@@ -610,14 +610,11 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
 #'
 #' Applies a 1D convolution over the input signal.
 #'
-#' @param input Input array of shape `(N, L, C_in)` where N is batch size,
-#'   L is sequence length, and C_in is number of input channels
-#' @param weight Weight tensor of shape `(C_out, kernel_size, C_in)`
-#' @param stride Stride of the convolution (default: 1)
-#' @param padding Amount of zero padding (default: 0)
-#' @param dilation Spacing between kernel elements (default: 1)
-#' @param groups Number of blocked connections (default: 1)
-#' @param device Device to use for computation
+#' Input has shape `(N, L, C_in)` where N is batch size, L is sequence length,
+#' and C_in is number of input channels. Weight has shape `(C_out, kernel_size, C_in)`.
+#'
+#' @inheritParams conv_params
+#' @inheritParams common_params
 #' @return Convolved output array
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv1d.html}
 #' @export
@@ -636,17 +633,12 @@ mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
 #'
 #' Applies a 2D convolution over the input image.
 #'
-#' @param input Input array of shape `(N, H, W, C_in)` where N is batch size,
-#'   H and W are height and width, and C_in is number of input channels
-#' @param weight Weight tensor of shape `(C_out, kernel_h, kernel_w, C_in)`
-#' @param stride Stride of the convolution. Can be a single integer or a vector of
-#'   length 2 for (stride_h, stride_w). Default: c(1, 1)
-#' @param padding Amount of zero padding. Can be a single integer or a vector of
-#'   length 2 for (padding_h, padding_w). Default: c(0, 0)
-#' @param dilation Spacing between kernel elements. Can be a single integer or a vector of
-#'   length 2 for (dilation_h, dilation_w). Default: c(1, 1)
-#' @param groups Number of blocked connections from input to output channels (default: 1)
-#' @param device Device to use for computation
+#' Input has shape `(N, H, W, C_in)` where N is batch size, H and W are height
+#' and width, and C_in is number of input channels. Weight has shape
+#' `(C_out, kernel_h, kernel_w, C_in)`.
+#'
+#' @inheritParams conv_params
+#' @inheritParams common_params
 #' @return Convolved output array
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv2d.html}
 #' @export
@@ -676,17 +668,12 @@ mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
 #'
 #' Applies a 3D convolution over the input volume.
 #'
-#' @param input Input array of shape `(N, D, H, W, C_in)` where N is batch size,
-#'   D, H, W are depth, height and width, and C_in is number of input channels
-#' @param weight Weight tensor of shape `(C_out, kernel_d, kernel_h, kernel_w, C_in)`
-#' @param stride Stride of the convolution. Can be a single integer or a vector of
-#'   length 3 for (stride_d, stride_h, stride_w). Default: c(1, 1, 1)
-#' @param padding Amount of zero padding. Can be a single integer or a vector of
-#'   length 3 for (padding_d, padding_h, padding_w). Default: c(0, 0, 0)
-#' @param dilation Spacing between kernel elements. Can be a single integer or a vector of
-#'   length 3 for (dilation_d, dilation_h, dilation_w). Default: c(1, 1, 1)
-#' @param groups Number of blocked connections from input to output channels (default: 1)
-#' @param device Device to use for computation
+#' Input has shape `(N, D, H, W, C_in)` where N is batch size, D, H, W are depth,
+#' height and width, and C_in is number of input channels. Weight has shape
+#' `(C_out, kernel_d, kernel_h, kernel_w, C_in)`.
+#'
+#' @inheritParams conv_params
+#' @inheritParams common_params
 #' @return Convolved output array
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv3d.html}
 #' @export
@@ -712,14 +699,12 @@ mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L
 #' Applies a 1D transposed convolution (also called deconvolution) over an input signal.
 #' Transposed convolutions are used to upsample the spatial dimensions of the input.
 #'
-#' @param input An mlx array with shape `(batch, length, in_channels)` for 'NWC' layout
-#' @param weight An mlx array with shape `(out_channels, kernel_size, in_channels)`
-#' @param stride Stride of the convolution. Default: 1
-#' @param padding Amount of zero padding. Default: 0
-#' @param dilation Dilation factor for the kernel. Default: 1
+#' Input has shape `(batch, length, in_channels)` for 'NWC' layout. Weight has shape
+#' `(out_channels, kernel_size, in_channels)`.
+#'
+#' @inheritParams conv_params
 #' @param output_padding Additional size added to output shape. Default: 0
-#' @param groups Number of blocked connections from input to output channels. Default: 1
-#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#' @inheritParams common_params
 #'
 #' @return An mlx array with the transposed convolution result
 #' @seealso [mlx_conv1d()], [mlx_conv_transpose2d()], [mlx_conv_transpose3d()]
@@ -743,14 +728,13 @@ mlx_conv_transpose1d <- function(input, weight, stride = 1L, padding = 0L,
 #' Applies a 2D transposed convolution (also called deconvolution) over an input signal.
 #' Transposed convolutions are commonly used in image generation and upsampling tasks.
 #'
-#' @param input An mlx array with shape `(batch, height, width, in_channels)` for 'NHWC' layout
-#' @param weight An mlx array with shape `(out_channels, kernel_h, kernel_w, in_channels)`
-#' @param stride Stride of the convolution. Can be a scalar or length-2 vector. Default: c(1, 1)
-#' @param padding Amount of zero padding. Can be a scalar or length-2 vector. Default: c(0, 0)
-#' @param dilation Dilation factor for the kernel. Can be a scalar or length-2 vector. Default: c(1, 1)
-#' @param output_padding Additional size added to output shape. Can be a scalar or length-2 vector. Default: c(0, 0)
-#' @param groups Number of blocked connections from input to output channels. Default: 1
-#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#' Input has shape `(batch, height, width, in_channels)` for 'NHWC' layout. Weight has
+#' shape `(out_channels, kernel_h, kernel_w, in_channels)`.
+#'
+#' @inheritParams conv_params
+#' @param output_padding Additional size added to output shape. Can be a scalar or
+#'   length-2 vector. Default: c(0, 0)
+#' @inheritParams common_params
 #'
 #' @return An mlx array with the transposed convolution result
 #' @seealso [mlx_conv2d()], [mlx_conv_transpose1d()], [mlx_conv_transpose3d()]
@@ -781,14 +765,13 @@ mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
 #' Applies a 3D transposed convolution (also called deconvolution) over an input signal.
 #' Useful for 3D volumetric data upsampling, such as in medical imaging or video generation.
 #'
-#' @param input An mlx array with shape `(batch, depth, height, width, in_channels)` for 'NDHWC' layout
-#' @param weight An mlx array with shape `(out_channels, kernel_d, kernel_h, kernel_w, in_channels)`
-#' @param stride Stride of the convolution. Can be a scalar or length-3 vector. Default: c(1, 1, 1)
-#' @param padding Amount of zero padding. Can be a scalar or length-3 vector. Default: c(0, 0, 0)
-#' @param dilation Dilation factor for the kernel. Can be a scalar or length-3 vector. Default: c(1, 1, 1)
-#' @param output_padding Additional size added to output shape. Can be a scalar or length-3 vector. Default: c(0, 0, 0)
-#' @param groups Number of blocked connections from input to output channels. Default: 1
-#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#' Input has shape `(batch, depth, height, width, in_channels)` for 'NDHWC' layout.
+#' Weight has shape `(out_channels, kernel_d, kernel_h, kernel_w, in_channels)`.
+#'
+#' @inheritParams conv_params
+#' @param output_padding Additional size added to output shape. Can be a scalar or
+#'   length-3 vector. Default: c(0, 0, 0)
+#' @inheritParams common_params
 #'
 #' @return An mlx array with the transposed convolution result
 #' @seealso [mlx_conv3d()], [mlx_conv_transpose1d()], [mlx_conv_transpose2d()]
@@ -825,7 +808,7 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
 #' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
 #' @param mode The quantization mode: "affine" (with scales and biases) or "mxfp4"
 #'   (4-bit floating point with group_size=32). Default: "affine"
-#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#' @inheritParams common_params
 #'
 #' @return A list containing:
 #'   \item{w_q}{The quantized weight matrix (packed as uint32)}
@@ -877,7 +860,7 @@ mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
 #' @param group_size The group size used during quantization. Default: 64
 #' @param bits The number of bits used during quantization. Default: 4
 #' @param mode The quantization mode used: "affine" or "mxfp4". Default: "affine"
-#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#' @inheritParams common_params
 #'
 #' @return An mlx array with the dequantized (approximate) floating-point weights
 #'
@@ -917,7 +900,7 @@ mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L
 #' is essential for efficient inference with quantized models, significantly reducing
 #' memory usage and computation time while maintaining reasonable accuracy.
 #'
-#' @param x An mlx array (the input matrix)
+#' @inheritParams mlx_array_required
 #' @param w An mlx array. Either:
 #'   \itemize{
 #'     \item A quantized weight matrix (uint32) from [mlx_quantize()], or
@@ -931,7 +914,7 @@ mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L
 #' @param group_size The group size for quantization. Default: 64
 #' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
 #' @param mode The quantization mode, either "affine" or "mxfp4". Default: "affine"
-#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#' @inheritParams common_params
 #'
 #' @return An mlx array with the result of the quantized matrix multiplication
 #'
@@ -999,7 +982,7 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
 #' This is useful for combining embedding lookups with quantized linear transformations,
 #' a common pattern in transformer models.
 #'
-#' @param x An mlx array (the input matrix)
+#' @inheritParams mlx_array_required
 #' @param w An mlx array (the quantized weight matrix)
 #' @param scales An mlx array (the quantization scales)
 #' @param biases An optional mlx array (biases to add). Default: NULL
@@ -1010,7 +993,7 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
 #' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
 #' @param mode The quantization mode, either "affine" or "mxfp4". Default: "affine"
 #' @param sorted_indices Whether the indices are sorted (enables optimizations). Default: FALSE
-#' @param device Device to perform computation on. Default: `mlx_default_device()`
+#' @inheritParams common_params
 #'
 #' @return An mlx array with the result of the gather-based quantized matrix multiplication
 #'

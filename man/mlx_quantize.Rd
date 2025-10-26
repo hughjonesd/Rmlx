@@ -23,7 +23,7 @@ accuracy but slightly higher memory. Default: 64}
 \item{mode}{The quantization mode: "affine" (with scales and biases) or "mxfp4"
 (4-bit floating point with group_size=32). Default: "affine"}
 
-\item{device}{Device to perform computation on. Default: \code{mlx_default_device()}}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
 A list containing:

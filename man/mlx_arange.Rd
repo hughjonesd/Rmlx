@@ -21,13 +21,14 @@ mlx_arange(
 
 \item{dtype}{MLX dtype (\code{"float32"} or \code{"float64"}).}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-A 1D \code{mlx} tensor.
+A 1D mlx array.
 }
 \description{
-\code{mlx_arange()} mirrors \code{base::seq()} with MLX tensors: it creates evenly spaced values
+\code{mlx_arange()} mirrors \code{base::seq()} with mlx arrays: it creates evenly spaced values
 starting at \code{start} (default \code{0}), stepping by \code{step} (default \code{1}), and stopping before \code{stop}.
 }
 \examples{

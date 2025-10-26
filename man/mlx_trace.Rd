@@ -2,19 +2,19 @@
 % Please edit documentation in R/linalg_adv.R
 \name{mlx_trace}
 \alias{mlx_trace}
-\title{Matrix trace for MLX tensors}
+\title{Matrix trace for mlx arrays}
 \usage{
 mlx_trace(x, offset = 0L, axis1 = 1L, axis2 = 2L)
 }
 \arguments{
-\item{x}{An \code{mlx} array.}
+\item{x}{An mlx array.}
 
 \item{offset}{Offset of the diagonal (0 for main diagonal, positive for above, negative for below).}
 
 \item{axis1, axis2}{Axes along which the diagonals are taken (1-indexed, default 1 and 2).}
 }
 \value{
-An \code{mlx} scalar or array containing the trace.
+An mlx scalar or array containing the trace.
 }
 \description{
 Computes the sum of the diagonal elements of a 2D array, or the sum along

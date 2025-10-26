@@ -45,10 +45,10 @@
 #' @return An object of class `mlx`
 #' @details Apple MLX executes in single precision. Numeric inputs are stored in
 #'   `float32` regardless of the requested dtype. Logical inputs are mapped to
-#'   MLX boolean tensors. Complex inputs are stored as `complex64` (float32 real
+#'   MLX boolean arrays. Complex inputs are stored as `complex64` (float32 real
 #'   and imaginary parts). Asking for `dtype = "float64"` emits a warning and the
 #'   input is downcast to `float32`. If you require double precision arithmetic,
-#'   use base R arrays instead of `mlx` objects.
+#'   use base R arrays instead of mlx objects.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}
 #' @export
 #' @examples
@@ -99,7 +99,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64", "uint
 
 #' Force evaluation of lazy MLX operations
 #'
-#' @param x An `mlx` object
+#' @inheritParams mlx_array_required
 #' @return The input object (invisibly)
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eval}
 #' @export
@@ -114,7 +114,7 @@ mlx_eval <- function(x) {
 
 #' Convert MLX array to R matrix/array
 #'
-#' @param x An `mlx` object
+#' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
 #' @return A matrix or array (numeric or logical depending on dtype)
 #' @export
@@ -134,7 +134,7 @@ as.matrix.mlx <- function(x, ...) {
 
 #' Convert MLX array to R array
 #'
-#' @param x An `mlx` object
+#' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
 #' @return A numeric array
 #' @export
@@ -147,7 +147,7 @@ as.array.mlx <- function(x, ...) {
 
 #' Convert MLX array to R vector
 #'
-#' @param x An `mlx` object
+#' @inheritParams mlx_array_required
 #' @param mode Character string specifying the mode (ignored)
 #' @return A numeric vector
 #' @export

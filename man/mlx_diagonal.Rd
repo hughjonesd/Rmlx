@@ -3,14 +3,14 @@
 \name{diag.mlx}
 \alias{diag.mlx}
 \alias{mlx_diagonal}
-\title{Extract diagonal or construct diagonal matrix for MLX tensors}
+\title{Extract diagonal or construct diagonal matrix for mlx arrays}
 \usage{
 \method{diag}{mlx}(x, nrow, ncol, names = TRUE)
 
 mlx_diagonal(x, offset = 0L, axis1 = 1L, axis2 = 2L)
 }
 \arguments{
-\item{x}{An \code{mlx} array. If 1D, creates a diagonal matrix. If 2D or higher, extracts the diagonal.}
+\item{x}{An mlx array. If 1D, creates a diagonal matrix. If 2D or higher, extracts the diagonal.}
 
 \item{names}{Unused.
 
@@ -22,7 +22,7 @@ as \code{\link[base:diag]{base::diag()}}.}
 \item{axis1, axis2}{For multi-dimensional arrays, which axes define the 2D planes (1-indexed).}
 }
 \value{
-An \code{mlx} tensor.
+An mlx array.
 }
 \description{
 Extract a diagonal from a matrix or construct a diagonal matrix from a vector.

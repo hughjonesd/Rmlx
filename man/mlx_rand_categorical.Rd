@@ -2,12 +2,12 @@
 % Please edit documentation in R/random.R
 \name{mlx_rand_categorical}
 \alias{mlx_rand_categorical}
-\title{Sample from a categorical distribution on MLX tensors}
+\title{Sample from a categorical distribution on mlx arrays}
 \usage{
 mlx_rand_categorical(logits, axis = -1L, num_samples = 1L)
 }
 \arguments{
-\item{logits}{A matrix or \code{mlx} tensor of log-probabilities. The values don't
+\item{logits}{A matrix or mlx array of log-probabilities. The values don't
 need to be normalized (the function applies softmax internally). For a single
 distribution over K classes, use a 1×K matrix. For multiple independent
 distributions, use an N×K matrix where each row is a distribution.}
@@ -18,7 +18,7 @@ the class dimension).}
 \item{num_samples}{Number of samples to draw from each distribution.}
 }
 \value{
-An \code{mlx} tensor of integer indices (0-indexed) sampled from the
+An mlx array of integer indices (0-indexed) sampled from the
 categorical distributions.
 }
 \description{

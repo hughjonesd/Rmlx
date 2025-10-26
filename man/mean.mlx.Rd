@@ -7,12 +7,12 @@
 \method{mean}{mlx}(x, ...)
 }
 \arguments{
-\item{x}{An \code{mlx} object}
+\item{x}{An mlx array.}
 
 \item{...}{Additional arguments (ignored)}
 }
 \value{
-An \code{mlx} scalar
+An mlx scalar
 }
 \description{
 Mean of MLX array elements

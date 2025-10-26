@@ -7,14 +7,14 @@
 mlx_l1_loss(predictions, targets, reduction = c("mean", "sum", "none"))
 }
 \arguments{
-\item{predictions}{Predicted values as an \code{mlx} tensor.}
+\item{predictions}{Predicted values as an mlx array.}
 
-\item{targets}{Target values as an \code{mlx} tensor.}
+\item{targets}{Target values as an mlx array.}
 
 \item{reduction}{Type of reduction: "mean" (default), "sum", or "none".}
 }
 \value{
-An \code{mlx} tensor containing the loss.
+An mlx array containing the loss.
 }
 \description{
 Computes the mean absolute error between predictions and targets.

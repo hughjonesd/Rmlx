@@ -21,10 +21,11 @@ mlx_linspace(
 
 \item{dtype}{MLX dtype (\code{"float32"} or \code{"float64"}).}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-A 1D \code{mlx} tensor.
+A 1D mlx array.
 }
 \description{
 \code{mlx_linspace()} creates \code{num} evenly spaced values from \code{start} to \code{stop}, inclusive.

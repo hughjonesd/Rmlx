@@ -2,20 +2,20 @@
 % Please edit documentation in R/linalg_adv.R
 \name{mlx_eigvalsh}
 \alias{mlx_eigvalsh}
-\title{Eigenvalues of Hermitian MLX tensors}
+\title{Eigenvalues of Hermitian mlx arrays}
 \usage{
 mlx_eigvalsh(x, uplo = c("L", "U"))
 }
 \arguments{
-\item{x}{An \code{mlx} square matrix.}
+\item{x}{An mlx matrix (2-dimensional array).}
 
 \item{uplo}{Character string indicating which triangle to use ("L" or "U").}
 }
 \value{
-An \code{mlx} tensor containing eigenvalues.
+An mlx array containing eigenvalues.
 }
 \description{
-Eigenvalues of Hermitian MLX tensors
+Eigenvalues of Hermitian mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))

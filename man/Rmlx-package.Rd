@@ -41,7 +41,7 @@ executed until:
 
 \section{Device Management}{
 Use \code{\link[=mlx_default_device]{mlx_default_device()}} to control whether arrays are created
-on GPU (default) or CPU. All \code{mlx} arrays are stored in \code{float32}
+on GPU (default) or CPU. All mlx arrays are stored in \code{float32}
 regardless of device. Use base R arrays if you require \code{float64} math.
 }
 

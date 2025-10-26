@@ -7,19 +7,19 @@
 mlx_where(condition, x, y)
 }
 \arguments{
-\item{condition}{Logical \code{mlx} tensor (non-zero values are treated as \code{TRUE}).}
+\item{condition}{Logical mlx array (non-zero values are treated as \code{TRUE}).}
 
 \item{x, y}{Tensors broadcastable to the shape of \code{condition}.}
 }
 \value{
-An \code{mlx} tensor where elements are drawn from \code{x} when
+An mlx array where elements are drawn from \code{x} when
 \code{condition} is \code{TRUE}, otherwise from \code{y}.
 }
 \description{
 Elementwise conditional selection
 }
 \details{
-Behaves like \code{\link[=ifelse]{ifelse()}} for tensors, but evaluates both branches.
+Behaves like \code{\link[=ifelse]{ifelse()}} for arrays, but evaluates both branches.
 }
 \examples{
 cond <- as_mlx(matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2))

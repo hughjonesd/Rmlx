@@ -22,10 +22,10 @@ mlx_isclose(
 
 \item{equal_nan}{If \code{TRUE}, NaN values are considered equal (default: \code{FALSE})}
 
-\item{device}{Device to use for computation}
+\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} array of booleans with element-wise comparison results
+An mlx array of booleans with element-wise comparison results
 }
 \description{
 Returns a boolean array indicating which elements of two arrays are close

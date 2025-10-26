@@ -2,26 +2,27 @@
 % Please edit documentation in R/create.R
 \name{mlx_full}
 \alias{mlx_full}
-\title{Fill an MLX tensor with a constant value}
+\title{Fill an mlx array with a constant value}
 \usage{
 mlx_full(dim, value, dtype = NULL, device = mlx_default_device())
 }
 \arguments{
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
-\item{value}{Scalar value used to fill the tensor. Numeric, logical, or complex.}
+\item{value}{Scalar value used to fill the array. Numeric, logical, or complex.}
 
 \item{dtype}{MLX dtype (\code{"float32"}, \code{"float64"}, \code{"bool"}, or \code{"complex64"}).
 If omitted, defaults to \code{"complex64"} for complex scalars, \code{"bool"} for logical scalars,
 and \code{"float32"} otherwise.}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} tensor filled with the supplied value.
+An mlx array filled with the supplied value.
 }
 \description{
-Fill an MLX tensor with a constant value
+Fill an mlx array with a constant value
 }
 \examples{
 filled <- mlx_full(c(2, 2), 3.14)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/random.R
 \name{mlx_rand_uniform}
 \alias{mlx_rand_uniform}
-\title{Sample from a uniform distribution on MLX tensors}
+\title{Sample from a uniform distribution on mlx arrays}
 \usage{
 mlx_rand_uniform(
   dim,
@@ -13,7 +13,7 @@ mlx_rand_uniform(
 )
 }
 \arguments{
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
 \item{min}{Lower bound for the uniform distribution.}
 
@@ -21,13 +21,14 @@ mlx_rand_uniform(
 
 \item{dtype}{Desired MLX dtype ("float32" or "float64").}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} tensor whose entries are sampled uniformly.
+An mlx array whose entries are sampled uniformly.
 }
 \description{
-Sample from a uniform distribution on MLX tensors
+Sample from a uniform distribution on mlx arrays
 }
 \examples{
 noise <- mlx_rand_uniform(c(2, 2), min = -1, max = 1)

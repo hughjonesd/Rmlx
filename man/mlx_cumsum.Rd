@@ -10,7 +10,7 @@ mlx_cumsum(x, axis = NULL, reverse = FALSE, inclusive = TRUE)
 mlx_cumprod(x, axis = NULL, reverse = FALSE, inclusive = TRUE)
 }
 \arguments{
-\item{x}{An \code{mlx} array.}
+\item{x}{An mlx array.}
 
 \item{axis}{Optional axis along which to compute cumulative operation.
 If \code{NULL} (default), the array is flattened first.}
@@ -21,7 +21,7 @@ If \code{NULL} (default), the array is flattened first.}
 If \code{FALSE}, the cumulative operation is exclusive (starts from identity element).}
 }
 \value{
-An \code{mlx} array with cumulative sums or products.
+An mlx array with cumulative sums or products.
 }
 \description{
 Compute cumulative sums or products along an axis.

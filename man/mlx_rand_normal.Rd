@@ -2,7 +2,7 @@
 % Please edit documentation in R/random.R
 \name{mlx_rand_normal}
 \alias{mlx_rand_normal}
-\title{Sample from a normal distribution on MLX tensors}
+\title{Sample from a normal distribution on mlx arrays}
 \usage{
 mlx_rand_normal(
   dim,
@@ -13,7 +13,7 @@ mlx_rand_normal(
 )
 }
 \arguments{
-\item{dim}{Integer vector giving the tensor shape.}
+\item{dim}{Integer vector specifying the array shape/dimensions.}
 
 \item{mean}{Mean of the normal distribution.}
 
@@ -21,13 +21,14 @@ mlx_rand_normal(
 
 \item{dtype}{Desired MLX dtype ("float32" or "float64").}
 
-\item{device}{Target device ("gpu" or "cpu").}
+\item{device}{Character string specifying the device for computation.
+Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 }
 \value{
-An \code{mlx} tensor with normally distributed entries.
+An mlx array with normally distributed entries.
 }
 \description{
-Sample from a normal distribution on MLX tensors
+Sample from a normal distribution on mlx arrays
 }
 \examples{
 weights <- mlx_rand_normal(c(3, 3), mean = 0, sd = 0.1)
