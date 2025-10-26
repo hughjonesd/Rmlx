@@ -91,20 +91,20 @@ brew install cmake
 ```
 
 ### Linux
-- BLAS and LAPACK libraries (required)
+- BLAS, LAPACK, and LAPACKE libraries (required)
 - CUDA Toolkit 12.0 or later (optional, for GPU acceleration)
 - NVIDIA GPU with compute capability 7.0+ (for CUDA)
 
 Install requirements (Ubuntu/Debian):
 ```bash
 sudo apt-get update
-sudo apt-get install cmake build-essential libblas-dev liblapack-dev
+sudo apt-get install cmake build-essential libblas-dev liblapack-dev liblapacke-dev
 
 # For CUDA support (optional)
 # Download from https://developer.nvidia.com/cuda-downloads
 ```
 
-**Note**: BLAS and LAPACK are always required on Linux, even for CPU-only builds.
+**Note**: BLAS, LAPACK, and LAPACKE are always required on Linux, even for CPU-only builds.
 
 
 Examples
