@@ -90,20 +90,21 @@ xcode-select --install
 brew install cmake
 ```
 
-### Linux (for CUDA backend)
+### Linux
+- BLAS and LAPACK libraries (required)
 - CUDA Toolkit 12.0 or later (optional, for GPU acceleration)
-- NVIDIA GPU with compute capability 7.0+
+- NVIDIA GPU with compute capability 7.0+ (for CUDA)
 
 Install requirements (Ubuntu/Debian):
 ```bash
 sudo apt-get update
-sudo apt-get install cmake build-essential
+sudo apt-get install cmake build-essential libblas-dev liblapack-dev
 
 # For CUDA support (optional)
 # Download from https://developer.nvidia.com/cuda-downloads
 ```
 
-For CPU-only builds on Linux, CUDA is not required.
+**Note**: BLAS and LAPACK are always required on Linux, even for CPU-only builds.
 
 
 Examples
