@@ -7,7 +7,7 @@
 mlx_logcumsumexp(x, axis = NULL, reverse = FALSE, inclusive = TRUE)
 }
 \arguments{
-\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Optional axis (single integer) to operate over.}
 

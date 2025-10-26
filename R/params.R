@@ -1,14 +1,20 @@
 #' Common Parameter Documentation
 #'
 #' @param device Device for computation: `"gpu"` or `"cpu"`. Default: `mlx_default_device()`.
-#' @param dtype Data type string (e.g., `"float32"`, `"int32"`, `"bool"`).
-#'   Supported types vary by function.
-#' @param axis Axis/axes to operate on (1-indexed). Negative values count from
+#' @param dtype Data type string. Supported types include:
+#'   - Floating point: `"float32"`, `"float64"`
+#'   - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`, `"uint32"`, `"uint64"`
+#'   - Other: `"bool"`, `"complex64"`
+#'
+#'   Not all functions support all types. See individual function documentation.
+#' @param axis Axis or axes to operate on (1-indexed). Negative values count from
 #'   the end. `NULL` operates on all axes or the entire array.
-#' @param keepdims If `TRUE`, keep reduced axes as size-1 dimensions
-#'   (`keepdims = TRUE` is equivalent to `drop = FALSE` in base R).
-#' @param stream MLX stream for asynchronous execution (rarely needed).
-#' @param x An mlx array, or an R array/matrix/vector converted via [as_mlx()].
+#' @param keepdims If `TRUE`, keep reduced axes as size-1 dimensions.
+#'   Equivalent to `drop = FALSE` in base R.
+#' @param drop If `TRUE` (default), drop dimensions of length 1. If `FALSE`,
+#'   retain all dimensions.
+#' @param dim Integer vector specifying array dimensions (shape).
+#' @param x An mlx array, or an R array/matrix/vector that will be converted via [as_mlx()].
 #'
 #' @name common_params
 #' @keywords internal

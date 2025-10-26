@@ -302,7 +302,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @export
 Summary.mlx <- function(x, ..., na.rm = FALSE) {
   op <- .Generic
-  if (!(op %in% c("sum", "prod", "all", "any"))) {
+  if (!(op %in% c("sum", "prod", "min", "max", "all", "any"))) {
     stop("Operation not implemented for mlx objects: ", op, call. = FALSE)
   }
   if (na.rm) {
@@ -326,6 +326,8 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
     return(.mlx_reduce_dispatch(args[[1L]], switch(op,
       sum = "sum",
       prod = "prod",
+      min = "min",
+      max = "max",
       all = "all",
       any = "any"
     ), axis = axis, drop = drop_val))
@@ -336,6 +338,8 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
     .mlx_reduce(obj_mlx, switch(op,
       sum = "sum",
       prod = "prod",
+      min = "min",
+      max = "max",
       all = "all",
       any = "any"
     ))
@@ -348,6 +352,8 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
       result <- switch(op,
         sum = result + scalar,
         prod = result * scalar,
+        min = mlx_minimum(result, scalar),
+        max = mlx_maximum(result, scalar),
         all = result & scalar,
         any = result | scalar
       )

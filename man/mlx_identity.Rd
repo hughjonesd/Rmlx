@@ -9,7 +9,9 @@ mlx_identity(n, dtype = c("float32", "float64"), device = mlx_default_device())
 \arguments{
 \item{n}{Size of the square matrix.}
 
-\item{dtype}{MLX dtype to use (\code{"float32"} or \code{"float64"}).}
+\item{dtype}{MLX dtype to use. One of \code{"float32"}, \code{"float64"}, \code{"int8"},
+\code{"int16"}, \code{"int32"}, \code{"int64"}, \code{"uint8"}, \code{"uint16"}, \code{"uint32"},
+\code{"uint64"}, \code{"bool"}, or \code{"complex64"}.}
 
 \item{device}{Character string specifying the device for computation.
 Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}

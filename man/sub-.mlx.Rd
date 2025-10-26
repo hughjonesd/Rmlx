@@ -7,7 +7,7 @@
 \method{[}{mlx}(x, ..., drop = FALSE)
 }
 \arguments{
-\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{...}{Indices for each dimension. Provide one per axis; omitted indices
 select the full extent. Logical indices recycle to the dimension length.}

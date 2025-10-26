@@ -4,12 +4,19 @@
 \alias{mlx_zeros}
 \title{Create arrays of zeros on MLX devices}
 \usage{
-mlx_zeros(dim, dtype = c("float32", "float64"), device = mlx_default_device())
+mlx_zeros(
+  dim,
+  dtype = c("float32", "float64", "int8", "int16", "int32", "int64", "uint8", "uint16",
+    "uint32", "uint64", "bool", "complex64"),
+  device = mlx_default_device()
+)
 }
 \arguments{
 \item{dim}{Integer vector specifying the array shape/dimensions.}
 
-\item{dtype}{MLX dtype to use (\code{"float32"} or \code{"float64"}).}
+\item{dtype}{MLX dtype to use. One of \code{"float32"}, \code{"float64"}, \code{"int8"},
+\code{"int16"}, \code{"int32"}, \code{"int64"}, \code{"uint8"}, \code{"uint16"}, \code{"uint32"},
+\code{"uint64"}, \code{"bool"}, or \code{"complex64"}.}
 
 \item{device}{Character string specifying the device for computation.
 Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
@@ -22,6 +29,7 @@ Create arrays of zeros on MLX devices
 }
 \examples{
 zeros <- mlx_zeros(c(2, 3))
+zeros_int <- mlx_zeros(c(2, 3), dtype = "int32")
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros}

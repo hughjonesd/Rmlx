@@ -25,7 +25,7 @@ mlx_var(x, axis = NULL, drop = TRUE, ddof = 0L)
 mlx_std(x, axis = NULL, drop = TRUE, ddof = 0L)
 }
 \arguments{
-\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Optional integer vector of axes (1-indexed) to reduce.
 When \code{NULL}, the reduction is performed over all elements.}

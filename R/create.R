@@ -1,14 +1,18 @@
 #' Create arrays of zeros on MLX devices
 #'
 #' @inheritParams mlx_creation_params
-#' @param dtype MLX dtype to use (`"float32"` or `"float64"`).
+#' @param dtype MLX dtype to use. One of `"float32"`, `"float64"`, `"int8"`,
+#'   `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`, `"uint32"`,
+#'   `"uint64"`, `"bool"`, or `"complex64"`.
 #' @return An mlx array filled with zeros.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros}
 #' @export
 #' @examples
 #' zeros <- mlx_zeros(c(2, 3))
+#' zeros_int <- mlx_zeros(c(2, 3), dtype = "int32")
 mlx_zeros <- function(dim,
-                      dtype = c("float32", "float64"),
+                      dtype = c("float32", "float64", "int8", "int16", "int32", "int64",
+                               "uint8", "uint16", "uint32", "uint64", "bool", "complex64"),
                       device = mlx_default_device()) {
   dim <- .validate_shape(dim)
   dtype <- match.arg(dtype)
@@ -26,8 +30,10 @@ mlx_zeros <- function(dim,
 #' @export
 #' @examples
 #' ones <- mlx_ones(c(2, 2), dtype = "float64", device = "cpu")
+#' ones_int <- mlx_ones(c(3, 3), dtype = "int32")
 mlx_ones <- function(dim,
-                     dtype = c("float32", "float64"),
+                     dtype = c("float32", "float64", "int8", "int16", "int32", "int64",
+                              "uint8", "uint16", "uint32", "uint64", "bool", "complex64"),
                      device = mlx_default_device()) {
   dim <- .validate_shape(dim)
   dtype <- match.arg(dtype)
@@ -199,7 +205,8 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
 mlx_arange <- function(stop,
                        start = NULL,
                        step = NULL,
-                       dtype = c("float32", "float64"),
+                       dtype = c("float32", "float64", "int8", "int16", "int32", "int64",
+                                "uint8", "uint16", "uint32", "uint64"),
                        device = mlx_default_device()) {
   if (!length(stop) || length(stop) != 1L) {
     stop("stop must be a single numeric value.", call. = FALSE)

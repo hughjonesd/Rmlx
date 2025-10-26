@@ -63,11 +63,14 @@ SEXP make_mlx_xptr(array&& arr) {
 Dtype string_to_dtype(const std::string& dtype) {
   if (dtype == "float32") return float32;
   if (dtype == "float64") return float64;
+  if (dtype == "int8") return int8;
+  if (dtype == "int16") return int16;
   if (dtype == "int32") return int32;
   if (dtype == "int64") return int64;
-  if (dtype == "int8") return int8;
   if (dtype == "uint8") return uint8;
+  if (dtype == "uint16") return uint16;
   if (dtype == "uint32") return uint32;
+  if (dtype == "uint64") return uint64;
   if (dtype == "complex64") return complex64;
   if (dtype == "bool") return bool_;
   Rcpp::stop("Unsupported dtype: " + dtype);
@@ -138,18 +141,30 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
     } else if (dt == float32) {
       std::vector<float> data_f32(x.begin(), x.end());
       return array(data_f32.data(), reversed_shape, float32);
-    } else if (dt == int32) {
-      std::vector<int32_t> data_i32(x.begin(), x.end());
-      return array(data_i32.data(), reversed_shape, int32);
-    } else if (dt == uint32) {
-      std::vector<uint32_t> data_u32(x.begin(), x.end());
-      return array(data_u32.data(), reversed_shape, uint32);
     } else if (dt == int8) {
       std::vector<int8_t> data_i8(x.begin(), x.end());
       return array(data_i8.data(), reversed_shape, int8);
+    } else if (dt == int16) {
+      std::vector<int16_t> data_i16(x.begin(), x.end());
+      return array(data_i16.data(), reversed_shape, int16);
+    } else if (dt == int32) {
+      std::vector<int32_t> data_i32(x.begin(), x.end());
+      return array(data_i32.data(), reversed_shape, int32);
+    } else if (dt == int64) {
+      std::vector<int64_t> data_i64(x.begin(), x.end());
+      return array(data_i64.data(), reversed_shape, int64);
     } else if (dt == uint8) {
       std::vector<uint8_t> data_u8(x.begin(), x.end());
       return array(data_u8.data(), reversed_shape, uint8);
+    } else if (dt == uint16) {
+      std::vector<uint16_t> data_u16(x.begin(), x.end());
+      return array(data_u16.data(), reversed_shape, uint16);
+    } else if (dt == uint32) {
+      std::vector<uint32_t> data_u32(x.begin(), x.end());
+      return array(data_u32.data(), reversed_shape, uint32);
+    } else if (dt == uint64) {
+      std::vector<uint64_t> data_u64(x.begin(), x.end());
+      return array(data_u64.data(), reversed_shape, uint64);
     } else if (dt == complex64) {
       std::vector<complex64_t> data_c64(cx.size());
       for (R_xlen_t idx = 0; idx < cx.size(); ++idx) {
@@ -232,6 +247,26 @@ SEXP cpp_mlx_to_r(SEXP xp_) {
     return result;
   }
 
+  // Integer types - int8, int16 -> R numeric (double)
+  if (arr.dtype() == int8) {
+    NumericVector result(total_size);
+    const int8_t* data = arr.data<int8_t>();
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = static_cast<double>(data[i]);
+    }
+    return result;
+  }
+
+  if (arr.dtype() == int16) {
+    NumericVector result(total_size);
+    const int16_t* data = arr.data<int16_t>();
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = static_cast<double>(data[i]);
+    }
+    return result;
+  }
+
+  // int32 fits in R integer
   if (arr.dtype() == int32) {
     IntegerVector result(total_size);
     const int32_t* data = arr.data<int32_t>();
@@ -241,9 +276,29 @@ SEXP cpp_mlx_to_r(SEXP xp_) {
     return result;
   }
 
+  // int64 -> R numeric (double)
   if (arr.dtype() == int64) {
     NumericVector result(total_size);
     const int64_t* data = arr.data<int64_t>();
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = static_cast<double>(data[i]);
+    }
+    return result;
+  }
+
+  // Unsigned types - uint8, uint16 -> R numeric
+  if (arr.dtype() == uint8) {
+    NumericVector result(total_size);
+    const uint8_t* data = arr.data<uint8_t>();
+    for (int i = 0; i < total_size; ++i) {
+      result[i] = static_cast<double>(data[i]);
+    }
+    return result;
+  }
+
+  if (arr.dtype() == uint16) {
+    NumericVector result(total_size);
+    const uint16_t* data = arr.data<uint16_t>();
     for (int i = 0; i < total_size; ++i) {
       result[i] = static_cast<double>(data[i]);
     }

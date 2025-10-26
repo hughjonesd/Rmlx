@@ -114,9 +114,6 @@ SEXP cpp_mlx_arange(SEXP start_,
                     std::string dtype_str,
                     std::string device_str) {
   Dtype dtype = string_to_dtype(dtype_str);
-  if (!(dtype == float32 || dtype == float64)) {
-    Rcpp::stop("mlx_arange currently supports float32 or float64 dtypes.");
-  }
   StreamOrDevice dev = string_to_device(device_str);
 
   bool has_start = start_ != R_NilValue;

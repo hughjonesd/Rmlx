@@ -13,8 +13,8 @@ mlx_norm(x, ord = NULL, axis = NULL, keepdims = FALSE)
 
 \item{axis}{Optional integer vector of axes (1-indexed) along which to compute the norm.}
 
-\item{keepdims}{If \code{TRUE}, keep reduced axes as size-1 dimensions
-(\code{keepdims = TRUE} is equivalent to \code{drop = FALSE} in base R).}
+\item{keepdims}{If \code{TRUE}, keep reduced axes as size-1 dimensions.
+Equivalent to \code{drop = FALSE} in base R.}
 }
 \value{
 An mlx array containing the requested norm.

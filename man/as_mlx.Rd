@@ -6,17 +6,24 @@
 \usage{
 as_mlx(
   x,
-  dtype = c("float32", "float64", "bool", "complex64", "uint32", "int32", "int8",
-    "uint8"),
+  dtype = c("float32", "float64", "bool", "complex64", "int8", "int16", "int32", "int64",
+    "uint8", "uint16", "uint32", "uint64"),
   device = mlx_default_device()
 )
 }
 \arguments{
 \item{x}{Numeric, logical, or complex vector, matrix, or array to convert}
 
-\item{dtype}{Ignored. Present for backward compatibility. Numeric arrays are
-stored as \code{float32}; logical arrays use MLX \code{bool}; complex arrays use MLX
-\code{complex64}.}
+\item{dtype}{Data type for the MLX array. One of:
+\itemize{
+\item Floating point: \code{"float32"}, \code{"float64"}
+\item Integer signed: \code{"int8"}, \code{"int16"}, \code{"int32"}, \code{"int64"}
+\item Integer unsigned: \code{"uint8"}, \code{"uint16"}, \code{"uint32"}, \code{"uint64"}
+\item Other: \code{"bool"}, \code{"complex64"}
+}
+
+If not specified, defaults to \code{"float32"} for numeric, \code{"bool"} for logical,
+and \code{"complex64"} for complex inputs.}
 
 \item{device}{Device: "gpu" (default) or "cpu"}
 }
@@ -27,15 +34,63 @@ An object of class \code{mlx}
 Create MLX array from R object
 }
 \details{
-Apple MLX executes in single precision. Numeric inputs are stored in
-\code{float32} regardless of the requested dtype. Logical inputs are mapped to
-MLX boolean arrays. Complex inputs are stored as \code{complex64} (float32 real
-and imaginary parts). Asking for \code{dtype = "float64"} emits a warning and the
-input is downcast to \code{float32}. If you require double precision arithmetic,
-use base R arrays instead of mlx objects.
+\subsection{Default type behavior}{
+
+When \code{dtype} is not specified:
+\itemize{
+\item Numeric vectors/arrays (including R integers from \code{1:10}) → \code{float32}
+\item Logical vectors/arrays → \code{bool}
+\item Complex vectors/arrays → \code{complex64}
+}
+}
+
+\subsection{Integer types require explicit dtype}{
+
+\strong{Important}: R integer vectors (like \code{1:10}) convert to \code{float32} by default.
+To create integer MLX arrays, you \strong{must} explicitly specify \code{dtype}:
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{x <- as_mlx(1:10, dtype = "int32")  # Creates int32 array
+x <- as_mlx(1:10)                    # Creates float32 array
+}\if{html}{\out{</div>}}
+
+This design avoids unintentional integer promotion, since R creates integers
+in many contexts where floating-point is intended.
+}
+
+\subsection{Supported integer types}{
+\itemize{
+\item \strong{Signed}: \code{int8} (-128 to 127), \code{int16}, \code{int32}, \code{int64}
+\item \strong{Unsigned}: \code{uint8} (0 to 255), \code{uint16}, \code{uint32}, \code{uint64}
+}
+}
+
+\subsection{Type precision notes}{
+\itemize{
+\item \code{float64} is supported but emits a warning and downcasts to \code{float32}
+\item Integer arithmetic may promote types (e.g., int32 + int32 might → int64)
+\item Mixed integer/float operations promote to float
+}
+}
 }
 \examples{
-x <- as_mlx(matrix(1:12, 3, 4))
+# Default float32 for numeric
+x <- as_mlx(c(1.5, 2.5, 3.5))
+mlx_dtype(x)  # "float32"
+
+# R integers also default to float32
+x <- as_mlx(1:10)
+mlx_dtype(x)  # "float32"
+
+# Explicit integer types
+x_int <- as_mlx(1:10, dtype = "int32")
+mlx_dtype(x_int)  # "int32"
+
+# Unsigned integers
+x_uint <- as_mlx(c(0, 128, 255), dtype = "uint8")
+
+# Logical → bool
+mask <- as_mlx(c(TRUE, FALSE, TRUE))
+mlx_dtype(mask)  # "bool"
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}

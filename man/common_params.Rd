@@ -6,18 +6,27 @@
 \arguments{
 \item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
 
-\item{dtype}{Data type string (e.g., \code{"float32"}, \code{"int32"}, \code{"bool"}).
-Supported types vary by function.}
+\item{dtype}{Data type string. Supported types include:
+\itemize{
+\item Floating point: \code{"float32"}, \code{"float64"}
+\item Integer: \code{"int8"}, \code{"int16"}, \code{"int32"}, \code{"int64"}, \code{"uint8"}, \code{"uint16"}, \code{"uint32"}, \code{"uint64"}
+\item Other: \code{"bool"}, \code{"complex64"}
+}
 
-\item{axis}{Axis/axes to operate on (1-indexed). Negative values count from
+Not all functions support all types. See individual function documentation.}
+
+\item{axis}{Axis or axes to operate on (1-indexed). Negative values count from
 the end. \code{NULL} operates on all axes or the entire array.}
 
-\item{keepdims}{If \code{TRUE}, keep reduced axes as size-1 dimensions
-(\code{keepdims = TRUE} is equivalent to \code{drop = FALSE} in base R).}
+\item{keepdims}{If \code{TRUE}, keep reduced axes as size-1 dimensions.
+Equivalent to \code{drop = FALSE} in base R.}
 
-\item{stream}{MLX stream for asynchronous execution (rarely needed).}
+\item{drop}{If \code{TRUE} (default), drop dimensions of length 1. If \code{FALSE},
+retain all dimensions.}
 
-\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{dim}{Integer vector specifying array dimensions (shape).}
+
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \description{
 Common Parameter Documentation

@@ -10,7 +10,7 @@ mlx_argmax(x, axis = NULL, keepdims = FALSE)
 mlx_argmin(x, axis = NULL, keepdims = FALSE)
 }
 \arguments{
-\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
 array is flattened first.}

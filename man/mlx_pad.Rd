@@ -16,7 +16,7 @@ mlx_pad(
 mlx_split(x, sections, axis = 1L)
 }
 \arguments{
-\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{pad_width}{Padding extents. Supply a single integer, a length-two
 numeric vector, or a matrix/list with one \verb{(before, after)} pair per padded

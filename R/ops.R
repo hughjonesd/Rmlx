@@ -305,10 +305,46 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
 
   dtypes <- c(dtype1, dtype2)
 
+  # Complex beats everything
   if ("complex64" %in% dtypes) return("complex64")
-  if ("float32" %in% dtypes) return("float32")
-  if ("float64" %in% dtypes) return("float32")
-  if ("bool" %in% dtypes) return("float32")
+
+  # Float beats integer and bool
+  if ("float64" %in% dtypes || "float32" %in% dtypes) return("float32")
+
+  # Bool promotes to int32
+  if ("bool" %in% dtypes) {
+    other <- setdiff(dtypes, "bool")[1]
+    if (other %in% c("int8", "int16", "int32", "int64",
+                     "uint8", "uint16", "uint32", "uint64")) {
+      return(other)
+    }
+    return("int32")
+  }
+
+  # Integer type promotion - promote to larger/wider type
+  int_types <- c("int8", "int16", "int32", "int64",
+                 "uint8", "uint16", "uint32", "uint64")
+
+  if (all(dtypes %in% int_types)) {
+    # Type hierarchy (smaller to larger)
+    # For simplicity, promote to int64 for mixed signed/unsigned of same size
+    type_rank <- c(int8 = 1, uint8 = 1, int16 = 2, uint16 = 2,
+                   int32 = 3, uint32 = 3, int64 = 4, uint64 = 4)
+
+    rank1 <- type_rank[dtype1]
+    rank2 <- type_rank[dtype2]
+
+    # Promote to the larger rank
+    if (rank1 > rank2) return(dtype1)
+    if (rank2 > rank1) return(dtype2)
+
+    # Same rank but different signedness -> promote to signed of next size
+    # e.g., int32 + uint32 -> int64
+    if (rank1 == rank2 && dtype1 != dtype2) {
+      next_signed <- c("1" = "int16", "2" = "int32", "3" = "int64", "4" = "int64")
+      return(next_signed[as.character(rank1)])
+    }
+  }
 
   stop("Unsupported dtype combination: ", dtype1, " and ", dtype2)
 }

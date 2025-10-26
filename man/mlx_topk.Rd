@@ -13,7 +13,7 @@ mlx_partition(x, kth, axis = NULL)
 mlx_argpartition(x, kth, axis = NULL)
 }
 \arguments{
-\item{x}{An mlx array, or an R array/matrix/vector converted via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{k}{Positive integer specifying the number of elements to select.}
 
