@@ -52,26 +52,33 @@
 
 
 <dt id="arg-dtype">dtype<a class="anchor" aria-label="anchor" href="#arg-dtype"></a></dt>
-<dd><p>Data type string (e.g., <code>"float32"</code>, <code>"int32"</code>, <code>"bool"</code>).
-Supported types vary by function.</p></dd>
+<dd><p>Data type string. Supported types include:</p><ul><li><p>Floating point: <code>"float32"</code>, <code>"float64"</code></p></li>
+<li><p>Integer: <code>"int8"</code>, <code>"int16"</code>, <code>"int32"</code>, <code>"int64"</code>, <code>"uint8"</code>, <code>"uint16"</code>, <code>"uint32"</code>, <code>"uint64"</code></p></li>
+<li><p>Other: <code>"bool"</code>, <code>"complex64"</code></p></li>
+</ul><p>Not all functions support all types. See individual function documentation.</p></dd>
 
 
 <dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
-<dd><p>Axis/axes to operate on (1-indexed). Negative values count from
+<dd><p>Axis or axes to operate on (1-indexed). Negative values count from
 the end. <code>NULL</code> operates on all axes or the entire array.</p></dd>
 
 
 <dt id="arg-keepdims">keepdims<a class="anchor" aria-label="anchor" href="#arg-keepdims"></a></dt>
-<dd><p>If <code>TRUE</code>, keep reduced axes as size-1 dimensions
-(<code>keepdims = TRUE</code> is equivalent to <code>drop = FALSE</code> in base R).</p></dd>
+<dd><p>If <code>TRUE</code>, keep reduced axes as size-1 dimensions.
+Equivalent to <code>drop = FALSE</code> in base R.</p></dd>
 
 
-<dt id="arg-stream">stream<a class="anchor" aria-label="anchor" href="#arg-stream"></a></dt>
-<dd><p>MLX stream for asynchronous execution (rarely needed).</p></dd>
+<dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
+<dd><p>If <code>TRUE</code> (default), drop dimensions of length 1. If <code>FALSE</code>,
+retain all dimensions.</p></dd>
+
+
+<dt id="arg-dim">dim<a class="anchor" aria-label="anchor" href="#arg-dim"></a></dt>
+<dd><p>Integer vector specifying array dimensions (shape).</p></dd>
 
 
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An mlx array, or an R array/matrix/vector converted via <code><a href="as_mlx.html">as_mlx()</a></code>.</p></dd>
+<dd><p>An mlx array, or an R array/matrix/vector that will be converted via <code><a href="as_mlx.html">as_mlx()</a></code>.</p></dd>
 
 </dl></div>
 
