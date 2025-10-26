@@ -15,8 +15,8 @@
 mlx_mse_loss <- function(predictions, targets, reduction = c("mean", "sum", "none")) {
   reduction <- match.arg(reduction)
 
-  if (!is.mlx(predictions)) predictions <- as_mlx(predictions)
-  if (!is.mlx(targets)) targets <- as_mlx(targets)
+  predictions <- as_mlx(predictions)
+  targets <- as_mlx(targets)
 
   squared_diff <- (predictions - targets)^2
 
@@ -44,8 +44,8 @@ mlx_mse_loss <- function(predictions, targets, reduction = c("mean", "sum", "non
 mlx_l1_loss <- function(predictions, targets, reduction = c("mean", "sum", "none")) {
   reduction <- match.arg(reduction)
 
-  if (!is.mlx(predictions)) predictions <- as_mlx(predictions)
-  if (!is.mlx(targets)) targets <- as_mlx(targets)
+  predictions <- as_mlx(predictions)
+  targets <- as_mlx(targets)
 
   abs_diff <- abs(predictions - targets)
 
@@ -73,8 +73,8 @@ mlx_l1_loss <- function(predictions, targets, reduction = c("mean", "sum", "none
 mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean", "sum", "none")) {
   reduction <- match.arg(reduction)
 
-  if (!is.mlx(predictions)) predictions <- as_mlx(predictions)
-  if (!is.mlx(targets)) targets <- as_mlx(targets)
+  predictions <- as_mlx(predictions)
+  targets <- as_mlx(targets)
 
   # Clip predictions to avoid log(0)
   eps <- 1e-7
@@ -108,8 +108,8 @@ mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean",
 mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "none")) {
   reduction <- match.arg(reduction)
 
-  if (!is.mlx(logits)) logits <- as_mlx(logits)
-  if (!is.mlx(targets)) targets <- as_mlx(targets)
+  logits <- as_mlx(logits)
+  targets <- as_mlx(targets)
 
   # Compute log-softmax for numerical stability
   # log_softmax(x) = x - log(sum(exp(x)))

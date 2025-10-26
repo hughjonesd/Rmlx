@@ -223,9 +223,7 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
 #'                    3, 2, 1), nrow = 2, byrow = TRUE)
 #' samples <- mlx_rand_categorical(logits, num_samples = 5)
 mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
-  if (!is.mlx(logits)) {
-    logits <- as_mlx(logits)
-  }
+  logits <- as_mlx(logits)
   axis <- as.integer(axis)
   num_samples <- as.integer(num_samples)
   if (num_samples < 1) {
@@ -316,9 +314,7 @@ mlx_rand_permutation <- function(x, axis = 0L, device = mlx_default_device()) {
     new_mlx(ptr, n, "int32", device)
   } else {
     # Permute array along axis
-    if (!is.mlx(x)) {
-      x <- as_mlx(x)
-    }
+    x <- as_mlx(x)
     ptr <- cpp_mlx_random_permutation(x, axis)
     output_shape <- cpp_mlx_shape(ptr)
     new_mlx(ptr, output_shape, x$dtype, x$device)

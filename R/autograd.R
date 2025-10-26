@@ -43,7 +43,7 @@ mlx_grad <- function(f, ..., argnums = NULL, value = FALSE) {
   }
 
   mlx_args <- lapply(args, function(arg) {
-    if (is.mlx(arg)) arg else as_mlx(arg)
+    as_mlx(arg)
   })
 
   if (is.null(argnums)) {
@@ -93,7 +93,7 @@ mlx_value_grad <- function(f, ..., argnums = NULL) {
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_stop_gradient(x)
 mlx_stop_gradient <- function(x) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   new_ptr <- cpp_mlx_stop_gradient(x$ptr)
   new_mlx(new_ptr, x$dim, x$dtype, x$device)
 }

@@ -384,7 +384,7 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
 #' mat <- as_mlx(matrix(1:12, 3, 4))
 #' mlx_cumsum(mat, axis = 1)  # cumsum down rows
 mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
 
   axis_mlx <- .mlx_normalize_axis(axis, x)
 
@@ -395,7 +395,7 @@ mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
 #' @rdname mlx_cumsum
 #' @export
 mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
 
   axis_mlx <- .mlx_normalize_axis(axis, x)
 

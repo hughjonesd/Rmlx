@@ -126,7 +126,7 @@ mlx_compile <- function(f, shapeless = FALSE) {
 
     # Convert arguments to mlx if needed
     mlx_args <- lapply(args, function(arg) {
-      if (is.mlx(arg)) arg else as_mlx(arg)
+      as_mlx(arg)
     })
 
     # Call compiled function

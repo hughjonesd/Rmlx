@@ -102,6 +102,27 @@ inline std::vector<int> normalize_new_axes(const array& arr, const std::vector<i
   return normalized;
 }
 
+inline List wrap_array_as_mlx(const array& arr, const std::string& device_hint) {
+  array copy = arr;
+  SEXP ptr = make_mlx_xptr(std::move(copy));
+
+  const Shape& shape = arr.shape();
+  IntegerVector dim(shape.size());
+  for (size_t i = 0; i < shape.size(); ++i) {
+    dim[i] = shape[i];
+  }
+
+  std::string dtype = dtype_to_string(arr.dtype());
+
+  List obj = List::create(
+      Named("ptr") = ptr,
+      Named("dim") = dim,
+      Named("dtype") = dtype,
+      Named("device") = device_hint);
+  obj.attr("class") = "mlx";
+  return obj;
+}
+
 }  // namespace
 
 #endif  // MLX_HELPERS_HPP

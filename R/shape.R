@@ -73,7 +73,7 @@ mlx_stack <- function(..., axis = 1L) {
   if (!length(arrays)) {
     stop("No arrays supplied.", call. = FALSE)
   }
-  arrays <- lapply(arrays, function(x) if (is.mlx(x)) x else as_mlx(x))
+  arrays <- lapply(arrays, as_mlx)
   dtype <- Reduce(.promote_dtype, lapply(arrays, `[[`, "dtype"))
   device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
   arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = device)
@@ -96,7 +96,7 @@ mlx_stack <- function(..., axis = 1L) {
 #' mlx_squeeze(x)
 #' mlx_squeeze(x, axis = 1)
 mlx_squeeze <- function(x, axis = NULL) {
-  x <- if (is.mlx(x)) x else as_mlx(x)
+  x <- as_mlx(x)
   if (is.null(axis)) {
     ptr <- cpp_mlx_squeeze(x$ptr, NULL)
   } else {
@@ -118,7 +118,7 @@ mlx_squeeze <- function(x, axis = NULL) {
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_expand_dims(x, axis = 1)
 mlx_expand_dims <- function(x, axis) {
-  x <- if (is.mlx(x)) x else as_mlx(x)
+  x <- as_mlx(x)
   axis0 <- .mlx_normalize_new_axes(axis, x$dim)
   ptr <- cpp_mlx_expand_dims(x$ptr, axis0)
   .mlx_wrap_result(ptr, x$device)
@@ -137,7 +137,7 @@ mlx_expand_dims <- function(x, axis) {
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_repeat(x, repeats = 2, axis = 2)
 mlx_repeat <- function(x, repeats, axis = NULL) {
-  x <- if (is.mlx(x)) x else as_mlx(x)
+  x <- as_mlx(x)
   repeats <- as.integer(repeats)
   if (length(repeats) != 1L || repeats <= 0L || is.na(repeats)) {
     stop("repeats must be a positive integer.", call. = FALSE)
@@ -163,7 +163,7 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_tile(x, reps = c(1, 2))
 mlx_tile <- function(x, reps) {
-  x <- if (is.mlx(x)) x else as_mlx(x)
+  x <- as_mlx(x)
   reps <- as.integer(reps)
   if (length(reps) == 0L || any(is.na(reps)) || any(reps <= 0L)) {
     stop("reps must be positive integers.", call. = FALSE)
@@ -185,7 +185,7 @@ mlx_tile <- function(x, reps) {
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_roll(x, shift = 1, axis = 2)
 mlx_roll <- function(x, shift, axis = NULL) {
-  x <- if (is.mlx(x)) x else as_mlx(x)
+  x <- as_mlx(x)
   shift <- as.integer(shift)
   if (length(shift) == 0L || any(is.na(shift))) {
     stop("shift must contain integer values.", call. = FALSE)
@@ -240,7 +240,7 @@ mlx_pad <- function(x,
                     value = 0,
                     mode = c("constant", "edge", "reflect", "symmetric"),
                     axes = NULL) {
-  x <- if (is.mlx(x)) x else as_mlx(x)
+  x <- as_mlx(x)
   mode <- match.arg(mode)
 
   ndim <- length(x$dim)
@@ -283,7 +283,7 @@ mlx_pad <- function(x,
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split}
 #' @export
 mlx_split <- function(x, sections, axis = 1L) {
-  x <- if (is.mlx(x)) x else as_mlx(x)
+  x <- as_mlx(x)
   if (missing(sections)) {
     stop("sections must be supplied.", call. = FALSE)
   }
@@ -412,7 +412,7 @@ mlx_split <- function(x, sections, axis = 1L) {
 #' moved <- mlx_moveaxis(x, source = 1, destination = 3)
 #' permuted <- aperm(x, c(2, 1, 3))
 mlx_moveaxis <- function(x, source, destination) {
-  x <- if (is.mlx(x)) x else as_mlx(x)
+  x <- as_mlx(x)
   if (missing(source) || missing(destination)) {
     stop("source and destination must be supplied.", call. = FALSE)
   }
@@ -442,7 +442,7 @@ mlx_moveaxis <- function(x, source, destination) {
 #' @export
 #' @method aperm mlx
 aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
-  x <- if (is.mlx(a)) a else as_mlx(a)
+  x <- as_mlx(a)
   if (!isTRUE(resize)) {
     stop("`resize = FALSE` is not supported for mlx arrays.", call. = FALSE)
   }
@@ -497,9 +497,9 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
 #' b <- as_mlx(matrix(5:8, 2, 2))
 #' mlx_where(cond, a, b)
 mlx_where <- function(condition, x, y) {
-  condition <- if (is.mlx(condition)) condition else as_mlx(condition)
-  x <- if (is.mlx(x)) x else as_mlx(x)
-  y <- if (is.mlx(y)) y else as_mlx(y)
+  condition <- as_mlx(condition)
+  x <- as_mlx(x)
+  y <- as_mlx(y)
 
   result_dtype <- .promote_dtype(x$dtype, y$dtype)
   result_device <- .common_device(x$device, y$device)

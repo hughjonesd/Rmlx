@@ -565,7 +565,7 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
   env$embedding_dim <- embedding_dim
 
   forward <- function(indices) {
-    if (!is.mlx(indices)) indices <- as_mlx(indices)
+    indices <- as_mlx(indices)
 
     # indices are 0-based token IDs
     orig_shape <- indices$dim
@@ -620,8 +620,8 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
 #' @export
 mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
                        groups = 1L, device = mlx_default_device()) {
-  if (!is.mlx(input)) input <- as_mlx(input)
-  if (!is.mlx(weight)) weight <- as_mlx(weight)
+  input <- as_mlx(input)
+  weight <- as_mlx(weight)
 
   ptr <- cpp_mlx_conv1d(input$ptr, weight$ptr, as.integer(stride),
                        as.integer(padding), as.integer(dilation),
@@ -650,8 +650,8 @@ mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
 mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
                        dilation = c(1L, 1L), groups = 1L,
                        device = mlx_default_device()) {
-  if (!is.mlx(input)) input <- as_mlx(input)
-  if (!is.mlx(weight)) weight <- as_mlx(weight)
+  input <- as_mlx(input)
+  weight <- as_mlx(weight)
 
   # Handle scalar inputs
   if (length(stride) == 1) stride <- rep(stride, 2)
@@ -680,8 +680,8 @@ mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
 mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L, 0L),
                        dilation = c(1L, 1L, 1L), groups = 1L,
                        device = mlx_default_device()) {
-  if (!is.mlx(input)) input <- as_mlx(input)
-  if (!is.mlx(weight)) weight <- as_mlx(weight)
+  input <- as_mlx(input)
+  weight <- as_mlx(weight)
 
   # Handle scalar inputs
   if (length(stride) == 1) stride <- rep(stride, 3)
@@ -713,8 +713,8 @@ mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L
 mlx_conv_transpose1d <- function(input, weight, stride = 1L, padding = 0L,
                                   dilation = 1L, output_padding = 0L, groups = 1L,
                                   device = mlx_default_device()) {
-  if (!is.mlx(input)) input <- as_mlx(input)
-  if (!is.mlx(weight)) weight <- as_mlx(weight)
+  input <- as_mlx(input)
+  weight <- as_mlx(weight)
 
   ptr <- cpp_mlx_conv_transpose1d(input$ptr, weight$ptr, as.integer(stride),
                                    as.integer(padding), as.integer(dilation),
@@ -744,8 +744,8 @@ mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
                                   padding = c(0L, 0L), dilation = c(1L, 1L),
                                   output_padding = c(0L, 0L), groups = 1L,
                                   device = mlx_default_device()) {
-  if (!is.mlx(input)) input <- as_mlx(input)
-  if (!is.mlx(weight)) weight <- as_mlx(weight)
+  input <- as_mlx(input)
+  weight <- as_mlx(weight)
 
   # Handle scalar inputs
   if (length(stride) == 1) stride <- rep(stride, 2)
@@ -781,8 +781,8 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
                                   padding = c(0L, 0L, 0L), dilation = c(1L, 1L, 1L),
                                   output_padding = c(0L, 0L, 0L), groups = 1L,
                                   device = mlx_default_device()) {
-  if (!is.mlx(input)) input <- as_mlx(input)
-  if (!is.mlx(weight)) weight <- as_mlx(weight)
+  input <- as_mlx(input)
+  weight <- as_mlx(weight)
 
   # Handle scalar inputs
   if (length(stride) == 1) stride <- rep(stride, 3)
@@ -831,7 +831,7 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
 #' @export
 mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
                          device = mlx_default_device()) {
-  if (!is.mlx(w)) w <- as_mlx(w)
+  w <- as_mlx(w)
 
   result <- cpp_mlx_quantize(w$ptr, as.integer(group_size), as.integer(bits),
                               mode, device)
@@ -880,12 +880,12 @@ mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
 #' @export
 mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L,
                             mode = "affine", device = mlx_default_device()) {
-  if (!is.mlx(w)) w <- as_mlx(w)
-  if (!is.mlx(scales)) scales <- as_mlx(scales)
+  w <- as_mlx(w)
+  scales <- as_mlx(scales)
 
   biases_ptr <- NULL
   if (!is.null(biases)) {
-    if (!is.mlx(biases)) biases <- as_mlx(biases)
+    biases <- as_mlx(biases)
     biases_ptr <- biases$ptr
   }
 
@@ -949,8 +949,8 @@ mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L
 mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose = TRUE,
                                   group_size = 64L, bits = 4L, mode = "affine",
                                   device = mlx_default_device()) {
-  if (!is.mlx(x)) x <- as_mlx(x)
-  if (!is.mlx(w)) w <- as_mlx(w)
+  x <- as_mlx(x)
+  w <- as_mlx(w)
 
   # Auto-quantize if scales not provided
   if (is.null(scales)) {
@@ -961,12 +961,12 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
       biases <- quant$biases
     }
   } else {
-    if (!is.mlx(scales)) scales <- as_mlx(scales)
+    scales <- as_mlx(scales)
   }
 
   biases_ptr <- NULL
   if (!is.null(biases)) {
-    if (!is.mlx(biases)) biases <- as_mlx(biases)
+    biases <- as_mlx(biases)
     biases_ptr <- biases$ptr
   }
 
@@ -1013,25 +1013,25 @@ mlx_gather_qmm <- function(x, w, scales, biases = NULL, lhs_indices = NULL,
                             rhs_indices = NULL, transpose = TRUE, group_size = 64L,
                             bits = 4L, mode = "affine", sorted_indices = FALSE,
                             device = mlx_default_device()) {
-  if (!is.mlx(x)) x <- as_mlx(x)
-  if (!is.mlx(w)) w <- as_mlx(w)
-  if (!is.mlx(scales)) scales <- as_mlx(scales)
+  x <- as_mlx(x)
+  w <- as_mlx(w)
+  scales <- as_mlx(scales)
 
   biases_ptr <- NULL
   if (!is.null(biases)) {
-    if (!is.mlx(biases)) biases <- as_mlx(biases)
+    biases <- as_mlx(biases)
     biases_ptr <- biases$ptr
   }
 
   lhs_indices_ptr <- NULL
   if (!is.null(lhs_indices)) {
-    if (!is.mlx(lhs_indices)) lhs_indices <- as_mlx(lhs_indices)
+    lhs_indices <- as_mlx(lhs_indices)
     lhs_indices_ptr <- lhs_indices$ptr
   }
 
   rhs_indices_ptr <- NULL
   if (!is.null(rhs_indices)) {
-    if (!is.mlx(rhs_indices)) rhs_indices <- as_mlx(rhs_indices)
+    rhs_indices <- as_mlx(rhs_indices)
     rhs_indices_ptr <- rhs_indices$ptr
   }
 

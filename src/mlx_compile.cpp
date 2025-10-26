@@ -10,28 +10,6 @@ using namespace mlx::core;
 
 namespace {
 
-// Helper to wrap array as mlx object
-List wrap_array_as_mlx(const array& arr, const std::string& device_hint) {
-  array copy = arr;
-  SEXP ptr = make_mlx_xptr(std::move(copy));
-
-  const Shape& shape = arr.shape();
-  IntegerVector dim(shape.size());
-  for (size_t i = 0; i < shape.size(); ++i) {
-    dim[i] = shape[i];
-  }
-
-  std::string dtype = dtype_to_string(arr.dtype());
-
-  List obj = List::create(
-      Named("ptr") = ptr,
-      Named("dim") = dim,
-      Named("dtype") = dtype,
-      Named("device") = device_hint);
-  obj.attr("class") = "mlx";
-  return obj;
-}
-
 // Extract arrays from R result (single mlx or list of mlx)
 std::vector<array> extract_arrays_from_result(SEXP result) {
   std::vector<array> outputs;

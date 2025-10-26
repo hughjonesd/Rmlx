@@ -172,7 +172,7 @@ diag.default <- function(x, ...) base::diag(x, ...)
 #' `diag.mlx()` is an R interface to `mlx_diagonal()` with the same semantics
 #' as [base::diag()].
 diag.mlx <- function(x, nrow, ncol, names = TRUE) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
 
   # Determine k offset if nrow is specified
   k <- 0L

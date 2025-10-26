@@ -26,7 +26,7 @@
 #' x <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
 #' chol(x)
 chol.mlx <- function(x, pivot = FALSE, ...) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   if (pivot) stop("pivoted Cholesky is not supported for mlx objects.", call. = FALSE)
 
   ptr <- cpp_mlx_cholesky(x$ptr, TRUE, x$dtype, x$device)
@@ -65,7 +65,7 @@ chol2inv.default <- function(x, size = NCOL(x), ...) {
 #' @export
 #' @rdname chol2inv
 chol2inv.mlx <- function(x, size = NCOL(x), ...) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   # R's chol() always returns upper triangular, so we always use upper=TRUE
   mlx_cholesky_inv(x, upper = TRUE)
 }
@@ -84,7 +84,7 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
 #' x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 3, 2))
 #' qr(x)
 qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L)
 
   if (!missing(tol) && !isTRUE(all.equal(tol, 1e-7))) {
@@ -133,7 +133,7 @@ svd.default <- function(x, ...) base::svd(x, ...)
 #' x <- as_mlx(matrix(c(1, 0, 0, 2), 2, 2))
 #' svd(x)
 svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L)
 
   n <- x$dim[1]
@@ -176,7 +176,7 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
 #' x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
 #' pinv(x)
 pinv <- function(x) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L)
 
   ptr <- cpp_mlx_pinv(x$ptr, x$dtype, x$device)
@@ -210,7 +210,7 @@ fft.default <- function(z, inverse = FALSE, ...) {
 
 #' @export
 fft.mlx <- function(z, inverse = FALSE, ...) {
-  if (!is.mlx(z)) z <- as_mlx(z)
+  z <- as_mlx(z)
   ptr <- cpp_mlx_fft(z$ptr, isTRUE(inverse), z$device)
   out <- .mlx_wrap_result(ptr, z$device)
   if (isTRUE(inverse)) {
@@ -235,7 +235,7 @@ fft.mlx <- function(z, inverse = FALSE, ...) {
 #' mlx_norm(x, ord = 2)
 #' mlx_norm(x, axis = 2)
 mlx_norm <- function(x, ord = NULL, axis = NULL, keepdims = FALSE) {
-  x <- if (is.mlx(x)) x else as_mlx(x)
+  x <- as_mlx(x)
   if (!is.null(ord) && !is.numeric(ord) && !is.character(ord)) {
     stop("ord must be numeric, character, or NULL.", call. = FALSE)
   }
@@ -259,7 +259,7 @@ mlx_norm <- function(x, ord = NULL, axis = NULL, keepdims = FALSE) {
 #' eig$values
 #' eig$vectors
 mlx_eig <- function(x) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L, x$dim[1] == x$dim[2])
 
   res <- cpp_mlx_eig(x$ptr, x$device)
@@ -279,7 +279,7 @@ mlx_eig <- function(x) {
 #' x <- as_mlx(matrix(c(3, 1, 0, 2), 2, 2))
 #' mlx_eigvals(x)
 mlx_eigvals <- function(x) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L, x$dim[1] == x$dim[2])
   ptr <- cpp_mlx_eigvals(x$ptr, x$device)
   .mlx_wrap_result(ptr, x$device)
@@ -296,7 +296,7 @@ mlx_eigvals <- function(x) {
 #' x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
 #' mlx_eigvalsh(x)
 mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L, x$dim[1] == x$dim[2])
   uplo <- match.arg(uplo)
   ptr <- cpp_mlx_eigvalsh(x$ptr, uplo, x$device)
@@ -313,7 +313,7 @@ mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
 #' x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
 #' mlx_eigh(x)
 mlx_eigh <- function(x, uplo = c("L", "U")) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   stopifnot(length(x$dim) == 2L, x$dim[1] == x$dim[2])
   uplo <- match.arg(uplo)
   res <- cpp_mlx_eigh(x$ptr, uplo, x$device)
@@ -336,8 +336,8 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
 #' b <- as_mlx(matrix(c(1, 5), 2, 1))
 #' mlx_solve_triangular(a, b, upper = FALSE)
 mlx_solve_triangular <- function(a, b, upper = FALSE) {
-  if (!is.mlx(a)) a <- as_mlx(a)
-  if (!is.mlx(b)) b <- as_mlx(b)
+  a <- as_mlx(a)
+  b <- as_mlx(b)
   stopifnot(length(a$dim) == 2L, a$dim[1] == a$dim[2])
   ptr <- cpp_mlx_solve_triangular(a$ptr, b$ptr, upper, a$device)
   .mlx_wrap_result(ptr, a$device)
@@ -355,8 +355,8 @@ mlx_solve_triangular <- function(a, b, upper = FALSE) {
 #' v <- as_mlx(c(0, 1, 0))
 #' mlx_cross(u, v)
 mlx_cross <- function(a, b, axis = -1L) {
-  if (!is.mlx(a)) a <- as_mlx(a)
-  if (!is.mlx(b)) b <- as_mlx(b)
+  a <- as_mlx(a)
+  b <- as_mlx(b)
   ptr <- cpp_mlx_cross(a$ptr, b$ptr, as.integer(axis), a$device)
   .mlx_wrap_result(ptr, a$device)
 }
@@ -377,7 +377,7 @@ mlx_cross <- function(a, b, axis = -1L) {
 #' mlx_trace(x)
 #' mlx_trace(x, offset = 1)
 mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   ptr <- cpp_mlx_trace(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), x$device)
   .mlx_wrap_result(ptr, x$device)
 }
@@ -402,7 +402,7 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' mlx_diagonal(v)
 #' }
 mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   ptr <- cpp_mlx_diagonal(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), x$device)
   .mlx_wrap_result(ptr, x$device)
 }
@@ -429,8 +429,8 @@ outer.default <- base::outer
 #' @export
 #' @rdname outer
 outer.mlx <- function(X, Y, FUN = "*", ...) {
-  if (!is.mlx(X)) X <- as_mlx(X)
-  if (!is.mlx(Y)) Y <- as_mlx(Y)
+  X <- as_mlx(X)
+  Y <- as_mlx(Y)
   ptr <- cpp_mlx_outer(X$ptr, Y$ptr, X$device)
   .mlx_wrap_result(ptr, X$device)
 }
@@ -451,7 +451,7 @@ outer.mlx <- function(X, Y, FUN = "*", ...) {
 #' x_flat <- mlx_reshape(x, c(2, 12))  # flatten last two dims
 #' mlx_unflatten(x_flat, axis = 2, shape = c(3, 4))  # restore original shape
 mlx_unflatten <- function(x, axis, shape) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   ptr <- cpp_mlx_unflatten(x$ptr, as.integer(axis), as.integer(shape), x$device)
   .mlx_wrap_result(ptr, x$device)
 }
@@ -470,7 +470,7 @@ mlx_unflatten <- function(x, axis, shape) {
 #' # Verify: A %*% A_inv should be identity
 #' as.matrix(A %*% A_inv)
 mlx_inv <- function(x) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   ptr <- cpp_mlx_inv(x$ptr, x$device)
   .mlx_wrap_result(ptr, x$device)
 }
@@ -489,7 +489,7 @@ mlx_inv <- function(x) {
 #' L <- as_mlx(matrix(c(1, 2, 0, 3, 0, 0, 4, 5, 6), 3, 3, byrow = TRUE))
 #' L_inv <- mlx_tri_inv(L, upper = FALSE)
 mlx_tri_inv <- function(x, upper = FALSE) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   ptr <- cpp_mlx_tri_inv(x$ptr, upper, x$device)
   .mlx_wrap_result(ptr, x$device)
 }
@@ -515,7 +515,7 @@ mlx_tri_inv <- function(x, upper = FALSE) {
 #' # Get inverse from Cholesky factor
 #' A_inv <- mlx_cholesky_inv(as_mlx(L))
 mlx_cholesky_inv <- function(x, upper = FALSE) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   ptr <- cpp_mlx_cholesky_inv(x$ptr, upper, x$device)
   .mlx_wrap_result(ptr, x$device)
 }
@@ -536,7 +536,7 @@ mlx_cholesky_inv <- function(x, upper = FALSE) {
 #' L <- lu_result$l  # Lower triangular
 #' U <- lu_result$u  # Upper triangular
 mlx_lu <- function(x) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   result <- cpp_mlx_lu(x$ptr, x$device)
   list(
     p = .mlx_wrap_result(result$p, x$device),

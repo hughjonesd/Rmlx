@@ -124,7 +124,7 @@ dim.mlx <- function(x) {
 #' mlx_reshape(x, c(3, 4))
 #' mlx_reshape(x, c(2, 6))
 mlx_reshape <- function(x, newshape) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
 
   if (!is.numeric(newshape) || any(is.na(newshape))) {
     stop("newshape must be a numeric vector without NAs", call. = FALSE)

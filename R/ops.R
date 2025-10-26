@@ -21,15 +21,15 @@ Ops.mlx <- function(e1, e2 = NULL) {
     if (op == "+") return(e1)
     if (op == "-") return(.mlx_unary(e1, "neg"))
     if (op == "!") {
-      if (!is.mlx(e1)) e1 <- as_mlx(e1)
+      e1 <- as_mlx(e1)
       return(.mlx_logical_not(e1))
     }
     stop(sprintf("Unary operator '%s' not supported for mlx", op))
   }
 
   # Binary operators - coerce arguments to mlx
-  if (!is.mlx(e1)) e1 <- as_mlx(e1)
-  if (!is.mlx(e2)) e2 <- as_mlx(e2)
+  e1 <- as_mlx(e1)
+  e2 <- as_mlx(e2)
 
   # Arithmetic operators
   if (op %in% c("+", "-", "*", "/", "^")) {
@@ -71,8 +71,8 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' x %*% y
 #' }
 `%*%.mlx` <- function(x, y) {
-  if (!is.mlx(x)) x <- as_mlx(x)
-  if (!is.mlx(y)) y <- as_mlx(y)
+  x <- as_mlx(x)
+  y <- as_mlx(y)
 
   # Validate dimensions
   if (length(x$dim) != 2 || length(y$dim) != 2) {
@@ -201,19 +201,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' mlx_minimum(a, b)
 #' }
 mlx_minimum <- function(x, y) {
-  if (!is.mlx(x)) x <- as_mlx(x)
-  if (!is.mlx(y)) y <- as_mlx(y)
-
-  result_dim <- .broadcast_dim(x$dim, y$dim)
-  result_device <- .common_device(x$device, y$device)
-  result_dtype <- .promote_dtype(x$dtype, y$dtype)
-
-  if (identical(result_dtype, "bool")) {
-    result_dtype <- "float32"
-  }
-
-  ptr <- cpp_mlx_minimum(x$ptr, y$ptr, result_device)
-  new_mlx(ptr, result_dim, result_dtype, result_device)
+  .mlx_binary_result(x, y, cpp_mlx_minimum)
 }
 
 #' Elementwise maximum of two mlx arrays
@@ -227,8 +215,18 @@ mlx_minimum <- function(x, y) {
 #' mlx_maximum(1:3, c(3, 2, 1))
 #' }
 mlx_maximum <- function(x, y) {
-  if (!is.mlx(x)) x <- as_mlx(x)
-  if (!is.mlx(y)) y <- as_mlx(y)
+  .mlx_binary_result(x, y, cpp_mlx_maximum)
+}
+
+#' Internal wrapper for binary operations
+#'
+#' @param x,y mlx arrays or coercible to mlx
+#' @param cpp_fn C++ function to call (takes x$ptr, y$ptr, device)
+#' @return mlx array
+#' @noRd
+.mlx_binary_result <- function(x, y, cpp_fn) {
+  x <- as_mlx(x)
+  y <- as_mlx(y)
 
   result_dim <- .broadcast_dim(x$dim, y$dim)
   result_device <- .common_device(x$device, y$device)
@@ -238,7 +236,7 @@ mlx_maximum <- function(x, y) {
     result_dtype <- "float32"
   }
 
-  ptr <- cpp_mlx_maximum(x$ptr, y$ptr, result_device)
+  ptr <- cpp_fn(x$ptr, y$ptr, result_device)
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
@@ -255,7 +253,7 @@ mlx_maximum <- function(x, y) {
 #' mlx_clip(x, min = -1, max = 1)
 #' }
 mlx_clip <- function(x, min = NULL, max = NULL) {
-  if (!is.mlx(x)) x <- as_mlx(x)
+  x <- as_mlx(x)
   if (is.null(min) && is.null(max)) {
     stop("At least one of 'min' or 'max' must be supplied.", call. = FALSE)
   }

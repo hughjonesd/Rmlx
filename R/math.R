@@ -91,8 +91,8 @@ Math.mlx <- function(x, ...) {
 #' mlx_isclose(a, b)  # First two TRUE, last FALSE
 mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
                         device = mlx_default_device()) {
-  if (!is.mlx(a)) a <- as_mlx(a)
-  if (!is.mlx(b)) b <- as_mlx(b)
+  a <- as_mlx(a)
+  b <- as_mlx(b)
 
   ptr <- cpp_mlx_isclose(a$ptr, b$ptr, rtol, atol, equal_nan, device)
   .mlx_wrap_result(ptr, device)
@@ -127,8 +127,8 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #' as.logical(as.matrix(mlx_allclose(a, b)))  # TRUE
 mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
                          device = mlx_default_device()) {
-  if (!is.mlx(a)) a <- as_mlx(a)
-  if (!is.mlx(b)) b <- as_mlx(b)
+  a <- as_mlx(a)
+  b <- as_mlx(b)
 
   ptr <- cpp_mlx_allclose(a$ptr, b$ptr, rtol, atol, equal_nan, device)
   .mlx_wrap_result(ptr, device)
