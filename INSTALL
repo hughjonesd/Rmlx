@@ -101,7 +101,6 @@ MLX_USE_SYSTEM=1 R CMD INSTALL Rmlx_*.tar.gz
 MLX_INCLUDE=/opt/homebrew/include R CMD INSTALL Rmlx_*.tar.gz
 ```
 
-
 System Requirements
 -------------------
 
@@ -135,6 +134,7 @@ sudo apt-get install cmake build-essential libblas-dev liblapack-dev liblapacke-
 ```
 
 **Note**: BLAS, LAPACK, and LAPACKE are always required on Linux, even for CPU-only builds.
+For CPU-only builds on Linux, CUDA is not required.
 
 
 Examples
