@@ -45,6 +45,7 @@ reference:
       - starts_with("mlx_rand")
   - title: Shape & Indexing
     contents:
+      - mlx_reshape
       - mlx_stack
       - mlx_squeeze
       - mlx_expand_dims
@@ -102,9 +103,11 @@ reference:
       - crossprod.mlx
       - tcrossprod.mlx
       - outer
+      - diag
       - chol.mlx
       - chol2inv
       - qr.mlx
+      - svd
       - svd.mlx
       - solve.mlx
       - pinv

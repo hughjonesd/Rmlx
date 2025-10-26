@@ -109,8 +109,44 @@ dim.mlx <- function(x) {
     ), call. = FALSE)
   }
 
-  # Use reshape
-  ptr <- cpp_mlx_reshape(x$ptr, value)
+  mlx_reshape(x, value)
+}
+
+#' Reshape an mlx array
+#'
+#' @inheritParams mlx_array_required
+#' @param newshape Integer vector specifying the new dimensions.
+#' @return An mlx array with the specified shape.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.reshape.html}
+#' @export
+#' @examples
+#' x <- as_mlx(1:12)
+#' mlx_reshape(x, c(3, 4))
+#' mlx_reshape(x, c(2, 6))
+mlx_reshape <- function(x, newshape) {
+  if (!is.mlx(x)) x <- as_mlx(x)
+
+  if (!is.numeric(newshape) || any(is.na(newshape))) {
+    stop("newshape must be a numeric vector without NAs", call. = FALSE)
+  }
+
+  newshape <- as.integer(newshape)
+
+  if (any(newshape < 0)) {
+    stop("newshape cannot contain negative values", call. = FALSE)
+  }
+
+  current_size <- prod(x$dim)
+  new_size <- prod(newshape)
+
+  if (current_size != new_size) {
+    stop(sprintf(
+      "Cannot reshape array of size %d into shape with size %d",
+      current_size, new_size
+    ), call. = FALSE)
+  }
+
+  ptr <- cpp_mlx_reshape(x$ptr, newshape)
   dim_result <- cpp_mlx_shape(ptr)
   dtype_result <- cpp_mlx_dtype(ptr)
   new_mlx(ptr, dim_result, dtype_result, x$device)

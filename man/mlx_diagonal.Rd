@@ -12,10 +12,12 @@ mlx_diagonal(x, offset = 0L, axis1 = 1L, axis2 = 2L)
 \arguments{
 \item{x}{An mlx array. If 1D, creates a diagonal matrix. If 2D or higher, extracts the diagonal.}
 
-\item{names}{Unused.
+\item{nrow, ncol}{Diagonal offset (nrow only; ncol ignored).
 
 \code{diag.mlx()} is an R interface to \code{mlx_diagonal()} with the same semantics
 as \code{\link[base:diag]{base::diag()}}.}
+
+\item{names}{Unused.}
 
 \item{offset}{Diagonal offset (0 for main diagonal, positive for above, negative for below).}
 
@@ -31,10 +33,11 @@ Extract a diagonal from a matrix or construct a diagonal matrix from a vector.
 # Extract diagonal
 x <- as_mlx(matrix(1:9, 3, 3))
 mlx_diagonal(x)
-
-# Create diagonal matrix
+\dontrun{
+# Create diagonal matrix (not yet supported for 1D input)
 v <- as_mlx(c(1, 2, 3))
 mlx_diagonal(v)
+}
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.diagonal.html}

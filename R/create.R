@@ -143,18 +143,25 @@ mlx_identity <- function(n,
 }
 
 
+#' Diagonal matrix extraction and construction
+#'
+#' Generic function for extracting/constructing diagonal matrices.
+#' @param x An object.
+#' @param nrow,ncol Optional dimensions for matrix construction.
+#' @param names Logical indicating whether to use names.
 #' @export
-diag <- function(x, ...) {
+diag <- function(x = 1, nrow, ncol, names = TRUE) {
   UseMethod("diag")
 }
 
 #' @export
-diag.default <- base::diag
+diag.default <- function(x, ...) base::diag(x, ...)
 
 
 #' @export
 #' @rdname mlx_diagonal
 #' @param names Unused.
+#' @param nrow,ncol Diagonal offset (nrow only; ncol ignored).
 #'
 #' `diag.mlx()` is an R interface to `mlx_diagonal()` with the same semantics
 #' as [base::diag()].

@@ -103,13 +103,18 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   )
 }
 
+#' Singular value decomposition
+#'
+#' Generic function for SVD computation.
+#' @param x An object.
+#' @param ... Additional arguments.
 #' @export
 svd <- function(x, ...) {
   UseMethod("svd")
 }
 
 #' @export
-svd.default <- base::svd
+svd.default <- function(x, ...) base::svd(x, ...)
 
 #' Singular value decomposition for mlx arrays
 #'
@@ -391,10 +396,11 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' # Extract diagonal
 #' x <- as_mlx(matrix(1:9, 3, 3))
 #' mlx_diagonal(x)
-#'
-#' # Create diagonal matrix
+#' \dontrun{
+#' # Create diagonal matrix (not yet supported for 1D input)
 #' v <- as_mlx(c(1, 2, 3))
 #' mlx_diagonal(v)
+#' }
 mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
   if (!is.mlx(x)) x <- as_mlx(x)
   ptr <- cpp_mlx_diagonal(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), x$device)
@@ -403,7 +409,8 @@ mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 
 #' Outer product of two vectors
 #'
-#' @param x,y Numeric vectors or mlx arrays.
+#' @param X,Y Numeric vectors or mlx arrays.
+#' @param FUN Function to apply (for default method).
 #' @param ... Additional arguments passed to methods.
 #' @return For mlx inputs, an mlx matrix. Otherwise delegates to `base::outer`.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.outer.html}
@@ -412,7 +419,7 @@ mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' x <- as_mlx(c(1, 2, 3))
 #' y <- as_mlx(c(4, 5))
 #' outer(x, y)
-outer <- function(x, y, ...) {
+outer <- function(X, Y, FUN = "*", ...) {
   UseMethod("outer")
 }
 
@@ -421,11 +428,11 @@ outer.default <- base::outer
 
 #' @export
 #' @rdname outer
-outer.mlx <- function(x, y, ...) {
-  if (!is.mlx(x)) x <- as_mlx(x)
-  if (!is.mlx(y)) y <- as_mlx(y)
-  ptr <- cpp_mlx_outer(x$ptr, y$ptr, x$device)
-  .mlx_wrap_result(ptr, x$device)
+outer.mlx <- function(X, Y, FUN = "*", ...) {
+  if (!is.mlx(X)) X <- as_mlx(X)
+  if (!is.mlx(Y)) Y <- as_mlx(Y)
+  ptr <- cpp_mlx_outer(X$ptr, Y$ptr, X$device)
+  .mlx_wrap_result(ptr, X$device)
 }
 
 #' Unflatten an axis into multiple axes
@@ -519,7 +526,7 @@ mlx_cholesky_inv <- function(x, upper = FALSE) {
 #'
 #' @inheritParams mlx_array_required
 #' @return A list with components `p` (pivot indices), `l` (lower triangular),
-#'   and `u` (upper triangular). The relationship is A = L[P, :] \%*\% U.
+#'   and `u` (upper triangular). The relationship is `A = L[P, ] %*% U`.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.lu}
 #' @export
 #' @examples

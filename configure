@@ -30,7 +30,7 @@ if [ -z "$MLX_LIB_DIR" ]; then
     /opt/homebrew/lib \
     /usr/local/lib
   do
-    if [ -d "$dir" ] && [ -f "$dir/libmlx.dylib" -o -f "$dir/libmlx.a" ]; then
+    if [ -d "$dir" ] && { [ -f "$dir/libmlx.dylib" ] || [ -f "$dir/libmlx.a" ]; }; then
       MLX_LIB_DIR="$dir"
       echo "Found MLX library in: $MLX_LIB_DIR"
       break

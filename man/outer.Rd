@@ -5,12 +5,14 @@
 \alias{outer.mlx}
 \title{Outer product of two vectors}
 \usage{
-outer(x, y, ...)
+outer(X, Y, FUN = "*", ...)
 
-\method{outer}{mlx}(x, y, ...)
+\method{outer}{mlx}(X, Y, FUN = "*", ...)
 }
 \arguments{
-\item{x, y}{Numeric vectors or mlx arrays.}
+\item{X, Y}{Numeric vectors or mlx arrays.}
+
+\item{FUN}{Function to apply (for default method).}
 
 \item{...}{Additional arguments passed to methods.}
 }

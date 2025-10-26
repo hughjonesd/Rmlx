@@ -11,7 +11,7 @@ mlx_lu(x)
 }
 \value{
 A list with components \code{p} (pivot indices), \code{l} (lower triangular),
-and \code{u} (upper triangular). The relationship is A = L\link{P, :} \\%*\\% U.
+and \code{u} (upper triangular). The relationship is \code{A = L[P, ] \%*\% U}.
 }
 \description{
 Computes the LU factorization of a matrix.
