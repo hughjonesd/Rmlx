@@ -64,23 +64,26 @@ Transposed convolutions are used to upsample the spatial dimensions of the input
 
 
 <dl><dt id="arg-input">input<a class="anchor" aria-label="anchor" href="#arg-input"></a></dt>
-<dd><p>An mlx array with shape <code>(batch, length, in_channels)</code> for 'NWC' layout</p></dd>
+<dd><p>Input mlx array. Shape depends on dimensionality (see individual functions).</p></dd>
 
 
 <dt id="arg-weight">weight<a class="anchor" aria-label="anchor" href="#arg-weight"></a></dt>
-<dd><p>An mlx array with shape <code>(out_channels, kernel_size, in_channels)</code></p></dd>
+<dd><p>Weight array. Shape depends on dimensionality (see individual functions).</p></dd>
 
 
 <dt id="arg-stride">stride<a class="anchor" aria-label="anchor" href="#arg-stride"></a></dt>
-<dd><p>Stride of the convolution. Default: 1</p></dd>
+<dd><p>Stride of the convolution. Can be a scalar or vector (length depends
+on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.</p></dd>
 
 
 <dt id="arg-padding">padding<a class="anchor" aria-label="anchor" href="#arg-padding"></a></dt>
-<dd><p>Amount of zero padding. Default: 0</p></dd>
+<dd><p>Amount of zero padding. Can be a scalar or vector (length depends
+on dimensionality). Default: 0 for 1D, c(0,0) for 2D, c(0,0,0) for 3D.</p></dd>
 
 
 <dt id="arg-dilation">dilation<a class="anchor" aria-label="anchor" href="#arg-dilation"></a></dt>
-<dd><p>Dilation factor for the kernel. Default: 1</p></dd>
+<dd><p>Spacing between kernel elements. Can be a scalar or vector (length
+depends on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.</p></dd>
 
 
 <dt id="arg-output-padding">output_padding<a class="anchor" aria-label="anchor" href="#arg-output-padding"></a></dt>
@@ -88,16 +91,21 @@ Transposed convolutions are used to upsample the spatial dimensions of the input
 
 
 <dt id="arg-groups">groups<a class="anchor" aria-label="anchor" href="#arg-groups"></a></dt>
-<dd><p>Number of blocked connections from input to output channels. Default: 1</p></dd>
+<dd><p>Number of blocked connections from input to output channels. Default: 1.</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Device to perform computation on. Default: <code><a href="mlx_default_device.html">mlx_default_device()</a></code></p></dd>
+<dd><p>Device for computation: <code>"gpu"</code> or <code>"cpu"</code>. Default: <code><a href="mlx_default_device.html">mlx_default_device()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An mlx array with the transposed convolution result</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Input has shape <code>(batch, length, in_channels)</code> for 'NWC' layout. Weight has shape
+<code>(out_channels, kernel_size, in_channels)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

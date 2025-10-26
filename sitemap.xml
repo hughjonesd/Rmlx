@@ -25,7 +25,10 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/chol2inv.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/colMeans.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/colSums.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/common_params.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/conv_params.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/crossprod.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/diag.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/dim-set-.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/dim.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/fft.html</loc></url>
@@ -37,10 +40,13 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_allclose.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_arange.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_argmax.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_array_required.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_batch_norm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_binary_cross_entropy.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_cholesky_inv.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_clip.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_compile.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_compile_control.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv1d.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv2d.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv3d.html</loc></url>
@@ -52,6 +58,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_cross_entropy.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_cumsum.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dequantize.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_diagonal.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dim.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dropout.html</loc></url>
@@ -80,6 +87,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_logcumsumexp.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_logsumexp.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_lu.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_matrix_required.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_maximum.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_minimum.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_moveaxis.html</loc></url>
@@ -91,6 +99,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_set_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_parameters.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_quantize.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_quantized_matmul.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_bernoulli.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_categorical.html</loc></url>
@@ -105,6 +114,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_reduction_base.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_relu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_repeat.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_reshape.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_roll.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sequential.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sigmoid.html</loc></url>
@@ -137,6 +147,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/solve.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/str.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/sub-.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/svd.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/svd.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/t.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/tcrossprod.mlx.html</loc></url>

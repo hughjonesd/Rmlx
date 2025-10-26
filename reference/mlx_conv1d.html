@@ -60,37 +60,44 @@
 
 
 <dl><dt id="arg-input">input<a class="anchor" aria-label="anchor" href="#arg-input"></a></dt>
-<dd><p>Input array of shape <code>(N, L, C_in)</code> where N is batch size,
-L is sequence length, and C_in is number of input channels</p></dd>
+<dd><p>Input mlx array. Shape depends on dimensionality (see individual functions).</p></dd>
 
 
 <dt id="arg-weight">weight<a class="anchor" aria-label="anchor" href="#arg-weight"></a></dt>
-<dd><p>Weight tensor of shape <code>(C_out, kernel_size, C_in)</code></p></dd>
+<dd><p>Weight array. Shape depends on dimensionality (see individual functions).</p></dd>
 
 
 <dt id="arg-stride">stride<a class="anchor" aria-label="anchor" href="#arg-stride"></a></dt>
-<dd><p>Stride of the convolution (default: 1)</p></dd>
+<dd><p>Stride of the convolution. Can be a scalar or vector (length depends
+on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.</p></dd>
 
 
 <dt id="arg-padding">padding<a class="anchor" aria-label="anchor" href="#arg-padding"></a></dt>
-<dd><p>Amount of zero padding (default: 0)</p></dd>
+<dd><p>Amount of zero padding. Can be a scalar or vector (length depends
+on dimensionality). Default: 0 for 1D, c(0,0) for 2D, c(0,0,0) for 3D.</p></dd>
 
 
 <dt id="arg-dilation">dilation<a class="anchor" aria-label="anchor" href="#arg-dilation"></a></dt>
-<dd><p>Spacing between kernel elements (default: 1)</p></dd>
+<dd><p>Spacing between kernel elements. Can be a scalar or vector (length
+depends on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.</p></dd>
 
 
 <dt id="arg-groups">groups<a class="anchor" aria-label="anchor" href="#arg-groups"></a></dt>
-<dd><p>Number of blocked connections (default: 1)</p></dd>
+<dd><p>Number of blocked connections from input to output channels. Default: 1.</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Device to use for computation</p></dd>
+<dd><p>Device for computation: <code>"gpu"</code> or <code>"cpu"</code>. Default: <code><a href="mlx_default_device.html">mlx_default_device()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>Convolved output array</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Input has shape <code>(N, L, C_in)</code> where N is batch size, L is sequence length,
+and C_in is number of input channels. Weight has shape <code>(C_out, kernel_size, C_in)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

@@ -78,10 +78,10 @@ stored as <code>float32</code>; logical arrays use MLX <code>bool</code>; comple
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Apple MLX executes in single precision. Numeric inputs are stored in
 <code>float32</code> regardless of the requested dtype. Logical inputs are mapped to
-MLX boolean tensors. Complex inputs are stored as <code>complex64</code> (float32 real
+MLX boolean arrays. Complex inputs are stored as <code>complex64</code> (float32 real
 and imaginary parts). Asking for <code>dtype = "float64"</code> emits a warning and the
 input is downcast to <code>float32</code>. If you require double precision arithmetic,
-use base R arrays instead of <code>mlx</code> objects.</p>
+use base R arrays instead of mlx objects.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

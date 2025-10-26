@@ -189,7 +189,19 @@
           <code><a href="mlx_stop_gradient.html">mlx_stop_gradient()</a></code>
 
         </dt>
-        <dd>Stop gradient propagation through an MLX tensor</dd>
+        <dd>Stop gradient propagation through an mlx array</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_compile.html">mlx_compile()</a></code>
+
+        </dt>
+        <dd>Compile an MLX Function for Optimized Execution</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_compile_control.html">mlx_disable_compile()</a></code> <code><a href="mlx_compile_control.html">mlx_enable_compile()</a></code>
+
+        </dt>
+        <dd>Control Global Compilation Behavior</dd>
       </dl></div><div class="section level2">
       <h2 id="creation-randomness">Creation &amp; Randomness<a class="anchor" aria-label="anchor" href="#creation-randomness"></a></h2>
 
@@ -206,19 +218,19 @@
           <code><a href="mlx_zeros.html">mlx_zeros()</a></code>
 
         </dt>
-        <dd>Create tensors of zeros on MLX devices</dd>
+        <dd>Create arrays of zeros on MLX devices</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_ones.html">mlx_ones()</a></code>
 
         </dt>
-        <dd>Create tensors of ones on MLX devices</dd>
+        <dd>Create arrays of ones on MLX devices</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_full.html">mlx_full()</a></code>
 
         </dt>
-        <dd>Fill an MLX tensor with a constant value</dd>
+        <dd>Fill an mlx array with a constant value</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_eye.html">mlx_eye()</a></code>
@@ -248,61 +260,61 @@
           <code><a href="mlx_rand_bernoulli.html">mlx_rand_bernoulli()</a></code>
 
         </dt>
-        <dd>Sample Bernoulli random variables on MLX tensors</dd>
+        <dd>Sample Bernoulli random variables on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_rand_categorical.html">mlx_rand_categorical()</a></code>
 
         </dt>
-        <dd>Sample from a categorical distribution on MLX tensors</dd>
+        <dd>Sample from a categorical distribution on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_rand_gumbel.html">mlx_rand_gumbel()</a></code>
 
         </dt>
-        <dd>Sample from the Gumbel distribution on MLX tensors</dd>
+        <dd>Sample from the Gumbel distribution on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_rand_laplace.html">mlx_rand_laplace()</a></code>
 
         </dt>
-        <dd>Sample from the Laplace distribution on MLX tensors</dd>
+        <dd>Sample from the Laplace distribution on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_rand_multivariate_normal.html">mlx_rand_multivariate_normal()</a></code>
 
         </dt>
-        <dd>Sample from a multivariate normal distribution on MLX tensors</dd>
+        <dd>Sample from a multivariate normal distribution on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_rand_normal.html">mlx_rand_normal()</a></code>
 
         </dt>
-        <dd>Sample from a normal distribution on MLX tensors</dd>
+        <dd>Sample from a normal distribution on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_rand_permutation.html">mlx_rand_permutation()</a></code>
 
         </dt>
-        <dd>Generate random permutations on MLX tensors</dd>
+        <dd>Generate random permutations on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_rand_randint.html">mlx_rand_randint()</a></code>
 
         </dt>
-        <dd>Sample random integers on MLX tensors</dd>
+        <dd>Sample random integers on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_rand_truncated_normal.html">mlx_rand_truncated_normal()</a></code>
 
         </dt>
-        <dd>Sample from a truncated normal distribution on MLX tensors</dd>
+        <dd>Sample from a truncated normal distribution on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_rand_uniform.html">mlx_rand_uniform()</a></code>
 
         </dt>
-        <dd>Sample from a uniform distribution on MLX tensors</dd>
+        <dd>Sample from a uniform distribution on mlx arrays</dd>
       </dl></div><div class="section level2">
       <h2 id="shape-indexing">Shape &amp; Indexing<a class="anchor" aria-label="anchor" href="#shape-indexing"></a></h2>
 
@@ -316,10 +328,16 @@
 
       <dl><dt>
 
+          <code><a href="mlx_reshape.html">mlx_reshape()</a></code>
+
+        </dt>
+        <dd>Reshape an mlx array</dd>
+      </dl><dl><dt>
+
           <code><a href="mlx_stack.html">mlx_stack()</a></code>
 
         </dt>
-        <dd>Stack MLX tensors along a new axis</dd>
+        <dd>Stack mlx arrays along a new axis</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_squeeze.html">mlx_squeeze()</a></code>
@@ -337,31 +355,31 @@
           <code><a href="mlx_repeat.html">mlx_repeat()</a></code>
 
         </dt>
-        <dd>Repeat tensor elements</dd>
+        <dd>Repeat array elements</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_tile.html">mlx_tile()</a></code>
 
         </dt>
-        <dd>Tile a tensor</dd>
+        <dd>Tile an array</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_pad.html">mlx_pad()</a></code> <code><a href="mlx_pad.html">mlx_split()</a></code>
 
         </dt>
-        <dd>Pad or split MLX tensors</dd>
+        <dd>Pad or split mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_roll.html">mlx_roll()</a></code>
 
         </dt>
-        <dd>Roll tensor elements</dd>
+        <dd>Roll array elements</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_moveaxis.html">mlx_moveaxis()</a></code> <code><a href="mlx_moveaxis.html">aperm(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
-        <dd>Reorder MLX tensor axes</dd>
+        <dd>Reorder mlx array axes</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_unflatten.html">mlx_unflatten()</a></code>
@@ -379,13 +397,13 @@
           <code><a href="rbind.mlx.html">rbind(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
-        <dd>Row-bind MLX tensors</dd>
+        <dd>Row-bind mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="cbind.mlx.html">cbind(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
-        <dd>Column-bind MLX tensors</dd>
+        <dd>Column-bind mlx arrays</dd>
       </dl></div><div class="section level2">
       <h2 id="ordering-selection">Ordering &amp; Selection<a class="anchor" aria-label="anchor" href="#ordering-selection"></a></h2>
 
@@ -402,19 +420,19 @@
           <code><a href="mlx_sort.html">mlx_sort()</a></code> <code><a href="mlx_sort.html">mlx_argsort()</a></code>
 
         </dt>
-        <dd>Sort and argsort for MLX tensors</dd>
+        <dd>Sort and argsort for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_topk.html">mlx_topk()</a></code> <code><a href="mlx_topk.html">mlx_partition()</a></code> <code><a href="mlx_topk.html">mlx_argpartition()</a></code>
 
         </dt>
-        <dd>Top-k selection and partitioning on MLX tensors</dd>
+        <dd>Top-k selection and partitioning on mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_argmax.html">mlx_argmax()</a></code> <code><a href="mlx_argmax.html">mlx_argmin()</a></code>
 
         </dt>
-        <dd>Argmax and argmin on MLX tensors</dd>
+        <dd>Argmax and argmin on mlx arrays</dd>
       </dl></div><div class="section level2">
       <h2 id="math-reductions">Math &amp; Reductions<a class="anchor" aria-label="anchor" href="#math-reductions"></a></h2>
 
@@ -443,7 +461,7 @@
           <code><a href="mlx_sum.html">mlx_sum()</a></code> <code><a href="mlx_sum.html">mlx_prod()</a></code> <code><a href="mlx_sum.html">mlx_all()</a></code> <code><a href="mlx_sum.html">mlx_any()</a></code> <code><a href="mlx_sum.html">mlx_mean()</a></code> <code><a href="mlx_sum.html">mlx_var()</a></code> <code><a href="mlx_sum.html">mlx_std()</a></code>
 
         </dt>
-        <dd>Reduce MLX tensors</dd>
+        <dd>Reduce mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mean.mlx.html">mean(<i>&lt;mlx&gt;</i>)</a></code>
@@ -461,37 +479,37 @@
           <code><a href="mlx_clip.html">mlx_clip()</a></code>
 
         </dt>
-        <dd>Clip MLX tensor values into a range</dd>
+        <dd>Clip mlx array values into a range</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_maximum.html">mlx_maximum()</a></code>
 
         </dt>
-        <dd>Elementwise maximum of two MLX tensors</dd>
+        <dd>Elementwise maximum of two mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_minimum.html">mlx_minimum()</a></code>
 
         </dt>
-        <dd>Elementwise minimum of two MLX tensors</dd>
+        <dd>Elementwise minimum of two mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_softmax.html">mlx_softmax()</a></code>
 
         </dt>
-        <dd>Softmax for MLX tensors</dd>
+        <dd>Softmax for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_logsumexp.html">mlx_logsumexp()</a></code>
 
         </dt>
-        <dd>Log-sum-exp reduction for MLX tensors</dd>
+        <dd>Log-sum-exp reduction for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_logcumsumexp.html">mlx_logcumsumexp()</a></code>
 
         </dt>
-        <dd>Log cumulative sum exponential for MLX tensors</dd>
+        <dd>Log cumulative sum exponential for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_isclose.html">mlx_isclose()</a></code>
@@ -515,25 +533,25 @@
           <code><a href="colSums.html">colSums()</a></code>
 
         </dt>
-        <dd>Column sums for MLX tensors</dd>
+        <dd>Column sums for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="rowSums.html">rowSums()</a></code>
 
         </dt>
-        <dd>Row sums for MLX tensors</dd>
+        <dd>Row sums for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="colMeans.html">colMeans()</a></code>
 
         </dt>
-        <dd>Column means for MLX tensors</dd>
+        <dd>Column means for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="rowMeans.html">rowMeans()</a></code>
 
         </dt>
-        <dd>Row means for MLX tensors</dd>
+        <dd>Row means for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="fft.html">fft()</a></code>
@@ -577,10 +595,16 @@
         <dd>Outer product of two vectors</dd>
       </dl><dl><dt>
 
+          <code><a href="diag.html">diag()</a></code>
+
+        </dt>
+        <dd>Diagonal matrix extraction and construction</dd>
+      </dl><dl><dt>
+
           <code><a href="chol.mlx.html">chol(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
-        <dd>Cholesky decomposition for MLX tensors</dd>
+        <dd>Cholesky decomposition for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="chol2inv.html">chol2inv()</a></code>
@@ -592,13 +616,19 @@
           <code><a href="qr.mlx.html">qr(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
-        <dd>QR decomposition for MLX tensors</dd>
+        <dd>QR decomposition for mlx arrays</dd>
+      </dl><dl><dt>
+
+          <code><a href="svd.html">svd()</a></code>
+
+        </dt>
+        <dd>Singular value decomposition</dd>
       </dl><dl><dt>
 
           <code><a href="svd.mlx.html">svd(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
-        <dd>Singular value decomposition for MLX tensors</dd>
+        <dd>Singular value decomposition for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="solve.mlx.html">solve(<i>&lt;mlx&gt;</i>)</a></code>
@@ -640,55 +670,55 @@
           <code><a href="mlx_norm.html">mlx_norm()</a></code>
 
         </dt>
-        <dd>Matrix and vector norms for MLX tensors</dd>
+        <dd>Matrix and vector norms for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_solve_triangular.html">mlx_solve_triangular()</a></code>
 
         </dt>
-        <dd>Solve triangular systems with MLX tensors</dd>
+        <dd>Solve triangular systems with mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_trace.html">mlx_trace()</a></code>
 
         </dt>
-        <dd>Matrix trace for MLX tensors</dd>
+        <dd>Matrix trace for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_diagonal.html">diag(<i>&lt;mlx&gt;</i>)</a></code> <code><a href="mlx_diagonal.html">mlx_diagonal()</a></code>
 
         </dt>
-        <dd>Extract diagonal or construct diagonal matrix for MLX tensors</dd>
+        <dd>Extract diagonal or construct diagonal matrix for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_eig.html">mlx_eig()</a></code>
 
         </dt>
-        <dd>Eigen decomposition for MLX tensors</dd>
+        <dd>Eigen decomposition for mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_eigh.html">mlx_eigh()</a></code>
 
         </dt>
-        <dd>Eigen decomposition of Hermitian MLX tensors</dd>
+        <dd>Eigen decomposition of Hermitian mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_eigvals.html">mlx_eigvals()</a></code>
 
         </dt>
-        <dd>Eigenvalues of MLX tensors</dd>
+        <dd>Eigenvalues of mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_eigvalsh.html">mlx_eigvalsh()</a></code>
 
         </dt>
-        <dd>Eigenvalues of Hermitian MLX tensors</dd>
+        <dd>Eigenvalues of Hermitian mlx arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_cross.html">mlx_cross()</a></code>
 
         </dt>
-        <dd>Vector cross product with MLX tensors</dd>
+        <dd>Vector cross product with mlx arrays</dd>
       </dl></div><div class="section level2">
       <h2 id="neural-network-layers">Neural Network Layers<a class="anchor" aria-label="anchor" href="#neural-network-layers"></a></h2>
 
@@ -754,6 +784,18 @@
 
         </dt>
         <dd>3D Transposed Convolution</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_quantize.html">mlx_quantize()</a></code>
+
+        </dt>
+        <dd>Quantize a Matrix</dd>
+      </dl><dl><dt>
+
+          <code><a href="mlx_dequantize.html">mlx_dequantize()</a></code>
+
+        </dt>
+        <dd>Dequantize a Matrix</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_quantized_matmul.html">mlx_quantized_matmul()</a></code>
@@ -905,13 +947,13 @@
           <code><a href="mlx_param_values.html">mlx_param_values()</a></code>
 
         </dt>
-        <dd>Retrieve parameter tensors</dd>
+        <dd>Retrieve parameter arrays</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_param_set_values.html">mlx_param_set_values()</a></code>
 
         </dt>
-        <dd>Assign tensors back to parameters</dd>
+        <dd>Assign arrays back to parameters</dd>
       </dl><dl><dt>
 
           <code><a href="mlx_optimizer_sgd.html">mlx_optimizer_sgd()</a></code>

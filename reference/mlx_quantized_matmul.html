@@ -53,7 +53,7 @@ memory usage and computation time while maintaining reasonable accuracy.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_quantized_matmul</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">w</span>,</span>
-<span>  <span class="va">scales</span>,</span>
+<span>  scales <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  biases <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  transpose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  group_size <span class="op">=</span> <span class="fl">64L</span>,</span>
@@ -68,19 +68,23 @@ memory usage and computation time while maintaining reasonable accuracy.</p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An mlx array (the input matrix)</p></dd>
+<dd><p>An mlx array.</p></dd>
 
 
 <dt id="arg-w">w<a class="anchor" aria-label="anchor" href="#arg-w"></a></dt>
-<dd><p>An mlx array (the quantized weight matrix)</p></dd>
+<dd><p>An mlx array. Either:</p><ul><li><p>A quantized weight matrix (uint32) from <code><a href="mlx_quantize.html">mlx_quantize()</a></code>, or</p></li>
+<li><p>An unquantized weight matrix that will be quantized automatically</p></li>
+</ul></dd>
 
 
 <dt id="arg-scales">scales<a class="anchor" aria-label="anchor" href="#arg-scales"></a></dt>
-<dd><p>An mlx array (the quantization scales)</p></dd>
+<dd><p>An optional mlx array (the quantization scales). If NULL and w is
+unquantized, w will be quantized automatically. Default: NULL</p></dd>
 
 
 <dt id="arg-biases">biases<a class="anchor" aria-label="anchor" href="#arg-biases"></a></dt>
-<dd><p>An optional mlx array (biases to add). Default: NULL</p></dd>
+<dd><p>An optional mlx array (biases to add). For affine quantization, this
+should be the quantization biases if w is pre-quantized. Default: NULL</p></dd>
 
 
 <dt id="arg-transpose">transpose<a class="anchor" aria-label="anchor" href="#arg-transpose"></a></dt>
@@ -96,11 +100,11 @@ memory usage and computation time while maintaining reasonable accuracy.</p>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
-<dd><p>The quantization mode, either "affine" or "symmetric". Default: "affine"</p></dd>
+<dd><p>The quantization mode, either "affine" or "mxfp4". Default: "affine"</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Device to perform computation on. Default: <code><a href="mlx_default_device.html">mlx_default_device()</a></code></p></dd>
+<dd><p>Device for computation: <code>"gpu"</code> or <code>"cpu"</code>. Default: <code><a href="mlx_default_device.html">mlx_default_device()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -115,16 +119,31 @@ float32. The scales parameter contains the dequantization factors needed to reco
 approximate float values during computation.</p>
 <p>The group_size parameter controls the granularity of quantization - smaller groups
 provide better accuracy but slightly higher memory usage.</p>
-<p><strong>Note:</strong> This function requires properly quantized and packed weights. Users should
-use MLX quantization utilities to prepare weights in the correct format. The weight
-matrix must be uint32 type with values packed according to the bits parameter.</p>
+<p><strong>Automatic Quantization</strong>: If only w is provided (without scales), the function will
+automatically quantize w using <code><a href="mlx_quantize.html">mlx_quantize()</a></code> before performing the multiplication.
+For repeated operations, it's more efficient to pre-quantize weights once using
+<code><a href="mlx_quantize.html">mlx_quantize()</a></code> and reuse them.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mlx_gather_qmm.html">mlx_gather_qmm()</a></code></p>
-<p><a href="https://ml-explore.github.io/mlx/build/html/python/nn.html" class="external-link">https://ml-explore.github.io/mlx/build/html/python/nn.html</a></p></div>
+    <div class="dont-index"><p><code><a href="mlx_quantize.html">mlx_quantize()</a></code>, <code><a href="mlx_dequantize.html">mlx_dequantize()</a></code>, <code><a href="mlx_gather_qmm.html">mlx_gather_qmm()</a></code></p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Automatic quantization (convenient but slower for repeated use)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">mlx_random_normal</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">256</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu">mlx_random_normal</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">512</span>, <span class="fl">256</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">mlx_quantized_matmul</span><span class="op">(</span><span class="va">x</span>, <span class="va">w</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Pre-quantized weights (faster for repeated operations)</span></span></span>
+<span class="r-in"><span><span class="va">quant</span> <span class="op">&lt;-</span> <span class="fu"><a href="mlx_quantize.html">mlx_quantize</a></span><span class="op">(</span><span class="va">w</span>, group_size <span class="op">=</span> <span class="fl">64</span>, bits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">mlx_quantized_matmul</span><span class="op">(</span><span class="va">x</span>, <span class="va">quant</span><span class="op">$</span><span class="va">w_q</span>, <span class="va">quant</span><span class="op">$</span><span class="va">scales</span>, <span class="va">quant</span><span class="op">$</span><span class="va">biases</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 
