@@ -448,7 +448,12 @@ echo "Generating src/Makevars..."
 
   # Base compiler flags and MLX library
   PKG_CPPFLAGS="-I./mlx-src/install/include -I./mlx-src/mlx"
-  PKG_LIBS="-L./mlx-src/install/lib -lmlx"
+  # Add rpath on macOS for bundled MLX - use @loader_path to find metallib relative to .so
+  if [ "$OS" = "Darwin" ]; then
+    PKG_LIBS="-L./mlx-src/install/lib -Wl,-rpath,@loader_path/../mlx-src/install/lib -lmlx"
+  else
+    PKG_LIBS="-L./mlx-src/install/lib -lmlx"
+  fi
 fi
 
 # Add platform-specific libraries based on enabled backends
