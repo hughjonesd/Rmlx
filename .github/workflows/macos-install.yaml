@@ -29,8 +29,9 @@ jobs:
           brew install cmake
           cmake --version
 
-      - name: Cache MLX build
-        uses: actions/cache@v4
+      - name: Restore MLX build cache
+        id: cache-mlx
+        uses: actions/cache/restore@v4
         with:
           path: |
             src/mlx-src/build
@@ -45,11 +46,21 @@ jobs:
           needs: check
 
       - name: Build and install package (bundled MLX)
+        id: build-package
         run: |
           chmod +x configure cleanup
           R CMD build .
           R CMD INSTALL *.tar.gz
         shell: bash
+
+      - name: Save MLX build cache
+        uses: actions/cache/save@v4
+        if: steps.cache-mlx.outputs.cache-hit != 'true'
+        with:
+          path: |
+            src/mlx-src/build
+            src/mlx-src/install
+          key: ${{ runner.os }}-mlx-${{ hashFiles('src/mlx-src/**') }}-${{ hashFiles('configure') }}
 
       - name: Verify installation
         run: |
