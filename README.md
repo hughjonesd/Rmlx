@@ -7,65 +7,35 @@
 coverage](https://codecov.io/gh/hughjonesd/Rmlx/graph/badge.svg)](https://app.codecov.io/gh/hughjonesd/Rmlx)
 <!-- badges: end -->
 
-R interface to Apple’s MLX (Machine Learning eXchange) library for
-GPU-accelerated array operations on Apple Silicon.
+R interface to Apple’s MLX (Machine Learning eXchange) library.
 
 ## Overview
 
-Rmlx provides an R interface to Apple’s MLX framework, enabling
-high-performance GPU computing on Apple Silicon (M1, M2, M3+) using the
-Metal backend. The package implements lazy evaluation and familiar R
-syntax through S3 method dispatch.
+Rmlx provides an R interface to Apple’s [MLX
+framework](https://ml-explore.github.io/mlx/), enabling high-performance
+GPU computing on Apple Silicon.
 
-**Status**: Phase 1 implementation complete (arrays, operations,
-evaluation, tests, documentation). Phase 2 (autodiff, optimizers) not
-yet implemented.
+This package was vibe-coded with Claude/OpenAI Codex in a week. Use at
+your own risk! Much of the C++ API has been implemented, but not
+python-only features such as large neural network layers.
 
 ## Requirements
 
-- macOS on Apple Silicon (M1/M2/M3 or later)
-- MLX C/C++ library installed
-- R \>= 4.1.0
-- Rcpp \>= 1.0.10
+- macOS on Apple Silicon (M1/M2/M3 or later) *or* Linux with CUDA *or*
+  MacOS/Linux for a CPU-only build
 
 ## Installation
 
-### Install MLX
+`brew install mlx`
 
-First, install the MLX library:
-
-``` bash
-# Option 1: Homebrew (if available)
-brew install mlx
-
-# Option 2: Build from source
-git clone https://github.com/ml-explore/mlx.git
-cd mlx
-mkdir build && cd build
-cmake ..
-make
-sudo make install
-```
-
-### Install Rmlx
-
-``` r
-# Install from source
-devtools::install()
-
-# Or with custom MLX paths
-Sys.setenv(MLX_INCLUDE = "/path/to/mlx/include")
-Sys.setenv(MLX_LIB_DIR = "/path/to/mlx/lib")
-devtools::install()
-```
+or the Linux equivalent. Then just install the package as normal.
 
 ## Features
 
-### Lazy Evaluation
-
-Operations are recorded but not executed until explicitly evaluated:
+### Fast GPU Operations
 
 ``` r
+
 library(Rmlx)
 #> 
 #> Attaching package: 'Rmlx'
@@ -74,10 +44,25 @@ library(Rmlx)
 #>     fft
 #> The following objects are masked from 'package:base':
 #> 
-#>     colMeans, colSums, rowMeans, rowSums
+#>     chol2inv, colMeans, colSums, diag, outer, rowMeans, rowSums, svd
 
-x <- as_mlx(matrix(1:100, 10, 10))
-y <- as_mlx(matrix(101:200, 10, 10))
+A <- matrix(rnorm(1e6), 1e3, 1e3)
+system.time(solve(A))
+#>    user  system elapsed 
+#>   0.366   0.003   0.372
+system.time(solve(as_mlx(A)))
+#>    user  system elapsed 
+#>   0.039   0.051   0.099
+```
+
+### Lazy Evaluation
+
+Operations are recorded but not executed until explicitly evaluated:
+
+``` r
+
+x <- as_mlx(matrix(1:25, 5, 5))
+y <- as_mlx(matrix(101:125, 5, 5))
 
 # Lazy - not computed yet
 z <- x + y * 2
@@ -86,29 +71,74 @@ z <- x + y * 2
 mlx_eval(z)
 
 # Or convert to R (automatically evaluates)
-result <- as.matrix(z)
-
-# Wait for queued GPU work (useful when timing)
-mlx_synchronize("gpu")
-
-# Simple aggregate checks
-sum(z)
-#> mlx array []
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#> [1] 35150
-mean(z)
-#> mlx array []
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#> [1] 351.5
+as.matrix(z)
+#>      [,1] [,2] [,3] [,4] [,5]
+#> [1,]  203  218  233  248  263
+#> [2,]  206  221  236  251  266
+#> [3,]  209  224  239  254  269
+#> [4,]  212  227  242  257  272
+#> [5,]  215  230  245  260  275
 ```
 
-### Arithmetic Operations
+### Subsetting
 
-Standard R operators work seamlessly:
+Subsetting works like base R:
+
+``` r
+x <- as_mlx(matrix(1:100, 10, 10))
+x[1:5, 1:5]
+#> mlx array [5 x 5]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2] [,3] [,4] [,5]
+#> [1,]    1   11   21   31   41
+#> [2,]    2   12   22   32   42
+#> [3,]    3   13   23   33   43
+#> [4,]    4   14   24   34   44
+#> [5,]    5   15   25   35   45
+
+# drop = FALSE by default
+x[1, ]
+#> mlx array [1 x 10]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+#> [1,]    1   11   21   31   41   51   61   71   81    91
+
+x[, 2:3]
+#> mlx array [10 x 2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>       [,1] [,2]
+#>  [1,]   11   21
+#>  [2,]   12   22
+#>  [3,]   13   23
+#>  [4,]   14   24
+#>  [5,]   15   25
+#>  [6,]   16   26
+#>  [7,]   17   27
+#>  [8,]   18   28
+#>  [9,]   19   29
+#> [10,]   20   30
+
+logical_mask <- rep(c(TRUE, FALSE), 5)
+x[logical_mask, ]
+#> mlx array [5 x 10]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+#> [1,]    1   11   21   31   41   51   61   71   81    91
+#> [2,]    3   13   23   33   43   53   63   73   83    93
+#> [3,]    5   15   25   35   45   55   65   75   85    95
+#> [4,]    7   17   27   37   47   57   67   77   87    97
+#> [5,]    9   19   29   39   49   59   69   79   89    99
+```
+
+### Arithmetic
 
 ``` r
 x <- as_mlx(matrix(1:12, 3, 4))
@@ -140,9 +170,31 @@ as.matrix(lt)
 
 ### Matrix Operations
 
+Many base R matrix functions have mlx-specific methods:
+
 ``` r
 a <- as_mlx(matrix(1:6, 2, 3))
 b <- as_mlx(matrix(1:6, 3, 2))
+
+# rbind, cbind, transpose
+rbind(a, t(b))
+#> mlx array [4 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2] [,3]
+#> [1,]    1    3    5
+#> [2,]    2    4    6
+#> [3,]    1    2    3
+#> [4,]    4    5    6
+cbind(a, t(b))
+#> mlx array [2 x 6]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2] [,3] [,4] [,5] [,6]
+#> [1,]    1    3    5    1    2    3
+#> [2,]    2    4    6    4    5    6
 
 # Matrix multiplication
 c <- a %*% b
@@ -150,43 +202,44 @@ as.matrix(c)
 #>      [,1] [,2]
 #> [1,]   22   49
 #> [2,]   28   64
-```
 
-Advanced decompositions mirror base R:
+# Reductions
+x <- as_mlx(matrix(1:25, 5, 5))
 
-### Random Sampling
-
-``` r
-random_tensor <- mlx_rand_uniform(c(512, 512), min = -1, max = 1)
-random_tensor
-#> mlx array [512 x 512]
+sum(a)
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
-#>   (262144 elements, not shown)
-```
+#>   values:
+#> [1] 21
+mean(a)
+#> mlx array []
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 3.5
+colMeans(a)
+#> mlx array [3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 1.5 3.5 5.5
+rowMeans(a)
+#> mlx array [2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 3 4
 
-### Data Transformations
+# Cumulative operations flatten column-major
+as.vector(cumsum(a))
+#> [1]  1  3  6 10 15 21
 
-Common ranking helpers are available under the `mlx_*` prefix; note that
-MLX indices are zero-based.
-
-``` r
-scores <- as_mlx(c(0.1, 0.7, 0.4, 0.9))
-as.matrix(mlx_sort(scores))
-#> [1] 0.1 0.4 0.7 0.9
-as.matrix(mlx_topk(scores, 2))
-#> [1] 0.7 0.9
-as.matrix(mlx_argmax(scores))
-#> [1] 3
-```
-
-``` r
 qr_res <- qr(a)
 svd_res <- svd(a)
 chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
 fft_res <- fft(a)
 
-# Inspect outputs
 qr_res$Q
 #> mlx array [2 x 2]
 #>   dtype: float32
@@ -196,14 +249,56 @@ qr_res$Q
 #> [1,] -0.4472135 -0.8944272
 #> [2,] -0.8944272  0.4472136
 svd_res$d
-#> [1] 9.5255181 0.5143006
-as.matrix(chol_res)
+#> mlx array [2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 9.5255194 0.5143015
+chol_res
+#> mlx array [2 x 2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>          [,1]     [,2]
 #> [1,] 3.741657 8.552360
 #> [2,] 0.000000 1.963962
 ```
 
-### Differentiation
+### Random Sampling
+
+``` r
+mlx_rand_uniform(c(512, 512), min = -1, max = 1)
+#> mlx array [512 x 512]
+#>   dtype: float32
+#>   device: gpu
+#>   (262144 elements, not shown)
+```
+
+### Data Transformations
+
+``` r
+scores <- as_mlx(c(0.1, 0.7, 0.4, 0.9))
+mlx_sort(scores)
+#> mlx array [4]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 0.1 0.4 0.7 0.9
+mlx_topk(scores, 2)
+#> mlx array [2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 0.7 0.9
+mlx_argmax(scores)
+#> mlx array []
+#>   dtype: uint32
+#>   device: gpu
+#>   values:
+#> [1] 3
+```
+
+### Automatic Differentiation
 
 ``` r
 loss <- function(w, x, y) {
@@ -220,11 +315,11 @@ grads <- mlx_grad(loss, w, x, y)
 
 # Inspect gradient
 as.matrix(grads[[1]])
-#>             [,1]
-#> [1,] 0.014563746
-#> [2,] 1.036490083
-#> [3,] 1.091995597
-#> [4,] 0.007043276
+#>            [,1]
+#> [1,]  1.5267658
+#> [2,]  0.2824979
+#> [3,]  0.9145919
+#> [4,] -0.2424971
 
 # Simple SGD loop
 model <- mlx_linear(4, 1, bias = FALSE)
@@ -245,148 +340,56 @@ mean((final_loss - y) * (final_loss - y))
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 0.3989661
-```
-
-### Reductions
-
-``` r
-x <- as_mlx(matrix(1:100, 10, 10))
-
-# Overall reductions
-sum(x)
-#> mlx array []
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#> [1] 5050
-mean(x)
-#> mlx array []
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#> [1] 50.5
-
-# Column/row means
-colMeans(x)
-#> mlx array [10]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>  [1]  5.5 15.5 25.5 35.5 45.5 55.5 65.5 75.5 85.5 95.5
-rowMeans(x)
-#> mlx array [10]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>  [1] 46 47 48 49 50 51 52 53 54 55
-
-# Cumulative operations flatten column-major
-as.vector(cumsum(x))
-#>   [1]    1    3    6   10   15   21   28   36   45   55   66   78   91  105  120
-#>  [16]  136  153  171  190  210  231  253  276  300  325  351  378  406  435  465
-#>  [31]  496  528  561  595  630  666  703  741  780  820  861  903  946  990 1035
-#>  [46] 1081 1128 1176 1225 1275 1326 1378 1431 1485 1540 1596 1653 1711 1770 1830
-#>  [61] 1891 1953 2016 2080 2145 2211 2278 2346 2415 2485 2556 2628 2701 2775 2850
-#>  [76] 2926 3003 3081 3160 3240 3321 3403 3486 3570 3655 3741 3828 3916 4005 4095
-#>  [91] 4186 4278 4371 4465 4560 4656 4753 4851 4950 5050
-```
-
-### Indexing
-
-``` r
-x <- as_mlx(matrix(1:100, 10, 10))
-
-# Subset
-x[1:5, 1:5]
-#> mlx array [5 x 5]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>      [,1] [,2] [,3] [,4] [,5]
-#> [1,]    1   11   21   31   41
-#> [2,]    2   12   22   32   42
-#> [3,]    3   13   23   33   43
-#> [4,]    4   14   24   34   44
-#> [5,]    5   15   25   35   45
-x[1, ]
-#> mlx array [1 x 10]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-#> [1,]    1   11   21   31   41   51   61   71   81    91
-x[, 1]
-#> mlx array [10 x 1]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>       [,1]
-#>  [1,]    1
-#>  [2,]    2
-#>  [3,]    3
-#>  [4,]    4
-#>  [5,]    5
-#>  [6,]    6
-#>  [7,]    7
-#>  [8,]    8
-#>  [9,]    9
-#> [10,]   10
+#> [1] 0.02584567
 ```
 
 ### Device Management
 
+M series chips have shared memory between the CPU and GPU, so switching
+between devices is costless.
+
 ``` r
 # Check/set default device
-mlx_default_device()           # "gpu"
-#> [1] "gpu"
-mlx_default_device("cpu")      # Switch to CPU
-#> [1] "cpu"
-mlx_default_device("gpu")      # Back to GPU
-#> [1] "gpu"
+dev <- mlx_default_device()           
+mlx_default_device("cpu")    # Switch to CPU
+mlx_default_device(dev)      # Back to GPU
 
 # Create on specific device
 x_gpu <- as_mlx(matrix(1:12, 3, 4), device = "gpu")
 x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 ```
 
-> **Precision note:** Numeric inputs are stored in `float32`. Requests
-> for `dtype = "float64"` are downcast with a warning. Logical inputs
-> are stored as MLX `bool` tensors (logical `NA` values are not
-> supported). Complex inputs are stored as `complex64` (single-precision
-> real/imaginary parts). Use base R arrays if you require double
-> precision arithmetic.
-
 ## Data Types
 
-Supported dtype:
+Supported data types:
 
 - `float32` for numeric data (default)
 - `bool` for logical data
+- Integer types `int8`, `int16`, `int32`, `int64`, `uint8`, `uint16`,
+  `uint32`, `uint64`.
+- `complex64`
 
 ``` r
+
 x_f32 <- as_mlx(matrix(1:12, 3, 4), dtype = "float32")
 logical_mat <- as_mlx(matrix(c(TRUE, FALSE, TRUE, TRUE), 2, 2))
+
+# Integer matrix must be requested explicitly:
+typeof(1:10)
+#> [1] "integer"
+x_float <- as_mlx(1:10)
+x_int <- as_mlx(1:10, dtype = "int32")
+
+# The Apple GPU uses float32 internally. Requests for `dtype = "float64"` 
+# are downcast with a warning.
+as_mlx(matrix(1:12, 3, 4), dtype = "float64")
+#> Warning: MLX arrays are stored in float32; downcasting input.
+#> mlx array [3 x 4]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2] [,3] [,4]
+#> [1,]    1    4    7   10
+#> [2,]    2    5    8   11
+#> [3,]    3    6    9   12
 ```
-
-## Documentation
-
-- Package documentation: `?Rmlx`
-- Getting started vignette:
-  `vignette("getting-started", package = "Rmlx")`
-- Function help: `?as_mlx`, `?mlx_eval`, etc.
-
-## Testing
-
-Tests use testthat and compare against base R results:
-
-``` r
-# Run all tests
-devtools::test()
-
-# Run specific test file
-devtools::test_file("tests/testthat/test-ops.R")
-```
-
-Tests skip gracefully if MLX is not available or the package fails to
-load.
