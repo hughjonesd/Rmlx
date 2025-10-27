@@ -8,6 +8,8 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(Rmlx)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -26,8 +28,6 @@ This vignette demonstrates linear regression using Rmlx, based on the [MLX linea
 We'll create synthetic data for linear regression with high dimensionality:
 
 ```{r}
-library(Rmlx)
-
 # Problem metadata
 num_features <- 100
 num_examples <- 1000
