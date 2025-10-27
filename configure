@@ -486,6 +486,16 @@ EOF
 
 echo "✓ src/Makevars created"
 
+# For bundled builds with Metal, copy metallib to inst/libs so it's co-located with Rmlx.so
+if [ "$USE_SYSTEM_MLX" = "false" ] && [ "$MLX_BUILD_METAL" = "ON" ]; then
+  if [ -f "src/mlx-src/install/lib/mlx.metallib" ]; then
+    echo "Copying mlx.metallib to inst/libs..."
+    mkdir -p inst/libs
+    cp src/mlx-src/install/lib/mlx.metallib inst/libs/
+    echo "✓ mlx.metallib copied"
+  fi
+fi
+
 echo ""
 echo "==============================================="
 echo "Configuration successful!"
