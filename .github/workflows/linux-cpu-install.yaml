@@ -38,7 +38,7 @@ jobs:
       - name: Build and install package
         run: |
           chmod +x configure cleanup
-          R CMD build --no-build-vignettes .
+          R CMD build .
           R CMD INSTALL *.tar.gz --configure-args="--cpu-only"
         shell: bash
 
