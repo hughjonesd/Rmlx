@@ -66,10 +66,40 @@ Configure arguments:
   --cpu-only           Build CPU-only version (shortcut)
   --help               Show configuration help
 
-Environment variables:
+Environment variables (bundled MLX):
   MLX_BUILD_CUDA=ON|OFF
   MLX_BUILD_METAL=ON|OFF
   MLX_BUILD_CPU=ON|OFF
+
+Environment variables (system MLX):
+  MLX_USE_SYSTEM=1       Use system-installed MLX instead of bundled
+  MLX_INCLUDE=/path      Path to MLX headers (also triggers system mode)
+  MLX_LIB_DIR=/path      Path to MLX libraries
+
+
+Using System MLX
+----------------
+
+If you have MLX already installed on your system, you can avoid building the
+bundled version by setting environment variables:
+
+```r
+# Use system MLX with auto-detection
+Sys.setenv(MLX_USE_SYSTEM = "1")
+install.packages("Rmlx", type = "source")
+
+# Or specify paths explicitly
+Sys.setenv(MLX_INCLUDE = "/opt/homebrew/include")
+Sys.setenv(MLX_LIB_DIR = "/opt/homebrew/lib")
+install.packages("Rmlx", type = "source")
+```
+
+From shell:
+```bash
+MLX_USE_SYSTEM=1 R CMD INSTALL Rmlx_*.tar.gz
+# or
+MLX_INCLUDE=/opt/homebrew/include R CMD INSTALL Rmlx_*.tar.gz
+```
 
 
 System Requirements

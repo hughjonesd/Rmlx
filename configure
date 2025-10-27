@@ -3,9 +3,18 @@
 # Configure script for Rmlx with bundled MLX
 # Supports Metal backend on macOS, CUDA backend on Linux, and CPU-only builds
 
-echo "==============================================="
-echo "Configuring Rmlx with bundled MLX library"
-echo "==============================================="
+# Check if user wants to use system MLX instead of bundled
+if [ -n "$MLX_USE_SYSTEM" ] || [ -n "$MLX_INCLUDE" ]; then
+  USE_SYSTEM_MLX=true
+  echo "==============================================="
+  echo "Configuring Rmlx with system MLX library"
+  echo "==============================================="
+else
+  USE_SYSTEM_MLX=false
+  echo "==============================================="
+  echo "Configuring Rmlx with bundled MLX library"
+  echo "==============================================="
+fi
 
 # Detect platform
 OS=$(uname -s)
@@ -79,10 +88,15 @@ for arg in "$@"; do
       echo "  --without-cpu        Disable CPU backend"
       echo "  --cpu-only           Build CPU-only version"
       echo ""
-      echo "Environment variables:"
-      echo "  MLX_BUILD_CUDA=ON|OFF"
-      echo "  MLX_BUILD_METAL=ON|OFF"
-      echo "  MLX_BUILD_CPU=ON|OFF"
+      echo "Environment variables for bundled MLX:"
+      echo "  MLX_BUILD_CUDA=ON|OFF    Control CUDA backend"
+      echo "  MLX_BUILD_METAL=ON|OFF   Control Metal backend"
+      echo "  MLX_BUILD_CPU=ON|OFF     Control CPU backend"
+      echo ""
+      echo "Environment variables for system MLX:"
+      echo "  MLX_USE_SYSTEM=1         Use system-installed MLX instead of bundled"
+      echo "  MLX_INCLUDE=<path>       Path to MLX headers (also triggers system mode)"
+      echo "  MLX_LIB_DIR=<path>       Path to MLX libraries"
       echo ""
       exit 0
       ;;
@@ -234,13 +248,80 @@ CXX=$(echo $CXX_FULL | awk '{print $1}')
 echo "C++ compiler: $CXX"
 echo "C++ flags: $CXXFLAGS"
 
-# Build bundled MLX
-echo ""
-echo "==============================================="
-echo "Building bundled MLX library..."
-echo "==============================================="
+# Detect or build MLX library
+if [ "$USE_SYSTEM_MLX" = "true" ]; then
+  # Use system-installed MLX
+  echo ""
+  echo "==============================================="
+  echo "Detecting system MLX installation..."
+  echo "==============================================="
 
-cd src/mlx-src || exit 1
+  # Allow environment variable overrides
+  MLX_INCLUDE_DIR=${MLX_INCLUDE:-""}
+  MLX_LIB_DIR=${MLX_LIB_DIR:-""}
+
+  # Search paths for headers if not specified
+  if [ -z "$MLX_INCLUDE_DIR" ]; then
+    for dir in \
+      /opt/homebrew/include \
+      /usr/local/include \
+      "$(xcrun --show-sdk-path 2>/dev/null)/usr/include"
+    do
+      if [ -d "$dir" ] && [ -f "$dir/mlx/mlx.h" ]; then
+        MLX_INCLUDE_DIR="$dir"
+        echo "Found MLX headers in: $MLX_INCLUDE_DIR"
+        break
+      fi
+    done
+  fi
+
+  # Search paths for libraries if not specified
+  if [ -z "$MLX_LIB_DIR" ]; then
+    for dir in \
+      /opt/homebrew/lib \
+      /usr/local/lib
+    do
+      if [ -d "$dir" ] && { [ -f "$dir/libmlx.dylib" ] || [ -f "$dir/libmlx.so" ] || [ -f "$dir/libmlx.a" ]; }; then
+        MLX_LIB_DIR="$dir"
+        echo "Found MLX library in: $MLX_LIB_DIR"
+        break
+      fi
+    done
+  fi
+
+  # Check if we found everything
+  if [ -z "$MLX_INCLUDE_DIR" ]; then
+    echo ""
+    echo "ERROR: MLX headers not found!"
+    echo ""
+    echo "Please install MLX or set MLX_INCLUDE environment variable."
+    echo "To use bundled MLX instead, unset MLX_USE_SYSTEM and MLX_INCLUDE."
+    echo ""
+    exit 1
+  fi
+
+  if [ -z "$MLX_LIB_DIR" ]; then
+    echo ""
+    echo "ERROR: MLX library not found!"
+    echo ""
+    echo "Please install MLX or set MLX_LIB_DIR environment variable."
+    echo "To use bundled MLX instead, unset MLX_USE_SYSTEM and MLX_INCLUDE."
+    echo ""
+    exit 1
+  fi
+
+  # Set paths for Makevars
+  PKG_CPPFLAGS="-I$MLX_INCLUDE_DIR"
+  PKG_LIBS="-L$MLX_LIB_DIR -lmlx"
+
+else
+  # Build bundled MLX
+  echo ""
+  echo "==============================================="
+  echo "Building bundled MLX library..."
+  echo "==============================================="
+
+  cd src/mlx-src || exit 1
 
 # Create build directory
 mkdir -p build
@@ -318,9 +399,10 @@ echo "✓ MLX built successfully"
 echo ""
 echo "Generating src/Makevars..."
 
-# Base compiler flags and MLX library
-PKG_CPPFLAGS="-I./mlx-src/install/include -I./mlx-src/mlx"
-PKG_LIBS="-L./mlx-src/install/lib -lmlx"
+  # Base compiler flags and MLX library
+  PKG_CPPFLAGS="-I./mlx-src/install/include -I./mlx-src/mlx"
+  PKG_LIBS="-L./mlx-src/install/lib -lmlx"
+fi
 
 # Add platform-specific libraries based on enabled backends
 if [ "$MLX_BUILD_METAL" = "ON" ]; then
