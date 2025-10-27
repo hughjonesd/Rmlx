@@ -29,6 +29,16 @@ jobs:
           brew install cmake
           cmake --version
 
+      - name: Cache MLX build
+        uses: actions/cache@v4
+        with:
+          path: |
+            src/mlx-src/build
+            src/mlx-src/install
+          key: ${{ runner.os }}-mlx-${{ hashFiles('src/mlx-src/**') }}-${{ hashFiles('configure') }}
+          restore-keys: |
+            ${{ runner.os }}-mlx-
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
