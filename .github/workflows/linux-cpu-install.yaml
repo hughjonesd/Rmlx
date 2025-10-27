@@ -35,15 +35,9 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
-      - name: Configure package (CPU-only)
-        run: |
-          chmod +x configure
-          chmod +x cleanup
-          ./configure --cpu-only
-        shell: bash
-
       - name: Build and install package
         run: |
+          chmod +x configure cleanup
           R CMD build .
           R CMD INSTALL *.tar.gz --configure-args="--cpu-only"
         shell: bash
