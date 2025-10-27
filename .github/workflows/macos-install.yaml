@@ -47,7 +47,7 @@ jobs:
       - name: Build and install package (bundled MLX)
         run: |
           chmod +x configure cleanup
-          R CMD build .
+          R CMD build --no-build-vignettes .
           R CMD INSTALL *.tar.gz
         shell: bash
 
@@ -92,7 +92,7 @@ jobs:
           MLX_USE_SYSTEM: "1"
         run: |
           chmod +x configure cleanup
-          R CMD build .
+          R CMD build --no-build-vignettes .
           R CMD INSTALL *.tar.gz
         shell: bash
 
