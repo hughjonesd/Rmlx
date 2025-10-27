@@ -47,9 +47,9 @@ devtools::install_github("hughjonesd/Rmlx")
 install.packages("Rmlx", repos = "https://hughjonesd.r-universe.dev")
 ```
 
-**macOS (Apple Silicon):** Builds Metal + CPU backends
-**Linux with CUDA:** Builds CUDA + CPU backends (requires CUDA toolkit)
-**Linux without CUDA:** Builds CPU-only backend
+**macOS (Apple Silicon):** Builds Metal + CPU backends **Linux with
+CUDA:** Builds CUDA + CPU backends (requires CUDA toolkit) **Linux
+without CUDA:** Builds CPU-only backend
 
 ### Custom Backend Configuration
 
@@ -120,10 +120,10 @@ library(Rmlx)
 A <- matrix(rnorm(1e6), 1e3, 1e3)
 system.time(solve(A))
 #>    user  system elapsed 
-#>   0.366   0.003   0.372
+#>   0.387   0.003   0.392
 system.time(solve(as_mlx(A)))
 #>    user  system elapsed 
-#>   0.039   0.051   0.099
+#>   0.048   0.055   0.104
 ```
 
 ### Lazy Evaluation
@@ -149,6 +149,22 @@ as.matrix(z)
 #> [3,]  209  224  239  254  269
 #> [4,]  212  227  242  257  272
 #> [5,]  215  230  245  260  275
+```
+
+### Device Management
+
+M series chips have shared memory between the CPU and GPU, so switching
+between devices is costless.
+
+``` r
+# Check/set default device
+dev <- mlx_default_device()           
+mlx_default_device("cpu")    # Switch to CPU
+mlx_default_device(dev)      # Back to GPU
+
+# Create on specific device
+x_gpu <- as_mlx(matrix(1:12, 3, 4), device = "gpu")
+x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 ```
 
 ### Subsetting
@@ -177,23 +193,6 @@ x[1, ]
 #>   values:
 #>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
 #> [1,]    1   11   21   31   41   51   61   71   81    91
-
-x[, 2:3]
-#> mlx array [10 x 2]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>       [,1] [,2]
-#>  [1,]   11   21
-#>  [2,]   12   22
-#>  [3,]   13   23
-#>  [4,]   14   24
-#>  [5,]   15   25
-#>  [6,]   16   26
-#>  [7,]   17   27
-#>  [8,]   18   28
-#>  [9,]   19   29
-#> [10,]   20   30
 
 logical_mask <- rep(c(TRUE, FALSE), 5)
 x[logical_mask, ]
@@ -387,10 +386,10 @@ grads <- mlx_grad(loss, w, x, y)
 # Inspect gradient
 as.matrix(grads[[1]])
 #>            [,1]
-#> [1,]  1.5267658
-#> [2,]  0.2824979
-#> [3,]  0.9145919
-#> [4,] -0.2424971
+#> [1,]  0.4909797
+#> [2,]  0.2869464
+#> [3,]  1.9843374
+#> [4,] -0.6045319
 
 # Simple SGD loop
 model <- mlx_linear(4, 1, bias = FALSE)
@@ -411,23 +410,7 @@ mean((final_loss - y) * (final_loss - y))
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 0.02584567
-```
-
-### Device Management
-
-M series chips have shared memory between the CPU and GPU, so switching
-between devices is costless.
-
-``` r
-# Check/set default device
-dev <- mlx_default_device()           
-mlx_default_device("cpu")    # Switch to CPU
-mlx_default_device(dev)      # Back to GPU
-
-# Create on specific device
-x_gpu <- as_mlx(matrix(1:12, 3, 4), device = "gpu")
-x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
+#> [1] 0.5065953
 ```
 
 ## Data Types
