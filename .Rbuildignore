@@ -29,3 +29,4 @@
 ^src/mlx-src/setup\.py$
 ^src/mlx-src/pyproject\.toml$
 ^src/mlx-src/MANIFEST\.in$
+^dev$
