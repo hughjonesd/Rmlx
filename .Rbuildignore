@@ -15,7 +15,6 @@
 ^\.claude/?$
 ^LICENSE\.md$
 ^codecov\.yml$
-<<<<<<< HEAD
 ^dev$
 ^doc$
 ^Meta$
@@ -39,19 +38,3 @@
 ^src/mlx-src/setup\.py$
 ^src/mlx-src/pyproject\.toml$
 ^src/mlx-src/MANIFEST\.in$
-=======
-^src/mlx-src/\.git
-^src/mlx-src/\.github
-^src/mlx-src/\.circleci
-^src/mlx-src/build$
-^src/mlx-src/install$
-^src/mlx-src/\.clang-format$
-^src/mlx-src/\.pre-commit-config\.yaml$
-^src/mlx-src/CODE_OF_CONDUCT\.md$
-^src/mlx-src/CONTRIBUTING\.md$
-^src/mlx-src/ACKNOWLEDGMENTS\.md$
-^src/mlx-src/CITATION\.cff$
-^src/mlx-src/setup\.py$
-^src/mlx-src/pyproject\.toml$
-^src/mlx-src/MANIFEST\.in$
->>>>>>> 74bf9a3 (Experiment: Bundle MLX source code (not recommended))

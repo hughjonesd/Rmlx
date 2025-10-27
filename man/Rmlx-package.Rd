@@ -46,4 +46,9 @@ Useful links:
 \author{
 \strong{Maintainer}: David Hugh-Jones \email{david@hughjones.com}
 
+Other contributors:
+\itemize{
+  \item Apple Inc. (MLX library (bundled in src/mlx-src)) [copyright holder]
+}
+
 }
