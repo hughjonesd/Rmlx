@@ -425,19 +425,19 @@ cmake .. \
   -DMLX_BUILD_CUDA=$MLX_BUILD_CUDA \
   -DCMAKE_INSTALL_PREFIX=../install \
   $CMAKE_EXTRA_FLAGS \
-  || { echo "CMake configuration failed"; cd ../..; exit 1; }
+  || { echo "CMake configuration failed"; cd ../../..; exit 1; }
 
 # Build MLX
 echo ""
 echo "Compiling MLX (this may take several minutes)..."
-cmake --build . --config Release --parallel || { echo "MLX build failed"; cd ../..; exit 1; }
+cmake --build . --config Release --parallel || { echo "MLX build failed"; cd ../../..; exit 1; }
 
 # Install to local prefix
 echo ""
 echo "Installing MLX locally..."
-cmake --install . || { echo "MLX install failed"; cd ../..; exit 1; }
+cmake --install . || { echo "MLX install failed"; cd ../../..; exit 1; }
 
-cd ../.. || exit 1
+cd ../../.. || exit 1
 
 echo ""
 echo "✓ MLX built successfully"
