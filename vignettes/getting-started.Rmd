@@ -12,6 +12,9 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+# Detect available device
+device <- mlx_get_device()
 ```
 
 
@@ -58,8 +61,8 @@ m <- matrix(1:12, nrow = 3, ncol = 4)
 x <- as_mlx(m)
 print(x)
 
-# Move the array to the GPU
-x_gpu <- as_mlx(m, device = "gpu")
+# Specify the device explicitly (uses GPU if available, CPU otherwise)
+x_dev <- as_mlx(m, device = device)
 ```
 
 > **Precision note:** Numeric inputs are stored in single precision (`float32`).
@@ -85,8 +88,8 @@ mlx_eval(z)
 # Or convert to R (automatically evaluates)
 as.matrix(z)
 
-# Wait for all queued work on the GPU if needed
-mlx_synchronize("gpu")
+# Wait for all queued work on the available device
+mlx_synchronize(device)
 ```
 
 ## Arithmetic Operations
@@ -233,8 +236,8 @@ mlx_default_device("cpu")
 # Create array on CPU
 x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 
-# Set back to GPU
-mlx_default_device("gpu")
+# Set back to best available device
+mlx_default_device(device)
 ```
 
 Remember that numeric computations are always performed in `float32`; the CPU
