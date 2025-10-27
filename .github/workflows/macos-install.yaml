@@ -1,0 +1,101 @@
+# Workflow for testing package installation on macOS
+# Tests both bundled MLX build and system MLX installation
+
+name: macOS Install
+
+on:
+  push:
+    branches: [experiment-vendor-mlx]
+  pull_request:
+    branches: [experiment-vendor-mlx]
+  workflow_dispatch:
+
+jobs:
+  macos-bundled:
+    runs-on: macos-14
+
+    name: macOS Bundled MLX
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+
+      - name: Install system dependencies
+        run: |
+          brew install cmake
+          cmake --version
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - name: Build and install package (bundled MLX)
+        run: |
+          chmod +x configure cleanup
+          R CMD build .
+          R CMD INSTALL *.tar.gz
+        shell: bash
+
+      - name: Verify installation
+        run: |
+          Rscript -e "library(Rmlx); print('Package loaded successfully')"
+          Rscript -e "library(Rmlx); x <- as_mlx(1:10); print(x)"
+
+      - name: Check device availability
+        run: |
+          Rscript -e "library(Rmlx); cat('GPU available:', mlx_has_gpu(), '\n')"
+          Rscript -e "library(Rmlx); cat('Default device:', mlx_get_device(), '\n')"
+
+  macos-system:
+    runs-on: macos-14
+
+    name: macOS System MLX (Homebrew)
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+
+      - name: Install system dependencies and MLX
+        run: |
+          brew install cmake mlx
+          cmake --version
+          # Verify MLX installation
+          ls -la /opt/homebrew/include/mlx/
+          ls -la /opt/homebrew/lib/libmlx.*
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      - name: Build and install package (system MLX)
+        env:
+          MLX_USE_SYSTEM: "1"
+        run: |
+          chmod +x configure cleanup
+          R CMD build .
+          R CMD INSTALL *.tar.gz
+        shell: bash
+
+      - name: Verify installation
+        run: |
+          Rscript -e "library(Rmlx); print('Package loaded successfully')"
+          Rscript -e "library(Rmlx); x <- as_mlx(1:10); print(x)"
+
+      - name: Check device availability
+        run: |
+          Rscript -e "library(Rmlx); cat('GPU available:', mlx_has_gpu(), '\n')"
+          Rscript -e "library(Rmlx); cat('Default device:', mlx_get_device(), '\n')"
+
+      - name: Run simple test
+        run: |
+          Rscript -e "library(Rmlx); A <- as_mlx(matrix(1:12, 3, 4)); B <- as_mlx(matrix(1:12, 4, 3)); C <- A %*% B; print(as.matrix(C))"
