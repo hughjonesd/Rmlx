@@ -41,11 +41,18 @@ installation. This typically takes 5-15 minutes on the first install.
 
 ### Default Installation
 
-Install from source (builds bundled MLX with optimal backends for your
+Install from GitHub (builds bundled MLX with optimal backends for your
 platform):
 
 ``` r
-install.packages("Rmlx", type = "source")
+# Using remotes
+remotes::install_github("hughjonesd/Rmlx")
+
+# Or using devtools
+devtools::install_github("hughjonesd/Rmlx")
+
+# Or from r-universe
+install.packages("Rmlx", repos = "https://hughjonesd.r-universe.dev")
 ```
 
 **macOS (Apple Silicon):** Builds Metal + CPU backends
@@ -58,23 +65,23 @@ Control which backends to build using `configure.args`:
 
 ``` r
 # CPU-only build (no GPU acceleration)
-install.packages("Rmlx", type = "source",
-                 configure.args = "--cpu-only")
+remotes::install_github("hughjonesd/Rmlx",
+                        configure.args = "--cpu-only")
 
 # Force CUDA on Linux
-install.packages("Rmlx", type = "source",
-                 configure.args = "--with-cuda")
+remotes::install_github("hughjonesd/Rmlx",
+                        configure.args = "--with-cuda")
 
 # Disable Metal on macOS
-install.packages("Rmlx", type = "source",
-                 configure.args = "--without-metal")
+remotes::install_github("hughjonesd/Rmlx",
+                        configure.args = "--without-metal")
 ```
 
 Or use environment variables:
 
 ``` r
 Sys.setenv(MLX_BUILD_CPU = "ON", MLX_BUILD_CUDA = "OFF")
-install.packages("Rmlx", type = "source")
+remotes::install_github("hughjonesd/Rmlx")
 ```
 
 ### Using System-Installed MLX
@@ -85,29 +92,18 @@ the bundled build:
 ``` r
 # Auto-detect system MLX
 Sys.setenv(MLX_USE_SYSTEM = "1")
-install.packages("Rmlx", type = "source")
+remotes::install_github("hughjonesd/Rmlx")
 
 # Or specify paths explicitly
 Sys.setenv(MLX_INCLUDE = "/opt/homebrew/include")
 Sys.setenv(MLX_LIB_DIR = "/opt/homebrew/lib")
-install.packages("Rmlx", type = "source")
+remotes::install_github("hughjonesd/Rmlx")
 ```
 
 To install system MLX on macOS:
 
 ``` bash
 brew install mlx
-```
-
-### Installation from GitHub
-
-``` r
-# Latest release
-remotes::install_github("hughjonesd/Rmlx")
-
-# Development version with bundled MLX
-remotes::install_github("hughjonesd/Rmlx",
-                        ref = "experiment-vendor-mlx")
 ```
 
 See the [INSTALL](INSTALL) file for detailed platform-specific
