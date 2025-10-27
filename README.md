@@ -29,21 +29,89 @@ matrix operations, including arithmetic, subsetting and matrix algebra.
 
 ## Requirements
 
-MacOS on Apple Silicon *or* Linux with CUDA *or* MacOS/Linux for a
-CPU-only build.
+- macOS on Apple Silicon (M1/M2/M3 or later) *or* Linux with CUDA *or*
+  macOS/Linux for a CPU-only build
+- CMake 3.24 or later
+- C++17 compatible compiler
 
 ## Installation
 
-`brew install mlx`
+Rmlx bundles the MLX library source and builds it automatically during
+installation. This typically takes 5-15 minutes on the first install.
 
-or the Linux equivalent. Then just install the package as normal:
+### Default Installation
+
+Install from source (builds bundled MLX with optimal backends for your
+platform):
 
 ``` r
-remotes::install("hughjonesd/Rmlx")
+install.packages("Rmlx", type = "source")
 ```
 
-Alternatively, you can build mlx from the
-[source](https://github.com/ml-explore/mlx).
+**macOS (Apple Silicon):** Builds Metal + CPU backends
+**Linux with CUDA:** Builds CUDA + CPU backends (requires CUDA toolkit)
+**Linux without CUDA:** Builds CPU-only backend
+
+### Custom Backend Configuration
+
+Control which backends to build using `configure.args`:
+
+``` r
+# CPU-only build (no GPU acceleration)
+install.packages("Rmlx", type = "source",
+                 configure.args = "--cpu-only")
+
+# Force CUDA on Linux
+install.packages("Rmlx", type = "source",
+                 configure.args = "--with-cuda")
+
+# Disable Metal on macOS
+install.packages("Rmlx", type = "source",
+                 configure.args = "--without-metal")
+```
+
+Or use environment variables:
+
+``` r
+Sys.setenv(MLX_BUILD_CPU = "ON", MLX_BUILD_CUDA = "OFF")
+install.packages("Rmlx", type = "source")
+```
+
+### Using System-Installed MLX
+
+If you have MLX installed separately (e.g., via Homebrew), you can skip
+the bundled build:
+
+``` r
+# Auto-detect system MLX
+Sys.setenv(MLX_USE_SYSTEM = "1")
+install.packages("Rmlx", type = "source")
+
+# Or specify paths explicitly
+Sys.setenv(MLX_INCLUDE = "/opt/homebrew/include")
+Sys.setenv(MLX_LIB_DIR = "/opt/homebrew/lib")
+install.packages("Rmlx", type = "source")
+```
+
+To install system MLX on macOS:
+
+``` bash
+brew install mlx
+```
+
+### Installation from GitHub
+
+``` r
+# Latest release
+remotes::install_github("hughjonesd/Rmlx")
+
+# Development version with bundled MLX
+remotes::install_github("hughjonesd/Rmlx",
+                        ref = "experiment-vendor-mlx")
+```
+
+See the [INSTALL](INSTALL) file for detailed platform-specific
+instructions and troubleshooting.
 
 ## Features
 
