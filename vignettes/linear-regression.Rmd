@@ -8,6 +8,8 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(Rmlx)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -29,8 +31,6 @@ We'll create synthetic data for linear regression with high dimensionality:
 - Noisy labels `y = X @ w_star + small_noise`
 
 ```{r}
-library(Rmlx)
-
 # Problem metadata
 num_features <- 100
 num_cases <- 10000

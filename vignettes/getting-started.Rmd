@@ -8,6 +8,8 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(Rmlx)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -50,8 +52,6 @@ cmake .. && make && sudo make install
 Convert R objects to MLX arrays using `as_mlx()`:
 
 ```{r}
-library(Rmlx)
-
 # From a vector
 v <- as_mlx(1:10)
 print(v)
