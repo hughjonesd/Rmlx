@@ -28,13 +28,13 @@ python-only features such as large neural network layers.
 
 ## Installation
 
-Rmlx bundles the MLX library source and builds it automatically during
-installation. This typically takes 5-15 minutes on the first install.
+By default, Rmlx searches for a system-installed MLX library. If not
+found, it builds from bundled source (typically 5-15 minutes on first
+install).
 
 ### Default Installation
 
-Install from GitHub (builds bundled MLX with optimal backends for your
-platform):
+Install from GitHub:
 
 ``` r
 # Using remotes
@@ -47,9 +47,11 @@ devtools::install_github("hughjonesd/Rmlx")
 install.packages("Rmlx", repos = "https://hughjonesd.r-universe.dev")
 ```
 
-**macOS (Apple Silicon):** Builds Metal + CPU backends **Linux with
-CUDA:** Builds CUDA + CPU backends (requires CUDA toolkit) **Linux
-without CUDA:** Builds CPU-only backend
+This will: 1. Search for system MLX in `/opt/homebrew` or `/usr/local`
+2. If not found, build from bundled source with optimal backends: -
+**macOS (Apple Silicon):** Metal + CPU backends - **Linux with CUDA:**
+CUDA + CPU backends (requires CUDA toolkit) - **Linux without CUDA:**
+CPU-only backend
 
 ### Custom Backend Configuration
 
@@ -78,24 +80,28 @@ remotes::install_github("hughjonesd/Rmlx")
 
 ### Using System-Installed MLX
 
-If you have MLX installed separately (e.g., via Homebrew), you can skip
-the bundled build:
+To install system MLX on macOS:
+
+``` bash
+brew install mlx
+```
+
+The configure script will auto-detect it. If it doesn’t, specify paths
+explicitly:
 
 ``` r
-# Auto-detect system MLX
-Sys.setenv(MLX_USE_SYSTEM = "1")
-remotes::install_github("hughjonesd/Rmlx")
-
-# Or specify paths explicitly
 Sys.setenv(MLX_INCLUDE = "/opt/homebrew/include")
 Sys.setenv(MLX_LIB_DIR = "/opt/homebrew/lib")
 remotes::install_github("hughjonesd/Rmlx")
 ```
 
-To install system MLX on macOS:
+### Force Building from Source
 
-``` bash
-brew install mlx
+To force building from bundled source even if system MLX is available:
+
+``` r
+Sys.setenv(MLX_BUILD_FROM_SOURCE = "1")
+remotes::install_github("hughjonesd/Rmlx")
 ```
 
 See the [INSTALL](INSTALL) file for detailed platform-specific
@@ -120,10 +126,10 @@ library(Rmlx)
 A <- matrix(rnorm(1e6), 1e3, 1e3)
 system.time(solve(A))
 #>    user  system elapsed 
-#>   0.387   0.003   0.392
+#>   0.371   0.002   0.374
 system.time(solve(as_mlx(A)))
 #>    user  system elapsed 
-#>   0.048   0.055   0.104
+#>   0.038   0.050   0.090
 ```
 
 ### Lazy Evaluation
@@ -386,10 +392,10 @@ grads <- mlx_grad(loss, w, x, y)
 # Inspect gradient
 as.matrix(grads[[1]])
 #>            [,1]
-#> [1,]  0.4909797
-#> [2,]  0.2869464
-#> [3,]  1.9843374
-#> [4,] -0.6045319
+#> [1,]  2.0031688
+#> [2,]  0.5444943
+#> [3,] -1.3796213
+#> [4,]  0.2550257
 
 # Simple SGD loop
 model <- mlx_linear(4, 1, bias = FALSE)
@@ -410,7 +416,7 @@ mean((final_loss - y) * (final_loss - y))
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 0.5065953
+#> [1] 0.1707606
 ```
 
 ## Data Types
