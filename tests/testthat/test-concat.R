@@ -52,3 +52,24 @@ test_that("rbind/cbind work on 4D arrays", {
   expect_equal(dim(rb), c(4L, 3L, 2L, 2L))
   expect_equal(dim(cb), c(2L, 6L, 2L, 2L))
 })
+
+test_that("abind concatenates along arbitrary axes", {
+  arr1 <- array(1:24, c(2, 3, 4))
+  arr2 <- array(25:48, c(2, 3, 4))
+  x <- as_mlx(arr1)
+  y <- as_mlx(arr2)
+
+  along3 <- abind(x, y, along = 3)
+  expect_equal(dim(along3), c(2L, 3L, 8L))
+  expected3 <- array(0, dim = c(2, 3, 8))
+  expected3[, , 1:4] <- arr1
+  expected3[, , 5:8] <- arr2
+  expect_equal(as.matrix(along3), expected3)
+
+  along2 <- abind(list(x, y), along = 2)
+  expect_equal(dim(along2), c(2L, 6L, 4L))
+  expected2 <- array(0, dim = c(2, 6, 4))
+  expected2[, 1:3, ] <- arr1
+  expected2[, 4:6, ] <- arr2
+  expect_equal(as.matrix(along2), expected2)
+})

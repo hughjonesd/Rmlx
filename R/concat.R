@@ -1,3 +1,54 @@
+# Internal helper to bind arrays along a given axis ---------------------------
+
+.mlx_bind_along_axis <- function(objs, axis) {
+  if (length(objs) == 1L && is.list(objs[[1L]]) && !is.mlx(objs[[1L]])) {
+    objs <- objs[[1L]]
+  }
+  if (!length(objs)) {
+    stop("No objects to bind.", call. = FALSE)
+  }
+
+  axis <- as.integer(axis)
+  if (length(axis) != 1L || is.na(axis)) {
+    stop("`along`/`axis` must be a single integer.", call. = FALSE)
+  }
+
+  mlx_objs <- lapply(objs, as_mlx)
+  ref <- mlx_objs[[1L]]
+  ref_dim <- ref$dim
+  ndim <- length(ref_dim)
+  if (!ndim) {
+    stop("Cannot bind scalar mlx arrays.", call. = FALSE)
+  }
+  if (axis < 1L || axis > ndim) {
+    stop("Axis ", axis, " is out of bounds for arrays with ", ndim, " dimensions.", call. = FALSE)
+  }
+
+  for (obj in mlx_objs) {
+    if (length(obj$dim) != ndim) {
+      stop("All inputs must have the same number of dimensions.", call. = FALSE)
+    }
+    if (!identical(obj$dim[-axis], ref_dim[-axis])) {
+      stop("Non-bound dimensions must match across all inputs.", call. = FALSE)
+    }
+  }
+
+  if (length(mlx_objs) > 1L) {
+    dtype <- Reduce(.promote_dtype, lapply(mlx_objs, `[[`, "dtype"))
+    device <- Reduce(.common_device, lapply(mlx_objs, `[[`, "device"))
+  } else {
+    dtype <- mlx_objs[[1L]]$dtype
+    device <- mlx_objs[[1L]]$device
+  }
+
+  aligned <- lapply(mlx_objs, .mlx_cast, dtype = dtype, device = device)
+  ptr <- cpp_mlx_concat(aligned, axis - 1L)
+  axis_lengths <- vapply(aligned, function(x) x$dim[axis], integer(1))
+  new_dim <- aligned[[1L]]$dim
+  new_dim[axis] <- sum(axis_lengths)
+  new_mlx(ptr, as.integer(new_dim), dtype, device)
+}
+
 #' Row-bind mlx arrays
 #'
 #' @param ... Objects to bind. mlx arrays are kept in MLX; other inputs are
@@ -15,15 +66,7 @@
 #' y <- as_mlx(matrix(5:8, 2, 2))
 #' rbind(x, y)
 rbind.mlx <- function(..., deparse.level = 1) {
-  objs <- list(...)
-  if (!length(objs)) stop("No objects to bind.", call. = FALSE)
-  mlx_objs <- lapply(objs, as_mlx)
-  ptr <- cpp_mlx_concat(mlx_objs, 0L)
-  ref <- mlx_objs[[1]]
-  dim1s <- vapply(mlx_objs, function(t) t$dim[1], integer(1))
-  new_dim1 <- sum(dim1s)
-  new_dim <- as.integer(c(new_dim1, ref$dim[-1]))
-  new_mlx(ptr, new_dim, ref$dtype, ref$device)
+  .mlx_bind_along_axis(list(...), axis = 1L)
 }
 
 #' Column-bind mlx arrays
@@ -41,13 +84,28 @@ rbind.mlx <- function(..., deparse.level = 1) {
 #' y <- as_mlx(matrix(5:8, 2, 2))
 #' cbind(x, y)
 cbind.mlx <- function(..., deparse.level = 1) {
-  objs <- list(...)
-  if (!length(objs)) stop("No objects to bind.", call. = FALSE)
-  mlx_objs <- lapply(objs, as_mlx)
-  ptr <- cpp_mlx_concat(mlx_objs, 1L)
-  ref <- mlx_objs[[1]]
-  dim2s <- vapply(mlx_objs, function(t) t$dim[2], integer(1))
-  new_dim2 <- sum(dim2s)
-  new_dim <- as.integer(c(ref$dim[1], new_dim2, ref$dim[-(1:2)]))
-  new_mlx(ptr, new_dim, ref$dtype, ref$device)
+  .mlx_bind_along_axis(list(...), axis = 2L)
+}
+
+#' Bind mlx arrays along an axis
+#'
+#' @param ... One or more mlx arrays (or a single list of arrays) to combine.
+#' @param along Positive integer giving the existing axis (1-indexed) along which
+#'   to bind the inputs.
+#'
+#' @details
+#' This is an MLX-backed alternative to [abind::abind()]. All inputs must share
+#' the same shape on non-bound axes. The `along` axis must already exist; to
+#' create a new axis use [mlx_stack()].
+#'
+#' @return An mlx array formed by concatenating the inputs along `along`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
+#' @export
+#' @examples
+#' x <- as_mlx(array(1:12, c(2, 3, 2)))
+#' y <- as_mlx(array(13:24, c(2, 3, 2)))
+#' z <- abind(x, y, along = 3)
+#' dim(z)
+abind <- function(..., along = 1L) {
+  .mlx_bind_along_axis(list(...), axis = along)
 }

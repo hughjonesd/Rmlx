@@ -485,7 +485,7 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
 #' Elementwise conditional selection
 #'
 #' @param condition Logical mlx array (non-zero values are treated as `TRUE`).
-#' @param x,y Tensors broadcastable to the shape of `condition`.
+#' @param x,y Arrays broadcastable to the shape of `condition`.
 #' @return An mlx array where elements are drawn from `x` when
 #'   `condition` is `TRUE`, otherwise from `y`.
 #' @details Behaves like [ifelse()] for arrays, but evaluates both branches.

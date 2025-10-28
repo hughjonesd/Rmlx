@@ -9,7 +9,7 @@ mlx_where(condition, x, y)
 \arguments{
 \item{condition}{Logical mlx array (non-zero values are treated as \code{TRUE}).}
 
-\item{x, y}{Tensors broadcastable to the shape of \code{condition}.}
+\item{x, y}{Arrays broadcastable to the shape of \code{condition}.}
 }
 \value{
 An mlx array where elements are drawn from \code{x} when
