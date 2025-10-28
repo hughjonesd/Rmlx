@@ -97,7 +97,7 @@ input dtypes change, or the number of arguments changes.</p></li>
 <h3 id="requirements-for-compiled-functions">Requirements for Compiled Functions<a class="anchor" aria-label="anchor" href="#requirements-for-compiled-functions"></a></h3>
 
 
-<p>Your function <strong>must</strong>:</p><ul><li><p>Accept only MLX arrays as arguments</p></li>
+<p>Your function must:</p><ul><li><p>Accept only MLX arrays as arguments</p></li>
 <li><p>Return MLX array(s) - either a single mlx object or a list of mlx objects</p></li>
 <li><p>Use only MLX operations (no conversion to R)</p></li>
 <li><p>Be pure (no side effects, no external state modification)</p></li>
@@ -132,7 +132,7 @@ input shapes without recompilation:</p>
 <span><span class="va">fast_fn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_compile.html">mlx_compile</a></span><span class="op">(</span><span class="va">matmul_fn</span>, shapeless <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu">fast_fn</span><span class="op">(</span><span class="fu"><a href="../reference/mlx_zeros.html">mlx_zeros</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">64</span><span class="op">)</span><span class="op">)</span>, <span class="va">weights</span><span class="op">)</span>  <span class="co"># Compiles once</span></span>
 <span><span class="fu">fast_fn</span><span class="op">(</span><span class="fu"><a href="../reference/mlx_zeros.html">mlx_zeros</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">20</span>, <span class="fl">64</span><span class="op">)</span><span class="op">)</span>, <span class="va">weights</span><span class="op">)</span>  <span class="co"># No recompilation!</span></span></code></pre><p></p></div>
-<p><strong>Trade-off</strong>: Shapeless mode sacrifices some optimization opportunities
+<p>Shapeless mode sacrifices some optimization opportunities
 but avoids recompilation costs. Use it when processing variable-sized batches.</p>
 </div>
 

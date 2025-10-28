@@ -90,6 +90,37 @@
 <li>Keep the workspace tidy after checks: remove <code>Rmlx_0.0.0.9000.tar.gz</code>, temporary <code>Rmlx.Rcheck/</code>, and local <code>library/</code> installs if you create them.</li>
 <li>Tests now pass, but they rely on MLX availability. Avoid adding conditional skips—failures are acceptable when MLX is absent.</li>
 </ul></div>
+<div class="section level2">
+<h2 id="additional-guidance">Additional Guidance<a class="anchor" aria-label="anchor" href="#additional-guidance"></a></h2>
+<div class="section level3">
+<h3 id="mlx-integration-reminders">MLX Integration Reminders<a class="anchor" aria-label="anchor" href="#mlx-integration-reminders"></a></h3>
+<ul><li>MLX may rename C API entry points; confirm function names against <code>&lt;mlx/c/mlx.h&gt;</code> before wiring Rcpp wrappers. Update <code>src/mlx_bindings.cpp</code> or <code>src/mlx_ops.cpp</code> whenever upstream changes occur.</li>
+<li>R arrays are column-major while MLX tensors are row-major. If reduction tests misbehave, double-check axis ordering (swapping axis 0/1 often fixes it).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="testing-notes">Testing Notes<a class="anchor" aria-label="anchor" href="#testing-notes"></a></h3>
+<ul><li>testthat specs live in <code>tests/testthat/</code>; all skip when MLX fails to load.</li>
+<li>Prefer <code>tolerance = 1e-6</code> when asserting floating point equality.</li>
+<li>Use base R results as the oracle for comparisons.</li>
+<li>Run a single file via <code>R -q -e 'devtools::test_file("tests/testthat/test-ops.R")'</code> when iterating.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-workflow">Documentation Workflow<a class="anchor" aria-label="anchor" href="#documentation-workflow"></a></h3>
+<ul><li>Roxygen comments power <code>man/</code> docs; the vignette is <code>vignettes/getting-started.Rmd</code>.</li>
+<li>After doc edits, regenerate with <code>R -q -e 'devtools::document()'</code>.</li>
+<li>Favor markdown lists/tables in roxygen over <code>\item</code>.</li>
+<li>Add <code>@seealso</code> links to relevant MLX online docs for new exports.</li>
+<li>When adding features, update the pkgdown reference index.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="handy-tips">Handy Tips<a class="anchor" aria-label="anchor" href="#handy-tips"></a></h3>
+<ul><li>
+<code>usethis::</code> helpers provide the canonical workflows for package chores—prefer them when possible.</li>
+<li>MLX array types lack a default constructor; always supply shape/dtype explicitly in C++.</li>
+<li>Discover exports via <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library(help = "Rmlx")</a></code>; inspect all functions with <code>ls(envir = asNamespace("Rmlx"), all.names = TRUE)</code>.</li>
+<li>Search upstream docs at <code>https://ml-explore.github.io/mlx/build/html/search.html?q=&lt;term&gt;</code>.</li>
+</ul></div>
+</div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

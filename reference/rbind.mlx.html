@@ -66,6 +66,13 @@ coerced via <code><a href="as_mlx.html">as_mlx()</a></code>.</p></dd>
     <p>An mlx array stacked along the first axis.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Unlike base R's <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code>, this function supports arrays with more
+than 2 dimensions and preserves all dimensions except the first (which is
+summed across inputs). Base R's <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code> flattens higher-dimensional arrays
+to matrices before binding.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><a href="https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate" class="external-link">https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate</a></p></div>
     </div>

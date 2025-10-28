@@ -79,7 +79,10 @@ GPU-accelerated arrays.</p>
 <h2 id="problem-setup">Problem Setup<a class="anchor" aria-label="anchor" href="#problem-setup"></a>
 </h2>
 <p>We’ll create synthetic data for linear regression with high
-dimensionality:</p>
+dimensionality: - A random “true” weight vector <code>w_star</code> of
+dimension 100 - A random design matrix <code>X</code> of 10,000 cases ×
+100 features - Noisy labels
+<code>y = X @ w_star + small_noise</code></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hughjonesd.github.io/Rmlx/">Rmlx</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -93,9 +96,9 @@ dimensionality:</p>
 <span></span>
 <span><span class="co"># Problem metadata</span></span>
 <span><span class="va">num_features</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
-<span><span class="va">num_examples</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
-<span><span class="va">num_iters</span> <span class="op">&lt;-</span> <span class="fl">10000</span>  <span class="co"># iterations of SGD</span></span>
-<span><span class="va">lr</span> <span class="op">&lt;-</span> <span class="fl">0.01</span>          <span class="co"># learning rate for SGD</span></span>
+<span><span class="va">num_cases</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span><span class="va">num_iters</span> <span class="op">&lt;-</span> <span class="fl">1200</span>          <span class="co"># iterations of SGD</span></span>
+<span><span class="va">learning_rate</span> <span class="op">&lt;-</span> <span class="fl">0.01</span>      <span class="co"># learning rate for SGD</span></span>
 <span></span>
 <span><span class="co"># Set seed for reproducibility</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span>
@@ -104,15 +107,11 @@ dimensionality:</p>
 <span><span class="va">w_star</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_rand_normal.html">mlx_rand_normal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">num_features</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Input examples (design matrix)</span></span>
-<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_rand_normal.html">mlx_rand_normal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">num_examples</span>, <span class="va">num_features</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_rand_normal.html">mlx_rand_normal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">num_cases</span>, <span class="va">num_features</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Noisy labels</span></span>
-<span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-2</span> <span class="op">*</span> <span class="fu"><a href="../reference/mlx_rand_normal.html">mlx_rand_normal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">num_examples</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">eps</span> <span class="op">&lt;-</span> <span class="fl">1e-2</span> <span class="op">*</span> <span class="fu"><a href="../reference/mlx_rand_normal.html">mlx_rand_normal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">num_cases</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">w_star</span> <span class="op">+</span> <span class="va">eps</span></span></code></pre></div>
-<p>We generate: - A random “true” weight vector <code>w_star</code> of
-dimension 100 - A random design matrix <code>X</code> of 1000 examples ×
-100 features - Noisy labels
-<code>y = X @ w_star + small_noise</code></p>
 </div>
 <div class="section level2">
 <h2 id="define-the-loss-function">Define the Loss Function<a class="anchor" aria-label="anchor" href="#define-the-loss-function"></a>
@@ -138,93 +137,188 @@ respect to our parameters:</p>
 <code class="sourceCode R"><span><span class="co"># Get the gradient function</span></span>
 <span><span class="va">grad_fn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">w</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/mlx_grad.html">mlx_grad</a></span><span class="op">(</span><span class="va">loss_fn</span>, <span class="va">w</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">train_sgd</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">steps</span> <span class="op">=</span> <span class="va">num_iters</span>, <span class="va">step_size</span> <span class="op">=</span> <span class="va">learning_rate</span>, <span class="va">verbose</span> <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">w</span> <span class="op">&lt;-</span> <span class="fl">1e-2</span> <span class="op">*</span> <span class="fu"><a href="../reference/mlx_rand_normal.html">mlx_rand_normal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">num_features</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">steps</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">grad</span> <span class="op">&lt;-</span> <span class="fu">grad_fn</span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
+<span>    <span class="va">w</span> <span class="op">&lt;-</span> <span class="va">w</span> <span class="op">-</span> <span class="va">step_size</span> <span class="op">*</span> <span class="va">grad</span></span>
+<span>    <span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">verbose</span> <span class="op">&amp;&amp;</span> <span class="va">i</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">1000</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Iteration"</span>, <span class="va">i</span>, <span class="st">"- Loss:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu">loss_fn</span><span class="op">(</span><span class="va">w</span><span class="op">)</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="va">w</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="training-loop-with-sgd">Training Loop with SGD<a class="anchor" aria-label="anchor" href="#training-loop-with-sgd"></a>
 </h2>
-<p>We train by repeatedly computing gradients and updating
-parameters:</p>
+<p>We train by repeatedly computing gradients and updating parameters.
+In each iteration, we:</p>
+<ol style="list-style-type: decimal">
+<li>Compute the gradient of loss with respect to <code>w</code>
+</li>
+<li>Update parameters using the gradient step</li>
+<li>Force evaluation to prevent the computation graph from growing
+unbounded</li>
+<li>Monitor progress by printing loss every 1000 iterations</li>
+</ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Initialize parameters randomly</span></span>
-<span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fl">1e-2</span> <span class="op">*</span> <span class="fu"><a href="../reference/mlx_rand_normal.html">mlx_rand_normal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">num_features</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Training loop</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">num_iters</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="co"># Compute gradient</span></span>
-<span>  <span class="va">grad</span> <span class="op">&lt;-</span> <span class="fu">grad_fn</span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Update parameters: w = w - lr * grad</span></span>
-<span>  <span class="va">w</span> <span class="op">&lt;-</span> <span class="va">w</span> <span class="op">-</span> <span class="va">lr</span> <span class="op">*</span> <span class="va">grad</span></span>
-<span></span>
-<span>  <span class="co"># Evaluate to avoid building up computation graph</span></span>
-<span>  <span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
-<span></span>
-<span>  <span class="co"># Print progress</span></span>
-<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">i</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">1000</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="va">loss</span> <span class="op">&lt;-</span> <span class="fu">loss_fn</span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Iteration"</span>, <span class="va">i</span>, <span class="st">"- Loss:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">loss</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span>  <span class="op">}</span></span>
-<span><span class="op">}</span></span>
-<span><span class="co">#&gt; Iteration 1000 - Loss: 7.484911e-05 </span></span>
-<span><span class="co">#&gt; Iteration 2000 - Loss: 4.439802e-05 </span></span>
-<span><span class="co">#&gt; Iteration 3000 - Loss: 4.439737e-05 </span></span>
-<span><span class="co">#&gt; Iteration 4000 - Loss: 4.439737e-05 </span></span>
-<span><span class="co">#&gt; Iteration 5000 - Loss: 4.439737e-05 </span></span>
-<span><span class="co">#&gt; Iteration 6000 - Loss: 4.439737e-05 </span></span>
-<span><span class="co">#&gt; Iteration 7000 - Loss: 4.439737e-05 </span></span>
-<span><span class="co">#&gt; Iteration 8000 - Loss: 4.439737e-05 </span></span>
-<span><span class="co">#&gt; Iteration 9000 - Loss: 4.439737e-05 </span></span>
-<span><span class="co">#&gt; Iteration 10000 - Loss: 4.439737e-05</span></span></code></pre></div>
-<p>In each iteration: 1. Compute the gradient of loss with respect to
-<code>w</code> 2. Update parameters using the gradient step 3. Force
-evaluation to prevent the computation graph from growing unbounded 4.
-Monitor progress by printing loss every 1000 iterations</p>
+<code class="sourceCode R"><span><span class="va">w_sgd</span> <span class="op">&lt;-</span> <span class="fu">train_sgd</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Iteration 1000 - Loss: 4.980902e-05</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="evaluation">Evaluation<a class="anchor" aria-label="anchor" href="#evaluation"></a>
+<h2 id="method-2-closed-form-regression-via-matrix-algebra">Method 2: Closed-form Regression via Matrix Algebra<a class="anchor" aria-label="anchor" href="#method-2-closed-form-regression-via-matrix-algebra"></a>
 </h2>
-<p>After training, we evaluate how well our learned parameters match the
-true parameters:</p>
+<p>Gradient descent is flexible, but linear regression also has a
+closed-form solution that can be obtained via the QR decomposition.
+Rather than forming
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>X</mi><mi>⊤</mi></msup><mi>X</mi></mrow><annotation encoding="application/x-tex">X^\top X</annotation></semantics></math>
+explicitly, we factor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mi>Q</mi><mi>R</mi></mrow><annotation encoding="application/x-tex">X = QR</annotation></semantics></math>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>Q</mi><mi>⊤</mi></msup><mi>Q</mi><mo>=</mo><mi>I</mi></mrow><annotation encoding="application/x-tex">Q^\top Q = I</annotation></semantics></math>
+and solve the triangular system
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>w</mi><mo>=</mo><msup><mi>Q</mi><mi>⊤</mi></msup><mi>y</mi></mrow><annotation encoding="application/x-tex">Rw = Q^\top y</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Compute final loss</span></span>
-<span><span class="va">final_loss</span> <span class="op">&lt;-</span> <span class="fu">loss_fn</span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Final loss:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">final_loss</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Final loss: 4.439737e-05</span></span>
+<code class="sourceCode R"><span><span class="va">mlx_normal_eq</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">qr_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/qr.html" class="external-link">qr</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span>  <span class="va">q</span> <span class="op">&lt;-</span> <span class="va">qr_res</span><span class="op">$</span><span class="va">Q</span></span>
+<span>  <span class="va">r</span> <span class="op">&lt;-</span> <span class="va">qr_res</span><span class="op">$</span><span class="va">R</span></span>
+<span>  <span class="va">q_ty</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">q</span>, <span class="va">y</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/mlx_solve_triangular.html">mlx_solve_triangular</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">q_ty</span>, upper <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
 <span></span>
-<span><span class="co"># Compute error between learned and true parameters</span></span>
-<span><span class="va">error</span> <span class="op">&lt;-</span> <span class="va">w</span> <span class="op">-</span> <span class="va">w_star</span></span>
-<span><span class="va">error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">error</span> <span class="op">*</span> <span class="va">error</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ||w - w*|| = 0.003527143</span></span>
+<span><span class="va">w_closed</span> <span class="op">&lt;-</span> <span class="fu">mlx_normal_eq</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">w_closed</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Convert to R for detailed inspection</span></span>
-<span><span class="va">w_learned</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">w</span><span class="op">)</span></span>
-<span><span class="va">w_true</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">w_star</span><span class="op">)</span></span>
+<span><span class="va">closed_error</span> <span class="op">&lt;-</span> <span class="va">w_closed</span> <span class="op">-</span> <span class="va">w_star</span></span>
+<span><span class="va">closed_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">closed_error</span> <span class="op">*</span> <span class="va">closed_error</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">closed_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.0009728033</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="accelerating-the-closed-form-solution-with-mlx_compile">Accelerating the Closed-form Solution with
+<code>mlx_compile()</code><a class="anchor" aria-label="anchor" href="#accelerating-the-closed-form-solution-with-mlx_compile"></a>
+</h2>
+<p>The closed-form function mixes several MLX primitives. We can trace
+and fuse those operations with <code><a href="../reference/mlx_compile.html">mlx_compile()</a></code>. The first
+call incurs the tracing cost; subsequent calls reuse the compiled
+graph.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">compiled_normal_eq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_compile.html">mlx_compile</a></span><span class="op">(</span><span class="va">mlx_normal_eq</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Compare first few parameters</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>learned <span class="op">=</span> <span class="va">w_learned</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">]</span>, true <span class="op">=</span> <span class="va">w_true</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           learned        true</span></span>
-<span><span class="co">#&gt;  [1,]  0.19004238  0.19004774</span></span>
-<span><span class="co">#&gt;  [2,] -0.65291935 -0.65304768</span></span>
-<span><span class="co">#&gt;  [3,] -0.06725333 -0.06759416</span></span>
-<span><span class="co">#&gt;  [4,]  0.22357701  0.22397274</span></span>
-<span><span class="co">#&gt;  [5,]  0.76215923  0.76200294</span></span>
-<span><span class="co">#&gt;  [6,]  0.40618512  0.40642720</span></span>
-<span><span class="co">#&gt;  [7,] -0.47955883 -0.47944051</span></span>
-<span><span class="co">#&gt;  [8,]  0.55266070  0.55199683</span></span>
-<span><span class="co">#&gt;  [9,] -1.61693013 -1.61689353</span></span>
-<span><span class="co">#&gt; [10,] -0.34473315 -0.34406701</span></span></code></pre></div>
-<p>We measure two things: - <strong>Final loss</strong>: How well our
-model fits the data - <strong>Parameter error</strong>: How close our
-learned weights are to the true weights</p>
+<span><span class="co"># Warm-up call performs tracing and compilation</span></span>
+<span><span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="fu">compiled_normal_eq</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Re-use the compiled function</span></span>
+<span><span class="va">w_compiled</span> <span class="op">&lt;-</span> <span class="fu">compiled_normal_eq</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">w_compiled</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">compiled_error</span> <span class="op">&lt;-</span> <span class="va">w_compiled</span> <span class="op">-</span> <span class="va">w_star</span></span>
+<span><span class="va">compiled_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">compiled_error</span> <span class="op">*</span> <span class="va">compiled_error</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Compiled closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">compiled_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.0009728033</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="accuracy-and-performance-comparison">Accuracy and Performance Comparison<a class="anchor" aria-label="anchor" href="#accuracy-and-performance-comparison"></a>
+</h2>
+<p>To compare approaches we measure elapsed time over several
+repetitions and the resulting distance between each estimate and the
+true coefficients. We also add base R’s normal-equation implementation
+as a reference.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bench.r-lib.org/" class="external-link">bench</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Fit models once for accuracy measurements</span></span>
+<span><span class="va">w_sgd</span> <span class="op">&lt;-</span> <span class="fu">train_sgd</span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">w_closed</span> <span class="op">&lt;-</span> <span class="fu">mlx_normal_eq</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="va">compiled_normal_eq</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_compile.html">mlx_compile</a></span><span class="op">(</span><span class="va">mlx_normal_eq</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="fu">compiled_normal_eq</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">w_compiled</span> <span class="op">&lt;-</span> <span class="fu">compiled_normal_eq</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="va">X_r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span><span class="va">y_r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
+<span><span class="va">w_base</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lmfit.html" class="external-link">lm.fit</a></span><span class="op">(</span><span class="va">X_r</span>, <span class="va">y_r</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Accuracy comparisons</span></span>
+<span><span class="va">to_norm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">w_hat</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">diff</span> <span class="op">&lt;-</span> <span class="va">w_hat</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">w_star</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">diff</span> <span class="op">*</span> <span class="va">diff</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co"># Benchmark timings (compiled solution already warm)</span></span>
+<span><span class="va">timings</span> <span class="op">&lt;-</span> <span class="fu">bench</span><span class="fu">::</span><span class="fu"><a href="https://bench.r-lib.org/reference/mark.html" class="external-link">mark</a></span><span class="op">(</span></span>
+<span>  sgd <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">train_sgd</span><span class="op">(</span>verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  mlx_closed <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">mlx_normal_eq</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  mlx_closed_compiled <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">compiled_normal_eq</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  base_R <span class="op">=</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/stats/lmfit.html" class="external-link">lm.fit</a></span><span class="op">(</span><span class="va">X_r</span>, <span class="va">y_r</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">coefficients</span></span>
+<span>  <span class="op">}</span>,</span>
+<span>  iterations <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  check <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Some expressions had a GC in every iteration; so filtering is</span></span>
+<span><span class="co">#&gt; disabled.</span></span>
+<span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SGD"</span>, <span class="st">"MLX closed form"</span>, <span class="st">"MLX closed form (compiled)"</span>, <span class="st">"Base R"</span><span class="op">)</span>,</span>
+<span>  median_time <span class="op">=</span> <span class="va">timings</span><span class="op">$</span><span class="va">median</span>,</span>
+<span>  parameter_error <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="fu">to_norm</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">w_sgd</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="fu">to_norm</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">w_closed</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="fu">to_norm</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">w_compiled</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="fu">to_norm</span><span class="op">(</span><span class="va">w_base</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">results</span>, digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">method</th>
+<th align="right">median_time</th>
+<th align="right">parameter_error</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">SGD</td>
+<td align="right">2.44s</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">MLX closed form</td>
+<td align="right">47.43ms</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">MLX closed form (compiled)</td>
+<td align="right">25.61ms</td>
+<td align="right">0.001</td>
+</tr>
+<tr class="even">
+<td align="left">Base R</td>
+<td align="right">102.31ms</td>
+<td align="right">0.001</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level2">
 <h2 id="device-selection">Device Selection<a class="anchor" aria-label="anchor" href="#device-selection"></a>
 </h2>
 <p>By default, computations run on GPU for speed. Switch to CPU if
 needed:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use CPU (useful for debugging)</span></span>
 <span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="st">"cpu"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cpu"</span></span>
@@ -232,28 +326,6 @@ needed:</p>
 <span><span class="co"># Or back to GPU</span></span>
 <span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="st">"gpu"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "gpu"</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="related-examples">Related Examples<a class="anchor" aria-label="anchor" href="#related-examples"></a>
-</h2>
-<p>For more advanced topics, see: - The <a href="getting-started.html">getting started vignette</a> for basic Rmlx
-usage - The <a href="performance.html">performance benchmarks
-vignette</a> for timing comparisons - The <a href="https://ml-explore.github.io/mlx/build/html/examples/linear_regression.html" class="external-link">original
-MLX linear regression example</a> in Python</p>
-</div>
-<div class="section level2">
-<h2 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
-</h2>
-<ul>
-<li>All computations use single-precision floating point
-(<code>float32</code>)</li>
-<li>The gradient computation is entirely automatic—no hand-coded
-derivatives</li>
-<li>Large computation graphs can accumulate; use <code><a href="../reference/mlx_eval.html">mlx_eval()</a></code>
-to force evaluation</li>
-<li>For more complex models, consider using MLX modules (see the getting
-started vignette)</li>
-</ul>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

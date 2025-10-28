@@ -94,7 +94,7 @@ and <code>"complex64"</code> for complex inputs.</p></dd>
 
 
 <p><strong>Important</strong>: R integer vectors (like <code>1:10</code>) convert to <code>float32</code> by default.
-To create integer MLX arrays, you <strong>must</strong> explicitly specify <code>dtype</code>:</p>
+To create integer MLX arrays, you must explicitly specify <code>dtype</code>:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, dtype <span class="op">=</span> <span class="st">"int32"</span><span class="op">)</span>  <span class="co"># Creates int32 array</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>                    <span class="co"># Creates float32 array</span></span></code></pre><p></p></div>
 <p>This design avoids unintentional integer promotion, since R creates integers

@@ -108,7 +108,7 @@ and <code>Rmlx</code>.</p>
 <span>    base <span class="op">=</span> <span class="op">{</span> <span class="va">A_r</span> <span class="op">+</span> <span class="va">B_r</span> <span class="op">}</span>,</span>
 <span>    rmlx <span class="op">=</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">A_mlx</span> <span class="op">+</span> <span class="va">B_mlx</span><span class="op">)</span> <span class="op">}</span>,</span>
 <span>    iterations <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>    check <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    check <span class="op">=</span> \<span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, tolerance <span class="op">=</span> <span class="fl">1e-6</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">mb</span><span class="op">$</span><span class="va">size</span> <span class="op">&lt;-</span> <span class="va">n</span></span>
 <span>  <span class="va">mb</span></span>
@@ -123,7 +123,7 @@ and <code>Rmlx</code>.</p>
 <span>    y <span class="op">=</span> <span class="st">"Median time"</span>,</span>
 <span>    fill <span class="op">=</span> <span class="st">"Implementation"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="performance_files/figure-html/bench-add-1.png" width="700"></p>
+<p><img src="performance_files/figure-html/bench-add-1.png" width="480"></p>
 </div>
 <div class="section level2">
 <h2 id="matrix-multiplication">Matrix multiplication<a class="anchor" aria-label="anchor" href="#matrix-multiplication"></a>
@@ -139,7 +139,7 @@ and <code>Rmlx</code>.</p>
 <span>    base <span class="op">=</span> <span class="op">{</span> <span class="va">A_r</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">B_r</span> <span class="op">}</span>,</span>
 <span>    rmlx <span class="op">=</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">A_mlx</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">B_mlx</span><span class="op">)</span> <span class="op">}</span>,</span>
 <span>    iterations <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>    check <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>    check <span class="op">=</span> \<span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, tolerance <span class="op">=</span> <span class="fl">1e-6</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">mb</span><span class="op">$</span><span class="va">size</span> <span class="op">&lt;-</span> <span class="va">n</span></span>
 <span>  <span class="va">mb</span></span>
@@ -154,7 +154,7 @@ and <code>Rmlx</code>.</p>
 <span>    y <span class="op">=</span> <span class="st">"Median time"</span>,</span>
 <span>    fill <span class="op">=</span> <span class="st">"Implementation"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="performance_files/figure-html/bench-matmul-1.png" width="700"></p>
+<p><img src="performance_files/figure-html/bench-matmul-1.png" width="480"></p>
 </div>
 <div class="section level2">
 <h2 id="linear-system-solves">Linear system solves<a class="anchor" aria-label="anchor" href="#linear-system-solves"></a>
@@ -166,6 +166,13 @@ and <code>Rmlx</code>.</p>
 <span>  <span class="va">b_r</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, <span class="va">n</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span>  <span class="va">A_mlx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">A_r</span><span class="op">)</span></span>
 <span>  <span class="va">b_mlx</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">b_r</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">base_sol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">A_r</span>, <span class="va">b_r</span><span class="op">)</span></span>
+<span>  <span class="va">mlx_sol</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">A_mlx</span>, <span class="va">b_mlx</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">A_r</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">base_sol</span> <span class="op">-</span> <span class="va">b_r</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">1e-8</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">A_r</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">mlx_sol</span> <span class="op">-</span> <span class="va">b_r</span><span class="op">)</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">5e-1</span></span>
+<span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">mb</span> <span class="op">&lt;-</span> <span class="fu">bench</span><span class="fu">::</span><span class="fu"><a href="https://bench.r-lib.org/reference/mark.html" class="external-link">mark</a></span><span class="op">(</span></span>
 <span>    base <span class="op">=</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">A_r</span>, <span class="va">b_r</span><span class="op">)</span> <span class="op">}</span>,</span>
@@ -186,21 +193,7 @@ and <code>Rmlx</code>.</p>
 <span>    y <span class="op">=</span> <span class="st">"Median time"</span>,</span>
 <span>    fill <span class="op">=</span> <span class="st">"Implementation"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="performance_files/figure-html/bench-solve-1.png" width="700"></p>
-</div>
-<div class="section level2">
-<h2 id="notes">Notes<a class="anchor" aria-label="anchor" href="#notes"></a>
-</h2>
-<ul>
-<li>Numeric data resides in single-precision (<code>float32</code>) when
-stored as <code>mlx</code> arrays; logical data uses MLX
-<code>bool</code>, and complex data uses <code>complex64</code>.</li>
-<li>When comparing timings, make sure MLX is configured for GPU
-execution and consider calling <code>mlx_synchronize("gpu")</code>
-before reading the results to avoid asynchronous delays.</li>
-<li>The exact speedups will vary depending on the problem size, the GPU
-available, and whether the GPU is already warm.</li>
-</ul>
+<p><img src="performance_files/figure-html/bench-solve-1.png" width="480"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
