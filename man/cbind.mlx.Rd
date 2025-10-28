@@ -18,6 +18,12 @@ An mlx array stacked along the second axis.
 \description{
 Column-bind mlx arrays
 }
+\details{
+Unlike base R's \code{cbind()}, this function supports arrays with more
+than 2 dimensions and preserves all dimensions except the second (which is
+summed across inputs). Base R's \code{cbind()} flattens higher-dimensional arrays
+to matrices before binding.
+}
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))
 y <- as_mlx(matrix(5:8, 2, 2))
