@@ -35,3 +35,28 @@
 - With `danger-full-access`, the full devtools workflow (`document()`, `test()`, `check()`) works end-to-end. `devtools::check()` currently reports a single NOTE about a bashism in `configure` line 33; everything else is clean.
 - Keep the workspace tidy after checks: remove `Rmlx_0.0.0.9000.tar.gz`, temporary `Rmlx.Rcheck/`, and local `library/` installs if you create them.
 - Tests now pass, but they rely on MLX availability. Avoid adding conditional skips—failures are acceptable when MLX is absent.
+
+## Additional Guidance
+
+### MLX Integration Reminders
+- MLX may rename C API entry points; confirm function names against `<mlx/c/mlx.h>` before wiring Rcpp wrappers. Update `src/mlx_bindings.cpp` or `src/mlx_ops.cpp` whenever upstream changes occur.
+- R arrays are column-major while MLX tensors are row-major. If reduction tests misbehave, double-check axis ordering (swapping axis 0/1 often fixes it).
+
+### Testing Notes
+- testthat specs live in `tests/testthat/`; all skip when MLX fails to load.
+- Prefer `tolerance = 1e-6` when asserting floating point equality.
+- Use base R results as the oracle for comparisons.
+- Run a single file via `R -q -e 'devtools::test_file("tests/testthat/test-ops.R")'` when iterating.
+
+### Documentation Workflow
+- Roxygen comments power `man/` docs; the vignette is `vignettes/getting-started.Rmd`.
+- After doc edits, regenerate with `R -q -e 'devtools::document()'`.
+- Favor markdown lists/tables in roxygen over `\item`.
+- Add `@seealso` links to relevant MLX online docs for new exports.
+- When adding features, update the pkgdown reference index.
+
+### Handy Tips
+- `usethis::` helpers provide the canonical workflows for package chores—prefer them when possible.
+- MLX array types lack a default constructor; always supply shape/dtype explicitly in C++.
+- Discover exports via `library(help = "Rmlx")`; inspect all functions with `ls(envir = asNamespace("Rmlx"), all.names = TRUE)`.
+- Search upstream docs at `https://ml-explore.github.io/mlx/build/html/search.html?q=<term>`.
