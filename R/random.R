@@ -13,10 +13,7 @@
 mlx_rand_uniform <- function(dim, min = 0, max = 1,
                              dtype = c("float32", "float64"),
                              device = mlx_default_device()) {
-  if (length(dim) == 0L) {
-    stop("dim must contain at least one element.", call. = FALSE)
-  }
-  dim <- as.integer(dim)
+  dim <- .validate_shape(dim)
   dtype <- match.arg(dtype)
   device <- match.arg(device, c("gpu", "cpu"))
 
@@ -38,10 +35,7 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
 mlx_rand_normal <- function(dim, mean = 0, sd = 1,
                             dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
-  if (length(dim) == 0L) {
-    stop("dim must contain at least one element.", call. = FALSE)
-  }
-  dim <- as.integer(dim)
+  dim <- .validate_shape(dim)
   dtype <- match.arg(dtype)
   device <- match.arg(device, c("gpu", "cpu"))
 
@@ -59,13 +53,10 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
 #' @examples
 #' mask <- mlx_rand_bernoulli(c(4, 4), prob = 0.3)
 mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
-  if (length(dim) == 0L) {
-    stop("dim must contain at least one element.", call. = FALSE)
-  }
+  dim <- .validate_shape(dim)
   if (prob < 0 || prob > 1) {
     stop("prob must be between 0 and 1.", call. = FALSE)
   }
-  dim <- as.integer(dim)
   device <- match.arg(device, c("gpu", "cpu"))
 
   ptr <- cpp_mlx_random_bernoulli(dim, prob, device)
@@ -83,10 +74,7 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
 #' samples <- mlx_rand_gumbel(c(2, 3))
 mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
-  if (length(dim) == 0L) {
-    stop("dim must contain at least one element.", call. = FALSE)
-  }
-  dim <- as.integer(dim)
+  dim <- .validate_shape(dim)
   dtype <- match.arg(dtype)
   device <- match.arg(device, c("gpu", "cpu"))
 
@@ -108,16 +96,13 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
 mlx_rand_truncated_normal <- function(lower, upper, dim,
                                       dtype = c("float32", "float64"),
                                       device = mlx_default_device()) {
-  if (length(dim) == 0L) {
-    stop("dim must contain at least one element.", call. = FALSE)
-  }
+  dim <- .validate_shape(dim)
   if (!is.numeric(lower) || length(lower) != 1) {
     stop("lower must be a single numeric value.", call. = FALSE)
   }
   if (!is.numeric(upper) || length(upper) != 1) {
     stop("upper must be a single numeric value.", call. = FALSE)
   }
-  dim <- as.integer(dim)
   dtype <- match.arg(dtype)
   device <- match.arg(device, c("gpu", "cpu"))
 
@@ -144,9 +129,7 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
 mlx_rand_multivariate_normal <- function(dim, mean, cov,
                                          dtype = c("float32", "float64"),
                                          device = "cpu") {
-  if (length(dim) == 0L) {
-    stop("dim must contain at least one element.", call. = FALSE)
-  }
+  dim <- .validate_shape(dim)
 
   # Convert mean and cov to mlx if needed
   if (!is.mlx(mean)) {
@@ -156,7 +139,6 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
     cov <- as_mlx(cov, device = device)
   }
 
-  dim <- as.integer(dim)
   dtype <- match.arg(dtype)
   device <- match.arg(device, c("gpu", "cpu"))
 
@@ -180,16 +162,13 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
 mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
                              dtype = c("float32", "float64"),
                              device = mlx_default_device()) {
-  if (length(dim) == 0L) {
-    stop("dim must contain at least one element.", call. = FALSE)
-  }
+  dim <- .validate_shape(dim)
   if (!is.numeric(loc) || length(loc) != 1) {
     stop("loc must be a single numeric value.", call. = FALSE)
   }
   if (!is.numeric(scale) || length(scale) != 1 || scale <= 0) {
     stop("scale must be a single positive numeric value.", call. = FALSE)
   }
-  dim <- as.integer(dim)
   dtype <- match.arg(dtype)
   device <- match.arg(device, c("gpu", "cpu"))
 
@@ -255,9 +234,7 @@ mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
 mlx_rand_randint <- function(dim, low, high,
                              dtype = c("int32", "int64", "uint32", "uint64"),
                              device = mlx_default_device()) {
-  if (length(dim) == 0L) {
-    stop("dim must contain at least one element.", call. = FALSE)
-  }
+  dim <- .validate_shape(dim)
   if (!is.numeric(low) || length(low) != 1) {
     stop("low must be a single numeric value.", call. = FALSE)
   }
@@ -267,7 +244,6 @@ mlx_rand_randint <- function(dim, low, high,
   if (low >= high) {
     stop("low must be less than high.", call. = FALSE)
   }
-  dim <- as.integer(dim)
   low <- as.integer(low)
   high <- as.integer(high)
   dtype <- match.arg(dtype)

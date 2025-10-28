@@ -116,19 +116,20 @@ mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "non
   log_sum_exp <- mlx_logsumexp(logits, axis = 2, keepdims = TRUE)
   log_probs <- logits - log_sum_exp
 
-  # Get log probability of target class
-  # Note: This is a simplified version - proper implementation would use gather/take
-  # For now, assume targets are class indices (0-indexed)
+  # Get log probability of target class (targets are assumed 0-indexed)
   n_samples <- logits$dim[1]
   n_classes <- logits$dim[2]
-
-  # Create one-hot encoding
-  targets_int <- as.integer(as.matrix(targets))
-  one_hot <- matrix(0, n_samples, n_classes)
-  for (i in seq_len(n_samples)) {
-    one_hot[i, targets_int[i] + 1] <- 1
+  targets_vec <- as.integer(as.matrix(targets))
+  if (length(targets_vec) != n_samples) {
+    stop("targets must provide one class index per sample.", call. = FALSE)
   }
-  one_hot <- as_mlx(one_hot, device = logits$device)
+  if (any(targets_vec < 0L | targets_vec >= n_classes)) {
+    stop("targets contain class indices outside 0:(n_classes - 1).", call. = FALSE)
+  }
+
+  eye_dtype <- if (identical(logits$dtype, "float64")) "float64" else "float32"
+  one_hot <- mlx_eye(n_classes, dtype = eye_dtype, device = logits$device)[targets_vec + 1L, , drop = FALSE]
+  one_hot <- .mlx_cast(one_hot, dtype = logits$dtype, device = logits$device)
 
   # Compute negative log likelihood
   loss <- -mlx_sum(log_probs * one_hot, axis = 2)

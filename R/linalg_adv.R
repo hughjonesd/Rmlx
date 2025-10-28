@@ -1,15 +1,3 @@
-#' Wrap a raw MLX pointer into an mlx object
-#'
-#' @param ptr External pointer returned by C++ bindings.
-#' @param device Device string associated with the array.
-#' @return An mlx array.
-#' @noRd
-.mlx_wrap_result <- function(ptr, device) {
-  dim <- cpp_mlx_shape(ptr)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_mlx(ptr, dim, dtype, device)
-}
-
 #' Cholesky decomposition for mlx arrays
 #'
 #' If `x` is not symmetric positive semi-definite, "behaviour is undefined"
