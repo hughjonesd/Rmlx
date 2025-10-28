@@ -15,3 +15,4 @@
 ^\.claude/?$
 ^LICENSE\.md$
 ^codecov\.yml$
+^dev$
