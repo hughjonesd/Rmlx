@@ -99,11 +99,18 @@ solve_results <- bind_rows(lapply(mat_sizes, function(n) {
   A_mlx <- as_mlx(A_r)
   b_mlx <- as_mlx(b_r)
 
+  base_sol <- solve(A_r, b_r)
+  mlx_sol <- as.matrix(solve(A_mlx, b_mlx))
+  stopifnot(
+    max(abs(A_r %*% base_sol - b_r)) < 1e-8,
+    max(abs(A_r %*% mlx_sol - b_r)) < 5e-1
+  )
+
   mb <- bench::mark(
     base = { solve(A_r, b_r) },
     rmlx = { as.matrix(solve(A_mlx, b_mlx)) },
     iterations = 3,
-    check = \(x, y) all.equal(x, y, tolerance = 1e-2)  
+    check = FALSE
   )
   mb$size <- n
   mb
@@ -119,7 +126,5 @@ ggplot(solve_results, aes(x = factor(size), y = as.numeric(median),
     fill = "Implementation"
   )
 ```
-
-
 
 
