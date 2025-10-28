@@ -58,6 +58,7 @@ reference:
       - mlx_split
       - mlx_unflatten
       - mlx_where
+      - abind
       - rbind.mlx
       - cbind.mlx
   - title: Ordering & Selection
