@@ -30,7 +30,7 @@ library(ggplot2)
 
 ## Matrix addition
 
-```{r bench-add}
+```{r bench-add, fig.width = 5}
 mat_sizes <- c(256, 512, 1024)
 add_results <- bind_rows(lapply(mat_sizes, function(n) {
   A_r <- matrix(runif(n * n), n, n)
@@ -42,7 +42,7 @@ add_results <- bind_rows(lapply(mat_sizes, function(n) {
     base = { A_r + B_r },
     rmlx = { as.matrix(A_mlx + B_mlx) },
     iterations = 5,
-    check = FALSE
+    check = \(x, y) all.equal(x, y, tolerance = 1e-6)
   )
   mb$size <- n
   mb
@@ -61,7 +61,7 @@ ggplot(add_results, aes(x = factor(size), y = as.numeric(median),
 
 ## Matrix multiplication
 
-```{r bench-matmul}
+```{r bench-matmul, fig.width = 5}
 matmul_results <- bind_rows(lapply(mat_sizes, function(n) {
   A_r <- matrix(runif(n * n), n, n)
   B_r <- matrix(runif(n * n), n, n)
@@ -72,7 +72,7 @@ matmul_results <- bind_rows(lapply(mat_sizes, function(n) {
     base = { A_r %*% B_r },
     rmlx = { as.matrix(A_mlx %*% B_mlx) },
     iterations = 3,
-    check = FALSE
+    check = \(x, y) all.equal(x, y, tolerance = 1e-6)
   )
   mb$size <- n
   mb
@@ -91,7 +91,7 @@ ggplot(matmul_results, aes(x = factor(size), y = as.numeric(median),
 
 ## Linear system solves
 
-```{r bench-solve}
+```{r bench-solve, fig.width = 5}
 solve_results <- bind_rows(lapply(mat_sizes, function(n) {
   A_r <- matrix(rnorm(n * n), n, n)
   A_r <- crossprod(A_r) + diag(n) * 1e-3
@@ -103,7 +103,7 @@ solve_results <- bind_rows(lapply(mat_sizes, function(n) {
     base = { solve(A_r, b_r) },
     rmlx = { as.matrix(solve(A_mlx, b_mlx)) },
     iterations = 3,
-    check = FALSE
+    check = \(x, y) all.equal(x, y, tolerance = 1e-2)  
   )
   mb$size <- n
   mb
@@ -122,11 +122,4 @@ ggplot(solve_results, aes(x = factor(size), y = as.numeric(median),
 
 
 
-## Notes
 
-- Numeric data resides in single-precision (`float32`) when stored as `mlx` arrays; logical data uses MLX `bool`, and complex data uses `complex64`.
-- When comparing timings, make sure MLX is configured for GPU execution and
-  consider calling `mlx_synchronize("gpu")` before reading the results to avoid
-  asynchronous delays.
-- The exact speedups will vary depending on the problem size, the GPU available,
-  and whether the GPU is already warm.

@@ -16,7 +16,9 @@ rbind.mlx <- function(..., deparse.level = 1) {
   mlx_objs <- lapply(objs, as_mlx)
   ptr <- cpp_mlx_concat(mlx_objs, 0L)
   ref <- mlx_objs[[1]]
-  new_dim <- as.integer(c(sum(vapply(mlx_objs, function(t) t$dim[1], integer(1))), ref$dim[-1]))
+  dim1s <- vapply(mlx_objs, function(t) t$dim[1], integer(1))
+  new_dim1 <- sum(dim1s)
+  new_dim <- as.integer(c(new_dim1, ref$dim[-1]))
   new_mlx(ptr, new_dim, ref$dtype, ref$device)
 }
 
@@ -36,6 +38,8 @@ cbind.mlx <- function(..., deparse.level = 1) {
   mlx_objs <- lapply(objs, as_mlx)
   ptr <- cpp_mlx_concat(mlx_objs, 1L)
   ref <- mlx_objs[[1]]
-  new_dim <- as.integer(c(ref$dim[1], sum(vapply(mlx_objs, function(t) t$dim[2], integer(1)))))
+  dim2s <- vapply(mlx_objs, function(t) t$dim[2], integer(1))
+  new_dim2 <- sum(dim2s)
+  new_dim <- as.integer(c(ref$dim[1], new_dim2))
   new_mlx(ptr, new_dim, ref$dtype, ref$device)
 }

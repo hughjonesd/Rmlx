@@ -12,10 +12,10 @@
 \item{...}{Additional arguments (ignored)}
 }
 \value{
-A matrix or array (numeric or logical depending on dtype)
+A vector, matrix or array (numeric or logical depending on dtype)
 }
 \description{
-Convert MLX array to R matrix/array
+MLX arrays without dimension are returned as R vectors.
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

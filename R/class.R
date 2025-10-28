@@ -59,7 +59,7 @@
 #' ## Integer types require explicit dtype
 #'
 #' **Important**: R integer vectors (like `1:10`) convert to `float32` by default.
-#' To create integer MLX arrays, you **must** explicitly specify `dtype`:
+#' To create integer MLX arrays, you must explicitly specify `dtype`:
 #'
 #' ```r
 #' x <- as_mlx(1:10, dtype = "int32")  # Creates int32 array
@@ -164,9 +164,11 @@ mlx_eval <- function(x) {
 
 #' Convert MLX array to R matrix/array
 #'
+#' MLX arrays without dimension are returned as R vectors.
+#'
 #' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
-#' @return A matrix or array (numeric or logical depending on dtype)
+#' @return A vector, matrix or array (numeric or logical depending on dtype)
 #' @export
 #' @method as.matrix mlx
 #' @examples

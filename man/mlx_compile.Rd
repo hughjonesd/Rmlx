@@ -44,7 +44,7 @@ input dtypes change, or the number of arguments changes.
 
 \subsection{Requirements for Compiled Functions}{
 
-Your function \strong{must}:
+Your function must:
 \itemize{
 \item Accept only MLX arrays as arguments
 \item Return MLX array(s) - either a single mlx object or a list of mlx objects
@@ -88,7 +88,7 @@ fast_fn(mlx_zeros(c(10, 64)), weights)  # Compiles once
 fast_fn(mlx_zeros(c(20, 64)), weights)  # No recompilation!
 }\if{html}{\out{</div>}}
 
-\strong{Trade-off}: Shapeless mode sacrifices some optimization opportunities
+Shapeless mode sacrifices some optimization opportunities
 but avoids recompilation costs. Use it when processing variable-sized batches.
 }
 }

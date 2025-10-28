@@ -47,7 +47,7 @@ When \code{dtype} is not specified:
 \subsection{Integer types require explicit dtype}{
 
 \strong{Important}: R integer vectors (like \code{1:10}) convert to \code{float32} by default.
-To create integer MLX arrays, you \strong{must} explicitly specify \code{dtype}:
+To create integer MLX arrays, you must explicitly specify \code{dtype}:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{x <- as_mlx(1:10, dtype = "int32")  # Creates int32 array
 x <- as_mlx(1:10)                    # Creates float32 array

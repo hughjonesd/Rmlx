@@ -21,6 +21,9 @@ This vignette demonstrates linear regression using Rmlx, based on the [MLX linea
 ## Problem Setup
 
 We'll create synthetic data for linear regression with high dimensionality:
+- A random "true" weight vector `w_star` of dimension 100
+- A random design matrix `X` of 1000 examples × 100 features
+- Noisy labels `y = X @ w_star + small_noise`
 
 ```{r}
 library(Rmlx)
@@ -45,10 +48,7 @@ eps <- 1e-2 * mlx_rand_normal(c(num_examples, 1))
 y <- X %*% w_star + eps
 ```
 
-We generate:
-- A random "true" weight vector `w_star` of dimension 100
-- A random design matrix `X` of 1000 examples × 100 features
-- Noisy labels `y = X @ w_star + small_noise`
+
 
 ## Define the Loss Function
 
@@ -78,7 +78,14 @@ grad_fn <- function(w) {
 
 ## Training Loop with SGD
 
-We train by repeatedly computing gradients and updating parameters:
+We train by repeatedly computing gradients and updating parameters. In each 
+iteration, we:
+
+1. Compute the gradient of loss with respect to `w`
+2. Update parameters using the gradient step
+3. Force evaluation to prevent the computation graph from growing unbounded
+4. Monitor progress by printing loss every 1000 iterations
+
 
 ```{r}
 # Initialize parameters randomly
@@ -103,12 +110,6 @@ for (i in seq_len(num_iters)) {
 }
 ```
 
-In each iteration:
-1. Compute the gradient of loss with respect to `w`
-2. Update parameters using the gradient step
-3. Force evaluation to prevent the computation graph from growing unbounded
-4. Monitor progress by printing loss every 1000 iterations
-
 ## Evaluation
 
 After training, we evaluate how well our learned parameters match the true parameters:
@@ -129,11 +130,10 @@ w_true <- as.matrix(w_star)
 
 # Compare first few parameters
 print(cbind(learned = w_learned[1:10, 1], true = w_true[1:10, 1]))
+plot(w_true[, 1], w_learned[, 1], xlab = "True parameter", 
+     ylab = "Learned parameter")
 ```
 
-We measure two things:
-- **Final loss**: How well our model fits the data
-- **Parameter error**: How close our learned weights are to the true weights
 
 ## Device Selection
 
@@ -147,16 +147,4 @@ mlx_default_device("cpu")
 mlx_default_device("gpu")
 ```
 
-## Related Examples
 
-For more advanced topics, see:
-- The [getting started vignette](getting-started.html) for basic Rmlx usage
-- The [performance benchmarks vignette](performance.html) for timing comparisons
-- The [original MLX linear regression example](https://ml-explore.github.io/mlx/build/html/examples/linear_regression.html) in Python
-
-## Notes
-
-- All computations use single-precision floating point (`float32`)
-- The gradient computation is entirely automatic—no hand-coded derivatives
-- Large computation graphs can accumulate; use `mlx_eval()` to force evaluation
-- For more complex models, consider using MLX modules (see the getting started vignette)

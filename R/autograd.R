@@ -55,20 +55,12 @@ mlx_grad <- function(f, ..., argnums = NULL, value = FALSE) {
     }
   }
 
-  res <- cpp_mlx_value_grad(
+  cpp_mlx_value_grad(
     f,
     mlx_args,
     as.integer(argnums - 1L),
     isTRUE(value)
   )
-
-  if (isTRUE(value)) {
-    res$value <- structure(res$value, class = class(res$value))
-    res$grads <- res$grads
-    return(res)
-  }
-
-  res
 }
 
 #' @rdname mlx_grad

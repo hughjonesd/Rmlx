@@ -1,0 +1,298 @@
+# MLX C++ Functions vs Rmlx Implementation
+
+## Core Operations (mlx/ops.h)
+
+### Array Creation - MOSTLY IMPLEMENTED
+✅ arange
+✅ linspace
+✅ zeros
+✅ ones
+✅ eye
+✅ identity
+✅ full
+❌ zeros_like
+❌ ones_like
+❌ tri (triangle matrix)
+❌ tril (lower triangle)
+❌ triu (upper triangle)
+
+### Shape Operations - MOSTLY IMPLEMENTED
+✅ reshape
+✅ unflatten
+✅ squeeze
+✅ expand_dims
+✅ moveaxis
+✅ transpose (via t())
+❌ flatten
+❌ swapaxes
+❌ hadamard_transform
+
+### Slicing & Indexing - PARTIALLY IMPLEMENTED
+✅ slice (via [])
+✅ take (via indexing)
+✅ where
+❌ slice_update
+❌ gather
+❌ scatter
+❌ scatter_add
+❌ scatter_add_axis
+❌ scatter_max
+❌ scatter_min
+❌ scatter_prod
+❌ put_along_axis
+❌ take_along_axis
+
+### Concatenation & Stacking - MOSTLY IMPLEMENTED
+✅ concatenate (via cbind/rbind)
+✅ stack
+✅ repeat
+✅ tile
+✅ split
+❌ meshgrid
+❌ broadcast_to
+❌ broadcast_arrays
+
+### Padding & Clipping - IMPLEMENTED
+✅ pad
+✅ clip
+
+### Reductions - MOSTLY IMPLEMENTED  
+✅ sum
+✅ mean
+✅ prod
+✅ std
+✅ var
+✅ max (via Math.mlx)
+✅ min (via Math.mlx)
+✅ all
+✅ any
+✅ argmax
+✅ argmin
+✅ logsumexp
+✅ logcumsumexp
+✅ cumsum
+✅ cumprod
+❌ cummax
+❌ cummin
+
+### Sorting & Searching - MOSTLY IMPLEMENTED
+✅ sort
+✅ argsort
+✅ argpartition  
+✅ partition
+✅ topk
+
+### Arithmetic Operations - IMPLEMENTED (via Ops.mlx and Math.mlx)
+✅ add, subtract, multiply, divide (via +, -, *, /)
+✅ power (via ^)
+✅ floor_divide (via %/%)
+✅ remainder (via %%)
+✅ negative (via -)
+✅ abs, sqrt, square
+✅ reciprocal
+✅ rsqrt
+❌ addmm
+
+### Comparisons - IMPLEMENTED (via Ops.mlx)
+✅ equal, not_equal (via ==, !=)
+✅ greater, greater_equal (via >, >=)
+✅ less, less_equal (via <, <=)
+✅ allclose
+✅ isclose
+✅ array_equal
+
+### Logical Operations - PARTIALLY IMPLEMENTED
+✅ logical_not (via !)
+✅ logical_and (via &)
+✅ logical_or (via |)
+❌ bitwise_and
+❌ bitwise_or
+❌ bitwise_xor
+❌ bitwise_invert  
+❌ left_shift
+❌ right_shift
+
+### Trigonometric - IMPLEMENTED (via Math.mlx)
+✅ sin, cos, tan
+✅ sinh, cosh, tanh
+✅ arcsin, arccos, arctan
+✅ arcsinh, arccosh, arctanh
+
+### Exponential & Logarithmic - IMPLEMENTED (via Math.mlx)
+✅ exp, log
+✅ logaddexp
+
+### Rounding - IMPLEMENTED (via Math.mlx)
+✅ round, floor, ceil
+✅ sign
+
+### Special Math - PARTIALLY IMPLEMENTED
+✅ erf, erfinv
+❌ degrees, radians
+
+### NaN/Inf Handling - PARTIALLY IMPLEMENTED
+✅ isnan, isinf, isfinite
+❌ isposinf, isneginf
+❌ nan_to_num
+
+### Complex Numbers - NOT IMPLEMENTED
+❌ real
+❌ imag
+❌ conjugate
+
+### Type & Memory Operations - PARTIALLY IMPLEMENTED
+✅ astype (implicit in as_mlx)
+✅ copy (implicit)
+✅ stop_gradient
+❌ as_strided
+❌ contiguous
+❌ view
+❌ number_of_elements
+
+### Quantization - IMPLEMENTED
+✅ quantize
+✅ dequantize  
+✅ quantized_matmul
+✅ gather_qmm
+
+### Advanced Matrix Ops - PARTIALLY IMPLEMENTED
+✅ matmul (via %*%)
+✅ outer
+✅ inner (via crossprod)
+✅ tensordot (as tcrossprod)
+❌ kron (Kronecker product)
+❌ gather_mm
+❌ block_masked_mm
+❌ segmented_mm
+
+### Convolutions - IMPLEMENTED
+✅ conv_general
+✅ conv1d, conv2d, conv3d
+✅ conv_transpose1d, conv_transpose2d, conv_transpose3d
+
+### Activations - IMPLEMENTED (via R functions)
+✅ softmax
+✅ sigmoid
+✅ relu
+✅ gelu
+✅ silu
+✅ tanh
+✅ leaky_relu
+
+## Linear Algebra (mlx/linalg.h) - MOSTLY IMPLEMENTED
+
+✅ solve
+✅ cholesky (via chol())
+✅ cholesky_inv
+✅ pinv
+✅ inv
+✅ norm
+✅ cross
+✅ eigvals
+✅ eigvalsh
+✅ solve_triangular
+✅ tri_inv
+✅ trace
+✅ diagonal (via diag())
+❌ qr (partial - returns Q and R but no pivoting)
+❌ svd (partial - may not have full options)
+❌ lu (partial - may not have full options)
+❌ eig (returns eigenvalues only, not vectors - eigvals exists)
+❌ eigh (partial - hermitian eigendecomposition)
+
+## Random (mlx/random.h) - MOSTLY IMPLEMENTED
+
+✅ normal
+✅ uniform
+✅ bernoulli
+✅ categorical
+✅ gumbel
+✅ laplace
+✅ multivariate_normal
+✅ randint
+✅ permutation
+✅ truncated_normal
+❌ key (RNG key management)
+❌ split (RNG key splitting)
+❌ bits (raw random bits)
+
+## FFT (mlx/fft.h) - PARTIALLY IMPLEMENTED
+
+✅ fft (1D via fft())
+❌ fftn (n-dimensional)
+❌ ifftn (inverse n-dimensional)
+❌ rfftn (real FFT)
+❌ irfftn (inverse real FFT)
+❌ fftshift
+❌ ifftshift
+
+## Neural Network Components - IMPLEMENTED
+
+✅ batch_norm
+✅ layer_norm
+✅ embedding
+✅ dropout
+✅ linear (layer)
+✅ sequential (module)
+
+## Loss Functions - IMPLEMENTED
+
+✅ binary_cross_entropy
+✅ cross_entropy
+✅ l1_loss
+✅ mse_loss
+
+## Autograd (mlx/transforms.h) - PARTIALLY IMPLEMENTED
+
+✅ grad (mlx_grad)
+✅ value_grad (mlx_value_grad)
+✅ stop_gradient
+❌ jvp (Jacobian-vector product)
+❌ vjp (vector-Jacobian product)
+❌ checkpoint (gradient checkpointing)
+❌ custom_vjp (custom gradients)
+
+## Compilation (mlx/compile.h) - IMPLEMENTED
+
+✅ compile (mlx_compile)
+✅ disable_compile
+✅ enable_compile
+
+## Device & Stream Management - IMPLEMENTED
+
+✅ eval (mlx_eval)
+✅ synchronize (mlx_synchronize)
+✅ default_device (mlx_default_device)
+
+## I/O Operations (mlx/io/) - NOT IMPLEMENTED
+
+❌ load (load arrays from file)
+❌ save (save arrays to file)
+❌ GGUF format support
+
+## Distributed Computing (mlx/distributed/) - NOT IMPLEMENTED
+
+❌ all_reduce
+❌ all_gather
+❌ broadcast
+❌ reduce_scatter
+❌ NCCL backend
+❌ MPI backend
+
+## Summary Statistics
+
+Total MLX ops functions: ~150
+Implemented in Rmlx: ~100
+Coverage: ~67%
+
+Major gaps:
+1. Scatter operations (scatter, scatter_add, etc.)
+2. Bitwise operations  
+3. Complex number support
+4. Advanced RNG (key management)
+5. N-dimensional FFT variants
+6. I/O operations (load/save)
+7. Distributed computing
+8. Some advanced autograd (jvp, vjp, checkpointing)
+9. Some utility functions (flatten, swapaxes, meshgrid)
+10. NaN/Inf utilities (isposinf, isneginf, nan_to_num)

@@ -32,7 +32,7 @@
 #'
 #' ## Requirements for Compiled Functions
 #'
-#' Your function **must**:
+#' Your function must:
 #' - Accept only MLX arrays as arguments
 #' - Return MLX array(s) - either a single mlx object or a list of mlx objects
 #' - Use only MLX operations (no conversion to R)
@@ -70,7 +70,7 @@
 #' fast_fn(mlx_zeros(c(20, 64)), weights)  # No recompilation!
 #' ```
 #'
-#' **Trade-off**: Shapeless mode sacrifices some optimization opportunities
+#' Shapeless mode sacrifices some optimization opportunities
 #' but avoids recompilation costs. Use it when processing variable-sized batches.
 #'
 #' @seealso [mlx_disable_compile()], [mlx_enable_compile()]
