@@ -22,7 +22,7 @@ This vignette demonstrates linear regression using Rmlx, based on the [MLX linea
 
 We'll create synthetic data for linear regression with high dimensionality:
 - A random "true" weight vector `w_star` of dimension 100
-- A random design matrix `X` of 1000 examples × 100 features
+- A random design matrix `X` of 10,000 cases × 100 features
 - Noisy labels `y = X @ w_star + small_noise`
 
 ```{r}
@@ -30,9 +30,9 @@ library(Rmlx)
 
 # Problem metadata
 num_features <- 100
-num_examples <- 1000
-num_iters <- 10000  # iterations of SGD
-lr <- 0.01          # learning rate for SGD
+num_cases <- 10000
+num_iters <- 1200          # iterations of SGD
+learning_rate <- 0.01      # learning rate for SGD
 
 # Set seed for reproducibility
 set.seed(42)
@@ -41,10 +41,10 @@ set.seed(42)
 w_star <- mlx_rand_normal(c(num_features, 1))
 
 # Input examples (design matrix)
-X <- mlx_rand_normal(c(num_examples, num_features))
+X <- mlx_rand_normal(c(num_cases, num_features))
 
 # Noisy labels
-eps <- 1e-2 * mlx_rand_normal(c(num_examples, 1))
+eps <- 1e-2 * mlx_rand_normal(c(num_cases, 1))
 y <- X %*% w_star + eps
 ```
 
@@ -74,6 +74,19 @@ Rmlx provides `mlx_grad()` to compute gradients via automatic differentiation. T
 grad_fn <- function(w) {
   mlx_grad(loss_fn, w)[[1]]
 }
+
+train_sgd <- function(steps = num_iters, step_size = learning_rate, verbose = TRUE) {
+  w <- 1e-2 * mlx_rand_normal(c(num_features, 1))
+  for (i in seq_len(steps)) {
+    grad <- grad_fn(w)
+    w <- w - step_size * grad
+    mlx_eval(w)
+    if (verbose && i %% 1000 == 0) {
+      cat("Iteration", i, "- Loss:", as.vector(loss_fn(w)), "\n")
+    }
+  }
+  w
+}
 ```
 
 ## Training Loop with SGD
@@ -88,52 +101,113 @@ iteration, we:
 
 
 ```{r}
-# Initialize parameters randomly
-w <- 1e-2 * mlx_rand_normal(c(num_features, 1))
-
-# Training loop
-for (i in seq_len(num_iters)) {
-  # Compute gradient
-  grad <- grad_fn(w)
-
-  # Update parameters: w = w - lr * grad
-  w <- w - lr * grad
-
-  # Evaluate to avoid building up computation graph
-  mlx_eval(w)
-
-  # Print progress
-  if (i %% 1000 == 0) {
-    loss <- loss_fn(w)
-    cat("Iteration", i, "- Loss:", as.vector(loss), "\n")
-  }
-}
+w_sgd <- train_sgd()
 ```
 
-## Evaluation
+## Method 2: Closed-form Regression via Matrix Algebra
 
-After training, we evaluate how well our learned parameters match the true parameters:
+Gradient descent is flexible, but linear regression also has a closed-form
+solution that can be obtained via the QR decomposition. Rather than forming
+\(X^\top X\) explicitly, we factor \(X = QR\) with \(Q^\top Q = I\) and solve
+the triangular system \(Rw = Q^\top y\):
 
 ```{r}
-# Compute final loss
-final_loss <- loss_fn(w)
-cat("Final loss:", as.vector(final_loss), "\n")
+mlx_normal_eq <- function(X, y) {
+  qr_res <- qr(X)
+  q <- qr_res$Q
+  r <- qr_res$R
+  q_ty <- crossprod(q, y)
+  mlx_solve_triangular(r, q_ty, upper = TRUE)
+}
 
-# Compute error between learned and true parameters
-error <- w - w_star
-error_norm <- sqrt(sum(error * error))
-cat("||w - w*|| =", as.vector(error_norm), "\n")
+w_closed <- mlx_normal_eq(X, y)
+mlx_eval(w_closed)
 
-# Convert to R for detailed inspection
-w_learned <- as.matrix(w)
-w_true <- as.matrix(w_star)
-
-# Compare first few parameters
-print(cbind(learned = w_learned[1:10, 1], true = w_true[1:10, 1]))
-plot(w_true[, 1], w_learned[, 1], xlab = "True parameter", 
-     ylab = "Learned parameter")
+closed_error <- w_closed - w_star
+closed_error_norm <- sqrt(sum(closed_error * closed_error))
+cat("Closed-form ||w - w*|| =", as.vector(closed_error_norm), "\n")
 ```
 
+## Accelerating the Closed-form Solution with `mlx_compile()`
+
+The closed-form function mixes several MLX primitives. We can trace and fuse
+those operations with `mlx_compile()`. The first call incurs the tracing cost;
+subsequent calls reuse the compiled graph.
+
+```{r}
+compiled_normal_eq <- mlx_compile(mlx_normal_eq)
+
+# Warm-up call performs tracing and compilation
+mlx_eval(compiled_normal_eq(X, y))
+
+# Re-use the compiled function
+w_compiled <- compiled_normal_eq(X, y)
+mlx_eval(w_compiled)
+
+compiled_error <- w_compiled - w_star
+compiled_error_norm <- sqrt(sum(compiled_error * compiled_error))
+cat("Compiled closed-form ||w - w*|| =", as.vector(compiled_error_norm), "\n")
+```
+
+## Accuracy and Performance Comparison
+
+To compare approaches we measure elapsed time over several repetitions and the
+resulting distance between each estimate and the true coefficients. We also add
+base R’s normal-equation implementation as a reference.
+
+```{r}
+library(bench)
+
+# Fit models once for accuracy measurements
+w_sgd <- train_sgd(verbose = FALSE)
+w_closed <- mlx_normal_eq(X, y)
+compiled_normal_eq <- mlx_compile(mlx_normal_eq)
+mlx_eval(compiled_normal_eq(X, y))
+w_compiled <- compiled_normal_eq(X, y)
+X_r <- as.matrix(X)
+y_r <- as.matrix(y)
+w_base <- matrix(lm.fit(X_r, y_r[, 1])$coefficients, ncol = 1)
+
+# Accuracy comparisons
+to_norm <- function(w_hat) {
+  diff <- w_hat - as.matrix(w_star)
+  sqrt(sum(diff * diff))
+}
+
+# Benchmark timings (compiled solution already warm)
+timings <- bench::mark(
+  sgd = {
+    res <- train_sgd(verbose = FALSE)
+    mlx_eval(res)
+  },
+  mlx_closed = {
+    res <- mlx_normal_eq(X, y)
+    mlx_eval(res)
+  },
+  mlx_closed_compiled = {
+    res <- compiled_normal_eq(X, y)
+    mlx_eval(res)
+  },
+  base_R = {
+    lm.fit(X_r, y_r[, 1])$coefficients
+  },
+  iterations = 3,
+  check = FALSE
+) |>
+  as.data.frame()
+
+results <- data.frame(
+  method = c("SGD", "MLX closed form", "MLX closed form (compiled)", "Base R"),
+  median_time = timings$median,
+  parameter_error = c(
+    to_norm(as.matrix(w_sgd)),
+    to_norm(as.matrix(w_closed)),
+    to_norm(as.matrix(w_compiled)),
+    to_norm(w_base)
+  )
+)
+knitr::kable(results, digits = 4)
+```
 
 ## Device Selection
 
@@ -146,5 +220,3 @@ mlx_default_device("cpu")
 # Or back to GPU
 mlx_default_device("gpu")
 ```
-
-
