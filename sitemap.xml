@@ -36,8 +36,10 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/grapes-times-grapes-.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/index.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/is.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/kronecker.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/length.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mean.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_addmm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_allclose.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_arange.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_argmax.html</loc></url>
@@ -89,6 +91,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_isposinf.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_key.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_key_bits.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_kron.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_l1_loss.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_layer_norm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_leaky_relu.html</loc></url>
@@ -124,6 +127,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_randint.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_truncated_normal.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_rand_uniform.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_real.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_reduction_base.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_relu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_repeat.html</loc></url>
@@ -149,6 +153,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_topk.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_trace.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_train_step.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_tri.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_tri_inv.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_unflatten.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_where.html</loc></url>
