@@ -1055,6 +1055,43 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// cpp_mlx_random_key
+SEXP cpp_mlx_random_key(double seed);
+RcppExport SEXP _Rmlx_cpp_mlx_random_key(SEXP seedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type seed(seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_random_key(seed));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_random_split
+SEXP cpp_mlx_random_split(SEXP key_xp_, int num);
+RcppExport SEXP _Rmlx_cpp_mlx_random_split(SEXP key_xp_SEXP, SEXP numSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type key_xp_(key_xp_SEXP);
+    Rcpp::traits::input_parameter< int >::type num(numSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_random_split(key_xp_, num));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_random_bits
+SEXP cpp_mlx_random_bits(SEXP dim_, int width, SEXP key_xp_, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_random_bits(SEXP dim_SEXP, SEXP widthSEXP, SEXP key_xp_SEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type dim_(dim_SEXP);
+    Rcpp::traits::input_parameter< int >::type width(widthSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type key_xp_(key_xp_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_random_bits(dim_, width, key_xp_, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_random_normal
 SEXP cpp_mlx_random_normal(SEXP dim_, double mean, double std, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_random_normal(SEXP dim_SEXP, SEXP meanSEXP, SEXP stdSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1703,6 +1740,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_cumsum", (DL_FUNC) &_Rmlx_cpp_mlx_cumsum, 4},
     {"_Rmlx_cpp_mlx_cumprod", (DL_FUNC) &_Rmlx_cpp_mlx_cumprod, 4},
     {"_Rmlx_cpp_mlx_synchronize", (DL_FUNC) &_Rmlx_cpp_mlx_synchronize, 1},
+    {"_Rmlx_cpp_mlx_random_key", (DL_FUNC) &_Rmlx_cpp_mlx_random_key, 1},
+    {"_Rmlx_cpp_mlx_random_split", (DL_FUNC) &_Rmlx_cpp_mlx_random_split, 2},
+    {"_Rmlx_cpp_mlx_random_bits", (DL_FUNC) &_Rmlx_cpp_mlx_random_bits, 4},
     {"_Rmlx_cpp_mlx_random_normal", (DL_FUNC) &_Rmlx_cpp_mlx_random_normal, 5},
     {"_Rmlx_cpp_mlx_random_uniform", (DL_FUNC) &_Rmlx_cpp_mlx_random_uniform, 5},
     {"_Rmlx_cpp_mlx_random_bernoulli", (DL_FUNC) &_Rmlx_cpp_mlx_random_bernoulli, 3},

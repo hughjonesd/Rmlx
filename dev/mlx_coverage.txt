@@ -214,9 +214,9 @@
 ✅ randint
 ✅ permutation
 ✅ truncated_normal
-❌ key (RNG key management)
-❌ split (RNG key splitting)
-❌ bits (raw random bits)
+✅ key
+✅ split
+✅ bits
 
 ## FFT (mlx/fft.h) - PARTIALLY IMPLEMENTED
 

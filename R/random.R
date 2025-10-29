@@ -296,3 +296,75 @@ mlx_rand_permutation <- function(x, axis = 0L, device = mlx_default_device()) {
     new_mlx(ptr, output_shape, x$dtype, x$device)
   }
 }
+
+#' Construct MLX random number generator keys
+#'
+#' `mlx_key()` provides access to MLX's stateless PRNG. Given a 64-bit seed it
+#' returns a key that can be passed to other random helpers. Use
+#' `mlx_key_split()` to derive multiple independent keys from an existing key.
+#'
+#' @param seed Integer or numeric seed (converted to unsigned 64-bit).
+#' @return An `mlx` array holding the PRNG key.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.key}
+#' @export
+#' @examples
+#' k <- mlx_key(42)
+#' subkeys <- mlx_key_split(k, num = 2)
+mlx_key <- function(seed) {
+  if (length(seed) != 1L || !is.numeric(seed)) {
+    stop("`seed` must be a single numeric value.", call. = FALSE)
+  }
+  ptr <- cpp_mlx_random_key(as.numeric(seed))
+  .mlx_wrap_result(ptr, "cpu")
+}
+
+#' @rdname mlx_key
+#' @param key An `mlx` key array returned by [mlx_key()].
+#' @param num Number of subkeys to produce (default 2L).
+#' @return A list of `num` `mlx` key arrays.
+#' @export
+mlx_key_split <- function(key, num = 2L) {
+  if (!is.mlx(key)) {
+    stop("`key` must be an mlx array produced by mlx_key().", call. = FALSE)
+  }
+  num <- as.integer(num)
+  if (length(num) != 1L || is.na(num) || num <= 0L) {
+    stop("`num` must be a positive integer.", call. = FALSE)
+  }
+  raw <- cpp_mlx_random_split(key$ptr, num)
+  lapply(raw, function(ptr) .mlx_wrap_result(ptr, key$device))
+}
+
+#' Generate raw random bits on MLX arrays
+#'
+#' @inheritParams mlx_creation_params
+#' @param width Number of bytes per element (default 4 = 32 bits). Must be
+#'   positive.
+#' @param key Optional `mlx` key array. If omitted, MLX's default generator is
+#'   used.
+#' @return An `mlx` array of unsigned integers filled with random bits.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bits}
+#' @export
+#' @examples
+#' k <- mlx_key(12)
+#' raw_bits <- mlx_key_bits(c(4, 4), key = k)
+mlx_key_bits <- function(dim, width = 4L, key = NULL, device = mlx_default_device()) {
+  dim <- .validate_shape(dim)
+  width <- as.integer(width)
+  if (length(width) != 1L || is.na(width) || width <= 0L) {
+    stop("`width` must be a positive integer.", call. = FALSE)
+  }
+  device <- match.arg(device, c("gpu", "cpu"))
+
+  key_ptr <- if (is.null(key)) {
+    NULL
+  } else {
+    if (!is.mlx(key)) {
+      stop("`key` must be an mlx array produced by mlx_key().", call. = FALSE)
+    }
+    key$ptr
+  }
+
+  ptr <- cpp_mlx_random_bits(dim, width, key_ptr, device)
+  .mlx_wrap_result(ptr, device)
+}

@@ -305,6 +305,18 @@ cpp_mlx_synchronize <- function(device_str) {
     invisible(.Call(`_Rmlx_cpp_mlx_synchronize`, device_str))
 }
 
+cpp_mlx_random_key <- function(seed) {
+    .Call(`_Rmlx_cpp_mlx_random_key`, seed)
+}
+
+cpp_mlx_random_split <- function(key_xp_, num) {
+    .Call(`_Rmlx_cpp_mlx_random_split`, key_xp_, num)
+}
+
+cpp_mlx_random_bits <- function(dim_, width, key_xp_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_random_bits`, dim_, width, key_xp_, device_str)
+}
+
 cpp_mlx_random_normal <- function(dim_, mean, std, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_random_normal`, dim_, mean, std, dtype_str, device_str)
 }

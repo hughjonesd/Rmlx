@@ -45,6 +45,9 @@ reference:
       - mlx_arange
       - mlx_linspace
       - starts_with("mlx_rand")
+      - mlx_key
+      - mlx_key_split
+      - mlx_key_bits
   - title: Shape & Indexing
     contents:
       - mlx_reshape

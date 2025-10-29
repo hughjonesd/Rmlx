@@ -219,3 +219,42 @@ test_that("mlx_rand_permutation permutes along specified axis", {
   # Check all values still present
   expect_equal(sort(as.vector(as.matrix(perm_cols))), 1:12)
 })
+
+test_that("mlx_key is deterministic for a given seed", {
+  key1 <- mlx_key(123)
+  key2 <- mlx_key(123)
+  key3 <- mlx_key(124)
+
+  expect_s3_class(key1, "mlx")
+  expect_equal(key1$device, "cpu")
+  expect_equal(as.matrix(key1), as.matrix(key2))
+  expect_false(all(as.matrix(key1) == as.matrix(key3)))
+})
+
+test_that("mlx_key_split returns reproducible subkeys", {
+  base_key <- mlx_key(321)
+  splits <- mlx_key_split(base_key, num = 3)
+
+  expect_length(splits, 3)
+  expect_true(all(vapply(splits, inherits, logical(1), what = "mlx")))
+
+  splits_again <- mlx_key_split(mlx_key(321), num = 3)
+  for (i in seq_along(splits)) {
+    expect_equal(as.matrix(splits[[i]]), as.matrix(splits_again[[i]]))
+  }
+  expect_false(all(as.matrix(splits[[1]]) == as.matrix(splits[[2]])))
+})
+
+test_that("mlx_key_bits produces deterministic bit patterns", {
+  key <- mlx_key(777)
+  bits1 <- mlx_key_bits(c(4L, 2L), key = key)
+  bits2 <- mlx_key_bits(c(4L, 2L), key = key)
+
+  expect_s3_class(bits1, "mlx")
+  expect_equal(bits1$dtype, "uint32")
+  expect_equal(bits1$dim, c(4L, 2L))
+  expect_equal(as.matrix(bits1), as.matrix(bits2))
+
+  bits_wide <- mlx_key_bits(c(2L, 2L), width = 2L)
+  expect_equal(bits_wide$dtype, "uint16")
+})

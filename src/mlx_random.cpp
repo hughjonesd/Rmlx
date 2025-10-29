@@ -2,11 +2,68 @@
 #include "mlx_helpers.hpp"
 #include <mlx/mlx.h>
 #include <mlx/random.h>
+#include <mlx/ops.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
 using namespace rmlx;
 using namespace mlx::core;
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_key(double seed) {
+  uint64_t seed_val = static_cast<uint64_t>(seed);
+  array result = mlx::core::random::key(seed_val);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_split(SEXP key_xp_, int num) {
+  if (num <= 0) {
+    Rcpp::stop("`num` must be a positive integer.");
+  }
+
+  MlxArrayWrapper* key_wrapper = get_mlx_wrapper(key_xp_);
+  array key_arr = key_wrapper->get();
+
+  std::vector<array> outputs;
+  outputs.reserve(num);
+
+  array split_result = mlx::core::random::split(key_arr, num);
+  for (int i = 0; i < num; ++i) {
+    array sub_key = take(split_result, i, 0);
+    outputs.push_back(std::move(sub_key));
+  }
+
+  List result(num);
+  for (int i = 0; i < num; ++i) {
+    result[i] = make_mlx_xptr(std::move(outputs[i]));
+  }
+  return result;
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_random_bits(SEXP dim_, int width, SEXP key_xp_,
+                         std::string device_str) {
+  IntegerVector dim(dim_);
+  if (dim.size() == 0) {
+    Rcpp::stop("`dim` must contain at least one element.");
+  }
+  if (width <= 0) {
+    Rcpp::stop("`width` must be a positive integer.");
+  }
+
+  Shape shape(dim.begin(), dim.end());
+  StreamOrDevice dev = string_to_device(device_str);
+
+  std::optional<array> key_opt = std::nullopt;
+  if (!Rf_isNull(key_xp_)) {
+    MlxArrayWrapper* key_wrapper = get_mlx_wrapper(key_xp_);
+    key_opt = key_wrapper->get();
+  }
+
+  array result = mlx::core::random::bits(shape, width, key_opt, dev);
+  return make_mlx_xptr(std::move(result));
+}
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_random_normal(SEXP dim_, double mean, double std,
@@ -165,4 +222,3 @@ SEXP cpp_mlx_random_permutation(SEXP x_, int axis) {
   array result = mlx::core::random::permutation(x_arr, axis, std::nullopt, dev);
   return make_mlx_xptr(std::move(result));
 }
-
