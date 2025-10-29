@@ -1,17 +1,20 @@
 Package: Rmlx
 Type: Package
-Title: R Interface to Apple's MLX Arrays (GPU-Accelerated on Apple Silicon)
+Title: R Interface to Apple's MLX library for GPU-accelerated arrays
 Version: 0.0.0.9000
 Authors@R:
     person("David", "Hugh-Jones", email = "david@hughjones.com", role = c("aut", "cre"))
 Author: David Hugh-Jones [aut, cre]
 Maintainer: David Hugh-Jones <david@hughjones.com>
-Description: S3 class 'mlx' backed by Apple MLX arrays with lazy GPU ops via Rcpp.
+Description: An R interface to Apple's MLX library, allowing array operations on 
+    Apple Silicon GPUs and CPUs. Features include shared memory between the chips,
+    CUDA support, lazy evaluation and automatic differentiation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports:
-    Rcpp (>= 1.0.10)
+    Rcpp (>= 1.0.10),
+    methods
 LinkingTo:
     Rcpp
 Suggests:

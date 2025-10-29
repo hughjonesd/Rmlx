@@ -83,6 +83,13 @@ mlx_kron <- function(a, b) {
 
 setOldClass("mlx")
 
+#' @import methods
+#' @importMethodsFrom methods kronecker
+NULL
+
+#' @export
+#' @docType methods
+#' @rdname kronecker
 setMethod(
   "kronecker",
   signature(X = "mlx", Y = "mlx"),
@@ -97,6 +104,9 @@ setMethod(
   }
 )
 
+#' @export
+#' @docType methods
+#' @rdname kronecker
 setMethod(
   "kronecker",
   signature(X = "mlx", Y = "ANY"),
@@ -105,6 +115,9 @@ setMethod(
   }
 )
 
+#' @export
+#' @docType methods
+#' @rdname kronecker
 setMethod(
   "kronecker",
   signature(X = "ANY", Y = "mlx"),
