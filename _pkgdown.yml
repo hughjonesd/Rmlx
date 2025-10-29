@@ -2,6 +2,15 @@ url: https://hughjonesd.github.io/Rmlx/
 template:
   bootstrap: 5
 
+home:
+  strip_header: false
+  links: ~
+
+exclude:
+  - "*.md"
+  - "!README.md"
+  - "!LICENSE.md"
+
 reference:
   - title: Core Tensor API
     contents:
