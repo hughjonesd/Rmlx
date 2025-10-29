@@ -122,6 +122,27 @@ SEXP cpp_mlx_eye(int n,
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_tri(int n,
+                 Rcpp::Nullable<int> m,
+                 int k,
+                 std::string dtype_str,
+                 std::string device_str) {
+  if (n <= 0) {
+    Rcpp::stop("n must be positive.");
+  }
+  int m_val = m.isNull() ? n : Rcpp::as<int>(m.get());
+  if (m_val <= 0) {
+    Rcpp::stop("m must be positive.");
+  }
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  StreamOrDevice dev = string_to_device(device_str);
+
+  array result = tri(n, m_val, k, dtype, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_identity(int n, std::string dtype_str, std::string device_str) {
   if (n <= 0) {
     Rcpp::stop("n must be positive.");

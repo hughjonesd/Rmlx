@@ -12,9 +12,9 @@
 ✅ full
 ✅ zeros_like
 ✅ ones_like
-❌ tri (triangle matrix – postponed pending API parity for offset diagonals)
-❌ tril (lower triangle – postponed; needs efficient masking utility)
-❌ triu (upper triangle – postponed; needs efficient masking utility)
+✅ tri
+✅ tril
+✅ triu
 
 ### Shape Operations - MOSTLY IMPLEMENTED
 ✅ reshape
@@ -51,6 +51,9 @@
 ✅ meshgrid
 ✅ broadcast_to
 ✅ broadcast_arrays
+✅ tri
+✅ tril
+✅ triu
 
 ### Padding & Clipping - IMPLEMENTED
 ✅ pad

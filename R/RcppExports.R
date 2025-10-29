@@ -25,6 +25,10 @@ cpp_mlx_eye <- function(n, m, k, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_eye`, n, m, k, dtype_str, device_str)
 }
 
+cpp_mlx_tri <- function(n, m, k, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_tri`, n, m, k, dtype_str, device_str)
+}
+
 cpp_mlx_identity <- function(n, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_identity`, n, dtype_str, device_str)
 }
@@ -307,6 +311,14 @@ cpp_mlx_cumprod <- function(xp_, axis_, reverse, inclusive) {
 
 cpp_mlx_synchronize <- function(device_str) {
     invisible(.Call(`_Rmlx_cpp_mlx_synchronize`, device_str))
+}
+
+cpp_mlx_tril <- function(xp_, k, device_str) {
+    .Call(`_Rmlx_cpp_mlx_tril`, xp_, k, device_str)
+}
+
+cpp_mlx_triu <- function(xp_, k, device_str) {
+    .Call(`_Rmlx_cpp_mlx_triu`, xp_, k, device_str)
 }
 
 cpp_mlx_random_key <- function(seed) {

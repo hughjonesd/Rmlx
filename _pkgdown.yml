@@ -68,6 +68,9 @@ reference:
       - mlx_broadcast_to
       - mlx_broadcast_arrays
       - mlx_where
+      - mlx_tri
+      - mlx_tril
+      - mlx_triu
       - mlx_slice_update
       - mlx_gather
       - abind

@@ -126,3 +126,22 @@ void cpp_mlx_synchronize(std::string device_str) {
   synchronize(stream);
 }
 
+// [[Rcpp::export]]
+SEXP cpp_mlx_tril(SEXP xp_, int k, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = tril(arr, k, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_triu(SEXP xp_, int k, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = triu(arr, k, dev);
+  return make_mlx_xptr(std::move(result));
+}

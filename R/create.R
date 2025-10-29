@@ -229,6 +229,83 @@ mlx_identity <- function(n,
   .mlx_wrap_result(ptr, device)
 }
 
+#' Triangular helpers for MLX arrays
+#'
+#' `mlx_tri()` creates a lower-triangular mask (ones on and below a diagonal,
+#' zeros elsewhere). `mlx_tril()` and `mlx_triu()` retain only the lower or
+#' upper triangular part of an existing array, respectively.
+#'
+#' @inheritParams mlx_eye
+#' @param m Optional number of columns (defaults to `n` for square output).
+#' @param k Diagonal offset: `0` selects the main diagonal, positive values move
+#'   to the upper diagonals, negative values to the lower diagonals.
+#' @param dtype MLX dtype to use (`"float32"` or `"float64"`).
+#' @param x Object coercible to `mlx`.
+#' @return An `mlx` array.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tri}
+#' @export
+#' @examples
+#' mlx_tri(3)          # 3x3 lower-triangular mask
+#' mlx_tril(diag(3) + 2)  # keep lower part of a matrix
+mlx_tri <- function(n,
+                    m = NULL,
+                    k = 0L,
+                    dtype = c("float32", "float64"),
+                    device = mlx_default_device()) {
+  n <- as.integer(n)
+  if (length(n) != 1L || is.na(n) || n <= 0L) {
+    stop("n must be a positive integer.", call. = FALSE)
+  }
+
+  if (is.null(m)) {
+    m_arg <- NULL
+  } else {
+    m_arg <- as.integer(m)
+    if (length(m_arg) != 1L || is.na(m_arg) || m_arg <= 0L) {
+      stop("m must be a positive integer when supplied.", call. = FALSE)
+    }
+  }
+
+  k <- as.integer(k)
+  if (length(k) != 1L || is.na(k)) {
+    stop("k must be a single integer.", call. = FALSE)
+  }
+
+  dtype <- match.arg(dtype)
+  device <- match.arg(device, c("gpu", "cpu"))
+
+  ptr <- cpp_mlx_tri(n, m_arg, k, dtype, device)
+  .mlx_wrap_result(ptr, device)
+}
+
+#' @rdname mlx_tri
+#' @export
+mlx_tril <- function(x, k = 0L) {
+  x <- as_mlx(x)
+
+  k <- as.integer(k)
+  if (length(k) != 1L || is.na(k)) {
+    stop("k must be a single integer.", call. = FALSE)
+  }
+
+  ptr <- cpp_mlx_tril(x$ptr, k, x$device)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_tri
+#' @export
+mlx_triu <- function(x, k = 0L) {
+  x <- as_mlx(x)
+
+  k <- as.integer(k)
+  if (length(k) != 1L || is.na(k)) {
+    stop("k must be a single integer.", call. = FALSE)
+  }
+
+  ptr <- cpp_mlx_triu(x$ptr, k, x$device)
+  .mlx_wrap_result(ptr, x$device)
+}
+
 
 #' Diagonal matrix extraction and construction
 #'
