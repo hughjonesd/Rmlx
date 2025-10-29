@@ -134,6 +134,7 @@ reference:
       - diag
       - chol.mlx
       - chol2inv
+      - kronecker
       - qr.mlx
       - svd
       - svd.mlx
