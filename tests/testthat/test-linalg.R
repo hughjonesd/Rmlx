@@ -198,6 +198,32 @@ test_that("svd.mlx singular values match base R", {
   expect_equal(as.vector(as.matrix(svd_mlx$d)), svd_r$d, tolerance = 1e-5)
 })
 
+test_that("mlx_kron matches base kronecker", {
+  set.seed(135)
+  A <- matrix(rnorm(4), 2, 2)
+  B <- matrix(rnorm(6), 2, 3)
+
+  kron_mlx <- mlx_kron(A, B)
+  kron_r <- kronecker(A, B)
+
+  expect_equal(as.matrix(kron_mlx), kron_r, tolerance = 1e-6)
+})
+
+test_that("kronecker methods dispatch for mlx", {
+  A <- as_mlx(matrix(1:4, 2, 2))
+  B <- as_mlx(matrix(5:8, 2, 2))
+
+  res <- kronecker(A, B)
+  expect_s3_class(res, "mlx")
+  expect_equal(as.matrix(res), kronecker(as.matrix(A), as.matrix(B)), tolerance = 1e-6)
+
+  res_mixed1 <- kronecker(A, matrix(1:4, 2, 2))
+  res_mixed2 <- kronecker(matrix(1:4, 2, 2), B)
+
+  expect_equal(as.matrix(res_mixed1), kronecker(as.matrix(A), matrix(1:4, 2, 2)), tolerance = 1e-6)
+  expect_equal(as.matrix(res_mixed2), kronecker(matrix(1:4, 2, 2), as.matrix(B)), tolerance = 1e-6)
+})
+
 test_that("svd.mlx works with different matrix dimensions", {
   set.seed(606)
 

@@ -189,6 +189,10 @@ cpp_mlx_lu <- function(a_xp_, device_str) {
     .Call(`_Rmlx_cpp_mlx_lu`, a_xp_, device_str)
 }
 
+cpp_mlx_kron <- function(a_xp_, b_xp_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_kron`, a_xp_, b_xp_, device_str)
+}
+
 cpp_mlx_unary <- function(xp_, op) {
     .Call(`_Rmlx_cpp_mlx_unary`, xp_, op)
 }

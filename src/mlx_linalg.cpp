@@ -413,3 +413,15 @@ SEXP cpp_mlx_lu(SEXP a_xp_, std::string device_str) {
   );
 }
 
+// [[Rcpp::export]]
+SEXP cpp_mlx_kron(SEXP a_xp_, SEXP b_xp_, std::string device_str) {
+  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+  MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
+
+  array a_arr = a_wrapper->get();
+  array b_arr = b_wrapper->get();
+
+  StreamOrDevice dev = string_to_device(device_str);
+  array result = kron(a_arr, b_arr, dev);
+  return make_mlx_xptr(std::move(result));
+}

@@ -162,7 +162,7 @@
 ✅ outer
 ✅ inner (via crossprod)
 ✅ tensordot (as tcrossprod)
-❌ kron (Kronecker product)
+✅ kron (Kronecker product)
 ❌ gather_mm
 ❌ block_masked_mm
 ❌ segmented_mm

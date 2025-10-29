@@ -135,6 +135,7 @@ reference:
       - svd.mlx
       - solve.mlx
       - pinv
+      - mlx_kron
       - mlx_inv
       - mlx_tri_inv
       - mlx_cholesky_inv
