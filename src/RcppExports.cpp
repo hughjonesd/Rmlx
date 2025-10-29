@@ -730,6 +730,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_nan_to_num
+SEXP cpp_mlx_nan_to_num(SEXP xp_, Rcpp::Nullable<double> nan_, Rcpp::Nullable<double> posinf_, Rcpp::Nullable<double> neginf_);
+RcppExport SEXP _Rmlx_cpp_mlx_nan_to_num(SEXP xp_SEXP, SEXP nan_SEXP, SEXP posinf_SEXP, SEXP neginf_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type nan_(nan_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type posinf_(posinf_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<double> >::type neginf_(neginf_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_nan_to_num(xp_, nan_, posinf_, neginf_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_conv1d
 SEXP cpp_mlx_conv1d(SEXP input_xp_, SEXP weight_xp_, int stride, int padding, int dilation, int groups, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_conv1d(SEXP input_xp_SEXP, SEXP weight_xp_SEXP, SEXP strideSEXP, SEXP paddingSEXP, SEXP dilationSEXP, SEXP groupsSEXP, SEXP device_strSEXP) {
@@ -1625,6 +1639,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_logical", (DL_FUNC) &_Rmlx_cpp_mlx_logical, 4},
     {"_Rmlx_cpp_mlx_isclose", (DL_FUNC) &_Rmlx_cpp_mlx_isclose, 6},
     {"_Rmlx_cpp_mlx_allclose", (DL_FUNC) &_Rmlx_cpp_mlx_allclose, 6},
+    {"_Rmlx_cpp_mlx_nan_to_num", (DL_FUNC) &_Rmlx_cpp_mlx_nan_to_num, 4},
     {"_Rmlx_cpp_mlx_conv1d", (DL_FUNC) &_Rmlx_cpp_mlx_conv1d, 7},
     {"_Rmlx_cpp_mlx_conv2d", (DL_FUNC) &_Rmlx_cpp_mlx_conv2d, 7},
     {"_Rmlx_cpp_mlx_conv3d", (DL_FUNC) &_Rmlx_cpp_mlx_conv3d, 7},

@@ -165,6 +165,130 @@ mlx_radians <- function(x) {
   .mlx_wrap_result(ptr, x$device)
 }
 
+#' Detect signed infinities in mlx arrays
+#'
+#' `mlx_isposinf()` and `mlx_isneginf()` mirror
+#' [`mlx.core.isposinf()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isposinf)
+#' and [`mlx.core.isneginf()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isneginf),
+#' returning boolean masks of positive or negative infinities.
+#'
+#' @inheritParams mlx_array_required
+#' @return An mlx boolean array highlighting infinite entries.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' vals <- as_mlx(c(-Inf, -1, 0, Inf))
+#' as.matrix(mlx_isposinf(vals))
+mlx_isposinf <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "isposinf")
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_isposinf
+#' @export
+#' @examples
+#' as.matrix(mlx_isneginf(vals))
+mlx_isneginf <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "isneginf")
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' Elementwise NaN and infinity predicates
+#'
+#' `mlx_isnan()`, `mlx_isinf()`, and `mlx_isfinite()` wrap the corresponding
+#' MLX elementwise predicates, returning boolean arrays.
+#'
+#' @inheritParams mlx_array_required
+#' @return An mlx boolean array.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @name mlx_isnan
+NULL
+
+#' @rdname mlx_isnan
+#' @export
+mlx_isnan <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "isnan")
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_isnan
+#' @export
+mlx_isinf <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "isinf")
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_isnan
+#' @export
+mlx_isfinite <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "isfinite")
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' Replace NaN and infinite values with finite numbers
+#'
+#' `mlx_nan_to_num()` mirrors
+#' [`mlx.core.nan_to_num()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.nan_to_num),
+#' filling non-finite entries with user-provided finite substitutes.
+#'
+#' @inheritParams mlx_array_required
+#' @param nan Replacement for NaN values (default `0`). Use `NULL` to retain MLX's default.
+#' @param posinf Optional replacement for positive infinity.
+#' @param neginf Optional replacement for negative infinity.
+#' @return An mlx array with non-finite values replaced.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' x <- as_mlx(c(-Inf, -1, NaN, 3, Inf))
+#' as.matrix(mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10))
+mlx_nan_to_num <- function(x, nan = 0, posinf = NULL, neginf = NULL) {
+  x <- as_mlx(x)
+
+  if (!is.null(nan)) {
+    if (length(nan) != 1L || !is.numeric(nan)) {
+      stop("nan must be a single numeric value or NULL.", call. = FALSE)
+    }
+    nan <- as.numeric(nan)
+  }
+
+  if (!is.null(posinf)) {
+    if (length(posinf) != 1L || !is.numeric(posinf)) {
+      stop("posinf must be a single numeric value or NULL.", call. = FALSE)
+    }
+    posinf <- as.numeric(posinf)
+  }
+
+  if (!is.null(neginf)) {
+    if (length(neginf) != 1L || !is.numeric(neginf)) {
+      stop("neginf must be a single numeric value or NULL.", call. = FALSE)
+    }
+    neginf <- as.numeric(neginf)
+  }
+
+  ptr <- cpp_mlx_nan_to_num(x$ptr, nan, posinf, neginf)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @export
+is.nan.mlx <- function(x) {
+  mlx_isnan(x)
+}
+
+#' @export
+is.infinite.mlx <- function(x) {
+  mlx_isinf(x)
+}
+
+#' @export
+is.finite.mlx <- function(x) {
+  mlx_isfinite(x)
+}
+
 #' Test if two MLX arrays are (nearly) equal
 #'
 #' S3 method for `all.equal` following R semantics. Returns `TRUE` if arrays

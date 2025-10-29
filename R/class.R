@@ -80,6 +80,12 @@
 #' - Integer arithmetic may promote types (e.g., int32 + int32 might → int64)
 #' - Mixed integer/float operations promote to float
 #'
+#' ## Missing values
+#'
+#' MLX does not have an `NA` sentinel. When you pass numeric `NA` values from R,
+#' they are stored as `NaN` inside MLX and returned to R as `NaN`.
+#' Use [is.nan()] on MLX arrays (method provided) if you need to detect them.
+#'
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}
 #' @export
 #' @examples

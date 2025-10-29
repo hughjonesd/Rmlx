@@ -221,6 +221,10 @@ cpp_mlx_allclose <- function(xp1_, xp2_, rtol, atol, equal_nan, device_str) {
     .Call(`_Rmlx_cpp_mlx_allclose`, xp1_, xp2_, rtol, atol, equal_nan, device_str)
 }
 
+cpp_mlx_nan_to_num <- function(xp_, nan_, posinf_, neginf_) {
+    .Call(`_Rmlx_cpp_mlx_nan_to_num`, xp_, nan_, posinf_, neginf_)
+}
+
 cpp_mlx_conv1d <- function(input_xp_, weight_xp_, stride, padding, dilation, groups, device_str) {
     .Call(`_Rmlx_cpp_mlx_conv1d`, input_xp_, weight_xp_, stride, padding, dilation, groups, device_str)
 }

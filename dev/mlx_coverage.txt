@@ -133,8 +133,9 @@
 
 ### NaN/Inf Handling - PARTIALLY IMPLEMENTED
 ✅ isnan, isinf, isfinite
-❌ isposinf, isneginf
-❌ nan_to_num
+✅ isposinf
+✅ isneginf
+✅ nan_to_num
 
 ### Complex Numbers - NOT IMPLEMENTED
 ❌ real

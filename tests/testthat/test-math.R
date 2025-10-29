@@ -159,6 +159,32 @@ test_that("mlx_degrees and mlx_radians convert angles", {
   expect_equal(as.numeric(as.matrix(rad_out)), c(0, pi, 3 * pi / 2), tolerance = 1e-6)
 })
 
+test_that("mlx_nan/inf helpers work", {
+  x <- as_mlx(c(-Inf, -1, NaN, 0, Inf))
+
+  expect_equal(as.vector(as.matrix(mlx_isposinf(x))), c(FALSE, FALSE, FALSE, FALSE, TRUE))
+  expect_equal(as.vector(as.matrix(mlx_isneginf(x))), c(TRUE, FALSE, FALSE, FALSE, FALSE))
+  expect_equal(as.vector(as.matrix(mlx_isnan(x))), c(FALSE, FALSE, TRUE, FALSE, FALSE))
+  expect_equal(as.vector(as.matrix(mlx_isinf(x))), c(TRUE, FALSE, FALSE, FALSE, TRUE))
+  expect_equal(as.vector(as.matrix(mlx_isfinite(x))), c(FALSE, TRUE, FALSE, TRUE, FALSE))
+
+  replaced <- mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10)
+  expect_equal(as.numeric(as.matrix(replaced)), c(-10, -1, 0, 0, 10), tolerance = 1e-6)
+})
+
+test_that("is.nan/is.infinite/is.finite methods dispatch", {
+  x <- as_mlx(c(-Inf, -1, NaN, 0, Inf))
+
+  expect_s3_class(is.nan(x), "mlx")
+  expect_equal(as.vector(as.matrix(is.nan(x))), c(FALSE, FALSE, TRUE, FALSE, FALSE))
+
+  expect_s3_class(is.infinite(x), "mlx")
+  expect_equal(as.vector(as.matrix(is.infinite(x))), c(TRUE, FALSE, FALSE, FALSE, TRUE))
+
+  expect_s3_class(is.finite(x), "mlx")
+  expect_equal(as.vector(as.matrix(is.finite(x))), c(FALSE, TRUE, FALSE, TRUE, FALSE))
+})
+
 test_that("fft matches base R", {
   set.seed(123)
   x <- rnorm(16)

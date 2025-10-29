@@ -1,6 +1,7 @@
 // Math operations (unary, binary, logical)
 #include "mlx_helpers.hpp"
 #include <mlx/mlx.h>
+#include <optional>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -66,6 +67,16 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
       return ceil(wrapper->get());
     } else if (op == "round") {
       return round(wrapper->get());
+    } else if (op == "isnan") {
+      return isnan(wrapper->get());
+    } else if (op == "isinf") {
+      return isinf(wrapper->get());
+    } else if (op == "isfinite") {
+      return isfinite(wrapper->get());
+    } else if (op == "isposinf") {
+      return isposinf(wrapper->get());
+    } else if (op == "isneginf") {
+      return isneginf(wrapper->get());
     } else if (op == "degrees") {
       return degrees(wrapper->get());
     } else if (op == "radians") {
@@ -315,5 +326,29 @@ SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal
 
   array result = allclose(lhs, rhs, rtol, atol, equal_nan, target_device);
 
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_nan_to_num(SEXP xp_,
+                        Rcpp::Nullable<double> nan_,
+                        Rcpp::Nullable<double> posinf_,
+                        Rcpp::Nullable<double> neginf_) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  float nan_value = nan_.isNull() ? 0.0f : static_cast<float>(Rcpp::as<double>(nan_.get()));
+
+  std::optional<float> posinf_opt;
+  if (posinf_.isNotNull()) {
+    posinf_opt = static_cast<float>(Rcpp::as<double>(posinf_.get()));
+  }
+
+  std::optional<float> neginf_opt;
+  if (neginf_.isNotNull()) {
+    neginf_opt = static_cast<float>(Rcpp::as<double>(neginf_.get()));
+  }
+
+  array result = nan_to_num(arr, nan_value, posinf_opt, neginf_opt);
   return make_mlx_xptr(std::move(result));
 }

@@ -71,6 +71,13 @@ in many contexts where floating-point is intended.
 \item Mixed integer/float operations promote to float
 }
 }
+
+\subsection{Missing values}{
+
+MLX does not have an \code{NA} sentinel. When you pass numeric \code{NA} values from R,
+they are stored as \code{NaN} inside MLX and returned to R as \code{NaN}.
+Use \code{\link[=is.nan]{is.nan()}} on MLX arrays (method provided) if you need to detect them.
+}
 }
 \examples{
 # Default float32 for numeric
