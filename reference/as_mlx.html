@@ -116,6 +116,15 @@ in many contexts where floating-point is intended.</p>
 <li><p>Mixed integer/float operations promote to float</p></li>
 </ul></div>
 
+<div class="section">
+<h3 id="missing-values">Missing values<a class="anchor" aria-label="anchor" href="#missing-values"></a></h3>
+
+
+<p>MLX does not have an <code>NA</code> sentinel. When you pass numeric <code>NA</code> values from R,
+they are stored as <code>NaN</code> inside MLX and returned to R as <code>NaN</code>.
+Use <code><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.nan()</a></code> on MLX arrays (method provided) if you need to detect them.</p>
+</div>
+
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
