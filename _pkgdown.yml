@@ -108,6 +108,9 @@ reference:
       - mlx_isposinf
       - mlx_isneginf
       - mlx_nan_to_num
+      - mlx_real
+      - mlx_imag
+      - mlx_conjugate
       - mlx_degrees
       - mlx_radians
       - mlx_isclose

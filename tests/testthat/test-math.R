@@ -230,6 +230,23 @@ test_that("unsupported Math functions fall back to R", {
   expect_equal(result_lgamma, lgamma(x_pos), tolerance = 1e-6)
 })
 
+test_that("complex helpers and generics operate on mlx arrays", {
+  arr <- matrix(1:4, 2, 2)
+  z <- as_mlx(arr + 1i * (arr + 1))
+
+  re_part <- mlx_real(z)
+  im_part <- mlx_imag(z)
+  conj_part <- mlx_conjugate(z)
+
+  expect_equal(as.matrix(re_part), arr, tolerance = 1e-6)
+  expect_equal(as.matrix(im_part), arr + 1, tolerance = 1e-6)
+  expect_equal(as.matrix(conj_part), Conj(arr + 1i * (arr + 1)), tolerance = 1e-6)
+
+  expect_equal(as.matrix(Re(z)), arr, tolerance = 1e-6)
+  expect_equal(as.matrix(Im(z)), arr + 1, tolerance = 1e-6)
+  expect_equal(as.matrix(Conj(z)), Conj(arr + 1i * (arr + 1)), tolerance = 1e-6)
+})
+
 test_that("mlx_isclose returns element-wise comparison", {
   a <- as_mlx(c(1.0, 2.0, 3.0))
   b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-3))

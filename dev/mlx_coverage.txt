@@ -138,9 +138,9 @@
 ✅ nan_to_num
 
 ### Complex Numbers - NOT IMPLEMENTED
-❌ real
-❌ imag
-❌ conjugate
+✅ real
+✅ imag
+✅ conjugate
 
 ### Type & Memory Operations - PARTIALLY IMPLEMENTED
 ✅ astype (implicit in as_mlx)

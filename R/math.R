@@ -134,6 +134,43 @@ mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
   .mlx_wrap_result(ptr, device)
 }
 
+#' Complex-valued helpers for mlx arrays
+#'
+#' `mlx_real()`, `mlx_imag()`, and `mlx_conjugate()` expose MLX's complex helpers to
+#' extract the real part, imaginary part, or complex conjugate of an `mlx`
+#' array. Corresponding S3 methods for [Re()], [Im()], and [Conj()] are also
+#' provided.
+#'
+#' @inheritParams mlx_array_required
+#' @return An `mlx` array containing the requested component.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#complex-helpers}
+#' @export
+#' @examples
+#' z <- as_mlx(1:4 + 1i * (4:1))
+#' mlx_real(z)
+#' Im(z)
+mlx_real <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "real")
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_real
+#' @export
+mlx_imag <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "imag")
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_real
+#' @export
+mlx_conjugate <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "conj")
+  .mlx_wrap_result(ptr, x$device)
+}
+
 #' Convert between radians and degrees
 #'
 #' `mlx_degrees()` and `mlx_radians()` mirror
@@ -287,6 +324,21 @@ is.infinite.mlx <- function(x) {
 #' @export
 is.finite.mlx <- function(x) {
   mlx_isfinite(x)
+}
+
+#' @export
+Re.mlx <- function(z) {
+  mlx_real(z)
+}
+
+#' @export
+Im.mlx <- function(z) {
+  mlx_imag(z)
+}
+
+#' @export
+Conj.mlx <- function(z) {
+  mlx_conjugate(z)
 }
 
 #' Test if two MLX arrays are (nearly) equal

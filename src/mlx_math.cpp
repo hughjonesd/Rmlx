@@ -77,6 +77,12 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
       return isposinf(wrapper->get());
     } else if (op == "isneginf") {
       return isneginf(wrapper->get());
+    } else if (op == "real") {
+      return real(wrapper->get());
+    } else if (op == "imag") {
+      return imag(wrapper->get());
+    } else if (op == "conj") {
+      return conjugate(wrapper->get());
     } else if (op == "degrees") {
       return degrees(wrapper->get());
     } else if (op == "radians") {
