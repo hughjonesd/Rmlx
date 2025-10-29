@@ -56,3 +56,57 @@ SEXP cpp_mlx_slice(SEXP xp_, SEXP starts_, SEXP stops_, SEXP strides_) {
   return make_mlx_xptr(std::move(result));
 }
 
+// [[Rcpp::export]]
+SEXP cpp_mlx_slice_update(SEXP xp_,
+                          SEXP update_xp_,
+                          IntegerVector start_,
+                          IntegerVector stop_,
+                          IntegerVector strides_) {
+  MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
+  MlxArrayWrapper* update_wrapper = get_mlx_wrapper(update_xp_);
+
+  Shape start_shape(start_.begin(), start_.end());
+  Shape stop_shape(stop_.begin(), stop_.end());
+  Shape stride_shape(strides_.begin(), strides_.end());
+
+  array result = slice_update(src_wrapper->get(), update_wrapper->get(), start_shape, stop_shape, stride_shape);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_gather(SEXP xp_,
+                    List indices_,
+                    IntegerVector axes_,
+                    std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  std::vector<array> indices;
+  indices.reserve(indices_.size());
+  for (int i = 0; i < indices_.size(); ++i) {
+    List obj(indices_[i]);
+    indices.push_back(get_mlx_wrapper(obj["ptr"])->get());
+  }
+
+  std::vector<int> axes(axes_.begin(), axes_.end());
+  StreamOrDevice dev = string_to_device(device_str);
+  Shape slice_sizes(axes.size(), 1);
+
+  array result = gather(wrapper->get(), indices, axes, slice_sizes, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_scatter(SEXP xp_,
+                     SEXP indices_xp_,
+                     SEXP updates_xp_,
+                     int axis) {
+  MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
+  MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_xp_);
+  MlxArrayWrapper* upd_wrapper = get_mlx_wrapper(updates_xp_);
+
+  std::vector<array> indices_vec;
+  indices_vec.push_back(idx_wrapper->get());
+  std::vector<int> axes_vec{axis};
+
+  array result = scatter(src_wrapper->get(), indices_vec, upd_wrapper->get(), axes_vec);
+  return make_mlx_xptr(std::move(result));
+}

@@ -57,3 +57,59 @@ test_that("zero length selections return empty tensors", {
   empty_cols <- x[, integer(0)]
   expect_equal(dim(empty_cols), c(nrow(mat), 0L))
 })
+
+test_that("subset assignment with numeric indices matches base R", {
+  mat <- matrix(1:9, 3, 3)
+  x <- as_mlx(mat)
+
+  x[1, 2] <- 42
+  mat[1, 2] <- 42
+  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
+
+  x[2, ] <- c(10, 11, 12)
+  mat[2, ] <- c(10, 11, 12)
+  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
+
+  x[, 3] <- 100
+  mat[, 3] <- 100
+  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
+})
+
+test_that("subset assignment with logical masks behaves like base R", {
+  mat <- matrix(1:9, 3, 3)
+  x <- as_mlx(mat)
+
+  row_mask <- c(TRUE, FALSE, TRUE)
+  col_mask <- c(FALSE, TRUE, TRUE)
+
+  x[row_mask, col_mask] <- c(5, 6, 7, 8)
+  mat[row_mask, col_mask] <- c(5, 6, 7, 8)
+
+  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
+})
+
+test_that("matrix indexing matches base behaviour", {
+  mat <- matrix(1:9, 3, 3)
+  x <- as_mlx(mat)
+
+  idx <- cbind(c(1, 3), c(2, 3))
+  expect_equal(as.vector(as.matrix(x[idx])), mat[idx], tolerance = 1e-6)
+})
+
+test_that("direct gather and slice_update mirror MLX semantics", {
+  mat <- matrix(1:9, 3, 3)
+  x <- as_mlx(mat)
+
+  gathered <- mlx_gather(x, list(c(1L, 3L)), axes = 1L)
+  expect_equal(as.matrix(gathered), mat[c(1, 3), , drop = FALSE], tolerance = 1e-6)
+
+  updated <- mlx_slice_update(
+    x,
+    as_mlx(matrix(c(100, 200, 300, 400), nrow = 2)),
+    start = c(0L, 1L),
+    stop = c(2L, 3L),
+    strides = c(1L, 1L)
+  )
+  mat[1:2, 2:3] <- matrix(c(100, 200, 300, 400), nrow = 2)
+  expect_equal(as.matrix(updated), mat, tolerance = 1e-6)
+})

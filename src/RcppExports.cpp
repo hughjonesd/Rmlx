@@ -313,6 +313,49 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_slice_update
+SEXP cpp_mlx_slice_update(SEXP xp_, SEXP update_xp_, IntegerVector start_, IntegerVector stop_, IntegerVector strides_);
+RcppExport SEXP _Rmlx_cpp_mlx_slice_update(SEXP xp_SEXP, SEXP update_xp_SEXP, SEXP start_SEXP, SEXP stop_SEXP, SEXP strides_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type update_xp_(update_xp_SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type start_(start_SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type stop_(stop_SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type strides_(strides_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_slice_update(xp_, update_xp_, start_, stop_, strides_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_gather
+SEXP cpp_mlx_gather(SEXP xp_, List indices_, IntegerVector axes_, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_gather(SEXP xp_SEXP, SEXP indices_SEXP, SEXP axes_SEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< List >::type indices_(indices_SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type axes_(axes_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_gather(xp_, indices_, axes_, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_scatter
+SEXP cpp_mlx_scatter(SEXP xp_, SEXP indices_xp_, SEXP updates_xp_, int axis);
+RcppExport SEXP _Rmlx_cpp_mlx_scatter(SEXP xp_SEXP, SEXP indices_xp_SEXP, SEXP updates_xp_SEXP, SEXP axisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type indices_xp_(indices_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type updates_xp_(updates_xp_SEXP);
+    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_scatter(xp_, indices_xp_, updates_xp_, axis));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_solve
 SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_solve(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1608,6 +1651,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_slice", (DL_FUNC) &_Rmlx_cpp_mlx_slice, 4},
+    {"_Rmlx_cpp_mlx_slice_update", (DL_FUNC) &_Rmlx_cpp_mlx_slice_update, 5},
+    {"_Rmlx_cpp_mlx_gather", (DL_FUNC) &_Rmlx_cpp_mlx_gather, 4},
+    {"_Rmlx_cpp_mlx_scatter", (DL_FUNC) &_Rmlx_cpp_mlx_scatter, 4},
     {"_Rmlx_cpp_mlx_solve", (DL_FUNC) &_Rmlx_cpp_mlx_solve, 4},
     {"_Rmlx_cpp_mlx_cholesky", (DL_FUNC) &_Rmlx_cpp_mlx_cholesky, 4},
     {"_Rmlx_cpp_mlx_qr", (DL_FUNC) &_Rmlx_cpp_mlx_qr, 3},

@@ -209,8 +209,12 @@ mlx_dtype <- function(x) {
 #' @param ... Indices for each dimension. Provide one per axis; omitted indices
 #'   select the full extent. Logical indices recycle to the dimension length.
 #' @param drop Should dimensions be dropped? (default: FALSE)
+#' @param value Replacement value(s) for `\code{[<-}` (scalar, vector, matrix,
+#'   or array) recycled to match the selection.
 #' @return Subsetted mlx object
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.take}
+#' @name mlx_subset
+#' @importFrom utils tail
 #' @export
 #' @method [ mlx
 #' @examples
@@ -245,6 +249,10 @@ mlx_dtype <- function(x) {
     }
   }
 
+  if (length(dot_expr) == 1L && is.matrix(idx_list[[1]])) {
+    return(.mlx_matrix_subset(x, idx_list[[1]]))
+  }
+
   out <- x
   for (axis in seq_len(ndim)) {
     idx <- if (axis <= length(idx_list)) idx_list[[axis]] else NULL
@@ -272,6 +280,222 @@ mlx_dtype <- function(x) {
   }
 
   out
+}
+
+#' @rdname mlx_subset
+#' @method [<- mlx
+#' @export
+`[<-.mlx` <- function(x, ..., value) {
+  stopifnot(is.mlx(x))
+  ndim <- length(x$dim)
+  if (ndim == 0L) {
+    stop("Cannot assign to a scalar mlx array.", call. = FALSE)
+  }
+
+  dot_expr <- as.list(substitute(alist(...)))[-1]
+  if (length(dot_expr) > ndim && !(length(dot_expr) == 1L && is.matrix(eval(dot_expr[[1]], parent.frame())))) {
+    stop("Incorrect number of indices supplied.", call. = FALSE)
+  }
+
+  idx_list <- vector("list", ndim)
+  if (length(dot_expr)) {
+    for (k in seq_along(dot_expr)) {
+      expr <- dot_expr[[k]]
+      value_idx <- tryCatch(eval(expr, parent.frame()), error = function(e) {
+        msg <- conditionMessage(e)
+        if (grepl("missing", msg, fixed = FALSE)) {
+          return(NULL)
+        }
+        stop(e)
+      })
+      if (!is.null(value_idx)) {
+        idx_list[[k]] <- value_idx
+      }
+    }
+  }
+
+  # Matrix-style indexing (single argument matrix)
+  if (length(dot_expr) == 1L && is.matrix(idx_list[[1]])) {
+    idx_mat <- idx_list[[1]]
+    return(.mlx_matrix_assign(x, idx_mat, value))
+  }
+
+  normalized <- vector("list", ndim)
+  empty_selection <- FALSE
+  for (axis in seq_len(ndim)) {
+    idx <- if (axis <= length(idx_list)) idx_list[[axis]] else NULL
+    sel <- .normalize_index_vector(idx, x$dim[axis])
+    if (!is.null(sel) && length(sel) == 0L) {
+      empty_selection <- TRUE
+      break
+    }
+    normalized[axis] <- list(sel)
+  }
+
+  if (empty_selection) {
+    return(x)
+  }
+
+  # Determine slice parameters when possible
+  slice_params <- lapply(seq_len(ndim), function(axis) {
+    sel <- normalized[[axis]]
+    dim_len <- x$dim[axis]
+    if (is.null(sel)) {
+      list(all = TRUE, start = 0L, stop = dim_len, stride = 1L, len = dim_len)
+    } else {
+      stride <- if (length(sel) <= 1L) 1L else diff(sel)
+      if (length(stride) > 1L && !all(stride == stride[1])) {
+        return(NULL)
+      }
+      stride_val <- if (length(stride) == 0L) 1L else stride[1]
+      list(
+        all = FALSE,
+        start = sel[1],
+        stop = utils::tail(sel, 1) + stride_val,
+        stride = stride_val,
+        len = length(sel)
+      )
+    }
+  })
+
+  dims_sel <- vapply(slice_params, function(info) info$len, integer(1))
+  total_elems <- prod(dims_sel)
+  if (total_elems == 0L) {
+    return(x)
+  }
+
+  value_vec <- as.vector(value)
+  if (length(value_vec) == 0L) {
+    stop("Replacement value must have length >= 1.", call. = FALSE)
+  }
+  value_vec <- rep_len(value_vec, total_elems)
+  value_array <- array(value_vec, dim = dims_sel)
+  value_mlx <- as_mlx(value_array, dtype = x$dtype, device = x$device)
+
+  if (!any(vapply(slice_params, is.null, logical(1)))) {
+    start <- vapply(slice_params, `[[`, integer(1), "start")
+    stop <- vapply(slice_params, `[[`, integer(1), "stop")
+    strides <- vapply(slice_params, `[[`, integer(1), "stride")
+    ptr <- cpp_mlx_slice_update(x$ptr, value_mlx$ptr, start, stop, strides)
+    return(.mlx_wrap_result(ptr, x$device))
+  }
+
+  # Fallback to scatter on flattened array
+  full_indices <- lapply(seq_len(ndim), function(axis) {
+    if (is.null(normalized[[axis]])) {
+      seq.int(0L, x$dim[axis] - 1L)
+    } else {
+      normalized[[axis]]
+    }
+  })
+
+  grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
+  grid_mat <- as.matrix(grid)
+  strides <- c(1L, cumprod(x$dim)[-length(x$dim)])
+  linear_idx <- as.integer(grid_mat %*% strides)
+
+  flat <- mlx_flatten(x)
+  idx_mlx <- as_mlx(linear_idx, dtype = "int64", device = x$device)
+  updates_mlx <- as_mlx(as.vector(value_array), dtype = x$dtype, device = x$device)
+
+  flat_updated <- .mlx_scatter_axis(flat, idx_mlx, updates_mlx, axis = 0L)
+  mlx_reshape(flat_updated, x$dim)
+}
+
+#' Matrix-style subsetting helper.
+#'
+#' @param x `mlx` array to subset.
+#' @param idx_mat Integer matrix of 1-based indices (rows correspond to points).
+#' @return An `mlx` array containing the selected elements.
+#' @noRd
+.mlx_matrix_subset <- function(x, idx_mat) {
+  idx_mat <- as.matrix(idx_mat)
+  if (ncol(idx_mat) != length(x$dim)) {
+    stop("Matrix index must have one column per dimension.", call. = FALSE)
+  }
+  if (nrow(idx_mat) == 0L) {
+    flat <- mlx_flatten(x)
+    idx_empty <- as_mlx(integer(0), dtype = "int64", device = x$device)
+    res <- .mlx_wrap_result(cpp_mlx_take(flat$ptr, integer(0), 0L), x$device)
+    res$dim <- integer(1)
+    return(res)
+  }
+  zero_based <- apply(idx_mat, 2, function(col, dim_len) {
+    if (any(is.na(col))) {
+      stop("Index contains NA values.", call. = FALSE)
+    }
+    if (any(col < 1L) || any(col > dim_len)) {
+      stop("Index out of bounds.", call. = FALSE)
+    }
+    as.integer(col - 1L)
+  }, dim_len = x$dim)
+  if (!is.matrix(zero_based)) zero_based <- matrix(zero_based, ncol = length(x$dim))
+  linear_idx <- .mlx_linear_indices(zero_based, x$dim)
+  flat <- mlx_flatten(x)
+  ptr <- cpp_mlx_take(flat$ptr, linear_idx, 0L)
+  res <- .mlx_wrap_result(ptr, x$device)
+  res
+}
+
+#' Matrix-style assignment helper.
+#'
+#' @param x `mlx` array to modify.
+#' @param idx_mat Integer matrix of 1-based indices.
+#' @param value Replacement values (recycled to match index count).
+#' @return An `mlx` array with the assignments applied.
+#' @noRd
+.mlx_matrix_assign <- function(x, idx_mat, value) {
+  idx_mat <- as.matrix(idx_mat)
+  if (ncol(idx_mat) != length(x$dim)) {
+    stop("Matrix index must have one column per dimension.", call. = FALSE)
+  }
+  if (nrow(idx_mat) == 0L) {
+    return(x)
+  }
+  zero_based <- apply(idx_mat, 2, function(col, dim_len) {
+    if (any(is.na(col))) {
+      stop("Index contains NA values.", call. = FALSE)
+    }
+    if (any(col < 1L) || any(col > dim_len)) {
+      stop("Index out of bounds.", call. = FALSE)
+    }
+    as.integer(col - 1L)
+  }, dim_len = x$dim)
+  if (!is.matrix(zero_based)) zero_based <- matrix(zero_based, ncol = length(x$dim))
+  linear_idx <- .mlx_linear_indices(zero_based, x$dim)
+
+  total <- length(linear_idx)
+  val_vec <- rep_len(as.vector(value), total)
+  updates_mlx <- as_mlx(val_vec, dtype = x$dtype, device = x$device)
+  idx_mlx <- as_mlx(linear_idx, dtype = "int64", device = x$device)
+
+  flat <- mlx_flatten(x)
+  flat_updated <- .mlx_scatter_axis(flat, idx_mlx, updates_mlx, axis = 0L)
+  mlx_reshape(flat_updated, x$dim)
+}
+
+#' Compute linear indices from multi-axis coordinates.
+#'
+#' @param index_matrix Matrix of zero-based indices (rows = elements).
+#' @param dim_sizes Integer vector of dimension sizes.
+#' @return Integer vector of flattened indices.
+#' @noRd
+.mlx_linear_indices <- function(index_matrix, dim_sizes) {
+  if (length(dim_sizes) == 0L) {
+    return(integer(0))
+  }
+  if (!is.matrix(index_matrix)) {
+    index_matrix <- matrix(index_matrix, ncol = length(dim_sizes))
+  }
+  strides <- vapply(seq_along(dim_sizes), function(k) {
+    if (k == length(dim_sizes)) {
+      1L
+    } else {
+      as.integer(prod(dim_sizes[(k + 1):length(dim_sizes)]))
+    }
+  }, integer(1))
+  linear <- index_matrix %*% strides
+  as.integer(linear)
 }
 
 #' Normalize subsetting index to 0-indexed integers

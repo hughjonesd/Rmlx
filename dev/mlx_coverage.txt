@@ -31,8 +31,8 @@
 ✅ slice (via [])
 ✅ take (via indexing)
 ✅ where
-❌ slice_update (postponed; need API covering start/stop/stride overloads)
-❌ gather (postponed; requires advanced axis semantics and dtype promotion)
+✅ slice_update
+✅ gather
 ❌ scatter (postponed; depends on in-place semantics and index validation)
 ❌ scatter_add (postponed; blocking on reduction behavior decisions)
 ❌ scatter_add_axis (postponed; similar concerns as scatter_add)

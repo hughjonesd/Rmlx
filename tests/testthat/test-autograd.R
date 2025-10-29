@@ -60,3 +60,18 @@ test_that("mlx_grad errors when mixing base R operations", {
     "Ensure all differentiable computations use MLX operations"
   )
 })
+
+test_that("subsetting participates in autograd", {
+  f <- function(x) {
+    row <- x[1, ]
+    sum(row * row)
+  }
+
+  mat <- matrix(1:6, 2, 3)
+  grads <- mlx_grad(f, mat)[[1]]
+
+  expected <- matrix(0, nrow = 2, ncol = 3)
+  expected[1, ] <- 2 * mat[1, ]
+
+  expect_equal(as.matrix(grads), expected, tolerance = 1e-6)
+})
