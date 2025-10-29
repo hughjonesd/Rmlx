@@ -10,11 +10,11 @@
 ✅ eye
 ✅ identity
 ✅ full
-❌ zeros_like
-❌ ones_like
-❌ tri (triangle matrix)
-❌ tril (lower triangle)
-❌ triu (upper triangle)
+✅ zeros_like
+✅ ones_like
+❌ tri (triangle matrix – postponed pending API parity for offset diagonals)
+❌ tril (lower triangle – postponed; needs efficient masking utility)
+❌ triu (upper triangle – postponed; needs efficient masking utility)
 
 ### Shape Operations - MOSTLY IMPLEMENTED
 ✅ reshape
@@ -23,9 +23,9 @@
 ✅ expand_dims
 ✅ moveaxis
 ✅ transpose (via t())
-❌ flatten
-❌ swapaxes
-❌ hadamard_transform
+✅ flatten
+✅ swapaxes
+❌ hadamard_transform (postponed; requires planning for complex twiddle factors)
 
 ### Slicing & Indexing - PARTIALLY IMPLEMENTED
 ✅ slice (via [])

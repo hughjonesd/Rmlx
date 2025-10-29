@@ -99,6 +99,59 @@ test_that("mlx_moveaxis reorders axes", {
   expect_equal(as.array(moved_multi), aperm(arr, c(3, 2, 1)), tolerance = 1e-6)
 })
 
+row_major_vec <- function(arr) {
+  dims <- dim(arr)
+  if (is.null(dims)) {
+    return(as.vector(arr))
+  }
+  res <- numeric(prod(dims))
+  idx <- 1L
+  current <- vector("list", length(dims))
+
+  fill_vals <- function(axis) {
+    if (axis > length(dims)) {
+      res[idx] <<- do.call("[", c(list(arr), current))
+      idx <<- idx + 1L
+      return(invisible(NULL))
+    }
+    for (val in seq_len(dims[axis])) {
+      current[[axis]] <<- val
+      fill_vals(axis + 1L)
+    }
+  }
+
+  fill_vals(1L)
+  res
+}
+
+test_that("mlx_flatten collapses axes", {
+  arr <- array(seq_len(12), dim = c(2, 3, 2))
+  x <- as_mlx(arr)
+
+  flat_all <- mlx_flatten(x)
+  expect_equal(mlx_dim(flat_all), c(12L))
+  expect_equal(as.vector(as.matrix(flat_all)), row_major_vec(arr), tolerance = 1e-6)
+
+  flat_middle <- mlx_flatten(x, start_axis = 2, end_axis = 3)
+  expect_equal(mlx_dim(flat_middle), c(2L, 6L))
+  expected <- matrix(row_major_vec(arr), nrow = dim(arr)[1], byrow = TRUE)
+  expect_equal(as.matrix(flat_middle), expected, tolerance = 1e-6)
+
+  expect_error(mlx_flatten(x, start_axis = 3, end_axis = 2))
+})
+
+test_that("mlx_swapaxes swaps specified axes", {
+  arr <- array(seq_len(24), dim = c(2, 3, 4))
+  x <- as_mlx(arr)
+
+  swapped <- mlx_swapaxes(x, axis1 = 1, axis2 = 3)
+  expect_equal(mlx_dim(swapped), c(4L, 3L, 2L))
+  expect_equal(as.array(swapped), aperm(arr, c(3, 2, 1)), tolerance = 1e-6)
+
+  swapped_neg <- mlx_swapaxes(x, axis1 = -2, axis2 = -1)
+  expect_equal(as.array(swapped_neg), aperm(arr, c(1, 3, 2)), tolerance = 1e-6)
+})
+
 test_that("aperm.mlx matches base behaviour", {
   arr <- array(runif(24), dim = c(2, 3, 4))
   x <- as_mlx(arr)

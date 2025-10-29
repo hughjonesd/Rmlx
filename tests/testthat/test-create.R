@@ -45,3 +45,36 @@ test_that("range helpers produce expected sequences", {
   lin <- mlx_linspace(0, 1, num = 5)
   expect_equal(as.vector(as.matrix(lin)), seq(0, 1, length.out = 5), tolerance = 1e-6)
 })
+
+test_that("mlx_zeros_like matches source metadata", {
+  base <- mlx_full(c(2, 3), 4, dtype = "float32", device = "cpu")
+  zeros <- mlx_zeros_like(base)
+
+  expect_s3_class(zeros, "mlx")
+  expect_equal(mlx_dim(zeros), mlx_dim(base))
+  expect_equal(mlx_dtype(zeros), mlx_dtype(base))
+  expect_equal(zeros$device, base$device)
+  expect_equal(as.matrix(zeros), matrix(0, 2, 3), tolerance = 1e-6)
+})
+
+test_that("mlx_zeros_like allows overriding dtype and device", {
+  base <- mlx_full(c(2, 2), 1, dtype = "float32", device = mlx_default_device())
+  zeros <- mlx_zeros_like(base, dtype = "int32", device = "cpu")
+
+  expect_equal(mlx_dtype(zeros), "int32")
+  expect_equal(zeros$device, "cpu")
+  expect_equal(as.matrix(zeros), matrix(0, 2, 2))
+})
+
+test_that("mlx_ones_like mirrors shape and supports overrides", {
+  base <- as_mlx(array(7L, dim = c(3, 1, 2)), dtype = "int16", device = "cpu")
+  ones <- mlx_ones_like(base)
+
+  expect_equal(mlx_dim(ones), mlx_dim(base))
+  expect_equal(mlx_dtype(ones), "int16")
+  expect_equal(ones$device, "cpu")
+  expect_equal(as.array(ones), array(1, dim = c(3, 1, 2)))
+
+  ones_float <- mlx_ones_like(base, dtype = "float32")
+  expect_equal(mlx_dtype(ones_float), "float32")
+})

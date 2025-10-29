@@ -37,6 +37,8 @@ reference:
     contents:
       - mlx_zeros
       - mlx_ones
+      - mlx_zeros_like
+      - mlx_ones_like
       - mlx_full
       - mlx_eye
       - mlx_identity
@@ -54,6 +56,8 @@ reference:
       - mlx_pad
       - mlx_roll
       - mlx_moveaxis
+      - mlx_flatten
+      - mlx_swapaxes
       - aperm.mlx
       - mlx_split
       - mlx_unflatten

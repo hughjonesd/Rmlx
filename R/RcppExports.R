@@ -9,6 +9,14 @@ cpp_mlx_ones <- function(dim_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_ones`, dim_, dtype_str, device_str)
 }
 
+cpp_mlx_zeros_like <- function(xp_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_zeros_like`, xp_, dtype_str, device_str)
+}
+
+cpp_mlx_ones_like <- function(xp_, dtype_str, device_str) {
+    .Call(`_Rmlx_cpp_mlx_ones_like`, xp_, dtype_str, device_str)
+}
+
 cpp_mlx_full <- function(dim_, value_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_full`, dim_, value_, dtype_str, device_str)
 }
@@ -399,6 +407,14 @@ cpp_mlx_roll <- function(xp_, shift_, axes_) {
 
 cpp_mlx_moveaxis <- function(xp_, source_, destination_) {
     .Call(`_Rmlx_cpp_mlx_moveaxis`, xp_, source_, destination_)
+}
+
+cpp_mlx_flatten <- function(xp_, start_axis, end_axis) {
+    .Call(`_Rmlx_cpp_mlx_flatten`, xp_, start_axis, end_axis)
+}
+
+cpp_mlx_swapaxes <- function(xp_, axis1, axis2) {
+    .Call(`_Rmlx_cpp_mlx_swapaxes`, xp_, axis1, axis2)
 }
 
 cpp_mlx_pad <- function(xp_, pad_pairs_, pad_value, dtype_str, device_str, mode_str) {

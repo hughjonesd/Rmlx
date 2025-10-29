@@ -38,6 +38,32 @@ SEXP cpp_mlx_ones(SEXP dim_, std::string dtype_str, std::string device_str) {
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_zeros_like(SEXP xp_, std::string dtype_str, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  StreamOrDevice dev = string_to_device(device_str);
+
+  Shape shape = arr.shape();
+  array result = zeros(shape, dtype, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_ones_like(SEXP xp_, std::string dtype_str, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  Dtype dtype = string_to_dtype(dtype_str);
+  StreamOrDevice dev = string_to_device(device_str);
+
+  Shape shape = arr.shape();
+  array result = ones(shape, dtype, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_full(SEXP dim_, SEXP value_, std::string dtype_str, std::string device_str) {
   if (Rf_length(value_) != 1) {
     Rcpp::stop("value must be a scalar.");
@@ -151,4 +177,3 @@ SEXP cpp_mlx_linspace(double start,
   array result = linspace(start, stop, num, dtype, dev);
   return make_mlx_xptr(std::move(result));
 }
-

@@ -482,6 +482,73 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
   result
 }
 
+#' Flatten axes of an mlx array
+#'
+#' `mlx_flatten()` mirrors [`mlx.core.flatten()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.flatten),
+#' collapsing a contiguous range of axes into a single dimension.
+#'
+#' @inheritParams mlx_array_required
+#' @param start_axis First axis (1-indexed, negatives count from the end) in the flattened range.
+#' @param end_axis Last axis (1-indexed, negatives count from the end) in the flattened range.
+#' @return An mlx array with the selected axes collapsed.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' x <- as_mlx(array(1:12, dim = c(2, 3, 2)))
+#' mlx_flatten(x)
+#' mlx_flatten(x, start_axis = 2, end_axis = 3)
+mlx_flatten <- function(x, start_axis = 1L, end_axis = -1L) {
+  x <- as_mlx(x)
+
+  if (length(x$dim) == 0L) {
+    return(x)
+  }
+
+  start_axis <- as.integer(start_axis)
+  end_axis <- as.integer(end_axis)
+
+  start_idx <- .mlx_normalize_axis_single(start_axis, x)
+  end_idx <- .mlx_normalize_axis_single(end_axis, x)
+
+  if (start_idx > end_idx) {
+    stop("start_axis must be less than or equal to end_axis.", call. = FALSE)
+  }
+
+  ptr <- cpp_mlx_flatten(x$ptr, start_idx, end_idx)
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' Swap two axes of an mlx array
+#'
+#' `mlx_swapaxes()` mirrors [`mlx.core.swapaxes()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.swapaxes),
+#' exchanging two dimensions while leaving others intact.
+#'
+#' @inheritParams mlx_array_required
+#' @param axis1,axis2 Axes to swap (1-indexed, negatives count from the end).
+#' @return An mlx array with the specified axes exchanged.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' x <- as_mlx(array(1:24, dim = c(2, 3, 4)))
+#' swapped <- mlx_swapaxes(x, axis1 = 1, axis2 = 3)
+#' dim(swapped)
+mlx_swapaxes <- function(x, axis1, axis2) {
+  x <- as_mlx(x)
+
+  if (missing(axis1) || missing(axis2)) {
+    stop("axis1 and axis2 must be supplied.", call. = FALSE)
+  }
+
+  axis1 <- as.integer(axis1)
+  axis2 <- as.integer(axis2)
+
+  axis1_idx <- .mlx_normalize_axis_single(axis1, x)
+  axis2_idx <- .mlx_normalize_axis_single(axis2, x)
+
+  ptr <- cpp_mlx_swapaxes(x$ptr, axis1_idx, axis2_idx)
+  .mlx_wrap_result(ptr, x$device)
+}
+
 #' Elementwise conditional selection
 #'
 #' @param condition Logical mlx array (non-zero values are treated as `TRUE`).

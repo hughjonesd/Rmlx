@@ -254,6 +254,24 @@ SEXP cpp_mlx_moveaxis(SEXP xp_, Rcpp::IntegerVector source_, Rcpp::IntegerVector
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_flatten(SEXP xp_, int start_axis, int end_axis) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = flatten(arr, start_axis, end_axis);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_swapaxes(SEXP xp_, int axis1, int axis2) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  array result = swapaxes(arr, axis1, axis2);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_pad(SEXP xp_,
                  Rcpp::IntegerMatrix pad_pairs_,
                  double pad_value,
@@ -359,4 +377,3 @@ SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape, std::string de
   array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
   return make_mlx_xptr(std::move(result_target));
 }
-

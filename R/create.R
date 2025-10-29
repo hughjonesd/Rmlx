@@ -43,6 +43,87 @@ mlx_ones <- function(dim,
   .mlx_wrap_result(ptr, device)
 }
 
+#' Zeros shaped like an existing mlx array
+#'
+#' `mlx_zeros_like()` mirrors [`mlx.core.zeros_like()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like):
+#' it creates a zero-filled tensor matching the source array's shape. Optionally override the dtype
+#' or device.
+#'
+#' @inheritParams mlx_array_required
+#' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
+#' @param device Optional device override (`"gpu"` or `"cpu"`). Defaults to the source array's device.
+#' @return An mlx array of zeros matching `x`.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' base <- mlx_ones(c(2, 2))
+#' zeros <- mlx_zeros_like(base)
+#' as.matrix(zeros)
+mlx_zeros_like <- function(x,
+                           dtype = NULL,
+                           device = NULL) {
+  x <- as_mlx(x)
+  valid_dtypes <- c(
+    "float32", "float64", "int8", "int16", "int32", "int64",
+    "uint8", "uint16", "uint32", "uint64", "bool", "complex64"
+  )
+
+  dtype <- if (is.null(dtype)) {
+    x$dtype
+  } else {
+    match.arg(dtype, valid_dtypes)
+  }
+
+  device <- if (is.null(device)) {
+    x$device
+  } else {
+    match.arg(device, c("gpu", "cpu"))
+  }
+
+  ptr <- cpp_mlx_zeros_like(x$ptr, dtype, device)
+  .mlx_wrap_result(ptr, device)
+}
+
+#' Ones shaped like an existing mlx array
+#'
+#' `mlx_ones_like()` mirrors [`mlx.core.ones_like()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like),
+#' creating a tensor of ones with the same shape. Optionally override dtype or device.
+#'
+#' @inheritParams mlx_array_required
+#' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
+#' @param device Optional device override (`"gpu"` or `"cpu"`). Defaults to the source array's device.
+#' @return An mlx array of ones matching `x`.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' base <- mlx_full(c(2, 3), 5)
+#' ones <- mlx_ones_like(base)
+#' as.matrix(ones)
+mlx_ones_like <- function(x,
+                          dtype = NULL,
+                          device = NULL) {
+  x <- as_mlx(x)
+  valid_dtypes <- c(
+    "float32", "float64", "int8", "int16", "int32", "int64",
+    "uint8", "uint16", "uint32", "uint64", "bool", "complex64"
+  )
+
+  dtype <- if (is.null(dtype)) {
+    x$dtype
+  } else {
+    match.arg(dtype, valid_dtypes)
+  }
+
+  device <- if (is.null(device)) {
+    x$device
+  } else {
+    match.arg(device, c("gpu", "cpu"))
+  }
+
+  ptr <- cpp_mlx_ones_like(x$ptr, dtype, device)
+  .mlx_wrap_result(ptr, device)
+}
+
 #' Fill an mlx array with a constant value
 #'
 #' @param value Scalar value used to fill the array. Numeric, logical, or complex.
