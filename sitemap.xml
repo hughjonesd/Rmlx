@@ -78,6 +78,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_flatten.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_forward.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_full.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gather.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gather_qmm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gelu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_grad.html</loc></url>
@@ -129,6 +130,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sequential.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sigmoid.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_silu.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_slice_update.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_softmax.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_softmax_layer.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_solve_triangular.html</loc></url>
@@ -136,6 +138,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_squeeze.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_stack.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_stop_gradient.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_subset.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sum.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_swapaxes.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_synchronize.html</loc></url>
@@ -158,7 +161,6 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rowSums.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/solve.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/str.mlx.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/sub-.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/svd.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/svd.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/t.mlx.html</loc></url>
