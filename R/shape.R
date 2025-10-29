@@ -549,6 +549,104 @@ mlx_swapaxes <- function(x, axis1, axis2) {
   .mlx_wrap_result(ptr, x$device)
 }
 
+#' Construct coordinate arrays from input vectors
+#'
+#' `mlx_meshgrid()` mirrors [`mlx.core.meshgrid()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.meshgrid),
+#' returning coordinate arrays suitable for vectorised evaluation on MLX devices.
+#'
+#' @param ... One or more tensors (or a single list) convertible via [as_mlx()] representing coordinate vectors.
+#' @param sparse Logical flag producing broadcast-friendly outputs when `TRUE`.
+#' @param indexing Either `"xy"` (Cartesian) or `"ij"` (matrix) indexing.
+#' @param device Optional device override (`"gpu"` or `"cpu"`). Defaults to the common device of the inputs.
+#' @return A list of mlx arrays matching the number of inputs.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' xs <- as_mlx(1:3)
+#' ys <- as_mlx(1:2)
+#' grids <- mlx_meshgrid(xs, ys, indexing = "xy")
+#' lapply(grids, as.matrix)
+mlx_meshgrid <- function(...,
+                         sparse = FALSE,
+                         indexing = c("xy", "ij"),
+                         device = NULL) {
+  arrays <- list(...)
+  if (length(arrays) == 1L && is.list(arrays[[1]]) && !is.mlx(arrays[[1]])) {
+    arrays <- arrays[[1]]
+  }
+  if (!length(arrays)) {
+    stop("No arrays supplied.", call. = FALSE)
+  }
+  arrays <- lapply(arrays, as_mlx)
+
+  dtype <- Reduce(.promote_dtype, lapply(arrays, `[[`, "dtype"))
+  default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
+  target_device <- if (is.null(device)) default_device else match.arg(device, c("gpu", "cpu"))
+  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = target_device)
+
+  indexing <- match.arg(indexing)
+  ptrs <- cpp_mlx_meshgrid(arrays, sparse, indexing, target_device)
+  lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, target_device))
+}
+
+#' Broadcast an array to a new shape
+#'
+#' `mlx_broadcast_to()` mirrors [`mlx.core.broadcast_to()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_to),
+#' repeating singleton dimensions without copying data.
+#'
+#' @inheritParams mlx_array_required
+#' @param shape Integer vector describing the broadcasted shape.
+#' @param device Optional device override (`"gpu"` or `"cpu"`). Defaults to the source array's device.
+#' @return An mlx array with the requested dimensions.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' x <- as_mlx(matrix(1:3, nrow = 1))
+#' broadcast <- mlx_broadcast_to(x, c(5, 3))
+#' dim(broadcast)
+mlx_broadcast_to <- function(x, shape, device = NULL) {
+  x <- as_mlx(x)
+  shape <- .validate_shape(shape)
+  target_device <- if (is.null(device)) x$device else match.arg(device, c("gpu", "cpu"))
+
+  ptr <- cpp_mlx_broadcast_to(x$ptr, shape, target_device)
+  .mlx_wrap_result(ptr, target_device)
+}
+
+#' Broadcast multiple arrays to a shared shape
+#'
+#' `mlx_broadcast_arrays()` mirrors [`mlx.core.broadcast_arrays()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_arrays),
+#' returning a list of inputs expanded to a common shape.
+#'
+#' @param ... One or more tensors (or a single list) convertible via [as_mlx()].
+#' @param device Optional device override (`"gpu"` or `"cpu"`). Defaults to the common device of the inputs.
+#' @return A list of broadcast mlx arrays.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' a <- as_mlx(matrix(1:3, nrow = 1))
+#' b <- as_mlx(matrix(1:3, ncol = 1))
+#' outs <- mlx_broadcast_arrays(a, b)
+#' lapply(outs, dim)
+mlx_broadcast_arrays <- function(..., device = NULL) {
+  arrays <- list(...)
+  if (length(arrays) == 1L && is.list(arrays[[1]]) && !is.mlx(arrays[[1]])) {
+    arrays <- arrays[[1]]
+  }
+  if (!length(arrays)) {
+    stop("No arrays supplied.", call. = FALSE)
+  }
+  arrays <- lapply(arrays, as_mlx)
+
+  dtype <- Reduce(.promote_dtype, lapply(arrays, `[[`, "dtype"))
+  default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
+  target_device <- if (is.null(device)) default_device else match.arg(device, c("gpu", "cpu"))
+  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = target_device)
+
+  ptrs <- cpp_mlx_broadcast_arrays(arrays, target_device)
+  lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, target_device))
+}
+
 #' Elementwise conditional selection
 #'
 #' @param condition Logical mlx array (non-zero values are treated as `TRUE`).

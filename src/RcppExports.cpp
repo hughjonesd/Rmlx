@@ -1420,6 +1420,45 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_meshgrid
+SEXP cpp_mlx_meshgrid(SEXP args_, bool sparse, std::string indexing, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_meshgrid(SEXP args_SEXP, SEXP sparseSEXP, SEXP indexingSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type args_(args_SEXP);
+    Rcpp::traits::input_parameter< bool >::type sparse(sparseSEXP);
+    Rcpp::traits::input_parameter< std::string >::type indexing(indexingSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_meshgrid(args_, sparse, indexing, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_broadcast_to
+SEXP cpp_mlx_broadcast_to(SEXP xp_, Rcpp::IntegerVector shape_, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_broadcast_to(SEXP xp_SEXP, SEXP shape_SEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type shape_(shape_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_broadcast_to(xp_, shape_, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_broadcast_arrays
+SEXP cpp_mlx_broadcast_arrays(SEXP args_, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_broadcast_arrays(SEXP args_SEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type args_(args_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_broadcast_arrays(args_, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_pad
 SEXP cpp_mlx_pad(SEXP xp_, Rcpp::IntegerMatrix pad_pairs_, double pad_value, std::string dtype_str, std::string device_str, std::string mode_str);
 RcppExport SEXP _Rmlx_cpp_mlx_pad(SEXP xp_SEXP, SEXP pad_pairs_SEXP, SEXP pad_valueSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP, SEXP mode_strSEXP) {
@@ -1635,6 +1674,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_moveaxis", (DL_FUNC) &_Rmlx_cpp_mlx_moveaxis, 3},
     {"_Rmlx_cpp_mlx_flatten", (DL_FUNC) &_Rmlx_cpp_mlx_flatten, 3},
     {"_Rmlx_cpp_mlx_swapaxes", (DL_FUNC) &_Rmlx_cpp_mlx_swapaxes, 3},
+    {"_Rmlx_cpp_mlx_meshgrid", (DL_FUNC) &_Rmlx_cpp_mlx_meshgrid, 4},
+    {"_Rmlx_cpp_mlx_broadcast_to", (DL_FUNC) &_Rmlx_cpp_mlx_broadcast_to, 3},
+    {"_Rmlx_cpp_mlx_broadcast_arrays", (DL_FUNC) &_Rmlx_cpp_mlx_broadcast_arrays, 2},
     {"_Rmlx_cpp_mlx_pad", (DL_FUNC) &_Rmlx_cpp_mlx_pad, 6},
     {"_Rmlx_cpp_mlx_split", (DL_FUNC) &_Rmlx_cpp_mlx_split, 6},
     {"_Rmlx_cpp_mlx_unflatten", (DL_FUNC) &_Rmlx_cpp_mlx_unflatten, 4},

@@ -152,6 +152,52 @@ test_that("mlx_swapaxes swaps specified axes", {
   expect_equal(as.array(swapped_neg), aperm(arr, c(1, 3, 2)), tolerance = 1e-6)
 })
 
+test_that("mlx_meshgrid creates coordinate tensors", {
+  x <- as_mlx(0:1)
+  y <- as_mlx(0:2)
+
+  grids_xy <- mlx_meshgrid(x, y, indexing = "xy")
+  expect_length(grids_xy, 2L)
+  expect_equal(mlx_dim(grids_xy[[1]]), c(3L, 2L))
+  expect_equal(mlx_dim(grids_xy[[2]]), c(3L, 2L))
+  expect_equal(as.matrix(grids_xy[[1]]), outer(0:2, 0:1, function(y, x) x), tolerance = 1e-6)
+  expect_equal(as.matrix(grids_xy[[2]]), outer(0:2, 0:1, function(y, x) y), tolerance = 1e-6)
+
+  grids_ij <- mlx_meshgrid(x, y, indexing = "ij")
+  expect_equal(mlx_dim(grids_ij[[1]]), c(2L, 3L))
+  expect_equal(mlx_dim(grids_ij[[2]]), c(2L, 3L))
+  expect_equal(as.matrix(grids_ij[[1]]), outer(0:1, 0:2, function(x, y) x), tolerance = 1e-6)
+  expect_equal(as.matrix(grids_ij[[2]]), outer(0:1, 0:2, function(x, y) y), tolerance = 1e-6)
+
+  sparse <- mlx_meshgrid(x, y, sparse = TRUE, indexing = "xy")
+  expect_equal(mlx_dim(sparse[[1]]), c(1L, 2L))
+  expect_equal(mlx_dim(sparse[[2]]), c(3L, 1L))
+})
+
+test_that("mlx_broadcast_to expands singleton dimensions", {
+  x <- as_mlx(matrix(1:3, nrow = 1))
+  broadcasted <- mlx_broadcast_to(x, c(4, 3))
+
+  expect_equal(mlx_dim(broadcasted), c(4L, 3L))
+  expected <- matrix(rep(1:3, times = 4), nrow = 4, byrow = TRUE)
+  expect_equal(as.matrix(broadcasted), expected, tolerance = 1e-6)
+})
+
+test_that("mlx_broadcast_arrays aligns shapes", {
+  a <- as_mlx(matrix(1:3, nrow = 1))
+  b <- as_mlx(matrix(c(10, 20, 30), ncol = 1))
+
+  outs <- mlx_broadcast_arrays(a, b)
+  expect_length(outs, 2L)
+  expect_equal(mlx_dim(outs[[1]]), c(3L, 3L))
+  expect_equal(mlx_dim(outs[[2]]), c(3L, 3L))
+
+  expected_a <- matrix(rep(1:3, times = 3), nrow = 3, byrow = TRUE)
+  expected_b <- matrix(c(10, 20, 30), nrow = 3, ncol = 3)
+  expect_equal(as.matrix(outs[[1]]), expected_a, tolerance = 1e-6)
+  expect_equal(as.matrix(outs[[2]]), expected_b, tolerance = 1e-6)
+})
+
 test_that("aperm.mlx matches base behaviour", {
   arr <- array(runif(24), dim = c(2, 3, 4))
   x <- as_mlx(arr)

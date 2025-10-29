@@ -31,16 +31,16 @@
 ✅ slice (via [])
 ✅ take (via indexing)
 ✅ where
-❌ slice_update
-❌ gather
-❌ scatter
-❌ scatter_add
-❌ scatter_add_axis
-❌ scatter_max
-❌ scatter_min
-❌ scatter_prod
-❌ put_along_axis
-❌ take_along_axis
+❌ slice_update (postponed; need API covering start/stop/stride overloads)
+❌ gather (postponed; requires advanced axis semantics and dtype promotion)
+❌ scatter (postponed; depends on in-place semantics and index validation)
+❌ scatter_add (postponed; blocking on reduction behavior decisions)
+❌ scatter_add_axis (postponed; similar concerns as scatter_add)
+❌ scatter_max (postponed; requires tie-breaking policy for duplicates)
+❌ scatter_min (postponed; requires tie-breaking policy for duplicates)
+❌ scatter_prod (postponed; consider numeric stability and dtype upgrades)
+❌ put_along_axis (postponed; behaviour diverges between numpy/MLX needs review)
+❌ take_along_axis (postponed; needs careful bounds handling and broadcasting)
 
 ### Concatenation & Stacking - MOSTLY IMPLEMENTED
 ✅ concatenate (via cbind/rbind)
@@ -48,9 +48,9 @@
 ✅ repeat
 ✅ tile
 ✅ split
-❌ meshgrid
-❌ broadcast_to
-❌ broadcast_arrays
+✅ meshgrid
+✅ broadcast_to
+✅ broadcast_arrays
 
 ### Padding & Clipping - IMPLEMENTED
 ✅ pad

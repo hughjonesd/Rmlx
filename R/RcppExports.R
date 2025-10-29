@@ -417,6 +417,18 @@ cpp_mlx_swapaxes <- function(xp_, axis1, axis2) {
     .Call(`_Rmlx_cpp_mlx_swapaxes`, xp_, axis1, axis2)
 }
 
+cpp_mlx_meshgrid <- function(args_, sparse, indexing, device_str) {
+    .Call(`_Rmlx_cpp_mlx_meshgrid`, args_, sparse, indexing, device_str)
+}
+
+cpp_mlx_broadcast_to <- function(xp_, shape_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_broadcast_to`, xp_, shape_, device_str)
+}
+
+cpp_mlx_broadcast_arrays <- function(args_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_broadcast_arrays`, args_, device_str)
+}
+
 cpp_mlx_pad <- function(xp_, pad_pairs_, pad_value, dtype_str, device_str, mode_str) {
     .Call(`_Rmlx_cpp_mlx_pad`, xp_, pad_pairs_, pad_value, dtype_str, device_str, mode_str)
 }

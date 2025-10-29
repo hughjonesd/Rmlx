@@ -61,6 +61,9 @@ reference:
       - aperm.mlx
       - mlx_split
       - mlx_unflatten
+      - mlx_meshgrid
+      - mlx_broadcast_to
+      - mlx_broadcast_arrays
       - mlx_where
       - abind
       - rbind.mlx

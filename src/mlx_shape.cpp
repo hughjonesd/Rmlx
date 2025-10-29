@@ -272,6 +272,70 @@ SEXP cpp_mlx_swapaxes(SEXP xp_, int axis1, int axis2) {
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_meshgrid(SEXP args_, bool sparse, std::string indexing, std::string device_str) {
+  List args(args_);
+  if (args.size() == 0) {
+    Rcpp::stop("No tensors supplied for meshgrid.");
+  }
+
+  std::vector<array> arrays;
+  arrays.reserve(args.size());
+  for (int i = 0; i < args.size(); ++i) {
+    List obj(args[i]);
+    arrays.push_back(get_mlx_wrapper(obj["ptr"])->get());
+  }
+
+  StreamOrDevice dev = string_to_device(device_str);
+  std::vector<array> result = meshgrid(arrays, sparse, indexing, dev);
+
+  List out(result.size());
+  for (std::size_t i = 0; i < result.size(); ++i) {
+    out[i] = make_mlx_xptr(std::move(result[i]));
+  }
+  return out;
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_broadcast_to(SEXP xp_, Rcpp::IntegerVector shape_, std::string device_str) {
+  if (shape_.size() == 0) {
+    Rcpp::stop("shape must contain at least one element.");
+  }
+
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  Shape shape(shape_.begin(), shape_.end());
+  StreamOrDevice dev = string_to_device(device_str);
+
+  array result = broadcast_to(arr, shape, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_broadcast_arrays(SEXP args_, std::string device_str) {
+  List args(args_);
+  if (args.size() == 0) {
+    Rcpp::stop("No tensors supplied for broadcast.");
+  }
+
+  std::vector<array> arrays;
+  arrays.reserve(args.size());
+  for (int i = 0; i < args.size(); ++i) {
+    List obj(args[i]);
+    arrays.push_back(get_mlx_wrapper(obj["ptr"])->get());
+  }
+
+  StreamOrDevice dev = string_to_device(device_str);
+  std::vector<array> result = broadcast_arrays(arrays, dev);
+
+  List out(result.size());
+  for (std::size_t i = 0; i < result.size(); ++i) {
+    out[i] = make_mlx_xptr(std::move(result[i]));
+  }
+  return out;
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_pad(SEXP xp_,
                  Rcpp::IntegerMatrix pad_pairs_,
                  double pad_value,
