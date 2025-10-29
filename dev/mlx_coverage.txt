@@ -94,7 +94,7 @@
 ✅ abs, sqrt, square
 ✅ reciprocal
 ✅ rsqrt
-❌ addmm
+✅ addmm
 
 ### Comparisons - IMPLEMENTED (via Ops.mlx)
 ✅ equal, not_equal (via ==, !=)

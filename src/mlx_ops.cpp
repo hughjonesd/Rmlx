@@ -32,6 +32,36 @@ SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_addmm(SEXP input_xp_,
+                   SEXP mat1_xp_,
+                   SEXP mat2_xp_,
+                   double alpha,
+                   double beta,
+                   std::string dtype_str,
+                   std::string device_str) {
+  MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
+  MlxArrayWrapper* mat1_wrapper = get_mlx_wrapper(mat1_xp_);
+  MlxArrayWrapper* mat2_wrapper = get_mlx_wrapper(mat2_xp_);
+
+  Dtype target_dtype = string_to_dtype(dtype_str);
+  StreamOrDevice target_device = string_to_device(device_str);
+
+  array input_arr = astype(input_wrapper->get(), target_dtype, target_device);
+  array mat1_arr = astype(mat1_wrapper->get(), target_dtype, target_device);
+  array mat2_arr = astype(mat2_wrapper->get(), target_dtype, target_device);
+
+  array result = addmm(
+      std::move(input_arr),
+      std::move(mat1_arr),
+      std::move(mat2_arr),
+      static_cast<float>(alpha),
+      static_cast<float>(beta),
+      target_device);
+
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_cast(SEXP xp_, std::string dtype_str, std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   Dtype dtype = string_to_dtype(dtype_str);

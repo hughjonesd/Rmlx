@@ -94,6 +94,80 @@ Ops.mlx <- function(e1, e2 = NULL) {
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
+#' Fused matrix multiply and add for MLX arrays
+#'
+#' Computes `beta * input + alpha * (mat1 %*% mat2)` in a single MLX kernel.
+#' All operands are promoted to a common dtype/device prior to evaluation.
+#'
+#' @param input Matrix-like object providing the additive term.
+#' @param mat1 Left matrix operand.
+#' @param mat2 Right matrix operand.
+#' @param alpha,beta Numeric scalars controlling the fused linear combination.
+#' @return An `mlx` matrix with the same shape as `input`.
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.addmm}
+#' @export
+#' @examples
+#' \dontrun{
+#' input <- as_mlx(diag(3))
+#' mat1 <- as_mlx(matrix(rnorm(9), 3, 3))
+#' mat2 <- as_mlx(matrix(rnorm(9), 3, 3))
+#' mlx_addmm(input, mat1, mat2, alpha = 0.5, beta = 2)
+#' }
+mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
+  input <- as_mlx(input)
+  mat1 <- as_mlx(mat1)
+  mat2 <- as_mlx(mat2)
+
+  dims_input <- input$dim
+  dims1 <- mat1$dim
+  dims2 <- mat2$dim
+
+  if (length(dims1) != 2L || length(dims2) != 2L) {
+    stop("mlx_addmm requires mat1 and mat2 to be 2D matrices.", call. = FALSE)
+  }
+  if (length(dims_input) != 2L) {
+    stop("mlx_addmm requires input to be a 2D matrix.", call. = FALSE)
+  }
+  if (dims1[2] != dims2[1]) {
+    stop(
+      sprintf(
+        "Non-conformable operands: mat1 is %d x %d but mat2 is %d x %d.",
+        dims1[1], dims1[2], dims2[1], dims2[2]
+      ),
+      call. = FALSE
+    )
+  }
+  result_dim <- c(dims1[1], dims2[2])
+  if (!identical(dims_input, result_dim)) {
+    stop(
+      sprintf(
+        "Input shape (%d x %d) must match mat1 %%*%% mat2 result (%d x %d).",
+        dims_input[1], dims_input[2], result_dim[1], result_dim[2]
+      ),
+      call. = FALSE
+    )
+  }
+
+  alpha <- as.numeric(alpha)
+  beta <- as.numeric(beta)
+  if (length(alpha) != 1L || !is.finite(alpha)) {
+    stop("alpha must be a single finite numeric value.", call. = FALSE)
+  }
+  if (length(beta) != 1L || !is.finite(beta)) {
+    stop("beta must be a single finite numeric value.", call. = FALSE)
+  }
+
+  result_dtype <- Reduce(.promote_dtype, list(input$dtype, mat1$dtype, mat2$dtype))
+  result_device <- Reduce(.common_device, list(input$device, mat1$device, mat2$device))
+
+  input <- .mlx_cast(input, dtype = result_dtype, device = result_device)
+  mat1 <- .mlx_cast(mat1, dtype = result_dtype, device = result_device)
+  mat2 <- .mlx_cast(mat2, dtype = result_dtype, device = result_device)
+
+  ptr <- cpp_mlx_addmm(input$ptr, mat1$ptr, mat2$ptr, alpha, beta, result_dtype, result_device)
+  new_mlx(ptr, result_dim, result_dtype, result_device)
+}
+
 #' Apply unary MLX operation
 #'
 #' @inheritParams mlx_array_required

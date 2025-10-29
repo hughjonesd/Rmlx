@@ -1007,6 +1007,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_addmm
+SEXP cpp_mlx_addmm(SEXP input_xp_, SEXP mat1_xp_, SEXP mat2_xp_, double alpha, double beta, std::string dtype_str, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_addmm(SEXP input_xp_SEXP, SEXP mat1_xp_SEXP, SEXP mat2_xp_SEXP, SEXP alphaSEXP, SEXP betaSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type input_xp_(input_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type mat1_xp_(mat1_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type mat2_xp_(mat2_xp_SEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type beta(betaSEXP);
+    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_addmm(input_xp_, mat1_xp_, mat2_xp_, alpha, beta, dtype_str, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_cast
 SEXP cpp_mlx_cast(SEXP xp_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_cast(SEXP xp_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1790,6 +1807,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_quantize", (DL_FUNC) &_Rmlx_cpp_mlx_quantize, 5},
     {"_Rmlx_cpp_mlx_dequantize", (DL_FUNC) &_Rmlx_cpp_mlx_dequantize, 7},
     {"_Rmlx_cpp_mlx_matmul", (DL_FUNC) &_Rmlx_cpp_mlx_matmul, 4},
+    {"_Rmlx_cpp_mlx_addmm", (DL_FUNC) &_Rmlx_cpp_mlx_addmm, 7},
     {"_Rmlx_cpp_mlx_cast", (DL_FUNC) &_Rmlx_cpp_mlx_cast, 3},
     {"_Rmlx_cpp_mlx_cumulative", (DL_FUNC) &_Rmlx_cpp_mlx_cumulative, 2},
     {"_Rmlx_cpp_mlx_fft", (DL_FUNC) &_Rmlx_cpp_mlx_fft, 3},

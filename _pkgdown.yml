@@ -127,6 +127,7 @@ reference:
   - title: Linear Algebra
     contents:
       - "%*%.mlx"
+      - mlx_addmm
       - crossprod.mlx
       - tcrossprod.mlx
       - outer
