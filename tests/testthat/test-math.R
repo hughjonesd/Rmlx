@@ -149,6 +149,16 @@ test_that("cumulative operations work", {
   expect_equal(result_cummin, cummin(x2), tolerance = 1e-6)
 })
 
+test_that("mlx_degrees and mlx_radians convert angles", {
+  radians <- as_mlx(c(0, pi / 2, pi))
+  degrees <- mlx_degrees(radians)
+  expect_equal(as.numeric(as.matrix(degrees)), c(0, 90, 180), tolerance = 1e-6)
+
+  deg_values <- as_mlx(c(0, 180, 270))
+  rad_out <- mlx_radians(deg_values)
+  expect_equal(as.numeric(as.matrix(rad_out)), c(0, pi, 3 * pi / 2), tolerance = 1e-6)
+})
+
 test_that("fft matches base R", {
   set.seed(123)
   x <- rnorm(16)

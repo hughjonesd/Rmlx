@@ -134,6 +134,37 @@ mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
   .mlx_wrap_result(ptr, device)
 }
 
+#' Convert between radians and degrees
+#'
+#' `mlx_degrees()` and `mlx_radians()` mirror
+#' [`mlx.core.degrees()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.degrees)
+#' and [`mlx.core.radians()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.radians),
+#' converting angular values elementwise using MLX kernels.
+#'
+#' @inheritParams mlx_array_required
+#' @return An mlx array with transformed angular units.
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @export
+#' @examples
+#' x <- as_mlx(pi / 2)
+#' as.matrix(mlx_degrees(x))  # 90
+mlx_degrees <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "degrees")
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_degrees
+#' @export
+#' @examples
+#' angles <- mlx_radians(as_mlx(c(0, 90, 180)))
+#' as.matrix(angles)
+mlx_radians <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "radians")
+  .mlx_wrap_result(ptr, x$device)
+}
+
 #' Test if two MLX arrays are (nearly) equal
 #'
 #' S3 method for `all.equal` following R semantics. Returns `TRUE` if arrays

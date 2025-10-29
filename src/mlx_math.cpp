@@ -66,6 +66,10 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
       return ceil(wrapper->get());
     } else if (op == "round") {
       return round(wrapper->get());
+    } else if (op == "degrees") {
+      return degrees(wrapper->get());
+    } else if (op == "radians") {
+      return radians(wrapper->get());
     } else {
       Rcpp::stop("Unsupported unary operation: " + op);
     }
@@ -313,4 +317,3 @@ SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal
 
   return make_mlx_xptr(std::move(result));
 }
-

@@ -97,6 +97,8 @@ reference:
       - mlx_softmax
       - mlx_logsumexp
       - mlx_logcumsumexp
+      - mlx_degrees
+      - mlx_radians
       - mlx_isclose
       - mlx_allclose
       - all.equal.mlx

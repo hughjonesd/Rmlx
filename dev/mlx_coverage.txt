@@ -128,7 +128,8 @@
 
 ### Special Math - PARTIALLY IMPLEMENTED
 ✅ erf, erfinv
-❌ degrees, radians
+✅ degrees
+✅ radians
 
 ### NaN/Inf Handling - PARTIALLY IMPLEMENTED
 ✅ isnan, isinf, isfinite
