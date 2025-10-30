@@ -159,6 +159,15 @@
 ✅ dequantize  
 ✅ quantized_matmul
 ✅ gather_qmm
+✅ addmm
+
+### Input / Output - MOSTLY IMPLEMENTED
+✅ save
+✅ load
+✅ save_safetensors
+✅ load_safetensors
+✅ save_gguf
+✅ load_gguf
 
 ### Advanced Matrix Ops - PARTIALLY IMPLEMENTED
 ✅ matmul (via %*%)

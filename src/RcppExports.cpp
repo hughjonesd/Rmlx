@@ -371,6 +371,81 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_save
+void cpp_mlx_save(SEXP xp_, std::string file);
+RcppExport SEXP _Rmlx_cpp_mlx_save(SEXP xp_SEXP, SEXP fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
+    cpp_mlx_save(xp_, file);
+    return R_NilValue;
+END_RCPP
+}
+// cpp_mlx_load
+SEXP cpp_mlx_load(std::string file, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_load(SEXP fileSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_load(file, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_save_safetensors
+void cpp_mlx_save_safetensors(List tensor_ptrs, CharacterVector tensor_names, CharacterVector metadata_names, CharacterVector metadata_values, std::string file);
+RcppExport SEXP _Rmlx_cpp_mlx_save_safetensors(SEXP tensor_ptrsSEXP, SEXP tensor_namesSEXP, SEXP metadata_namesSEXP, SEXP metadata_valuesSEXP, SEXP fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type tensor_ptrs(tensor_ptrsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type tensor_names(tensor_namesSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type metadata_names(metadata_namesSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type metadata_values(metadata_valuesSEXP);
+    Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
+    cpp_mlx_save_safetensors(tensor_ptrs, tensor_names, metadata_names, metadata_values, file);
+    return R_NilValue;
+END_RCPP
+}
+// cpp_mlx_load_safetensors
+List cpp_mlx_load_safetensors(std::string file, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_load_safetensors(SEXP fileSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_load_safetensors(file, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_save_gguf
+void cpp_mlx_save_gguf(List tensor_ptrs, CharacterVector tensor_names, List metadata_payload, CharacterVector metadata_names, std::string file);
+RcppExport SEXP _Rmlx_cpp_mlx_save_gguf(SEXP tensor_ptrsSEXP, SEXP tensor_namesSEXP, SEXP metadata_payloadSEXP, SEXP metadata_namesSEXP, SEXP fileSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type tensor_ptrs(tensor_ptrsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type tensor_names(tensor_namesSEXP);
+    Rcpp::traits::input_parameter< List >::type metadata_payload(metadata_payloadSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type metadata_names(metadata_namesSEXP);
+    Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
+    cpp_mlx_save_gguf(tensor_ptrs, tensor_names, metadata_payload, metadata_names, file);
+    return R_NilValue;
+END_RCPP
+}
+// cpp_mlx_load_gguf
+List cpp_mlx_load_gguf(std::string file, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_load_gguf(SEXP fileSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_load_gguf(file, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_solve
 SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_solve(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1763,6 +1838,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_slice_update", (DL_FUNC) &_Rmlx_cpp_mlx_slice_update, 5},
     {"_Rmlx_cpp_mlx_gather", (DL_FUNC) &_Rmlx_cpp_mlx_gather, 4},
     {"_Rmlx_cpp_mlx_scatter", (DL_FUNC) &_Rmlx_cpp_mlx_scatter, 4},
+    {"_Rmlx_cpp_mlx_save", (DL_FUNC) &_Rmlx_cpp_mlx_save, 2},
+    {"_Rmlx_cpp_mlx_load", (DL_FUNC) &_Rmlx_cpp_mlx_load, 2},
+    {"_Rmlx_cpp_mlx_save_safetensors", (DL_FUNC) &_Rmlx_cpp_mlx_save_safetensors, 5},
+    {"_Rmlx_cpp_mlx_load_safetensors", (DL_FUNC) &_Rmlx_cpp_mlx_load_safetensors, 2},
+    {"_Rmlx_cpp_mlx_save_gguf", (DL_FUNC) &_Rmlx_cpp_mlx_save_gguf, 5},
+    {"_Rmlx_cpp_mlx_load_gguf", (DL_FUNC) &_Rmlx_cpp_mlx_load_gguf, 2},
     {"_Rmlx_cpp_mlx_solve", (DL_FUNC) &_Rmlx_cpp_mlx_solve, 4},
     {"_Rmlx_cpp_mlx_cholesky", (DL_FUNC) &_Rmlx_cpp_mlx_cholesky, 4},
     {"_Rmlx_cpp_mlx_qr", (DL_FUNC) &_Rmlx_cpp_mlx_qr, 3},
