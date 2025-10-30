@@ -9,9 +9,9 @@
 #'   Not all functions support all types. See individual function documentation.
 #' @param axis Axis or axes to operate on (1-indexed). Negative values count from
 #'   the end. `NULL` operates on all axes or the entire array.
-#' @param keepdims Deprecated; use `drop = FALSE` instead.
 #' @param drop If `TRUE` (default), drop dimensions of length 1. If `FALSE`,
-#'   retain all dimensions.
+#'   retain all dimensions. Equivalent to `keepdims = TRUE` in underlying
+#'   mlx functions.
 #' @param dim Integer vector specifying array dimensions (shape).
 #' @param x An mlx array, or an R array/matrix/vector that will be converted via [as_mlx()].
 #'

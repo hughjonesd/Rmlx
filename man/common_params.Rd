@@ -18,10 +18,9 @@ Not all functions support all types. See individual function documentation.}
 \item{axis}{Axis or axes to operate on (1-indexed). Negative values count from
 the end. \code{NULL} operates on all axes or the entire array.}
 
-\item{keepdims}{Deprecated; use \code{drop = FALSE} instead.}
-
 \item{drop}{If \code{TRUE} (default), drop dimensions of length 1. If \code{FALSE},
-retain all dimensions.}
+retain all dimensions. Equivalent to \code{keepdims = TRUE} in underlying
+mlx functions.}
 
 \item{dim}{Integer vector specifying array dimensions (shape).}
 

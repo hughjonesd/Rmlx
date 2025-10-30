@@ -14,7 +14,8 @@ mlx_norm(x, ord = NULL, axis = NULL, drop = TRUE)
 \item{axis}{Optional integer vector of axes (1-indexed) along which to compute the norm.}
 
 \item{drop}{If \code{TRUE} (default), drop dimensions of length 1. If \code{FALSE},
-retain all dimensions.}
+retain all dimensions. Equivalent to \code{keepdims = TRUE} in underlying
+mlx functions.}
 }
 \value{
 An mlx array containing the requested norm.
