@@ -63,13 +63,10 @@
 the end. <code>NULL</code> operates on all axes or the entire array.</p></dd>
 
 
-<dt id="arg-keepdims">keepdims<a class="anchor" aria-label="anchor" href="#arg-keepdims"></a></dt>
-<dd><p>Deprecated; use <code>drop = FALSE</code> instead.</p></dd>
-
-
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
 <dd><p>If <code>TRUE</code> (default), drop dimensions of length 1. If <code>FALSE</code>,
-retain all dimensions.</p></dd>
+retain all dimensions. Equivalent to <code>keepdims = TRUE</code> in underlying
+mlx functions.</p></dd>
 
 
 <dt id="arg-dim">dim<a class="anchor" aria-label="anchor" href="#arg-dim"></a></dt>
