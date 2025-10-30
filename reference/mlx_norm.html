@@ -44,7 +44,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_norm</span><span class="op">(</span><span class="va">x</span>, ord <span class="op">=</span> <span class="cn">NULL</span>, axis <span class="op">=</span> <span class="cn">NULL</span>, keepdims <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_norm</span><span class="op">(</span><span class="va">x</span>, ord <span class="op">=</span> <span class="cn">NULL</span>, axis <span class="op">=</span> <span class="cn">NULL</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,9 +63,9 @@
 <dd><p>Optional integer vector of axes (1-indexed) along which to compute the norm.</p></dd>
 
 
-<dt id="arg-keepdims">keepdims<a class="anchor" aria-label="anchor" href="#arg-keepdims"></a></dt>
-<dd><p>If <code>TRUE</code>, keep reduced axes as size-1 dimensions.
-Equivalent to <code>drop = FALSE</code> in base R.</p></dd>
+<dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
+<dd><p>If <code>TRUE</code> (default), drop dimensions of length 1. If <code>FALSE</code>,
+retain all dimensions.</p></dd>
 
 </dl></div>
     <div class="section level2">
