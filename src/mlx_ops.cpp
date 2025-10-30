@@ -51,13 +51,32 @@ SEXP cpp_mlx_addmm(SEXP input_xp_,
   array mat2_arr = astype(mat2_wrapper->get(), target_dtype, target_device);
 
   array result = addmm(
-      std::move(input_arr),
-      std::move(mat1_arr),
-      std::move(mat2_arr),
-      static_cast<float>(alpha),
-      static_cast<float>(beta),
-      target_device);
+    std::move(input_arr),
+    std::move(mat1_arr),
+    std::move(mat2_arr),
+    static_cast<float>(alpha),
+    static_cast<float>(beta),
+    target_device);
 
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_hadamard_transform(SEXP xp_,
+                                Rcpp::Nullable<double> scale_,
+                                std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice target_device = string_to_device(device_str);
+  arr = astype(arr, arr.dtype(), target_device);
+
+  std::optional<float> scale = std::nullopt;
+  if (scale_.isNotNull()) {
+    scale = static_cast<float>(Rcpp::as<double>(scale_));
+  }
+
+  array result = hadamard_transform(arr, scale, target_device);
   return make_mlx_xptr(std::move(result));
 }
 

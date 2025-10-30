@@ -111,6 +111,7 @@ reference:
       - mlx_clip
       - mlx_maximum
       - mlx_minimum
+      - mlx_hadamard_transform
       - mlx_softmax
       - mlx_logsumexp
       - mlx_logcumsumexp

@@ -25,7 +25,7 @@
 ✅ transpose (via t())
 ✅ flatten
 ✅ swapaxes
-❌ hadamard_transform (postponed; requires planning for complex twiddle factors)
+✅ hadamard_transform
 
 ### Slicing & Indexing - PARTIALLY IMPLEMENTED
 ✅ slice (via [])

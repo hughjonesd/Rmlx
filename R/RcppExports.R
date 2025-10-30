@@ -317,6 +317,10 @@ cpp_mlx_addmm <- function(input_xp_, mat1_xp_, mat2_xp_, alpha, beta, dtype_str,
     .Call(`_Rmlx_cpp_mlx_addmm`, input_xp_, mat1_xp_, mat2_xp_, alpha, beta, dtype_str, device_str)
 }
 
+cpp_mlx_hadamard_transform <- function(xp_, scale_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_hadamard_transform`, xp_, scale_, device_str)
+}
+
 cpp_mlx_cast <- function(xp_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_cast`, xp_, dtype_str, device_str)
 }

@@ -1,3 +1,47 @@
+hadamard_matrix <- function(n) {
+  if (n == 1L) {
+    return(matrix(1, 1, 1))
+  }
+  if (n %% 2L != 0L) {
+    stop("Hadamard matrices are defined for powers of two.", call. = FALSE)
+  }
+  H <- hadamard_matrix(n / 2L)
+  rbind(cbind(H, H), cbind(H, -H))
+}
+
+test_that("mlx_hadamard_transform matches reference implementation", {
+  x <- as_mlx(c(1, -1))
+  res <- as.vector(as.matrix(mlx_hadamard_transform(x)))
+  expected <- as.vector((hadamard_matrix(2) / sqrt(2)) %*% c(1, -1))
+  expect_equal(res, expected, tolerance = 1e-6)
+
+  res_raw <- as.vector(as.matrix(mlx_hadamard_transform(x, scale = 1)))
+  expected_raw <- as.vector(hadamard_matrix(2) %*% c(1, -1))
+  expect_equal(res_raw, expected_raw, tolerance = 1e-6)
+
+  mat <- matrix(1:8, nrow = 2, byrow = TRUE)
+  mlx_mat <- as_mlx(mat)
+  res_mat <- as.matrix(mlx_hadamard_transform(mlx_mat))
+  H4 <- hadamard_matrix(4) / sqrt(4)
+  expected_mat <- t(apply(mat, 1, function(row) H4 %*% row))
+  expect_equal(res_mat, expected_mat, tolerance = 1e-6)
+
+  expect_error(as.matrix(mlx_hadamard_transform(as_mlx(c(1, 0, -1)))))
+})
+
+test_that("mlx_hadamard_transform handles higher dimensional arrays", {
+  arr <- array(seq_len(16), dim = c(2, 2, 4))
+  res <- as.array(mlx_hadamard_transform(arr))
+
+  H4 <- hadamard_matrix(4) / sqrt(4)
+  expected_tmp <- apply(arr, c(1, 2), function(slice) {
+    as.vector(H4 %*% slice)
+  })
+  expected <- aperm(expected_tmp, c(2, 3, 1))
+
+  expect_equal(res, expected, tolerance = 1e-6)
+})
+
 test_that("mlx_argmax and mlx_argmin match base behaviour", {
   x <- c(-3, 5, 1, 9, 9, -4)
   t <- as_mlx(x)

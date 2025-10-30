@@ -1,3 +1,35 @@
+#' Hadamard transform for MLX arrays
+#'
+#' Multiplies the last dimension of `x` by the Sylvester-Hadamard matrix of the
+#' corresponding size. The transform expects the length of the last axis to be a
+#' power of two.
+#'
+#' @inheritParams common_params
+#' @param scale Optional numeric scalar applied to the result. MLX defaults to
+#'   `1 / sqrt(n)` where `n` is the size of the transformed axis; set `scale`
+#'   to override the factor (for example, `scale = 1` yields the unnormalised
+#'   Hadamard transform).
+#' @return An `mlx` array containing the Hadamard-transformed values.
+#' @seealso <https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.hadamard_transform>
+#' @export
+#' @examples
+#' x <- as_mlx(c(1, -1))
+#' as.vector(mlx_hadamard_transform(x))
+#' as.vector(mlx_hadamard_transform(x, scale = 1))
+mlx_hadamard_transform <- function(x, scale = NULL) {
+  x <- as_mlx(x)
+
+  if (!is.null(scale)) {
+    if (length(scale) != 1L || !is.numeric(scale) || anyNA(scale)) {
+      stop("`scale` must be NULL or a single numeric value.", call. = FALSE)
+    }
+    scale <- as.numeric(scale)
+  }
+
+  ptr <- cpp_mlx_hadamard_transform(x$ptr, scale, x$device)
+  .mlx_wrap_result(ptr, x$device)
+}
+
 #' Argmax and argmin on mlx arrays
 #'
 #' @inheritParams common_params
