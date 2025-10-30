@@ -30,10 +30,25 @@ SEXP cpp_mlx_take(SEXP xp_, SEXP indices_, int axis) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  IntegerVector idx(indices_);
-  std::vector<int64_t> data(idx.begin(), idx.end());
-  Shape shape{static_cast<int>(data.size())};
-  array idx_array(data.data(), shape, int64);
+  array idx_array = [&]() -> array {
+    // Check if indices_ is an mlx array (external pointer)
+    if (TYPEOF(indices_) == EXTPTRSXP) {
+      MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_);
+      array idx = idx_wrapper->get();
+      // Ensure index array is at least 1D to match R vector behavior
+      // If scalar, reshape to [1] so take() preserves dimensions correctly
+      if (idx.ndim() == 0) {
+        idx = reshape(idx, {1});
+      }
+      return idx;
+    } else {
+      // Handle R integer vector
+      IntegerVector idx(indices_);
+      std::vector<int64_t> data(idx.begin(), idx.end());
+      Shape shape{static_cast<int>(data.size())};
+      return array(data.data(), shape, int64);
+    }
+  }();
 
   array result = take(arr, idx_array, axis);
   return make_mlx_xptr(std::move(result));

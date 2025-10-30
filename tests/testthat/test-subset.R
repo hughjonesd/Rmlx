@@ -113,3 +113,195 @@ test_that("direct gather and slice_update mirror MLX semantics", {
   mat[1:2, 2:3] <- matrix(c(100, 200, 300, 400), nrow = 2)
   expect_equal(as.matrix(updated), mat, tolerance = 1e-6)
 })
+
+test_that("mlx vector indexing works (1-based)", {
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  # Test row indexing with mlx vector
+  idx_rows <- as_mlx(c(1L, 3L))
+  result <- x[idx_rows, ]
+  expect_equal(as.matrix(result), mat[c(1, 3), , drop = FALSE])
+
+  # Test column indexing with mlx vector
+  idx_cols <- as_mlx(c(2L, 4L))
+  result <- x[, idx_cols]
+  expect_equal(as.matrix(result), mat[, c(2, 4), drop = FALSE])
+
+  # Test both dimensions with mlx vectors
+  result <- x[idx_rows, idx_cols]
+  expect_equal(as.matrix(result), mat[c(1, 3), c(2, 4), drop = FALSE])
+
+  # Test single row with mlx scalar
+  idx_single <- as_mlx(2L)
+  result <- x[idx_single, ]
+  expect_equal(as.matrix(result), matrix(mat[2, ], nrow = 1))
+})
+
+test_that("mlx vector indexing uses 1-based convention", {
+  vec <- as_mlx(c(10, 20, 30, 40, 50))
+
+  # Index 1 should get first element (10), not second
+  idx <- as_mlx(1L)
+  expect_equal(as.vector(as.matrix(vec[idx])), 10)
+
+  # Index 5 should get last element (50)
+  idx <- as_mlx(5L)
+  expect_equal(as.vector(as.matrix(vec[idx])), 50)
+
+  # Multiple indices
+  idx <- as_mlx(c(2L, 4L))
+  expect_equal(as.vector(as.matrix(vec[idx])), c(20, 40))
+})
+
+test_that("mlx vector indexing handles automatic dtype conversion", {
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  # mlx arrays from R integers default to float32, should be auto-converted
+  idx <- as_mlx(c(1L, 3L))  # This will be float32
+  expect_equal(mlx_dtype(idx), "float32")
+
+  # But indexing should still work (auto-converts to int64)
+  result <- x[idx, ]
+  expect_equal(as.matrix(result), mat[c(1, 3), , drop = FALSE])
+
+  # Explicit integer dtype should also work
+  idx_int <- as_mlx(c(1L, 3L), dtype = "int32")
+  result <- x[idx_int, ]
+  expect_equal(as.matrix(result), mat[c(1, 3), , drop = FALSE])
+})
+
+test_that("mlx matrix indexing works (1-based)", {
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  # Test matrix-style indexing (each row is [row, col])
+  idx_mat <- matrix(c(1, 1,
+                      2, 2,
+                      3, 3), ncol = 2, byrow = TRUE)
+
+  # R version (baseline)
+  expected <- mat[idx_mat]
+
+  # mlx version
+  idx_mat_mlx <- as_mlx(idx_mat)
+  result <- x[idx_mat_mlx]
+
+  expect_equal(as.vector(as.matrix(result)), expected)
+})
+
+test_that("mlx matrix indexing extracts specific elements", {
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  # Extract diagonal elements
+  idx_diag <- matrix(c(1, 1,
+                       2, 2,
+                       3, 3), ncol = 2, byrow = TRUE)
+  idx_diag_mlx <- as_mlx(idx_diag)
+
+  result <- x[idx_diag_mlx]
+  expect_equal(as.vector(as.matrix(result)), c(1, 5, 9))
+
+  # Extract corner elements
+  idx_corners <- matrix(c(1, 1,
+                          1, 4,
+                          3, 1,
+                          3, 4), ncol = 2, byrow = TRUE)
+  idx_corners_mlx <- as_mlx(idx_corners)
+
+  result <- x[idx_corners_mlx]
+  expect_equal(as.vector(as.matrix(result)), c(1, 10, 3, 12))
+})
+
+test_that("mlx matrix indexing uses 1-based convention", {
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  # [1, 1] should get first element (1), not [0, 0]
+  idx <- as_mlx(matrix(c(1, 1), nrow = 1))
+  expect_equal(as.vector(as.matrix(x[idx])), 1)
+
+  # [3, 4] should get last element (12)
+  idx <- as_mlx(matrix(c(3, 4), nrow = 1))
+  expect_equal(as.vector(as.matrix(x[idx])), 12)
+})
+
+test_that("mlx and R indexing give identical results", {
+  set.seed(123)
+  mat <- matrix(rnorm(20), 5, 4)
+  x <- as_mlx(mat)
+
+  # Test 1: Vector indexing
+  idx_rows <- c(1L, 3L, 5L)
+  idx_mlx_rows <- as_mlx(idx_rows)
+  idx_cols <- c(1L, 3L, 4L)
+  idx_mlx_cols <- as_mlx(idx_cols)
+
+  expect_equal(as.matrix(x[idx_rows, ]), as.matrix(x[idx_mlx_rows, ]))
+  expect_equal(as.matrix(x[, idx_cols]), as.matrix(x[, idx_mlx_cols]))
+
+  # Test 2: Matrix indexing
+  idx_mat <- matrix(c(1, 1,
+                      2, 3,
+                      4, 2,
+                      5, 4), ncol = 2, byrow = TRUE)
+  idx_mat_mlx <- as_mlx(idx_mat)
+
+  expect_equal(as.vector(as.matrix(x[idx_mat])),
+               as.vector(as.matrix(x[idx_mat_mlx])))
+})
+
+test_that("mlx indexing works with higher dimensional arrays", {
+  arr <- array(1:24, dim = c(3, 4, 2))
+  x <- as_mlx(arr)
+
+  # Test vector indexing in 3D
+  idx <- as_mlx(c(1L, 3L))
+  result <- x[idx, , ]
+  expect_equal(as.array(result), arr[c(1, 3), , , drop = FALSE])
+
+  # Test multiple dimensions
+  idx1 <- as_mlx(c(1L, 2L))
+  idx2 <- as_mlx(c(2L, 4L))
+  result <- x[idx1, idx2, ]
+  expect_equal(as.array(result), arr[c(1, 2), c(2, 4), , drop = FALSE])
+})
+
+test_that("mlx indexing preserves device", {
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat, device = "gpu")
+
+  idx <- as_mlx(c(1L, 3L), device = "gpu")
+  result <- x[idx, ]
+
+  expect_equal(result$device, "gpu")
+})
+
+test_that("empty mlx index returns empty result", {
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  # Empty vector index
+  idx_empty <- as_mlx(integer(0), dtype = "int32")
+  result <- x[idx_empty, ]
+
+  expect_equal(nrow(result), 0L)
+  expect_equal(ncol(result), ncol(mat))
+})
+
+test_that("mlx indexing errors appropriately", {
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  # Note: MLX does not error on out-of-bounds indices with mlx arrays
+  # It may return zeros or undefined values. This differs from R's behavior
+  # but is consistent with MLX's C++ API and lazy evaluation model.
+  # We only get bounds checking when using R integer vectors:
+  expect_error(x[c(1L, 10L), ], "Index out of bounds")
+
+  # Matrix with wrong number of columns should error
+  idx_mat_wrong <- as_mlx(matrix(c(1, 1, 1), nrow = 1))  # 3 columns for 2D array
+  expect_error(x[idx_mat_wrong], "one column per dimension")
+})

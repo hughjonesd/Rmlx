@@ -280,8 +280,13 @@ mlx_dtype <- function(x) {
     }
   }
 
-  if (length(dot_expr) == 1L && is.matrix(idx_list[[1]])) {
-    return(.mlx_matrix_subset(x, idx_list[[1]]))
+  # Check for matrix-style indexing (single argument that's a matrix or 2D mlx array)
+  if (length(dot_expr) == 1L) {
+    idx_arg <- idx_list[[1]]
+    is_mat <- is.matrix(idx_arg) || (is.mlx(idx_arg) && length(idx_arg$dim) == 2L)
+    if (is_mat) {
+      return(.mlx_matrix_subset(x, idx_arg))
+    }
   }
 
   out <- x
@@ -290,7 +295,9 @@ mlx_dtype <- function(x) {
     sel <- .normalize_index_vector(idx, out$dim[axis])
     if (is.null(sel)) next
 
-    ptr <- cpp_mlx_take(out$ptr, sel, axis - 1L)
+    # If sel is an mlx array, pass its pointer; otherwise pass the R vector
+    sel_arg <- if (is.mlx(sel)) sel$ptr else sel
+    ptr <- cpp_mlx_take(out$ptr, sel_arg, axis - 1L)
     out <- .mlx_wrap_result(ptr, out$device)
   }
 
@@ -440,32 +447,69 @@ mlx_dtype <- function(x) {
 #' @return An `mlx` array containing the selected elements.
 #' @noRd
 .mlx_matrix_subset <- function(x, idx_mat) {
-  idx_mat <- as.matrix(idx_mat)
-  if (ncol(idx_mat) != length(x$dim)) {
-    stop("Matrix index must have one column per dimension.", call. = FALSE)
-  }
-  if (nrow(idx_mat) == 0L) {
+  is_mlx_mat <- is.mlx(idx_mat)
+
+  if (is_mlx_mat) {
+    # mlx matrix: assume 1-based indices (R convention)
+    if (length(idx_mat$dim) != 2L) {
+      stop("mlx matrix index must be 2-dimensional.", call. = FALSE)
+    }
+    if (idx_mat$dim[2] != length(x$dim)) {
+      stop("Matrix index must have one column per dimension.", call. = FALSE)
+    }
+    if (idx_mat$dim[1] == 0L) {
+      flat <- mlx_flatten(x)
+      idx_empty <- as_mlx(integer(0), dtype = "int64", device = x$device)
+      res <- .mlx_wrap_result(cpp_mlx_take(flat$ptr, integer(0), 0L), x$device)
+      res$dim <- integer(1)
+      return(res)
+    }
+
+    # Ensure integer dtype
+    if (!grepl("int", idx_mat$dtype)) {
+      idx_mat <- .mlx_cast(idx_mat, "int64")
+    }
+
+    # Convert to 0-based using mlx scalar to preserve dtype
+    one_mlx <- as_mlx(1L, dtype = idx_mat$dtype, device = idx_mat$device)
+    zero_based <- idx_mat - one_mlx
+
+    linear_idx <- .mlx_linear_indices_mlx(zero_based, x$dim)
     flat <- mlx_flatten(x)
-    idx_empty <- as_mlx(integer(0), dtype = "int64", device = x$device)
-    res <- .mlx_wrap_result(cpp_mlx_take(flat$ptr, integer(0), 0L), x$device)
-    res$dim <- integer(1)
-    return(res)
+    ptr <- cpp_mlx_take(flat$ptr, linear_idx$ptr, 0L)
+    res <- .mlx_wrap_result(ptr, x$device)
+    res
+  } else {
+    # R matrix
+    idx_mat <- as.matrix(idx_mat)
+    if (ncol(idx_mat) != length(x$dim)) {
+      stop("Matrix index must have one column per dimension.", call. = FALSE)
+    }
+    if (nrow(idx_mat) == 0L) {
+      flat <- mlx_flatten(x)
+      idx_empty <- as_mlx(integer(0), dtype = "int64", device = x$device)
+      res <- .mlx_wrap_result(cpp_mlx_take(flat$ptr, integer(0), 0L), x$device)
+      res$dim <- integer(1)
+      return(res)
+    }
+    zero_based <- matrix(nrow = nrow(idx_mat), ncol = ncol(idx_mat))
+    for (i in seq_len(ncol(idx_mat))) {
+      col <- idx_mat[, i]
+      if (any(is.na(col))) {
+        stop("Index contains NA values.", call. = FALSE)
+      }
+      if (any(col < 1L) || any(col > x$dim[i])) {
+        stop("Index out of bounds.", call. = FALSE)
+      }
+      zero_based[, i] <- as.integer(col - 1L)
+    }
+    if (!is.matrix(zero_based)) zero_based <- matrix(zero_based, ncol = length(x$dim))
+    linear_idx <- .mlx_linear_indices(zero_based, x$dim)
+    flat <- mlx_flatten(x)
+    ptr <- cpp_mlx_take(flat$ptr, linear_idx, 0L)
+    res <- .mlx_wrap_result(ptr, x$device)
+    res
   }
-  zero_based <- apply(idx_mat, 2, function(col, dim_len) {
-    if (any(is.na(col))) {
-      stop("Index contains NA values.", call. = FALSE)
-    }
-    if (any(col < 1L) || any(col > dim_len)) {
-      stop("Index out of bounds.", call. = FALSE)
-    }
-    as.integer(col - 1L)
-  }, dim_len = x$dim)
-  if (!is.matrix(zero_based)) zero_based <- matrix(zero_based, ncol = length(x$dim))
-  linear_idx <- .mlx_linear_indices(zero_based, x$dim)
-  flat <- mlx_flatten(x)
-  ptr <- cpp_mlx_take(flat$ptr, linear_idx, 0L)
-  res <- .mlx_wrap_result(ptr, x$device)
-  res
 }
 
 #' Matrix-style assignment helper.
@@ -529,6 +573,38 @@ mlx_dtype <- function(x) {
   as.integer(linear)
 }
 
+#' Compute linear indices from multi-dimensional indices (mlx version)
+#'
+#' @param index_matrix mlx array of 0-based indices (rows are points, columns are dimensions).
+#' @param dim_sizes Integer vector of dimension sizes.
+#' @return mlx array of linear indices.
+#' @noRd
+.mlx_linear_indices_mlx <- function(index_matrix, dim_sizes) {
+  if (length(dim_sizes) == 0L) {
+    return(as_mlx(integer(0), dtype = "int64", device = index_matrix$device))
+  }
+
+  # Compute strides in column-major order
+  strides <- vapply(seq_along(dim_sizes), function(k) {
+    if (k == length(dim_sizes)) {
+      1L
+    } else {
+      as.integer(prod(dim_sizes[(k + 1):length(dim_sizes)]))
+    }
+  }, integer(1))
+
+  # Compute linear indices by summing (col_i * stride_i) for each row
+  # This avoids matmul which doesn't support integer types
+  linear <- as_mlx(0L, dtype = index_matrix$dtype, device = index_matrix$device)
+  for (i in seq_along(strides)) {
+    col_i <- index_matrix[, i]
+    stride_mlx <- as_mlx(strides[i], dtype = index_matrix$dtype, device = index_matrix$device)
+    linear <- linear + col_i * stride_mlx
+  }
+
+  linear
+}
+
 #' Normalize subsetting index to 0-indexed integers
 #'
 #' @param idx Logical, numeric, or NULL index vector.
@@ -538,6 +614,20 @@ mlx_dtype <- function(x) {
 .normalize_index_vector <- function(idx, dim_size) {
   if (is.null(idx)) {
     return(NULL)
+  }
+
+  # Handle mlx arrays directly
+  if (is.mlx(idx)) {
+    # mlx indices are assumed to be 1-based (R convention)
+    # Convert to 0-based for MLX operations
+    # Ensure integer dtype (MLX requires integer indices)
+    if (!grepl("int", idx$dtype)) {
+      idx <- .mlx_cast(idx, "int64")
+    }
+    # Subtract 1 using an mlx scalar to preserve integer dtype
+    one_mlx <- as_mlx(1L, dtype = idx$dtype, device = idx$device)
+    # Return the mlx array directly to avoid R conversion
+    return(idx - one_mlx)
   }
 
   if (is.logical(idx)) {
