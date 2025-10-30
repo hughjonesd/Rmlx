@@ -17,6 +17,7 @@ reference:
       - as_mlx
       - is.mlx
       - Rmlx-package
+      - mlx-methods
       - mlx_dim
       - mlx_dtype
       - mlx_eval
@@ -137,6 +138,7 @@ reference:
       - rowSums
       - colMeans
       - rowMeans
+      - fft
       - mlx_fft
       - mlx_fft2
       - mlx_fftn
