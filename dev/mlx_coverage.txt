@@ -26,6 +26,10 @@
 ✅ flatten
 ✅ swapaxes
 ✅ hadamard_transform
+✅ roll
+❌ atleast_1d — Priority: Medium (nice parity helper; straightforward wrapper around `mlx::core::atleast_1d`).
+❌ atleast_2d — Priority: Medium (pairs with `atleast_1d`; unlocks array-friendly APIs).
+❌ atleast_3d — Priority: Medium (completes the trio for broadcasting utilities).
 
 ### Slicing & Indexing - PARTIALLY IMPLEMENTED
 ✅ slice (via [])
@@ -33,14 +37,14 @@
 ✅ where
 ✅ slice_update
 ✅ gather
-❌ scatter (postponed; depends on in-place semantics and index validation)
-❌ scatter_add (postponed; blocking on reduction behavior decisions)
-❌ scatter_add_axis (postponed; similar concerns as scatter_add)
-❌ scatter_max (postponed; requires tie-breaking policy for duplicates)
-❌ scatter_min (postponed; requires tie-breaking policy for duplicates)
-❌ scatter_prod (postponed; consider numeric stability and dtype upgrades)
-❌ put_along_axis (postponed; behaviour diverges between numpy/MLX needs review)
-❌ take_along_axis (postponed; needs careful bounds handling and broadcasting)
+❌ scatter (postponed; depends on in-place semantics and index validation) — Priority: High.
+❌ scatter_add (postponed; blocking on reduction behavior decisions) — Priority: High.
+❌ scatter_add_axis (postponed; similar concerns as scatter_add) — Priority: Medium.
+❌ scatter_max (postponed; requires tie-breaking policy for duplicates) — Priority: Medium.
+❌ scatter_min (postponed; requires tie-breaking policy for duplicates) — Priority: Medium.
+❌ scatter_prod (postponed; consider numeric stability and dtype upgrades) — Priority: Low.
+❌ put_along_axis (postponed; behaviour diverges between numpy/MLX needs review) — Priority: Medium.
+❌ take_along_axis (postponed; needs careful bounds handling and broadcasting) — Priority: Medium.
 
 ### Concatenation & Stacking - MOSTLY IMPLEMENTED
 ✅ concatenate (via cbind/rbind)
@@ -75,8 +79,8 @@
 ✅ logcumsumexp
 ✅ cumsum
 ✅ cumprod
-❌ cummax
-❌ cummin
+✅ cummax
+✅ cummin
 
 ### Sorting & Searching - MOSTLY IMPLEMENTED
 ✅ sort
@@ -86,20 +90,30 @@
 ✅ topk
 
 ### Arithmetic Operations - IMPLEMENTED (via Ops.mlx and Math.mlx)
-✅ add, subtract, multiply, divide (via +, -, *, /)
+✅ add (via +)
+✅ subtract (via -)
+✅ multiply (via *)
+✅ divide (via /)
 ✅ power (via ^)
 ✅ floor_divide (via %/%)
 ✅ remainder (via %%)
-✅ negative (via -)
-✅ abs, sqrt, square
+✅ negative (via unary -)
+✅ abs
+✅ sqrt
+✅ square
+✅ maximum (via `mlx_maximum()` helper)
+✅ minimum (via `mlx_minimum()` helper)
 ✅ reciprocal
 ✅ rsqrt
 ✅ addmm
 
 ### Comparisons - IMPLEMENTED (via Ops.mlx)
-✅ equal, not_equal (via ==, !=)
-✅ greater, greater_equal (via >, >=)
-✅ less, less_equal (via <, <=)
+✅ equal (via ==)
+✅ not_equal (via !=)
+✅ greater (via >)
+✅ greater_equal (via >=)
+✅ less (via <)
+✅ less_equal (via <=)
 ✅ allclose
 ✅ isclose
 ✅ array_equal
@@ -108,39 +122,58 @@
 ✅ logical_not (via !)
 ✅ logical_and (via &)
 ✅ logical_or (via |)
-❌ bitwise_and
-❌ bitwise_or
-❌ bitwise_xor
-❌ bitwise_invert  
-❌ left_shift
-❌ right_shift
+❌ bitwise_and — Priority: Medium (numpy parity for mask manipulation).
+❌ bitwise_or — Priority: Medium.
+❌ bitwise_xor — Priority: Medium.
+❌ bitwise_invert — Priority: Medium.
+❌ left_shift — Priority: Low (integer-only helper).
+❌ right_shift — Priority: Low.
 
-### Trigonometric - IMPLEMENTED (via Math.mlx)
-✅ sin, cos, tan
-✅ sinh, cosh, tanh
-✅ arcsin, arccos, arctan
-✅ arcsinh, arccosh, arctanh
+### Trigonometric - MOSTLY IMPLEMENTED (via Math.mlx)
+✅ sin
+✅ cos
+✅ tan
+✅ sinh
+✅ cosh
+✅ tanh
+✅ arcsin
+✅ arccos
+✅ arctan
+✅ arcsinh
+✅ arccosh
+✅ arctanh
+❌ arctan2 — Priority: Medium (binary angle helper still needs a dedicated wrapper).
 
 ### Exponential & Logarithmic - IMPLEMENTED (via Math.mlx)
-✅ exp, log
+✅ exp
+✅ expm1
+✅ log
+✅ log1p
+✅ log2
+✅ log10
 ✅ logaddexp
 
 ### Rounding - IMPLEMENTED (via Math.mlx)
-✅ round, floor, ceil
+✅ round
+✅ floor
+✅ ceil
 ✅ sign
 
-### Special Math - PARTIALLY IMPLEMENTED
-✅ erf, erfinv
+### Special Math - IMPLEMENTED
+✅ erf
+✅ erfinv
 ✅ degrees
 ✅ radians
 
-### NaN/Inf Handling - PARTIALLY IMPLEMENTED
-✅ isnan, isinf, isfinite
+### NaN/Inf Handling - IMPLEMENTED
+✅ isnan
+✅ isinf
+✅ isfinite
 ✅ isposinf
 ✅ isneginf
 ✅ nan_to_num
 
-### Complex Numbers - NOT IMPLEMENTED
+### Complex Numbers - IMPLEMENTED
 ✅ real
 ✅ imag
 ✅ conjugate
@@ -149,10 +182,11 @@
 ✅ astype (implicit in as_mlx)
 ✅ copy (implicit)
 ✅ stop_gradient
-❌ as_strided
 ✅ contiguous
-❌ view
-❌ number_of_elements
+❌ as_strided — Priority: Low (advanced view semantics; needs careful validation before exposing).
+✅ contiguous
+❌ view — Priority: Low (aliasing-only helper; lower user demand so far).
+❌ number_of_elements — Priority: Low (lightweight helper; easy win once exposed).
 
 ### Quantization - IMPLEMENTED
 ✅ quantize
@@ -175,9 +209,9 @@
 ✅ inner (via crossprod)
 ✅ tensordot (as tcrossprod)
 ✅ kron (Kronecker product)
-❌ gather_mm
-❌ block_masked_mm
-❌ segmented_mm
+❌ gather_mm — Priority: Low (specialised kernel; no immediate R use-case).
+❌ block_masked_mm — Priority: Low (requires mask utilities first).
+❌ segmented_mm — Priority: Low (depends on higher-level segmented reductions).
 
 ### Convolutions - IMPLEMENTED
 ✅ conv_general
@@ -208,11 +242,13 @@
 ✅ tri_inv
 ✅ trace
 ✅ diagonal (via diag())
-❌ qr (partial - returns Q and R but no pivoting)
-❌ svd (partial - may not have full options)
-❌ lu (partial - may not have full options)
-❌ eig (returns eigenvalues only, not vectors - eigvals exists)
-❌ eigh (partial - hermitian eigendecomposition)
+✅ diag (S3 `diag.mlx` delegates to `mlx_diagonal`)
+❌ qr (partial - returns Q and R but no pivoting) — Priority: Medium.
+❌ svd (partial - may not have full options) — Priority: Medium.
+❌ lu (partial - may not have full options) — Priority: Medium.
+❌ lu_factor — Priority: Medium (needed for returning LU factors and pivots).
+❌ eig (returns eigenvalues only, not vectors - eigvals exists) — Priority: Medium.
+❌ eigh (partial - hermitian eigendecomposition) — Priority: Medium.
 
 ## Random (mlx/random.h) - MOSTLY IMPLEMENTED
 
@@ -229,16 +265,24 @@
 ✅ key
 ✅ split
 ✅ bits
+❌ next — Priority: Low (niche RNG key advancement helper).
 
 ## FFT (mlx/fft.h) - PARTIALLY IMPLEMENTED
 
 ✅ fft (1D via fft())
-❌ fftn (n-dimensional)
-❌ ifftn (inverse n-dimensional)
-❌ rfftn (real FFT)
-❌ irfftn (inverse real FFT)
-❌ fftshift
-❌ ifftshift
+❌ fft2 — Priority: Medium (2-D FFT parity with base R `mvfft`).
+❌ ifft — Priority: Medium (explicit inverse wrapper mirrors fft default).
+❌ fftn (n-dimensional) — Priority: Medium (core parity for n-D transforms).
+❌ ifft2 — Priority: Medium (2-D inverse transform).
+❌ ifftn (inverse n-dimensional) — Priority: Medium.
+❌ rfft — Priority: Low (real-input specialisation).
+❌ irfft — Priority: Low (inverse real-input specialisation).
+❌ rfft2 — Priority: Low (2-D real-input helper).
+❌ irfft2 — Priority: Low (2-D inverse real-input helper).
+❌ rfftn (real FFT) — Priority: Low.
+❌ irfftn (inverse real FFT) — Priority: Low.
+❌ fftshift — Priority: Low (index transformation helper).
+❌ ifftshift — Priority: Low (index transformation helper).
 
 ## Neural Network Components - IMPLEMENTED
 
@@ -259,57 +303,69 @@
 ## Autograd (mlx/transforms.h) - PARTIALLY IMPLEMENTED
 
 ✅ grad (mlx_grad)
-✅ value_grad (mlx_value_grad)
+✅ value_and_grad (exposed as mlx_value_grad)
 ✅ stop_gradient
-❌ jvp (Jacobian-vector product)
-❌ vjp (vector-Jacobian product)
-❌ checkpoint (gradient checkpointing)
-❌ custom_vjp (custom gradients)
+❌ jvp (Jacobian-vector product) — Priority: Medium.
+❌ vjp (vector-Jacobian product) — Priority: Medium.
+❌ vmap — Priority: Medium (vectorised transforms).
+❌ async_eval — Priority: Low (async scheduling helper).
+❌ checkpoint (gradient checkpointing) — Priority: Low.
+❌ custom_vjp (custom gradients) — Priority: Medium.
+❌ custom_function — Priority: Low (wrapper around bespoke transform overrides).
 
 ## Compilation (mlx/compile.h) - IMPLEMENTED
 
 ✅ compile (mlx_compile)
 ✅ disable_compile
 ✅ enable_compile
+❌ set_compile_mode — Priority: Low (niche control; expose once configuration surface stabilises).
 
-## Device & Stream Management - IMPLEMENTED
+## Device & Stream Management - MIXED
 
 ✅ eval (mlx_eval)
 ✅ synchronize (mlx_synchronize)
-✅ default_device (mlx_default_device)
+⚠️ default_device — R shim only (bind to `mlx::core::default_device` for full parity).
+❌ set_default_device — Priority: Low (current R-level setter suffices short term).
+❌ is_available (device) — Priority: Medium (needed for feature detection on GPU-less hosts).
 ✅ default_stream (mlx_default_stream)
 ✅ new_stream (mlx_new_stream)
 ✅ set_default_stream (mlx_set_default_stream)
+❌ get_stream — Priority: Low (round-trips stream handles; expose if needed for debugging).
 
 ## I/O Operations (mlx/io/) - IMPLEMENTED
 
 ✅ load (load arrays from file)
 ✅ save (save arrays to file)
-✅ GGUF format support
+✅ load_safetensors / save_safetensors
+✅ load_gguf / save_gguf
 
 ## Distributed Computing (mlx/distributed/) - NOT IMPLEMENTED
 
-❌ all_reduce
-❌ all_gather
-❌ broadcast
-❌ reduce_scatter
-❌ NCCL backend
-❌ MPI backend
+❌ is_available — Priority: Low (depends on external backend).
+❌ init — Priority: Medium (bootstrap for all distributed ops).
+❌ Group::split — Priority: Medium (needed for sub-grouping APIs).
+❌ all_sum — Priority: Medium (core reduction primitive).
+❌ all_gather — Priority: Medium.
+❌ all_max — Priority: Low (niche reduction).
+❌ all_min — Priority: Low.
+❌ send — Priority: Medium (point-to-point messaging).
+❌ recv — Priority: Medium (complements `send`).
+❌ recv_like — Priority: Low (ergonomic helper).
 
 ## Summary Statistics
 
 Total MLX ops functions: ~150
-Implemented in Rmlx: ~100
-Coverage: ~67%
+Implemented in Rmlx: ~105
+Coverage: ~70%
 
 Major gaps:
-1. Scatter operations (scatter, scatter_add, etc.)
-2. Bitwise operations  
-3. Complex number support
-4. Advanced RNG (key management)
-5. N-dimensional FFT variants
-6. I/O operations (load/save)
-7. Distributed computing
-8. Some advanced autograd (jvp, vjp, checkpointing)
-9. Some utility functions (flatten, swapaxes, meshgrid)
-10. NaN/Inf utilities (isposinf, isneginf, nan_to_num)
+1. Scatter family operations (scatter, scatter_add, *_along_axis variants).
+2. Bitwise kernels (bitwise_and/or/xor/invert, shifts).
+3. Advanced autograd transforms (jvp, vjp, vmap, custom_vjp, custom_function).
+4. N-dimensional FFT helpers (fft2/fftn/rfft variants).
+5. Distributed runtime primitives (init/is_available/all_sum/send/recv, etc.).
+6. Shape conveniences (`atleast_*` family) and advanced views (`as_strided`, `view`).
+7. Device capability introspection (`set_default_device`, `is_available`).
+8. Specialized matmul variants (`gather_mm`, `block_masked_mm`, `segmented_mm`).
+9. Random key advancement (`next`).
+10. arctan2 and other niche math wrappers.
