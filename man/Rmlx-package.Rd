@@ -45,19 +45,6 @@ on GPU (default) or CPU. All mlx arrays are stored in \code{float32}
 regardless of device. Use base R arrays if you require \code{float64} math.
 }
 
-\section{Known Limitations}{
-Major portions of MLX still lack R wrappers. High-priority gaps include:
-\itemize{
-\item Scatter-style updates (\verb{scatter*}, \code{take_along_axis}, etc.)
-\item Bitwise integer kernels (bitwise AND/OR/XOR, shifts)
-\item Advanced autograd transforms (\code{jvp}, \code{vjp}, \code{vmap}, custom VJP)
-\item N-dimensional FFT helpers (e.g. \code{fftn}, \code{rfftn})
-\item Distributed execution primitives (NCCL/MPI collectives)
-}
-
-These remain on the roadmap and are tracked in \code{dev/mlx_coverage.txt}.
-}
-
 \seealso{
 Useful links:
 \itemize{
