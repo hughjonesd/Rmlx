@@ -112,6 +112,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_moveaxis.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_mse_loss.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_nan_to_num.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_norm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_ones.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_ones_like.html</loc></url>
@@ -142,6 +143,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_save_gguf.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_save_safetensors.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sequential.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_set_default_stream.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sigmoid.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_silu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_slice_update.html</loc></url>
