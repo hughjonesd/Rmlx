@@ -82,12 +82,15 @@ test_that("as.vector.mlx works for 1D arrays", {
   expect_equal(v_back, as.numeric(v))
 })
 
-test_that("as.vector.mlx fails for multi-dimensional arrays", {
+test_that("as.vector.mlx warns for multi-dimensional arrays", {
   m <- matrix(1:12, 3, 4)
   m_mlx <- as_mlx(m)
 
-  expect_error(
-    as.vector(m_mlx),
-    "Cannot convert multi-dimensional mlx array to vector"
+  expect_warning(
+    result <- as.vector(m_mlx),
+    "Converting multi-dimensional mlx array to vector"
   )
+
+  # Should flatten in column-major order (R's default)
+  expect_equal(result, as.vector(m))
 })

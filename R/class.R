@@ -87,7 +87,7 @@
 #' Use [is.nan()] on MLX arrays (method provided) if you need to detect them.
 #'
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}
-#' @seealso [base-generics]
+#' @seealso [mlx-methods]
 #' @export
 #' @examples
 #' # Default float32 for numeric
@@ -208,24 +208,27 @@ as.array.mlx <- function(x, ...) {
 
 #' Convert MLX array to R vector
 #'
+#' Converts an MLX array to an R vector. For multi-dimensional arrays (2+ dimensions),
+#' a warning is issued and the array is flattened in column-major order (R's default).
+#'
 #' @inheritParams mlx_array_required
-#' @param mode Character string specifying the mode (ignored)
-#' @return A numeric vector
+#' @param mode Character string specifying the type of vector to return (passed to [base::as.vector()])
+#' @return A vector of the specified mode
 #' @export
 #' @examples
 #' x <- as_mlx(1:5)
 #' as.vector(x)
+#'
+#' # Multi-dimensional arrays produce a warning
+#' m <- as_mlx(matrix(1:6, 2, 3))
+#' v <- suppressWarnings(as.vector(m))  # Flattened in column-major order
 as.vector.mlx <- function(x, mode = "any") {
-  # Only works for 1D arrays
-  if (length(x$dim) == 0) {
-    return(as.vector(as.matrix(x)))
+  # Warn for 2+ dimensional arrays
+  if (length(x$dim) >= 2) {
+    warning("Converting multi-dimensional mlx array to vector (flattening in column-major order)")
   }
 
-  if (length(x$dim) != 1) {
-    stop("Cannot convert multi-dimensional mlx array to vector. Use as.vector(as.matrix(x)) to flatten.")
-  }
-
-  as.vector(as.matrix(x))
+  as.vector(as.matrix(x), mode = mode)
 }
 
 #' Test if object is an MLX array

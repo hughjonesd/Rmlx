@@ -9,15 +9,20 @@
 \arguments{
 \item{x}{An mlx array.}
 
-\item{mode}{Character string specifying the mode (ignored)}
+\item{mode}{Character string specifying the type of vector to return (passed to \code{\link[base:vector]{base::as.vector()}})}
 }
 \value{
-A numeric vector
+A vector of the specified mode
 }
 \description{
-Convert MLX array to R vector
+Converts an MLX array to an R vector. For multi-dimensional arrays (2+ dimensions),
+a warning is issued and the array is flattened in column-major order (R's default).
 }
 \examples{
 x <- as_mlx(1:5)
 as.vector(x)
+
+# Multi-dimensional arrays produce a warning
+m <- as_mlx(matrix(1:6, 2, 3))
+v <- suppressWarnings(as.vector(m))  # Flattened in column-major order
 }
