@@ -41,7 +41,7 @@ test_that("mlx_repeat repeats along axes", {
   expect_equal(as.matrix(rep_cols), expected_cols, tolerance = 1e-6)
 
   rep_flat <- mlx_repeat(x, repeats = 3)
-  expect_equal(as.vector(as.matrix(rep_flat)), rep(as.vector(t(as.matrix(x))), each = 3))
+  expect_equal(as.vector(rep_flat), rep(as.vector(t(as.matrix(x))), each = 3))
 })
 
 test_that("mlx_tile tiles tensors", {
@@ -143,7 +143,7 @@ test_that("mlx_flatten collapses axes", {
 
   flat_all <- mlx_flatten(x)
   expect_equal(mlx_dim(flat_all), c(12L))
-  expect_equal(as.vector(as.matrix(flat_all)), row_major_vec(arr), tolerance = 1e-6)
+  expect_equal(as.vector(flat_all), row_major_vec(arr), tolerance = 1e-6)
 
   flat_middle <- mlx_flatten(x, start_axis = 2, end_axis = 3)
   expect_equal(mlx_dim(flat_middle), c(2L, 6L))

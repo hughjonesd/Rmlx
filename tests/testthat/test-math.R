@@ -162,11 +162,11 @@ test_that("mlx_degrees and mlx_radians convert angles", {
 test_that("mlx_nan/inf helpers work", {
   x <- as_mlx(c(-Inf, -1, NaN, 0, Inf))
 
-  expect_equal(as.vector(as.matrix(mlx_isposinf(x))), c(FALSE, FALSE, FALSE, FALSE, TRUE))
-  expect_equal(as.vector(as.matrix(mlx_isneginf(x))), c(TRUE, FALSE, FALSE, FALSE, FALSE))
-  expect_equal(as.vector(as.matrix(mlx_isnan(x))), c(FALSE, FALSE, TRUE, FALSE, FALSE))
-  expect_equal(as.vector(as.matrix(mlx_isinf(x))), c(TRUE, FALSE, FALSE, FALSE, TRUE))
-  expect_equal(as.vector(as.matrix(mlx_isfinite(x))), c(FALSE, TRUE, FALSE, TRUE, FALSE))
+  expect_equal(as.vector(mlx_isposinf(x)), c(FALSE, FALSE, FALSE, FALSE, TRUE))
+  expect_equal(as.vector(mlx_isneginf(x)), c(TRUE, FALSE, FALSE, FALSE, FALSE))
+  expect_equal(as.vector(mlx_isnan(x)), c(FALSE, FALSE, TRUE, FALSE, FALSE))
+  expect_equal(as.vector(mlx_isinf(x)), c(TRUE, FALSE, FALSE, FALSE, TRUE))
+  expect_equal(as.vector(mlx_isfinite(x)), c(FALSE, TRUE, FALSE, TRUE, FALSE))
 
   replaced <- mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10)
   expect_equal(as.numeric(as.matrix(replaced)), c(-10, -1, 0, 0, 10), tolerance = 1e-6)
@@ -176,13 +176,13 @@ test_that("is.nan/is.infinite/is.finite methods dispatch", {
   x <- as_mlx(c(-Inf, -1, NaN, 0, Inf))
 
   expect_s3_class(is.nan(x), "mlx")
-  expect_equal(as.vector(as.matrix(is.nan(x))), c(FALSE, FALSE, TRUE, FALSE, FALSE))
+  expect_equal(as.vector(is.nan(x)), c(FALSE, FALSE, TRUE, FALSE, FALSE))
 
   expect_s3_class(is.infinite(x), "mlx")
-  expect_equal(as.vector(as.matrix(is.infinite(x))), c(TRUE, FALSE, FALSE, FALSE, TRUE))
+  expect_equal(as.vector(is.infinite(x)), c(TRUE, FALSE, FALSE, FALSE, TRUE))
 
   expect_s3_class(is.finite(x), "mlx")
-  expect_equal(as.vector(as.matrix(is.finite(x))), c(FALSE, TRUE, FALSE, TRUE, FALSE))
+  expect_equal(as.vector(is.finite(x)), c(FALSE, TRUE, FALSE, TRUE, FALSE))
 })
 
 test_that("fft matches base R", {
@@ -194,12 +194,12 @@ test_that("fft matches base R", {
   fft_mlx <- fft(x_mlx)
 
   expect_s3_class(fft_mlx, "mlx")
-  expect_equal(as.vector(as.matrix(fft_mlx)), fft_r, tolerance = 1e-4)
+  expect_equal(as.vector(fft_mlx), fft_r, tolerance = 1e-4)
 
   ifft_mlx <- fft(fft_mlx, inverse = TRUE)
   ifft_r <- fft(fft_r, inverse = TRUE)
 
-  expect_equal(as.vector(as.matrix(ifft_mlx)), ifft_r, tolerance = 1e-4)
+  expect_equal(as.vector(ifft_mlx), ifft_r, tolerance = 1e-4)
 })
 
 test_that("unsupported Math functions fall back to R", {
@@ -254,13 +254,13 @@ test_that("mlx_isclose returns element-wise comparison", {
   # Default tolerance should pass for small differences
   result <- mlx_isclose(a, b)
   expect_s3_class(result, "mlx")
-  close_vals <- as.vector(as.matrix(result))
+  close_vals <- as.vector(result)
   expect_equal(close_vals[1:2], c(TRUE, TRUE))
   expect_equal(close_vals[3], FALSE)  # 1e-3 is too large
 
   # Tighter tolerance
   result_strict <- mlx_isclose(a, b, rtol = 1e-7, atol = 1e-9)
-  close_strict <- as.vector(as.matrix(result_strict))
+  close_strict <- as.vector(result_strict)
   expect_equal(close_strict, c(FALSE, FALSE, FALSE))
 
   # Broadcasting
@@ -295,14 +295,14 @@ test_that("mlx_isclose handles NaN with equal_nan parameter", {
 
   # By default, NaN != NaN
   result_default <- mlx_isclose(a, b)
-  close_vals <- as.vector(as.matrix(result_default))
+  close_vals <- as.vector(result_default)
   expect_equal(close_vals[1], TRUE)
   expect_equal(close_vals[2], FALSE)  # NaN not equal to NaN
   expect_equal(close_vals[3], TRUE)
 
   # With equal_nan = TRUE
   result_equal_nan <- mlx_isclose(a, b, equal_nan = TRUE)
-  close_vals_nan <- as.vector(as.matrix(result_equal_nan))
+  close_vals_nan <- as.vector(result_equal_nan)
   expect_equal(close_vals_nan, c(TRUE, TRUE, TRUE))
 })
 

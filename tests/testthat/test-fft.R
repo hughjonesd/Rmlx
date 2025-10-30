@@ -3,7 +3,7 @@ skip_on_cran()
 set.seed(42)
 
 expect_fft_equal <- function(x, y, tol = 1e-6) {
-  res <- as.vector(as.matrix(x))
+  res <- as.vector(x)
   expect_equal(res, as.complex(as.vector(y)), tolerance = tol)
 }
 

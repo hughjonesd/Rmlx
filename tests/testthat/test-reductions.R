@@ -9,9 +9,9 @@ test_that("Summary group reductions work", {
   expect_equal(as.matrix(prod(x, 2)), prod(c(1:4, 2)), tolerance = 1e-6)
 
   bool_x <- x > 0
-  expect_equal(as.vector(as.matrix(all(bool_x))), TRUE)
-  expect_equal(as.vector(as.matrix(any(x > 10))), FALSE)
-  expect_equal(as.vector(as.matrix(all(bool_x, x > 2))), FALSE)
+  expect_equal(as.vector(all(bool_x)), TRUE)
+  expect_equal(as.vector(any(x > 10)), FALSE)
+  expect_equal(as.vector(all(bool_x, x > 2)), FALSE)
 })
 
 test_that("mlx_sum and friends reduce axes", {
@@ -47,7 +47,7 @@ test_that("mlx_mean/var/std support axes and ddof", {
   std_expected <- sqrt(var0_expected)
   expect_equal(as.matrix(mlx_std(x, axis = 3)), std_expected, tolerance = 1e-6)
 
-  overall_std <- as.vector(as.matrix(mlx_std(x, ddof = 1)))
+  overall_std <- as.vector(mlx_std(x, ddof = 1))
   expect_equal(overall_std, stats::sd(as.vector(arr)), tolerance = 1e-6)
 })
 
@@ -55,7 +55,7 @@ test_that("mlx_cumsum computes cumulative sum", {
   # 1D case
   x <- as_mlx(1:5)
   result <- mlx_cumsum(x)
-  expect_equal(as.vector(as.matrix(result)), cumsum(1:5))
+  expect_equal(as.vector(result), cumsum(1:5))
 
   # 2D case with axis
   mat <- matrix(1:12, 3, 4)
@@ -84,7 +84,7 @@ test_that("mlx_cumprod computes cumulative product", {
   # 1D case
   x <- as_mlx(1:5)
   result <- mlx_cumprod(x)
-  expect_equal(as.vector(as.matrix(result)), cumprod(1:5))
+  expect_equal(as.vector(result), cumprod(1:5))
 
   # 2D case with axis
   mat <- matrix(1:12, 3, 4)

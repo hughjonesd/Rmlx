@@ -11,11 +11,11 @@ hadamard_matrix <- function(n) {
 
 test_that("mlx_hadamard_transform matches reference implementation", {
   x <- as_mlx(c(1, -1))
-  res <- as.vector(as.matrix(mlx_hadamard_transform(x)))
+  res <- as.vector(mlx_hadamard_transform(x))
   expected <- as.vector((hadamard_matrix(2) / sqrt(2)) %*% c(1, -1))
   expect_equal(res, expected, tolerance = 1e-6)
 
-  res_raw <- as.vector(as.matrix(mlx_hadamard_transform(x, scale = 1)))
+  res_raw <- as.vector(mlx_hadamard_transform(x, scale = 1))
   expected_raw <- as.vector(hadamard_matrix(2) %*% c(1, -1))
   expect_equal(res_raw, expected_raw, tolerance = 1e-6)
 
@@ -46,8 +46,8 @@ test_that("mlx_argmax and mlx_argmin match base behaviour", {
   x <- c(-3, 5, 1, 9, 9, -4)
   t <- as_mlx(x)
 
-  argmax <- as.vector(as.matrix(mlx_argmax(t)))
-  argmin <- as.vector(as.matrix(mlx_argmin(t)))
+  argmax <- as.vector(mlx_argmax(t))
+  argmin <- as.vector(mlx_argmin(t))
 
   expect_equal(as.integer(argmax), which.max(x))
   expect_equal(as.integer(argmin), which.min(x))
@@ -67,10 +67,10 @@ test_that("mlx_sort and mlx_argsort agree with base R", {
   x <- c(3, -1, 5, 2)
   t <- as_mlx(x)
 
-  sorted_vals <- as.vector(as.matrix(mlx_sort(t)))
+  sorted_vals <- as.vector(mlx_sort(t))
   expect_equal(sorted_vals, sort(x))
 
-  idx <- as.integer(as.vector(as.matrix(mlx_argsort(t))))
+  idx <- as.integer(as.vector(mlx_argsort(t)))
   # argsort now returns 1-based indices
   expect_equal(x[idx], sort(x))
 
@@ -84,7 +84,7 @@ test_that("mlx_sort and mlx_argsort agree with base R", {
 
 test_that("mlx_topk returns the expected values", {
   x <- as_mlx(c(0.4, 2, -1, 3, 7))
-  top2 <- sort(as.vector(as.matrix(mlx_topk(x, 2L))))
+  top2 <- sort(as.vector(mlx_topk(x, 2L)))
   expect_equal(top2, tail(sort(c(0.4, 2, -1, 3, 7)), 2))
 
   mat <- matrix(c(1, 5, 2,
@@ -100,12 +100,12 @@ test_that("mlx_partition and mlx_argpartition position kth elements", {
   x <- as_mlx(c(5, 1, 7, 3, 9))
   kth <- 2L
 
-  part <- as.vector(as.matrix(mlx_partition(x, kth)))
+  part <- as.vector(mlx_partition(x, kth))
   ref_sorted <- sort(c(5, 1, 7, 3, 9))
   expect_equal(part[kth + 1L], ref_sorted[kth + 1L])
   expect_true(all(part[seq_len(kth + 1L)] <= part[kth + 1L]))
 
-  argpart <- as.integer(as.vector(as.matrix(mlx_argpartition(x, kth))))
+  argpart <- as.integer(as.vector(mlx_argpartition(x, kth)))
   # argpart now returns 1-based indices
   expect_equal(c(5, 1, 7, 3, 9)[argpart][kth + 1L], ref_sorted[kth + 1L])
 })
@@ -130,7 +130,7 @@ test_that("mlx_logcumsumexp matches cumulative reference", {
   vec <- c(-1, 0, 2)
   mlx_vec <- as_mlx(vec)
   expect_equal(
-    as.vector(as.matrix(mlx_logcumsumexp(mlx_vec))),
+    as.vector(mlx_logcumsumexp(mlx_vec)),
     log(cumsum(exp(vec))),
     tolerance = 1e-6
   )

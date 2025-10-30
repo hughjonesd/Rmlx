@@ -18,7 +18,7 @@ test_that("mlx_eig recreates eigen decomposition", {
   x <- as_mlx(mat)
   eig_res <- mlx_eig(x)
 
-  values <- as.vector(as.matrix(eig_res$values))
+  values <- as.vector(eig_res$values)
   vectors <- as.matrix(eig_res$vectors)
 
   recon <- mat %*% vectors
@@ -28,7 +28,7 @@ test_that("mlx_eig recreates eigen decomposition", {
 
 test_that("mlx_eigvals matches base eigenvalues", {
   mat <- matrix(c(3, 1, 0, 2), 2, 2)
-  vals <- sort(Re(as.vector(as.matrix(mlx_eigvals(as_mlx(mat))))))
+  vals <- sort(Re(as.vector(mlx_eigvals(as_mlx(mat)))))
   expected <- sort(base::eigen(mat, only.values = TRUE)$values)
   expect_equal(vals, expected, tolerance = 1e-6)
 })
@@ -40,13 +40,13 @@ test_that("mlx_eigh and mlx_eigvalsh agree with symmetric eigenvalues", {
   x <- as_mlx(mat)
 
   base_eig <- eigen(mat, symmetric = TRUE)
-  vals <- as.vector(as.matrix(mlx_eigvalsh(x)))
+  vals <- as.vector(mlx_eigvalsh(x))
   expect_equal(sort(vals), sort(base_eig$values), tolerance = 1e-6)
 
   eigh <- mlx_eigh(x)
   vecs <- as.matrix(eigh$vectors)
   check <- mat %*% vecs
-  expect_equal(check, vecs %*% diag(as.vector(as.matrix(eigh$values))),
+  expect_equal(check, vecs %*% diag(as.vector(eigh$values)),
                tolerance = 1e-5)
 })
 

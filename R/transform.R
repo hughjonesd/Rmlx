@@ -274,7 +274,7 @@ mlx_logsumexp <- function(x, axis = NULL, drop = TRUE) {
 #' @export
 #' @examples
 #' x <- as_mlx(1:4)
-#' as.vector(as.matrix(mlx_logcumsumexp(x)))
+#' as.vector(mlx_logcumsumexp(x))
 #' m <- as_mlx(matrix(1:6, 2, 3))
 #' as.matrix(mlx_logcumsumexp(m, axis = 2))
 mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {

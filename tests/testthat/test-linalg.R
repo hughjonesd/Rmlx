@@ -169,7 +169,7 @@ test_that("svd reconstructs the original matrix", {
   svd_mlx <- svd(as_mlx(A))
 
   U <- as.matrix(svd_mlx$u)
-  d <- as.vector(as.matrix(svd_mlx$d))
+  d <- as.vector(svd_mlx$d)
   V <- as.matrix(svd_mlx$v)
 
   # the subsets are because mlx does "full" svd
@@ -195,7 +195,7 @@ test_that("svd.mlx singular values match base R", {
   svd_r <- svd(A)
   svd_mlx <- svd(as_mlx(A))
 
-  expect_equal(as.vector(as.matrix(svd_mlx$d)), svd_r$d, tolerance = 1e-5)
+  expect_equal(as.vector(svd_mlx$d), svd_r$d, tolerance = 1e-5)
 })
 
 test_that("mlx_kron matches base kronecker", {
@@ -232,7 +232,7 @@ test_that("svd.mlx works with different matrix dimensions", {
   svd_tall <- svd(as_mlx(A_tall))
   U <- as.matrix(svd_tall$u)
   V <- as.matrix(svd_tall$v)
-  d <- as.vector(as.matrix(svd_tall$d))
+  d <- as.vector(svd_tall$d)
   # full svd strikes again:
   reconstructed_tall <- U[, 1:3] %*% diag(d) %*% t(V)
   expect_equal(reconstructed_tall, A_tall, tolerance = 1e-5)
@@ -242,7 +242,7 @@ test_that("svd.mlx works with different matrix dimensions", {
   svd_wide <- svd(as_mlx(A_wide))
   U <- as.matrix(svd_wide$u)
   V <- as.matrix(svd_wide$v)
-  d <- as.vector(as.matrix(svd_wide$d))
+  d <- as.vector(svd_wide$d)
 
   reconstructed_wide <- U %*% diag(d) %*% t(V[, 1:3])
   expect_equal(reconstructed_wide, A_wide, tolerance = 1e-5)
@@ -252,7 +252,7 @@ test_that("svd.mlx works with different matrix dimensions", {
   svd_square <- svd(as_mlx(A_square))
   U <- as.matrix(svd_square$u)
   V <- as.matrix(svd_square$v)
-  d <- as.vector(as.matrix(svd_square$d))
+  d <- as.vector(svd_square$d)
 
   reconstructed_square <- U %*% diag(d) %*% t(V)
   expect_equal(reconstructed_square, A_square, tolerance = 1e-5)
@@ -317,7 +317,7 @@ test_that("svd.mlx handles rank-deficient matrices", {
   svd_mlx <- svd(as_mlx(A))
 
   # Should have one large singular value and one near-zero
-  svd_mlx_d <- as.vector(as.matrix(svd_mlx$d))
+  svd_mlx_d <- as.vector(svd_mlx$d)
   expect_true(svd_mlx_d[1] > 1)
   expect_true(svd_mlx_d[2] < 1e-5)
 
@@ -453,7 +453,7 @@ test_that("mlx_lu returns P, L and U factors", {
   expect_true("l" %in% names(lu_mlx))
   expect_true("u" %in% names(lu_mlx))
 
-  P <- as.vector(as.matrix(lu_mlx$p))
+  P <- as.vector(lu_mlx$p)
   L <- as.matrix(lu_mlx$l)
   U <- as.matrix(lu_mlx$u)
 

@@ -187,7 +187,7 @@ test_that("mlx_rand_permutation generates valid permutation", {
   expect_equal(length(perm$dim), 1)
   expect_equal(perm$dim, 10L)
 
-  perm_vals <- as.vector(as.matrix(perm))
+  perm_vals <- as.vector(perm)
   # Should contain each of 0:9 exactly once
   expect_equal(sort(perm_vals), 0:9)
 })

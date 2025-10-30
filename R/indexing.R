@@ -52,7 +52,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
   axis_len <- x$dim[axis0 + 1L]
   idx_vals <- idx_list[[1]]
   if (is.mlx(idx_vals)) {
-    idx_vals <- as.vector(as.matrix(idx_vals))
+    idx_vals <- as.vector(idx_vals)
   }
   sel <- .normalize_index_vector(idx_vals, axis_len)
   ptr <- cpp_mlx_take(x$ptr, sel, axis0)

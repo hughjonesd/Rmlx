@@ -37,13 +37,13 @@ test_that("identity helpers work", {
 
 test_that("range helpers produce expected sequences", {
   ar <- mlx_arange(5)
-  expect_equal(as.vector(as.matrix(ar)), 0:4, tolerance = 1e-6)
+  expect_equal(as.vector(ar), 0:4, tolerance = 1e-6)
 
   ar_custom <- mlx_arange(5, start = 1, step = 2)
-  expect_equal(as.vector(as.matrix(ar_custom)), c(1, 3), tolerance = 1e-6)
+  expect_equal(as.vector(ar_custom), c(1, 3), tolerance = 1e-6)
 
   lin <- mlx_linspace(0, 1, num = 5)
-  expect_equal(as.vector(as.matrix(lin)), seq(0, 1, length.out = 5), tolerance = 1e-6)
+  expect_equal(as.vector(lin), seq(0, 1, length.out = 5), tolerance = 1e-6)
 })
 
 test_that("mlx_zeros_like matches source metadata", {

@@ -3,7 +3,7 @@ test_that("basic slicing matches base semantics", {
   x <- as_mlx(mat)
 
   expect_equal(as.matrix(x[1, ]), matrix(mat[1, ], nrow = 1, byrow = TRUE))
-  expect_equal(as.vector(as.matrix(x[1, , drop = TRUE])), mat[1, ])
+  expect_equal(as.vector(x[1, , drop = TRUE]), mat[1, ])
 
   expect_equal(as.matrix(x[, 2]), matrix(mat[, 2], ncol = 1))
   expect_equal(as.matrix(x[2, 3]), matrix(mat[2, 3], nrow = 1, ncol = 1))
@@ -44,7 +44,7 @@ test_that("drop argument matches expectations", {
   expect_equal(dim(res), c(1L, ncol(mat)))
 
   res_drop <- x[1, , drop = TRUE]
-  expect_equal(as.vector(as.matrix(res_drop)), mat[1, ])
+  expect_equal(as.vector(res_drop), mat[1, ])
 })
 
 test_that("zero length selections return empty tensors", {
@@ -93,7 +93,7 @@ test_that("matrix indexing matches base behaviour", {
   x <- as_mlx(mat)
 
   idx <- cbind(c(1, 3), c(2, 3))
-  expect_equal(as.vector(as.matrix(x[idx])), mat[idx], tolerance = 1e-6)
+  expect_equal(as.vector(x[idx]), mat[idx], tolerance = 1e-6)
 })
 
 test_that("direct gather and slice_update mirror MLX semantics", {
@@ -143,15 +143,15 @@ test_that("mlx vector indexing uses 1-based convention", {
 
   # Index 1 should get first element (10), not second
   idx <- as_mlx(1L)
-  expect_equal(as.vector(as.matrix(vec[idx])), 10)
+  expect_equal(as.vector(vec[idx]), 10)
 
   # Index 5 should get last element (50)
   idx <- as_mlx(5L)
-  expect_equal(as.vector(as.matrix(vec[idx])), 50)
+  expect_equal(as.vector(vec[idx]), 50)
 
   # Multiple indices
   idx <- as_mlx(c(2L, 4L))
-  expect_equal(as.vector(as.matrix(vec[idx])), c(20, 40))
+  expect_equal(as.vector(vec[idx]), c(20, 40))
 })
 
 test_that("mlx vector indexing handles automatic dtype conversion", {
