@@ -13,13 +13,17 @@ entry points are:
 \item \href{\%*\%.mlx}{\code{\%*\%}} for matrix multiplication
 \item \href{[.mlx}{\code{[}} and \href{[<-.mlx}{\verb{[<-}} for extraction and assignment
 \item \href{Ops.mlx}{\code{Ops}} and \href{Math.mlx}{\code{Math}} for elementwise arithmetic and math
-\item \href{Summary.mlx}{\code{Summary}} for reductions such as \code{sum()} and \code{max()}
+\item \href{Summary.mlx}{\code{Summary}} for reductions such as \code{sum()} and \code{max()};
+also \href{mean.mlx}{\code{mean()}}, \href{length.mlx}{\code{length()}} and \href{all.equal.mlx}{\code{all.equal()}}.
+\item \href{diag.mlx}{\code{diag()}}, \href{dim.mlx}{\code{dim()}} and \href{dim<-.mlx}{\verb{dim<-}}
 \item \href{as.matrix.mlx}{\code{as.matrix()}}, \href{as.array.mlx}{\code{as.array()}}, and \href{as.vector.mlx}{\code{as.vector()}} for conversion back to base R
-\item \href{cbind.mlx}{\code{cbind()}} and \href{rbind.mlx}{\code{rbind()}} for binding arrays along rows or columns
+\item \href{cbind.mlx}{\code{cbind()}} and \href{rbind.mlx}{\code{rbind()}} for binding arrays along rows or columns;
+there is also an \code{\link[=abind]{abind()}} function modelled on \code{abind::abind()}.
 \item \href{rowMeans.mlx}{\code{rowMeans()}}, \href{colMeans.mlx}{\code{colMeans()}}, \href{rowSums.mlx}{\code{rowSums()}}, and \href{colSums.mlx}{\code{colSums()}} for axis-wise summaries
 \item \href{aperm.mlx}{\code{aperm()}}, \href{t.mlx}{\code{t()}}, and \href{\`dim<-.mlx\`}{\verb{dim<-}} for shape manipulation
 \item \href{kronecker}{\code{kronecker()}}, \href{outer.mlx}{\code{outer()}}, \href{crossprod}{\code{crossprod()}}, and \href{tcrossprod}{\code{tcrossprod()}} for linear algebra helpers
 \item \href{fft.mlx}{\code{fft()}}, \href{chol.mlx}{\code{chol()}}, \href{chol2inv}{\code{chol2inv()}}, and \href{solve.mlx}{\code{solve()}} for numerical routines
+\item \href{is.finite.mlx}{\code{is.finite()}}, \href{is.infinite.mlx}{\code{is.infinite()}} and \href{is.nan.mlx}{\code{is.nan()}}
 }
 }
 \seealso{
