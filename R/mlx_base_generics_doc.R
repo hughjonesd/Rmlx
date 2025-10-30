@@ -1,0 +1,35 @@
+#' Base R generics with mlx methods
+#'
+#' Rmlx provides S3 methods for a number of base R generics so that common
+#' operations keep working after converting objects with [as_mlx()]. The main
+#' entry points are:
+#'
+#' @details
+#' \itemize{
+#'   \item \code{\link[=\%*\%.mlx]{\%*\%}} for matrix multiplication
+#'   \item \code{\link[=[.mlx]{[}} and \code{\link[=[<-.mlx]{[<-}} for
+#'     extraction and assignment
+#'   \item \code{\link[=Ops.mlx]{Ops}} and \code{\link[=Math.mlx]{Math}}
+#'     for elementwise arithmetic and math
+#'   \item \code{\link[=Summary.mlx]{Summary}} for reductions like
+#'     \code{sum()} and \code{max()}
+#'   \item \code{\link[=as.matrix.mlx]{as.matrix()}},
+#'     \code{\link[=as.array.mlx]{as.array()}}, and
+#'     \code{\link[=as.vector.mlx]{as.vector()}} for conversion back to base R
+#'   \item \code{\link[=cbind.mlx]{cbind()}} and \code{\link[=rbind.mlx]{rbind()}}
+#'     for binding arrays along rows or columns
+#'   \item \code{\link[=aperm.mlx]{aperm()}}, \code{\link[=t.mlx]{t()}}, and
+#'     \code{\link[=dim<-.mlx]{dim<-}} for shape manipulation
+#'   \item \code{\link[=kronecker]{kronecker()}},
+#'     \code{\link[=outer.mlx]{outer()}}, \code{\link[=crossprod]{crossprod()}},
+#'     and \code{\link[=tcrossprod]{tcrossprod()}} for linear algebra
+#'   \item \code{\link[=fft.mlx]{fft()}}, \code{\link[=chol.mlx]{chol()}},
+#'     \code{\link[=chol2inv]{chol2inv()}}, and \code{\link[=solve.mlx]{solve()}}
+#'     for numerical routines
+#' }
+#'
+#' See the individual help pages for usage examples and any mlx-specific notes.
+#'
+#' @name mlx_base_generics
+#' @keywords documentation
+NULL

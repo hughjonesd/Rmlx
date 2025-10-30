@@ -29,6 +29,13 @@
 #' on GPU (default) or CPU. All mlx arrays are stored in `float32`
 #' regardless of device. Use base R arrays if you require `float64` math.
 #'
+#' # Known Limitations
+#' Several MLX primitives are not yet exposed in Rmlx. High-priority gaps
+#' include scatter-style updates (e.g. `scatter_add`), bitwise integer kernels,
+#' advanced autograd transforms (`jvp`, `vjp`, `vmap`), n-dimensional FFT
+#' helpers, and distributed collectives. Progress is tracked in
+#' `dev/mlx_coverage.txt`.
+#' 
 #' @docType package
 #' @name Rmlx-package
 #' @aliases Rmlx
