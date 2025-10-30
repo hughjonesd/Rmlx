@@ -286,6 +286,26 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// cpp_mlx_default_device
+std::string cpp_mlx_default_device();
+RcppExport SEXP _Rmlx_cpp_mlx_default_device() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_default_device());
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_set_default_device
+void cpp_mlx_set_default_device(std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_set_default_device(SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    cpp_mlx_set_default_device(device_str);
+    return R_NilValue;
+END_RCPP
+}
 // cpp_mlx_where
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_where(SEXP cond_xp_SEXP, SEXP xp_true_SEXP, SEXP xp_false_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1921,6 +1941,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_compile_call", (DL_FUNC) &_Rmlx_cpp_mlx_compile_call, 2},
     {"_Rmlx_cpp_mlx_disable_compile", (DL_FUNC) &_Rmlx_cpp_mlx_disable_compile, 0},
     {"_Rmlx_cpp_mlx_enable_compile", (DL_FUNC) &_Rmlx_cpp_mlx_enable_compile, 0},
+    {"_Rmlx_cpp_mlx_default_device", (DL_FUNC) &_Rmlx_cpp_mlx_default_device, 0},
+    {"_Rmlx_cpp_mlx_set_default_device", (DL_FUNC) &_Rmlx_cpp_mlx_set_default_device, 1},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_slice", (DL_FUNC) &_Rmlx_cpp_mlx_slice, 4},

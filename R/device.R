@@ -9,15 +9,14 @@
 #' mlx_default_device("cpu")  # Set to CPU
 #' mlx_default_device("gpu")  # Set back to GPU
 #' mlx_default_device()
-mlx_default_device <- local({
-  dev <- "gpu"
-  function(value) {
-    if (!missing(value)) {
-      dev <<- match.arg(value, c("gpu", "cpu"))
-    }
-    dev
+mlx_default_device <- function(value) {
+  if (missing(value)) {
+    return(cpp_mlx_default_device())
   }
-})
+  value <- match.arg(value, c("gpu", "cpu"))
+  cpp_mlx_set_default_device(value)
+  value
+}
 
 #' Synchronize MLX execution
 #'

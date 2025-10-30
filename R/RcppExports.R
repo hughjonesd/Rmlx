@@ -89,6 +89,14 @@ cpp_mlx_enable_compile <- function() {
     invisible(.Call(`_Rmlx_cpp_mlx_enable_compile`))
 }
 
+cpp_mlx_default_device <- function() {
+    .Call(`_Rmlx_cpp_mlx_default_device`)
+}
+
+cpp_mlx_set_default_device <- function(device_str) {
+    invisible(.Call(`_Rmlx_cpp_mlx_set_default_device`, device_str))
+}
+
 cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_where`, cond_xp_, xp_true_, xp_false_, dtype_str, device_str)
 }
