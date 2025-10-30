@@ -1,3 +1,53 @@
+# Internal utilities ---------------------------------------------------------
+
+#' @title Internal helpers for mlx modules
+#' @description Constructors and utilities shared across module definitions.
+#' @noRd
+new_mlx_module <- function(forward,
+                           parameters = function() list(),
+                           set_training = NULL,
+                           fields = list(),
+                           classes = character()) {
+  stopifnot(is.function(forward), is.function(parameters))
+  if (!is.null(set_training)) {
+    stopifnot(is.function(set_training))
+  }
+
+  module <- c(list(forward = forward, parameters = parameters), fields)
+  if (!is.null(set_training)) {
+    module$set_training <- set_training
+  }
+
+  class(module) <- unique(c(classes, "mlx_module"))
+  module
+}
+
+mlx_module_forward <- function(module, x) {
+  if (!inherits(module, "mlx_module")) {
+    stop("Expected an `mlx_module`.", call. = FALSE)
+  }
+  module$forward(x)
+}
+
+mlx_module_parameters <- function(module) {
+  if (!inherits(module, "mlx_module")) {
+    stop("Expected an `mlx_module`.", call. = FALSE)
+  }
+  module$parameters()
+}
+
+mlx_module_set_training <- function(module, mode = TRUE) {
+  if (!inherits(module, "mlx_module")) {
+    stop("Expected an `mlx_module`.", call. = FALSE)
+  }
+  setter <- module$set_training
+  if (is.null(setter)) {
+    return(invisible(module))
+  }
+  setter(mode)
+  invisible(module)
+}
+
 #' Create a learnable linear transformation
 #'
 #' @param in_features Number of input features.
@@ -48,13 +98,11 @@ mlx_linear <- function(in_features,
     params
   }
 
-  structure(
-    list(
-      forward = forward,
-      parameters = parameters,
-      .env = env
-    ),
-    class = c("mlx_linear", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = parameters,
+    fields = list(.env = env),
+    classes = "mlx_linear"
   )
 }
 
@@ -73,12 +121,10 @@ mlx_relu <- function() {
     mask * x
   }
 
-  structure(
-    list(
-      forward = forward,
-      parameters = function() list()
-    ),
-    class = c("mlx_relu", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = function() list(),
+    classes = "mlx_relu"
   )
 }
 
@@ -104,23 +150,27 @@ mlx_sequential <- function(...) {
 
   forward <- function(x) {
     for (layer in layers) {
-      x <- layer$forward(x)
+      x <- mlx_module_forward(layer, x)
     }
     x
   }
 
   parameters <- function() {
-    params <- lapply(layers, mlx_parameters)
+    params <- lapply(layers, mlx_module_parameters)
     unlist(params, recursive = FALSE)
   }
 
-  structure(
-    list(
-      forward = forward,
-      parameters = parameters,
-      layers = layers
-    ),
-    class = c("mlx_sequential", "mlx_module")
+  set_training <- function(mode = TRUE) {
+    lapply(layers, mlx_module_set_training, mode = mode)
+    invisible(NULL)
+  }
+
+  new_mlx_module(
+    forward = forward,
+    parameters = parameters,
+    set_training = set_training,
+    fields = list(layers = layers),
+    classes = "mlx_sequential"
   )
 }
 
@@ -137,10 +187,7 @@ mlx_sequential <- function(...) {
 #' input <- as_mlx(matrix(c(1, 2), 1, 2))
 #' mlx_forward(layer, input)
 mlx_forward <- function(module, x) {
-  if (!inherits(module, "mlx_module")) {
-    stop("Expected an `mlx_module`.", call. = FALSE)
-  }
-  module$forward(x)
+  mlx_module_forward(module, x)
 }
 
 #' Collect parameters from modules
@@ -155,13 +202,34 @@ mlx_forward <- function(module, x) {
 #' mlx_parameters(layer)
 mlx_parameters <- function(module) {
   if (inherits(module, "mlx_module")) {
-    return(module$parameters())
+    return(mlx_module_parameters(module))
   }
   if (is.list(module)) {
     params <- lapply(module, mlx_parameters)
     return(unlist(params, recursive = FALSE))
   }
   stop("Unsupported type for mlx_parameters().", call. = FALSE)
+}
+
+#' Toggle training mode for MLX modules
+#'
+#' `mlx_set_training()` switches modules between training and evaluation modes.
+#' Layers that do not implement training-specific behaviour ignore the call.
+#'
+#' @param module An object inheriting from `mlx_module`.
+#' @param mode Logical flag; `TRUE` for training mode, `FALSE` for evaluation.
+#' @return The input module (invisibly).
+#' @seealso <https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.train>
+#' @export
+#' @examples
+#' model <- mlx_sequential(mlx_linear(2, 4), mlx_dropout(0.5))
+#' mlx_set_training(model, FALSE)
+mlx_set_training <- function(module, mode = TRUE) {
+  if (!inherits(module, "mlx_module")) {
+    stop("Expected an `mlx_module`.", call. = FALSE)
+  }
+  mlx_module_set_training(module, mode = mode)
+  invisible(module)
 }
 
 # Internal helper for parameters ----------------------------------------
@@ -237,9 +305,10 @@ mlx_gelu <- function() {
     x * 0.5 * (1 + tanh(sqrt(2 / pi) * (x + 0.044715 * x^3)))
   }
 
-  structure(
-    list(forward = forward, parameters = function() list()),
-    class = c("mlx_gelu", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = function() list(),
+    classes = "mlx_gelu"
   )
 }
 
@@ -257,9 +326,10 @@ mlx_sigmoid <- function() {
     1 / (1 + exp(-x))
   }
 
-  structure(
-    list(forward = forward, parameters = function() list()),
-    class = c("mlx_sigmoid", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = function() list(),
+    classes = "mlx_sigmoid"
   )
 }
 
@@ -277,9 +347,10 @@ mlx_tanh <- function() {
     tanh(x)
   }
 
-  structure(
-    list(forward = forward, parameters = function() list()),
-    class = c("mlx_tanh", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = function() list(),
+    classes = "mlx_tanh"
   )
 }
 
@@ -300,9 +371,10 @@ mlx_leaky_relu <- function(negative_slope = 0.01) {
     mlx_maximum(x, negative_slope * x)
   }
 
-  structure(
-    list(forward = forward, parameters = function() list()),
-    class = c("mlx_leaky_relu", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = function() list(),
+    classes = "mlx_leaky_relu"
   )
 }
 
@@ -322,9 +394,10 @@ mlx_silu <- function() {
     x / (1 + exp(-x))
   }
 
-  structure(
-    list(forward = forward, parameters = function() list()),
-    class = c("mlx_silu", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = function() list(),
+    classes = "mlx_silu"
   )
 }
 
@@ -345,9 +418,10 @@ mlx_softmax_layer <- function(axis = -1L) {
     mlx_softmax(x, axis = ax)
   }
 
-  structure(
-    list(forward = forward, parameters = function() list()),
-    class = c("mlx_softmax_layer", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = function() list(),
+    classes = "mlx_softmax_layer"
   )
 }
 
@@ -388,14 +462,12 @@ mlx_dropout <- function(p = 0.5) {
     env$training <- mode
   }
 
-  structure(
-    list(
-      forward = forward,
-      parameters = function() list(),
-      set_training = set_training,
-      .env = env
-    ),
-    class = c("mlx_dropout", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = function() list(),
+    set_training = set_training,
+    fields = list(.env = env),
+    classes = "mlx_dropout"
   )
 }
 
@@ -446,13 +518,11 @@ mlx_layer_norm <- function(normalized_shape, eps = 1e-5, device = mlx_default_de
     )
   }
 
-  structure(
-    list(
-      forward = forward,
-      parameters = parameters,
-      .env = env
-    ),
-    class = c("mlx_layer_norm", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = parameters,
+    fields = list(.env = env),
+    classes = "mlx_layer_norm"
   )
 }
 
@@ -521,14 +591,12 @@ mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1, device = ml
     env$training <- mode
   }
 
-  structure(
-    list(
-      forward = forward,
-      parameters = parameters,
-      set_training = set_training,
-      .env = env
-    ),
-    class = c("mlx_batch_norm", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = parameters,
+    set_training = set_training,
+    fields = list(.env = env),
+    classes = "mlx_batch_norm"
   )
 }
 
@@ -596,13 +664,11 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
     list(mlx_param(env, "weight"))
   }
 
-  structure(
-    list(
-      forward = forward,
-      parameters = parameters,
-      .env = env
-    ),
-    class = c("mlx_embedding", "mlx_module")
+  new_mlx_module(
+    forward = forward,
+    parameters = parameters,
+    fields = list(.env = env),
+    classes = "mlx_embedding"
   )
 }
 

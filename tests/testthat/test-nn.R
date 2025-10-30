@@ -71,7 +71,7 @@ test_that("dropout layer works correctly", {
   expect_equal(result$dim, x$dim)
 
   # Set to eval mode
-  dropout$set_training(FALSE)
+  mlx_set_training(dropout, FALSE)
   result_eval <- mlx_forward(dropout, x)
   # In eval mode, output should equal input
   expect_equal(as.matrix(result_eval), as.matrix(x), tolerance = 1e-6)
@@ -132,7 +132,7 @@ test_that("batch normalization works correctly", {
   expect_length(params, 2)
 
   # Test eval mode
-  bn$set_training(FALSE)
+  mlx_set_training(bn, FALSE)
   result_eval <- mlx_forward(bn, x)
   expect_s3_class(result_eval, "mlx")
 })
@@ -217,4 +217,16 @@ test_that("modules work in sequential", {
   # Check parameters from all layers
   params <- mlx_parameters(net)
   expect_length(params, 4) # 2 weights + 2 biases from linear layers
+})
+
+test_that("mlx_set_training propagates through sequential modules", {
+  net <- mlx_sequential(
+    mlx_dropout(p = 0.4),
+    mlx_batch_norm(num_features = 2)
+  )
+
+  mlx_set_training(net, FALSE)
+
+  expect_false(net$layers[[1]]$.env$training)
+  expect_false(net$layers[[2]]$.env$training)
 })

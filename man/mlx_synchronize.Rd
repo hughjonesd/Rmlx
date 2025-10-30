@@ -2,19 +2,22 @@
 % Please edit documentation in R/device.R
 \name{mlx_synchronize}
 \alias{mlx_synchronize}
-\title{Synchronize MLX device}
+\title{Synchronize MLX execution}
 \usage{
 mlx_synchronize(device = c("gpu", "cpu"))
 }
 \arguments{
-\item{device}{Device to synchronize ("gpu" or "cpu").}
+\item{device}{Device identifier ("gpu" or "cpu") or an \code{mlx_stream} created by
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}.}
 }
 \description{
-Waits for all outstanding operations on the specified device to complete.
+Waits for outstanding operations on the specified device or stream to complete.
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))
 mlx_synchronize("gpu")
+stream <- mlx_new_stream()
+mlx_synchronize(stream)
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/metal.html}

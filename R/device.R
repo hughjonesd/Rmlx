@@ -19,16 +19,19 @@ mlx_default_device <- local({
   }
 })
 
-#' Synchronize MLX device
+#' Synchronize MLX execution
 #'
-#' Waits for all outstanding operations on the specified device to complete.
+#' Waits for outstanding operations on the specified device or stream to complete.
 #'
-#' @param device Device to synchronize ("gpu" or "cpu").
+#' @param device Device identifier ("gpu" or "cpu") or an `mlx_stream` created by
+#'   [mlx_new_stream()].
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/metal.html}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_synchronize("gpu")
+#' stream <- mlx_new_stream()
+#' mlx_synchronize(stream)
 mlx_synchronize <- function(device = c("gpu", "cpu")) {
   if (.mlx_is_stream(device)) {
     cpp_mlx_synchronize_stream(device$ptr)

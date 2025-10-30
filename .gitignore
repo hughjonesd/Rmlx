@@ -7,3 +7,5 @@ src/*.dll
 src/Makevars
 docs
 Rplots.pdf
+/doc/
+/Meta/

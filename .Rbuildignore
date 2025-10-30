@@ -16,3 +16,5 @@
 ^LICENSE\.md$
 ^codecov\.yml$
 ^dev$
+^doc$
+^Meta$

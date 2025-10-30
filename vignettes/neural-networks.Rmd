@@ -20,7 +20,7 @@ This vignette demonstrates how to build and train neural networks using Rmlx's n
 
 Rmlx provides modular neural network components that can be combined using `mlx_sequential()`. Here's a simple multi-layer perceptron (MLP) for binary classification:
 
-```{r setup, eval = FALSE}
+```{r setup}
 library(Rmlx)
 
 # Create a 3-layer MLP
@@ -39,7 +39,7 @@ mlp <- mlx_sequential(
 
 Let's create a simple binary classification dataset:
 
-```{r data, eval = FALSE}
+```{r data}
 set.seed(42)
 
 # Generate spiral dataset
@@ -71,52 +71,43 @@ y_mlx <- as_mlx(matrix(y_train, ncol = 1))
 
 Define a loss function and train using gradient descent:
 
-```{r training, eval = FALSE}
-# Loss function
-loss_fn <- function(params_list, x, y) {
-  # Forward pass
-  y_pred <- mlx_forward(mlp, x)
-  # Binary cross-entropy loss
-  mlx_binary_cross_entropy(y_pred, y)
+```{r training}
+# Loss function operating on the module
+loss_fn <- function(module, x, y) {
+  preds <- mlx_forward(module, x)
+  mlx_binary_cross_entropy(preds, y)
 }
 
 # Training parameters
-learning_rate <- 0.01
-n_epochs <- 100
+learning_rate <- 0.05
+n_epochs <- 60
 
-# Get model parameters
-params <- mlx_parameters(mlp)
+# Optimizer and training mode
+optimizer <- mlx_optimizer_sgd(mlx_parameters(mlp), lr = learning_rate)
+mlx_set_training(mlp, TRUE)
 
-# Training loop
-for (epoch in 1:n_epochs) {
-  # Compute loss and gradients
-  grads <- mlx_grad(loss_fn, params, x_mlx, y_mlx, argnums = 1)
+for (epoch in seq_len(n_epochs)) {
+  step <- mlx_train_step(mlp, loss_fn, optimizer, x_mlx, y_mlx)
 
-  # Update parameters
-  for (i in seq_along(params)) {
-    new_value <- params[[i]]$get() - learning_rate * grads[[i]]
-    params[[i]]$set(new_value)
-    mlx_eval(new_value)  # Force evaluation
-  }
-
-  # Print progress
   if (epoch %% 10 == 0) {
-    loss <- loss_fn(params, x_mlx, y_mlx)
-    cat(sprintf("Epoch %d, Loss: %.4f\n", epoch, as.numeric(as.matrix(loss))))
+    loss_value <- as.numeric(as.matrix(step$loss))
+    cat(sprintf("Epoch %d, Loss: %.4f\n", epoch, loss_value))
   }
 }
+
+mlx_set_training(mlp, FALSE)
 ```
 
 ## Making Predictions
 
 After training, use the model for predictions:
 
-```{r prediction, eval = FALSE}
+```{r prediction}
 # Generate test points
 x_test <- as_mlx(matrix(c(0.5, 0.5, -0.5, -0.5), 2, 2))
 
 # Forward pass
-mlp$set_training(FALSE)  # Set to evaluation mode (disables dropout)
+mlx_set_training(mlp, FALSE)  # Ensure evaluation mode (disables dropout)
 predictions <- mlx_forward(mlp, x_test)
 
 # Convert to probabilities
@@ -133,7 +124,7 @@ Rmlx provides various layer types for different architectures:
 
 While full convolution layers require C++ implementation, you can combine linear layers with reshape operations:
 
-```{r architecture1, eval = FALSE}
+```{r architecture1}
 # Classifier with normalization
 classifier <- mlx_sequential(
   mlx_linear(10, 64),
@@ -152,7 +143,7 @@ classifier <- mlx_sequential(
 
 Use `mlx_embedding()` for categorical inputs:
 
-```{r embeddings, eval = FALSE}
+```{r embeddings}
 # Text/token embeddings
 vocab_size <- 10000
 embed_dim <- 128
@@ -198,12 +189,17 @@ Each supports `reduction = "mean"`, `"sum"`, or `"none"`.
 
 Remember to set training mode appropriately:
 
-```{r training_mode, eval = FALSE}
+```{r training_mode}
+model <- mlx_sequential(
+  mlx_linear(2, 4),
+  mlx_dropout(0.5)
+)
+
 # Training
-model$set_training(TRUE)
+mlx_set_training(model, TRUE)
 
 # Evaluation
-model$set_training(FALSE)
+mlx_set_training(model, FALSE)
 ```
 
 ## Best Practices
