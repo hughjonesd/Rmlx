@@ -32,9 +32,13 @@ SEXP cpp_mlx_argsort(SEXP xp_, Rcpp::Nullable<int> axis) {
     if (axis.isNotNull()) {
       int ax = Rcpp::as<int>(axis.get());
       ax = normalize_axis(arr, ax);
-      return argsort(arr, ax);
+      array idx = argsort(arr, ax);
+      idx = idx + 1;
+      return idx;
     }
-    return argsort(arr);
+    array idx = argsort(arr);
+    idx = idx + 1;
+    return idx;
   }();
   return make_mlx_xptr(std::move(result));
 }
@@ -111,13 +115,17 @@ SEXP cpp_mlx_argpartition(SEXP xp_, int kth, Rcpp::Nullable<int> axis) {
       if (kth >= axis_size) {
         Rcpp::stop("kth (%d) exceeds size of axis %d (%d).", kth, target_axis + 1, axis_size);
       }
-      return argpartition(arr, kth, target_axis);
+      array idx = argpartition(arr, kth, target_axis);
+      idx = idx + 1;
+      return idx;
     }
     int total = static_cast<int>(arr.size());
     if (kth >= total) {
       Rcpp::stop("kth (%d) exceeds number of elements (%d).", kth, total);
     }
-    return argpartition(arr, kth);
+    array idx = argpartition(arr, kth);
+    idx = idx + 1;
+    return idx;
   }();
   return make_mlx_xptr(std::move(result));
 }

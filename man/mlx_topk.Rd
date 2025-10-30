@@ -24,20 +24,36 @@ array is flattened first.}
 after partitioning.}
 }
 \value{
-An mlx array.
+An mlx array. For \code{mlx_argpartition()}, returns 1-based indices
+(following R conventions) showing the partition ordering.
 }
 \description{
-Top-k selection and partitioning on mlx arrays
+\code{mlx_topk()} returns the largest \code{k} values. \code{mlx_partition()} and
+\code{mlx_argpartition()} perform partial sorting, rearranging elements so that
+the element at position \code{kth} is in its correctly sorted position, with all
+smaller elements before it and all larger elements after it. This is more
+efficient than full sorting when you only need elements up to a certain rank.
 }
 \details{
-\code{mlx_topk()} returns the largest \code{k} values as reported by MLX. Use
-\code{mlx_argsort()} if you need the associated indices.
+\itemize{
+\item \code{mlx_topk()} returns the largest \code{k} values along the specified axis.
+\item \code{mlx_partition()} rearranges elements so the kth element is correctly positioned.
+\item \code{mlx_argpartition()} returns the \strong{1-based indices} that would partition
+the array. This follows R's indexing convention (unlike the underlying MLX
+library which uses 0-based indexing).
+}
+
+Use \code{mlx_argsort()} if you need fully sorted indices.
 }
 \examples{
 scores <- as_mlx(c(0.7, 0.2, 0.9, 0.4))
 mlx_topk(scores, k = 2)
 mlx_partition(scores, kth = 1)
-mlx_argpartition(scores, kth = 1)
+
+# Returns 1-based indices
+idx <- mlx_argpartition(scores, kth = 1)
+as.integer(as.matrix(idx))  # 1-based indices
+
 mlx_topk(as_mlx(matrix(1:6, 2, 3)), k = 1, axis = 1)
 }
 \seealso{

@@ -67,12 +67,23 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
 
 #' Sort and argsort for mlx arrays
 #'
+#' `mlx_sort()` returns sorted values along the specified axis. `mlx_argsort()`
+#' returns the indices that would sort the array.
+#'
 #' @inheritParams mlx_argmax
 #'
-#' @return An mlx array containing sorted values (for `mlx_sort`) or indices
-#'   (for `mlx_argsort`).
-#' @details Indices returned by `mlx_argsort()` and `mlx_argpartition()` use
-#'   zero-based offsets, matching MLX's native conventions.
+#' @return An mlx array containing sorted values (for `mlx_sort()`) or
+#'   **1-based indices** (for `mlx_argsort()`). The indices follow R's indexing
+#'   convention and can be used directly with R's `[` operator.
+#' @details
+#' `mlx_argsort()` returns **1-based indices** that would sort the array in
+#' ascending order. This follows R's indexing convention (unlike the underlying
+#' MLX library which uses 0-based indexing). The returned indices can be used
+#' directly to reorder the original array.
+#'
+#' For partial sorting (finding elements up to a certain rank without fully
+#' sorting), see [mlx_partition()] and [mlx_argpartition()].
+#'
 #' @seealso
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sort},
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argsort}
@@ -80,7 +91,16 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
 #' @examples
 #' x <- as_mlx(c(3, 1, 4, 2))
 #' mlx_sort(x)
-#' mlx_argsort(x)
+#'
+#' # Returns 1-based indices
+#' idx <- mlx_argsort(x)
+#' as.integer(as.matrix(idx))  # [1] 2 4 1 3
+#'
+#' # Can be used directly with R indexing
+#' original <- c(3, 1, 4, 2)
+#' sorted_idx <- as.integer(as.matrix(mlx_argsort(as_mlx(original))))
+#' original[sorted_idx]  # [1] 1 2 3 4
+#'
 #' mlx_sort(as_mlx(matrix(1:6, 2, 3)), axis = 1)
 mlx_sort <- function(x, axis = NULL) {
   x <- as_mlx(x)
@@ -100,14 +120,28 @@ mlx_argsort <- function(x, axis = NULL) {
 
 #' Top-k selection and partitioning on mlx arrays
 #'
+#' `mlx_topk()` returns the largest `k` values. `mlx_partition()` and
+#' `mlx_argpartition()` perform partial sorting, rearranging elements so that
+#' the element at position `kth` is in its correctly sorted position, with all
+#' smaller elements before it and all larger elements after it. This is more
+#' efficient than full sorting when you only need elements up to a certain rank.
+#'
 #' @inheritParams mlx_argmax
 #' @param k Positive integer specifying the number of elements to select.
 #' @param kth Zero-based index of the element that should be placed in-order
 #'   after partitioning.
 #'
-#' @return An mlx array.
-#' @details `mlx_topk()` returns the largest `k` values as reported by MLX. Use
-#'   `mlx_argsort()` if you need the associated indices.
+#' @return An mlx array. For `mlx_argpartition()`, returns 1-based indices
+#'   (following R conventions) showing the partition ordering.
+#' @details
+#' - `mlx_topk()` returns the largest `k` values along the specified axis.
+#' - `mlx_partition()` rearranges elements so the kth element is correctly positioned.
+#' - `mlx_argpartition()` returns the **1-based indices** that would partition
+#'   the array. This follows R's indexing convention (unlike the underlying MLX
+#'   library which uses 0-based indexing).
+#'
+#' Use `mlx_argsort()` if you need fully sorted indices.
+#'
 #' @seealso
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.topk},
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.partition},
@@ -117,7 +151,11 @@ mlx_argsort <- function(x, axis = NULL) {
 #' scores <- as_mlx(c(0.7, 0.2, 0.9, 0.4))
 #' mlx_topk(scores, k = 2)
 #' mlx_partition(scores, kth = 1)
-#' mlx_argpartition(scores, kth = 1)
+#'
+#' # Returns 1-based indices
+#' idx <- mlx_argpartition(scores, kth = 1)
+#' as.integer(as.matrix(idx))  # 1-based indices
+#'
 #' mlx_topk(as_mlx(matrix(1:6, 2, 3)), k = 1, axis = 1)
 mlx_topk <- function(x, k, axis = NULL) {
   x <- as_mlx(x)

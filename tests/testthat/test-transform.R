@@ -71,7 +71,8 @@ test_that("mlx_sort and mlx_argsort agree with base R", {
   expect_equal(sorted_vals, sort(x))
 
   idx <- as.integer(as.vector(as.matrix(mlx_argsort(t))))
-  expect_equal(x[idx + 1L], sort(x))
+  # argsort now returns 1-based indices
+  expect_equal(x[idx], sort(x))
 
   mat <- matrix(c(3, 4, 1,
                   9, 2, 5), nrow = 2, byrow = TRUE)
@@ -105,7 +106,8 @@ test_that("mlx_partition and mlx_argpartition position kth elements", {
   expect_true(all(part[seq_len(kth + 1L)] <= part[kth + 1L]))
 
   argpart <- as.integer(as.vector(as.matrix(mlx_argpartition(x, kth))))
-  expect_equal(c(5, 1, 7, 3, 9)[argpart + 1L][kth + 1L], ref_sorted[kth + 1L])
+  # argpart now returns 1-based indices
+  expect_equal(c(5, 1, 7, 3, 9)[argpart][kth + 1L], ref_sorted[kth + 1L])
 })
 
 test_that("mlx_logsumexp matches base computations", {

@@ -16,20 +16,36 @@ mlx_argsort(x, axis = NULL)
 array is flattened first.}
 }
 \value{
-An mlx array containing sorted values (for \code{mlx_sort}) or indices
-(for \code{mlx_argsort}).
+An mlx array containing sorted values (for \code{mlx_sort()}) or
+\strong{1-based indices} (for \code{mlx_argsort()}). The indices follow R's indexing
+convention and can be used directly with R's \code{[} operator.
 }
 \description{
-Sort and argsort for mlx arrays
+\code{mlx_sort()} returns sorted values along the specified axis. \code{mlx_argsort()}
+returns the indices that would sort the array.
 }
 \details{
-Indices returned by \code{mlx_argsort()} and \code{mlx_argpartition()} use
-zero-based offsets, matching MLX's native conventions.
+\code{mlx_argsort()} returns \strong{1-based indices} that would sort the array in
+ascending order. This follows R's indexing convention (unlike the underlying
+MLX library which uses 0-based indexing). The returned indices can be used
+directly to reorder the original array.
+
+For partial sorting (finding elements up to a certain rank without fully
+sorting), see \code{\link[=mlx_partition]{mlx_partition()}} and \code{\link[=mlx_argpartition]{mlx_argpartition()}}.
 }
 \examples{
 x <- as_mlx(c(3, 1, 4, 2))
 mlx_sort(x)
-mlx_argsort(x)
+
+# Returns 1-based indices
+idx <- mlx_argsort(x)
+as.integer(as.matrix(idx))  # [1] 2 4 1 3
+
+# Can be used directly with R indexing
+original <- c(3, 1, 4, 2)
+sorted_idx <- as.integer(as.matrix(mlx_argsort(as_mlx(original))))
+original[sorted_idx]  # [1] 1 2 3 4
+
 mlx_sort(as_mlx(matrix(1:6, 2, 3)), axis = 1)
 }
 \seealso{
