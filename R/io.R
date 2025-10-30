@@ -65,7 +65,7 @@ mlx_save_safetensors <- function(file, arrays, metadata = character()) {
     if (is.null(metadata_names) || any(metadata_names == "")) {
       stop("`metadata` must be a named character vector.", call. = FALSE)
     }
-    metadata <- setNames(as.character(metadata), metadata_names)
+    metadata <- stats::setNames(as.character(metadata), metadata_names)
   } else {
     metadata <- character()
   }
@@ -166,7 +166,7 @@ mlx_load_gguf <- function(file, device = mlx_default_device()) {
 .normalize_gguf_metadata <- function(metadata) {
   metadata <- as.list(metadata)
   if (!length(metadata)) {
-    return(setNames(list(), character()))
+    return(stats::setNames(list(), character()))
   }
   if (is.null(names(metadata)) || any(names(metadata) == "")) {
     stop("`metadata` must be a named list.", call. = FALSE)

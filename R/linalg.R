@@ -83,7 +83,7 @@ mlx_kron <- function(a, b) {
 
 setOldClass("mlx")
 
-#' @import methods
+#' @importFrom methods setMethod setOldClass
 #' @importMethodsFrom methods kronecker
 NULL
 
