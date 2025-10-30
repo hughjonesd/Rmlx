@@ -11,6 +11,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/articles/performance.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/authors.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/index.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/news/index.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/plan.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/Math.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/Ops.mlx.html</loc></url>
@@ -144,6 +145,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_save_safetensors.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sequential.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_set_default_stream.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_set_training.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sigmoid.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_silu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_slice_update.html</loc></url>

@@ -9,7 +9,7 @@ returning coordinate arrays suitable for vectorised evaluation on MLX devices.">
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,6 +25,7 @@ returning coordinate arrays suitable for vectorised evaluation on MLX devices.">
     <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/performance.html">Performance Benchmarks</a></li>
   </ul></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
       </ul></div>
@@ -55,7 +56,7 @@ returning coordinate arrays suitable for vectorised evaluation on MLX devices.</
 
 
 <dl><dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>One or more tensors (or a single list) convertible via <code><a href="as_mlx.html">as_mlx()</a></code> representing coordinate vectors.</p></dd>
+<dd><p>One or more arrays (or a single list) convertible via <code><a href="as_mlx.html">as_mlx()</a></code> representing coordinate vectors.</p></dd>
 
 
 <dt id="arg-sparse">sparse<a class="anchor" aria-label="anchor" href="#arg-sparse"></a></dt>
@@ -67,7 +68,8 @@ returning coordinate arrays suitable for vectorised evaluation on MLX devices.</
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Optional device override (<code>"gpu"</code> or <code>"cpu"</code>). Defaults to the common device of the inputs.</p></dd>
+<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
+<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Default: <code><a href="mlx_default_device.html">mlx_default_device()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
