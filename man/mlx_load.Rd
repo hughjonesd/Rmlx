@@ -10,7 +10,8 @@ mlx_load(file, device = mlx_default_device())
 \item{file}{Path to a \code{.npy} file. The extension is appended automatically
 when missing.}
 
-\item{device}{Target device for the loaded tensor (\code{"gpu"} or \code{"cpu"}).}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An \code{mlx} array containing the file contents.
@@ -18,6 +19,11 @@ An \code{mlx} array containing the file contents.
 \description{
 Restores an array saved with \code{\link[=mlx_save]{mlx_save()}} and optionally places it on a
 specified device.
+}
+\details{
+Use an \code{mlx_stream} from \code{\link[=mlx_new_stream]{mlx_new_stream()}} to load directly onto a
+specific stream; otherwise the array is placed on the current
+\code{\link[=mlx_default_device]{mlx_default_device()}}.
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.load}

@@ -10,7 +10,8 @@ mlx_load_safetensors(file, device = mlx_default_device())
 \item{file}{Path to a \code{.npy} file. The extension is appended automatically
 when missing.}
 
-\item{device}{Target device for the loaded tensor (\code{"gpu"} or \code{"cpu"}).}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 A list containing:

@@ -42,7 +42,8 @@ mlx_gather_qmm(
 
 \item{sorted_indices}{Whether the indices are sorted (enables optimizations). Default: FALSE}
 
-\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array with the result of the gather-based quantized matrix multiplication

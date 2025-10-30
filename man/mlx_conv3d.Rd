@@ -30,7 +30,8 @@ depends on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.}
 
 \item{groups}{Number of blocked connections from input to output channels. Default: 1.}
 
-\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 Convolved output array

@@ -21,15 +21,20 @@ mlx_rand_multivariate_normal(
 
 \item{dtype}{Desired MLX dtype ("float32" or "float64").}
 
-\item{device}{Target device ("cpu" only). Note: this function requires CPU
-due to SVD decomposition of the covariance matrix; GPU device is not currently
-supported.}
+\item{device}{Execution target: provide \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
+\code{\link[=mlx_default_device]{mlx_default_device()}}.}
 }
 \value{
 An mlx array with samples from the multivariate normal.
 }
 \description{
 Sample from a multivariate normal distribution on mlx arrays
+}
+\details{
+Samples are generated on the CPU: GPU execution is currently
+unavailable because the covariance factorisation runs on the host. Supply a
+CPU stream (via \code{\link[=mlx_new_stream]{mlx_new_stream()}}) to integrate with asynchronous flows.
 }
 \examples{
 mean <- as_mlx(c(0, 0), device = "cpu")

@@ -11,7 +11,8 @@ mlx_broadcast_to(x, shape, device = NULL)
 
 \item{shape}{Integer vector describing the broadcasted shape.}
 
-\item{device}{Optional device override (\code{"gpu"} or \code{"cpu"}). Defaults to the source array's device.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array with the requested dimensions.

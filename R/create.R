@@ -44,12 +44,12 @@ mlx_ones <- function(dim,
 #' Zeros shaped like an existing mlx array
 #'
 #' `mlx_zeros_like()` mirrors [`mlx.core.zeros_like()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like):
-#' it creates a zero-filled tensor matching the source array's shape. Optionally override the dtype
+#' it creates a zero-filled array matching the source array's shape. Optionally override the dtype
 #' or device.
 #'
 #' @inheritParams mlx_array_required
 #' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
-#' @param device Optional device override (`"gpu"` or `"cpu"`). Defaults to the source array's device.
+#' @inheritParams common_params
 #' @return An mlx array of zeros matching `x`.
 #' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export
@@ -81,11 +81,11 @@ mlx_zeros_like <- function(x,
 #' Ones shaped like an existing mlx array
 #'
 #' `mlx_ones_like()` mirrors [`mlx.core.ones_like()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like),
-#' creating a tensor of ones with the same shape. Optionally override dtype or device.
+#' creating an array of ones with the same shape. Optionally override dtype or device.
 #'
 #' @inheritParams mlx_array_required
 #' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
-#' @param device Optional device override (`"gpu"` or `"cpu"`). Defaults to the source array's device.
+#' @inheritParams common_params
 #' @return An mlx array of ones matching `x`.
 #' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export

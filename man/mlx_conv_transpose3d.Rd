@@ -34,7 +34,8 @@ length-3 vector. Default: c(0, 0, 0)}
 
 \item{groups}{Number of blocked connections from input to output channels. Default: 1.}
 
-\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array with the transposed convolution result

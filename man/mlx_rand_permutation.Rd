@@ -13,7 +13,8 @@ mlx array or matrix to permute.}
 \item{axis}{The axis along which to permute when x is an array. Default is 0
 (permute rows).}
 
-\item{device}{Target device ("gpu" or "cpu"). Only used when x is an integer.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array containing the random permutation.
@@ -21,6 +22,11 @@ An mlx array containing the random permutation.
 \description{
 Generate a random permutation of integers or permute the entries of an array
 along a specified axis.
+}
+\details{
+When \code{x} is an integer, the result is created on the specified
+device or stream; otherwise the permutation follows the input array's
+device.
 }
 \examples{
 # Generate a random permutation of 0:9

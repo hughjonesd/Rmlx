@@ -11,14 +11,15 @@ mlx_zeros_like(x, dtype = NULL, device = NULL)
 
 \item{dtype}{Optional MLX dtype override. Defaults to the source array's dtype.}
 
-\item{device}{Optional device override (\code{"gpu"} or \code{"cpu"}). Defaults to the source array's device.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array of zeros matching \code{x}.
 }
 \description{
 \code{mlx_zeros_like()} mirrors \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like}{\code{mlx.core.zeros_like()}}:
-it creates a zero-filled tensor matching the source array's shape. Optionally override the dtype
+it creates a zero-filled array matching the source array's shape. Optionally override the dtype
 or device.
 }
 \examples{

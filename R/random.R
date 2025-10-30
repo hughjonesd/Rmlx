@@ -126,9 +126,9 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param mean An mlx array or vector for the mean.
 #' @param cov An mlx array or matrix for the covariance.
-#' @param device Target device ("cpu" only). Note: this function requires CPU
-#'   due to SVD decomposition of the covariance matrix; GPU device is not currently
-#'   supported.
+#' @details Samples are generated on the CPU: GPU execution is currently
+#'   unavailable because the covariance factorisation runs on the host. Supply a
+#'   CPU stream (via [mlx_new_stream()]) to integrate with asynchronous flows.
 #' @return An mlx array with samples from the multivariate normal.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.multivariate_normal}
 #' @export
@@ -278,7 +278,10 @@ mlx_rand_randint <- function(dim, low, high,
 #'   mlx array or matrix to permute.
 #' @param axis The axis along which to permute when x is an array. Default is 0
 #'   (permute rows).
-#' @param device Target device ("gpu" or "cpu"). Only used when x is an integer.
+#' @inheritParams common_params
+#' @details When `x` is an integer, the result is created on the specified
+#'   device or stream; otherwise the permutation follows the input array's
+#'   device.
 #' @return An mlx array containing the random permutation.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.permutation}
 #' @export

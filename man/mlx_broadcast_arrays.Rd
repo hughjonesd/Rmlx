@@ -7,9 +7,10 @@
 mlx_broadcast_arrays(..., device = NULL)
 }
 \arguments{
-\item{...}{One or more tensors (or a single list) convertible via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{...}{One or more arrays (or a single list) convertible via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{device}{Optional device override (\code{"gpu"} or \code{"cpu"}). Defaults to the common device of the inputs.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 A list of broadcast mlx arrays.

@@ -11,7 +11,8 @@ mlx_layer_norm(normalized_shape, eps = 1e-05, device = mlx_default_device())
 
 \item{eps}{Small constant for numerical stability (default: 1e-5).}
 
-\item{device}{Device for computation: \code{"gpu"} or \code{"cpu"}. Default: \code{mlx_default_device()}.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An \code{mlx_module} applying layer normalization.

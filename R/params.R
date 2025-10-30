@@ -1,6 +1,7 @@
 #' Common Parameter Documentation
 #'
-#' @param device Device for computation: `"gpu"` or `"cpu"`. Default: `mlx_default_device()`.
+#' @param device Execution target: supply `"gpu"`, `"cpu"`, or an
+#'   `mlx_stream` created via [mlx_new_stream()]. Default: `mlx_default_device()`.
 #' @param dtype Data type string. Supported types include:
 #'   - Floating point: `"float32"`, `"float64"`
 #'   - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`, `"uint32"`, `"uint64"`
@@ -53,4 +54,3 @@ NULL
 #' @name conv_params
 #' @keywords internal
 NULL
-

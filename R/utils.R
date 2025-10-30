@@ -41,7 +41,7 @@
   fn(handle$device)
 }
 
-#' Common Parameters for MLX Tensor Creation
+#' Common parameters for MLX array creation
 #'
 #' @param dim Integer vector specifying the array shape/dimensions.
 #' @param dtype Character string specifying the MLX data type. Common options:
@@ -51,8 +51,9 @@
 #'   - Other: `"bool"`, `"complex64"`
 #'
 #'   Supported types vary by function; see individual function documentation.
-#' @param device Character string specifying the device for computation.
-#'   Options: `"gpu"` (default) or `"cpu"`. Default: `mlx_default_device()`.
+#' @param device Execution target: provide `"gpu"`, `"cpu"`, or an
+#'   `mlx_stream` created via [mlx_new_stream()]. Defaults to the current
+#'   [mlx_default_device()].
 #' @name mlx_creation_params
 #' @keywords internal
 NULL

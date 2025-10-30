@@ -11,14 +11,15 @@ mlx_ones_like(x, dtype = NULL, device = NULL)
 
 \item{dtype}{Optional MLX dtype override. Defaults to the source array's dtype.}
 
-\item{device}{Optional device override (\code{"gpu"} or \code{"cpu"}). Defaults to the source array's device.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
 }
 \value{
 An mlx array of ones matching \code{x}.
 }
 \description{
 \code{mlx_ones_like()} mirrors \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like}{\code{mlx.core.ones_like()}},
-creating a tensor of ones with the same shape. Optionally override dtype or device.
+creating an array of ones with the same shape. Optionally override dtype or device.
 }
 \examples{
 base <- mlx_full(c(2, 3), 5)

@@ -31,7 +31,10 @@ mlx_save <- function(x, file) {
 #'
 #' @param file Path to a `.npy` file. The extension is appended automatically
 #'   when missing.
-#' @param device Target device for the loaded tensor (`"gpu"` or `"cpu"`).
+#' @inheritParams common_params
+#' @details Use an `mlx_stream` from [mlx_new_stream()] to load directly onto a
+#'   specific stream; otherwise the array is placed on the current
+#'   [mlx_default_device()].
 #' @return An `mlx` array containing the file contents.
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.load>
 #' @export

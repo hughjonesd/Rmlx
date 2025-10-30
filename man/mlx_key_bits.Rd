@@ -15,8 +15,9 @@ positive.}
 \item{key}{Optional \code{mlx} key array. If omitted, MLX's default generator is
 used.}
 
-\item{device}{Character string specifying the device for computation.
-Options: \code{"gpu"} (default) or \code{"cpu"}. Default: \code{mlx_default_device()}.}
+\item{device}{Execution target: provide \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
+\code{\link[=mlx_default_device]{mlx_default_device()}}.}
 }
 \value{
 An \code{mlx} array of unsigned integers filled with random bits.
