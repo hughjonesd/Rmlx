@@ -18,6 +18,6 @@
 #'
 #' @seealso [as_mlx()]
 #'
-#' @name base-generics
+#' @name mlx-methods
 #' @keywords documentation
 NULL
