@@ -10,26 +10,20 @@ entry points are:
 }
 \details{
 \itemize{
-\item \code{\link[=\%*\%.mlx]{\%*\%}} for matrix multiplication
-\item \code{\link[=[.mlx]{[}} and \code{\link[=[<-.mlx]{[<-}} for
-extraction and assignment
-\item \code{\link[=Ops.mlx]{Ops}} and \code{\link[=Math.mlx]{Math}}
-for elementwise arithmetic and math
-\item \code{\link[=Summary.mlx]{Summary}} for reductions like
-\code{sum()} and \code{max()}
-\item \code{\link[=as.matrix.mlx]{as.matrix()}},
-\code{\link[=as.array.mlx]{as.array()}}, and
-\code{\link[=as.vector.mlx]{as.vector()}} for conversion back to base R
-\item \code{\link[=cbind.mlx]{cbind()}} and \code{\link[=rbind.mlx]{rbind()}}
-for binding arrays along rows or columns
-\item \code{\link[=aperm.mlx]{aperm()}}, \code{\link[=t.mlx]{t()}}, and
-\code{\link[=dim<-.mlx]{dim<-}} for shape manipulation
-\item \code{\link[=kronecker]{kronecker()}},
-\code{\link[=outer.mlx]{outer()}}, \code{\link[=crossprod]{crossprod()}},
-and \code{\link[=tcrossprod]{tcrossprod()}} for linear algebra
-\item \code{\link[=fft.mlx]{fft()}}, \code{\link[=chol.mlx]{chol()}},
-\code{\link[=chol2inv]{chol2inv()}}, and \code{\link[=solve.mlx]{solve()}}
-for numerical routines
+\item \code{\link[==\%*\%.mlx]{\%*\%}} for matrix multiplication
+\item [\code{[}][=\link{.mlx} and [\verb{[<-}][=\link{<-.mlx} for extraction and assignment
+\item \link[==Ops.mlx]{Ops} and \link[==Math.mlx]{Math} for elementwise arithmetic and math
+\item \link[==Summary.mlx]{Summary} for reductions such as \code{sum()} and \code{max()}
+\item \link[==as.matrix.mlx]{as.matrix()}, \link[==as.array.mlx]{as.array()}, and
+\link[==as.vector.mlx]{as.vector()} for conversion back to base R
+\item \link[==cbind.mlx]{cbind()} and \link[==rbind.mlx]{rbind()} for binding arrays along
+rows or columns
+\item \link[==aperm.mlx]{aperm()}, \link[==t.mlx]{t()}, and \code{\link[==dim<-.mlx]{dim<-}} for shape
+manipulation
+\item \link[==kronecker]{kronecker()}, \link[==outer.mlx]{outer()}, \link[==crossprod]{crossprod()},
+and \link[==tcrossprod]{tcrossprod()} for linear algebra helpers
+\item \link[==fft.mlx]{fft()}, \link[==chol.mlx]{chol()}, \link[==chol2inv]{chol2inv()}, and
+\link[==solve.mlx]{solve()} for numerical routines
 }
 
 See the individual help pages for usage examples and any mlx-specific notes.

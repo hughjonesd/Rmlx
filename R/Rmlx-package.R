@@ -30,11 +30,15 @@
 #' regardless of device. Use base R arrays if you require `float64` math.
 #'
 #' # Known Limitations
-#' Several MLX primitives are not yet exposed in Rmlx. High-priority gaps
-#' include scatter-style updates (e.g. `scatter_add`), bitwise integer kernels,
-#' advanced autograd transforms (`jvp`, `vjp`, `vmap`), n-dimensional FFT
-#' helpers, and distributed collectives. Progress is tracked in
-#' `dev/mlx_coverage.txt`.
+#' Rmlx does not yet wrap every MLX primitive. Major gaps include:
+#' 
+#' - Scatter-style updates (e.g. `scatter_add`, `take_along_axis`)
+#' - Bitwise integer kernels (bitwise AND/OR/XOR, shifts)
+#' - Advanced autograd transforms (`jvp`, `vjp`, `vmap`, custom VJPs)
+#' - N-dimensional FFT helpers (`fftn`, `rfftn`, and inverse variants)
+#' - Distributed collectives (NCCL/MPI backends)
+#'
+#' See `dev/mlx_coverage.txt` for a living checklist of the MLX surface area.
 #' 
 #' @docType package
 #' @name Rmlx-package

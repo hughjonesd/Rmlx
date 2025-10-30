@@ -46,11 +46,16 @@ regardless of device. Use base R arrays if you require \code{float64} math.
 }
 
 \section{Known Limitations}{
-Several MLX primitives are not yet exposed in Rmlx. High-priority gaps
-include scatter-style updates (e.g. \code{scatter_add}), bitwise integer kernels,
-advanced autograd transforms (\code{jvp}, \code{vjp}, \code{vmap}), n-dimensional FFT
-helpers, and distributed collectives. Progress is tracked in
-\code{dev/mlx_coverage.txt}.
+Rmlx does not yet wrap every MLX primitive. Major gaps include:
+\itemize{
+\item Scatter-style updates (e.g. \code{scatter_add}, \code{take_along_axis})
+\item Bitwise integer kernels (bitwise AND/OR/XOR, shifts)
+\item Advanced autograd transforms (\code{jvp}, \code{vjp}, \code{vmap}, custom VJPs)
+\item N-dimensional FFT helpers (\code{fftn}, \code{rfftn}, and inverse variants)
+\item Distributed collectives (NCCL/MPI backends)
+}
+
+See \code{dev/mlx_coverage.txt} for a living checklist of the MLX surface area.
 }
 
 \seealso{

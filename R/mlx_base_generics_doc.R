@@ -5,28 +5,20 @@
 #' entry points are:
 #'
 #' @details
-#' \itemize{
-#'   \item \code{\link[=\%*\%.mlx]{\%*\%}} for matrix multiplication
-#'   \item \code{\link[=[.mlx]{[}} and \code{\link[=[<-.mlx]{[<-}} for
-#'     extraction and assignment
-#'   \item \code{\link[=Ops.mlx]{Ops}} and \code{\link[=Math.mlx]{Math}}
-#'     for elementwise arithmetic and math
-#'   \item \code{\link[=Summary.mlx]{Summary}} for reductions like
-#'     \code{sum()} and \code{max()}
-#'   \item \code{\link[=as.matrix.mlx]{as.matrix()}},
-#'     \code{\link[=as.array.mlx]{as.array()}}, and
-#'     \code{\link[=as.vector.mlx]{as.vector()}} for conversion back to base R
-#'   \item \code{\link[=cbind.mlx]{cbind()}} and \code{\link[=rbind.mlx]{rbind()}}
-#'     for binding arrays along rows or columns
-#'   \item \code{\link[=aperm.mlx]{aperm()}}, \code{\link[=t.mlx]{t()}}, and
-#'     \code{\link[=dim<-.mlx]{dim<-}} for shape manipulation
-#'   \item \code{\link[=kronecker]{kronecker()}},
-#'     \code{\link[=outer.mlx]{outer()}}, \code{\link[=crossprod]{crossprod()}},
-#'     and \code{\link[=tcrossprod]{tcrossprod()}} for linear algebra
-#'   \item \code{\link[=fft.mlx]{fft()}}, \code{\link[=chol.mlx]{chol()}},
-#'     \code{\link[=chol2inv]{chol2inv()}}, and \code{\link[=solve.mlx]{solve()}}
-#'     for numerical routines
-#' }
+#' - [`%*%`][=%*%.mlx] for matrix multiplication
+#' - [`[`][=[.mlx] and [`[<-`][=[<-.mlx] for extraction and assignment
+#' - [Ops][=Ops.mlx] and [Math][=Math.mlx] for elementwise arithmetic and math
+#' - [Summary][=Summary.mlx] for reductions such as `sum()` and `max()`
+#' - [as.matrix()][=as.matrix.mlx], [as.array()][=as.array.mlx], and
+#'   [as.vector()][=as.vector.mlx] for conversion back to base R
+#' - [cbind()][=cbind.mlx] and [rbind()][=rbind.mlx] for binding arrays along
+#'   rows or columns
+#' - [aperm()][=aperm.mlx], [t()][=t.mlx], and [`dim<-`][=dim<-.mlx] for shape
+#'   manipulation
+#' - [kronecker()][=kronecker], [outer()][=outer.mlx], [crossprod()][=crossprod],
+#'   and [tcrossprod()][=tcrossprod] for linear algebra helpers
+#' - [fft()][=fft.mlx], [chol()][=chol.mlx], [chol2inv()][=chol2inv], and
+#'   [solve()][=solve.mlx] for numerical routines
 #'
 #' See the individual help pages for usage examples and any mlx-specific notes.
 #'
