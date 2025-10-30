@@ -9,7 +9,7 @@ library for GPU-accelerated array operations on Apple Silicon."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,6 +77,15 @@ executed until:</p><ul><li><p>You call <code>mlx_eval(x)</code></p></li>
     <p>Use <code><a href="mlx_default_device.html">mlx_default_device()</a></code> to control whether arrays are created
 on GPU (default) or CPU. All mlx arrays are stored in <code>float32</code>
 regardless of device. Use base R arrays if you require <code>float64</code> math.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="known-limitations">Known Limitations<a class="anchor" aria-label="anchor" href="#known-limitations"></a></h2>
+    <p>Rmlx does not yet wrap every MLX primitive. Major gaps include:</p><ul><li><p>Scatter-style updates (e.g. <code>scatter_add</code>, <code>take_along_axis</code>)</p></li>
+<li><p>Bitwise integer kernels (bitwise AND/OR/XOR, shifts)</p></li>
+<li><p>Advanced autograd transforms (<code>jvp</code>, <code>vjp</code>, <code>vmap</code>, custom VJPs)</p></li>
+<li><p>N-dimensional FFT helpers (<code>fftn</code>, <code>rfftn</code>, and inverse variants)</p></li>
+<li><p>Distributed collectives (NCCL/MPI backends)</p></li>
+</ul><p>See <code>dev/mlx_coverage.txt</code> for a living checklist of the MLX surface area.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
