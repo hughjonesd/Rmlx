@@ -180,6 +180,7 @@ reference:
     contents:
       - mlx_linear
       - mlx_sequential
+      - mlx_set_training
       - mlx_embedding
       - mlx_conv1d
       - mlx_conv2d

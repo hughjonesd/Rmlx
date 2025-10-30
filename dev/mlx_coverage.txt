@@ -324,8 +324,8 @@
 
 ✅ eval (mlx_eval)
 ✅ synchronize (mlx_synchronize)
-⚠️ default_device — R shim only (bind to `mlx::core::default_device` for full parity).
-❌ set_default_device — Priority: Low (current R-level setter suffices short term).
+✅ default_device (mlx_default_device)
+✅ set_default_device (via mlx_default_device assignment)
 ❌ is_available (device) — Priority: Medium (needed for feature detection on GPU-less hosts).
 ✅ default_stream (mlx_default_stream)
 ✅ new_stream (mlx_new_stream)
