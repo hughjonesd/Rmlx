@@ -541,3 +541,27 @@ cpp_mlx_argpartition <- function(xp_, kth, axis) {
     .Call(`_Rmlx_cpp_mlx_argpartition`, xp_, kth, axis)
 }
 
+cpp_mlx_stream_new <- function(device_str) {
+    .Call(`_Rmlx_cpp_mlx_stream_new`, device_str)
+}
+
+cpp_mlx_stream_default <- function(device_str) {
+    .Call(`_Rmlx_cpp_mlx_stream_default`, device_str)
+}
+
+cpp_mlx_set_default_stream <- function(stream_xp) {
+    invisible(.Call(`_Rmlx_cpp_mlx_set_default_stream`, stream_xp))
+}
+
+cpp_mlx_stream_device <- function(stream_xp) {
+    .Call(`_Rmlx_cpp_mlx_stream_device`, stream_xp)
+}
+
+cpp_mlx_stream_index <- function(stream_xp) {
+    .Call(`_Rmlx_cpp_mlx_stream_index`, stream_xp)
+}
+
+cpp_mlx_synchronize_stream <- function(stream_xp) {
+    invisible(.Call(`_Rmlx_cpp_mlx_synchronize_stream`, stream_xp))
+}
+

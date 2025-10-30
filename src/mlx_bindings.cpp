@@ -1,8 +1,8 @@
 #include "mlx_bindings.hpp"
-#include <mlx/mlx.h>
 #include <Rcpp.h>
-#include <vector>
+#include <mlx/mlx.h>
 #include <string>
+#include <vector>
 #include <complex>
 #include <cstdint>
 
@@ -11,6 +11,15 @@ using namespace mlx::core;
 using mlx::core::complex64_t;
 
 namespace rmlx {
+
+namespace {
+
+SEXP stream_tag() {
+  static SEXP tag = Rf_install("Rmlx_stream");
+  return tag;
+}
+
+} // namespace
 
 // MlxArrayWrapper implementation
 MlxArrayWrapper::MlxArrayWrapper() : ptr_(nullptr) {}
@@ -32,6 +41,16 @@ void mlx_array_finalizer(SEXP xp) {
   }
 }
 
+void mlx_stream_finalizer(SEXP xp) {
+  if (TYPEOF(xp) == EXTPTRSXP) {
+    auto* wrapper = static_cast<MlxStreamWrapper*>(R_ExternalPtrAddr(xp));
+    if (wrapper != nullptr) {
+      delete wrapper;
+      R_ClearExternalPtr(xp);
+    }
+  }
+}
+
 // Get MlxArrayWrapper from external pointer
 MlxArrayWrapper* get_mlx_wrapper(SEXP xp) {
   if (TYPEOF(xp) != EXTPTRSXP) {
@@ -42,6 +61,22 @@ MlxArrayWrapper* get_mlx_wrapper(SEXP xp) {
     Rcpp::stop("Invalid MLX array pointer");
   }
   return wrapper;
+}
+
+bool is_mlx_stream(SEXP value) {
+  return TYPEOF(value) == EXTPTRSXP && R_ExternalPtrTag(value) == stream_tag() &&
+         R_ExternalPtrAddr(value) != nullptr;
+}
+
+Stream get_mlx_stream(SEXP xp) {
+  if (!is_mlx_stream(xp)) {
+    Rcpp::stop("Expected an mlx_stream external pointer");
+  }
+  auto* wrapper = static_cast<MlxStreamWrapper*>(R_ExternalPtrAddr(xp));
+  if (wrapper == nullptr) {
+    Rcpp::stop("Invalid MLX stream pointer");
+  }
+  return wrapper->get();
 }
 
 // Wrap MLX array in external pointer
@@ -56,6 +91,13 @@ SEXP make_mlx_xptr(array&& arr) {
   MlxArrayWrapper* wrapper = new MlxArrayWrapper(std::move(arr));
   SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, R_NilValue);
   R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);
+  return xp;
+}
+
+SEXP make_mlx_stream_xptr(Stream stream) {
+  auto* wrapper = new MlxStreamWrapper(stream);
+  SEXP xp = R_MakeExternalPtr(wrapper, stream_tag(), R_NilValue);
+  R_RegisterCFinalizerEx(xp, mlx_stream_finalizer, TRUE);
   return xp;
 }
 
@@ -98,6 +140,16 @@ Device string_to_device(const std::string& device) {
   if (device == "gpu") return Device(Device::gpu);
   if (device == "cpu") return Device(Device::cpu);
   Rcpp::stop("Unsupported device: " + device);
+}
+
+std::string device_to_string(const Device& device) {
+  switch (device.type) {
+  case Device::DeviceType::gpu:
+    return "gpu";
+  case Device::DeviceType::cpu:
+    return "cpu";
+  }
+  Rcpp::stop("Unsupported device type");
 }
 
 } // namespace rmlx

@@ -110,7 +110,7 @@
 as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
                                  "int8", "int16", "int32", "int64",
                                  "uint8", "uint16", "uint32", "uint64"), device = mlx_default_device()) {
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, mlx_default_device())
   dtype_val <- if (missing(dtype)) {
     if (is.logical(x)) {
       "bool"
@@ -139,7 +139,9 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
   x_payload <- .mlx_coerce_payload(x, dtype_val)
 
   # Create MLX array via C++
-  ptr <- cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val, device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val, dev)
+  })
 
   # Create S3 object
   structure(
@@ -147,7 +149,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
       ptr = ptr,
       dim = as.integer(dim_vec),
       dtype = dtype_val,
-      device = device
+      device = handle$device
     ),
     class = "mlx"
   )

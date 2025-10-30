@@ -11,6 +11,36 @@
   new_mlx(ptr, dim, dtype, device)
 }
 
+.mlx_is_stream <- function(x) inherits(x, "mlx_stream")
+
+.mlx_resolve_device <- function(device, default = mlx_default_device()) {
+  if (missing(device) || is.null(device)) {
+    device <- default
+  }
+
+  if (.mlx_is_stream(device)) {
+    return(list(device = device$device, stream_ptr = device$ptr))
+  }
+
+  if (!is.character(device) || length(device) != 1L) {
+    stop('device must be "gpu", "cpu", or an mlx_stream.', call. = FALSE)
+  }
+
+  device_chr <- match.arg(device, c("gpu", "cpu"))
+  list(device = device_chr, stream_ptr = NULL)
+}
+
+.mlx_eval_with_stream <- function(handle, fn) {
+  if (is.null(handle$stream_ptr)) {
+    return(fn(handle$device))
+  }
+
+  old <- cpp_mlx_stream_default(handle$device)
+  on.exit(cpp_mlx_set_default_stream(old), add = TRUE)
+  cpp_mlx_set_default_stream(handle$stream_ptr)
+  fn(handle$device)
+}
+
 #' Common Parameters for MLX Tensor Creation
 #'
 #' @param dim Integer vector specifying the array shape/dimensions.

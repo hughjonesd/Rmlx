@@ -1833,6 +1833,70 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_stream_new
+SEXP cpp_mlx_stream_new(std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_stream_new(SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_stream_new(device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_stream_default
+SEXP cpp_mlx_stream_default(std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_stream_default(SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_stream_default(device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_set_default_stream
+void cpp_mlx_set_default_stream(SEXP stream_xp);
+RcppExport SEXP _Rmlx_cpp_mlx_set_default_stream(SEXP stream_xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type stream_xp(stream_xpSEXP);
+    cpp_mlx_set_default_stream(stream_xp);
+    return R_NilValue;
+END_RCPP
+}
+// cpp_mlx_stream_device
+std::string cpp_mlx_stream_device(SEXP stream_xp);
+RcppExport SEXP _Rmlx_cpp_mlx_stream_device(SEXP stream_xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type stream_xp(stream_xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_stream_device(stream_xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_stream_index
+int cpp_mlx_stream_index(SEXP stream_xp);
+RcppExport SEXP _Rmlx_cpp_mlx_stream_index(SEXP stream_xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type stream_xp(stream_xpSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_stream_index(stream_xp));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_synchronize_stream
+void cpp_mlx_synchronize_stream(SEXP stream_xp);
+RcppExport SEXP _Rmlx_cpp_mlx_synchronize_stream(SEXP stream_xpSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type stream_xp(stream_xpSEXP);
+    cpp_mlx_synchronize_stream(stream_xp);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_zeros", (DL_FUNC) &_Rmlx_cpp_mlx_zeros, 3},
@@ -1970,6 +2034,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_topk", (DL_FUNC) &_Rmlx_cpp_mlx_topk, 3},
     {"_Rmlx_cpp_mlx_partition", (DL_FUNC) &_Rmlx_cpp_mlx_partition, 3},
     {"_Rmlx_cpp_mlx_argpartition", (DL_FUNC) &_Rmlx_cpp_mlx_argpartition, 3},
+    {"_Rmlx_cpp_mlx_stream_new", (DL_FUNC) &_Rmlx_cpp_mlx_stream_new, 1},
+    {"_Rmlx_cpp_mlx_stream_default", (DL_FUNC) &_Rmlx_cpp_mlx_stream_default, 1},
+    {"_Rmlx_cpp_mlx_set_default_stream", (DL_FUNC) &_Rmlx_cpp_mlx_set_default_stream, 1},
+    {"_Rmlx_cpp_mlx_stream_device", (DL_FUNC) &_Rmlx_cpp_mlx_stream_device, 1},
+    {"_Rmlx_cpp_mlx_stream_index", (DL_FUNC) &_Rmlx_cpp_mlx_stream_index, 1},
+    {"_Rmlx_cpp_mlx_synchronize_stream", (DL_FUNC) &_Rmlx_cpp_mlx_synchronize_stream, 1},
     {NULL, NULL, 0}
 };
 

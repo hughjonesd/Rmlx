@@ -41,9 +41,9 @@ mlx_load <- function(file, device = mlx_default_device()) {
     stop("File '", file, "' does not exist.", call. = FALSE)
   }
 
-  device <- match.arg(device, c("gpu", "cpu"))
-  ptr <- cpp_mlx_load(file, device)
-  .mlx_wrap_result(ptr, device)
+  handle <- .mlx_resolve_device(device, mlx_default_device())
+  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_load(file, dev))
+  .mlx_wrap_result(ptr, handle$device)
 }
 
 #' Save MLX arrays to the safetensors format
@@ -98,8 +98,8 @@ mlx_load_safetensors <- function(file, device = mlx_default_device()) {
     stop("File '", file, "' does not exist.", call. = FALSE)
   }
 
-  device <- match.arg(device, c("gpu", "cpu"))
-  cpp_mlx_load_safetensors(file, device)
+  handle <- .mlx_resolve_device(device, mlx_default_device())
+  .mlx_eval_with_stream(handle, function(dev) cpp_mlx_load_safetensors(file, dev))
 }
 
 #' Save MLX arrays to the GGUF format
@@ -145,8 +145,8 @@ mlx_load_gguf <- function(file, device = mlx_default_device()) {
     stop("File '", file, "' does not exist.", call. = FALSE)
   }
 
-  device <- match.arg(device, c("gpu", "cpu"))
-  cpp_mlx_load_gguf(file, device)
+  handle <- .mlx_resolve_device(device, mlx_default_device())
+  .mlx_eval_with_stream(handle, function(dev) cpp_mlx_load_gguf(file, dev))
 }
 
 .normalize_array_list <- function(arrays) {

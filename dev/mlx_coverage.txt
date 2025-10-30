@@ -277,12 +277,15 @@
 ✅ eval (mlx_eval)
 ✅ synchronize (mlx_synchronize)
 ✅ default_device (mlx_default_device)
+✅ default_stream (mlx_default_stream)
+✅ new_stream (mlx_new_stream)
+✅ set_default_stream (mlx_set_default_stream)
 
-## I/O Operations (mlx/io/) - NOT IMPLEMENTED
+## I/O Operations (mlx/io/) - IMPLEMENTED
 
-❌ load (load arrays from file)
-❌ save (save arrays to file)
-❌ GGUF format support
+✅ load (load arrays from file)
+✅ save (save arrays to file)
+✅ GGUF format support
 
 ## Distributed Computing (mlx/distributed/) - NOT IMPLEMENTED
 

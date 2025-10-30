@@ -30,6 +30,11 @@ mlx_default_device <- local({
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_synchronize("gpu")
 mlx_synchronize <- function(device = c("gpu", "cpu")) {
+  if (.mlx_is_stream(device)) {
+    cpp_mlx_synchronize_stream(device$ptr)
+    return(invisible(NULL))
+  }
+
   device <- match.arg(device)
   cpp_mlx_synchronize(device)
   invisible(NULL)

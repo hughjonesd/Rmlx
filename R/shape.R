@@ -497,9 +497,10 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
 #' identical(as.array(x), as.array(y))
 mlx_contiguous <- function(x, device = NULL) {
   x <- as_mlx(x)
-  target_device <- if (is.null(device)) x$device else match.arg(device, c("gpu", "cpu"))
-  ptr <- cpp_mlx_contiguous(x$ptr, target_device)
-  .mlx_wrap_result(ptr, target_device)
+  target <- if (is.null(device)) x$device else device
+  handle <- .mlx_resolve_device(target, x$device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_contiguous(x$ptr, dev))
+  .mlx_wrap_result(ptr, handle$device)
 }
 
 #' Flatten axes of an mlx array
@@ -601,12 +602,13 @@ mlx_meshgrid <- function(...,
 
   dtype <- Reduce(.promote_dtype, lapply(arrays, `[[`, "dtype"))
   default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
-  target_device <- if (is.null(device)) default_device else match.arg(device, c("gpu", "cpu"))
-  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = target_device)
+  target <- if (is.null(device)) default_device else device
+  handle <- .mlx_resolve_device(target, default_device)
+  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = handle$device)
 
   indexing <- match.arg(indexing)
-  ptrs <- cpp_mlx_meshgrid(arrays, sparse, indexing, target_device)
-  lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, target_device))
+  ptrs <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_meshgrid(arrays, sparse, indexing, dev))
+  lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, handle$device))
 }
 
 #' Broadcast an array to a new shape
@@ -627,10 +629,11 @@ mlx_meshgrid <- function(...,
 mlx_broadcast_to <- function(x, shape, device = NULL) {
   x <- as_mlx(x)
   shape <- .validate_shape(shape)
-  target_device <- if (is.null(device)) x$device else match.arg(device, c("gpu", "cpu"))
+  target <- if (is.null(device)) x$device else device
+  handle <- .mlx_resolve_device(target, x$device)
 
-  ptr <- cpp_mlx_broadcast_to(x$ptr, shape, target_device)
-  .mlx_wrap_result(ptr, target_device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_broadcast_to(x$ptr, shape, dev))
+  .mlx_wrap_result(ptr, handle$device)
 }
 
 #' Broadcast multiple arrays to a shared shape
@@ -660,11 +663,12 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
 
   dtype <- Reduce(.promote_dtype, lapply(arrays, `[[`, "dtype"))
   default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
-  target_device <- if (is.null(device)) default_device else match.arg(device, c("gpu", "cpu"))
-  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = target_device)
+  target <- if (is.null(device)) default_device else device
+  handle <- .mlx_resolve_device(target, default_device)
+  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = handle$device)
 
-  ptrs <- cpp_mlx_broadcast_arrays(arrays, target_device)
-  lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, target_device))
+  ptrs <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_broadcast_arrays(arrays, dev))
+  lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, handle$device))
 }
 
 #' Elementwise conditional selection

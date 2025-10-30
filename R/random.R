@@ -15,10 +15,12 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
                              device = mlx_default_device()) {
   dim <- .validate_shape(dim)
   dtype <- match.arg(dtype)
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, mlx_default_device())
 
-  ptr <- cpp_mlx_random_uniform(dim, min, max, dtype, device)
-  new_mlx(ptr, dim, dtype, device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_random_uniform(dim, min, max, dtype, dev)
+  })
+  new_mlx(ptr, dim, dtype, handle$device)
 }
 
 #' Sample from a normal distribution on mlx arrays
@@ -37,10 +39,12 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
                             device = mlx_default_device()) {
   dim <- .validate_shape(dim)
   dtype <- match.arg(dtype)
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, mlx_default_device())
 
-  ptr <- cpp_mlx_random_normal(dim, mean, sd, dtype, device)
-  new_mlx(ptr, dim, dtype, device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_random_normal(dim, mean, sd, dtype, dev)
+  })
+  new_mlx(ptr, dim, dtype, handle$device)
 }
 
 #' Sample Bernoulli random variables on mlx arrays
@@ -57,10 +61,12 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
   if (prob < 0 || prob > 1) {
     stop("prob must be between 0 and 1.", call. = FALSE)
   }
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, mlx_default_device())
 
-  ptr <- cpp_mlx_random_bernoulli(dim, prob, device)
-  new_mlx(ptr, dim, "bool", device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_random_bernoulli(dim, prob, dev)
+  })
+  new_mlx(ptr, dim, "bool", handle$device)
 }
 
 #' Sample from the Gumbel distribution on mlx arrays
@@ -76,10 +82,12 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
   dim <- .validate_shape(dim)
   dtype <- match.arg(dtype)
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, mlx_default_device())
 
-  ptr <- cpp_mlx_random_gumbel(dim, dtype, device)
-  new_mlx(ptr, dim, dtype, device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_random_gumbel(dim, dtype, dev)
+  })
+  new_mlx(ptr, dim, dtype, handle$device)
 }
 
 #' Sample from a truncated normal distribution on mlx arrays
@@ -104,10 +112,12 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
     stop("upper must be a single numeric value.", call. = FALSE)
   }
   dtype <- match.arg(dtype)
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, mlx_default_device())
 
-  ptr <- cpp_mlx_random_truncated_normal(lower, upper, dim, dtype, device)
-  new_mlx(ptr, dim, dtype, device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_random_truncated_normal(lower, upper, dim, dtype, dev)
+  })
+  new_mlx(ptr, dim, dtype, handle$device)
 }
 
 #' Sample from a multivariate normal distribution on mlx arrays
@@ -140,12 +150,14 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
   }
 
   dtype <- match.arg(dtype)
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, "cpu")
 
-  ptr <- cpp_mlx_random_multivariate_normal(mean, cov, dim, dtype, device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_random_multivariate_normal(mean, cov, dim, dtype, dev)
+  })
   # Get the actual output shape from the result
   output_shape <- cpp_mlx_shape(ptr)
-  new_mlx(ptr, output_shape, dtype, device)
+  new_mlx(ptr, output_shape, dtype, handle$device)
 }
 
 #' Sample from the Laplace distribution on mlx arrays
@@ -170,10 +182,12 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
     stop("scale must be a single positive numeric value.", call. = FALSE)
   }
   dtype <- match.arg(dtype)
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, mlx_default_device())
 
-  ptr <- cpp_mlx_random_laplace(dim, loc, scale, dtype, device)
-  new_mlx(ptr, dim, dtype, device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_random_laplace(dim, loc, scale, dtype, dev)
+  })
+  new_mlx(ptr, dim, dtype, handle$device)
 }
 
 #' Sample from a categorical distribution on mlx arrays
@@ -247,10 +261,12 @@ mlx_rand_randint <- function(dim, low, high,
   low <- as.integer(low)
   high <- as.integer(high)
   dtype <- match.arg(dtype)
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, mlx_default_device())
 
-  ptr <- cpp_mlx_random_randint(dim, low, high, dtype, device)
-  new_mlx(ptr, dim, dtype, device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_random_randint(dim, low, high, dtype, dev)
+  })
+  new_mlx(ptr, dim, dtype, handle$device)
 }
 
 #' Generate random permutations on mlx arrays
@@ -285,9 +301,9 @@ mlx_rand_permutation <- function(x, axis = 0L, device = mlx_default_device()) {
     if (n < 1) {
       stop("n must be at least 1.", call. = FALSE)
     }
-    device <- match.arg(device, c("gpu", "cpu"))
-    ptr <- cpp_mlx_random_permutation_n(n, device)
-    new_mlx(ptr, n, "int32", device)
+    handle <- .mlx_resolve_device(device, mlx_default_device())
+    ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_random_permutation_n(n, dev))
+    new_mlx(ptr, n, "int32", handle$device)
   } else {
     # Permute array along axis
     x <- as_mlx(x)
@@ -354,7 +370,7 @@ mlx_key_bits <- function(dim, width = 4L, key = NULL, device = mlx_default_devic
   if (length(width) != 1L || is.na(width) || width <= 0L) {
     stop("`width` must be a positive integer.", call. = FALSE)
   }
-  device <- match.arg(device, c("gpu", "cpu"))
+  handle <- .mlx_resolve_device(device, mlx_default_device())
 
   key_ptr <- if (is.null(key)) {
     NULL
@@ -365,6 +381,8 @@ mlx_key_bits <- function(dim, width = 4L, key = NULL, device = mlx_default_devic
     key$ptr
   }
 
-  ptr <- cpp_mlx_random_bits(dim, width, key_ptr, device)
-  .mlx_wrap_result(ptr, device)
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_random_bits(dim, width, key_ptr, dev)
+  })
+  .mlx_wrap_result(ptr, handle$device)
 }

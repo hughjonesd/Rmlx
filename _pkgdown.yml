@@ -34,6 +34,9 @@ reference:
     contents:
       - mlx_default_device
       - with_default_device
+      - mlx_default_stream
+      - mlx_new_stream
+      - mlx_set_default_stream
       - mlx_synchronize
       - mlx_forward
       - mlx_grad
