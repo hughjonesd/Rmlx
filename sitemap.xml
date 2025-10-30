@@ -97,6 +97,9 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_leaky_relu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_linear.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_linspace.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_load.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_load_gguf.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_load_safetensors.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_logcumsumexp.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_logsumexp.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_lu.html</loc></url>
@@ -133,6 +136,9 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_repeat.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_reshape.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_roll.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_save.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_save_gguf.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_save_safetensors.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sequential.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sigmoid.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_silu.html</loc></url>

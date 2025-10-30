@@ -119,6 +119,9 @@
 <li>MLX array types lack a default constructor; always supply shape/dtype explicitly in C++.</li>
 <li>Discover exports via <code><a href="https://rdrr.io/r/base/library.html" class="external-link">library(help = "Rmlx")</a></code>; inspect all functions with <code>ls(envir = asNamespace("Rmlx"), all.names = TRUE)</code>.</li>
 <li>Search upstream docs at <code>https://ml-explore.github.io/mlx/build/html/search.html?q=&lt;term&gt;</code>.</li>
+<li>Never edit <code>NAMESPACE</code> or <code>R/RcppExports.R</code> by hand—regenerate them with <code>devtools::document()</code> / <code><a href="https://rdrr.io/pkg/Rcpp/man/compileAttributes.html" class="external-link">Rcpp::compileAttributes()</a></code> after updating roxygen or C++ signatures.</li>
+<li>In user-facing APIs and docs, prefer the term <em>array</em> over <em>tensor</em> to match R conventions.</li>
+<li>Add concise internal documentation (comments or helper docstrings) for non-obvious internal helpers; keep the codebase self-explanatory.</li>
 </ul></div>
 </div>
 </div>
