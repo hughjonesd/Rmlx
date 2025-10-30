@@ -124,9 +124,13 @@ SEXP cpp_mlx_argmax(SEXP xp_, Rcpp::Nullable<int> axis, bool keepdims) {
     if (axis.isNotNull()) {
       int ax = Rcpp::as<int>(axis.get());
       ax = normalize_axis(arr, ax);
-      return argmax(arr, ax, keepdims);
+      array idx = argmax(arr, ax, keepdims);
+      idx = idx + 1;
+      return idx;
     }
-    return argmax(arr, keepdims);
+    array idx = argmax(arr, keepdims);
+    idx = idx + 1;
+    return idx;
   }();
 
   return make_mlx_xptr(std::move(result));
@@ -141,9 +145,13 @@ SEXP cpp_mlx_argmin(SEXP xp_, Rcpp::Nullable<int> axis, bool keepdims) {
     if (axis.isNotNull()) {
       int ax = Rcpp::as<int>(axis.get());
       ax = normalize_axis(arr, ax);
-      return argmin(arr, ax, keepdims);
+      array idx = argmin(arr, ax, keepdims);
+      idx = idx + 1;
+      return idx;
     }
-    return argmin(arr, keepdims);
+    array idx = argmin(arr, keepdims);
+    idx = idx + 1;
+    return idx;
   }();
 
   return make_mlx_xptr(std::move(result));
@@ -216,4 +224,3 @@ SEXP cpp_mlx_softmax_axis(SEXP xp_, int axis, bool precise) {
   array result = softmax(arr, ax, precise);
   return make_mlx_xptr(std::move(result));
 }
-

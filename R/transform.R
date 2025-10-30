@@ -37,7 +37,8 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
 #'   array is flattened first.
 #' @param keepdims Logical; retain reduced dimensions with length one.
 #'
-#' @return An mlx array of indices.
+#' @return An mlx array of indices. Indices are 1-based to match R's
+#'   conventions.
 #' @seealso
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmax},
 #'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmin}

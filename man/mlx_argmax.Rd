@@ -18,7 +18,8 @@ array is flattened first.}
 \item{keepdims}{Logical; retain reduced dimensions with length one.}
 }
 \value{
-An mlx array of indices.
+An mlx array of indices. Indices are 1-based to match R's
+conventions.
 }
 \description{
 Argmax and argmin on mlx arrays

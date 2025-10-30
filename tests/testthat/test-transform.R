@@ -49,8 +49,8 @@ test_that("mlx_argmax and mlx_argmin match base behaviour", {
   argmax <- as.vector(as.matrix(mlx_argmax(t)))
   argmin <- as.vector(as.matrix(mlx_argmin(t)))
 
-  expect_equal(as.integer(argmax), which.max(x) - 1L)
-  expect_equal(as.integer(argmin), which.min(x) - 1L)
+  expect_equal(as.integer(argmax), which.max(x))
+  expect_equal(as.integer(argmin), which.min(x))
 
   mat <- matrix(c(1, 7, 3,
                   9, 2, 4), nrow = 2, byrow = TRUE)
@@ -59,8 +59,8 @@ test_that("mlx_argmax and mlx_argmin match base behaviour", {
   col_argmax <- as.matrix(mlx_argmax(m_t, axis = 1L))
   row_argmax <- as.matrix(mlx_argmax(m_t, axis = 2L))
 
-  expect_equal(as.integer(col_argmax), apply(mat, 2, which.max) - 1L)
-  expect_equal(as.integer(row_argmax), apply(mat, 1, which.max) - 1L)
+  expect_equal(as.integer(col_argmax), apply(mat, 2, which.max))
+  expect_equal(as.integer(row_argmax), apply(mat, 1, which.max))
 })
 
 test_that("mlx_sort and mlx_argsort agree with base R", {
