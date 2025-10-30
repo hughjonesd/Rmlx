@@ -270,9 +270,9 @@
 ## FFT (mlx/fft.h) - PARTIALLY IMPLEMENTED
 
 ✅ fft (1D via fft())
-❌ fft2 — Priority: Medium (2-D FFT parity with base R `mvfft`).
+✅ fft2
+✅ fftn
 ❌ ifft — Priority: Medium (explicit inverse wrapper mirrors fft default).
-❌ fftn (n-dimensional) — Priority: Medium (core parity for n-D transforms).
 ❌ ifft2 — Priority: Medium (2-D inverse transform).
 ❌ ifftn (inverse n-dimensional) — Priority: Medium.
 ❌ rfft — Priority: Low (real-input specialisation).

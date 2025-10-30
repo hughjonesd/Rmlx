@@ -27,5 +27,5 @@ fft(z)
 fft(z, inverse = TRUE)
 }
 \seealso{
-\code{\link[stats:fft]{stats::fft()}}, \url{https://ml-explore.github.io/mlx/build/html/python/fft.html#mlx.core.fft.fft}
+\code{\link[stats:fft]{stats::fft()}}, \code{\link[=mlx_fft]{mlx_fft()}}, \code{\link[=mlx_fft2]{mlx_fft2()}}, \code{\link[=mlx_fftn]{mlx_fftn()}}, \url{https://ml-explore.github.io/mlx/build/html/python/fft.html#mlx.core.fft.fft}
 }

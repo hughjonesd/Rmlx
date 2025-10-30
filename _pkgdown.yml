@@ -137,7 +137,9 @@ reference:
       - rowSums
       - colMeans
       - rowMeans
-      - fft
+      - mlx_fft
+      - mlx_fft2
+      - mlx_fftn
   - title: Linear Algebra
     contents:
       - "%*%.mlx"

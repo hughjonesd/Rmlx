@@ -181,7 +181,7 @@ pinv <- function(x) {
 #' @param ... Passed through to the default method.
 #' @return For mlx inputs, an mlx object containing complex frequency
 #'   coefficients; otherwise the base R result.
-#' @seealso [stats::fft()], \url{https://ml-explore.github.io/mlx/build/html/python/fft.html#mlx.core.fft.fft}
+#' @seealso [stats::fft()], [mlx_fft()], [mlx_fft2()], [mlx_fftn()], \url{https://ml-explore.github.io/mlx/build/html/python/fft.html#mlx.core.fft.fft}
 #' @export
 #' @examples
 #' z <- as_mlx(c(1, 2, 3, 4))
@@ -198,14 +198,9 @@ fft.default <- function(z, inverse = FALSE, ...) {
 
 #' @export
 fft.mlx <- function(z, inverse = FALSE, ...) {
-  z <- as_mlx(z)
-  ptr <- cpp_mlx_fft(z$ptr, isTRUE(inverse), z$device)
-  out <- .mlx_wrap_result(ptr, z$device)
-  if (isTRUE(inverse)) {
-    size <- prod(z$dim)
-    out <- out * size
-  }
-  out
+  args <- list(...)
+  axis <- if (!is.null(args$axis)) args$axis else -1L
+  mlx_fft(z, axis = axis, inverse = inverse)
 }
 
 #' Matrix and vector norms for mlx arrays

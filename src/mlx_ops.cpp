@@ -129,15 +129,26 @@ SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_fft(SEXP xp_, bool inverse, std::string device_str) {
+SEXP cpp_mlx_fft(SEXP xp_,
+                 Rcpp::Nullable<Rcpp::IntegerVector> axes_,
+                 bool inverse,
+                 std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   StreamOrDevice target_device = string_to_device(device_str);
   StreamOrDevice cpu_stream = Device(Device::cpu);
 
   array input_cpu = astype(wrapper->get(), wrapper->get().dtype(), cpu_stream);
-  array result_cpu = inverse ? mlx::core::fft::ifftn(input_cpu, cpu_stream)
-                             : mlx::core::fft::fftn(input_cpu, cpu_stream);
+
+  array result_cpu = [&]() -> array {
+    if (axes_.isNull()) {
+      return inverse ? mlx::core::fft::ifftn(input_cpu, cpu_stream)
+                     : mlx::core::fft::fftn(input_cpu, cpu_stream);
+    }
+    std::vector<int> axes = Rcpp::as<std::vector<int>>(axes_.get());
+    return inverse ? mlx::core::fft::ifftn(input_cpu, axes, cpu_stream)
+                   : mlx::core::fft::fftn(input_cpu, axes, cpu_stream);
+  }();
 
   array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
 
