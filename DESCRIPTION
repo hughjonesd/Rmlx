@@ -1,7 +1,7 @@
 Package: Rmlx
 Type: Package
 Title: R Interface to Apple's MLX library for GPU-accelerated arrays
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R:
     person("David", "Hugh-Jones", email = "david@hughjones.com", role = c("aut", "cre"))
 Author: David Hugh-Jones [aut, cre]
