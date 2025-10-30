@@ -517,6 +517,10 @@ cpp_mlx_unflatten <- function(a_xp_, axis, shape, device_str) {
     .Call(`_Rmlx_cpp_mlx_unflatten`, a_xp_, axis, shape, device_str)
 }
 
+cpp_mlx_contiguous <- function(xp_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_contiguous`, xp_, device_str)
+}
+
 cpp_mlx_sort <- function(xp_, axis) {
     .Call(`_Rmlx_cpp_mlx_sort`, xp_, axis)
 }

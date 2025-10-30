@@ -68,6 +68,7 @@ reference:
       - mlx_pad
       - mlx_roll
       - mlx_moveaxis
+      - mlx_contiguous
       - mlx_flatten
       - mlx_swapaxes
       - aperm.mlx

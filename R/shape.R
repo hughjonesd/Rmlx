@@ -482,6 +482,26 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
   result
 }
 
+#' Ensure contiguous memory layout
+#'
+#' Returns a copy of `x` with contiguous strides on the requested device.
+#'
+#' @inheritParams mlx_array_required
+#' @param device Optional device override (`"gpu"` or `"cpu"`). Defaults to the array's current device.
+#' @return An mlx array backed by contiguous storage on the specified device.
+#' @seealso <https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.contiguous>
+#' @export
+#' @examples
+#' x <- mlx_swapaxes(as_mlx(matrix(1:4, 2, 2)), axis1 = 1, axis2 = 2)
+#' y <- mlx_contiguous(x)
+#' identical(as.array(x), as.array(y))
+mlx_contiguous <- function(x, device = NULL) {
+  x <- as_mlx(x)
+  target_device <- if (is.null(device)) x$device else match.arg(device, c("gpu", "cpu"))
+  ptr <- cpp_mlx_contiguous(x$ptr, target_device)
+  .mlx_wrap_result(ptr, target_device)
+}
+
 #' Flatten axes of an mlx array
 #'
 #' `mlx_flatten()` mirrors [`mlx.core.flatten()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.flatten),

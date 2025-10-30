@@ -99,6 +99,19 @@ test_that("mlx_moveaxis reorders axes", {
   expect_equal(as.array(moved_multi), aperm(arr, c(3, 2, 1)), tolerance = 1e-6)
 })
 
+test_that("mlx_contiguous materializes a contiguous copy", {
+  base <- matrix(1:12, nrow = 3, byrow = TRUE)
+  x <- as_mlx(base)
+  view <- mlx_swapaxes(x, axis1 = 1, axis2 = 2)
+
+  contig <- mlx_contiguous(view)
+  expect_equal(as.matrix(contig), as.matrix(view), tolerance = 1e-6)
+
+  cpu_copy <- mlx_contiguous(view, device = "cpu")
+  expect_equal(cpu_copy$device, "cpu")
+  expect_equal(as.matrix(cpu_copy), as.matrix(view), tolerance = 1e-6)
+})
+
 row_major_vec <- function(arr) {
   dims <- dim(arr)
   if (is.null(dims)) {

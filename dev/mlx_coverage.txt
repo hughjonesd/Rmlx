@@ -150,7 +150,7 @@
 ✅ copy (implicit)
 ✅ stop_gradient
 ❌ as_strided
-❌ contiguous
+✅ contiguous
 ❌ view
 ❌ number_of_elements
 

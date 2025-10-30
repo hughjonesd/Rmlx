@@ -1758,6 +1758,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_contiguous
+SEXP cpp_mlx_contiguous(SEXP xp_, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_contiguous(SEXP xp_SEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_contiguous(xp_, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_sort
 SEXP cpp_mlx_sort(SEXP xp_, Rcpp::Nullable<int> axis);
 RcppExport SEXP _Rmlx_cpp_mlx_sort(SEXP xp_SEXP, SEXP axisSEXP) {
@@ -1952,6 +1964,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_pad", (DL_FUNC) &_Rmlx_cpp_mlx_pad, 6},
     {"_Rmlx_cpp_mlx_split", (DL_FUNC) &_Rmlx_cpp_mlx_split, 6},
     {"_Rmlx_cpp_mlx_unflatten", (DL_FUNC) &_Rmlx_cpp_mlx_unflatten, 4},
+    {"_Rmlx_cpp_mlx_contiguous", (DL_FUNC) &_Rmlx_cpp_mlx_contiguous, 2},
     {"_Rmlx_cpp_mlx_sort", (DL_FUNC) &_Rmlx_cpp_mlx_sort, 2},
     {"_Rmlx_cpp_mlx_argsort", (DL_FUNC) &_Rmlx_cpp_mlx_argsort, 2},
     {"_Rmlx_cpp_mlx_topk", (DL_FUNC) &_Rmlx_cpp_mlx_topk, 3},

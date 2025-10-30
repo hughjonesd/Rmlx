@@ -441,3 +441,14 @@ SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape, std::string de
   array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
   return make_mlx_xptr(std::move(result_target));
 }
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_contiguous(SEXP xp_, std::string device_str) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+
+  StreamOrDevice target_device = string_to_device(device_str);
+  array on_device = astype(arr, arr.dtype(), target_device);
+  array result = contiguous(on_device);
+  return make_mlx_xptr(std::move(result));
+}
