@@ -618,16 +618,22 @@ mlx_dtype <- function(x) {
 
   # Handle mlx arrays directly
   if (is.mlx(idx)) {
-    # mlx indices are assumed to be 1-based (R convention)
-    # Convert to 0-based for MLX operations
-    # Ensure integer dtype (MLX requires integer indices)
-    if (!grepl("int", idx$dtype)) {
-      idx <- .mlx_cast(idx, "int64")
+    # If it's a boolean mlx array, convert to R logical and handle below
+    if (idx$dtype == "bool") {
+      idx <- as.vector(idx)
+      # Fall through to R logical handling
+    } else {
+      # mlx indices are assumed to be 1-based (R convention)
+      # Convert to 0-based for MLX operations
+      # Ensure integer dtype (MLX requires integer indices)
+      if (!grepl("int", idx$dtype)) {
+        idx <- .mlx_cast(idx, "int64")
+      }
+      # Subtract 1 using an mlx scalar to preserve integer dtype
+      one_mlx <- as_mlx(1L, dtype = idx$dtype, device = idx$device)
+      # Return the mlx array directly to avoid R conversion
+      return(idx - one_mlx)
     }
-    # Subtract 1 using an mlx scalar to preserve integer dtype
-    one_mlx <- as_mlx(1L, dtype = idx$dtype, device = idx$device)
-    # Return the mlx array directly to avoid R conversion
-    return(idx - one_mlx)
   }
 
   if (is.logical(idx)) {

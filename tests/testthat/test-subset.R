@@ -23,6 +23,29 @@ test_that("logical masks work", {
   expect_equal(as.matrix(x[FALSE, ]), mat[FALSE, , drop = FALSE])
 })
 
+test_that("mlx logical masks work like R logical masks", {
+  mat <- matrix(1:9, 3, 3)
+  x <- as_mlx(mat)
+
+  # Test row indexing with mlx logical
+  mask_rows <- c(TRUE, TRUE, FALSE)
+  mask_rows_mlx <- as_mlx(mask_rows)
+  expect_equal(as.matrix(x[mask_rows_mlx, ]), mat[mask_rows, , drop = FALSE])
+
+  # Test column indexing with mlx logical
+  mask_cols <- c(TRUE, FALSE, TRUE)
+  mask_cols_mlx <- as_mlx(mask_cols)
+  expect_equal(as.matrix(x[, mask_cols_mlx]), mat[, mask_cols, drop = FALSE])
+
+  # Test both dimensions
+  expect_equal(as.matrix(x[mask_rows_mlx, mask_cols_mlx]),
+               mat[mask_rows, mask_cols, drop = FALSE])
+
+  # Test all FALSE
+  mask_false <- as_mlx(c(FALSE, FALSE, FALSE))
+  expect_equal(as.matrix(x[mask_false, ]), mat[c(FALSE, FALSE, FALSE), , drop = FALSE])
+})
+
 test_that("higher dimensional indexing works", {
   arr <- array(seq_len(24), dim = c(3, 4, 2))
   x <- as_mlx(arr)
