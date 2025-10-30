@@ -2,19 +2,25 @@
 % Please edit documentation in R/stats.R
 \name{rowMeans}
 \alias{rowMeans}
+\alias{rowMeans.default}
+\alias{rowMeans.mlx}
 \title{Row means for mlx arrays}
 \usage{
-rowMeans(x, na.rm = FALSE, dims = 1, ...)
+rowMeans(x, ...)
+
+\method{rowMeans}{default}(x, na.rm = FALSE, dims = 1, ...)
+
+\method{rowMeans}{mlx}(x, na.rm = FALSE, dims = 1, ...)
 }
 \arguments{
 \item{x}{An array or mlx array.}
+
+\item{...}{Additional arguments forwarded to the base implementation.}
 
 \item{na.rm}{Logical; currently ignored for mlx arrays.}
 
 \item{dims}{Dimensions passed through to the base implementation when
 \code{x} is not an mlx array.}
-
-\item{...}{Additional arguments forwarded to the base implementation.}
 }
 \value{
 An mlx array if \code{x} is mlx, otherwise a numeric vector.

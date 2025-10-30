@@ -2,19 +2,25 @@
 % Please edit documentation in R/stats.R
 \name{rowSums}
 \alias{rowSums}
+\alias{rowSums.default}
+\alias{rowSums.mlx}
 \title{Row sums for mlx arrays}
 \usage{
-rowSums(x, na.rm = FALSE, dims = 1, ...)
+rowSums(x, ...)
+
+\method{rowSums}{default}(x, na.rm = FALSE, dims = 1, ...)
+
+\method{rowSums}{mlx}(x, na.rm = FALSE, dims = 1, ...)
 }
 \arguments{
 \item{x}{An array or mlx array.}
+
+\item{...}{Additional arguments forwarded to the base implementation.}
 
 \item{na.rm}{Logical; currently ignored for mlx arrays.}
 
 \item{dims}{Dimensions passed through to the base implementation when
 \code{x} is not an mlx array.}
-
-\item{...}{Additional arguments forwarded to the base implementation.}
 }
 \value{
 An mlx array if \code{x} is mlx, otherwise a numeric vector.

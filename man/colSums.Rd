@@ -2,19 +2,25 @@
 % Please edit documentation in R/stats.R
 \name{colSums}
 \alias{colSums}
+\alias{colSums.default}
+\alias{colSums.mlx}
 \title{Column sums for mlx arrays}
 \usage{
-colSums(x, na.rm = FALSE, dims = 1, ...)
+colSums(x, ...)
+
+\method{colSums}{default}(x, na.rm = FALSE, dims = 1, ...)
+
+\method{colSums}{mlx}(x, na.rm = FALSE, dims = 1, ...)
 }
 \arguments{
 \item{x}{An array or mlx array.}
+
+\item{...}{Additional arguments forwarded to the base implementation.}
 
 \item{na.rm}{Logical; currently ignored for mlx arrays.}
 
 \item{dims}{Dimensions passed through to the base implementation when
 \code{x} is not an mlx array.}
-
-\item{...}{Additional arguments forwarded to the base implementation.}
 }
 \value{
 An mlx array if \code{x} is mlx, otherwise a numeric vector.

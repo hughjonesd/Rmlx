@@ -111,11 +111,22 @@ mean.mlx <- function(x, ...) {
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
 #' rowMeans(x)
-rowMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
-  if (inherits(x, "mlx")) {
-    return(.mlx_reduce_axis(x, "mean", axis = 2L, drop = TRUE))
-  }
+rowMeans <- function(x, ...) {
+  UseMethod("rowMeans")
+}
+
+#' @rdname rowMeans
+#' @export
+#' @method rowMeans default
+rowMeans.default <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::rowMeans(x, na.rm = na.rm, dims = dims, ...)
+}
+
+#' @rdname rowMeans
+#' @export
+#' @method rowMeans mlx
+rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
+  .mlx_reduce_axis(x, "mean", axis = 2L, drop = TRUE)
 }
 
 #' Column means for mlx arrays
@@ -127,11 +138,22 @@ rowMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
 #' colMeans(x)
-colMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
-  if (inherits(x, "mlx")) {
-    return(.mlx_reduce_axis(x, "mean", axis = 1L, drop = TRUE))
-  }
+colMeans <- function(x, ...) {
+  UseMethod("colMeans")
+}
+
+#' @rdname colMeans
+#' @export
+#' @method colMeans default
+colMeans.default <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::colMeans(x, na.rm = na.rm, dims = dims, ...)
+}
+
+#' @rdname colMeans
+#' @export
+#' @method colMeans mlx
+colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
+  .mlx_reduce_axis(x, "mean", axis = 1L, drop = TRUE)
 }
 
 #' Row sums for mlx arrays
@@ -143,11 +165,22 @@ colMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
 #' rowSums(x)
-rowSums <- function(x, na.rm = FALSE, dims = 1, ...) {
-  if (inherits(x, "mlx")) {
-    return(.mlx_reduce_axis(x, "sum", axis = 2L, drop = TRUE))
-  }
+rowSums <- function(x, ...) {
+  UseMethod("rowSums")
+}
+
+#' @rdname rowSums
+#' @export
+#' @method rowSums default
+rowSums.default <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::rowSums(x, na.rm = na.rm, dims = dims, ...)
+}
+
+#' @rdname rowSums
+#' @export
+#' @method rowSums mlx
+rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
+  .mlx_reduce_axis(x, "sum", axis = 2L, drop = TRUE)
 }
 
 #' Column sums for mlx arrays
@@ -159,11 +192,22 @@ rowSums <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
 #' colSums(x)
-colSums <- function(x, na.rm = FALSE, dims = 1, ...) {
-  if (inherits(x, "mlx")) {
-    return(.mlx_reduce_axis(x, "sum", axis = 1L, drop = TRUE))
-  }
+colSums <- function(x, ...) {
+  UseMethod("colSums")
+}
+
+#' @rdname colSums
+#' @export
+#' @method colSums default
+colSums.default <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::colSums(x, na.rm = na.rm, dims = dims, ...)
+}
+
+#' @rdname colSums
+#' @export
+#' @method colSums mlx
+colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
+  .mlx_reduce_axis(x, "sum", axis = 1L, drop = TRUE)
 }
 
 #' Transpose of MLX matrix
