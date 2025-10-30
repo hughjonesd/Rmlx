@@ -121,16 +121,16 @@ cpp_mlx_load <- function(file, device_str) {
     .Call(`_Rmlx_cpp_mlx_load`, file, device_str)
 }
 
-cpp_mlx_save_safetensors <- function(tensor_ptrs, tensor_names, metadata_names, metadata_values, file) {
-    invisible(.Call(`_Rmlx_cpp_mlx_save_safetensors`, tensor_ptrs, tensor_names, metadata_names, metadata_values, file))
+cpp_mlx_save_safetensors <- function(array_ptrs, array_names, metadata_names, metadata_values, file) {
+    invisible(.Call(`_Rmlx_cpp_mlx_save_safetensors`, array_ptrs, array_names, metadata_names, metadata_values, file))
 }
 
 cpp_mlx_load_safetensors <- function(file, device_str) {
     .Call(`_Rmlx_cpp_mlx_load_safetensors`, file, device_str)
 }
 
-cpp_mlx_save_gguf <- function(tensor_ptrs, tensor_names, metadata_payload, metadata_names, file) {
-    invisible(.Call(`_Rmlx_cpp_mlx_save_gguf`, tensor_ptrs, tensor_names, metadata_payload, metadata_names, file))
+cpp_mlx_save_gguf <- function(array_ptrs, array_names, metadata_payload, metadata_names, file) {
+    invisible(.Call(`_Rmlx_cpp_mlx_save_gguf`, array_ptrs, array_names, metadata_payload, metadata_names, file))
 }
 
 cpp_mlx_load_gguf <- function(file, device_str) {

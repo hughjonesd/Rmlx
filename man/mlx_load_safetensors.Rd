@@ -2,7 +2,7 @@
 % Please edit documentation in R/io.R
 \name{mlx_load_safetensors}
 \alias{mlx_load_safetensors}
-\title{Load MLX tensors from the safetensors format}
+\title{Load MLX arrays from the safetensors format}
 \usage{
 mlx_load_safetensors(file, device = mlx_default_device())
 }
@@ -20,7 +20,7 @@ A list containing:
 }
 }
 \description{
-Load MLX tensors from the safetensors format
+Load MLX arrays from the safetensors format
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.load_safetensors}

@@ -30,16 +30,16 @@ test_that("mlx_load validates file path", {
   expect_error(mlx_load(missing_path), expected, fixed = TRUE)
 })
 
-test_that("mlx_save_safetensors round trips tensors and metadata", {
+test_that("mlx_save_safetensors round trips arrays and metadata", {
   base_path <- tempfile(fileext = ".safetensors")
 
-  tensors <- list(
+  arrays <- list(
     mat = as_mlx(matrix(rnorm(4), 2, 2), device = "cpu"),
     vec = as_mlx(1:3, device = "cpu")
   )
   metadata <- c(author = "rmlx", version = "1.0")
 
-  saved_path <- mlx_save_safetensors(base_path, tensors, metadata)
+  saved_path <- mlx_save_safetensors(base_path, arrays, metadata)
   on.exit(unlink(saved_path, recursive = TRUE), add = TRUE)
 
   expect_true(file.exists(saved_path))
@@ -51,9 +51,9 @@ test_that("mlx_save_safetensors round trips tensors and metadata", {
   expect_equal(saved_path, expected_path)
 
   loaded <- mlx_load_safetensors(base_path, device = "cpu")
-  expect_named(loaded$tensors, names(tensors))
-  expect_equal(as.matrix(loaded$tensors$mat), as.matrix(tensors$mat), tolerance = 1e-6)
-  expect_equal(as.vector(as.matrix(loaded$tensors$vec)), as.vector(as.matrix(tensors$vec)))
+  expect_named(loaded$tensors, names(arrays))
+  expect_equal(as.matrix(loaded$tensors$mat), as.matrix(arrays$mat), tolerance = 1e-6)
+  expect_equal(as.vector(as.matrix(loaded$tensors$vec)), as.vector(as.matrix(arrays$vec)))
   expect_named(loaded$metadata, names(metadata))
   expect_equal(unname(loaded$metadata), unname(metadata))
 })
@@ -61,14 +61,14 @@ test_that("mlx_save_safetensors round trips tensors and metadata", {
 test_that("mlx_save_gguf handles mixed metadata", {
   base_path <- tempfile(fileext = ".gguf")
 
-  tensors <- list(emb = as_mlx(matrix(1:4, 2, 2), device = "cpu"))
+  arrays <- list(emb = as_mlx(matrix(1:4, 2, 2), device = "cpu"))
   metadata <- list(
     description = "demo",
     tags = c("a", "b"),
     scale = as_mlx(1:2, device = "cpu")
   )
 
-  saved_path <- mlx_save_gguf(base_path, tensors, metadata)
+  saved_path <- mlx_save_gguf(base_path, arrays, metadata)
   on.exit(unlink(saved_path, recursive = TRUE), add = TRUE)
 
   expect_true(file.exists(saved_path))
@@ -80,8 +80,8 @@ test_that("mlx_save_gguf handles mixed metadata", {
   expect_equal(saved_path, expected_path)
 
   loaded <- mlx_load_gguf(base_path, device = "cpu")
-  expect_named(loaded$tensors, names(tensors))
-  expect_equal(as.matrix(loaded$tensors$emb), as.matrix(tensors$emb))
+  expect_named(loaded$tensors, names(arrays))
+  expect_equal(as.matrix(loaded$tensors$emb), as.matrix(arrays$emb))
 
   expect_setequal(names(loaded$metadata), names(metadata))
   expect_equal(loaded$metadata$description, metadata$description)

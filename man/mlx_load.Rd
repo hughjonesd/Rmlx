@@ -16,7 +16,7 @@ when missing.}
 An \code{mlx} array containing the file contents.
 }
 \description{
-Restores a tensor saved with \code{\link[=mlx_save]{mlx_save()}} and optionally places it on a
+Restores an array saved with \code{\link[=mlx_save]{mlx_save()}} and optionally places it on a
 specified device.
 }
 \seealso{

@@ -2,23 +2,23 @@
 % Please edit documentation in R/io.R
 \name{mlx_save_gguf}
 \alias{mlx_save_gguf}
-\title{Save MLX tensors to the GGUF format}
+\title{Save MLX arrays to the GGUF format}
 \usage{
-mlx_save_gguf(file, tensors, metadata = list())
+mlx_save_gguf(file, arrays, metadata = list())
 }
 \arguments{
 \item{file}{Output path. \code{.safetensors} is appended automatically when omitted.}
 
-\item{tensors}{Named list of objects coercible to \code{mlx}.}
+\item{arrays}{Named list of objects coercible to \code{mlx}.}
 
 \item{metadata}{Optional named list describing GGUF metadata. Values may be
-\code{NULL}, character vectors, or \code{mlx} arrays.}
+character vectors or \code{mlx} arrays.}
 }
 \value{
 Invisibly returns the full path that was written.
 }
 \description{
-Save MLX tensors to the GGUF format
+Save MLX arrays to the GGUF format
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.save_gguf}

@@ -1,6 +1,6 @@
 #' Save an MLX array to disk
 #'
-#' Persists an MLX tensor to a `.npy` file using MLX's native serialization.
+#' Persists an MLX array to a `.npy` file using MLX's native serialization.
 #'
 #' @param x Object coercible to `mlx`.
 #' @param file Path to the output file. If the file does not end with `.npy`,
@@ -26,7 +26,7 @@ mlx_save <- function(x, file) {
 
 #' Load an MLX array from disk
 #'
-#' Restores a tensor saved with [mlx_save()] and optionally places it on a
+#' Restores an array saved with [mlx_save()] and optionally places it on a
 #' specified device.
 #'
 #' @param file Path to a `.npy` file. The extension is appended automatically
@@ -46,16 +46,16 @@ mlx_load <- function(file, device = mlx_default_device()) {
   .mlx_wrap_result(ptr, device)
 }
 
-#' Save MLX tensors to the safetensors format
+#' Save MLX arrays to the safetensors format
 #'
 #' @param file Output path. `.safetensors` is appended automatically when omitted.
-#' @param tensors Named list of objects coercible to `mlx`.
+#' @param arrays Named list of objects coercible to `mlx`.
 #' @param metadata Optional named character vector of metadata entries.
 #' @return Invisibly returns the full path that was written.
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.save_safetensors>
 #' @export
-mlx_save_safetensors <- function(file, tensors, metadata = character()) {
-  tensors <- .normalize_tensor_list(tensors)
+mlx_save_safetensors <- function(file, arrays, metadata = character()) {
+  arrays <- .normalize_array_list(arrays)
 
   if (!is.null(metadata) && length(metadata)) {
     metadata_names <- names(metadata)
@@ -70,19 +70,19 @@ mlx_save_safetensors <- function(file, tensors, metadata = character()) {
   file <- .ensure_extension(path.expand(.validate_path(file)), ".safetensors")
   .ensure_parent_dir(file)
 
-  tensor_ptrs <- lapply(tensors, `[[`, "ptr")
-  tensor_names <- names(tensors)
+  array_ptrs <- lapply(arrays, `[[`, "ptr")
+  array_names <- names(arrays)
   metadata_names <- names(metadata)
   if (is.null(metadata_names)) {
     metadata_names <- character()
   }
   metadata_values <- unname(metadata)
 
-  cpp_mlx_save_safetensors(tensor_ptrs, tensor_names, metadata_names, metadata_values, file)
+  cpp_mlx_save_safetensors(array_ptrs, array_names, metadata_names, metadata_values, file)
   invisible(file)
 }
 
-#' Load MLX tensors from the safetensors format
+#' Load MLX arrays from the safetensors format
 #'
 #' @inheritParams mlx_load
 #' @return A list containing:
@@ -102,29 +102,29 @@ mlx_load_safetensors <- function(file, device = mlx_default_device()) {
   cpp_mlx_load_safetensors(file, device)
 }
 
-#' Save MLX tensors to the GGUF format
+#' Save MLX arrays to the GGUF format
 #'
 #' @param metadata Optional named list describing GGUF metadata. Values may be
-#'   `NULL`, character vectors, or `mlx` arrays.
+#'   character vectors or `mlx` arrays.
 #' @inheritParams mlx_save_safetensors
 #' @return Invisibly returns the full path that was written.
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.save_gguf>
 #' @export
-mlx_save_gguf <- function(file, tensors, metadata = list()) {
-  tensors <- .normalize_tensor_list(tensors)
+mlx_save_gguf <- function(file, arrays, metadata = list()) {
+  arrays <- .normalize_array_list(arrays)
   metadata_payload <- .normalize_gguf_metadata(metadata)
 
   file <- .ensure_extension(path.expand(.validate_path(file)), ".gguf")
   .ensure_parent_dir(file)
 
-  tensor_ptrs <- lapply(tensors, `[[`, "ptr")
-  tensor_names <- names(tensors)
+  array_ptrs <- lapply(arrays, `[[`, "ptr")
+  array_names <- names(arrays)
   metadata_names <- names(metadata_payload)
   if (is.null(metadata_names)) {
     metadata_names <- character()
   }
 
-  cpp_mlx_save_gguf(tensor_ptrs, tensor_names, metadata_payload, metadata_names, file)
+  cpp_mlx_save_gguf(array_ptrs, array_names, metadata_payload, metadata_names, file)
   invisible(file)
 }
 
@@ -149,15 +149,15 @@ mlx_load_gguf <- function(file, device = mlx_default_device()) {
   cpp_mlx_load_gguf(file, device)
 }
 
-.normalize_tensor_list <- function(tensors) {
-  tensors <- as.list(tensors)
-  if (!length(tensors)) {
-    stop("`tensors` must contain at least one element.", call. = FALSE)
+.normalize_array_list <- function(arrays) {
+  arrays <- as.list(arrays)
+  if (!length(arrays)) {
+    stop("`arrays` must contain at least one element.", call. = FALSE)
   }
-  if (is.null(names(tensors)) || any(names(tensors) == "")) {
-    stop("`tensors` must be a named list.", call. = FALSE)
+  if (is.null(names(arrays)) || any(names(arrays) == "")) {
+    stop("`arrays` must be a named list.", call. = FALSE)
   }
-  lapply(tensors, as_mlx)
+  lapply(arrays, as_mlx)
 }
 
 .normalize_gguf_metadata <- function(metadata) {

@@ -17,7 +17,7 @@ Invisibly returns the full path that was written, including the
 \code{.npy} suffix.
 }
 \description{
-Persists an MLX tensor to a \code{.npy} file using MLX's native serialization.
+Persists an MLX array to a \code{.npy} file using MLX's native serialization.
 }
 \examples{
 \dontrun{

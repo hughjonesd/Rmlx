@@ -147,12 +147,12 @@ SEXP cpp_mlx_load(std::string file, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-void cpp_mlx_save_safetensors(List tensor_ptrs,
-                              CharacterVector tensor_names,
+void cpp_mlx_save_safetensors(List array_ptrs,
+                              CharacterVector array_names,
                               CharacterVector metadata_names,
                               CharacterVector metadata_values,
                               std::string file) {
-  auto tensor_map = list_to_array_map(tensor_ptrs, tensor_names, cpu_device());
+  auto tensor_map = list_to_array_map(array_ptrs, array_names, cpu_device());
   std::unordered_map<std::string, std::string> meta_map;
   for (int i = 0; i < metadata_names.size(); ++i) {
     meta_map.emplace(as<std::string>(metadata_names[i]), as<std::string>(metadata_values[i]));
@@ -174,8 +174,8 @@ List cpp_mlx_load_safetensors(std::string file, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-void cpp_mlx_save_gguf(List tensor_ptrs,
-                       CharacterVector tensor_names,
+void cpp_mlx_save_gguf(List array_ptrs,
+                       CharacterVector array_names,
                        List metadata_payload,
                        CharacterVector metadata_names,
                        std::string file) {
@@ -183,7 +183,7 @@ void cpp_mlx_save_gguf(List tensor_ptrs,
     Rcpp::stop("Metadata names and values length mismatch.");
   }
 
-  auto tensor_map = list_to_array_map(tensor_ptrs, tensor_names, cpu_device());
+  auto tensor_map = list_to_array_map(array_ptrs, array_names, cpu_device());
   std::unordered_map<std::string, GGUFMetaData> meta_map;
   for (int i = 0; i < metadata_payload.size(); ++i) {
     List payload(metadata_payload[i]);

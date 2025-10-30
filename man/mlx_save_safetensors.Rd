@@ -2,14 +2,14 @@
 % Please edit documentation in R/io.R
 \name{mlx_save_safetensors}
 \alias{mlx_save_safetensors}
-\title{Save MLX tensors to the safetensors format}
+\title{Save MLX arrays to the safetensors format}
 \usage{
-mlx_save_safetensors(file, tensors, metadata = character())
+mlx_save_safetensors(file, arrays, metadata = character())
 }
 \arguments{
 \item{file}{Output path. \code{.safetensors} is appended automatically when omitted.}
 
-\item{tensors}{Named list of objects coercible to \code{mlx}.}
+\item{arrays}{Named list of objects coercible to \code{mlx}.}
 
 \item{metadata}{Optional named character vector of metadata entries.}
 }
@@ -17,7 +17,7 @@ mlx_save_safetensors(file, tensors, metadata = character())
 Invisibly returns the full path that was written.
 }
 \description{
-Save MLX tensors to the safetensors format
+Save MLX arrays to the safetensors format
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.save_safetensors}

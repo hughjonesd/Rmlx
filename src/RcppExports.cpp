@@ -395,16 +395,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_save_safetensors
-void cpp_mlx_save_safetensors(List tensor_ptrs, CharacterVector tensor_names, CharacterVector metadata_names, CharacterVector metadata_values, std::string file);
-RcppExport SEXP _Rmlx_cpp_mlx_save_safetensors(SEXP tensor_ptrsSEXP, SEXP tensor_namesSEXP, SEXP metadata_namesSEXP, SEXP metadata_valuesSEXP, SEXP fileSEXP) {
+void cpp_mlx_save_safetensors(List array_ptrs, CharacterVector array_names, CharacterVector metadata_names, CharacterVector metadata_values, std::string file);
+RcppExport SEXP _Rmlx_cpp_mlx_save_safetensors(SEXP array_ptrsSEXP, SEXP array_namesSEXP, SEXP metadata_namesSEXP, SEXP metadata_valuesSEXP, SEXP fileSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type tensor_ptrs(tensor_ptrsSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type tensor_names(tensor_namesSEXP);
+    Rcpp::traits::input_parameter< List >::type array_ptrs(array_ptrsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type array_names(array_namesSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type metadata_names(metadata_namesSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type metadata_values(metadata_valuesSEXP);
     Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
-    cpp_mlx_save_safetensors(tensor_ptrs, tensor_names, metadata_names, metadata_values, file);
+    cpp_mlx_save_safetensors(array_ptrs, array_names, metadata_names, metadata_values, file);
     return R_NilValue;
 END_RCPP
 }
@@ -421,16 +421,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_save_gguf
-void cpp_mlx_save_gguf(List tensor_ptrs, CharacterVector tensor_names, List metadata_payload, CharacterVector metadata_names, std::string file);
-RcppExport SEXP _Rmlx_cpp_mlx_save_gguf(SEXP tensor_ptrsSEXP, SEXP tensor_namesSEXP, SEXP metadata_payloadSEXP, SEXP metadata_namesSEXP, SEXP fileSEXP) {
+void cpp_mlx_save_gguf(List array_ptrs, CharacterVector array_names, List metadata_payload, CharacterVector metadata_names, std::string file);
+RcppExport SEXP _Rmlx_cpp_mlx_save_gguf(SEXP array_ptrsSEXP, SEXP array_namesSEXP, SEXP metadata_payloadSEXP, SEXP metadata_namesSEXP, SEXP fileSEXP) {
 BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< List >::type tensor_ptrs(tensor_ptrsSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type tensor_names(tensor_namesSEXP);
+    Rcpp::traits::input_parameter< List >::type array_ptrs(array_ptrsSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type array_names(array_namesSEXP);
     Rcpp::traits::input_parameter< List >::type metadata_payload(metadata_payloadSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type metadata_names(metadata_namesSEXP);
     Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
-    cpp_mlx_save_gguf(tensor_ptrs, tensor_names, metadata_payload, metadata_names, file);
+    cpp_mlx_save_gguf(array_ptrs, array_names, metadata_payload, metadata_names, file);
     return R_NilValue;
 END_RCPP
 }
