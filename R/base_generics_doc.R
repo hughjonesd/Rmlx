@@ -5,16 +5,16 @@
 #' entry points are:
 #'
 #' @details
-#' - `\%*\%` for matrix multiplication (see `?\%*%.mlx`)
-#' - `[` and `[<-` for extraction and assignment (see `?[.mlx` and `?[<-.mlx`)
-#' - `Ops` and `Math` for elementwise arithmetic and math (see `?Ops.mlx` and `?Math.mlx`)
-#' - `Summary` for reductions such as `sum()` and `max()` (see `?Summary.mlx`)
-#' - `as.matrix()`, `as.array()`, and `as.vector()` for conversion back to base R (see `?as.matrix.mlx`, `?as.array.mlx`, `?as.vector.mlx`)
-#' - `cbind()` and `rbind()` for binding arrays along rows or columns (see `?cbind.mlx` and `?rbind.mlx`)
-#' - `rowMeans()`, `colMeans()`, `rowSums()`, and `colSums()` for axis-wise summaries (see `?rowMeans.mlx`, `?colMeans.mlx`, `?rowSums.mlx`, `?colSums.mlx`)
-#' - `aperm()`, `t()`, and `dim<-` for shape manipulation (see `?aperm.mlx`, `?t.mlx`, `?\`dim<-.mlx\``)
-#' - `kronecker()`, `outer()`, `crossprod()`, and `tcrossprod()` for linear algebra helpers (see `?kronecker`, `?outer.mlx`, `?crossprod`, `?tcrossprod`)
-#' - `fft()`, `chol()`, `chol2inv()`, and `solve()` for numerical routines (see `?fft`, `?chol.mlx`, `?chol2inv`, `?solve.mlx`)
+#' - [`%*%`](%*%.mlx) for matrix multiplication
+#' - [`[`]([.mlx) and [`[<-`]([<-.mlx) for extraction and assignment
+#' - [`Ops`](Ops.mlx) and [`Math`](Math.mlx) for elementwise arithmetic and math
+#' - [`Summary`](Summary.mlx) for reductions such as `sum()` and `max()`
+#' - [`as.matrix()`](as.matrix.mlx), [`as.array()`](as.array.mlx), and [`as.vector()`](as.vector.mlx) for conversion back to base R
+#' - [`cbind()`](cbind.mlx) and [`rbind()`](rbind.mlx) for binding arrays along rows or columns
+#' - [`rowMeans()`](rowMeans.mlx), [`colMeans()`](colMeans.mlx), [`rowSums()`](rowSums.mlx), and [`colSums()`](colSums.mlx) for axis-wise summaries
+#' - [`aperm()`](aperm.mlx), [`t()`](t.mlx), and [`dim<-`](\`dim<-.mlx\`) for shape manipulation
+#' - [`kronecker()`](kronecker), [`outer()`](outer.mlx), [`crossprod()`](crossprod), and [`tcrossprod()`](tcrossprod) for linear algebra helpers
+#' - [`fft()`](fft.mlx), [`chol()`](chol.mlx), [`chol2inv()`](chol2inv), and [`solve()`](solve.mlx) for numerical routines
 #'
 #' @seealso [as_mlx()]
 #'

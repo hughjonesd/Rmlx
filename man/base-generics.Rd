@@ -10,16 +10,16 @@ entry points are:
 }
 \details{
 \itemize{
-\item \verb{\\\%*\\\%} for matrix multiplication (see \verb{?\\\%*\%.mlx})
-\item \code{[} and \verb{[<-} for extraction and assignment (see \verb{?[.mlx} and \verb{?[<-.mlx})
-\item \code{Ops} and \code{Math} for elementwise arithmetic and math (see \code{?Ops.mlx} and \code{?Math.mlx})
-\item \code{Summary} for reductions such as \code{sum()} and \code{max()} (see \code{?Summary.mlx})
-\item \code{as.matrix()}, \code{as.array()}, and \code{as.vector()} for conversion back to base R (see \code{?as.matrix.mlx}, \code{?as.array.mlx}, \code{?as.vector.mlx})
-\item \code{cbind()} and \code{rbind()} for binding arrays along rows or columns (see \code{?cbind.mlx} and \code{?rbind.mlx})
-\item \code{rowMeans()}, \code{colMeans()}, \code{rowSums()}, and \code{colSums()} for axis-wise summaries (see \code{?rowMeans.mlx}, \code{?colMeans.mlx}, \code{?rowSums.mlx}, \code{?colSums.mlx})
-\item \code{aperm()}, \code{t()}, and \verb{dim<-} for shape manipulation (see \code{?aperm.mlx}, \code{?t.mlx}, \verb{?\\}dim<-.mlx\``)
-\item \code{kronecker()}, \code{outer()}, \code{crossprod()}, and \code{tcrossprod()} for linear algebra helpers (see \code{?kronecker}, \code{?outer.mlx}, \code{?crossprod}, \code{?tcrossprod})
-\item \code{fft()}, \code{chol()}, \code{chol2inv()}, and \code{solve()} for numerical routines (see \code{?fft}, \code{?chol.mlx}, \code{?chol2inv}, \code{?solve.mlx})
+\item \href{\%*\%.mlx}{\code{\%*\%}} for matrix multiplication
+\item \href{[.mlx}{\code{[}} and \href{[<-.mlx}{\verb{[<-}} for extraction and assignment
+\item \href{Ops.mlx}{\code{Ops}} and \href{Math.mlx}{\code{Math}} for elementwise arithmetic and math
+\item \href{Summary.mlx}{\code{Summary}} for reductions such as \code{sum()} and \code{max()}
+\item \href{as.matrix.mlx}{\code{as.matrix()}}, \href{as.array.mlx}{\code{as.array()}}, and \href{as.vector.mlx}{\code{as.vector()}} for conversion back to base R
+\item \href{cbind.mlx}{\code{cbind()}} and \href{rbind.mlx}{\code{rbind()}} for binding arrays along rows or columns
+\item \href{rowMeans.mlx}{\code{rowMeans()}}, \href{colMeans.mlx}{\code{colMeans()}}, \href{rowSums.mlx}{\code{rowSums()}}, and \href{colSums.mlx}{\code{colSums()}} for axis-wise summaries
+\item \href{aperm.mlx}{\code{aperm()}}, \href{t.mlx}{\code{t()}}, and \href{\`dim<-.mlx\`}{\verb{dim<-}} for shape manipulation
+\item \href{kronecker}{\code{kronecker()}}, \href{outer.mlx}{\code{outer()}}, \href{crossprod}{\code{crossprod()}}, and \href{tcrossprod}{\code{tcrossprod()}} for linear algebra helpers
+\item \href{fft.mlx}{\code{fft()}}, \href{chol.mlx}{\code{chol()}}, \href{chol2inv}{\code{chol2inv()}}, and \href{solve.mlx}{\code{solve()}} for numerical routines
 }
 }
 \seealso{
