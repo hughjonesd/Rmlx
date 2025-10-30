@@ -87,6 +87,7 @@
 #' Use [is.nan()] on MLX arrays (method provided) if you need to detect them.
 #'
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}
+#' @seealso [mlx_base_methods()]
 #' @export
 #' @examples
 #' # Default float32 for numeric

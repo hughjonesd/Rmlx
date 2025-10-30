@@ -101,4 +101,6 @@ mlx_dtype(mask)  # "bool"
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}
+
+\code{\link[=mlx_base_methods]{mlx_base_methods()}}
 }

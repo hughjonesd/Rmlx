@@ -29,6 +29,16 @@
 #' on GPU (default) or CPU. All mlx arrays are stored in `float32`
 #' regardless of device. Use base R arrays if you require `float64` math.
 #'
+#' # Known Limitations
+#' Major portions of MLX still lack R wrappers. High-priority gaps include:
+#' * Scatter-style updates (`scatter*`, `take_along_axis`, etc.)
+#' * Bitwise integer kernels (bitwise AND/OR/XOR, shifts)
+#' * Advanced autograd transforms (`jvp`, `vjp`, `vmap`, custom VJP)
+#' * N-dimensional FFT helpers (e.g. `fftn`, `rfftn`)
+#' * Distributed execution primitives (NCCL/MPI collectives)
+#'
+#' These remain on the roadmap and are tracked in `dev/mlx_coverage.txt`.
+#' 
 #' @docType package
 #' @name Rmlx-package
 #' @aliases Rmlx
