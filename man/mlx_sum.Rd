@@ -42,7 +42,7 @@ An mlx array containing the reduction result.
 \description{
 These helpers mirror NumPy-style reductions, optionally collapsing one or
 more axes. Use \code{drop = FALSE} to retain reduced axes with length one
-(akin to \code{keepdims = TRUE} in NumPy).
+(akin to setting \code{drop = FALSE} in base R).
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

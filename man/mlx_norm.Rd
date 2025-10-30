@@ -4,7 +4,7 @@
 \alias{mlx_norm}
 \title{Matrix and vector norms for mlx arrays}
 \usage{
-mlx_norm(x, ord = NULL, axis = NULL, keepdims = FALSE)
+mlx_norm(x, ord = NULL, axis = NULL, drop = TRUE)
 }
 \arguments{
 \item{x}{An mlx array.}
@@ -13,8 +13,8 @@ mlx_norm(x, ord = NULL, axis = NULL, keepdims = FALSE)
 
 \item{axis}{Optional integer vector of axes (1-indexed) along which to compute the norm.}
 
-\item{keepdims}{If \code{TRUE}, keep reduced axes as size-1 dimensions.
-Equivalent to \code{drop = FALSE} in base R.}
+\item{drop}{If \code{TRUE} (default), drop dimensions of length 1. If \code{FALSE},
+retain all dimensions.}
 }
 \value{
 An mlx array containing the requested norm.

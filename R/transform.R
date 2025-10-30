@@ -35,7 +35,8 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
 #' @inheritParams common_params
 #' @param axis Optional axis to operate over (1-indexed like R). When `NULL`, the
 #'   array is flattened first.
-#' @param keepdims Logical; retain reduced dimensions with length one.
+#' @param drop Logical; when `TRUE` (default) the reduced axis is removed.
+#'   Set to `FALSE` to keep the axis as length one.
 #'
 #' @return An mlx array of indices. Indices are 1-based to match R's
 #'   conventions.
@@ -48,19 +49,19 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
 #' mlx_argmax(x)
 #' mlx_argmax(x, axis = 1)
 #' mlx_argmin(x)
-mlx_argmax <- function(x, axis = NULL, keepdims = FALSE) {
+mlx_argmax <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
-  ptr <- cpp_mlx_argmax(x$ptr, axis_idx, keepdims)
+  ptr <- cpp_mlx_argmax(x$ptr, axis_idx, !isTRUE(drop))
   .mlx_wrap_result(ptr, x$device)
 }
 
 #' @rdname mlx_argmax
 #' @export
-mlx_argmin <- function(x, axis = NULL, keepdims = FALSE) {
+mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
-  ptr <- cpp_mlx_argmin(x$ptr, axis_idx, keepdims)
+  ptr <- cpp_mlx_argmin(x$ptr, axis_idx, !isTRUE(drop))
   .mlx_wrap_result(ptr, x$device)
 }
 
@@ -209,7 +210,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 #' Log-sum-exp reduction for mlx arrays
 #'
 #' @inheritParams mlx_argmax
-#' @param keepdims Logical indicating whether reduced axes are retained.
+#' @param drop Logical indicating whether the reduced axes should be dropped (default `TRUE`).
 #' @return An mlx array containing log-sum-exp results.
 #' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp}
 #' @export
@@ -217,10 +218,10 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' as.matrix(mlx_logsumexp(x))
 #' as.matrix(mlx_logsumexp(x, axis = 2))
-mlx_logsumexp <- function(x, axis = NULL, keepdims = FALSE) {
+mlx_logsumexp <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axes_idx <- .mlx_normalize_axes(axis, x)
-  ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, keepdims)
+  ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, !isTRUE(drop))
   .mlx_wrap_result(ptr, x$device)
 }
 

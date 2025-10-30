@@ -13,7 +13,7 @@ NULL
 #'
 #' These helpers mirror NumPy-style reductions, optionally collapsing one or
 #' more axes. Use `drop = FALSE` to retain reduced axes with length one
-#' (akin to `keepdims = TRUE` in NumPy).
+#' (akin to setting `drop = FALSE` in base R).
 #'
 #' @inheritParams common_params
 #' @param axis Optional integer vector of axes (1-indexed) to reduce.
@@ -113,7 +113,7 @@ mean.mlx <- function(x, ...) {
 #' rowMeans(x)
 rowMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
   if (inherits(x, "mlx")) {
-    return(.mlx_reduce_axis(x, "mean", axis = 2L, keepdims = FALSE))
+    return(.mlx_reduce_axis(x, "mean", axis = 2L, drop = TRUE))
   }
   base::rowMeans(x, na.rm = na.rm, dims = dims, ...)
 }
@@ -129,7 +129,7 @@ rowMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' colMeans(x)
 colMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
   if (inherits(x, "mlx")) {
-    return(.mlx_reduce_axis(x, "mean", axis = 1L, keepdims = FALSE))
+    return(.mlx_reduce_axis(x, "mean", axis = 1L, drop = TRUE))
   }
   base::colMeans(x, na.rm = na.rm, dims = dims, ...)
 }
@@ -145,7 +145,7 @@ colMeans <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' rowSums(x)
 rowSums <- function(x, na.rm = FALSE, dims = 1, ...) {
   if (inherits(x, "mlx")) {
-    return(.mlx_reduce_axis(x, "sum", axis = 2L, keepdims = FALSE))
+    return(.mlx_reduce_axis(x, "sum", axis = 2L, drop = TRUE))
   }
   base::rowSums(x, na.rm = na.rm, dims = dims, ...)
 }
@@ -161,7 +161,7 @@ rowSums <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' colSums(x)
 colSums <- function(x, na.rm = FALSE, dims = 1, ...) {
   if (inherits(x, "mlx")) {
-    return(.mlx_reduce_axis(x, "sum", axis = 1L, keepdims = FALSE))
+    return(.mlx_reduce_axis(x, "sum", axis = 1L, drop = TRUE))
   }
   base::colSums(x, na.rm = na.rm, dims = dims, ...)
 }
@@ -234,16 +234,16 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @param x mlx array.
 #' @param op Character string naming the reduction.
 #' @param axis Integer (1-indexed).
-#' @param keepdims Logical preserving reduced dimension.
+#' @param drop Logical indicating whether to drop the reduced axis (default `TRUE`).
 #' @param ddof Integer delta degrees of freedom.
 #' @return mlx array with reduced axis.
 #' @noRd
-.mlx_reduce_axis <- function(x, op, axis, keepdims, ddof = 0L) {
+.mlx_reduce_axis <- function(x, op, axis, drop, ddof = 0L) {
   axis0 <- as.integer(axis) - 1L
   if (axis0 < 0L || axis0 >= length(x$dim)) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
-  ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, keepdims, as.integer(ddof))
+  ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
   .mlx_wrap_result(ptr, x$device)
 }
 
@@ -268,11 +268,11 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   axes <- unique(axes)
   if (!drop) {
     for (ax in sort(axes)) {
-      x <- .mlx_reduce_axis(x, op, axis = ax, keepdims = TRUE, ddof = ddof)
+      x <- .mlx_reduce_axis(x, op, axis = ax, drop = FALSE, ddof = ddof)
     }
   } else {
     for (ax in sort(axes, decreasing = TRUE)) {
-      x <- .mlx_reduce_axis(x, op, axis = ax, keepdims = FALSE, ddof = ddof)
+      x <- .mlx_reduce_axis(x, op, axis = ax, drop = TRUE, ddof = ddof)
     }
   }
   x

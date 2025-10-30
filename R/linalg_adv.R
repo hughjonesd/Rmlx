@@ -222,7 +222,7 @@ fft.mlx <- function(z, inverse = FALSE, ...) {
 #' mlx_norm(x)
 #' mlx_norm(x, ord = 2)
 #' mlx_norm(x, axis = 2)
-mlx_norm <- function(x, ord = NULL, axis = NULL, keepdims = FALSE) {
+mlx_norm <- function(x, ord = NULL, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   if (!is.null(ord) && !is.numeric(ord) && !is.character(ord)) {
     stop("ord must be numeric, character, or NULL.", call. = FALSE)
@@ -231,7 +231,7 @@ mlx_norm <- function(x, ord = NULL, axis = NULL, keepdims = FALSE) {
     ord <- toupper(ord)
   }
   axes_arg <- if (is.null(axis)) NULL else as.integer(axis)
-  ptr <- cpp_mlx_norm(x$ptr, ord, axes_arg, keepdims, x$device)
+  ptr <- cpp_mlx_norm(x$ptr, ord, axes_arg, !isTRUE(drop), x$device)
   .mlx_wrap_result(ptr, x$device)
 }
 

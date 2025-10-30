@@ -113,7 +113,7 @@ mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "non
 
   # Compute log-softmax for numerical stability
   # log_softmax(x) = x - log(sum(exp(x)))
-  log_sum_exp <- mlx_logsumexp(logits, axis = 2, keepdims = TRUE)
+  log_sum_exp <- mlx_logsumexp(logits, axis = 2, drop = FALSE)
   log_probs <- logits - log_sum_exp
 
   # Get log probability of target class (targets are assumed 0-indexed)

@@ -9,8 +9,7 @@
 #'   Not all functions support all types. See individual function documentation.
 #' @param axis Axis or axes to operate on (1-indexed). Negative values count from
 #'   the end. `NULL` operates on all axes or the entire array.
-#' @param keepdims If `TRUE`, keep reduced axes as size-1 dimensions.
-#'   Equivalent to `drop = FALSE` in base R.
+#' @param keepdims Deprecated; use `drop = FALSE` instead.
 #' @param drop If `TRUE` (default), drop dimensions of length 1. If `FALSE`,
 #'   retain all dimensions.
 #' @param dim Integer vector specifying array dimensions (shape).
@@ -54,5 +53,4 @@ NULL
 #' @name conv_params
 #' @keywords internal
 NULL
-
 

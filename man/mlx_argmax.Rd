@@ -5,9 +5,9 @@
 \alias{mlx_argmin}
 \title{Argmax and argmin on mlx arrays}
 \usage{
-mlx_argmax(x, axis = NULL, keepdims = FALSE)
+mlx_argmax(x, axis = NULL, drop = TRUE)
 
-mlx_argmin(x, axis = NULL, keepdims = FALSE)
+mlx_argmin(x, axis = NULL, drop = TRUE)
 }
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
@@ -15,7 +15,8 @@ mlx_argmin(x, axis = NULL, keepdims = FALSE)
 \item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
 array is flattened first.}
 
-\item{keepdims}{Logical; retain reduced dimensions with length one.}
+\item{drop}{Logical; when \code{TRUE} (default) the reduced axis is removed.
+Set to \code{FALSE} to keep the axis as length one.}
 }
 \value{
 An mlx array of indices. Indices are 1-based to match R's

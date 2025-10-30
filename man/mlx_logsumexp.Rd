@@ -4,7 +4,7 @@
 \alias{mlx_logsumexp}
 \title{Log-sum-exp reduction for mlx arrays}
 \usage{
-mlx_logsumexp(x, axis = NULL, keepdims = FALSE)
+mlx_logsumexp(x, axis = NULL, drop = TRUE)
 }
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
@@ -12,7 +12,7 @@ mlx_logsumexp(x, axis = NULL, keepdims = FALSE)
 \item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
 array is flattened first.}
 
-\item{keepdims}{Logical indicating whether reduced axes are retained.}
+\item{drop}{Logical indicating whether the reduced axes should be dropped (default \code{TRUE}).}
 }
 \value{
 An mlx array containing log-sum-exp results.
