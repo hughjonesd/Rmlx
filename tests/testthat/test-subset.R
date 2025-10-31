@@ -122,6 +122,25 @@ test_that("subset assignment with logical masks behaves like base R", {
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 
+test_that("non-contiguous numeric assignment works without fast path", {
+  old <- getOption("Rmlx_use_slice_fast_path")
+  on.exit(options(Rmlx_use_slice_fast_path = old), add = TRUE)
+  options(Rmlx_use_slice_fast_path = FALSE)
+
+  mat <- matrix(seq_len(12 * 15), 12, 15)
+  x <- as_mlx(mat)
+
+  set.seed(20251101)
+  rows <- c(2L, 5L, 9L, 12L)
+  cols <- c(1L, 4L, 6L, 9L, 14L)
+  repl <- matrix(runif(length(rows) * length(cols)), nrow = length(rows))
+
+  x[rows, cols] <- repl
+  mat[rows, cols] <- repl
+
+  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
+})
+
 test_that("subset assignment with mlx indices matches base R", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)
