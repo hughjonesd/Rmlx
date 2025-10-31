@@ -163,6 +163,26 @@ test_that("matrix indexing matches base behaviour", {
   expect_equal(as.vector(x[idx]), mat[idx], tolerance = 1e-6)
 })
 
+test_that("subset handles repeated numeric indices", {
+  mat <- matrix(seq_len(100), nrow = 10, ncol = 10)
+  x <- as_mlx(mat)
+
+  rows <- c(1L, 3L, 3L)
+  cols <- c(4L, 2L, 4L)
+
+  expect_equal(as.matrix(x[rows, cols]), mat[rows, cols, drop = FALSE])
+})
+
+test_that("subset preserves the order of numeric indices", {
+  mat <- matrix(seq_len(100), nrow = 10, ncol = 10)
+  x <- as_mlx(mat)
+
+  rows <- c(5L, 2L)
+  cols <- c(7L, 1L, 4L)
+
+  expect_equal(as.matrix(x[rows, cols]), mat[rows, cols, drop = FALSE])
+})
+
 test_that("direct gather and slice_update mirror MLX semantics", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)

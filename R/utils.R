@@ -437,7 +437,10 @@ mlx_dtype <- function(x) {
     }
   })
 
-  dims_sel <- vapply(slice_params, function(info) info$len, integer(1))
+  dims_sel <- vapply(seq_len(ndim), function(axis) {
+    sel <- normalized[[axis]]
+    if (is.null(sel)) x$dim[axis] else length(sel)
+  }, integer(1))
   total_elems <- prod(dims_sel)
   if (total_elems == 0L) {
     return(x)
@@ -459,7 +462,7 @@ mlx_dtype <- function(x) {
     return(.mlx_wrap_result(ptr, x$device))
   }
 
-  # Fallback to scatter on flattened array
+  # Fallback to explicit element-wise assignment via index matrix
   full_indices <- lapply(seq_len(ndim), function(axis) {
     if (is.null(normalized[[axis]])) {
       seq.int(0L, x$dim[axis] - 1L)
@@ -469,16 +472,12 @@ mlx_dtype <- function(x) {
   })
 
   grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
-  grid_mat <- as.matrix(grid)
-  strides <- c(1L, cumprod(x$dim)[-length(x$dim)])
-  linear_idx <- as.integer(grid_mat %*% strides)
-
-  flat <- mlx_flatten(x)
-  idx_mlx <- as_mlx(linear_idx, dtype = "int64", device = x$device)
-  updates_mlx <- as_mlx(as.vector(value_array), dtype = x$dtype, device = x$device)
-
-  flat_updated <- .mlx_scatter_axis(flat, idx_mlx, updates_mlx, axis = 0L)
-  mlx_reshape(flat_updated, x$dim)
+  coord_mat <- as.matrix(grid)
+  if (!is.matrix(coord_mat)) {
+    coord_mat <- matrix(coord_mat, ncol = ndim)
+  }
+  idx_mat <- coord_mat + 1L
+  .mlx_matrix_assign(x, idx_mat, value_array)
 }
 
 #' Matrix-style subsetting helper.
