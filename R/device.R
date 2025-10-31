@@ -2,7 +2,7 @@
 #'
 #' @param value New default device ("gpu" or "cpu"). If missing, returns current default.
 #' @return Current default device (character)
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/metal.html}
+#' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 #' @export
 #' @examples
 #' mlx_default_device()  # Get current default
@@ -24,7 +24,7 @@ mlx_default_device <- function(value) {
 #'
 #' @param device Device identifier ("gpu" or "cpu") or an `mlx_stream` created by
 #'   [mlx_new_stream()].
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/metal.html}
+#' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -47,7 +47,7 @@ mlx_synchronize <- function(device = c("gpu", "cpu")) {
 #' @param device Device to use (`"gpu"` or `"cpu"`).
 #' @param code Expression to evaluate while `device` is active.
 #' @return The result of evaluating `code`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/metal.html}
+#' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 #' @export
 #' @examples
 #' old <- mlx_default_device()

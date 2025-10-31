@@ -23,5 +23,5 @@ model <- mlx_linear(2, 1, bias = FALSE)
 opt <- mlx_optimizer_sgd(mlx_parameters(model), lr = 0.1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.optimizers.SGD}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.optimizers.SGD}{mlx.optimizers.SGD}
 }

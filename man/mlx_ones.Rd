@@ -33,5 +33,5 @@ ones <- mlx_ones(c(2, 2), dtype = "float64", device = "cpu")
 ones_int <- mlx_ones(c(3, 3), dtype = "int32")
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones}{mlx.core.ones}
 }

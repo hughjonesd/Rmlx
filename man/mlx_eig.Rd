@@ -22,5 +22,5 @@ eig$values
 eig$vectors
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eig}
+\href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eig}{mlx.linalg.eig}
 }

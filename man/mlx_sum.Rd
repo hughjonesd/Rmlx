@@ -56,11 +56,11 @@ mlx_var(x, axis = 2)
 mlx_std(x, ddof = 1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.prod},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.all},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.any},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.var},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.std}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum}{mlx.core.sum},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.prod}{mlx.core.prod},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.all}{mlx.core.all},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.any}{mlx.core.any},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}{mlx.core.mean},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.var}{mlx.core.var},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.std}{mlx.core.std}
 }

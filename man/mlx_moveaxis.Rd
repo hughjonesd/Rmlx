@@ -43,5 +43,5 @@ moved <- mlx_moveaxis(x, source = 1, destination = 3)
 permuted <- aperm(x, c(2, 1, 3))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.moveaxis}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.moveaxis}{mlx.core.moveaxis}
 }

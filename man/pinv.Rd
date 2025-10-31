@@ -20,5 +20,5 @@ x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
 pinv(x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv}
+\href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv}{mlx.linalg.pinv}
 }

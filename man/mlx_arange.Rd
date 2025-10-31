@@ -38,5 +38,5 @@ mlx_arange(5)                    # 0, 1, 2, 3, 4
 mlx_arange(5, start = 1, step = 2) # 1, 3
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.arange}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.arange}{mlx.core.arange}
 }

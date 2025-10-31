@@ -5,7 +5,7 @@
 #'   `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`, `"uint32"`,
 #'   `"uint64"`, `"bool"`, or `"complex64"`.
 #' @return An mlx array filled with zeros.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros}
+#' @seealso [mlx.core.zeros](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros)
 #' @export
 #' @examples
 #' zeros <- mlx_zeros(c(2, 3))
@@ -25,7 +25,7 @@ mlx_zeros <- function(dim,
 #'
 #' @inheritParams mlx_zeros
 #' @return An mlx array filled with ones.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones}
+#' @seealso [mlx.core.ones](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones)
 #' @export
 #' @examples
 #' ones <- mlx_ones(c(2, 2), dtype = "float64", device = "cpu")
@@ -51,7 +51,7 @@ mlx_ones <- function(dim,
 #' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
 #' @inheritParams common_params
 #' @return An mlx array of zeros matching `x`.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.zeros_like](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like)
 #' @export
 #' @examples
 #' base <- mlx_ones(c(2, 2))
@@ -87,7 +87,7 @@ mlx_zeros_like <- function(x,
 #' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
 #' @inheritParams common_params
 #' @return An mlx array of ones matching `x`.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.ones_like](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like)
 #' @export
 #' @examples
 #' base <- mlx_full(c(2, 3), 5)
@@ -122,7 +122,7 @@ mlx_ones_like <- function(x,
 #'   If omitted, defaults to `"complex64"` for complex scalars, `"bool"` for logical scalars,
 #'   and `"float32"` otherwise.
 #' @return An mlx array filled with the supplied value.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.full}
+#' @seealso [mlx.core.full](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.full)
 #' @export
 #' @examples
 #' filled <- mlx_full(c(2, 2), 3.14)
@@ -167,7 +167,7 @@ mlx_full <- function(dim,
 #'   negative values shift downward.
 #' @inheritParams mlx_zeros
 #' @return An mlx matrix with ones on the selected diagonal and zeros elsewhere.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eye}
+#' @seealso [mlx.core.eye](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eye)
 #' @export
 #' @examples
 #' eye <- mlx_eye(3)
@@ -199,7 +199,7 @@ mlx_eye <- function(n,
 #' @param n Size of the square matrix.
 #' @inheritParams mlx_eye
 #' @return An mlx identity matrix.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.identity}
+#' @seealso [mlx.core.identity](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.identity)
 #' @export
 #' @examples
 #' I4 <- mlx_identity(4)
@@ -230,7 +230,7 @@ mlx_identity <- function(n,
 #' @param dtype MLX dtype to use (`"float32"` or `"float64"`).
 #' @param x Object coercible to `mlx`.
 #' @return An `mlx` array.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tri}
+#' @seealso [mlx.core.tri](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tri)
 #' @export
 #' @examples
 #' mlx_tri(3)          # 3x3 lower-triangular mask
@@ -342,7 +342,7 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
 #' @param dtype MLX dtype (`"float32"` or `"float64"`).
 #' @inheritParams mlx_zeros
 #' @return A 1D mlx array.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.arange}
+#' @seealso [mlx.core.arange](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.arange)
 #' @export
 #' @examples
 #' mlx_arange(5)                    # 0, 1, 2, 3, 4
@@ -386,7 +386,7 @@ mlx_arange <- function(stop,
 #' @param num Number of samples to generate.
 #' @inheritParams mlx_arange
 #' @return A 1D mlx array.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.linspace}
+#' @seealso [mlx.core.linspace](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.linspace)
 #' @export
 #' @examples
 #' mlx_linspace(0, 1, num = 5)

@@ -30,5 +30,5 @@ mlx_real(z)
 Im(z)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#complex-helpers}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#complex-helpers}{mlx.core.array}
 }

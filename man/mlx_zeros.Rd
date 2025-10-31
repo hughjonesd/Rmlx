@@ -33,5 +33,5 @@ zeros <- mlx_zeros(c(2, 3))
 zeros_int <- mlx_zeros(c(2, 3), dtype = "int32")
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros}{mlx.core.zeros}
 }

@@ -31,5 +31,5 @@ L <- chol(A, pivot = FALSE, upper = FALSE)
 A_inv <- mlx_cholesky_inv(as_mlx(L))
 }
 \seealso{
-\code{\link[=chol2inv]{chol2inv()}}, \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}
+\code{\link[=chol2inv]{chol2inv()}}, \href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}{mlx.core.linalg.cholesky_inv}
 }

@@ -42,5 +42,5 @@ cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2), device = "cpu")
 samples <- mlx_rand_multivariate_normal(c(100, 2), mean, cov, device = "cpu")
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.multivariate_normal}
+\href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.multivariate_normal}{mlx.core.random.multivariate_normal}
 }

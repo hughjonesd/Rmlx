@@ -23,5 +23,5 @@ x <- as_mlx(matrix(1:4, 2, 2))
 mlx_expand_dims(x, axis = 1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.expand_dims}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.expand_dims}{mlx.core.expand_dims}
 }

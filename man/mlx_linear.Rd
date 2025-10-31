@@ -34,5 +34,5 @@ x <- as_mlx(matrix(1:6, 2, 3))
 mlx_forward(layer, x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Linear}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Linear}{mlx.nn.Linear}
 }

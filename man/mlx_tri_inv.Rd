@@ -23,5 +23,5 @@ L <- as_mlx(matrix(c(1, 2, 0, 3, 0, 0, 4, 5, 6), 3, 3, byrow = TRUE))
 L_inv <- mlx_tri_inv(L, upper = FALSE)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.tri_inv}
+\href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.tri_inv}{mlx.core.linalg.tri_inv}
 }

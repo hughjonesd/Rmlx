@@ -30,5 +30,5 @@ k <- mlx_key(12)
 raw_bits <- mlx_key_bits(c(4, 4), key = k)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bits}
+\href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bits}{mlx.core.random.bits}
 }

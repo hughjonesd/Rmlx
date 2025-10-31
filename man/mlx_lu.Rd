@@ -24,5 +24,5 @@ L <- lu_result$l  # Lower triangular
 U <- lu_result$u  # Upper triangular
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.lu}
+\href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.lu}{mlx.core.linalg.lu}
 }

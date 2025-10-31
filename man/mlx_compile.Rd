@@ -128,5 +128,5 @@ results <- compiled_fn(x, w)  # Returns list(y, norm)
 \seealso{
 \code{\link[=mlx_disable_compile]{mlx_disable_compile()}}, \code{\link[=mlx_enable_compile]{mlx_enable_compile()}}
 
-\url{https://ml-explore.github.io/mlx/build/html/usage/compile.html}
+\href{https://ml-explore.github.io/mlx/build/html/usage/compile.html}{mlx.core.compile}
 }

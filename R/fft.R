@@ -16,7 +16,7 @@
 #'   (or [mlx_default_device()] for non-mlx inputs).
 #'
 #' @return An `mlx` array containing complex frequency coefficients.
-#' @seealso [fft()], \url{https://ml-explore.github.io/mlx/build/html/python/fft.html}
+#' @seealso [fft()], [mlx.fft](https://ml-explore.github.io/mlx/build/html/python/fft.html)
 #' @export
 #' @examples
 #' x <- as_mlx(c(1, 2, 3, 4))

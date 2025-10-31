@@ -32,6 +32,6 @@ mlx_argmax(x, axis = 1)
 mlx_argmin(x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmax},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmin}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmax}{mlx.core.argmax},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmin}{mlx.core.argmin}
 }

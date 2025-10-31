@@ -59,7 +59,7 @@
 #'   than 2 dimensions and preserves all dimensions except the first (which is
 #'   summed across inputs). Base R's `rbind()` flattens higher-dimensional arrays
 #'   to matrices before binding.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
+#' @seealso [mlx.core.concatenate](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -77,7 +77,7 @@ rbind.mlx <- function(..., deparse.level = 1) {
 #'   than 2 dimensions and preserves all dimensions except the second (which is
 #'   summed across inputs). Base R's `cbind()` flattens higher-dimensional arrays
 #'   to matrices before binding.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
+#' @seealso [mlx.core.concatenate](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -99,7 +99,7 @@ cbind.mlx <- function(..., deparse.level = 1) {
 #' create a new axis use [mlx_stack()].
 #'
 #' @return An mlx array formed by concatenating the inputs along `along`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
+#' @seealso [mlx.core.concatenate](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate)
 #' @export
 #' @examples
 #' x <- as_mlx(array(1:12, c(2, 3, 2)))

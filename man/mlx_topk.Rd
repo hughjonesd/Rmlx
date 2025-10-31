@@ -57,7 +57,7 @@ as.integer(as.matrix(idx))  # 1-based indices
 mlx_topk(as_mlx(matrix(1:6, 2, 3)), k = 1, axis = 1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.topk},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.partition},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argpartition}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.topk}{mlx.core.topk},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.partition}{mlx.core.partition},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argpartition}{mlx.core.argpartition}
 }

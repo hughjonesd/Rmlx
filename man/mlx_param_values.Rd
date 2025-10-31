@@ -21,5 +21,5 @@ layer <- mlx_linear(2, 1)
 vals <- mlx_param_values(mlx_parameters(layer))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.parameters}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.parameters}{mlx.nn.Module.parameters}
 }

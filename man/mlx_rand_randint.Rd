@@ -39,5 +39,5 @@ samples <- mlx_rand_randint(c(3, 3), low = 0, high = 10)
 samples <- mlx_rand_randint(c(2, 5), low = -5, high = 5)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.randint}
+\href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.randint}{mlx.core.random.randint}
 }

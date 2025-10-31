@@ -23,5 +23,7 @@ An mlx boolean array.
 MLX elementwise predicates, returning boolean arrays.
 }
 \seealso{
-\url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isnan}{mlx.core.isnan},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isinf}{mlx.core.isinf},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isfinite}{mlx.core.isfinite}
 }

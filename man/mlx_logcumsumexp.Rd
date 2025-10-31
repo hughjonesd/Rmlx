@@ -23,10 +23,10 @@ Log cumulative sum exponential for mlx arrays
 }
 \examples{
 x <- as_mlx(1:4)
-as.vector(as.matrix(mlx_logcumsumexp(x)))
+as.vector(mlx_logcumsumexp(x))
 m <- as_mlx(matrix(1:6, 2, 3))
 as.matrix(mlx_logcumsumexp(m, axis = 2))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logaddexp}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logaddexp}{mlx.core.logaddexp}
 }

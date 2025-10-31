@@ -5,7 +5,7 @@
 #'   computes the matrix inverse.
 #' @param ... Additional arguments (for compatibility with base::solve)
 #' @return An mlx object containing the solution
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve}
+#' @seealso [mlx.linalg.solve](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve)
 #' @export
 #' @method solve mlx
 #' @examples
@@ -60,7 +60,7 @@ kronecker.default <- function(X, Y, FUN = "*", make.dimnames = FALSE, ...) {
 #'
 #' @param a,b Objects coercible to `mlx`.
 #' @return An `mlx` array representing the Kronecker product.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.kron}
+#' @seealso [mlx.core.kron](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.kron)
 #' @export
 #' @examples
 #' A <- as_mlx(matrix(1:4, 2, 2))

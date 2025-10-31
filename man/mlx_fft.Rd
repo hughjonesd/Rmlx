@@ -46,5 +46,5 @@ arr <- as_mlx(array(1:8, dim = c(2, 2, 2)))
 mlx_fftn(arr)
 }
 \seealso{
-\code{\link[=fft]{fft()}}, \url{https://ml-explore.github.io/mlx/build/html/python/fft.html}
+\code{\link[=fft]{fft()}}, \href{https://ml-explore.github.io/mlx/build/html/python/fft.html}{mlx.fft}
 }

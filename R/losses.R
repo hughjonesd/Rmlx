@@ -6,7 +6,7 @@
 #' @param targets Target values as an mlx array.
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
 #' @return An mlx array containing the loss.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.mse_loss}
+#' @seealso [mlx.nn.losses.mse_loss](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.mse_loss)
 #' @export
 #' @examples
 #' preds <- as_mlx(matrix(c(1.5, 2.3, 0.8), 3, 1))
@@ -35,7 +35,7 @@ mlx_mse_loss <- function(predictions, targets, reduction = c("mean", "sum", "non
 #' @param targets Target values as an mlx array.
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
 #' @return An mlx array containing the loss.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.l1_loss}
+#' @seealso [mlx.nn.losses.l1_loss](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.l1_loss)
 #' @export
 #' @examples
 #' preds <- as_mlx(matrix(c(1.5, 2.3, 0.8), 3, 1))
@@ -64,7 +64,7 @@ mlx_l1_loss <- function(predictions, targets, reduction = c("mean", "sum", "none
 #' @param targets Binary target values as an mlx array (0 or 1).
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
 #' @return An mlx array containing the loss.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.binary_cross_entropy}
+#' @seealso [mlx.nn.losses.binary_cross_entropy](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.binary_cross_entropy)
 #' @export
 #' @examples
 #' preds <- as_mlx(matrix(c(0.9, 0.2, 0.8), 3, 1))
@@ -98,7 +98,7 @@ mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean",
 #' @param targets Target class indices as an mlx array or integer vector.
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
 #' @return An mlx array containing the loss.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.cross_entropy}
+#' @seealso [mlx.nn.losses.cross_entropy](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.cross_entropy)
 #' @export
 #' @examples
 #' # Logits for 3 samples, 4 classes

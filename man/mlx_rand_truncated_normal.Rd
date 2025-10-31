@@ -35,5 +35,5 @@ Sample from a truncated normal distribution on mlx arrays
 samples <- mlx_rand_truncated_normal(-1, 1, c(5, 5))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.truncated_normal}
+\href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.truncated_normal}{mlx.core.random.truncated_normal}
 }

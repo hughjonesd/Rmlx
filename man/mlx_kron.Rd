@@ -22,5 +22,5 @@ B <- as_mlx(matrix(c(0, 5, 6, 7), 2, 2))
 mlx_kron(A, B)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.kron}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.kron}{mlx.core.kron}
 }

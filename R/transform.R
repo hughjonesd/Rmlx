@@ -41,8 +41,8 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
 #' @return An mlx array of indices. Indices are 1-based to match R's
 #'   conventions.
 #' @seealso
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmax},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmin}
+#'   [mlx.core.argmax](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmax),
+#'   [mlx.core.argmin](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argmin)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(1, 5, 3, 2), 2, 2))
@@ -85,8 +85,8 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
 #' sorting), see [mlx_partition()] and [mlx_argpartition()].
 #'
 #' @seealso
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sort},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argsort}
+#'   [mlx.core.sort](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sort),
+#'   [mlx.core.argsort](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argsort)
 #' @export
 #' @examples
 #' x <- as_mlx(c(3, 1, 4, 2))
@@ -143,9 +143,9 @@ mlx_argsort <- function(x, axis = NULL) {
 #' Use `mlx_argsort()` if you need fully sorted indices.
 #'
 #' @seealso
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.topk},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.partition},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argpartition}
+#'   [mlx.core.topk](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.topk),
+#'   [mlx.core.partition](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.partition),
+#'   [mlx.core.argpartition](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argpartition)
 #' @export
 #' @examples
 #' scores <- as_mlx(c(0.7, 0.2, 0.9, 0.4))
@@ -250,7 +250,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 #' @inheritParams mlx_argmax
 #' @param drop Logical indicating whether the reduced axes should be dropped (default `TRUE`).
 #' @return An mlx array containing log-sum-exp results.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp}
+#' @seealso [mlx.core.logsumexp](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 2, 3))
@@ -270,7 +270,7 @@ mlx_logsumexp <- function(x, axis = NULL, drop = TRUE) {
 #' @param reverse Logical flag for reverse accumulation.
 #' @param inclusive Logical flag controlling inclusivity.
 #' @return An mlx array.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logaddexp}
+#' @seealso [mlx.core.logaddexp](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logaddexp)
 #' @export
 #' @examples
 #' x <- as_mlx(1:4)
@@ -289,7 +289,7 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
 #' @inheritParams mlx_argmax
 #' @param precise Logical; compute in higher precision for stability.
 #' @return An mlx array with normalized probabilities.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax}
+#' @seealso [mlx.core.softmax](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 2, 3))

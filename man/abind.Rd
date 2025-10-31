@@ -30,5 +30,5 @@ z <- abind(x, y, along = 3)
 dim(z)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}{mlx.core.concatenate}
 }

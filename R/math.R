@@ -3,7 +3,7 @@
 #' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
 #' @return An mlx object with the result
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html}
+#' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html)
 #' @export
 #' @method Math mlx
 #' @examples
@@ -83,7 +83,7 @@ Math.mlx <- function(x, ...) {
 #' @return An mlx array of booleans with element-wise comparison results
 #'
 #' @seealso [mlx_allclose()], [all.equal.mlx()],
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.isclose.html}
+#'   [mlx.core.isclose](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.isclose.html)
 #' @export
 #' @examples
 #' a <- as_mlx(c(1.0, 2.0, 3.0))
@@ -119,7 +119,7 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #' @return An mlx array containing a single boolean value
 #'
 #' @seealso [mlx_isclose()], [all.equal.mlx()],
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.allclose.html}
+#'   [mlx.core.allclose](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.allclose.html)
 #' @export
 #' @examples
 #' a <- as_mlx(c(1.0, 2.0, 3.0))
@@ -143,7 +143,7 @@ mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #'
 #' @inheritParams mlx_array_required
 #' @return An `mlx` array containing the requested component.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#complex-helpers}
+#' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html#complex-helpers)
 #' @export
 #' @examples
 #' z <- as_mlx(1:4 + 1i * (4:1))
@@ -180,7 +180,8 @@ mlx_conjugate <- function(x) {
 #'
 #' @inheritParams mlx_array_required
 #' @return An mlx array with transformed angular units.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.degrees](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.degrees),
+#'   [mlx.core.radians](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.radians)
 #' @export
 #' @examples
 #' x <- as_mlx(pi / 2)
@@ -211,7 +212,8 @@ mlx_radians <- function(x) {
 #'
 #' @inheritParams mlx_array_required
 #' @return An mlx boolean array highlighting infinite entries.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.isposinf](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isposinf),
+#'   [mlx.core.isneginf](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isneginf)
 #' @export
 #' @examples
 #' vals <- as_mlx(c(-Inf, -1, 0, Inf))
@@ -239,7 +241,9 @@ mlx_isneginf <- function(x) {
 #'
 #' @inheritParams mlx_array_required
 #' @return An mlx boolean array.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.isnan](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isnan),
+#'   [mlx.core.isinf](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isinf),
+#'   [mlx.core.isfinite](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isfinite)
 #' @name mlx_isnan
 NULL
 
@@ -278,7 +282,7 @@ mlx_isfinite <- function(x) {
 #' @param posinf Optional replacement for positive infinity.
 #' @param neginf Optional replacement for negative infinity.
 #' @return An mlx array with non-finite values replaced.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.nan_to_num](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.nan_to_num)
 #' @export
 #' @examples
 #' x <- as_mlx(c(-Inf, -1, NaN, 3, Inf))

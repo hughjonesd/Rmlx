@@ -3,7 +3,7 @@
 #' @param e1 First operand (mlx or numeric)
 #' @param e2 Second operand (mlx or numeric)
 #' @return An mlx object
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html}
+#' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html)
 #' @export
 #' @method Ops mlx
 #' @examples
@@ -61,7 +61,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #'
 #' @inheritParams base::`%*%`
 #' @return An mlx object
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul}
+#' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
 #' @method %*% mlx
 #' @examples
@@ -104,7 +104,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' @param mat2 Right matrix operand.
 #' @param alpha,beta Numeric scalars controlling the fused linear combination.
 #' @return An `mlx` matrix with the same shape as `input`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.addmm}
+#' @seealso [mlx.core.addmm](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.addmm)
 #' @export
 #' @examples
 #' \dontrun{
@@ -266,7 +266,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #'
 #' @param x,y mlx arrays or objects coercible with [as_mlx()].
 #' @return An mlx array containing the elementwise minimum.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum}
+#' @seealso [mlx.core.minimum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum)
 #' @export
 #' @examples
 #' \dontrun{
@@ -282,7 +282,7 @@ mlx_minimum <- function(x, y) {
 #'
 #' @inheritParams mlx_minimum
 #' @return An mlx array containing the elementwise maximum.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum}
+#' @seealso [mlx.core.maximum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum)
 #' @export
 #' @examples
 #' \dontrun{
@@ -319,7 +319,7 @@ mlx_maximum <- function(x, y) {
 #' @inheritParams common_params
 #' @param min,max Scalar bounds. Use `NULL` to leave a bound open.
 #' @return An mlx array with values clipped to `[min, max]`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.clip}
+#' @seealso [mlx.core.clip](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.clip)
 #' @export
 #' @examples
 #' \dontrun{

@@ -7,7 +7,7 @@
 #' @param pivot Ignored; pivoted decomposition is not supported.
 #' @param ... Additional arguments (unused).
 #' @return Upper-triangular Cholesky factor as an mlx matrix.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky}
+#' @seealso [mlx.linalg.cholesky](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky)
 #' @export
 #' @method chol mlx
 #' @examples
@@ -65,7 +65,7 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
 #' @param LAPACK Ignored; set to `FALSE`.
 #' @param ... Additional arguments (unused).
 #' @return A list with components `Q` and `R`, each an mlx matrix.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.qr}
+#' @seealso [mlx.linalg.qr](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.qr)
 #' @export
 #' @method qr mlx
 #' @examples
@@ -114,7 +114,7 @@ svd.default <- function(x, ...) base::svd(x, ...)
 #' @param nv Number of right singular vectors to return (0 or `min(dim(x))`).
 #' @param ... Additional arguments (unused).
 #' @return A list with components `d`, `u`, and `v`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.svd}
+#' @seealso [mlx.linalg.svd](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.svd)
 #' @export
 #' @method svd mlx
 #' @examples
@@ -158,7 +158,7 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
 #'
 #' @param x An mlx object or coercible matrix.
 #' @return An mlx object containing the pseudoinverse.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv}
+#' @seealso [mlx.linalg.pinv](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
@@ -181,7 +181,7 @@ pinv <- function(x) {
 #' @param ... Passed through to the default method.
 #' @return For mlx inputs, an mlx object containing complex frequency
 #'   coefficients; otherwise the base R result.
-#' @seealso [stats::fft()], [mlx_fft()], [mlx_fft2()], [mlx_fftn()], \url{https://ml-explore.github.io/mlx/build/html/python/fft.html#mlx.core.fft.fft}
+#' @seealso [stats::fft()], [mlx_fft()], [mlx_fft2()], [mlx_fftn()], [mlx.core.fft.fft](https://ml-explore.github.io/mlx/build/html/python/fft.html#mlx.core.fft.fft)
 #' @export
 #' @examples
 #' z <- as_mlx(c(1, 2, 3, 4))
@@ -210,7 +210,7 @@ fft.mlx <- function(z, inverse = FALSE, ...) {
 #' @param axis Optional integer vector of axes (1-indexed) along which to compute the norm.
 #' @inheritParams common_params
 #' @return An mlx array containing the requested norm.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.norm}
+#' @seealso [mlx.linalg.norm](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.norm)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -234,7 +234,7 @@ mlx_norm <- function(x, ord = NULL, axis = NULL, drop = TRUE) {
 #'
 #' @inheritParams mlx_matrix_required
 #' @return A list with components `values` and `vectors`, both mlx arrays.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eig}
+#' @seealso [mlx.linalg.eig](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eig)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(2, -1, 0, 2), 2, 2))
@@ -256,7 +256,7 @@ mlx_eig <- function(x) {
 #'
 #' @inheritParams mlx_eig
 #' @return An mlx array containing eigenvalues.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvals}
+#' @seealso [mlx.linalg.eigvals](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvals)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(3, 1, 0, 2), 2, 2))
@@ -273,7 +273,7 @@ mlx_eigvals <- function(x) {
 #' @inheritParams mlx_eig
 #' @param uplo Character string indicating which triangle to use ("L" or "U").
 #' @return An mlx array containing eigenvalues.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvalsh}
+#' @seealso [mlx.linalg.eigvalsh](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvalsh)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
@@ -290,7 +290,7 @@ mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
 #'
 #' @inheritParams mlx_eigvalsh
 #' @return A list with components `values` and `vectors`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigh}
+#' @seealso [mlx.linalg.eigh](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigh)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
@@ -312,7 +312,7 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
 #' @param b Right-hand side matrix or vector.
 #' @param upper Logical; if `TRUE`, `a` is upper triangular, otherwise lower.
 #' @return An mlx array solution.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular}
+#' @seealso [mlx.linalg.solve_triangular](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular)
 #' @export
 #' @examples
 #' a <- as_mlx(matrix(c(2, 1, 0, 3), 2, 2))
@@ -331,7 +331,7 @@ mlx_solve_triangular <- function(a, b, upper = FALSE) {
 #' @param a,b Input mlx arrays containing 3D vectors.
 #' @param axis Axis along which to compute the cross product (1-indexed, default last).
 #' @return An mlx array of cross products.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cross}
+#' @seealso [mlx.linalg.cross](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cross)
 #' @export
 #' @examples
 #' u <- as_mlx(c(1, 0, 0))
@@ -353,7 +353,7 @@ mlx_cross <- function(a, b, axis = -1L) {
 #' @param offset Offset of the diagonal (0 for main diagonal, positive for above, negative for below).
 #' @param axis1,axis2 Axes along which the diagonals are taken (1-indexed, default 1 and 2).
 #' @return An mlx scalar or array containing the trace.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.trace.html}
+#' @seealso [mlx.core.trace](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.trace.html)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:9, 3, 3))
@@ -373,7 +373,7 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' @param offset Diagonal offset (0 for main diagonal, positive for above, negative for below).
 #' @param axis1,axis2 For multi-dimensional arrays, which axes define the 2D planes (1-indexed).
 #' @return An mlx array.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.diagonal.html}
+#' @seealso [mlx.core.diagonal](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.diagonal.html)
 #' @export
 #' @examples
 #' # Extract diagonal
@@ -396,7 +396,7 @@ mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' @param FUN Function to apply (for default method).
 #' @param ... Additional arguments passed to methods.
 #' @return For mlx inputs, an mlx matrix. Otherwise delegates to `base::outer`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.outer.html}
+#' @seealso [mlx.core.outer](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.outer.html)
 #' @export
 #' @examples
 #' x <- as_mlx(c(1, 2, 3))
@@ -426,7 +426,7 @@ outer.mlx <- function(X, Y, FUN = "*", ...) {
 #' @param axis Which axis to unflatten (1-indexed).
 #' @param shape Integer vector specifying the new shape for the unflattened axis.
 #' @return An mlx array with the axis expanded.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.unflatten.html}
+#' @seealso [mlx.core.unflatten](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.unflatten.html)
 #' @export
 #' @examples
 #' # Flatten and unflatten
@@ -445,7 +445,7 @@ mlx_unflatten <- function(x, axis, shape) {
 #'
 #' @inheritParams mlx_array_required
 #' @return The inverse of `x`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.inv}
+#' @seealso [mlx.core.linalg.inv](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.inv)
 #' @export
 #' @examples
 #' A <- as_mlx(matrix(c(4, 7, 2, 6), 2, 2))
@@ -465,7 +465,7 @@ mlx_inv <- function(x) {
 #' @inheritParams mlx_array_required
 #' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
 #' @return The inverse of the triangular matrix `x`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.tri_inv}
+#' @seealso [mlx.core.linalg.tri_inv](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.tri_inv)
 #' @export
 #' @examples
 #' # Lower triangular matrix
@@ -487,7 +487,7 @@ mlx_tri_inv <- function(x, upper = FALSE) {
 #' @inheritParams mlx_array_required
 #' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
 #' @return The inverse of the original matrix (A^-1 where A = LL' or A = U'U).
-#' @seealso [chol2inv()], \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}
+#' @seealso [chol2inv()], [mlx.core.linalg.cholesky_inv](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv)
 #' @export
 #' @examples
 #' # Create a positive definite matrix
@@ -510,7 +510,7 @@ mlx_cholesky_inv <- function(x, upper = FALSE) {
 #' @inheritParams mlx_array_required
 #' @return A list with components `p` (pivot indices), `l` (lower triangular),
 #'   and `u` (upper triangular). The relationship is `A = L[P, ] %*% U`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.lu}
+#' @seealso [mlx.core.linalg.lu](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.lu)
 #' @export
 #' @examples
 #' A <- as_mlx(matrix(rnorm(16), 4, 4))

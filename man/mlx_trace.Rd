@@ -26,5 +26,5 @@ mlx_trace(x)
 mlx_trace(x, offset = 1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.trace.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.trace.html}{mlx.core.trace}
 }

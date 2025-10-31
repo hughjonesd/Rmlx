@@ -55,7 +55,7 @@ mlx_module_set_training <- function(module, mode = TRUE) {
 #' @param bias Should a bias term be included?
 #' @inheritParams common_params
 #' @return An object of class `mlx_module`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Linear}
+#' @seealso [mlx.nn.Linear](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Linear)
 #' @importFrom stats rnorm
 #' @export
 #' @examples
@@ -109,7 +109,7 @@ mlx_linear <- function(in_features,
 #' Rectified linear activation module
 #'
 #' @return An `mlx_module` applying ReLU.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.ReLU}
+#' @seealso [mlx.nn.ReLU](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.ReLU)
 #' @export
 #' @examples
 #' act <- mlx_relu()
@@ -132,7 +132,7 @@ mlx_relu <- function() {
 #'
 #' @param ... Modules to compose.
 #' @return An `mlx_module`.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Sequential}
+#' @seealso [mlx.nn.Sequential](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Sequential)
 #' @export
 #' @examples
 #' set.seed(1)
@@ -179,7 +179,7 @@ mlx_sequential <- function(...) {
 #' @param module An `mlx_module`.
 #' @inheritParams mlx_array_required
 #' @return Output array.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module}
+#' @seealso [mlx.nn.Module](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module)
 #' @export
 #' @examples
 #' set.seed(1)
@@ -194,7 +194,7 @@ mlx_forward <- function(module, x) {
 #'
 #' @param module An `mlx_module` or list of modules.
 #' @return A list of `mlx_param` objects.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.parameters}
+#' @seealso [mlx.nn.Module.parameters](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.parameters)
 #' @export
 #' @examples
 #' set.seed(1)
@@ -251,7 +251,7 @@ mlx_param <- function(env, name) {
 #'
 #' @param params A list of `mlx_param`.
 #' @return List of mlx arrays.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.parameters}
+#' @seealso [mlx.nn.Module.parameters](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.parameters)
 #' @export
 #' @examples
 #' set.seed(1)
@@ -268,7 +268,7 @@ mlx_param_values <- function(params) {
 #'
 #' @param params A list of `mlx_param`.
 #' @param values A list of arrays.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.update}
+#' @seealso [mlx.nn.Module.update](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Module.update)
 #' @export
 #' @examples
 #' set.seed(1)
@@ -292,7 +292,7 @@ mlx_param_set_values <- function(params, values) {
 #' Gaussian Error Linear Unit activation function.
 #'
 #' @return An `mlx_module` applying GELU activation.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.GELU}
+#' @seealso [mlx.nn.GELU](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.GELU)
 #' @export
 #' @examples
 #' act <- mlx_gelu()
@@ -315,7 +315,7 @@ mlx_gelu <- function() {
 #' Sigmoid activation
 #'
 #' @return An `mlx_module` applying sigmoid activation.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Sigmoid}
+#' @seealso [mlx.nn.Sigmoid](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Sigmoid)
 #' @export
 #' @examples
 #' act <- mlx_sigmoid()
@@ -336,7 +336,7 @@ mlx_sigmoid <- function() {
 #' Tanh activation
 #'
 #' @return An `mlx_module` applying hyperbolic tangent activation.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Tanh}
+#' @seealso [mlx.nn.Tanh](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Tanh)
 #' @export
 #' @examples
 #' act <- mlx_tanh()
@@ -358,7 +358,7 @@ mlx_tanh <- function() {
 #'
 #' @param negative_slope Slope for negative values (default: 0.01).
 #' @return An `mlx_module` applying Leaky ReLU activation.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LeakyReLU}
+#' @seealso [mlx.nn.LeakyReLU](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LeakyReLU)
 #' @export
 #' @examples
 #' act <- mlx_leaky_relu(negative_slope = 0.1)
@@ -383,7 +383,7 @@ mlx_leaky_relu <- function(negative_slope = 0.01) {
 #' Sigmoid Linear Unit, also known as Swish activation.
 #'
 #' @return An `mlx_module` applying SiLU activation.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.SiLU}
+#' @seealso [mlx.nn.SiLU](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.SiLU)
 #' @export
 #' @examples
 #' act <- mlx_silu()
@@ -405,7 +405,7 @@ mlx_silu <- function() {
 #'
 #' @param axis Axis along which to apply softmax (default: -1, last axis).
 #' @return An `mlx_module` applying softmax activation.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Softmax}
+#' @seealso [mlx.nn.Softmax](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Softmax)
 #' @export
 #' @examples
 #' act <- mlx_softmax_layer()
@@ -431,7 +431,7 @@ mlx_softmax_layer <- function(axis = -1L) {
 #'
 #' @param p Probability of dropping an element (default: 0.5).
 #' @return An `mlx_module` applying dropout during training.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Dropout}
+#' @seealso [mlx.nn.Dropout](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Dropout)
 #' @export
 #' @examples
 #' set.seed(1)
@@ -481,7 +481,7 @@ mlx_dropout <- function(p = 0.5) {
 #' @param eps Small constant for numerical stability (default: 1e-5).
 #' @inheritParams common_params
 #' @return An `mlx_module` applying layer normalization.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LayerNorm}
+#' @seealso [mlx.nn.LayerNorm](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LayerNorm)
 #' @export
 #' @examples
 #' set.seed(1)
@@ -535,7 +535,7 @@ mlx_layer_norm <- function(normalized_shape, eps = 1e-5, device = mlx_default_de
 #' @param momentum Momentum for running statistics (default: 0.1).
 #' @inheritParams common_params
 #' @return An `mlx_module` applying batch normalization.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.BatchNorm}
+#' @seealso [mlx.nn.BatchNorm](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.BatchNorm)
 #' @export
 #' @examples
 #' set.seed(1)
@@ -610,7 +610,7 @@ mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1, device = ml
 #' @param embedding_dim Dimension of embedding vectors.
 #' @inheritParams common_params
 #' @return An `mlx_module` for token embeddings.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Embedding}
+#' @seealso [mlx.nn.Embedding](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Embedding)
 #' @export
 #' @examples
 #' set.seed(1)
@@ -682,7 +682,7 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
 #' @inheritParams conv_params
 #' @inheritParams common_params
 #' @return Convolved output array
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv1d.html}
+#' @seealso [mlx.core.conv1d](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv1d.html)
 #' @export
 mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
                        groups = 1L, device = mlx_default_device()) {
@@ -706,7 +706,7 @@ mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
 #' @inheritParams conv_params
 #' @inheritParams common_params
 #' @return Convolved output array
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv2d.html}
+#' @seealso [mlx.core.conv2d](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv2d.html)
 #' @export
 #' @examples
 #' # Create a simple 2D convolution
@@ -741,7 +741,7 @@ mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
 #' @inheritParams conv_params
 #' @inheritParams common_params
 #' @return Convolved output array
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv3d.html}
+#' @seealso [mlx.core.conv3d](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv3d.html)
 #' @export
 mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L, 0L),
                        dilation = c(1L, 1L, 1L), groups = 1L,
@@ -774,7 +774,7 @@ mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L
 #'
 #' @return An mlx array with the transposed convolution result
 #' @seealso [mlx_conv1d()], [mlx_conv_transpose2d()], [mlx_conv_transpose3d()]
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @seealso [mlx.nn](https://ml-explore.github.io/mlx/build/html/python/nn.html)
 #' @export
 mlx_conv_transpose1d <- function(input, weight, stride = 1L, padding = 0L,
                                   dilation = 1L, output_padding = 0L, groups = 1L,
@@ -804,7 +804,7 @@ mlx_conv_transpose1d <- function(input, weight, stride = 1L, padding = 0L,
 #'
 #' @return An mlx array with the transposed convolution result
 #' @seealso [mlx_conv2d()], [mlx_conv_transpose1d()], [mlx_conv_transpose3d()]
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @seealso [mlx.nn](https://ml-explore.github.io/mlx/build/html/python/nn.html)
 #' @export
 mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
                                   padding = c(0L, 0L), dilation = c(1L, 1L),
@@ -841,7 +841,7 @@ mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
 #'
 #' @return An mlx array with the transposed convolution result
 #' @seealso [mlx_conv3d()], [mlx_conv_transpose1d()], [mlx_conv_transpose2d()]
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @seealso [mlx.nn](https://ml-explore.github.io/mlx/build/html/python/nn.html)
 #' @export
 mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
                                   padding = c(0L, 0L, 0L), dilation = c(1L, 1L, 1L),
@@ -1073,7 +1073,7 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
 #' operation.
 #'
 #' @seealso [mlx_quantized_matmul()]
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+#' @seealso [mlx.nn](https://ml-explore.github.io/mlx/build/html/python/nn.html)
 #' @export
 mlx_gather_qmm <- function(x, w, scales, biases = NULL, lhs_indices = NULL,
                             rhs_indices = NULL, transpose = TRUE, group_size = 64L,

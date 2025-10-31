@@ -23,5 +23,5 @@ v <- as_mlx(c(0, 1, 0))
 mlx_cross(u, v)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cross}
+\href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cross}{mlx.linalg.cross}
 }

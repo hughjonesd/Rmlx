@@ -23,5 +23,5 @@ mlx_minimum(a, b)
 }
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum}{mlx.core.minimum}
 }

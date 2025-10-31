@@ -24,13 +24,13 @@ NULL
 #'   standard deviation reductions.
 #' @return An mlx array containing the reduction result.
 #' @seealso
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.prod},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.all},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.any},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.var},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.std}
+#'   [mlx.core.sum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum),
+#'   [mlx.core.prod](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.prod),
+#'   [mlx.core.all](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.all),
+#'   [mlx.core.any](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.any),
+#'   [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean),
+#'   [mlx.core.var](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.var),
+#'   [mlx.core.std](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.std)
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_sum(x)
@@ -92,7 +92,7 @@ mlx_std <- function(x, axis = NULL, drop = TRUE, ddof = 0L) {
 #' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
 #' @return An mlx scalar
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
+#' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
 #' @method mean mlx
 #' @examples
@@ -106,7 +106,7 @@ mean.mlx <- function(x, ...) {
 #'
 #' @inheritParams mlx_reduction_base
 #' @return An mlx array if `x` is mlx, otherwise a numeric vector.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
+#' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
@@ -133,7 +133,7 @@ rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #'
 #' @inheritParams mlx_reduction_base
 #' @return An mlx array if `x` is mlx, otherwise a numeric vector.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
+#' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
@@ -160,7 +160,7 @@ colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #'
 #' @inheritParams mlx_reduction_base
 #' @return An mlx array if `x` is mlx, otherwise a numeric vector.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum}
+#' @seealso [mlx.core.sum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
@@ -187,7 +187,7 @@ rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #'
 #' @inheritParams mlx_reduction_base
 #' @return An mlx array if `x` is mlx, otherwise a numeric vector.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum}
+#' @seealso [mlx.core.sum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 3, 2))
@@ -214,7 +214,7 @@ colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #'
 #' @inheritParams mlx_matrix_required
 #' @return Transposed mlx matrix
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.transpose}
+#' @seealso [mlx.core.transpose](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.transpose)
 #' @export
 #' @method t mlx
 #' @examples
@@ -233,7 +233,7 @@ t.mlx <- function(x) {
 #' @param y An mlx matrix (default: NULL, uses x)
 #' @return `t(x) %*% y` as an mlx object
 #' @param ... Additional arguments passed to base::crossprod.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul}
+#' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
 #' @method crossprod mlx
 #' @examples
@@ -250,7 +250,7 @@ crossprod.mlx <- function(x, y = NULL, ...) {
 #' @param y An mlx matrix (default: NULL, uses x)
 #' @return `x %*% t(y)` as an mlx object
 #' @param ... Additional arguments passed to base::tcrossprod.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul}
+#' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
 #' @method tcrossprod mlx
 #' @examples
@@ -418,8 +418,8 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
 #'   If `FALSE`, the cumulative operation is exclusive (starts from identity element).
 #' @return An mlx array with cumulative sums or products.
 #' @seealso [cumsum()], [cumprod()],
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumsum},
-#'   \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumprod}
+#'   [mlx.core.cumsum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumsum),
+#'   [mlx.core.cumprod](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumprod)
 #' @export
 #' @examples
 #' x <- as_mlx(1:5)

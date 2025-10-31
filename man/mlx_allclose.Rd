@@ -46,5 +46,5 @@ as.logical(as.matrix(mlx_allclose(a, b)))  # TRUE
 }
 \seealso{
 \code{\link[=mlx_isclose]{mlx_isclose()}}, \code{\link[=all.equal.mlx]{all.equal.mlx()}},
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.allclose.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.allclose.html}{mlx.core.allclose}
 }

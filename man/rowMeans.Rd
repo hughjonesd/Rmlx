@@ -33,5 +33,5 @@ x <- as_mlx(matrix(1:6, 3, 2))
 rowMeans(x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean}{mlx.core.mean}
 }

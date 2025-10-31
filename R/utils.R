@@ -160,7 +160,7 @@ dim.mlx <- function(x) {
 #' @inheritParams mlx_array_required
 #' @param newshape Integer vector specifying the new dimensions.
 #' @return An mlx array with the specified shape.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.reshape.html}
+#' @seealso [mlx.core.reshape](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.reshape.html)
 #' @export
 #' @examples
 #' x <- as_mlx(1:12)
@@ -243,7 +243,7 @@ mlx_dtype <- function(x) {
 #' @param value Replacement value(s) for `\code{[<-}` (scalar, vector, matrix,
 #'   or array) recycled to match the selection.
 #' @return Subsetted mlx object
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.take}
+#' @seealso [mlx.core.take](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.take)
 #' @name mlx_subset
 #' @importFrom utils tail
 #' @export

@@ -22,5 +22,5 @@ x <- as_mlx(matrix(1:12, 3, 4))
 mlx_forward(dropout, x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Dropout}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Dropout}{mlx.nn.Dropout}
 }

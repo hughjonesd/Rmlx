@@ -21,5 +21,5 @@ x <- as_mlx(matrix(1:6, 2, 3))
 mlx_forward(act, x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Softmax}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Softmax}{mlx.nn.Softmax}
 }

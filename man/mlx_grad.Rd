@@ -52,6 +52,6 @@ w <- as_mlx(matrix(c(1, -1), 2, 1))
 mlx_value_grad(loss, w, x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.grad},
-\url{https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.value_and_grad}
+\href{https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.grad}{mlx.core.grad},
+\href{https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.value_and_grad}{mlx.core.value_and_grad}
 }

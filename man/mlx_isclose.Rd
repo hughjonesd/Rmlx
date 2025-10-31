@@ -46,5 +46,5 @@ mlx_isclose(a, b)  # First two TRUE, last FALSE
 }
 \seealso{
 \code{\link[=mlx_allclose]{mlx_allclose()}}, \code{\link[=all.equal.mlx]{all.equal.mlx()}},
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.isclose.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.isclose.html}{mlx.core.isclose}
 }
