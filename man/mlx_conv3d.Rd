@@ -45,5 +45,5 @@ height and width, and C_in is number of input channels. Weight has shape
 \verb{(C_out, kernel_d, kernel_h, kernel_w, C_in)}.
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv3d.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv3d.html}{mlx.core.conv3d}
 }

@@ -24,5 +24,5 @@ mlx_clip(x, min = -1, max = 1)
 }
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.clip}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.clip}{mlx.core.clip}
 }

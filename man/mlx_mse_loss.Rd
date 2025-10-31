@@ -25,5 +25,5 @@ targets <- as_mlx(matrix(c(1, 2, 1), 3, 1))
 mlx_mse_loss(preds, targets)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.mse_loss}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.mse_loss}{mlx.nn.losses.mse_loss}
 }

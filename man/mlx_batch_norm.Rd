@@ -34,5 +34,5 @@ x <- as_mlx(matrix(rnorm(12), 3, 4))
 mlx_forward(bn, x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.BatchNorm}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.BatchNorm}{mlx.nn.BatchNorm}
 }

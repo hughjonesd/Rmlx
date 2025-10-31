@@ -21,5 +21,5 @@ x <- as_mlx(matrix(c(-2, -1, 0, 1, 2), 5, 1))
 mlx_forward(act, x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LeakyReLU}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LeakyReLU}{mlx.nn.LeakyReLU}
 }

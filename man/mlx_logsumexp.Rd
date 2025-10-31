@@ -26,5 +26,5 @@ as.matrix(mlx_logsumexp(x))
 as.matrix(mlx_logsumexp(x, axis = 2))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp}{mlx.core.logsumexp}
 }

@@ -47,5 +47,5 @@ mlx_tri(3)          # 3x3 lower-triangular mask
 mlx_tril(diag(3) + 2)  # keep lower part of a matrix
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tri}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tri}{mlx.core.tri}
 }

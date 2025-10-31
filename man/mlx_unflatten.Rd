@@ -26,5 +26,5 @@ x_flat <- mlx_reshape(x, c(2, 12))  # flatten last two dims
 mlx_unflatten(x_flat, axis = 2, shape = c(3, 4))  # restore original shape
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.unflatten.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.unflatten.html}{mlx.core.unflatten}
 }

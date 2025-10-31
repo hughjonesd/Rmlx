@@ -23,5 +23,5 @@ sin(x)
 round(x + 0.4)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html}{mlx.core.array}
 }

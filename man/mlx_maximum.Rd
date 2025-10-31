@@ -21,5 +21,5 @@ mlx_maximum(1:3, c(3, 2, 1))
 }
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum}{mlx.core.maximum}
 }

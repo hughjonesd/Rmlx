@@ -30,5 +30,5 @@ filled <- mlx_full(c(2, 2), 3.14)
 complex_full <- mlx_full(c(2, 2), 1+2i, dtype = "complex64")
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.full}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.full}{mlx.core.full}
 }

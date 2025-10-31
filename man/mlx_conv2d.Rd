@@ -51,5 +51,5 @@ weight <- as_mlx(array(rnorm(16*3*3*3), dim = c(16, 3, 3, 3)))  # 16 filters, 3x
 output <- mlx_conv2d(input, weight, stride = c(1, 1), padding = c(1, 1))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv2d.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv2d.html}{mlx.core.conv2d}
 }

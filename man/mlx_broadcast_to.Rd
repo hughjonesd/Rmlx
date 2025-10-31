@@ -27,5 +27,5 @@ broadcast <- mlx_broadcast_to(x, c(5, 3))
 dim(broadcast)
 }
 \seealso{
-\url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_to}{mlx.core.broadcast_to}
 }

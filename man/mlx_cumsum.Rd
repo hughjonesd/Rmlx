@@ -35,6 +35,6 @@ mlx_cumsum(mat, axis = 1)  # cumsum down rows
 }
 \seealso{
 \code{\link[=cumsum]{cumsum()}}, \code{\link[=cumprod]{cumprod()}},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumsum},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumprod}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumsum}{mlx.core.cumsum},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.cumprod}{mlx.core.cumprod}
 }

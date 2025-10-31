@@ -26,5 +26,5 @@ targets <- as_mlx(c(1, 3, 2))  # 0-indexed class labels
 mlx_cross_entropy(logits, targets)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.cross_entropy}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.cross_entropy}{mlx.nn.losses.cross_entropy}
 }

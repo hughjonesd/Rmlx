@@ -29,5 +29,5 @@ Sample from the Gumbel distribution on mlx arrays
 samples <- mlx_rand_gumbel(c(2, 3))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.gumbel}
+\href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.gumbel}{mlx.core.random.gumbel}
 }

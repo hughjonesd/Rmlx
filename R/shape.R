@@ -59,7 +59,7 @@
 #' @param ... One or more arrays (or a single list of arrays) coercible to mlx.
 #' @param axis Position of the new axis (1-indexed, negative values count from the end).
 #' @return An mlx array with one additional dimension.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.stack}
+#' @seealso [mlx.core.stack](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.stack)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -89,7 +89,7 @@ mlx_stack <- function(..., axis = 1L) {
 #' @param axis Optional integer vector of axes (1-indexed) to remove. When `NULL`
 #'   all axes of length one are removed.
 #' @return An mlx array with the selected axes removed.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze}
+#' @seealso [mlx.core.squeeze](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze)
 #' @export
 #' @examples
 #' x <- as_mlx(array(1:4, dim = c(1, 2, 2, 1)))
@@ -112,7 +112,7 @@ mlx_squeeze <- function(x, axis = NULL) {
 #' @param axis Integer vector of axis positions (1-indexed) where new singleton
 #'   dimensions should be inserted.
 #' @return An mlx array with additional dimensions of length one.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.expand_dims}
+#' @seealso [mlx.core.expand_dims](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.expand_dims)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -131,7 +131,7 @@ mlx_expand_dims <- function(x, axis) {
 #' @param axis Optional axis along which to repeat. When `NULL`, the array is
 #'   flattened before repetition (matching NumPy semantics).
 #' @return An mlx array with repeated values.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.repeat}
+#' @seealso [mlx.core.repeat](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.repeat)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -157,7 +157,7 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
 #' @inheritParams mlx_array_required
 #' @param reps Integer vector giving the number of repetitions for each axis.
 #' @return An mlx array with tiled content.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tile}
+#' @seealso [mlx.core.tile](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tile)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -179,7 +179,7 @@ mlx_tile <- function(x, reps) {
 #' @param axis Optional axis (or axes) along which elements are shifted.
 #'   When `NULL`, the array is flattened and shifted.
 #' @return An mlx array with elements circularly shifted.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.roll}
+#' @seealso [mlx.core.roll](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.roll)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -227,7 +227,7 @@ mlx_roll <- function(x, shift, axis = NULL) {
 #' @param axis Axis (1-indexed, negatives count from the end) to operate on.
 #' @return For `mlx_pad()`, an mlx array; for `mlx_split()`, a list of mlx
 #'   arrays.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad}
+#' @seealso [mlx.core.pad](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -280,7 +280,7 @@ mlx_pad <- function(x,
 }
 
 #' @rdname mlx_pad
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split}
+#' @seealso [mlx.core.split](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split)
 #' @export
 mlx_split <- function(x, sections, axis = 1L) {
   x <- as_mlx(x)
@@ -405,7 +405,7 @@ mlx_split <- function(x, sections, axis = 1L) {
 #'   supported for mlx arrays.
 #' @param ... Additional arguments accepted for compatibility; ignored.
 #' @return An mlx array with axes permuted.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.moveaxis}
+#' @seealso [mlx.core.moveaxis](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.moveaxis)
 #' @export
 #' @examples
 #' x <- as_mlx(array(1:8, dim = c(2, 2, 2)))
@@ -512,7 +512,7 @@ mlx_contiguous <- function(x, device = NULL) {
 #' @param start_axis First axis (1-indexed, negatives count from the end) in the flattened range.
 #' @param end_axis Last axis (1-indexed, negatives count from the end) in the flattened range.
 #' @return An mlx array with the selected axes collapsed.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.flatten](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.flatten)
 #' @export
 #' @examples
 #' x <- as_mlx(array(1:12, dim = c(2, 3, 2)))
@@ -547,7 +547,7 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = -1L) {
 #' @inheritParams mlx_array_required
 #' @param axis1,axis2 Axes to swap (1-indexed, negatives count from the end).
 #' @return An mlx array with the specified axes exchanged.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.swapaxes](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.swapaxes)
 #' @export
 #' @examples
 #' x <- as_mlx(array(1:24, dim = c(2, 3, 4)))
@@ -580,7 +580,7 @@ mlx_swapaxes <- function(x, axis1, axis2) {
 #' @param indexing Either `"xy"` (Cartesian) or `"ij"` (matrix) indexing.
 #' @inheritParams common_params
 #' @return A list of mlx arrays matching the number of inputs.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.meshgrid](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.meshgrid)
 #' @export
 #' @examples
 #' xs <- as_mlx(1:3)
@@ -620,7 +620,7 @@ mlx_meshgrid <- function(...,
 #' @param shape Integer vector describing the broadcasted shape.
 #' @inheritParams common_params
 #' @return An mlx array with the requested dimensions.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.broadcast_to](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_to)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:3, nrow = 1))
@@ -644,7 +644,7 @@ mlx_broadcast_to <- function(x, shape, device = NULL) {
 #' @param ... One or more arrays (or a single list) convertible via [as_mlx()].
 #' @inheritParams common_params
 #' @return A list of broadcast mlx arrays.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso [mlx.core.broadcast_arrays](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_arrays)
 #' @export
 #' @examples
 #' a <- as_mlx(matrix(1:3, nrow = 1))
@@ -678,7 +678,7 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
 #' @return An mlx array where elements are drawn from `x` when
 #'   `condition` is `TRUE`, otherwise from `y`.
 #' @details Behaves like [ifelse()] for arrays, but evaluates both branches.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.where}
+#' @seealso [mlx.core.where](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.where)
 #' @export
 #' @examples
 #' cond <- as_mlx(matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2))

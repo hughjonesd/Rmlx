@@ -18,5 +18,5 @@ x <- as_mlx(matrix(c(-1, 0, 2), 3, 1))
 mlx_forward(act, x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.ReLU}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.ReLU}{mlx.nn.ReLU}
 }

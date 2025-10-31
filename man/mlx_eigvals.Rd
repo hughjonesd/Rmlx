@@ -20,5 +20,5 @@ x <- as_mlx(matrix(c(3, 1, 0, 2), 2, 2))
 mlx_eigvals(x)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvals}
+\href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvals}{mlx.linalg.eigvals}
 }

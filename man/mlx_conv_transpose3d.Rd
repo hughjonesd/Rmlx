@@ -51,5 +51,5 @@ Weight has shape \verb{(out_channels, kernel_d, kernel_h, kernel_w, in_channels)
 \seealso{
 \code{\link[=mlx_conv3d]{mlx_conv3d()}}, \code{\link[=mlx_conv_transpose1d]{mlx_conv_transpose1d()}}, \code{\link[=mlx_conv_transpose2d]{mlx_conv_transpose2d()}}
 
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html}{mlx.nn}
 }

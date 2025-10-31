@@ -26,5 +26,5 @@ b <- as_mlx(c(9, 8))
 solve(a, b)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve}
+\href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve}{mlx.linalg.solve}
 }

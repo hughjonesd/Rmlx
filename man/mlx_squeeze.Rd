@@ -24,5 +24,5 @@ mlx_squeeze(x)
 mlx_squeeze(x, axis = 1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze}{mlx.core.squeeze}
 }

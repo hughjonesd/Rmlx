@@ -22,5 +22,5 @@ input <- as_mlx(matrix(c(1, 2), 1, 2))
 mlx_forward(net, input)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Sequential}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Sequential}{mlx.nn.Sequential}
 }

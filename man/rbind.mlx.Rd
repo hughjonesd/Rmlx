@@ -30,5 +30,5 @@ y <- as_mlx(matrix(5:8, 2, 2))
 rbind(x, y)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate}{mlx.core.concatenate}
 }

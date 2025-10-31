@@ -36,5 +36,5 @@ Unlike \code{mlx_arange()}, you specify how many samples you want rather than th
 mlx_linspace(0, 1, num = 5)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.linspace}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.linspace}{mlx.core.linspace}
 }

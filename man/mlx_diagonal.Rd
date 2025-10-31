@@ -40,5 +40,5 @@ mlx_diagonal(v)
 }
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.diagonal.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.diagonal.html}{mlx.core.diagonal}
 }

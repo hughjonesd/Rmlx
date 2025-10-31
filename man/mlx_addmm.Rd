@@ -31,5 +31,5 @@ mlx_addmm(input, mat1, mat2, alpha = 0.5, beta = 2)
 }
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.addmm}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.addmm}{mlx.core.addmm}
 }

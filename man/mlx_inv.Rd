@@ -22,5 +22,5 @@ A_inv <- mlx_inv(A)
 as.matrix(A \%*\% A_inv)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.inv}
+\href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.inv}{mlx.core.linalg.inv}
 }

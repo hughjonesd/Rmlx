@@ -49,6 +49,6 @@ original[sorted_idx]  # [1] 1 2 3 4
 mlx_sort(as_mlx(matrix(1:6, 2, 3)), axis = 1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sort},
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argsort}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sort}{mlx.core.sort},
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.argsort}{mlx.core.argsort}
 }

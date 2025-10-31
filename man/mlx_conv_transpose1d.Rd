@@ -50,5 +50,5 @@ Input has shape \verb{(batch, length, in_channels)} for 'NWC' layout. Weight has
 \seealso{
 \code{\link[=mlx_conv1d]{mlx_conv1d()}}, \code{\link[=mlx_conv_transpose2d]{mlx_conv_transpose2d()}}, \code{\link[=mlx_conv_transpose3d]{mlx_conv_transpose3d()}}
 
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html}{mlx.nn}
 }

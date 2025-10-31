@@ -20,5 +20,5 @@ stream <- mlx_new_stream()
 mlx_synchronize(stream)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/metal.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/metal.html}{mlx.core.default_device}
 }

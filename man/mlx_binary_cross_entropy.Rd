@@ -29,5 +29,5 @@ targets <- as_mlx(matrix(c(1, 0, 1), 3, 1))
 mlx_binary_cross_entropy(preds, targets)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.binary_cross_entropy}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.binary_cross_entropy}{mlx.nn.losses.binary_cross_entropy}
 }

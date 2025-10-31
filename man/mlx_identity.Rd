@@ -27,5 +27,5 @@ Identity matrices on MLX devices
 I4 <- mlx_identity(4)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.identity}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.identity}{mlx.core.identity}
 }

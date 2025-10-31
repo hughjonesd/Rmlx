@@ -65,5 +65,5 @@ operation.
 \seealso{
 \code{\link[=mlx_quantized_matmul]{mlx_quantized_matmul()}}
 
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html}{mlx.nn}
 }

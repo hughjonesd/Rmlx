@@ -28,5 +28,5 @@ y <- as_mlx(c(4, 5))
 outer(x, y)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.outer.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.outer.html}{mlx.core.outer}
 }

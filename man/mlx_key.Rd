@@ -31,5 +31,5 @@ k <- mlx_key(42)
 subkeys <- mlx_key_split(k, num = 2)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.key}
+\href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.key}{mlx.core.random.key}
 }

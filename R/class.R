@@ -86,7 +86,7 @@
 #' they are stored as `NaN` inside MLX and returned to R as `NaN`.
 #' Use [is.nan()] on MLX arrays (method provided) if you need to detect them.
 #'
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}
+#' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array)
 #' @seealso [mlx-methods]
 #' @export
 #' @examples
@@ -160,7 +160,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
 #'
 #' @inheritParams mlx_array_required
 #' @return The input object (invisibly)
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eval}
+#' @seealso [mlx.core.eval](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eval)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))

@@ -23,5 +23,5 @@ y <- as_mlx(matrix(5:8, 2, 2))
 stacked <- mlx_stack(x, y, axis = 1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.stack}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.stack}{mlx.core.stack}
 }

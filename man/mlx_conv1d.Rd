@@ -44,5 +44,5 @@ Input has shape \verb{(N, L, C_in)} where N is batch size, L is sequence length,
 and C_in is number of input channels. Weight has shape \verb{(C_out, kernel_size, C_in)}.
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv1d.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv1d.html}{mlx.core.conv1d}
 }

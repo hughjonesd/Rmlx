@@ -23,5 +23,5 @@ mlx_reshape(x, c(3, 4))
 mlx_reshape(x, c(2, 6))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.reshape.html}
+\href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.reshape.html}{mlx.core.reshape}
 }

@@ -40,5 +40,5 @@ perm_mat <- mlx_rand_permutation(mat)
 perm_cols <- mlx_rand_permutation(mat, axis = 1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.permutation}
+\href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.permutation}{mlx.core.random.permutation}
 }

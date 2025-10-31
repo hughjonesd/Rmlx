@@ -6,7 +6,7 @@
 #' @param max Upper bound for the uniform distribution.
 #'
 #' @return An mlx array whose entries are sampled uniformly.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.uniform}
+#' @seealso [mlx.core.random.uniform](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.uniform)
 #' @export
 #' @examples
 #' noise <- mlx_rand_uniform(c(2, 2), min = -1, max = 1)
@@ -30,7 +30,7 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
 #' @param mean Mean of the normal distribution.
 #' @param sd Standard deviation of the normal distribution.
 #' @return An mlx array with normally distributed entries.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.normal}
+#' @seealso [mlx.core.random.normal](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.normal)
 #' @export
 #' @examples
 #' weights <- mlx_rand_normal(c(3, 3), mean = 0, sd = 0.1)
@@ -52,7 +52,7 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
 #' @inheritParams mlx_creation_params
 #' @param prob Probability of a one.
 #' @return An mlx boolean array.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bernoulli}
+#' @seealso [mlx.core.random.bernoulli](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bernoulli)
 #' @export
 #' @examples
 #' mask <- mlx_rand_bernoulli(c(4, 4), prob = 0.3)
@@ -74,7 +74,7 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
 #' @inheritParams mlx_creation_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @return An mlx array with Gumbel-distributed entries.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.gumbel}
+#' @seealso [mlx.core.random.gumbel](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.gumbel)
 #' @export
 #' @examples
 #' samples <- mlx_rand_gumbel(c(2, 3))
@@ -97,7 +97,7 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
 #' @param lower Lower bound of the truncated normal.
 #' @param upper Upper bound of the truncated normal.
 #' @return An mlx array with truncated normally distributed entries.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.truncated_normal}
+#' @seealso [mlx.core.random.truncated_normal](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.truncated_normal)
 #' @export
 #' @examples
 #' samples <- mlx_rand_truncated_normal(-1, 1, c(5, 5))
@@ -130,7 +130,7 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
 #'   unavailable because the covariance factorisation runs on the host. Supply a
 #'   CPU stream (via [mlx_new_stream()]) to integrate with asynchronous flows.
 #' @return An mlx array with samples from the multivariate normal.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.multivariate_normal}
+#' @seealso [mlx.core.random.multivariate_normal](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.multivariate_normal)
 #' @export
 #' @examples
 #' mean <- as_mlx(c(0, 0), device = "cpu")
@@ -167,7 +167,7 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
 #' @param loc Location parameter (mean) of the Laplace distribution.
 #' @param scale Scale parameter (diversity) of the Laplace distribution.
 #' @return An mlx array with Laplace-distributed entries.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.laplace}
+#' @seealso [mlx.core.random.laplace](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.laplace)
 #' @export
 #' @examples
 #' samples <- mlx_rand_laplace(c(2, 3), loc = 0, scale = 1)
@@ -204,7 +204,7 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
 #' @param num_samples Number of samples to draw from each distribution.
 #' @return An mlx array of integer indices (0-indexed) sampled from the
 #'   categorical distributions.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.categorical}
+#' @seealso [mlx.core.random.categorical](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.categorical)
 #' @export
 #' @examples
 #' # Single distribution over 3 classes
@@ -237,7 +237,7 @@ mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
 #' @param high Upper bound (exclusive).
 #' @param dtype Desired integer dtype ("int32", "int64", "uint32", "uint64").
 #' @return An mlx array of random integers.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.randint}
+#' @seealso [mlx.core.random.randint](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.randint)
 #' @export
 #' @examples
 #' # Random integers from 0 to 9
@@ -283,7 +283,7 @@ mlx_rand_randint <- function(dim, low, high,
 #'   device or stream; otherwise the permutation follows the input array's
 #'   device.
 #' @return An mlx array containing the random permutation.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.permutation}
+#' @seealso [mlx.core.random.permutation](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.permutation)
 #' @export
 #' @examples
 #' # Generate a random permutation of 0:9
@@ -324,7 +324,7 @@ mlx_rand_permutation <- function(x, axis = 0L, device = mlx_default_device()) {
 #'
 #' @param seed Integer or numeric seed (converted to unsigned 64-bit).
 #' @return An `mlx` array holding the PRNG key.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.key}
+#' @seealso [mlx.core.random.key](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.key)
 #' @export
 #' @examples
 #' k <- mlx_key(42)
@@ -362,7 +362,7 @@ mlx_key_split <- function(key, num = 2L) {
 #' @param key Optional `mlx` key array. If omitted, MLX's default generator is
 #'   used.
 #' @return An `mlx` array of unsigned integers filled with random bits.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bits}
+#' @seealso [mlx.core.random.bits](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bits)
 #' @export
 #' @examples
 #' k <- mlx_key(12)

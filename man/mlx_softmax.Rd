@@ -26,5 +26,5 @@ sm <- mlx_softmax(x, axis = 2)
 rowSums(as.matrix(sm))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax}{mlx.core.softmax}
 }

@@ -74,7 +74,7 @@
 #' but avoids recompilation costs. Use it when processing variable-sized batches.
 #'
 #' @seealso [mlx_disable_compile()], [mlx_enable_compile()]
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/usage/compile.html}
+#' @seealso [mlx.core.compile](https://ml-explore.github.io/mlx/build/html/usage/compile.html)
 #'
 #' @examples
 #' \dontrun{

@@ -25,5 +25,5 @@ Sample Bernoulli random variables on mlx arrays
 mask <- mlx_rand_bernoulli(c(4, 4), prob = 0.3)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bernoulli}
+\href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bernoulli}{mlx.core.random.bernoulli}
 }

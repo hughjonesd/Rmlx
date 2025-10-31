@@ -100,7 +100,7 @@ mask <- as_mlx(c(TRUE, FALSE, TRUE))
 mlx_dtype(mask)  # "bool"
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array}{mlx.core.array}
 
 \link{mlx-methods}
 }

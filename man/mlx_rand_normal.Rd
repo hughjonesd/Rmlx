@@ -35,5 +35,5 @@ Sample from a normal distribution on mlx arrays
 weights <- mlx_rand_normal(c(3, 3), mean = 0, sd = 0.1)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.normal}
+\href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.normal}{mlx.core.random.normal}
 }

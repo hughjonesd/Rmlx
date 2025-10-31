@@ -28,5 +28,5 @@ tokens <- as_mlx(matrix(c(5, 10, 3, 7), 2, 2))
 mlx_forward(emb, tokens)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Embedding}
+\href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Embedding}{mlx.nn.Embedding}
 }
