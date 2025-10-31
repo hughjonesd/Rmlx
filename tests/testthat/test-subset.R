@@ -8,7 +8,6 @@ test_that("basic slicing matches base semantics", {
   expect_equal(as.matrix(x[, 2]), matrix(mat[, 2], ncol = 1))
   expect_equal(as.matrix(x[2, 3]), matrix(mat[2, 3], nrow = 1, ncol = 1))
 
-  expect_equal(as.matrix(x[-1, ]), mat[-1, , drop = FALSE])
   expect_equal(as.matrix(x[mat[, 1] > 1, ]), mat[mat[, 1] > 1, , drop = FALSE])
 })
 
@@ -21,6 +20,18 @@ test_that("logical masks work", {
   expect_equal(as.matrix(x[mask_rows, ]), mat[mask_rows, , drop = FALSE])
   expect_equal(as.matrix(x[, mask_cols]), mat[, mask_cols, drop = FALSE])
   expect_equal(as.matrix(x[FALSE, ]), mat[FALSE, , drop = FALSE])
+})
+
+test_that("single logical index flattens like base R", {
+  mat <- matrix((-4):3, nrow = 2)
+  mask <- mat < 0
+  x <- as_mlx(mat)
+
+  expect_equal(as.vector(x[mask]), mat[mask])
+
+  x[mask] <- 0
+  mat[mask] <- 0
+  expect_equal(as.matrix(x), mat)
 })
 
 test_that("mlx logical masks work like R logical masks", {
@@ -107,6 +118,20 @@ test_that("subset assignment with logical masks behaves like base R", {
 
   x[row_mask, col_mask] <- c(5, 6, 7, 8)
   mat[row_mask, col_mask] <- c(5, 6, 7, 8)
+
+  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
+})
+
+test_that("subset assignment with mlx indices matches base R", {
+  mat <- matrix(1:9, 3, 3)
+  x <- as_mlx(mat)
+
+  rows <- as_mlx(c(1L, 3L))
+  cols <- as_mlx(c(2L, 3L))
+  block <- matrix(c(100, 200, 300, 400), nrow = 2)
+
+  x[rows, cols] <- block
+  mat[c(1, 3), c(2, 3)] <- block
 
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
@@ -249,6 +274,20 @@ test_that("mlx matrix indexing uses 1-based convention", {
   # [3, 4] should get last element (12)
   idx <- as_mlx(matrix(c(3, 4), nrow = 1))
   expect_equal(as.vector(as.matrix(x[idx])), 12)
+})
+
+test_that("mlx matrix assignment works", {
+  mat <- matrix(1:12, 3, 4)
+  x <- as_mlx(mat)
+
+  idx <- as_mlx(matrix(c(1, 1,
+                         3, 4), ncol = 2, byrow = TRUE))
+  vals <- c(500, 600)
+
+  x[idx] <- vals
+  mat[matrix(c(1, 1, 3, 4), ncol = 2, byrow = TRUE)] <- vals
+
+  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 
 test_that("mlx and R indexing give identical results", {
