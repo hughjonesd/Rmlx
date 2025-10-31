@@ -43,19 +43,19 @@ Let's create a simple binary classification dataset:
 set.seed(42)
 
 # Generate spiral dataset
-n_samples <- 200
-noise <- 0.2
+n_samples <- 2000
+noise <- 0.1
 
-# Class 0: outer spiral
+# Class 0: first spiral starting at angle 0
 theta0 <- runif(n_samples/2, 0, 4*pi)
 r0 <- theta0 / (4*pi) + rnorm(n_samples/2, 0, noise)
 x0 <- cbind(r0 * cos(theta0), r0 * sin(theta0))
 y0 <- rep(0, n_samples/2)
 
-# Class 1: inner spiral
+# Class 1: second spiral starting at angle pi (interleaved)
 theta1 <- runif(n_samples/2, 0, 4*pi)
-r1 <- theta1 / (4*pi) + rnorm(n_samples/2, 0, noise) + 0.5
-x1 <- cbind(r1 * cos(theta1), r1 * sin(theta1))
+r1 <- theta1 / (4*pi) + rnorm(n_samples/2, 0, noise)
+x1 <- cbind(r1 * cos(theta1 + pi), r1 * sin(theta1 + pi))
 y1 <- rep(1, n_samples/2)
 
 # Combine
@@ -65,6 +65,15 @@ y_train <- c(y0, y1)
 # Convert to MLX tensors
 x_mlx <- as_mlx(x_train)
 y_mlx <- as_mlx(matrix(y_train, ncol = 1))
+```
+
+```{r plot_data, fig.width=7, fig.height=5}
+# Visualize the training data
+plot(x_train[, 1], x_train[, 2],
+     col = ifelse(y_train == 0, "blue", "red"),
+     pch = 19, cex = 0.8,
+     main = "Training Data",
+     xlab = "Feature 1", ylab = "Feature 2")
 ```
 
 ## Training Loop
@@ -80,7 +89,7 @@ loss_fn <- function(module, x, y) {
 
 # Training parameters
 learning_rate <- 0.05
-n_epochs <- 60
+n_epochs <- 600
 
 # Optimizer and training mode
 optimizer <- mlx_optimizer_sgd(mlx_parameters(mlp), lr = learning_rate)
@@ -89,7 +98,7 @@ mlx_set_training(mlp, TRUE)
 for (epoch in seq_len(n_epochs)) {
   step <- mlx_train_step(mlp, loss_fn, optimizer, x_mlx, y_mlx)
 
-  if (epoch %% 10 == 0) {
+  if (epoch %% 100 == 0) {
     loss_value <- as.numeric(as.matrix(step$loss))
     cat(sprintf("Epoch %d, Loss: %.4f\n", epoch, loss_value))
   }
@@ -98,22 +107,32 @@ for (epoch in seq_len(n_epochs)) {
 mlx_set_training(mlp, FALSE)
 ```
 
-## Making Predictions
+## Evaluating Model Performance
 
-After training, use the model for predictions:
+Let's evaluate the model's predictions:
 
-```{r prediction}
-# Generate test points
-x_test <- as_mlx(matrix(c(0.5, 0.5, -0.5, -0.5), 2, 2))
+```{r evaluation}
+# Make predictions on all training points
+predictions <- mlx_forward(mlp, x_mlx)
+pred_probs <- as.matrix(predictions)
+pred_classes <- ifelse(pred_probs > 0.5, 1, 0)
 
-# Forward pass
-mlx_set_training(mlp, FALSE)  # Ensure evaluation mode (disables dropout)
-predictions <- mlx_forward(mlp, x_test)
+# Confusion matrix
+confusion <- table(Actual = y_train, Predicted = pred_classes)
+print(confusion)
 
-# Convert to probabilities
-probs <- as.matrix(predictions)
-classes <- ifelse(probs > 0.5, 1, 0)
-print(classes)
+# Calculate accuracy
+accuracy <- sum(diag(confusion)) / sum(confusion)
+cat(sprintf("\nAccuracy: %.2f%%\n", accuracy * 100))
+```
+
+```{r plot_predictions, fig.width=7, fig.height=5}
+# Plot predicted classes
+plot(x_train[, 1], x_train[, 2],
+     col = ifelse(pred_classes == 0, "blue", "red"),
+     pch = 19, cex = 0.8,
+     main = "Predicted Classes",
+     xlab = "Feature 1", ylab = "Feature 2")
 ```
 
 ## Using Different Architectures
