@@ -28,5 +28,5 @@ x <- as_mlx(c(-Inf, -1, NaN, 3, Inf))
 as.matrix(mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10))
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.nan_to_num}
+\url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 }

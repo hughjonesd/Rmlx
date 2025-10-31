@@ -27,5 +27,5 @@ ones <- mlx_ones_like(base)
 as.matrix(ones)
 }
 \seealso{
-\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like}
+\url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 }

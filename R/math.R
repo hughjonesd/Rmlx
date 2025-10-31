@@ -180,7 +180,7 @@ mlx_conjugate <- function(x) {
 #'
 #' @inheritParams mlx_array_required
 #' @return An mlx array with transformed angular units.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.degrees}
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export
 #' @examples
 #' x <- as_mlx(pi / 2)
@@ -211,7 +211,7 @@ mlx_radians <- function(x) {
 #'
 #' @inheritParams mlx_array_required
 #' @return An mlx boolean array highlighting infinite entries.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isposinf}
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export
 #' @examples
 #' vals <- as_mlx(c(-Inf, -1, 0, Inf))
@@ -239,7 +239,7 @@ mlx_isneginf <- function(x) {
 #'
 #' @inheritParams mlx_array_required
 #' @return An mlx boolean array.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isnan}
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @name mlx_isnan
 NULL
 
@@ -278,7 +278,7 @@ mlx_isfinite <- function(x) {
 #' @param posinf Optional replacement for positive infinity.
 #' @param neginf Optional replacement for negative infinity.
 #' @return An mlx array with non-finite values replaced.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.nan_to_num}
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export
 #' @examples
 #' x <- as_mlx(c(-Inf, -1, NaN, 3, Inf))

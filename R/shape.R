@@ -512,7 +512,7 @@ mlx_contiguous <- function(x, device = NULL) {
 #' @param start_axis First axis (1-indexed, negatives count from the end) in the flattened range.
 #' @param end_axis Last axis (1-indexed, negatives count from the end) in the flattened range.
 #' @return An mlx array with the selected axes collapsed.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.flatten}
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export
 #' @examples
 #' x <- as_mlx(array(1:12, dim = c(2, 3, 2)))
@@ -547,7 +547,7 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = -1L) {
 #' @inheritParams mlx_array_required
 #' @param axis1,axis2 Axes to swap (1-indexed, negatives count from the end).
 #' @return An mlx array with the specified axes exchanged.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.swapaxes}
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export
 #' @examples
 #' x <- as_mlx(array(1:24, dim = c(2, 3, 4)))
@@ -580,7 +580,7 @@ mlx_swapaxes <- function(x, axis1, axis2) {
 #' @param indexing Either `"xy"` (Cartesian) or `"ij"` (matrix) indexing.
 #' @inheritParams common_params
 #' @return A list of mlx arrays matching the number of inputs.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.meshgrid}
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export
 #' @examples
 #' xs <- as_mlx(1:3)
@@ -620,7 +620,7 @@ mlx_meshgrid <- function(...,
 #' @param shape Integer vector describing the broadcasted shape.
 #' @inheritParams common_params
 #' @return An mlx array with the requested dimensions.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_to}
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:3, nrow = 1))
@@ -644,7 +644,7 @@ mlx_broadcast_to <- function(x, shape, device = NULL) {
 #' @param ... One or more arrays (or a single list) convertible via [as_mlx()].
 #' @inheritParams common_params
 #' @return A list of broadcast mlx arrays.
-#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_arrays}
+#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
 #' @export
 #' @examples
 #' a <- as_mlx(matrix(1:3, nrow = 1))
