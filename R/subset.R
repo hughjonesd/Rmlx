@@ -41,47 +41,19 @@
     stop("Cannot subset a scalar mlx array.", call. = FALSE)
   }
 
-  idx_list <- vector("list", ndim)
+  # Evaluate and collect index arguments supplied through ...
   dot_expr <- as.list(substitute(alist(...)))[-1]
+  idx_list <- .mlx_collect_indices(dot_expr, ndim, parent.frame())
 
-  if (length(dot_expr) > ndim) {
-    stop("Incorrect number of indices supplied.", call. = FALSE)
-  }
-
-  if (length(dot_expr)) {
-    for (k in seq_along(dot_expr)) {
-      expr <- dot_expr[[k]]
-      value <- tryCatch(eval(expr, parent.frame()), error = function(e) {
-        msg <- conditionMessage(e)
-        if (grepl("missing", msg, fixed = FALSE)) {
-          return(NULL)
-        }
-        stop(e)
-      })
-      if (!is.null(value)) {
-        idx_list[[k]] <- value
-      }
-    }
-  }
-
+  # Handle matrix-style coordinates or flattened vector indices via dedicated helper
   if (length(dot_expr) == 1L) {
-    idx_arg <- idx_list[[1]]
-    if (.mlx_is_numeric_matrix_index(idx_arg, x$dim)) {
-      return(.mlx_matrix_subset(x, idx_arg))
+    resolved <- .mlx_resolve_single_index(idx_list[[1]], x$dim)
+    if (!is.null(resolved)) {
+      return(.mlx_matrix_subset(x, resolved$coord))
     }
-    if (.mlx_is_numeric_matrix_shape(idx_arg)) {
-      stop("Matrix index must have one column per dimension.", call. = FALSE)
-    }
-
-    flat_sel <- .mlx_coerce_flat_index(idx_arg, length(x))
-    coord_mat <- if (length(flat_sel)) {
-      arrayInd(flat_sel + 1L, .dim = x$dim)
-    } else {
-      matrix(integer(0), nrow = 0, ncol = length(x$dim))
-    }
-    return(.mlx_matrix_subset(x, coord_mat))
   }
 
+  # Apply take() sequentially across axes to realise the remaining selection
   out <- x
   for (axis in seq_len(ndim)) {
     idx <- if (axis <= length(idx_list)) idx_list[[axis]] else NULL
@@ -94,6 +66,7 @@
     out <- .mlx_wrap_result(ptr, out$device)
   }
 
+  # Optionally drop singleton dimensions (default is FALSE to mirror package conventions)
   if (drop) {
     keep <- out$dim != 1L
     if (!all(keep) && length(out$dim) > 0L) {
@@ -123,93 +96,27 @@
     stop("Cannot assign to a scalar mlx array.", call. = FALSE)
   }
 
+  # Evaluate index arguments; allow fewer than ndim entries when trailing dimensions are implied
   dot_expr <- as.list(substitute(alist(...)))[-1]
-  if (length(dot_expr) > ndim &&
-      !(length(dot_expr) == 1L && .mlx_is_numeric_matrix_index(eval(dot_expr[[1]], parent.frame()), x$dim))) {
-    stop("Incorrect number of indices supplied.", call. = FALSE)
-  }
+  idx_list <- .mlx_collect_indices(dot_expr, ndim, parent.frame())
 
-  idx_list <- vector("list", ndim)
-  if (length(dot_expr)) {
-    for (k in seq_along(dot_expr)) {
-      expr <- dot_expr[[k]]
-      value_idx <- tryCatch(eval(expr, parent.frame()), error = function(e) {
-        msg <- conditionMessage(e)
-        if (grepl("missing", msg, fixed = FALSE)) {
-          return(NULL)
-        }
-        stop(e)
-      })
-      if (!is.null(value_idx)) {
-        idx_list[[k]] <- value_idx
-      }
-    }
-  }
-
-  if (length(dot_expr) == 1L && .mlx_is_numeric_matrix_index(idx_list[[1]], x$dim)) {
-    idx_mat <- idx_list[[1]]
-    return(.mlx_matrix_assign(x, idx_mat, value))
-  }
-
+  # Matrix/array indexing (one coordinate per row) delegates to helper
   if (length(dot_expr) == 1L) {
-    if (.mlx_is_numeric_matrix_shape(idx_list[[1]])) {
-      stop("Matrix index must have one column per dimension.", call. = FALSE)
+    resolved <- .mlx_resolve_single_index(idx_list[[1]], x$dim)
+    if (!is.null(resolved)) {
+      return(.mlx_matrix_assign(x, resolved$coord, value))
     }
-    flat_sel <- .mlx_coerce_flat_index(idx_list[[1]], length(x))
-    if (!length(flat_sel)) {
-      return(x)
-    }
-
-    coord_mat <- arrayInd(flat_sel + 1L, .dim = x$dim)
-    return(.mlx_matrix_assign(x, coord_mat, value))
   }
 
-  normalized <- vector("list", ndim)
-  empty_selection <- FALSE
-  for (axis in seq_len(ndim)) {
-    idx <- if (axis <= length(idx_list)) idx_list[[axis]] else NULL
-    sel <- .normalize_index_vector(idx, x$dim[axis])
-    if (!is.null(sel) && length(sel) == 0L) {
-      empty_selection <- TRUE
-      break
-    }
-    normalized[axis] <- list(sel)
-  }
-
-  if (empty_selection) {
+  prep <- .mlx_prepare_assignment_indices(idx_list, x$dim)
+  if (prep$empty) {
     return(x)
   }
 
-  # Determine slice parameters when possible
-  slice_params <- lapply(seq_len(ndim), function(axis) {
-    sel <- normalized[[axis]]
-    dim_len <- x$dim[axis]
-    if (is.null(sel)) {
-      list(all = TRUE, start = 0L, stop = dim_len, stride = 1L, len = dim_len)
-    } else {
-      stride <- if (length(sel) <= 1L) 1L else diff(sel)
-      if (length(stride) > 1L && !all(stride == stride[1])) {
-        return(NULL)
-      }
-      stride_val <- if (length(stride) == 0L) 1L else stride[1]
-      list(
-        all = FALSE,
-        start = sel[1],
-        stop = utils::tail(sel, 1) + stride_val,
-        stride = stride_val,
-        len = length(sel)
-      )
-    }
-  })
-
-  dims_sel <- vapply(seq_len(ndim), function(axis) {
-    sel <- normalized[[axis]]
-    if (is.null(sel)) x$dim[axis] else length(sel)
-  }, integer(1))
+  dims_sel <- prep$dims_sel
   total_elems <- prod(dims_sel)
-  if (total_elems == 0L) {
-    return(x)
-  }
+  stopifnot(total_elems >= 0L)
+  if (total_elems == 0L) return(x)
 
   value_vec <- as.vector(value)
   if (length(value_vec) == 0L) {
@@ -219,22 +126,14 @@
   value_array <- array(value_vec, dim = dims_sel)
   value_mlx <- as_mlx(value_array, dtype = x$dtype, device = x$device)
 
-  if (!any(vapply(slice_params, is.null, logical(1)))) {
-    start <- vapply(slice_params, `[[`, integer(1), "start")
-    stop <- vapply(slice_params, `[[`, integer(1), "stop")
-    strides <- vapply(slice_params, `[[`, integer(1), "stride")
-    ptr <- cpp_mlx_slice_update(x$ptr, value_mlx$ptr, start, stop, strides)
+  slice <- .mlx_slice_parameters(prep$normalized, x$dim)
+  if (slice$can_slice) {
+    ptr <- cpp_mlx_slice_update(x$ptr, value_mlx$ptr, slice$start, slice$stop, slice$stride)
     return(.mlx_wrap_result(ptr, x$device))
   }
 
-  # Fallback to explicit element-wise assignment via index matrix
-  full_indices <- lapply(seq_len(ndim), function(axis) {
-    if (is.null(normalized[[axis]])) {
-      seq.int(0L, x$dim[axis] - 1L)
-    } else {
-      normalized[[axis]]
-    }
-  })
+  # Otherwise materialise the cartesian product and update element-wise
+  full_indices <- .mlx_expand_indices(prep$normalized, x$dim)
 
   grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
   coord_mat <- as.matrix(grid)
@@ -243,6 +142,7 @@
   }
   idx_mat <- coord_mat + 1L
 
+  # Base R applies repeated indices in order; emulate by dropping to host when duplicates appear
   has_dupes <- nrow(idx_mat) > 1L && anyDuplicated(idx_mat)
   if (has_dupes) {
     base <- as.array(x)
@@ -303,6 +203,175 @@
   flat <- mlx_flatten(x)
   flat_updated <- .mlx_scatter_axis(flat, idx_mlx, updates_mlx, axis = 0L)
   mlx_reshape(flat_updated, x$dim)
+}
+
+#' Evaluate and align index expressions with dimension count
+#'
+#' @param dot_expr List of unevaluated index expressions from `...`.
+#' @param ndim Number of dimensions expected for the target array.
+#' @param env Environment in which to evaluate the expressions.
+#' @return List of length `ndim` containing evaluated indices (with `NULL`
+#'   placeholders for omitted axes).
+#' @noRd
+.mlx_collect_indices <- function(dot_expr, ndim, env) {
+  if (!length(dot_expr)) {
+    return(vector("list", ndim))
+  }
+
+  evaluated <- lapply(dot_expr, function(expr) {
+    tryCatch(
+      eval(expr, env),
+      error = function(e) {
+        msg <- conditionMessage(e)
+        if (grepl("missing", msg, fixed = FALSE)) {
+          return(NULL)
+        }
+        stop(e)
+      }
+    )
+  })
+
+  if (length(evaluated) > ndim) {
+    stop("Incorrect number of indices supplied.", call. = FALSE)
+  }
+
+  idx_list <- vector("list", ndim)
+  if (length(evaluated)) {
+    for (k in seq_along(evaluated)) {
+      val <- evaluated[[k]]
+      if (!is.null(val)) {
+        idx_list[[k]] <- val
+      }
+    }
+  }
+
+  idx_list
+}
+
+#' Resolve a single (possibly matrix) index into coordinate rows
+#'
+#' @param idx Index object supplied by the user (may be `NULL`).
+#' @param dim_sizes Integer vector of target dimension sizes.
+#' @return `NULL` if the index cannot be handled specially, otherwise a list
+#'   containing `coord`, a 1-based integer matrix of coordinates.
+#' @noRd
+.mlx_resolve_single_index <- function(idx, dim_sizes) {
+  if (length(dim_sizes) == 0L) {
+    return(NULL)
+  }
+
+  if (is.null(idx)) {
+    coord_mat <- matrix(integer(0), nrow = 0, ncol = length(dim_sizes))
+    return(list(coord = coord_mat))
+  }
+
+  if (.mlx_is_numeric_matrix_index(idx, dim_sizes)) {
+    coord_mat <- idx
+  } else {
+    if (.mlx_is_numeric_matrix_shape(idx)) {
+      stop("Matrix index must have one column per dimension.", call. = FALSE)
+    }
+    flat_sel <- .mlx_coerce_flat_index(idx, prod(dim_sizes))
+    coord_mat <- if (length(flat_sel)) {
+      arrayInd(flat_sel + 1L, .dim = dim_sizes)
+    } else {
+      matrix(integer(0), nrow = 0, ncol = length(dim_sizes))
+    }
+  }
+
+  list(coord = coord_mat)
+}
+
+#' Normalise indices for assignment logic
+#'
+#' @param idx_list List of per-axis indices (possibly shorter than `dim_sizes`).
+#' @param dim_sizes Integer vector of dimension sizes.
+#' @return List with elements `normalized` (0-based indices or `NULL`),
+#'   `dims_sel` (sizes of the selected region per axis), and `empty`
+#'   indicating whether any axis selects zero elements.
+#' @noRd
+.mlx_prepare_assignment_indices <- function(idx_list, dim_sizes) {
+  ndim <- length(dim_sizes)
+  normalized <- vector("list", ndim)
+  dims_sel <- dim_sizes
+  empty <- FALSE
+
+  for (axis in seq_len(ndim)) {
+    idx <- if (axis <= length(idx_list)) idx_list[[axis]] else NULL
+    sel <- .normalize_index_vector(idx, dim_sizes[axis])
+
+    if (!is.null(sel) && length(sel) == 0L) {
+      normalized[axis] <- list(sel)
+      dims_sel[axis] <- 0L
+      empty <- TRUE
+      break
+    }
+
+    normalized[axis] <- list(sel)
+    if (!is.null(sel)) {
+      dims_sel[axis] <- length(sel)
+    }
+  }
+
+  list(normalized = normalized, dims_sel = dims_sel, empty = empty)
+}
+
+#' Compute slice parameters for contiguous selections
+#'
+#' @param normalized List of normalised (0-based) indices per axis.
+#' @param dim_sizes Integer vector of dimension sizes.
+#' @return List with `can_slice` flag plus integer vectors `start`, `stop`,
+#'   and `stride`.
+#' @noRd
+.mlx_slice_parameters <- function(normalized, dim_sizes) {
+  ndim <- length(dim_sizes)
+  start <- integer(ndim)
+  stop <- integer(ndim)
+  stride <- rep(1L, ndim)
+  can_slice <- TRUE
+
+  for (axis in seq_len(ndim)) {
+    sel <- normalized[[axis]]
+    dim_len <- dim_sizes[axis]
+    if (is.null(sel)) {
+      start[axis] <- 0L
+      stop[axis] <- dim_len
+      stride[axis] <- 1L
+      next
+    }
+
+    diffs <- if (length(sel) <= 1L) integer(0) else diff(sel)
+    if (length(diffs) > 1L && !all(diffs == diffs[1L])) {
+      can_slice <- FALSE
+    }
+    stride_val <- if (length(diffs) == 0L) 1L else diffs[1L]
+    start[axis] <- sel[1L]
+    stride[axis] <- stride_val
+    stop[axis] <- utils::tail(sel, 1L) + stride_val
+  }
+
+  list(
+    can_slice = can_slice,
+    start = start,
+    stop = stop,
+    stride = stride
+  )
+}
+
+#' Expand normalised indices to full coordinate vectors
+#'
+#' @param normalized List of per-axis selections (0-based integer vectors or `NULL`).
+#' @param dim_sizes Integer vector of dimension sizes.
+#' @return List of integer vectors suitable for `expand.grid()`.
+#' @noRd
+.mlx_expand_indices <- function(normalized, dim_sizes) {
+  Map(function(sel, dim_len) {
+    if (is.null(sel)) {
+      if (dim_len == 0L) integer(0) else seq.int(0L, dim_len - 1L)
+    } else {
+      sel
+    }
+  }, normalized, dim_sizes)
 }
 
 #' Compute linear indices from multi-axis coordinates.
@@ -393,6 +462,12 @@
   stop("Unsupported index type.", call. = FALSE)
 }
 
+#' Check whether an index represents matrix-style coordinates
+#'
+#' @param idx Candidate index (R matrix/array or `mlx` array).
+#' @param dim_sizes Integer vector of target dimension sizes.
+#' @return `TRUE` if `idx` encodes coordinate rows, `FALSE` otherwise.
+#' @noRd
 .mlx_is_numeric_matrix_index <- function(idx, dim_sizes) {
   ndim <- length(dim_sizes)
   if (is.null(idx)) {
@@ -413,6 +488,11 @@
   is.numeric(idx) && tail(dims, 1) == ndim
 }
 
+#' Check whether an index has matrix/array shape (without validating columns)
+#'
+#' @param idx Candidate matrix/array index.
+#' @return `TRUE` if `idx` is numeric with at least two dimensions.
+#' @noRd
 .mlx_is_numeric_matrix_shape <- function(idx) {
   if (is.null(idx)) {
     return(FALSE)
@@ -425,6 +505,13 @@
   (is.matrix(idx) || (is.array(idx) && length(dim(idx)) >= 2L)) && is.numeric(idx)
 }
 
+#' Coerce a matrix/array of coordinates into zero-based integer rows
+#'
+#' @param idx Numeric matrix/array or `mlx` array containing coordinates.
+#' @param dim_sizes Integer vector of dimension sizes.
+#' @param type Operation context (subset vs assign) used for error messages.
+#' @return Integer matrix with one column per dimension, entries zero-based.
+#' @noRd
 .mlx_coerce_index_matrix <- function(idx, dim_sizes, type = c("subset", "assign")) {
   type <- match.arg(type)
 
@@ -477,6 +564,12 @@
   idx_mat
 }
 
+#' Coerce 1D indices into zero-based integer positions
+#'
+#' @param idx Logical, numeric, or `mlx` vector index.
+#' @param total_len Total length of the flattened array.
+#' @return Integer vector of zero-based positions.
+#' @noRd
 .mlx_coerce_flat_index <- function(idx, total_len) {
   if (is.null(idx)) {
     return(integer(0))
