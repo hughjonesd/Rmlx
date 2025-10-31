@@ -477,6 +477,14 @@ mlx_dtype <- function(x) {
     coord_mat <- matrix(coord_mat, ncol = ndim)
   }
   idx_mat <- coord_mat + 1L
+
+  has_dupes <- nrow(idx_mat) > 1L && anyDuplicated(idx_mat)
+  if (has_dupes) {
+    base <- as.array(x)
+    base[idx_mat] <- as.vector(value_array)
+    return(as_mlx(base, dtype = x$dtype, device = x$device))
+  }
+
   .mlx_matrix_assign(x, idx_mat, value_array)
 }
 
