@@ -51,7 +51,7 @@ mlx_ones <- function(dim,
 #' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
 #' @inheritParams common_params
 #' @return An mlx array of zeros matching `x`.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like}
 #' @export
 #' @examples
 #' base <- mlx_ones(c(2, 2))
@@ -87,7 +87,7 @@ mlx_zeros_like <- function(x,
 #' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
 #' @inheritParams common_params
 #' @return An mlx array of ones matching `x`.
-#' @seealso \url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+#' @seealso \url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like}
 #' @export
 #' @examples
 #' base <- mlx_full(c(2, 3), 5)

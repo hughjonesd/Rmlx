@@ -28,5 +28,5 @@ angles <- mlx_radians(as_mlx(c(0, 90, 180)))
 as.matrix(angles)
 }
 \seealso{
-\url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.degrees}
 }

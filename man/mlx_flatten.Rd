@@ -26,5 +26,5 @@ mlx_flatten(x)
 mlx_flatten(x, start_axis = 2, end_axis = 3)
 }
 \seealso{
-\url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.flatten}
 }

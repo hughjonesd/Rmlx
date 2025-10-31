@@ -27,5 +27,5 @@ as.matrix(mlx_isposinf(vals))
 as.matrix(mlx_isneginf(vals))
 }
 \seealso{
-\url{https://github.com/ml-explore/mlx/blob/main/python/mlx/core/array.py}
+\url{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isposinf}
 }
