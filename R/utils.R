@@ -236,6 +236,25 @@ mlx_dtype <- function(x) {
 
 #' Subset MLX array
 #'
+#' MLX subsetting mirrors base R for the common cases while avoiding a few of
+#' the language's historical footguns:
+#'
+#' * **Numeric indices**: positive (1-based) and purely negative vectors are
+#'   supported. Negative indices drop the listed elements, just as in base R.
+#'   Mixing signs is an error and `0` is not allowed.
+#' * **Logical indices**: recycled to the target dimension length. Logical masks
+#'   may be mixed with numeric indices across dimensions.
+#' * **Matrices/arrays**: numeric matrices (or higher dimensional arrays) select
+#'   individual elements, one coordinate per row. The trailing dimension must
+#'   match the array rank and entries must be positive; negative matrices are
+#'   rejected to avoid ambiguous complements.
+#' * **`mlx` indices**: `mlx` vectors, logical masks, and matrices behave the
+#'   same as their R equivalents. One-dimensional MLX arrays are treated as
+#'   vectors rather than 1-column matrices.
+#' * **`drop`**: dimensions are preserved by default (`drop = FALSE`), matching
+#'   the package's preference for explicit shapes.
+#' * **Unsupported**: character indices and named lookups are not implemented.
+#'
 #' @inheritParams common_params
 #' @param ... Indices for each dimension. Provide one per axis; omitted indices
 #'   select the full extent. Logical indices recycle to the dimension length.
@@ -576,10 +595,23 @@ mlx_dtype <- function(x) {
     if (any(idx == 0L)) {
       stop("Index contains zeros, which are not allowed.", call. = FALSE)
     }
-    idx <- as.integer(idx)
-    if (any(idx < 0L)) {
-      stop("Negative indices are not supported for mlx arrays.", call. = FALSE)
+    if (any(idx != floor(idx))) {
+      stop("Numeric indices must be whole numbers.", call. = FALSE)
     }
+    negative <- idx < 0
+    if (any(negative)) {
+      if (!all(negative)) {
+        stop("Cannot mix positive and negative indices.", call. = FALSE)
+      }
+      idx_abs <- as.integer(abs(idx))
+      if (any(idx_abs < 1L) || any(idx_abs > dim_size)) {
+        stop("Index out of bounds.", call. = FALSE)
+      }
+      keep <- setdiff(seq_len(dim_size), unique(idx_abs))
+      return(as.integer(keep - 1L))
+    }
+
+    idx <- as.integer(idx)
     if (any(idx < 1L) || any(idx > dim_size)) {
       stop("Index out of bounds.", call. = FALSE)
     }
@@ -706,12 +738,23 @@ mlx_dtype <- function(x) {
     if (any(idx == 0L)) {
       stop("Index contains zeros, which are not allowed.", call. = FALSE)
     }
-    if (any(idx < 0L)) {
-      stop("Negative indices are not supported for mlx arrays.", call. = FALSE)
-    }
     if (any(idx != floor(idx))) {
       stop("Numeric indices must be whole numbers.", call. = FALSE)
     }
+    negative <- idx < 0
+    if (any(negative)) {
+      if (!all(negative)) {
+        stop("Cannot mix positive and negative indices.", call. = FALSE)
+      }
+      idx_abs <- as.integer(abs(idx))
+      if (any(idx_abs < 1L) || any(idx_abs > total_len)) {
+        stop("Index out of bounds.", call. = FALSE)
+      }
+      keep <- setdiff(seq_len(total_len), unique(idx_abs))
+      return(as.integer(keep - 1L))
+    }
+
+    idx <- as.integer(idx)
     if (any(idx > total_len)) {
       stop("Index out of bounds.", call. = FALSE)
     }

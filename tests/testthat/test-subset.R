@@ -290,6 +290,48 @@ test_that("mlx matrix assignment works", {
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 
+test_that("negative numeric indices behave like base R", {
+  vec <- 1:5
+  mlx_vec <- as_mlx(vec)
+
+  expect_equal(as.vector(mlx_vec[-1]), vec[-1])
+  expect_equal(as.vector(mlx_vec[-c(1, 3)]), vec[-c(1, 3)])
+  expect_equal(length(mlx_vec[integer(0)]), 0L)
+  expect_equal(as.vector(mlx_vec[-integer(0)]), vec[-integer(0)])
+
+  expect_error(mlx_vec[c(-1, 2)], "Cannot mix positive and negative indices", fixed = TRUE)
+  expect_error(mlx_vec[c(-1, 0)], "Index contains zeros", fixed = TRUE)
+})
+
+test_that("negative numeric indices work for assignment", {
+  vec <- 1:5
+  mlx_vec <- as_mlx(vec)
+
+  mlx_vec[-1] <- 0
+  vec[-1] <- 0
+
+  expect_equal(as.vector(mlx_vec), vec)
+})
+
+test_that("negative indices mix with logical axes", {
+  mat <- matrix(1:25, 5)
+  x <- as_mlx(mat)
+
+  expect_equal(
+    as.matrix(x[c(TRUE, FALSE, TRUE, FALSE, TRUE), -(1:2)]),
+    mat[c(TRUE, FALSE, TRUE, FALSE, TRUE), -(1:2), drop = FALSE]
+  )
+})
+
+test_that("negative matrix indices are rejected", {
+  mat <- matrix(1:9, 3, 3)
+  x <- as_mlx(mat)
+  neg_idx <- cbind(c(-1, -2), c(1, 2))
+
+  expect_error(x[neg_idx], "Matrix indices must be positive", fixed = TRUE)
+  expect_error(x[as_mlx(neg_idx)], "Matrix indices must be positive", fixed = TRUE)
+})
+
 test_that("mlx and R indexing give identical results", {
   set.seed(123)
   mat <- matrix(rnorm(20), 5, 4)
