@@ -1,0 +1,4 @@
+"timestamp","branch","commit","rows","cols","device","expression","min","median","itr_per_sec","mem_alloc","gc_per_sec","n_gc"
+"2025-11-02 22:07:06 UTC","master","1f6425c",1000,1000,"gpu",as_mlx(matrix_payload, device = device),0.00680017803097144,0.00695644953520969,135.685768779829,7.63MB,58.1510437627838,6
+"2025-11-02 22:07:11 UTC","master","1f6425c",2000,2000,"gpu",as_mlx(matrix_payload, device = device),0.0272004250145983,0.027762760524638,36.083729809382,30.5MB,84.1953695552246,14
+"2025-11-02 22:07:20 UTC","master","1f6425c",4000,4000,"gpu",as_mlx(matrix_payload, device = device),0.112484115030384,0.11789939503069,8.40580904727805,122MB,15.6107882306592,13
