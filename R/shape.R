@@ -83,6 +83,31 @@ mlx_stack <- function(..., axis = 1L) {
   .mlx_wrap_result(ptr, device)
 }
 
+#' Drop singleton dimensions
+#'
+#' `drop()` removes axes of length one. For base R objects this dispatches to
+#' [base::drop()], while `drop.mlx()` delegates to [mlx_squeeze()] so that mlx
+#' arrays remain on the device.
+#'
+#' @param x Object to drop dimensions from.
+#' @return An object with singleton dimensions removed. For mlx inputs the
+#'   result is another mlx array.
+#' @seealso [mlx_squeeze()], [base::drop()]
+#' @export
+drop <- function(x) {
+  UseMethod("drop")
+}
+
+#' @rdname drop
+#' @export
+drop.default <- function(x) base::drop(x)
+
+#' @rdname drop
+#' @export
+drop.mlx <- function(x) {
+  mlx_squeeze(x)
+}
+
 #' Remove singleton dimensions
 #'
 #' @inheritParams mlx_array_required
