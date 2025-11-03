@@ -231,16 +231,17 @@ bench_results$operation <- factor(
 ```{r plot}
 ggplot(
   bench_results,
-  aes(x = size, y = iters_per_sec, colour = implementation, group = implementation)
+  aes(x = size, y = median_seconds, colour = implementation, group = implementation)
 ) +
   geom_line() +
   geom_point(size = 2) +
   scale_colour_manual(values = c("base R" = "#4A4A4A", "mlx" = "#D63230")) +
-  scale_y_log10() +
   facet_wrap(~ operation, scales = "free_y") +
   labs(
+    title = "Benchmarks for common matrix operations",
+    subtitle = "Time taken (less is better)",
     x = "",
-    y = "Iterations per second",
+    y = "Median time (seconds)",
     colour = ""
   ) +
   theme_minimal(base_size = 11) +
