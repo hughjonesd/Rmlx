@@ -19,9 +19,11 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/abind.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/all.equal.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.array.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/as.logical.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as_mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/asplit.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/cbind.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/chol.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/chol2inv.html</loc></url>
@@ -33,6 +35,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/diag.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/dim-set-.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/dim.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/drop.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/fft.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/grapes-times-grapes-.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/index.html</loc></url>
@@ -178,8 +181,10 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/print.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/qr.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rbind.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/row.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rowMeans.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rowSums.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/scale.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/solve.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/str.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/svd.html</loc></url>

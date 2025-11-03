@@ -45,7 +45,15 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_solve_triangular</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, upper <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_solve_triangular</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span>, upper <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">backsolve</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, k <span class="op">=</span> <span class="cn">NULL</span>, upper.tri <span class="op">=</span> <span class="cn">TRUE</span>, transpose <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Default S3 method</span></span>
+<span><span class="fu">backsolve</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, k <span class="op">=</span> <span class="cn">NULL</span>, upper.tri <span class="op">=</span> <span class="cn">TRUE</span>, transpose <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'mlx'</span></span>
+<span><span class="fu">backsolve</span><span class="op">(</span><span class="va">r</span>, <span class="va">x</span>, k <span class="op">=</span> <span class="cn">NULL</span>, upper.tri <span class="op">=</span> <span class="cn">TRUE</span>, transpose <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -62,6 +70,25 @@
 
 <dt id="arg-upper">upper<a class="anchor" aria-label="anchor" href="#arg-upper"></a></dt>
 <dd><p>Logical; if <code>TRUE</code>, <code>a</code> is upper triangular, otherwise lower.</p></dd>
+
+
+<dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
+<dd><p>a matrix whose columns give the right-hand sides for
+    the equations.</p></dd>
+
+
+<dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
+<dd><p>the number of columns of <code>r</code> and rows of <code>x</code> to use.</p></dd>
+
+
+<dt id="arg-upper-tri">upper.tri<a class="anchor" aria-label="anchor" href="#arg-upper-tri"></a></dt>
+<dd><p>logical; if <code>TRUE</code> (default), the <em>upper</em>
+    <em>tri</em>angular part of <code>r</code> is used.  Otherwise, the lower one.</p></dd>
+
+
+<dt id="arg-transpose">transpose<a class="anchor" aria-label="anchor" href="#arg-transpose"></a></dt>
+<dd><p>logical; if <code>TRUE</code>, solve \(r' * y = x\) for
+    \(y\), i.e., <code>t(r) %*% y == x</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

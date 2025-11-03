@@ -93,7 +93,8 @@ dimension 100 - A random design matrix <code>X</code> of 10,000 cases ×
 <span><span class="co">#&gt;     fft</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     chol2inv, colMeans, colSums, diag, outer, rowMeans, rowSums, svd</span></span>
+<span><span class="co">#&gt;     asplit, backsolve, chol2inv, col, colMeans, colSums, diag, drop,</span></span>
+<span><span class="co">#&gt;     outer, row, rowMeans, rowSums, svd</span></span>
 <span></span>
 <span><span class="co"># Problem metadata</span></span>
 <span><span class="va">num_features</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
@@ -168,7 +169,7 @@ unbounded</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">w_sgd</span> <span class="op">&lt;-</span> <span class="fu">train_sgd</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Iteration 1000 - Loss: 4.992279e-05</span></span></code></pre></div>
+<span><span class="co">#&gt; Iteration 1000 - Loss: 4.987876e-05</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-2-closed-form-regression-via-matrix-algebra">Method 2: Closed-form Regression via Matrix Algebra<a class="anchor" aria-label="anchor" href="#method-2-closed-form-regression-via-matrix-algebra"></a>
@@ -198,7 +199,7 @@ and solve the triangular system
 <span><span class="va">closed_error</span> <span class="op">&lt;-</span> <span class="va">w_closed</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">closed_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">closed_error</span> <span class="op">*</span> <span class="va">closed_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">closed_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.00111556</span></span></code></pre></div>
+<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.001128816</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accelerating-the-closed-form-solution-with-mlx_compile">Accelerating the Closed-form Solution with
@@ -221,7 +222,7 @@ graph.</p>
 <span><span class="va">compiled_error</span> <span class="op">&lt;-</span> <span class="va">w_compiled</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">compiled_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">compiled_error</span> <span class="op">*</span> <span class="va">compiled_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Compiled closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">compiled_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.00111556</span></span></code></pre></div>
+<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.001128816</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accuracy-and-performance-comparison">Accuracy and Performance Comparison<a class="anchor" aria-label="anchor" href="#accuracy-and-performance-comparison"></a>
@@ -293,22 +294,22 @@ as a reference.</p>
 <tbody>
 <tr class="odd">
 <td align="left">SGD</td>
-<td align="right">1.25s</td>
+<td align="right">1.78s</td>
 <td align="right">0.0011</td>
 </tr>
 <tr class="even">
 <td align="left">MLX closed form</td>
-<td align="right">20.7ms</td>
+<td align="right">23.89ms</td>
 <td align="right">0.0011</td>
 </tr>
 <tr class="odd">
 <td align="left">MLX closed form (compiled)</td>
-<td align="right">19.54ms</td>
+<td align="right">19.89ms</td>
 <td align="right">0.0011</td>
 </tr>
 <tr class="even">
 <td align="left">Base R</td>
-<td align="right">79.98ms</td>
+<td align="right">32.52ms</td>
 <td align="right">0.0011</td>
 </tr>
 </tbody>
