@@ -19,6 +19,7 @@
 #' - [`aperm()`](aperm.mlx), [`t()`](t.mlx), and [`dim<-`](\`dim<-.mlx\`) for shape manipulation
 #' - [`kronecker()`](kronecker), [`outer()`](outer.mlx), [`crossprod()`](crossprod), and [`tcrossprod()`](tcrossprod) for linear algebra helpers
 #' - [`fft()`](fft.mlx), [`chol()`](chol.mlx), [`chol2inv()`](chol2inv), [`backsolve()`](backsolve), and [`solve()`](solve.mlx) for numerical routines
+#' - [`scale()`](scale.mlx) for column-wise centring and scaling that stays on the MLX backend
 #' - [`asplit()`](asplit) to slice arrays along a margin while staying on the MLX backend
 #' - [`is.finite()`](is.finite.mlx), [`is.infinite()`](is.infinite.mlx) and [`is.nan()`](is.nan.mlx)
 #' @seealso [as_mlx()]

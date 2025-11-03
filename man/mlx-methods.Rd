@@ -24,6 +24,7 @@ there is also an \code{\link[=abind]{abind()}} function modelled on \code{abind:
 \item \href{aperm.mlx}{\code{aperm()}}, \href{t.mlx}{\code{t()}}, and \href{\`dim<-.mlx\`}{\verb{dim<-}} for shape manipulation
 \item \href{kronecker}{\code{kronecker()}}, \href{outer.mlx}{\code{outer()}}, \href{crossprod}{\code{crossprod()}}, and \href{tcrossprod}{\code{tcrossprod()}} for linear algebra helpers
 \item \href{fft.mlx}{\code{fft()}}, \href{chol.mlx}{\code{chol()}}, \href{chol2inv}{\code{chol2inv()}}, \href{backsolve}{\code{backsolve()}}, and \href{solve.mlx}{\code{solve()}} for numerical routines
+\item \href{scale.mlx}{\code{scale()}} for column-wise centring and scaling that stays on the MLX backend
 \item \href{asplit}{\code{asplit()}} to slice arrays along a margin while staying on the MLX backend
 \item \href{is.finite.mlx}{\code{is.finite()}}, \href{is.infinite.mlx}{\code{is.infinite()}} and \href{is.nan.mlx}{\code{is.nan()}}
 }

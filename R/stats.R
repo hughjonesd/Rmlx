@@ -461,6 +461,71 @@ col.mlx <- function(x, as.factor = FALSE) {
   base::col(as.array(x), as.factor = as.factor)
 }
 
+#' Scale mlx arrays
+#'
+#' Extends base [scale()] to handle mlx inputs without moving data back to
+#' base R. The computation delegates to MLX reductions and broadcasting. The
+#' returned mlx array omits the `"scaled:center"` and `"scaled:scale"`
+#' attributes used by base R.
+#'
+#' @inheritParams base::scale
+#' @return An mlx array with centred/scaled columns.
+#' @exportS3Method scale mlx
+scale.mlx <- function(x, center = TRUE, scale = TRUE) {
+  x_mlx <- as_mlx(x)
+  if (length(x_mlx$dim) != 2L) {
+    stop("scale.mlx() currently supports 2D arrays (matrices).", call. = FALSE)
+  }
+
+  n_rows <- x_mlx$dim[1L]
+  n_cols <- x_mlx$dim[2L]
+  result <- x_mlx
+
+  # Centering
+  if (!identical(center, FALSE)) {
+    if (isTRUE(center)) {
+      centers <- mlx_mean(result, axis = 1L, drop = FALSE)
+    } else {
+      center_vec <- as.numeric(center)
+      if (length(center_vec) == 1L) {
+        center_vec <- rep(center_vec, n_cols)
+      }
+      if (length(center_vec) != n_cols) {
+        stop("length of 'center' must equal the number of columns of 'x'", call. = FALSE)
+      }
+      centers <- as_mlx(matrix(center_vec, nrow = 1L),
+                        dtype = result$dtype,
+                        device = result$device)
+    }
+    result <- result - centers
+  }
+
+  # Scaling
+  if (!identical(scale, FALSE)) {
+    if (isTRUE(scale)) {
+      denom <- max(1L, n_rows - 1L)
+      sum_sq <- mlx_sum(result ^ 2, axis = 1L, drop = TRUE)
+      scale_vals <- sqrt(sum_sq / denom)
+      scales <- mlx_reshape(scale_vals, c(1L, n_cols))
+    } else {
+      scale_vec <- as.numeric(scale)
+      if (length(scale_vec) == 1L) {
+        scale_vec <- rep(scale_vec, n_cols)
+      }
+      if (length(scale_vec) != n_cols) {
+        stop("length of 'scale' must equal the number of columns of 'x'", call. = FALSE)
+      }
+      scales <- as_mlx(matrix(scale_vec, nrow = 1L),
+                       dtype = result$dtype,
+                       device = result$device)
+    }
+
+    result <- result / scales
+  }
+
+  result
+}
+
 #' Cumulative sum and product
 #'
 #' Compute cumulative sums or products along an axis.
