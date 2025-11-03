@@ -94,3 +94,43 @@ test_that("as.vector.mlx warns for multi-dimensional arrays", {
   # Should flatten in column-major order (R's default)
   expect_equal(result, as.vector(m))
 })
+
+test_that("row()/col() match base results for mlx matrices", {
+  mat <- matrix(seq_len(12), 3, 4)
+  mat_mlx <- as_mlx(mat)
+
+  expect_equal(row(mat_mlx), base::row(mat))
+  expect_equal(col(mat_mlx), base::col(mat))
+  expect_equal(row(mat_mlx, as.factor = TRUE), base::row(mat, as.factor = TRUE))
+})
+
+test_that("asplit() returns mlx slices matching base arrays", {
+  x <- matrix(1:6, 2, 3)
+  x_mlx <- as_mlx(x)
+
+  base_split <- base::asplit(x, 1)
+  mlx_split <- asplit(x_mlx, 1)
+
+  expect_true(all(vapply(mlx_split, is.mlx, logical(1))))
+  expect_equal(lapply(mlx_split, as.vector), lapply(base_split, as.vector))
+
+  mlx_split_drop <- asplit(x_mlx, 1, drop = TRUE)
+  base_split_drop <- base::asplit(x, 1, drop = TRUE)
+  expect_equal(lapply(mlx_split_drop, as.vector), lapply(base_split_drop, as.vector))
+})
+
+test_that("backsolve() delegates to mlx_solve_triangular", {
+  r <- matrix(c(3, 1, 0, 2), 2, 2)
+  b_mat <- matrix(c(5, 4), 2, 1)
+  b_vec <- c(5, 4)
+
+  expected_mat <- base::backsolve(r, b_mat)
+  expected_vec <- base::backsolve(r, b_vec)
+
+  res_mat <- backsolve(as_mlx(r), as_mlx(b_mat), upper.tri = TRUE)
+  res_vec <- backsolve(as_mlx(r), as_mlx(b_vec), upper.tri = TRUE)
+
+  expect_s3_class(res_mat, "mlx")
+  expect_equal(as.matrix(res_mat), expected_mat, tolerance = 1e-6)
+  expect_equal(as.vector(res_vec), as.vector(expected_vec), tolerance = 1e-6)
+})

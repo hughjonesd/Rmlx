@@ -2,9 +2,18 @@
 % Please edit documentation in R/linalg_adv.R
 \name{mlx_solve_triangular}
 \alias{mlx_solve_triangular}
+\alias{backsolve}
+\alias{backsolve.default}
+\alias{backsolve.mlx}
 \title{Solve triangular systems with mlx arrays}
 \usage{
 mlx_solve_triangular(a, b, upper = FALSE)
+
+backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
+
+\method{backsolve}{default}(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
+
+\method{backsolve}{mlx}(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 }
 \arguments{
 \item{a}{An mlx triangular matrix.}
@@ -12,6 +21,17 @@ mlx_solve_triangular(a, b, upper = FALSE)
 \item{b}{Right-hand side matrix or vector.}
 
 \item{upper}{Logical; if \code{TRUE}, \code{a} is upper triangular, otherwise lower.}
+
+\item{x}{a matrix whose columns give the right-hand sides for
+    the equations.}
+
+\item{k}{the number of columns of \code{r} and rows of \code{x} to use.}
+
+\item{upper.tri}{logical; if \code{TRUE} (default), the \emph{upper}
+    \emph{tri}angular part of \code{r} is used.  Otherwise, the lower one.}
+
+\item{transpose}{logical; if \code{TRUE}, solve \eqn{r' * y = x} for
+    \eqn{y}, i.e., \code{t(r) \%*\% y == x}.}
 }
 \value{
 An mlx array solution.

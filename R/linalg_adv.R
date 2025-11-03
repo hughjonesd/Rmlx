@@ -326,6 +326,45 @@ mlx_solve_triangular <- function(a, b, upper = FALSE) {
   .mlx_wrap_result(ptr, a$device)
 }
 
+#' @rdname mlx_solve_triangular
+#' @inheritParams base::backsolve
+#' @export
+backsolve <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...) {
+  UseMethod("backsolve")
+}
+
+#' @rdname mlx_solve_triangular
+#' @export
+backsolve.default <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...) {
+  base::backsolve(r, x, k = if (is.null(k)) ncol(r) else k, upper.tri = upper.tri, transpose = transpose, ...)
+}
+
+#' @rdname mlx_solve_triangular
+#' @export
+backsolve.mlx <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...) {
+  r_mlx <- as_mlx(r)
+  x_mlx <- as_mlx(x, device = r_mlx$device)
+
+  if (length(r_mlx$dim) != 2L) {
+    stop("`r` must be a matrix when using backsolve() with mlx arrays.", call. = FALSE)
+  }
+
+  if (is.null(k)) {
+    k <- r_mlx$dim[2L]
+  }
+  if (!identical(k, r_mlx$dim[2L])) {
+    stop("`k` values other than ncol(r) are not yet supported for mlx arrays.", call. = FALSE)
+  }
+
+  target <- r_mlx
+  if (transpose) {
+    target <- t(target)
+    upper.tri <- !upper.tri
+  }
+
+  mlx_solve_triangular(target, x_mlx, upper = upper.tri)
+}
+
 #' Vector cross product with mlx arrays
 #'
 #' @param a,b Input mlx arrays containing 3D vectors.

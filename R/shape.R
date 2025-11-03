@@ -355,6 +355,51 @@ mlx_split <- function(x, sections, axis = 1L) {
   res
 }
 
+#' Split mlx arrays along a margin
+#'
+#' `asplit()` extends base [asplit()] to work with mlx arrays by delegating to
+#' [mlx_split()]. When `x` is mlx the result is a list of mlx arrays; otherwise,
+#' the base implementation is used.
+#'
+#' Currently only a single `MARGIN` value is supported for mlx arrays.
+#'
+#' @inheritParams base::asplit
+#' @returns For mlx inputs, a list of mlx arrays; otherwise matches
+#'   [base::asplit()].
+#' @export
+asplit <- function(x, MARGIN, drop = FALSE) {
+  UseMethod("asplit")
+}
+
+#' @rdname asplit
+#' @export
+asplit.default <- function(x, MARGIN, drop = FALSE) {
+  base::asplit(x, MARGIN, drop = drop)
+}
+
+#' @rdname asplit
+#' @export
+asplit.mlx <- function(x, MARGIN, drop = FALSE) {
+  x <- as_mlx(x)
+  if (length(MARGIN) != 1L) {
+    stop("asplit() for mlx arrays currently supports a single margin.", call. = FALSE)
+  }
+  axis_idx <- .mlx_normalize_axis(MARGIN, x)
+  dim_len <- x$dim[axis_idx + 1L]
+  splits <- mlx_split(x, sections = dim_len, axis = MARGIN)
+
+  rest_dim <- x$dim[-(axis_idx + 1L)]
+  splits <- lapply(splits, function(part) {
+    if (isTRUE(drop)) {
+      part$dim <- integer(0L)
+    } else {
+      part$dim <- if (length(rest_dim)) rest_dim else integer(0L)
+    }
+    part
+  })
+  splits
+}
+
 #' Parse padding specification into matrix format
 #'
 #' @param pad_width Scalar, length-2 vector, matrix, list, or full-length vector.

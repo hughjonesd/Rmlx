@@ -417,6 +417,50 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
   result
 }
 
+#' Row and column indices for mlx arrays
+#'
+#' Extends base [row()] and [col()] so they also accept mlx arrays. When `x`
+#' is mlx, the result is computed by converting to a base array and delegating
+#' to the corresponding base helper.
+#'
+#' @inheritParams base::row
+#' @return A matrix or array of row indices (for `row()`) or column indices
+#'   (for `col()`), matching the base R behaviour.
+#' @export
+row <- function(x, ...) {
+  UseMethod("row")
+}
+
+#' @rdname row
+#' @export
+row.default <- function(x, ...) {
+  base::row(x, ...)
+}
+
+#' @rdname row
+#' @export
+row.mlx <- function(x, as.factor = FALSE) {
+  base::row(as.array(x), as.factor = as.factor)
+}
+
+#' @rdname row
+#' @export
+col <- function(x, ...) {
+  UseMethod("col")
+}
+
+#' @rdname row
+#' @export
+col.default <- function(x, ...) {
+  base::col(x, ...)
+}
+
+#' @rdname row
+#' @export
+col.mlx <- function(x, as.factor = FALSE) {
+  base::col(as.array(x), as.factor = as.factor)
+}
+
 #' Cumulative sum and product
 #'
 #' Compute cumulative sums or products along an axis.
