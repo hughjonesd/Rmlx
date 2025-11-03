@@ -31,6 +31,7 @@ reference:
       - as.matrix.mlx
       - as.array.mlx
       - as.vector.mlx
+      - as.logical.mlx
   - title: Device & Execution
     contents:
       - mlx_default_device
@@ -76,7 +77,11 @@ reference:
       - mlx_flatten
       - mlx_swapaxes
       - aperm.mlx
+      - drop
+      - row
+      - col
       - mlx_split
+      - asplit
       - mlx_unflatten
       - mlx_meshgrid
       - mlx_broadcast_to
@@ -138,6 +143,7 @@ reference:
       - rowSums
       - colMeans
       - rowMeans
+      - scale.mlx
       - fft
       - mlx_fft
       - mlx_fft2
