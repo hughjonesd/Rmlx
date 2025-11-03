@@ -12,8 +12,6 @@
   6×–10× speedups for 1000–4000 square matrices and similar gains on CPU.
 * Base reducers [all()] and [any()] applied to mlx arrays now return plain R
   logical scalars; `mlx_all()`/`mlx_any()` continue to yield mlx booleans.
-* Added `as.logical.mlx()`, which simply evaluates `as.logical(as.vector(x))`
-  so MLX arrays convert to base logical vectors using the existing vector semantics.
 
 # Rmlx 0.1.0
 

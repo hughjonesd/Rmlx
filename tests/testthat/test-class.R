@@ -94,19 +94,3 @@ test_that("as.vector.mlx warns for multi-dimensional arrays", {
   # Should flatten in column-major order (R's default)
   expect_equal(result, as.vector(m))
 })
-
-test_that("as.logical.mlx returns base logical vectors", {
-  v <- c(1, 0, -3, 2)
-  v_mlx <- as_mlx(v)
-
-  expect_identical(as.logical(v_mlx), as.logical(v))
-
-  m <- matrix(c(1, 0, 0, 5), 2, 2)
-  m_mlx <- as_mlx(m)
-
-  expect_warning(
-    logical_flat <- as.logical(m_mlx),
-    "Converting multi-dimensional mlx array to vector"
-  )
-  expect_identical(logical_flat, as.logical(as.vector(m)))
-})
