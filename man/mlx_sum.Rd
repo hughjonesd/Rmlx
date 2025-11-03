@@ -44,6 +44,11 @@ These helpers mirror NumPy-style reductions, optionally collapsing one or
 more axes. Use \code{drop = FALSE} to retain reduced axes with length one
 (akin to setting \code{drop = FALSE} in base R).
 }
+\details{
+\code{mlx_all()} and \code{mlx_any()} continue to return mlx boolean scalars, while the
+base R reducers \code{\link[=all]{all()}} and \code{\link[=any]{any()}} applied to mlx inputs now return plain
+logical scalars.
+}
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))
 mlx_sum(x)

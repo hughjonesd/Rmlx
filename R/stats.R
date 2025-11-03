@@ -31,6 +31,10 @@ NULL
 #'   [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean),
 #'   [mlx.core.var](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.var),
 #'   [mlx.core.std](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.std)
+#' @details
+#' `mlx_all()` and `mlx_any()` continue to return mlx boolean scalars, while the
+#' base R reducers [all()] and [any()] applied to mlx inputs now return plain
+#' logical scalars.
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_sum(x)
@@ -367,14 +371,18 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
       stop("axis/drop arguments are only supported when reducing a single array", call. = FALSE)
     }
     drop_val <- if (is.null(drop_arg)) TRUE else drop_arg
-    return(.mlx_reduce_dispatch(args[[1L]], switch(op,
+    res <- .mlx_reduce_dispatch(args[[1L]], switch(op,
       sum = "sum",
       prod = "prod",
       min = "min",
       max = "max",
       all = "all",
       any = "any"
-    ), axis = axis, drop = drop_val))
+    ), axis = axis, drop = drop_val)
+    if (op %in% c("all", "any")) {
+      return(as.logical(as.matrix(res)))
+    }
+    return(res)
   }
 
   reduce_one <- function(obj) {
@@ -402,6 +410,9 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
         any = result | scalar
       )
     }
+  }
+  if (op %in% c("all", "any")) {
+    return(as.logical(as.matrix(result)))
   }
   result
 }
