@@ -34,6 +34,7 @@ A matrix or array of row indices (for \code{row()}) or column indices
 (for \code{col()}), matching the base R behaviour.
 }
 \description{
-Extends base \code{\link[=row]{row()}} and \code{\link[=col]{col()}} so they also accept mlx arrays without
-materialising data back to base R. Results mirror base behaviour.
+Extends base \code{\link[=row]{row()}} and \code{\link[=col]{col()}} so they also accept mlx arrays. When
+\code{as.factor = FALSE} the result stays on the MLX backend, avoiding
+round-tripping through base R.
 }

@@ -419,8 +419,9 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
 
 #' Row and column indices for mlx arrays
 #'
-#' Extends base [row()] and [col()] so they also accept mlx arrays without
-#' materialising data back to base R. Results mirror base behaviour.
+#' Extends base [row()] and [col()] so they also accept mlx arrays. When
+#' `as.factor = FALSE` the result stays on the MLX backend, avoiding
+#' round-tripping through base R.
 #'
 #' @inheritParams base::row
 #' @return A matrix or array of row indices (for `row()`) or column indices
@@ -443,14 +444,18 @@ row.mlx <- function(x, as.factor = FALSE) {
   if (length(dims) <= 1L) {
     stop("a matrix-like object is required as argument to 'row'", call. = FALSE)
   }
-  out <- .Internal(row(dims))
-  if (!as.factor) {
-    return(out)
+  if (as.factor) {
+    return(base::row(as.array(x), as.factor = TRUE))
   }
-  labels <- as.character(seq_len(dims[1L]))
-  res <- factor(out, labels = labels)
-  dim(res) <- dims
-  res
+  rows <- mlx_arange(
+    dims[1] + 1,
+    start = 1,
+    dtype = "int32",
+    device = x$device
+  )
+  target_shape <- c(dims[1], rep.int(1L, length(dims) - 1L))
+  reshaped <- mlx_reshape(rows, target_shape)
+  mlx_broadcast_to(reshaped, dims)
 }
 
 #' @rdname row
@@ -472,14 +477,18 @@ col.mlx <- function(x, as.factor = FALSE) {
   if (length(dims) <= 1L) {
     stop("a matrix-like object is required as argument to 'col'", call. = FALSE)
   }
-  out <- .Internal(col(dims))
-  if (!as.factor) {
-    return(out)
+  if (as.factor) {
+    return(base::col(as.array(x), as.factor = TRUE))
   }
-  labels <- as.character(seq_len(dims[2L]))
-  res <- factor(out, labels = labels)
-  dim(res) <- dims
-  res
+  cols <- mlx_arange(
+    dims[2] + 1,
+    start = 1,
+    dtype = "int32",
+    device = x$device
+  )
+  target_shape <- c(1L, dims[2], rep.int(1L, length(dims) - 2L))
+  reshaped <- mlx_reshape(cols, target_shape)
+  mlx_broadcast_to(reshaped, dims)
 }
 
 #' Scale mlx arrays
