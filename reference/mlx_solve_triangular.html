@@ -18,7 +18,8 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/benchmarks.html">MLX Benchmarks</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/linear-regression.html">Linear Regression with MLX</a></li>
     <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/performance.html">Performance Benchmarks</a></li>
@@ -72,23 +73,28 @@
 <dd><p>Logical; if <code>TRUE</code>, <code>a</code> is upper triangular, otherwise lower.</p></dd>
 
 
+<dt id="arg-r">r<a class="anchor" aria-label="anchor" href="#arg-r"></a></dt>
+<dd><p>Triangular system matrix passed to <code>backsolve()</code>.</p></dd>
+
+
 <dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>a matrix whose columns give the right-hand sides for
-    the equations.</p></dd>
+<dd><p>Right-hand side supplied to <code>backsolve()</code>.</p></dd>
 
 
 <dt id="arg-k">k<a class="anchor" aria-label="anchor" href="#arg-k"></a></dt>
-<dd><p>the number of columns of <code>r</code> and rows of <code>x</code> to use.</p></dd>
+<dd><p>Number of columns of <code>r</code> to use.</p></dd>
 
 
 <dt id="arg-upper-tri">upper.tri<a class="anchor" aria-label="anchor" href="#arg-upper-tri"></a></dt>
-<dd><p>logical; if <code>TRUE</code> (default), the <em>upper</em>
-    <em>tri</em>angular part of <code>r</code> is used.  Otherwise, the lower one.</p></dd>
+<dd><p>Logical; indicates if <code>r</code> is upper triangular.</p></dd>
 
 
 <dt id="arg-transpose">transpose<a class="anchor" aria-label="anchor" href="#arg-transpose"></a></dt>
-<dd><p>logical; if <code>TRUE</code>, solve \(r' * y = x\) for
-    \(y\), i.e., <code>t(r) %*% y == x</code>.</p></dd>
+<dd><p>Logical; if <code>TRUE</code>, solve <code>t(r) %*% x = b</code>.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Additional arguments forwarded to <code><a href="https://rdrr.io/r/base/backsolve.html" class="external-link">base::backsolve()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

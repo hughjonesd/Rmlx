@@ -22,7 +22,8 @@ to the corresponding base helper."></head><body>
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/benchmarks.html">MLX Benchmarks</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/linear-regression.html">Linear Regression with MLX</a></li>
     <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/performance.html">Performance Benchmarks</a></li>
@@ -57,7 +58,7 @@ to the corresponding base helper.</p>
 <span><span class="fu">row</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'mlx'</span></span>
-<span><span class="fu">row</span><span class="op">(</span><span class="va">x</span>, as.factor <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="fu">row</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">col</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -65,7 +66,7 @@ to the corresponding base helper.</p>
 <span><span class="fu">col</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'mlx'</span></span>
-<span><span class="fu">col</span><span class="op">(</span><span class="va">x</span>, as.factor <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">col</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -77,10 +78,8 @@ to the corresponding base helper.</p>
     <code>dim</code>.</p></dd>
 
 
-<dt id="arg-as-factor">as.factor<a class="anchor" aria-label="anchor" href="#arg-as-factor"></a></dt>
-<dd><p>a logical value indicating whether the value should
-    be returned as a factor of row labels (created if necessary)
-    rather than as numbers.</p></dd>
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Passed through to <code><a href="https://rdrr.io/r/base/row.html" class="external-link">base::row()</a></code> or <code><a href="https://rdrr.io/r/base/col.html" class="external-link">base::col()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
