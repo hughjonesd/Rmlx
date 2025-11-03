@@ -424,6 +424,7 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
 #' to the corresponding base helper.
 #'
 #' @inheritParams base::row
+#' @param ... Passed through to [base::row()] or [base::col()].
 #' @return A matrix or array of row indices (for `row()`) or column indices
 #'   (for `col()`), matching the base R behaviour.
 #' @export
@@ -439,8 +440,8 @@ row.default <- function(x, ...) {
 
 #' @rdname row
 #' @export
-row.mlx <- function(x, as.factor = FALSE) {
-  base::row(as.array(x), as.factor = as.factor)
+row.mlx <- function(x, ...) {
+  base::row(as.array(x), ...)
 }
 
 #' @rdname row
@@ -457,8 +458,8 @@ col.default <- function(x, ...) {
 
 #' @rdname row
 #' @export
-col.mlx <- function(x, as.factor = FALSE) {
-  base::col(as.array(x), as.factor = as.factor)
+col.mlx <- function(x, ...) {
+  base::col(as.array(x), ...)
 }
 
 #' Scale mlx arrays

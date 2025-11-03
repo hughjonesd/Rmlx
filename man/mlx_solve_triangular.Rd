@@ -22,16 +22,17 @@ backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 
 \item{upper}{Logical; if \code{TRUE}, \code{a} is upper triangular, otherwise lower.}
 
-\item{x}{a matrix whose columns give the right-hand sides for
-    the equations.}
+\item{r}{Triangular system matrix passed to \code{\link[=backsolve]{backsolve()}}.}
 
-\item{k}{the number of columns of \code{r} and rows of \code{x} to use.}
+\item{x}{Right-hand side supplied to \code{\link[=backsolve]{backsolve()}}.}
 
-\item{upper.tri}{logical; if \code{TRUE} (default), the \emph{upper}
-    \emph{tri}angular part of \code{r} is used.  Otherwise, the lower one.}
+\item{k}{Number of columns of \code{r} to use.}
 
-\item{transpose}{logical; if \code{TRUE}, solve \eqn{r' * y = x} for
-    \eqn{y}, i.e., \code{t(r) \%*\% y == x}.}
+\item{upper.tri}{Logical; indicates if \code{r} is upper triangular.}
+
+\item{transpose}{Logical; if \code{TRUE}, solve \code{t(r) \%*\% x = b}.}
+
+\item{...}{Additional arguments forwarded to \code{\link[base:backsolve]{base::backsolve()}}.}
 }
 \value{
 An mlx array solution.

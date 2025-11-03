@@ -13,21 +13,19 @@ row(x, ...)
 
 \method{row}{default}(x, ...)
 
-\method{row}{mlx}(x, as.factor = FALSE)
+\method{row}{mlx}(x, ...)
 
 col(x, ...)
 
 \method{col}{default}(x, ...)
 
-\method{col}{mlx}(x, as.factor = FALSE)
+\method{col}{mlx}(x, ...)
 }
 \arguments{
 \item{x}{a matrix-like object, that is one with a two-dimensional
     \code{dim}.}
 
-\item{as.factor}{a logical value indicating whether the value should
-    be returned as a factor of row labels (created if necessary)
-    rather than as numbers.}
+\item{...}{Passed through to \code{\link[base:row]{base::row()}} or \code{\link[base:col]{base::col()}}.}
 }
 \value{
 A matrix or array of row indices (for \code{row()}) or column indices
