@@ -19,11 +19,15 @@ This package was vibe-coded with Claude/OpenAI Codex in a week. Use at
 your own risk! Much of the C++ API has been implemented, but not
 python-only features such as large neural network layers.
 
+Most C++ functions are implemented via R functions with an `mlx_`
+prefix. In addition, the package defines mlx-specific methods for many R
+matrix operations, including arithmetic, subsetting and matrix algebra.
+
 ## Motivation
 
 Modern Macs have a GPU, which is great for performing matrix operations.
 Statistics uses a lot of matrix operations. But until now, there has
-been no way for R on the Mac to use the GPU. Rmlx changes that.
+been no way for R on the Mac to use the GPU.
 
 ## Requirements
 
@@ -58,15 +62,16 @@ library(Rmlx)
 #>     fft
 #> The following objects are masked from 'package:base':
 #> 
-#>     chol2inv, colMeans, colSums, diag, outer, rowMeans, rowSums, svd
+#>     asplit, backsolve, chol2inv, col, colMeans, colSums, diag, drop,
+#>     outer, row, rowMeans, rowSums, svd
 
 A <- matrix(rnorm(1e6), 1e3, 1e3)
 system.time(solve(A))
 #>    user  system elapsed 
-#>   0.395   0.002   0.399
+#>   0.365   0.003   0.367
 system.time(solve(as_mlx(A)))
 #>    user  system elapsed 
-#>   0.048   0.055   0.104
+#>   0.037   0.055   0.094
 ```
 
 ### Lazy Evaluation
@@ -216,7 +221,7 @@ cbind(a, t(b))
 #> [1,]    1    3    5    1    2    3
 #> [2,]    2    4    6    4    5    6
 
-# Matrix multiplication
+# Matrix algebra
 a %*% b
 #> mlx array [2 x 2]
 #>   dtype: float32
@@ -233,125 +238,27 @@ sum(a)
 #>   device: gpu
 #>   values:
 #> [1] 21
-mean(a)
-#> mlx array []
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#> [1] 3.5
 colMeans(a)
 #> mlx array [3]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 1.5 3.5 5.5
-rowMeans(a)
-#> mlx array [2]
+
+# Cumulative operations flatten column-major
+cumsum(a)
+#> mlx array [6]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 3 4
-
-# Cumulative operations flatten column-major
-as.vector(cumsum(a))
 #> [1]  1  3  6 10 15 21
 
 qr_res <- qr(a)
 svd_res <- svd(a)
-chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
+chol_res <- chol(a[, 1:2])
 fft_res <- fft(a)
-
-qr_res$Q
-#> mlx array [2 x 2]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>            [,1]       [,2]
-#> [1,] -0.4472135 -0.8944272
-#> [2,] -0.8944272  0.4472136
-svd_res$d
-#> mlx array [2]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#> [1] 9.5255194 0.5143015
-chol_res
-#> mlx array [2 x 2]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>          [,1]     [,2]
-#> [1,] 3.741657 8.552360
-#> [2,] 0.000000 1.963962
-```
-
-### Random Sampling
-
-``` r
-mlx_rand_uniform(c(3, 3), min = -1, max = 1)
-#> mlx array [3 x 3]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>             [,1]       [,2]       [,3]
-#> [1,] -0.88357937 -0.3713405 -0.0342840
-#> [2,]  0.09261358 -0.2968941 -0.4256831
-#> [3,]  0.72074342  0.5229734 -0.1605381
-```
-
-### Data Transformations
-
-``` r
-scores <- as_mlx(c(0.1, 0.7, 0.4, 0.9))
-mlx_sort(scores)
-#> mlx array [4]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#> [1] 0.1 0.4 0.7 0.9
-mlx_topk(scores, 2)
-#> mlx array [2]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#> [1] 0.7 0.9
-mlx_argmax(scores)
-#> mlx array []
-#>   dtype: int64
-#>   device: gpu
-#>   values:
-#> [1] 4
-```
-
-### Matrix Operations
-
-``` r
-A <- as_mlx(matrix(1:4, 2, 2))
-B <- as_mlx(matrix(c(1, 0, -1, 0), 2, 2))
-A %*% B
-#> mlx array [2 x 2]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>      [,1] [,2]
-#> [1,]    1   -1
-#> [2,]    2   -2
-solve(A, B)
-#> mlx array [2 x 2]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>      [,1] [,2]
-#> [1,]   -2    2
-#> [2,]    1   -1
-crossprod(A, B)
-#> mlx array [2 x 2]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>      [,1] [,2]
-#> [1,]    1   -1
-#> [2,]    3   -3
+crossprod_res <- crossprod(a, b[1:2, ])
+solve_res <- solve(a[, 1:2], b[1:2, ])
 ```
 
 ### Automatic Differentiation
@@ -371,11 +278,11 @@ grads <- mlx_grad(loss, w, x, y)
 
 # Inspect gradient
 as.matrix(grads[[1]])
-#>             [,1]
-#> [1,] -0.77310860
-#> [2,]  0.14119890
-#> [3,] -0.12343385
-#> [4,]  0.05721617
+#>            [,1]
+#> [1,] -1.8226540
+#> [2,]  0.3192708
+#> [3,]  1.3037107
+#> [4,]  0.1494838
 
 # Simple SGD loop
 model <- mlx_linear(4, 1, bias = FALSE)
@@ -390,21 +297,11 @@ for (step in 1:50) {
 }
 
 # Check final loss
-final_loss <- mlx_forward(model, x)
-mean((final_loss - y) * (final_loss - y))
+ypred <- mlx_forward(model, x)
+mean((ypred - y) * (ypred - y))
 #> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 0.06682333
+#> [1] 0.04954781
 ```
-
-## Data Types
-
-Supported data types:
-
-- `float32` for numeric data (default)
-- `bool` for logical data
-- Integer types `int8`, `int16`, `int32`, `int64`, `uint8`, `uint16`,
-  `uint32`, `uint64`.
-- `complex64`

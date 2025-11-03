@@ -25,11 +25,15 @@ This package was vibe-coded with Claude/OpenAI Codex in a week.
 Use at your own risk! Much of the C++ API has been implemented, but not
 python-only features such as large neural network layers.
 
+Most C++ functions are implemented via R functions with an `mlx_` prefix. In
+addition, the package defines mlx-specific methods for many R matrix 
+operations, including arithmetic, subsetting and matrix algebra.
+
 ## Motivation
 
 Modern Macs have a GPU, which is great for performing matrix operations. 
 Statistics uses a lot of matrix operations. But until now, there has been no way
-for R on the Mac to use the GPU. Rmlx changes that.
+for R on the Mac to use the GPU.
 
 ## Requirements
 
@@ -154,57 +158,25 @@ b <- as_mlx(matrix(1:6, 3, 2))
 rbind(a, t(b))
 cbind(a, t(b))
 
-# Matrix multiplication
+# Matrix algebra
 a %*% b
 
 # Reductions
 sum(a)
-mean(a)
 colMeans(a)
-rowMeans(a)
 
 # Cumulative operations flatten column-major
-as.vector(cumsum(a))
+cumsum(a)
 
 qr_res <- qr(a)
 svd_res <- svd(a)
-chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
+chol_res <- chol(a[, 1:2])
 fft_res <- fft(a)
-
-qr_res$Q
-svd_res$d
-chol_res
-
+crossprod_res <- crossprod(a, b[1:2, ])
+solve_res <- solve(a[, 1:2], b[1:2, ])
 ```
 
 
-### Random Sampling
-
-```{r}
-mlx_rand_uniform(c(3, 3), min = -1, max = 1)
-
-```
-
-### Data Transformations
-
-
-```{r}
-scores <- as_mlx(c(0.1, 0.7, 0.4, 0.9))
-mlx_sort(scores)
-mlx_topk(scores, 2)
-mlx_argmax(scores)
-```
-
-### Matrix Operations
-
-
-```{r}
-A <- as_mlx(matrix(1:4, 2, 2))
-B <- as_mlx(matrix(c(1, 0, -1, 0), 2, 2))
-A %*% B
-solve(A, B)
-crossprod(A, B)
-```
 
 ### Automatic Differentiation
 
@@ -237,20 +209,11 @@ for (step in 1:50) {
 }
 
 # Check final loss
-final_loss <- mlx_forward(model, x)
-mean((final_loss - y) * (final_loss - y))
+ypred <- mlx_forward(model, x)
+mean((ypred - y) * (ypred - y))
 ```
 
 
-## Data Types
-
-Supported data types:
-
-- `float32` for numeric data (default)
-- `bool` for logical data
-- Integer types `int8`, `int16`, `int32`, `int64`, `uint8`, `uint16`, `uint32`, 
-  `uint64`.
-- `complex64`
 
 
 
