@@ -444,8 +444,8 @@ row.mlx <- function(x, as.factor = FALSE) {
   if (length(dims) <= 1L) {
     stop("a matrix-like object is required as argument to 'row'", call. = FALSE)
   }
-  if (as.factor) {
-    return(base::row(as.array(x), as.factor = TRUE))
+  if (isTRUE(as.factor)) {
+    warning("row.mlx() ignores as.factor = TRUE and returns mlx indices.", call. = FALSE)
   }
   rows <- mlx_arange(
     dims[1] + 1,
@@ -477,8 +477,8 @@ col.mlx <- function(x, as.factor = FALSE) {
   if (length(dims) <= 1L) {
     stop("a matrix-like object is required as argument to 'col'", call. = FALSE)
   }
-  if (as.factor) {
-    return(base::col(as.array(x), as.factor = TRUE))
+  if (isTRUE(as.factor)) {
+    warning("col.mlx() ignores as.factor = TRUE and returns mlx indices.", call. = FALSE)
   }
   cols <- mlx_arange(
     dims[2] + 1,

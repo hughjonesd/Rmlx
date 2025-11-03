@@ -25,9 +25,8 @@ col(x, as.factor = FALSE)
 \item{x}{a matrix-like object, that is one with a two-dimensional
     \code{dim}.}
 
-\item{as.factor}{a logical value indicating whether the value should
-    be returned as a factor of row labels (created if necessary)
-    rather than as numbers.}
+\item{as.factor}{Ignored for mlx inputs. Factors require host-side
+    row/column names, which MLX arrays do not track.}
 }
 \value{
 A matrix or array of row indices (for \code{row()}) or column indices
