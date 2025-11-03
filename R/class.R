@@ -231,6 +231,19 @@ as.vector.mlx <- function(x, mode = "any") {
   as.vector(as.matrix(x), mode = mode)
 }
 
+#' Convert MLX array to logical vector
+#'
+#' @inheritParams mlx_array_required
+#' @param ... Additional arguments passed to [base::as.vector()].
+#' @return A logical vector.
+#' @export
+#' @examples
+#' x <- as_mlx(c(1, 0, 2))
+#' as.logical(x)
+as.logical.mlx <- function(x, ...) {
+  as.logical(as.vector(x))
+}
+
 #' Test if object is an MLX array
 #'
 #' @param x Object to test
