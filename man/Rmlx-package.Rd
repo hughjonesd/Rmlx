@@ -6,8 +6,9 @@
 \alias{Rmlx}
 \title{Rmlx: R Interface to Apple's MLX Arrays}
 \description{
-This package provides an R interface to Apple's MLX (Machine Learning eXchange)
-library for GPU-accelerated array operations on Apple Silicon.
+This package provides an R interface to Apple's \href{https://mlx-framework.org/}{MLX}
+(Machine Learning eXchange) library for GPU-accelerated array operations on
+Apple Silicon.
 }
 \section{Key Features}{
 \itemize{
@@ -18,50 +19,26 @@ library for GPU-accelerated array operations on Apple Silicon.
 }
 }
 
-\section{Main Functions}{
-\itemize{
-\item \code{\link[=as_mlx]{as_mlx()}}: Convert R objects to MLX arrays
-\item \code{\link[=as.matrix.mlx]{as.matrix.mlx()}}: Convert MLX arrays back to R
-\item \code{\link[=mlx_eval]{mlx_eval()}}: Force evaluation of lazy operations
-\item Arithmetic: \code{+}, \code{-}, \code{*}, \code{/}, \code{^}
-\item Matrix ops: \code{\%*\%}, \code{t}, \code{crossprod}, \code{tcrossprod}
-\item Reductions: \code{sum}, \code{mean}, \code{colMeans}, \code{rowMeans}
-}
-}
-
 \section{Lazy Evaluation}{
 MLX arrays use lazy evaluation by default. Operations are recorded but not
 executed until:
 \itemize{
-\item You call \code{mlx_eval(x)}
-\item You convert to R with \code{as.matrix(x)}
+\item You call \code{\link[=mlx_eval]{mlx_eval()}}
+\item You convert to R with \code{\link[=as.matrix]{as.matrix()}} or \code{\link[=as.vector]{as.vector()}}
 \item The result is needed for another computation
 }
-}
 
-\section{Device Management}{
-Use \code{\link[=mlx_default_device]{mlx_default_device()}} to control whether arrays are created
-on GPU (default) or CPU. All mlx arrays are stored in \code{float32}
-regardless of device. Use base R arrays if you require \code{float64} math.
-}
-
-\section{Known Limitations}{
-Rmlx does not yet wrap every MLX primitive. Major gaps include:
-\itemize{
-\item Scatter-style updates (e.g. \code{scatter_add}, \code{take_along_axis})
-\item Bitwise integer kernels (bitwise AND/OR/XOR, shifts)
-\item Advanced autograd transforms (\code{jvp}, \code{vjp}, \code{vmap}, custom VJPs)
-\item N-dimensional FFT helpers (\code{fftn}, \code{rfftn}, and inverse variants)
-\item Distributed collectives (NCCL/MPI backends)
-}
-
-See \code{dev/mlx_coverage.txt} for a living checklist of the MLX surface area.
+The package implements most of the C++ API via calls with the \code{mlx_} prefix,
+but it also provides \link[=mlx-specific methods]{mlx-methods} for common R matrix
+operations. R conventions are used: for example, indexing is 1-based.
 }
 
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://hughjonesd.github.io/Rmlx/}
+  \item \url{https://github.com/hughjonesd/Rmlx}
+  \item Report bugs at \url{https://github.com/hughjonesd/Rmlx/issues}
 }
 
 }

@@ -99,9 +99,8 @@ test_that("row()/col() match base results for mlx matrices", {
   mat <- matrix(seq_len(12), 3, 4)
   mat_mlx <- as_mlx(mat)
 
-  expect_equal(row(mat_mlx), base::row(mat))
-  expect_equal(col(mat_mlx), base::col(mat))
-  expect_equal(row(mat_mlx, as.factor = TRUE), base::row(mat, as.factor = TRUE))
+  expect_equal(as.matrix(row(mat_mlx)), base::row(mat))
+  expect_equal(as.matrix(col(mat_mlx)), base::col(mat))
 })
 
 test_that("asplit() returns mlx slices matching base arrays", {

@@ -311,11 +311,6 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
 #' @param a An mlx triangular matrix.
 #' @param b Right-hand side matrix or vector.
 #' @param upper Logical; if `TRUE`, `a` is upper triangular, otherwise lower.
-#' @param r Triangular system matrix passed to [backsolve()].
-#' @param x Right-hand side supplied to [backsolve()].
-#' @param k Number of columns of `r` to use.
-#' @param upper.tri Logical; indicates if `r` is upper triangular.
-#' @param transpose Logical; if `TRUE`, solve `t(r) %*% x = b`.
 #' @param ... Additional arguments forwarded to [base::backsolve()].
 #' @return An mlx array solution.
 #' @seealso [mlx.linalg.solve_triangular](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular)
@@ -333,7 +328,11 @@ mlx_solve_triangular <- function(a, b, upper = FALSE) {
 }
 
 #' @rdname mlx_solve_triangular
-#' @inheritParams base::backsolve
+#' @param r Triangular system matrix passed to [backsolve()].
+#' @param x Right-hand side supplied to [backsolve()].
+#' @param k Number of columns of `r` to use.
+#' @param upper.tri Logical; indicates if `r` is upper triangular.
+#' @param transpose Logical; if `TRUE`, solve `t(r) %*% x = b`.
 #' @export
 backsolve <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...) {
   UseMethod("backsolve")

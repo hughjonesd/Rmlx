@@ -28,6 +28,9 @@ there is also an \code{\link[=abind]{abind()}} function modelled on \code{abind:
 \item \href{asplit}{\code{asplit()}} to slice arrays along a margin while staying on the MLX backend
 \item \href{is.finite.mlx}{\code{is.finite()}}, \href{is.infinite.mlx}{\code{is.infinite()}} and \href{is.nan.mlx}{\code{is.nan()}}
 }
+
+Most methods return mlx objects. One exception is that \code{all()} and \code{any()}
+return standard R \code{TRUE} or \code{FALSE} when used on mlx objects.
 }
 \seealso{
 \code{\link[=as_mlx]{as_mlx()}}

@@ -32,8 +32,8 @@ NULL
 #'   [mlx.core.var](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.var),
 #'   [mlx.core.std](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.std)
 #' @details
-#' `mlx_all()` and `mlx_any()` continue to return mlx boolean scalars, while the
-#' base R reducers [all()] and [any()] applied to mlx inputs now return plain
+#' `mlx_all()` and `mlx_any()` return mlx boolean scalars, while the
+#' base R reducers [all()] and [any()] applied to mlx inputs return plain
 #' logical scalars.
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))

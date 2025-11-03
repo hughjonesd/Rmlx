@@ -4,7 +4,6 @@
 #' operations keep working after converting objects with [as_mlx()]. The main
 #' entry points are:
 #'
-#' @details
 #' - [`%*%`](%*%.mlx) for matrix multiplication
 #' - [`[`]([.mlx) and [`[<-`]([<-.mlx) for extraction and assignment
 #' - [`Ops`](Ops.mlx) and [`Math`](Math.mlx) for elementwise arithmetic and math
@@ -22,6 +21,9 @@
 #' - [`scale()`](scale.mlx) for column-wise centring and scaling that stays on the MLX backend
 #' - [`asplit()`](asplit) to slice arrays along a margin while staying on the MLX backend
 #' - [`is.finite()`](is.finite.mlx), [`is.infinite()`](is.infinite.mlx) and [`is.nan()`](is.nan.mlx)
+#'
+#' Most methods return mlx objects. One exception is that `all()` and `any()`
+#' return standard R `TRUE` or `FALSE` when used on mlx objects.
 #' @seealso [as_mlx()]
 #'
 #' @name mlx-methods
