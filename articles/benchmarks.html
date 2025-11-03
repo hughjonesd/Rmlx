@@ -45,6 +45,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/hughjonesd/Rmlx/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -61,7 +62,7 @@
       <h1>MLX Benchmarks</h1>
             
       
-
+      <small class="dont-index">Source: <a href="https://github.com/hughjonesd/Rmlx/blob/master/vignettes/benchmarks.Rmd" class="external-link"><code>vignettes/benchmarks.Rmd</code></a></small>
       <div class="d-none name"><code>benchmarks.Rmd</code></div>
     </div>
 
@@ -305,102 +306,102 @@ routines.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bench_results</span></span>
 <span><span class="co">#&gt;                operation   size implementation iters_per_sec median_seconds</span></span>
-<span><span class="co">#&gt; 1        Matrix multiply  Small         base R  2.018284e+02   0.0048279960</span></span>
-<span><span class="co">#&gt; 2        Matrix multiply  Small            mlx  5.783433e+02   0.0014515230</span></span>
-<span><span class="co">#&gt; 3        Matrix multiply Medium         base R  3.170733e+01   0.0335468355</span></span>
-<span><span class="co">#&gt; 4        Matrix multiply Medium            mlx  1.995442e+02   0.0040978680</span></span>
-<span><span class="co">#&gt; 5        Matrix multiply  Large         base R  3.786106e+00   0.2672906440</span></span>
-<span><span class="co">#&gt; 6        Matrix multiply  Large            mlx  5.525080e+01   0.0181920895</span></span>
-<span><span class="co">#&gt; 7        Matrix addition  Small         base R  3.863893e+02   0.0004950750</span></span>
-<span><span class="co">#&gt; 8        Matrix addition  Small            mlx  6.131096e+02   0.0013156080</span></span>
-<span><span class="co">#&gt; 9        Matrix addition Medium         base R  1.352335e+02   0.0048870975</span></span>
-<span><span class="co">#&gt; 10       Matrix addition Medium            mlx  3.213561e+02   0.0029325660</span></span>
-<span><span class="co">#&gt; 11       Matrix addition  Large         base R  5.935725e+01   0.0058338900</span></span>
-<span><span class="co">#&gt; 12       Matrix addition  Large            mlx  9.499747e+01   0.0053874820</span></span>
-<span><span class="co">#&gt; 13  Subset rows (vector)  Small         base R  4.871272e+02   0.0009081910</span></span>
-<span><span class="co">#&gt; 14  Subset rows (vector)  Small            mlx  6.103533e+02   0.0015817390</span></span>
-<span><span class="co">#&gt; 15  Subset rows (vector) Medium         base R  2.319556e+02   0.0021556980</span></span>
-<span><span class="co">#&gt; 16  Subset rows (vector) Medium            mlx  5.276164e+02   0.0016587370</span></span>
-<span><span class="co">#&gt; 17  Subset rows (vector)  Large         base R  1.962754e+01   0.0609674510</span></span>
-<span><span class="co">#&gt; 18  Subset rows (vector)  Large            mlx  1.139639e+02   0.0038985055</span></span>
-<span><span class="co">#&gt; 19 Subset (matrix index)  Small         base R  7.229761e+04   0.0000052890</span></span>
-<span><span class="co">#&gt; 20 Subset (matrix index)  Small            mlx  1.014457e+03   0.0008274005</span></span>
-<span><span class="co">#&gt; 21 Subset (matrix index) Medium         base R  5.567834e+04   0.0000101680</span></span>
-<span><span class="co">#&gt; 22 Subset (matrix index) Medium            mlx  1.231583e+03   0.0006775660</span></span>
-<span><span class="co">#&gt; 23 Subset (matrix index)  Large         base R  3.000557e+04   0.0000194340</span></span>
-<span><span class="co">#&gt; 24 Subset (matrix index)  Large            mlx  1.068705e+03   0.0007701030</span></span>
-<span><span class="co">#&gt; 25                   Sum  Small         base R  3.800065e+03   0.0002603090</span></span>
-<span><span class="co">#&gt; 26                   Sum  Small            mlx  1.635946e+03   0.0005801090</span></span>
-<span><span class="co">#&gt; 27                   Sum Medium         base R  9.514701e+02   0.0010467505</span></span>
-<span><span class="co">#&gt; 28                   Sum Medium            mlx  1.416832e+03   0.0006264390</span></span>
-<span><span class="co">#&gt; 29                   Sum  Large         base R  2.374034e+02   0.0041952840</span></span>
-<span><span class="co">#&gt; 30                   Sum  Large            mlx  9.495114e+02   0.0010319495</span></span>
-<span><span class="co">#&gt; 31                  Mean  Small         base R  1.881788e+03   0.0005232420</span></span>
-<span><span class="co">#&gt; 32                  Mean  Small            mlx  1.739508e+03   0.0005334920</span></span>
-<span><span class="co">#&gt; 33                  Mean Medium         base R  4.757363e+02   0.0020973960</span></span>
-<span><span class="co">#&gt; 34                  Mean Medium            mlx  1.781714e+03   0.0005496870</span></span>
-<span><span class="co">#&gt; 35                  Mean  Large         base R  1.225308e+02   0.0081414930</span></span>
-<span><span class="co">#&gt; 36                  Mean  Large            mlx  9.587690e+02   0.0009798180</span></span>
-<span><span class="co">#&gt; 37              Row sums  Small         base R  2.029352e+04   0.0000463095</span></span>
-<span><span class="co">#&gt; 38              Row sums  Small            mlx  1.180047e+03   0.0007468560</span></span>
-<span><span class="co">#&gt; 39              Row sums Medium         base R  4.524297e+03   0.0002090590</span></span>
-<span><span class="co">#&gt; 40              Row sums Medium            mlx  1.605425e+03   0.0005443160</span></span>
-<span><span class="co">#&gt; 41              Row sums  Large         base R  1.280548e+03   0.0007763350</span></span>
-<span><span class="co">#&gt; 42              Row sums  Large            mlx  1.099582e+03   0.0008559570</span></span>
-<span><span class="co">#&gt; 43             Row means  Small         base R  2.044440e+04   0.0000468630</span></span>
-<span><span class="co">#&gt; 44             Row means  Small            mlx  1.759248e+03   0.0005325080</span></span>
-<span><span class="co">#&gt; 45             Row means Medium         base R  4.866355e+03   0.0001986040</span></span>
-<span><span class="co">#&gt; 46             Row means Medium            mlx  1.285583e+03   0.0007315015</span></span>
-<span><span class="co">#&gt; 47             Row means  Large         base R  1.177321e+03   0.0008192620</span></span>
-<span><span class="co">#&gt; 48             Row means  Large            mlx  8.354586e+02   0.0011600130</span></span>
-<span><span class="co">#&gt; 49            tcrossprod  Small         base R  2.189712e+02   0.0041314880</span></span>
-<span><span class="co">#&gt; 50            tcrossprod  Small            mlx  6.134799e+02   0.0015498205</span></span>
-<span><span class="co">#&gt; 51            tcrossprod Medium         base R  5.781791e+01   0.0154113670</span></span>
-<span><span class="co">#&gt; 52            tcrossprod Medium            mlx  1.945047e+02   0.0047742450</span></span>
-<span><span class="co">#&gt; 53            tcrossprod  Large         base R  4.601977e+00   0.2252561730</span></span>
-<span><span class="co">#&gt; 54            tcrossprod  Large            mlx  4.229721e+01   0.0230492980</span></span>
-<span><span class="co">#&gt; 55               scale()  Small         base R  7.083901e+01   0.0126837395</span></span>
-<span><span class="co">#&gt; 56               scale()  Small            mlx  1.741939e+02   0.0052166965</span></span>
-<span><span class="co">#&gt; 57               scale() Medium         base R  2.274237e+01   0.0402049280</span></span>
-<span><span class="co">#&gt; 58               scale() Medium            mlx  1.175194e+02   0.0073905575</span></span>
-<span><span class="co">#&gt; 59               scale()  Large         base R  3.964732e+00   0.2621459640</span></span>
-<span><span class="co">#&gt; 60               scale()  Large            mlx  3.887143e+01   0.0240125930</span></span>
-<span><span class="co">#&gt; 61          Solve Ax = b  Small         base R  1.897407e+02   0.0050775015</span></span>
-<span><span class="co">#&gt; 62          Solve Ax = b  Small            mlx  1.046339e+02   0.0085246790</span></span>
-<span><span class="co">#&gt; 63          Solve Ax = b Medium         base R  3.475795e+01   0.0245687990</span></span>
-<span><span class="co">#&gt; 64          Solve Ax = b Medium            mlx  1.411783e+01   0.0722483550</span></span>
-<span><span class="co">#&gt; 65          Solve Ax = b  Large         base R  5.150904e+00   0.1887459190</span></span>
-<span><span class="co">#&gt; 66          Solve Ax = b  Large            mlx  2.156377e+00   0.4651285180</span></span>
-<span><span class="co">#&gt; 67             Backsolve  Small         base R  1.452707e+04   0.0000657640</span></span>
-<span><span class="co">#&gt; 68             Backsolve  Small            mlx  5.019258e+02   0.0017302410</span></span>
-<span><span class="co">#&gt; 69             Backsolve Medium         base R  3.432186e+03   0.0002741465</span></span>
-<span><span class="co">#&gt; 70             Backsolve Medium            mlx  5.870932e+01   0.0167204970</span></span>
-<span><span class="co">#&gt; 71             Backsolve  Large         base R  7.702275e+02   0.0012911720</span></span>
-<span><span class="co">#&gt; 72             Backsolve  Large            mlx  4.977855e+00   0.2021002750</span></span>
-<span><span class="co">#&gt; 73              Cholesky  Small         base R  2.767099e+02   0.0028929395</span></span>
-<span><span class="co">#&gt; 74              Cholesky  Small            mlx  7.581783e+02   0.0009800025</span></span>
-<span><span class="co">#&gt; 75              Cholesky Medium         base R  4.389995e+01   0.0186235940</span></span>
-<span><span class="co">#&gt; 76              Cholesky Medium            mlx  1.319843e+02   0.0075159560</span></span>
-<span><span class="co">#&gt; 77              Cholesky  Large         base R  9.180127e+00   0.0966308090</span></span>
-<span><span class="co">#&gt; 78              Cholesky  Large            mlx  1.944965e+01   0.0486817190</span></span>
-<span><span class="co">#&gt; 79              chol2inv  Small         base R  1.585295e+02   0.0059557420</span></span>
-<span><span class="co">#&gt; 80              chol2inv  Small            mlx  3.448369e+02   0.0028674990</span></span>
-<span><span class="co">#&gt; 81              chol2inv Medium         base R  2.883388e+01   0.0348286595</span></span>
-<span><span class="co">#&gt; 82              chol2inv Medium            mlx  3.746943e+01   0.0254733820</span></span>
-<span><span class="co">#&gt; 83              chol2inv  Large         base R  2.336981e+00   0.4266199650</span></span>
-<span><span class="co">#&gt; 84              chol2inv  Large            mlx  4.365943e+00   0.2371400640</span></span>
-<span><span class="co">#&gt; 85     SVD (values only)  Small         base R  2.068096e+01   0.0470024205</span></span>
-<span><span class="co">#&gt; 86     SVD (values only)  Small            mlx  3.948880e+01   0.0231058370</span></span>
-<span><span class="co">#&gt; 87     SVD (values only) Medium         base R  3.624887e+00   0.2758706730</span></span>
-<span><span class="co">#&gt; 88     SVD (values only) Medium            mlx  6.992201e+00   0.1430164870</span></span>
-<span><span class="co">#&gt; 89     SVD (values only)  Large         base R  2.664425e-01   3.7531550880</span></span>
-<span><span class="co">#&gt; 90     SVD (values only)  Large            mlx  5.018093e-01   1.9927887640</span></span>
-<span><span class="co">#&gt; 91              Diagonal  Small         base R  4.323263e+04   0.0000114800</span></span>
-<span><span class="co">#&gt; 92              Diagonal  Small            mlx  6.552693e+03   0.0000915940</span></span>
-<span><span class="co">#&gt; 93              Diagonal Medium         base R  4.542637e+04   0.0000112340</span></span>
-<span><span class="co">#&gt; 94              Diagonal Medium            mlx  8.279976e+03   0.0000823485</span></span>
-<span><span class="co">#&gt; 95              Diagonal  Large         base R  3.613965e+04   0.0000180400</span></span>
-<span><span class="co">#&gt; 96              Diagonal  Large            mlx  6.680202e+03   0.0000976210</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        Matrix multiply  Small         base R  1.665245e+02   0.0052028590</span></span>
+<span><span class="co">#&gt; 2        Matrix multiply  Small            mlx  4.978162e+02   0.0014333600</span></span>
+<span><span class="co">#&gt; 3        Matrix multiply Medium         base R  3.399036e+01   0.0278779090</span></span>
+<span><span class="co">#&gt; 4        Matrix multiply Medium            mlx  1.515174e+02   0.0045882485</span></span>
+<span><span class="co">#&gt; 5        Matrix multiply  Large         base R  5.118157e+00   0.1953177680</span></span>
+<span><span class="co">#&gt; 6        Matrix multiply  Large            mlx  4.558855e+01   0.0218031850</span></span>
+<span><span class="co">#&gt; 7        Matrix addition  Small         base R  7.215349e+02   0.0005447875</span></span>
+<span><span class="co">#&gt; 8        Matrix addition  Small            mlx  6.552579e+02   0.0012606885</span></span>
+<span><span class="co">#&gt; 9        Matrix addition Medium         base R  2.506584e+02   0.0025313400</span></span>
+<span><span class="co">#&gt; 10       Matrix addition Medium            mlx  2.996525e+02   0.0027491730</span></span>
+<span><span class="co">#&gt; 11       Matrix addition  Large         base R  7.740766e+01   0.0062813025</span></span>
+<span><span class="co">#&gt; 12       Matrix addition  Large            mlx  9.988180e+01   0.0071503795</span></span>
+<span><span class="co">#&gt; 13  Subset rows (vector)  Small         base R  8.653103e+02   0.0005473090</span></span>
+<span><span class="co">#&gt; 14  Subset rows (vector)  Small            mlx  9.353297e+02   0.0006691610</span></span>
+<span><span class="co">#&gt; 15  Subset rows (vector) Medium         base R  2.506324e+02   0.0022808300</span></span>
+<span><span class="co">#&gt; 16  Subset rows (vector) Medium            mlx  5.248862e+02   0.0013692975</span></span>
+<span><span class="co">#&gt; 17  Subset rows (vector)  Large         base R  8.685458e+01   0.0077217555</span></span>
+<span><span class="co">#&gt; 18  Subset rows (vector)  Large            mlx  2.197388e+02   0.0028344940</span></span>
+<span><span class="co">#&gt; 19 Subset (matrix index)  Small         base R  1.127297e+05   0.0000051660</span></span>
+<span><span class="co">#&gt; 20 Subset (matrix index)  Small            mlx  1.043070e+03   0.0006692430</span></span>
+<span><span class="co">#&gt; 21 Subset (matrix index) Medium         base R  4.744826e+04   0.0000102500</span></span>
+<span><span class="co">#&gt; 22 Subset (matrix index) Medium            mlx  1.450256e+03   0.0006166400</span></span>
+<span><span class="co">#&gt; 23 Subset (matrix index)  Large         base R  4.823782e+04   0.0000186550</span></span>
+<span><span class="co">#&gt; 24 Subset (matrix index)  Large            mlx  1.390206e+03   0.0006044630</span></span>
+<span><span class="co">#&gt; 25                   Sum  Small         base R  3.602613e+03   0.0002611700</span></span>
+<span><span class="co">#&gt; 26                   Sum  Small            mlx  1.037256e+03   0.0008280975</span></span>
+<span><span class="co">#&gt; 27                   Sum Medium         base R  8.598617e+02   0.0010800630</span></span>
+<span><span class="co">#&gt; 28                   Sum Medium            mlx  1.492062e+03   0.0005771160</span></span>
+<span><span class="co">#&gt; 29                   Sum  Large         base R  2.358272e+02   0.0041946690</span></span>
+<span><span class="co">#&gt; 30                   Sum  Large            mlx  1.057845e+03   0.0008756370</span></span>
+<span><span class="co">#&gt; 31                  Mean  Small         base R  1.873719e+03   0.0005234880</span></span>
+<span><span class="co">#&gt; 32                  Mean  Small            mlx  1.702760e+03   0.0005088305</span></span>
+<span><span class="co">#&gt; 33                  Mean Medium         base R  4.795982e+02   0.0020560680</span></span>
+<span><span class="co">#&gt; 34                  Mean Medium            mlx  1.766643e+03   0.0005244925</span></span>
+<span><span class="co">#&gt; 35                  Mean  Large         base R  1.149683e+02   0.0085293120</span></span>
+<span><span class="co">#&gt; 36                  Mean  Large            mlx  1.168702e+03   0.0008184830</span></span>
+<span><span class="co">#&gt; 37              Row sums  Small         base R  1.972726e+04   0.0000467810</span></span>
+<span><span class="co">#&gt; 38              Row sums  Small            mlx  2.166979e+03   0.0004559405</span></span>
+<span><span class="co">#&gt; 39              Row sums Medium         base R  5.337671e+03   0.0001849510</span></span>
+<span><span class="co">#&gt; 40              Row sums Medium            mlx  1.999499e+03   0.0004786135</span></span>
+<span><span class="co">#&gt; 41              Row sums  Large         base R  1.347646e+03   0.0007353760</span></span>
+<span><span class="co">#&gt; 42              Row sums  Large            mlx  1.299238e+03   0.0007569830</span></span>
+<span><span class="co">#&gt; 43             Row means  Small         base R  2.075195e+04   0.0000456740</span></span>
+<span><span class="co">#&gt; 44             Row means  Small            mlx  2.091245e+03   0.0004681790</span></span>
+<span><span class="co">#&gt; 45             Row means Medium         base R  5.324841e+03   0.0001847050</span></span>
+<span><span class="co">#&gt; 46             Row means Medium            mlx  1.959671e+03   0.0004986010</span></span>
+<span><span class="co">#&gt; 47             Row means  Large         base R  1.369474e+03   0.0007213540</span></span>
+<span><span class="co">#&gt; 48             Row means  Large            mlx  1.208662e+03   0.0008124560</span></span>
+<span><span class="co">#&gt; 49            tcrossprod  Small         base R  3.072615e+02   0.0026967750</span></span>
+<span><span class="co">#&gt; 50            tcrossprod  Small            mlx  7.576734e+02   0.0013279900</span></span>
+<span><span class="co">#&gt; 51            tcrossprod Medium         base R  4.619254e+01   0.0178473205</span></span>
+<span><span class="co">#&gt; 52            tcrossprod Medium            mlx  2.479529e+02   0.0040254415</span></span>
+<span><span class="co">#&gt; 53            tcrossprod  Large         base R  9.369810e+00   0.1061424400</span></span>
+<span><span class="co">#&gt; 54            tcrossprod  Large            mlx  4.680651e+01   0.0196871545</span></span>
+<span><span class="co">#&gt; 55               scale()  Small         base R  1.108331e+02   0.0063412240</span></span>
+<span><span class="co">#&gt; 56               scale()  Small            mlx  4.268434e+02   0.0021161125</span></span>
+<span><span class="co">#&gt; 57               scale() Medium         base R  2.323088e+01   0.0322676150</span></span>
+<span><span class="co">#&gt; 58               scale() Medium            mlx  1.407618e+02   0.0064403415</span></span>
+<span><span class="co">#&gt; 59               scale()  Large         base R  7.406712e+00   0.1355185300</span></span>
+<span><span class="co">#&gt; 60               scale()  Large            mlx  4.677364e+01   0.0215690955</span></span>
+<span><span class="co">#&gt; 61          Solve Ax = b  Small         base R  2.449524e+02   0.0030274400</span></span>
+<span><span class="co">#&gt; 62          Solve Ax = b  Small            mlx  1.645441e+02   0.0059805265</span></span>
+<span><span class="co">#&gt; 63          Solve Ax = b Medium         base R  4.692014e+01   0.0201246245</span></span>
+<span><span class="co">#&gt; 64          Solve Ax = b Medium            mlx  2.047284e+01   0.0476177280</span></span>
+<span><span class="co">#&gt; 65          Solve Ax = b  Large         base R  9.044756e+00   0.1105632650</span></span>
+<span><span class="co">#&gt; 66          Solve Ax = b  Large            mlx  2.666285e+00   0.3790012530</span></span>
+<span><span class="co">#&gt; 67             Backsolve  Small         base R  1.821338e+04   0.0000529310</span></span>
+<span><span class="co">#&gt; 68             Backsolve  Small            mlx  6.581354e+02   0.0015176970</span></span>
+<span><span class="co">#&gt; 69             Backsolve Medium         base R  4.461030e+03   0.0002127490</span></span>
+<span><span class="co">#&gt; 70             Backsolve Medium            mlx  7.972471e+01   0.0124879030</span></span>
+<span><span class="co">#&gt; 71             Backsolve  Large         base R  8.266443e+02   0.0012209800</span></span>
+<span><span class="co">#&gt; 72             Backsolve  Large            mlx  6.761598e+00   0.1443914630</span></span>
+<span><span class="co">#&gt; 73              Cholesky  Small         base R  6.399438e+02   0.0014481610</span></span>
+<span><span class="co">#&gt; 74              Cholesky  Small            mlx  1.467516e+03   0.0005209050</span></span>
+<span><span class="co">#&gt; 75              Cholesky Medium         base R  9.493427e+01   0.0097419280</span></span>
+<span><span class="co">#&gt; 76              Cholesky Medium            mlx  2.498434e+02   0.0039989350</span></span>
+<span><span class="co">#&gt; 77              Cholesky  Large         base R  1.879160e+01   0.0523664710</span></span>
+<span><span class="co">#&gt; 78              Cholesky  Large            mlx  5.181058e+01   0.0193493350</span></span>
+<span><span class="co">#&gt; 79              chol2inv  Small         base R  2.343548e+02   0.0040626900</span></span>
+<span><span class="co">#&gt; 80              chol2inv  Small            mlx  3.860277e+02   0.0024496270</span></span>
+<span><span class="co">#&gt; 81              chol2inv Medium         base R  3.643366e+01   0.0272878780</span></span>
+<span><span class="co">#&gt; 82              chol2inv Medium            mlx  5.022535e+01   0.0196545390</span></span>
+<span><span class="co">#&gt; 83              chol2inv  Large         base R  2.602695e+00   0.3893428060</span></span>
+<span><span class="co">#&gt; 84              chol2inv  Large            mlx  5.119697e+00   0.2059779320</span></span>
+<span><span class="co">#&gt; 85     SVD (values only)  Small         base R  2.653282e+01   0.0378154480</span></span>
+<span><span class="co">#&gt; 86     SVD (values only)  Small            mlx  4.770562e+01   0.0200949815</span></span>
+<span><span class="co">#&gt; 87     SVD (values only) Medium         base R  4.474524e+00   0.2234874740</span></span>
+<span><span class="co">#&gt; 88     SVD (values only) Medium            mlx  7.840349e+00   0.1275453420</span></span>
+<span><span class="co">#&gt; 89     SVD (values only)  Large         base R  2.653457e-01   3.7686682170</span></span>
+<span><span class="co">#&gt; 90     SVD (values only)  Large            mlx  7.918901e-01   1.2628014350</span></span>
+<span><span class="co">#&gt; 91              Diagonal  Small         base R  6.145171e+04   0.0000121770</span></span>
+<span><span class="co">#&gt; 92              Diagonal  Small            mlx  1.216143e+04   0.0000696590</span></span>
+<span><span class="co">#&gt; 93              Diagonal Medium         base R  4.618733e+04   0.0000118080</span></span>
+<span><span class="co">#&gt; 94              Diagonal Medium            mlx  1.219408e+04   0.0000720370</span></span>
+<span><span class="co">#&gt; 95              Diagonal  Large         base R  3.312046e+04   0.0000187370</span></span>
+<span><span class="co">#&gt; 96              Diagonal  Large            mlx  9.053033e+03   0.0000906100</span></span></code></pre></div>
   </main>
 </div>
 
