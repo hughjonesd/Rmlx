@@ -9,30 +9,31 @@
 \alias{col.mlx}
 \title{Row and column indices for mlx arrays}
 \usage{
-row(x, ...)
+row(x, as.factor = FALSE)
 
-\method{row}{default}(x, ...)
+\method{row}{default}(x, as.factor = FALSE)
 
-\method{row}{mlx}(x, ...)
+\method{row}{mlx}(x, as.factor = FALSE)
 
-col(x, ...)
+col(x, as.factor = FALSE)
 
-\method{col}{default}(x, ...)
+\method{col}{default}(x, as.factor = FALSE)
 
-\method{col}{mlx}(x, ...)
+\method{col}{mlx}(x, as.factor = FALSE)
 }
 \arguments{
 \item{x}{a matrix-like object, that is one with a two-dimensional
     \code{dim}.}
 
-\item{...}{Passed through to \code{\link[base:row]{base::row()}} or \code{\link[base:col]{base::col()}}.}
+\item{as.factor}{a logical value indicating whether the value should
+    be returned as a factor of row labels (created if necessary)
+    rather than as numbers.}
 }
 \value{
 A matrix or array of row indices (for \code{row()}) or column indices
 (for \code{col()}), matching the base R behaviour.
 }
 \description{
-Extends base \code{\link[=row]{row()}} and \code{\link[=col]{col()}} so they also accept mlx arrays. When \code{x}
-is mlx, the result is computed by converting to a base array and delegating
-to the corresponding base helper.
+Extends base \code{\link[=row]{row()}} and \code{\link[=col]{col()}} so they also accept mlx arrays without
+materialising data back to base R. Results mirror base behaviour.
 }

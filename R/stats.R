@@ -419,47 +419,67 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
 
 #' Row and column indices for mlx arrays
 #'
-#' Extends base [row()] and [col()] so they also accept mlx arrays. When `x`
-#' is mlx, the result is computed by converting to a base array and delegating
-#' to the corresponding base helper.
+#' Extends base [row()] and [col()] so they also accept mlx arrays without
+#' materialising data back to base R. Results mirror base behaviour.
 #'
 #' @inheritParams base::row
-#' @param ... Passed through to [base::row()] or [base::col()].
 #' @return A matrix or array of row indices (for `row()`) or column indices
 #'   (for `col()`), matching the base R behaviour.
 #' @export
-row <- function(x, ...) {
+row <- function(x, as.factor = FALSE) {
   UseMethod("row")
 }
 
 #' @rdname row
 #' @export
-row.default <- function(x, ...) {
-  base::row(x, ...)
+row.default <- function(x, as.factor = FALSE) {
+  base::row(x, as.factor = as.factor)
 }
 
 #' @rdname row
 #' @export
-row.mlx <- function(x, ...) {
-  base::row(as.array(x), ...)
+row.mlx <- function(x, as.factor = FALSE) {
+  dims <- dim(x)
+  if (length(dims) <= 1L) {
+    stop("a matrix-like object is required as argument to 'row'", call. = FALSE)
+  }
+  out <- .Internal(row(dims))
+  if (!as.factor) {
+    return(out)
+  }
+  labels <- as.character(seq_len(dims[1L]))
+  res <- factor(out, labels = labels)
+  dim(res) <- dims
+  res
 }
 
 #' @rdname row
 #' @export
-col <- function(x, ...) {
+col <- function(x, as.factor = FALSE) {
   UseMethod("col")
 }
 
 #' @rdname row
 #' @export
-col.default <- function(x, ...) {
-  base::col(x, ...)
+col.default <- function(x, as.factor = FALSE) {
+  base::col(x, as.factor = as.factor)
 }
 
 #' @rdname row
 #' @export
-col.mlx <- function(x, ...) {
-  base::col(as.array(x), ...)
+col.mlx <- function(x, as.factor = FALSE) {
+  dims <- dim(x)
+  if (length(dims) <= 1L) {
+    stop("a matrix-like object is required as argument to 'col'", call. = FALSE)
+  }
+  out <- .Internal(col(dims))
+  if (!as.factor) {
+    return(out)
+  }
+  labels <- as.character(seq_len(dims[2L]))
+  res <- factor(out, labels = labels)
+  dim(res) <- dims
+  res
 }
 
 #' Scale mlx arrays
