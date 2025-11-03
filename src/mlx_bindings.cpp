@@ -182,6 +182,64 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
     x = NumericVector(x_);
   }
 
+  const bool col_major_fast_path =
+    !use_complex &&
+    TYPEOF(x_) == REALSXP &&
+    ndim >= 1 &&
+    (dt == float32 || dt == float64);
+
+  if (col_major_fast_path) {
+    size_t total = 1;
+    for (size_t i = 0; i < ndim; ++i) {
+      total *= static_cast<size_t>(shape[i]);
+    }
+
+    const Device original_device = default_device();
+    const bool switch_to_cpu = original_device.type != Device::DeviceType::cpu;
+    if (switch_to_cpu) {
+      set_default_device(Device(Device::cpu));
+    }
+
+    try {
+      array flat(
+        REAL(x_),
+        Shape{static_cast<int32_t>(total)},
+        float64);
+
+      Shape target_shape(shape.begin(), shape.end());
+      Strides col_major_strides;
+      col_major_strides.reserve(ndim);
+      int64_t stride = 1;
+      for (size_t i = 0; i < ndim; ++i) {
+        col_major_strides.push_back(stride);
+        stride *= static_cast<int64_t>(shape[i]);
+      }
+
+      array view = as_strided(
+        flat,
+        target_shape,
+        col_major_strides,
+        /*offset=*/0);
+
+      array arr = contiguous(view, /*allow_col_major=*/true, Device(Device::cpu));
+      if (arr.dtype() != dt) {
+        arr = astype(arr, dt, Device(Device::cpu));
+      }
+      if (switch_to_cpu) {
+        set_default_device(original_device);
+      }
+      if (device_str != "cpu") {
+        arr = contiguous(arr, /*allow_col_major=*/false, dev);
+      }
+      return make_mlx_xptr(std::move(arr));
+    } catch (...) {
+      if (switch_to_cpu) {
+        set_default_device(original_device);
+      }
+      throw;
+    }
+  }
+
   // Create array directly from R data (column-major) using reversed shape
   // Use float32 for bool to avoid float64 GPU issues
   array arr_temp = [&]() -> array {
