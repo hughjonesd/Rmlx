@@ -14,6 +14,7 @@
   logical scalars; `mlx_all()`/`mlx_any()` continue to yield mlx booleans.
 * Added mlx-aware wrappers for `row()`, `col()`, `asplit()`, and `backsolve()`.
 * Added `scale.mlx()` to center/scale matrices entirely on the MLX backend.
+* Created a new benchmarks vignette.
 
 # Rmlx 0.1.0
 
