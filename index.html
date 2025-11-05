@@ -60,13 +60,9 @@
 <!-- badges: start -->
 
 <p>Rmlx provides an R interface to Apple’s <a href="https://ml-explore.github.io/mlx/" class="external-link">MLX framework</a>, enabling high-performance GPU computing on Apple Silicon.</p>
-<p>This package was vibe-coded with Claude/OpenAI Codex in a week. Use at your own risk! Much of the C++ API has been implemented, but not python-only features such as large neural network layers.</p>
+<p>Modern Macs have a GPU, which is great for performing matrix operations. Statistics uses a lot of matrix operations. But until now, there has been no way for R on the Mac to use the GPU. Rmlx exists to fill that gap. It is very early stage and was largely vibe-coded with Claude/OpenAI Codex. Obviously, use at your own risk! <strong>Contributions are very welcome.</strong> In particular it would be great to implement function import/export, more neural network components, etc.</p>
+<p>There is a companion library at <a href="https://github.com/hughjonesd/RmlxStats" class="external-link">hughjonesd/RmlxStats</a>, which focuses on implementing common statistical methods on the GPU.</p>
 <p>Most C++ functions are implemented via R functions with an <code>mlx_</code> prefix. In addition, the package defines mlx-specific methods for many R matrix operations, including arithmetic, subsetting and matrix algebra.</p>
-<div class="section level2">
-<h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
-</h2>
-<p>Modern Macs have a GPU, which is great for performing matrix operations. Statistics uses a lot of matrix operations. But until now, there has been no way for R on the Mac to use the GPU.</p>
-</div>
 <div class="section level2">
 <h2 id="requirements">Requirements<a class="anchor" aria-label="anchor" href="#requirements"></a>
 </h2>
@@ -104,7 +100,7 @@
 <span><span class="va">A_mlx</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.372   0.003   0.374</span></span>
+<span><span class="co">#&gt;   0.378   0.005   0.555</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu"><a href="reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">A_mlx</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
 <span><span class="co">#&gt;   0.008   0.006   0.015</span></span></code></pre></div>
@@ -309,11 +305,11 @@
 <span></span>
 <span><span class="co"># Inspect gradient</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">grads</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;             [,1]</span></span>
-<span><span class="co">#&gt; [1,] -0.06966811</span></span>
-<span><span class="co">#&gt; [2,]  0.30066702</span></span>
-<span><span class="co">#&gt; [3,] -0.05742492</span></span>
-<span><span class="co">#&gt; [4,] -0.25140595</span></span>
+<span><span class="co">#&gt;           [,1]</span></span>
+<span><span class="co">#&gt; [1,] 0.9005783</span></span>
+<span><span class="co">#&gt; [2,] 0.2985840</span></span>
+<span><span class="co">#&gt; [3,] 0.6431852</span></span>
+<span><span class="co">#&gt; [4,] 0.7269748</span></span>
 <span></span>
 <span><span class="co"># Simple SGD loop</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mlx_linear.html">mlx_linear</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">1</span>, bias <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -334,8 +330,18 @@
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
-<span><span class="co">#&gt; [1] 0.3365595</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.1833142</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="learning-more">Learning more<a class="anchor" aria-label="anchor" href="#learning-more"></a>
+</h2>
+<ul>
+<li><a href="https://hughjonesd.github.io/Rmlx">Package website</a></li>
+<li><a href="https://ml-explore.github.io/mlx/build/html/index.html" class="external-link">Apple MLX documentation</a></li>
+<li><a href="https://hughjonesd.github.io/Rmlx/reference/Rmlx-package.html">Package help</a></li>
+<li><a href="https://hughjonesd.github.io/Rmlx/reference/index.html">Function reference</a></li>
+</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
