@@ -58,7 +58,7 @@ library(Rmlx)
 A <- matrix(rnorm(1e6), 1e3, 1e3)
 A_mlx <- as_mlx(A)
 system.time(solve(A))
-system.time(mlx_eval(solve(A))) # mlx_eval() forces computation of solve.mlx
+system.time(mlx_eval(solve(A_mlx))) 
 
 ```
 

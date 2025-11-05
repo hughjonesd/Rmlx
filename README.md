@@ -7,10 +7,6 @@
 coverage](https://codecov.io/gh/hughjonesd/Rmlx/graph/badge.svg)](https://app.codecov.io/gh/hughjonesd/Rmlx)
 <!-- badges: end -->
 
-R interface to Apple’s MLX (Machine Learning eXchange) library.
-
-## Overview
-
 Rmlx provides an R interface to Apple’s [MLX
 framework](https://ml-explore.github.io/mlx/), enabling high-performance
 GPU computing on Apple Silicon.
@@ -31,8 +27,8 @@ been no way for R on the Mac to use the GPU.
 
 ## Requirements
 
-- macOS on Apple Silicon *or* Linux with CUDA *or* MacOS/Linux for a
-  CPU-only build
+MacOS on Apple Silicon *or* Linux with CUDA *or* MacOS/Linux for a
+CPU-only build.
 
 ## Installation
 
@@ -41,7 +37,6 @@ been no way for R on the Mac to use the GPU.
 or the Linux equivalent. Then just install the package as normal:
 
 ``` r
-# install.packages("remotes")
 remotes::install("hughjonesd/Rmlx")
 ```
 
@@ -66,12 +61,13 @@ library(Rmlx)
 #>     outer, row, rowMeans, rowSums, svd
 
 A <- matrix(rnorm(1e6), 1e3, 1e3)
+A_mlx <- as_mlx(A)
 system.time(solve(A))
 #>    user  system elapsed 
-#>   0.365   0.003   0.367
-system.time(solve(as_mlx(A)))
+#>   0.372   0.003   0.374
+system.time(mlx_eval(solve(A_mlx))) 
 #>    user  system elapsed 
-#>   0.037   0.055   0.094
+#>   0.008   0.006   0.015
 ```
 
 ### Lazy Evaluation
@@ -278,11 +274,11 @@ grads <- mlx_grad(loss, w, x, y)
 
 # Inspect gradient
 as.matrix(grads[[1]])
-#>            [,1]
-#> [1,] -1.8226540
-#> [2,]  0.3192708
-#> [3,]  1.3037107
-#> [4,]  0.1494838
+#>             [,1]
+#> [1,] -0.06966811
+#> [2,]  0.30066702
+#> [3,] -0.05742492
+#> [4,] -0.25140595
 
 # Simple SGD loop
 model <- mlx_linear(4, 1, bias = FALSE)
@@ -303,5 +299,5 @@ mean((ypred - y) * (ypred - y))
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 0.04954781
+#> [1] 0.3365595
 ```
