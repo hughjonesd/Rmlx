@@ -15,10 +15,6 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/hughjonesd/Rmlx/graph/badge.svg)](https://app.codecov.io/gh/hughjonesd/Rmlx)
 <!-- badges: end -->
 
-R interface to Apple's MLX (Machine Learning eXchange) library.
-
-## Overview
-
 Rmlx provides an R interface to Apple's [MLX framework](https://ml-explore.github.io/mlx/), enabling high-performance GPU computing on Apple Silicon.  
 
 This package was vibe-coded with Claude/OpenAI Codex in a week.
@@ -37,7 +33,7 @@ for R on the Mac to use the GPU.
 
 ## Requirements
 
-- macOS on Apple Silicon *or* Linux with CUDA *or* MacOS/Linux for a CPU-only build
+MacOS on Apple Silicon *or* Linux with CUDA *or* MacOS/Linux for a CPU-only build.
 
 ## Installation
 
@@ -46,7 +42,6 @@ for R on the Mac to use the GPU.
 or the Linux equivalent. Then just install the package as normal:
 
 ```r
-# install.packages("remotes")
 remotes::install("hughjonesd/Rmlx")
 ```
 
@@ -61,8 +56,9 @@ Alternatively, you can build mlx from the [source](https://github.com/ml-explore
 library(Rmlx)
 
 A <- matrix(rnorm(1e6), 1e3, 1e3)
+A_mlx <- as_mlx(A)
 system.time(solve(A))
-system.time(solve(as_mlx(A)))
+system.time(mlx_eval(solve(A))) # mlx_eval() forces computation of solve.mlx
 
 ```
 

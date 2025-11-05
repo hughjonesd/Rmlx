@@ -25,7 +25,7 @@ library(ggplot2)
 ```
 
 ```{r benchmark}
-sizes <- c(small = 512L, medium = 1024L, large = 2048L)
+sizes <- c(small = 1000L, medium = 2000L, large = 4000L)
 
 set.seed(20251031)
 
@@ -215,7 +215,7 @@ bench_results <- run_benchmarks(operations, inputs)
 bench_results$size <- factor(
   bench_results$size,
   levels = names(sizes),
-  labels = c("Small", "Medium", "Large")
+  labels = sizes
 )
 bench_results$implementation <- factor(
   bench_results$implementation,
@@ -240,7 +240,7 @@ ggplot(
   labs(
     title = "Benchmarks for common matrix operations",
     subtitle = "Time taken (less is better)",
-    x = "",
+    x = "Matrix size",
     y = "Median time (seconds)",
     colour = ""
   ) +
