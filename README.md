@@ -11,19 +11,21 @@ Rmlx provides an R interface to Apple’s [MLX
 framework](https://ml-explore.github.io/mlx/), enabling high-performance
 GPU computing on Apple Silicon.
 
-This package was vibe-coded with Claude/OpenAI Codex in a week. Use at
-your own risk! Much of the C++ API has been implemented, but not
-python-only features such as large neural network layers.
+Modern Macs have a GPU, which is great for performing matrix operations.
+Statistics uses a lot of matrix operations. But until now, there has
+been no way for R on the Mac to use the GPU. Rmlx exists to fill that
+gap. It is very early stage and was largely vibe-coded with
+Claude/OpenAI Codex. Obviously, use at your own risk! **Contributions
+are very welcome.** In particular it would be great to implement
+function import/export, more neural network components, etc.
+
+There is a companion library at
+[hughjonesd/RmlxStats](https://github.com/hughjonesd/RmlxStats), which
+focuses on implementing common statistical methods on the GPU.
 
 Most C++ functions are implemented via R functions with an `mlx_`
 prefix. In addition, the package defines mlx-specific methods for many R
 matrix operations, including arithmetic, subsetting and matrix algebra.
-
-## Motivation
-
-Modern Macs have a GPU, which is great for performing matrix operations.
-Statistics uses a lot of matrix operations. But until now, there has
-been no way for R on the Mac to use the GPU.
 
 ## Requirements
 
@@ -64,7 +66,7 @@ A <- matrix(rnorm(1e6), 1e3, 1e3)
 A_mlx <- as_mlx(A)
 system.time(solve(A))
 #>    user  system elapsed 
-#>   0.372   0.003   0.374
+#>   0.378   0.005   0.555
 system.time(mlx_eval(solve(A_mlx))) 
 #>    user  system elapsed 
 #>   0.008   0.006   0.015
@@ -274,11 +276,11 @@ grads <- mlx_grad(loss, w, x, y)
 
 # Inspect gradient
 as.matrix(grads[[1]])
-#>             [,1]
-#> [1,] -0.06966811
-#> [2,]  0.30066702
-#> [3,] -0.05742492
-#> [4,] -0.25140595
+#>           [,1]
+#> [1,] 0.9005783
+#> [2,] 0.2985840
+#> [3,] 0.6431852
+#> [4,] 0.7269748
 
 # Simple SGD loop
 model <- mlx_linear(4, 1, bias = FALSE)
@@ -299,5 +301,15 @@ mean((ypred - y) * (ypred - y))
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 0.3365595
+#> [1] 0.1833142
 ```
+
+## Learning more
+
+- [Package website](https://hughjonesd.github.io/Rmlx)
+- [Apple MLX
+  documentation](https://ml-explore.github.io/mlx/build/html/index.html)
+- [Package
+  help](https://hughjonesd.github.io/Rmlx/reference/Rmlx-package.html)
+- [Function
+  reference](https://hughjonesd.github.io/Rmlx/reference/index.html)
