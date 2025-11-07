@@ -194,6 +194,115 @@ mlx_eye <- function(n,
   .mlx_wrap_result(ptr, handle$device)
 }
 
+#' Construct an MLX array from R data
+#'
+#' `mlx_array()` is a low-level constructor that skips `as_mlx()`'s type inference
+#' and dimension guessing. Supply the raw payload vector plus an explicit shape
+#' and it pipes the data straight into MLX.
+#'
+#' @inheritParams mlx_creation_params
+#' @param data Numeric, logical, or complex vector supplying the payload.
+#'   Any dimension attributes are ignored; pass `dim` explicitly.
+#' @param dim Integer vector of array dimensions (product must equal `length(data)`).
+#' @param dtype Optional MLX dtype. Defaults to `"float32"` for numeric input,
+#'   `"bool"` for logical, and `"complex64"` for complex.
+#' @return An `mlx` array with the requested shape.
+#' @export
+#' @examples
+#' payload <- runif(6)
+#' arr <- mlx_array(payload, dim = c(2, 3))
+#' as.matrix(arr)
+mlx_array <- function(data,
+                      dim,
+                      dtype = NULL,
+                      device = mlx_default_device()) {
+  if (!is.atomic(data) || is.list(data)) {
+    stop("data must be an atomic vector.", call. = FALSE)
+  }
+
+  dim <- .validate_shape(dim)
+  total <- prod(dim)
+  data_vec <- as.vector(data)
+
+  if (length(data_vec) != total) {
+    stop(
+      "length(data) (", length(data_vec),
+      ") must match prod(dim) (", total, ").",
+      call. = FALSE
+    )
+  }
+
+  dtype_val <- if (is.null(dtype)) {
+    if (is.logical(data_vec)) {
+      "bool"
+    } else if (is.complex(data_vec)) {
+      "complex64"
+    } else {
+      "float32"
+    }
+  } else {
+    match.arg(dtype,
+              c(
+                "float32", "float64", "bool", "complex64",
+                "int8", "int16", "int32", "int64",
+                "uint8", "uint16", "uint32", "uint64"
+              ))
+  }
+
+  payload <- .mlx_coerce_payload(data_vec, dtype_val)
+  handle <- .mlx_resolve_device(device, mlx_default_device())
+  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    cpp_mlx_from_r(payload, as.integer(dim), dtype_val, dev)
+  })
+  .mlx_wrap_result(ptr, handle$device)
+}
+
+#' Construct MLX matrices efficiently
+#'
+#' `mlx_matrix()` wraps [mlx_array()] for the common 2-D case. It accepts the same
+#' style arguments as [base::matrix()] but without recycling, so mistakes surface early.
+#'
+#' @inheritParams mlx_array
+#' @param nrow,ncol Matrix dimensions (positive integers).
+#' @param byrow Logical; if `TRUE`, fill by rows (same semantics as [base::matrix()]).
+#' @return An `mlx` matrix with `dim = c(nrow, ncol)`.
+#' @export
+#' @examples
+#' mx <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
+#' as.matrix(mx)
+mlx_matrix <- function(data,
+                       nrow,
+                       ncol,
+                       byrow = FALSE,
+                       dtype = NULL,
+                       device = mlx_default_device()) {
+  nrow <- as.integer(nrow)
+  ncol <- as.integer(ncol)
+
+  if (length(nrow) != 1L || is.na(nrow) || nrow <= 0) {
+    stop("nrow must be a positive integer.", call. = FALSE)
+  }
+  if (length(ncol) != 1L || is.na(ncol) || ncol <= 0) {
+    stop("ncol must be a positive integer.", call. = FALSE)
+  }
+
+  total <- nrow * ncol
+  data_vec <- as.vector(data)
+  if (length(data_vec) != total) {
+    stop(
+      "length(data) (", length(data_vec),
+      ") must equal nrow * ncol (", total, ").",
+      call. = FALSE
+    )
+  }
+
+  if (isTRUE(byrow)) {
+    data_vec <- as.vector(matrix(data_vec, nrow = nrow, ncol = ncol, byrow = TRUE))
+  }
+
+  mlx_array(data_vec, c(nrow, ncol), dtype = dtype, device = device)
+}
+
 #' Identity matrices on MLX devices
 #'
 #' @param n Size of the square matrix.

@@ -4,6 +4,8 @@
 
 * Added negative numeric indexing support for `[`/`[<-` on `mlx` arrays and
   documented subsetting semantics.
+* Added `mlx_array()` / `mlx_matrix()` for fast construction of MLX arrays and
+  matrices when data and dimensions are already known.
 * Added `mlx_fft()`, `mlx_fft2()`, and `mlx_fftn()` wrappers around MLX FFT kernels and aligned pkgdown coverage.
 * Fixed several `[`/`[<-` bugs affecting non-contiguous, unsorted, and duplicate
   subsetting patterns on `mlx` arrays.

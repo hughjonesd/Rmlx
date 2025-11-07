@@ -78,3 +78,26 @@ test_that("mlx_ones_like mirrors shape and supports overrides", {
   ones_float <- mlx_ones_like(base, dtype = "float32")
   expect_equal(mlx_dtype(ones_float), "float32")
 })
+
+test_that("mlx_array constructs arrays without extra copies", {
+  data <- runif(6)
+  arr <- mlx_array(data, dim = c(2, 3), device = "cpu")
+
+  expect_s3_class(arr, "mlx")
+  expect_equal(mlx_dim(arr), c(2L, 3L))
+  expect_equal(mlx_dtype(arr), "float32")
+  expect_equal(as.matrix(arr), matrix(data, 2, 3), tolerance = 1e-6)
+
+  bool_arr <- mlx_array(c(TRUE, FALSE), dim = 2, dtype = "bool", device = "cpu")
+  expect_equal(mlx_dtype(bool_arr), "bool")
+  expect_equal(as.vector(bool_arr), c(TRUE, FALSE))
+})
+
+test_that("mlx_matrix respects dimensions and byrow flag", {
+  mat <- mlx_matrix(1:6, nrow = 2, ncol = 3, device = "cpu")
+  expect_equal(mlx_dim(mat), c(2L, 3L))
+  expect_equal(as.matrix(mat), matrix(1:6, 2, 3))
+
+  mat_byrow <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE, device = "cpu")
+  expect_equal(as.matrix(mat_byrow), matrix(1:6, 2, 3, byrow = TRUE))
+})
