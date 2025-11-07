@@ -15,6 +15,11 @@
 * Added mlx-aware wrappers for `row()`, `col()`, `asplit()`, and `backsolve()`.
 * Added `scale.mlx()` to center/scale matrices entirely on the MLX backend (with
   MLX arrays stored in the `scaled:center` / `scaled:scale` attributes).
+* `scale.mlx()` now always records its `scaled:center` / `scaled:scale`
+  attributes as 1 x p MLX arrays, keeping them lazily evaluated even after
+  coercion.
+* `as.matrix.mlx()` now preserves any user-set attributes (including the MLX
+  scaling metadata) when copying arrays back to base R.
 * Created a new benchmarks vignette.
 
 # Rmlx 0.1.0
