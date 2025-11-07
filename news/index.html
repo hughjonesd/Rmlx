@@ -47,7 +47,11 @@
 <code><a href="../reference/as_mlx.html">as_mlx()</a></code> now takes a much faster path for large numeric matrices by letting MLX handle column-major inputs directly; 20-iteration GPU benchmarks show 6×–10× speedups for 1000–4000 square matrices and similar gains on CPU.</li>
 <li>Base reducers <code><a href="https://rdrr.io/r/base/all.html" class="external-link">all()</a></code> and <code><a href="https://rdrr.io/r/base/any.html" class="external-link">any()</a></code> applied to mlx arrays now return plain R logical scalars; <code><a href="../reference/mlx_sum.html">mlx_all()</a></code>/<code><a href="../reference/mlx_sum.html">mlx_any()</a></code> continue to yield mlx booleans.</li>
 <li>Added mlx-aware wrappers for <code><a href="../reference/row.html">row()</a></code>, <code><a href="../reference/row.html">col()</a></code>, <code><a href="../reference/asplit.html">asplit()</a></code>, and <code><a href="../reference/mlx_solve_triangular.html">backsolve()</a></code>.</li>
-<li>Added <code><a href="../reference/scale.mlx.html">scale.mlx()</a></code> to center/scale matrices entirely on the MLX backend.</li>
+<li>Added <code><a href="../reference/scale.mlx.html">scale.mlx()</a></code> to center/scale matrices entirely on the MLX backend (with MLX arrays stored in the <code>scaled:center</code> / <code>scaled:scale</code> attributes).</li>
+<li>
+<code><a href="../reference/scale.mlx.html">scale.mlx()</a></code> now always records its <code>scaled:center</code> / <code>scaled:scale</code> attributes as 1 x p MLX arrays, keeping them lazily evaluated even after coercion.</li>
+<li>
+<code><a href="../reference/as.matrix.mlx.html">as.matrix.mlx()</a></code> now preserves any user-set attributes (including the MLX scaling metadata) when copying arrays back to base R.</li>
 <li>Created a new benchmarks vignette.</li>
 </ul></div>
     <div class="section level2">
@@ -63,7 +67,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

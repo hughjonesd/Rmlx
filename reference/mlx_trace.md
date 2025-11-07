@@ -1,0 +1,51 @@
+# Matrix trace for mlx arrays
+
+Computes the sum of the diagonal elements of a 2D array, or the sum
+along diagonals of a higher dimensional array.
+
+## Usage
+
+``` r
+mlx_trace(x, offset = 0L, axis1 = 1L, axis2 = 2L)
+```
+
+## Arguments
+
+- x:
+
+  An mlx array.
+
+- offset:
+
+  Offset of the diagonal (0 for main diagonal, positive for above,
+  negative for below).
+
+- axis1, axis2:
+
+  Axes along which the diagonals are taken (1-indexed, default 1 and 2).
+
+## Value
+
+An mlx scalar or array containing the trace.
+
+## See also
+
+[mlx.core.trace](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.trace.html)
+
+## Examples
+
+``` r
+x <- as_mlx(matrix(1:9, 3, 3))
+mlx_trace(x)
+#> mlx array []
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 15
+mlx_trace(x, offset = 1)
+#> mlx array []
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 12
+```

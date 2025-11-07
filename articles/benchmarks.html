@@ -302,106 +302,106 @@ routines.</p>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_minimal</a></span><span class="op">(</span>base_size <span class="op">=</span> <span class="fl">11</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="benchmarks_files/figure-html/plot-1.png" width="672"></p>
+<p><img src="benchmarks_files/figure-html/plot-1.png" class="r-plt" width="672"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bench_results</span></span>
 <span><span class="co">#&gt;                operation size implementation iters_per_sec median_seconds</span></span>
-<span><span class="co">#&gt; 1        Matrix multiply 1000         base R  1.994009e+01   3.966389e-02</span></span>
-<span><span class="co">#&gt; 2        Matrix multiply 1000            mlx  2.088546e+02   4.539930e-03</span></span>
-<span><span class="co">#&gt; 3        Matrix multiply 2000         base R  3.759909e+00   2.349434e-01</span></span>
-<span><span class="co">#&gt; 4        Matrix multiply 2000            mlx  4.185838e+01   2.251515e-02</span></span>
-<span><span class="co">#&gt; 5        Matrix multiply 4000         base R  8.577485e-01   1.030732e+00</span></span>
-<span><span class="co">#&gt; 6        Matrix multiply 4000            mlx  6.930985e+00   1.028636e-01</span></span>
-<span><span class="co">#&gt; 7        Matrix addition 1000         base R  5.718959e+01   1.477035e-02</span></span>
-<span><span class="co">#&gt; 8        Matrix addition 1000            mlx  2.713023e+02   2.702863e-03</span></span>
-<span><span class="co">#&gt; 9        Matrix addition 2000         base R  3.493870e+01   1.058792e-02</span></span>
-<span><span class="co">#&gt; 10       Matrix addition 2000            mlx  9.365916e+01   7.100216e-03</span></span>
-<span><span class="co">#&gt; 11       Matrix addition 4000         base R  3.489626e+01   1.707330e-02</span></span>
-<span><span class="co">#&gt; 12       Matrix addition 4000            mlx  2.619261e+01   3.446751e-02</span></span>
-<span><span class="co">#&gt; 13  Subset rows (vector) 1000         base R  4.980028e+01   1.382061e-02</span></span>
-<span><span class="co">#&gt; 14  Subset rows (vector) 1000            mlx  4.448729e+02   1.606626e-03</span></span>
-<span><span class="co">#&gt; 15  Subset rows (vector) 2000         base R  9.228283e+00   3.482429e-02</span></span>
-<span><span class="co">#&gt; 16  Subset rows (vector) 2000            mlx  1.387815e+02   5.059277e-03</span></span>
-<span><span class="co">#&gt; 17  Subset rows (vector) 4000         base R  4.400019e+00   4.540410e-02</span></span>
-<span><span class="co">#&gt; 18  Subset rows (vector) 4000            mlx  1.121549e+01   2.390292e-02</span></span>
-<span><span class="co">#&gt; 19 Subset (matrix index) 1000         base R  3.214828e+04   1.418600e-05</span></span>
-<span><span class="co">#&gt; 20 Subset (matrix index) 1000            mlx  1.119061e+03   6.056725e-04</span></span>
-<span><span class="co">#&gt; 21 Subset (matrix index) 2000         base R  6.189986e+03   3.044250e-05</span></span>
-<span><span class="co">#&gt; 22 Subset (matrix index) 2000            mlx  1.059929e+01   3.069760e-02</span></span>
-<span><span class="co">#&gt; 23 Subset (matrix index) 4000         base R  4.576262e+03   7.626000e-05</span></span>
-<span><span class="co">#&gt; 24 Subset (matrix index) 4000            mlx  6.483074e+01   1.013233e-03</span></span>
-<span><span class="co">#&gt; 25                   Sum 1000         base R  8.184595e+02   1.028280e-03</span></span>
-<span><span class="co">#&gt; 26                   Sum 1000            mlx  1.699385e+03   5.398470e-04</span></span>
-<span><span class="co">#&gt; 27                   Sum 2000         base R  2.289306e+02   4.129746e-03</span></span>
-<span><span class="co">#&gt; 28                   Sum 2000            mlx  9.956163e+02   9.001550e-04</span></span>
-<span><span class="co">#&gt; 29                   Sum 4000         base R  5.524733e+01   1.727701e-02</span></span>
-<span><span class="co">#&gt; 30                   Sum 4000            mlx  3.536713e+02   2.230195e-03</span></span>
-<span><span class="co">#&gt; 31                  Mean 1000         base R  4.496198e+02   2.048237e-03</span></span>
-<span><span class="co">#&gt; 32                  Mean 1000            mlx  7.337004e+02   8.569000e-04</span></span>
-<span><span class="co">#&gt; 33                  Mean 2000         base R  1.124792e+02   8.388641e-03</span></span>
-<span><span class="co">#&gt; 34                  Mean 2000            mlx  7.212462e+02   1.088099e-03</span></span>
-<span><span class="co">#&gt; 35                  Mean 4000         base R  2.577147e+01   3.573347e-02</span></span>
-<span><span class="co">#&gt; 36                  Mean 4000            mlx  4.231979e+02   2.200347e-03</span></span>
-<span><span class="co">#&gt; 37              Row sums 1000         base R  9.235355e+02   1.973330e-04</span></span>
-<span><span class="co">#&gt; 38              Row sums 1000            mlx  1.402677e+03   5.881860e-04</span></span>
-<span><span class="co">#&gt; 39              Row sums 2000         base R  1.365614e+03   7.041955e-04</span></span>
-<span><span class="co">#&gt; 40              Row sums 2000            mlx  1.256208e+03   7.866260e-04</span></span>
-<span><span class="co">#&gt; 41              Row sums 4000         base R  3.450453e+02   2.830886e-03</span></span>
-<span><span class="co">#&gt; 42              Row sums 4000            mlx  6.070471e+02   1.609845e-03</span></span>
-<span><span class="co">#&gt; 43             Row means 1000         base R  5.335303e+03   1.809945e-04</span></span>
-<span><span class="co">#&gt; 44             Row means 1000            mlx  1.830877e+03   5.361775e-04</span></span>
-<span><span class="co">#&gt; 45             Row means 2000         base R  1.387594e+03   7.062660e-04</span></span>
-<span><span class="co">#&gt; 46             Row means 2000            mlx  1.173767e+03   8.269905e-04</span></span>
-<span><span class="co">#&gt; 47             Row means 4000         base R  3.600285e+02   2.740850e-03</span></span>
-<span><span class="co">#&gt; 48             Row means 4000            mlx  6.068875e+02   1.629750e-03</span></span>
-<span><span class="co">#&gt; 49            tcrossprod 1000         base R  4.346055e+01   1.540673e-02</span></span>
-<span><span class="co">#&gt; 50            tcrossprod 1000            mlx  1.907761e+02   5.114607e-03</span></span>
-<span><span class="co">#&gt; 51            tcrossprod 2000         base R  8.337613e+00   1.297033e-01</span></span>
-<span><span class="co">#&gt; 52            tcrossprod 2000            mlx  4.833521e+01   1.996737e-02</span></span>
-<span><span class="co">#&gt; 53            tcrossprod 4000         base R  1.554953e+00   6.282607e-01</span></span>
-<span><span class="co">#&gt; 54            tcrossprod 4000            mlx  7.297389e+00   1.356707e-01</span></span>
-<span><span class="co">#&gt; 55               scale() 1000         base R  6.289158e+00   5.415382e-02</span></span>
-<span><span class="co">#&gt; 56               scale() 1000            mlx  5.199917e+01   1.200906e-02</span></span>
-<span><span class="co">#&gt; 57               scale() 2000         base R  2.565332e+00   3.007580e-01</span></span>
-<span><span class="co">#&gt; 58               scale() 2000            mlx  1.964308e+01   4.986199e-02</span></span>
-<span><span class="co">#&gt; 59               scale() 4000         base R  8.941478e-01   9.078280e-01</span></span>
-<span><span class="co">#&gt; 60               scale() 4000            mlx  9.877240e+00   9.136317e-02</span></span>
-<span><span class="co">#&gt; 61          Solve Ax = b 1000         base R  6.797172e+01   1.345735e-02</span></span>
-<span><span class="co">#&gt; 62          Solve Ax = b 1000            mlx  3.336056e+01   3.049871e-02</span></span>
-<span><span class="co">#&gt; 63          Solve Ax = b 2000         base R  1.219340e+01   8.213423e-02</span></span>
-<span><span class="co">#&gt; 64          Solve Ax = b 2000            mlx  5.223627e+00   1.900675e-01</span></span>
-<span><span class="co">#&gt; 65          Solve Ax = b 4000         base R  2.021910e+00   4.933622e-01</span></span>
-<span><span class="co">#&gt; 66          Solve Ax = b 4000            mlx  3.949557e-01   2.537963e+00</span></span>
-<span><span class="co">#&gt; 67             Backsolve 1000         base R  7.034289e+03   1.389080e-04</span></span>
-<span><span class="co">#&gt; 68             Backsolve 1000            mlx  8.947916e+01   1.036578e-02</span></span>
-<span><span class="co">#&gt; 69             Backsolve 2000         base R  7.657459e+02   1.019629e-03</span></span>
-<span><span class="co">#&gt; 70             Backsolve 2000            mlx  1.113167e+01   9.127625e-02</span></span>
-<span><span class="co">#&gt; 71             Backsolve 4000         base R  2.073349e+02   4.627280e-03</span></span>
-<span><span class="co">#&gt; 72             Backsolve 4000            mlx  9.117084e-01   1.093756e+00</span></span>
-<span><span class="co">#&gt; 73              Cholesky 1000         base R  7.542945e+01   1.248598e-02</span></span>
-<span><span class="co">#&gt; 74              Cholesky 1000            mlx  1.308314e+02   6.718793e-03</span></span>
-<span><span class="co">#&gt; 75              Cholesky 2000         base R  1.168775e+01   7.517196e-02</span></span>
-<span><span class="co">#&gt; 76              Cholesky 2000            mlx  3.022592e+01   2.920428e-02</span></span>
-<span><span class="co">#&gt; 77              Cholesky 4000         base R  2.448286e+00   3.889900e-01</span></span>
-<span><span class="co">#&gt; 78              Cholesky 4000            mlx  7.497572e+00   1.158398e-01</span></span>
-<span><span class="co">#&gt; 79              chol2inv 1000         base R  4.343237e+01   2.291183e-02</span></span>
-<span><span class="co">#&gt; 80              chol2inv 1000            mlx  5.728207e+01   1.634522e-02</span></span>
-<span><span class="co">#&gt; 81              chol2inv 2000         base R  5.054964e+00   1.962411e-01</span></span>
-<span><span class="co">#&gt; 82              chol2inv 2000            mlx  8.470390e+00   1.199426e-01</span></span>
-<span><span class="co">#&gt; 83              chol2inv 4000         base R  4.070556e-01   2.488236e+00</span></span>
-<span><span class="co">#&gt; 84              chol2inv 4000            mlx  7.317405e-01   1.422874e+00</span></span>
-<span><span class="co">#&gt; 85     SVD (values only) 1000         base R  4.961432e+00   2.015547e-01</span></span>
-<span><span class="co">#&gt; 86     SVD (values only) 1000            mlx  9.643181e+00   1.033782e-01</span></span>
-<span><span class="co">#&gt; 87     SVD (values only) 2000         base R  6.672157e-01   1.498766e+00</span></span>
-<span><span class="co">#&gt; 88     SVD (values only) 2000            mlx  1.469902e+00   6.803173e-01</span></span>
-<span><span class="co">#&gt; 89     SVD (values only) 4000         base R  4.725168e-02   2.116327e+01</span></span>
-<span><span class="co">#&gt; 90     SVD (values only) 4000            mlx  1.253724e-01   7.976236e+00</span></span>
-<span><span class="co">#&gt; 91              Diagonal 1000         base R  3.494339e+04   1.353000e-05</span></span>
-<span><span class="co">#&gt; 92              Diagonal 1000            mlx  8.014120e+03   8.851900e-05</span></span>
-<span><span class="co">#&gt; 93              Diagonal 2000         base R  8.578421e+03   3.817100e-05</span></span>
-<span><span class="co">#&gt; 94              Diagonal 2000            mlx  8.382498e+03   9.282400e-05</span></span>
-<span><span class="co">#&gt; 95              Diagonal 4000         base R  1.297942e+04   6.469800e-05</span></span>
-<span><span class="co">#&gt; 96              Diagonal 4000            mlx  5.684344e+03   1.505110e-04</span></span></code></pre></div>
+<span><span class="co">#&gt; 1        Matrix multiply 1000         base R  1.686332e+01   5.337489e-02</span></span>
+<span><span class="co">#&gt; 2        Matrix multiply 1000            mlx  1.482274e+02   5.776613e-03</span></span>
+<span><span class="co">#&gt; 3        Matrix multiply 2000         base R  2.694053e+00   3.847019e-01</span></span>
+<span><span class="co">#&gt; 4        Matrix multiply 2000            mlx  2.063118e+01   3.706332e-02</span></span>
+<span><span class="co">#&gt; 5        Matrix multiply 4000         base R  6.928183e-01   1.339366e+00</span></span>
+<span><span class="co">#&gt; 6        Matrix multiply 4000            mlx  6.535483e+00   1.216408e-01</span></span>
+<span><span class="co">#&gt; 7        Matrix addition 1000         base R  7.580863e+01   1.253397e-02</span></span>
+<span><span class="co">#&gt; 8        Matrix addition 1000            mlx  2.069565e+02   4.067672e-03</span></span>
+<span><span class="co">#&gt; 9        Matrix addition 2000         base R  3.445317e+01   1.812093e-02</span></span>
+<span><span class="co">#&gt; 10       Matrix addition 2000            mlx  6.703484e+01   1.198967e-02</span></span>
+<span><span class="co">#&gt; 11       Matrix addition 4000         base R  1.575538e+01   4.288723e-02</span></span>
+<span><span class="co">#&gt; 12       Matrix addition 4000            mlx  2.023367e+01   2.637891e-02</span></span>
+<span><span class="co">#&gt; 13  Subset rows (vector) 1000         base R  9.199962e+01   6.712602e-03</span></span>
+<span><span class="co">#&gt; 14  Subset rows (vector) 1000            mlx  2.258265e+02   4.155842e-03</span></span>
+<span><span class="co">#&gt; 15  Subset rows (vector) 2000         base R  3.579691e+01   9.720444e-03</span></span>
+<span><span class="co">#&gt; 16  Subset rows (vector) 2000            mlx  1.116736e+02   7.904595e-03</span></span>
+<span><span class="co">#&gt; 17  Subset rows (vector) 4000         base R  1.852686e+01   5.096275e-02</span></span>
+<span><span class="co">#&gt; 18  Subset rows (vector) 4000            mlx  2.542716e+01   2.937162e-02</span></span>
+<span><span class="co">#&gt; 19 Subset (matrix index) 1000         base R  3.077650e+04   1.414500e-05</span></span>
+<span><span class="co">#&gt; 20 Subset (matrix index) 1000            mlx  7.057360e+02   1.069977e-03</span></span>
+<span><span class="co">#&gt; 21 Subset (matrix index) 2000         base R  1.060398e+04   3.478850e-05</span></span>
+<span><span class="co">#&gt; 22 Subset (matrix index) 2000            mlx  1.226078e+02   4.105269e-03</span></span>
+<span><span class="co">#&gt; 23 Subset (matrix index) 4000         base R  3.627776e+03   8.909300e-05</span></span>
+<span><span class="co">#&gt; 24 Subset (matrix index) 4000            mlx  2.803131e+02   3.321861e-03</span></span>
+<span><span class="co">#&gt; 25                   Sum 1000         base R  8.158334e+02   1.025717e-03</span></span>
+<span><span class="co">#&gt; 26                   Sum 1000            mlx  5.693211e+02   1.403553e-03</span></span>
+<span><span class="co">#&gt; 27                   Sum 2000         base R  1.990504e+02   4.471522e-03</span></span>
+<span><span class="co">#&gt; 28                   Sum 2000            mlx  4.187205e+02   1.885180e-03</span></span>
+<span><span class="co">#&gt; 29                   Sum 4000         base R  5.644120e+01   1.740512e-02</span></span>
+<span><span class="co">#&gt; 30                   Sum 4000            mlx  3.343564e+02   2.706328e-03</span></span>
+<span><span class="co">#&gt; 31                  Mean 1000         base R  3.827968e+02   2.436958e-03</span></span>
+<span><span class="co">#&gt; 32                  Mean 1000            mlx  6.183002e+02   1.443118e-03</span></span>
+<span><span class="co">#&gt; 33                  Mean 2000         base R  1.189897e+02   8.147951e-03</span></span>
+<span><span class="co">#&gt; 34                  Mean 2000            mlx  5.898661e+02   1.595228e-03</span></span>
+<span><span class="co">#&gt; 35                  Mean 4000         base R  2.426965e+01   4.116203e-02</span></span>
+<span><span class="co">#&gt; 36                  Mean 4000            mlx  3.177675e+02   2.935477e-03</span></span>
+<span><span class="co">#&gt; 37              Row sums 1000         base R  4.508088e+03   1.935200e-04</span></span>
+<span><span class="co">#&gt; 38              Row sums 1000            mlx  6.190800e+02   1.350048e-03</span></span>
+<span><span class="co">#&gt; 39              Row sums 2000         base R  1.101625e+03   8.162895e-04</span></span>
+<span><span class="co">#&gt; 40              Row sums 2000            mlx  8.397160e+02   9.849020e-04</span></span>
+<span><span class="co">#&gt; 41              Row sums 4000         base R  2.619458e+02   3.322353e-03</span></span>
+<span><span class="co">#&gt; 42              Row sums 4000            mlx  3.497414e+02   2.578695e-03</span></span>
+<span><span class="co">#&gt; 43             Row means 1000         base R  4.561999e+03   1.928230e-04</span></span>
+<span><span class="co">#&gt; 44             Row means 1000            mlx  1.117836e+03   6.942325e-04</span></span>
+<span><span class="co">#&gt; 45             Row means 2000         base R  1.282473e+03   7.581310e-04</span></span>
+<span><span class="co">#&gt; 46             Row means 2000            mlx  9.342403e+02   1.043471e-03</span></span>
+<span><span class="co">#&gt; 47             Row means 4000         base R  3.380841e+02   2.990089e-03</span></span>
+<span><span class="co">#&gt; 48             Row means 4000            mlx  5.398472e+02   1.758613e-03</span></span>
+<span><span class="co">#&gt; 49            tcrossprod 1000         base R  4.248881e+01   1.443985e-02</span></span>
+<span><span class="co">#&gt; 50            tcrossprod 1000            mlx  1.151698e+02   4.997777e-03</span></span>
+<span><span class="co">#&gt; 51            tcrossprod 2000         base R  5.960182e+00   1.865696e-01</span></span>
+<span><span class="co">#&gt; 52            tcrossprod 2000            mlx  5.226876e+01   1.909452e-02</span></span>
+<span><span class="co">#&gt; 53            tcrossprod 4000         base R  1.378266e+00   7.290075e-01</span></span>
+<span><span class="co">#&gt; 54            tcrossprod 4000            mlx  8.418419e+00   1.142077e-01</span></span>
+<span><span class="co">#&gt; 55               scale() 1000         base R  8.506913e+00   1.028171e-01</span></span>
+<span><span class="co">#&gt; 56               scale() 1000            mlx  3.992617e+01   1.817208e-02</span></span>
+<span><span class="co">#&gt; 57               scale() 2000         base R  6.827832e+00   1.393218e-01</span></span>
+<span><span class="co">#&gt; 58               scale() 2000            mlx  2.200685e+01   4.338149e-02</span></span>
+<span><span class="co">#&gt; 59               scale() 4000         base R  5.892145e-01   1.258455e+00</span></span>
+<span><span class="co">#&gt; 60               scale() 4000            mlx  4.959993e+00   2.078249e-01</span></span>
+<span><span class="co">#&gt; 61          Solve Ax = b 1000         base R  4.647989e+01   2.071650e-02</span></span>
+<span><span class="co">#&gt; 62          Solve Ax = b 1000            mlx  2.420378e+01   3.842868e-02</span></span>
+<span><span class="co">#&gt; 63          Solve Ax = b 2000         base R  6.384171e+00   1.466064e-01</span></span>
+<span><span class="co">#&gt; 64          Solve Ax = b 2000            mlx  4.225594e+00   2.363753e-01</span></span>
+<span><span class="co">#&gt; 65          Solve Ax = b 4000         base R  9.146701e-01   1.071055e+00</span></span>
+<span><span class="co">#&gt; 66          Solve Ax = b 4000            mlx  3.200219e-01   3.158153e+00</span></span>
+<span><span class="co">#&gt; 67             Backsolve 1000         base R  5.173912e+03   1.873495e-04</span></span>
+<span><span class="co">#&gt; 68             Backsolve 1000            mlx  6.759129e+01   1.230894e-02</span></span>
+<span><span class="co">#&gt; 69             Backsolve 2000         base R  5.550587e+02   1.405193e-03</span></span>
+<span><span class="co">#&gt; 70             Backsolve 2000            mlx  7.332984e+00   1.372084e-01</span></span>
+<span><span class="co">#&gt; 71             Backsolve 4000         base R  1.432211e+02   6.272098e-03</span></span>
+<span><span class="co">#&gt; 72             Backsolve 4000            mlx  7.410269e-01   1.397919e+00</span></span>
+<span><span class="co">#&gt; 73              Cholesky 1000         base R  4.237244e+01   2.003383e-02</span></span>
+<span><span class="co">#&gt; 74              Cholesky 1000            mlx  1.319401e+02   6.263611e-03</span></span>
+<span><span class="co">#&gt; 75              Cholesky 2000         base R  9.359651e+00   1.115690e-01</span></span>
+<span><span class="co">#&gt; 76              Cholesky 2000            mlx  3.516983e+01   2.553537e-02</span></span>
+<span><span class="co">#&gt; 77              Cholesky 4000         base R  2.735014e+00   3.630021e-01</span></span>
+<span><span class="co">#&gt; 78              Cholesky 4000            mlx  7.707886e+00   1.274542e-01</span></span>
+<span><span class="co">#&gt; 79              chol2inv 1000         base R  4.254603e+01   2.240232e-02</span></span>
+<span><span class="co">#&gt; 80              chol2inv 1000            mlx  5.800550e+01   1.695321e-02</span></span>
+<span><span class="co">#&gt; 81              chol2inv 2000         base R  4.408622e+00   2.249110e-01</span></span>
+<span><span class="co">#&gt; 82              chol2inv 2000            mlx  7.933741e+00   1.099304e-01</span></span>
+<span><span class="co">#&gt; 83              chol2inv 4000         base R  3.642869e-01   2.692015e+00</span></span>
+<span><span class="co">#&gt; 84              chol2inv 4000            mlx  7.427381e-01   1.336821e+00</span></span>
+<span><span class="co">#&gt; 85     SVD (values only) 1000         base R  4.701149e+00   2.127139e-01</span></span>
+<span><span class="co">#&gt; 86     SVD (values only) 1000            mlx  8.991039e+00   1.093591e-01</span></span>
+<span><span class="co">#&gt; 87     SVD (values only) 2000         base R  4.985447e-01   2.005838e+00</span></span>
+<span><span class="co">#&gt; 88     SVD (values only) 2000            mlx  1.487637e+00   6.722072e-01</span></span>
+<span><span class="co">#&gt; 89     SVD (values only) 4000         base R  4.754891e-02   2.103098e+01</span></span>
+<span><span class="co">#&gt; 90     SVD (values only) 4000            mlx  1.149650e-01   8.698301e+00</span></span>
+<span><span class="co">#&gt; 91              Diagonal 1000         base R  1.798698e+04   1.750700e-05</span></span>
+<span><span class="co">#&gt; 92              Diagonal 1000            mlx  8.222750e+03   9.913800e-05</span></span>
+<span><span class="co">#&gt; 93              Diagonal 2000         base R  1.058169e+04   4.358300e-05</span></span>
+<span><span class="co">#&gt; 94              Diagonal 2000            mlx  6.713126e+03   9.712900e-05</span></span>
+<span><span class="co">#&gt; 95              Diagonal 4000         base R  1.414439e+04   5.781000e-05</span></span>
+<span><span class="co">#&gt; 96              Diagonal 4000            mlx  6.132823e+03   1.389900e-04</span></span></code></pre></div>
   </main>
 </div>
 
@@ -412,7 +412,7 @@ routines.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
