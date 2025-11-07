@@ -497,7 +497,8 @@ col.mlx <- function(x, as.factor = FALSE) {
 #' base R. The computation delegates to MLX reductions and broadcasting. When
 #' centering or scaling values are computed, the attributes `"scaled:center"`
 #' and `"scaled:scale"` are stored as 1 x `ncol(x)` mlx arrays (user-supplied
-#' numeric vectors are preserved as-is).
+#' numeric vectors are preserved as-is). These attributes remain MLX arrays even
+#' after coercing with [as.matrix()], so they stay lazily evaluated.
 #'
 #' @inheritParams base::scale
 #' @return An mlx array with centred/scaled columns.
@@ -538,10 +539,8 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
   # Scaling
   if (!identical(scale, FALSE)) {
     if (isTRUE(scale)) {
-      denom <- max(1L, n_rows - 1L)
-      sum_sq <- mlx_sum(result ^ 2, axis = 1L, drop = TRUE)
-      scale_vals <- sqrt(sum_sq / denom)
-      scales <- mlx_reshape(scale_vals, c(1L, n_cols))
+      ddof <- if (n_rows > 1L) 1L else 0L
+      scales <- mlx_std(result, axis = 1L, drop = FALSE, ddof = ddof)
       scale_attr <- scales
     } else {
       scale_vec <- as.numeric(scale)

@@ -190,6 +190,14 @@ as.matrix.mlx <- function(x, ...) {
     return(as.vector(out))
   }
   dim(out) <- x$dim
+  attrs <- attributes(x)
+  attrs$names <- NULL
+  attrs$class <- NULL
+  if (length(attrs)) {
+    for (nm in names(attrs)) {
+      attr(out, nm) <- attrs[[nm]]
+    }
+  }
   out
 }
 

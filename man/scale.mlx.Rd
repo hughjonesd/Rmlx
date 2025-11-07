@@ -25,5 +25,6 @@ Extends base \code{\link[=scale]{scale()}} to handle mlx inputs without moving d
 base R. The computation delegates to MLX reductions and broadcasting. When
 centering or scaling values are computed, the attributes \code{"scaled:center"}
 and \code{"scaled:scale"} are stored as 1 x \code{ncol(x)} mlx arrays (user-supplied
-numeric vectors are preserved as-is).
+numeric vectors are preserved as-is). These attributes remain MLX arrays even
+after coercing with \code{\link[=as.matrix]{as.matrix()}}, so they stay lazily evaluated.
 }
