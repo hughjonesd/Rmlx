@@ -25,7 +25,7 @@ library(ggplot2)
 ```
 
 ```{r benchmark}
-sizes <- c(small = 1000L, medium = 2000L, large = 4000L)
+sizes <- c(small = 500L, medium = 1000L, large = 2000L)
 
 set.seed(20251031)
 

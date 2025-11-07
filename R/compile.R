@@ -77,7 +77,6 @@
 #' @seealso [mlx.core.compile](https://ml-explore.github.io/mlx/build/html/usage/compile.html)
 #'
 #' @examples
-#' \dontrun{
 #' # Simple example
 #' matmul_add <- function(x, w, b) {
 #'   (x %*% w) + b
@@ -88,7 +87,7 @@
 #'
 #' # First call: slow (traces and compiles)
 #' x <- mlx_rand_normal(c(32, 128))
-#' w <- mlx_rand_normal(c(256, 128))
+#' w <- mlx_rand_normal(c(128, 256))
 #' b <- mlx_rand_normal(c(256))
 #' result <- fast_fn(x, w, b)  # Compiles during this call
 #'
@@ -106,7 +105,6 @@
 #'
 #' compiled_fn <- mlx_compile(forward_and_norm)
 #' results <- compiled_fn(x, w)  # Returns list(y, norm)
-#' }
 #'
 #' @export
 mlx_compile <- function(f, shapeless = FALSE) {
