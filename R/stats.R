@@ -494,9 +494,10 @@ col.mlx <- function(x, as.factor = FALSE) {
 #' Scale mlx arrays
 #'
 #' Extends base [scale()] to handle mlx inputs without moving data back to
-#' base R. The computation delegates to MLX reductions and broadcasting. The
-#' returned mlx array omits the `"scaled:center"` and `"scaled:scale"`
-#' attributes used by base R.
+#' base R. The computation delegates to MLX reductions and broadcasting. When
+#' centering or scaling values are computed, the attributes `"scaled:center"`
+#' and `"scaled:scale"` are stored as 1 x `ncol(x)` mlx arrays (user-supplied
+#' numeric vectors are preserved as-is).
 #'
 #' @inheritParams base::scale
 #' @return An mlx array with centred/scaled columns.
@@ -510,11 +511,14 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
   n_rows <- x_mlx$dim[1L]
   n_cols <- x_mlx$dim[2L]
   result <- x_mlx
+  center_attr <- NULL
+  scale_attr <- NULL
 
   # Centering
   if (!identical(center, FALSE)) {
     if (isTRUE(center)) {
       centers <- mlx_mean(result, axis = 1L, drop = FALSE)
+      center_attr <- centers
     } else {
       center_vec <- as.numeric(center)
       if (length(center_vec) == 1L) {
@@ -523,6 +527,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
       if (length(center_vec) != n_cols) {
         stop("length of 'center' must equal the number of columns of 'x'", call. = FALSE)
       }
+      center_attr <- center_vec
       centers <- as_mlx(matrix(center_vec, nrow = 1L),
                         dtype = result$dtype,
                         device = result$device)
@@ -537,6 +542,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
       sum_sq <- mlx_sum(result ^ 2, axis = 1L, drop = TRUE)
       scale_vals <- sqrt(sum_sq / denom)
       scales <- mlx_reshape(scale_vals, c(1L, n_cols))
+      scale_attr <- scales
     } else {
       scale_vec <- as.numeric(scale)
       if (length(scale_vec) == 1L) {
@@ -545,12 +551,20 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
       if (length(scale_vec) != n_cols) {
         stop("length of 'scale' must equal the number of columns of 'x'", call. = FALSE)
       }
+      scale_attr <- scale_vec
       scales <- as_mlx(matrix(scale_vec, nrow = 1L),
                        dtype = result$dtype,
                        device = result$device)
     }
 
     result <- result / scales
+  }
+
+  if (!is.null(center_attr)) {
+    attr(result, "scaled:center") <- center_attr
+  }
+  if (!is.null(scale_attr)) {
+    attr(result, "scaled:scale") <- scale_attr
   }
 
   result

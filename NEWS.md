@@ -13,7 +13,8 @@
 * Base reducers `all()` and `any()` applied to mlx arrays now return plain R
   logical scalars; `mlx_all()`/`mlx_any()` continue to yield mlx booleans.
 * Added mlx-aware wrappers for `row()`, `col()`, `asplit()`, and `backsolve()`.
-* Added `scale.mlx()` to center/scale matrices entirely on the MLX backend.
+* Added `scale.mlx()` to center/scale matrices entirely on the MLX backend (with
+  MLX arrays stored in the `scaled:center` / `scaled:scale` attributes).
 * Created a new benchmarks vignette.
 
 # Rmlx 0.1.0
