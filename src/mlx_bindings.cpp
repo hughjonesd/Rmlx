@@ -229,7 +229,7 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
         set_default_device(original_device);
       }
       if (device_str != "cpu") {
-        arr = contiguous(arr, /*allow_col_major=*/false, dev);
+        arr = astype(arr, dt, dev);
       }
       return make_mlx_xptr(std::move(arr));
     } catch (...) {
