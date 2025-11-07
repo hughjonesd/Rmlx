@@ -18,9 +18,17 @@
 #'
 #' @param x Input object (vector/array).
 #' @param dtype Target MLX dtype.
-#' @return Vector of numeric or complex values.
+#' @return Vector of numeric or complex values (or the original numeric input when
+#'   it is already a double vector/matrix headed for float32/float64).
 #' @noRd
 .mlx_coerce_payload <- function(x, dtype) {
+  if (dtype %in% c("float32", "float64") &&
+      is.double(x) &&
+      is.atomic(x) &&
+      !is.object(x)) {
+    return(x)
+  }
+
   switch(
     dtype,
     "bool" = {
