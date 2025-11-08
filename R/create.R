@@ -215,19 +215,25 @@ mlx_eye <- function(n,
 mlx_array <- function(data,
                       dim,
                       dtype = NULL,
-                      device = mlx_default_device()) {
+                      device = mlx_default_device(),
+                      allow_scalar = FALSE) {
   if (!is.atomic(data) || is.list(data)) {
     stop("data must be an atomic vector.", call. = FALSE)
   }
 
-  dim <- .validate_shape(dim)
+  dim <- .validate_shape(dim, allow_scalar = allow_scalar)
   total <- prod(dim)
   data_vec <- as.vector(data)
 
-  if (length(data_vec) != total) {
+  if (!allow_scalar && length(data_vec) != total) {
     stop(
       "length(data) (", length(data_vec),
       ") must match prod(dim) (", total, ").",
+      call. = FALSE
+    )
+  } else if (allow_scalar && length(data_vec) != max(1L, total)) {
+    stop(
+      "Scalar data must be length 1.",
       call. = FALSE
     )
   }
@@ -301,6 +307,51 @@ mlx_matrix <- function(data,
   }
 
   mlx_array(data_vec, c(nrow, ncol), dtype = dtype, device = device)
+}
+
+#' Construct MLX vectors
+#'
+#' `mlx_vector()` is a convenience around [mlx_array()] for 1-D payloads.
+#'
+#' @inheritParams mlx_array
+#' @param data Atomic vector providing the elements (recycling is not allowed).
+#' @return An `mlx` vector with `dim = length(data)`.
+#' @export
+mlx_vector <- function(data,
+                       dtype = NULL,
+                       device = mlx_default_device()) {
+  if (!is.atomic(data) || is.list(data)) {
+    stop("data must be an atomic vector.", call. = FALSE)
+  }
+
+  data_vec <- as.vector(data)
+  if (!length(data_vec)) {
+    stop("data must contain at least one element.", call. = FALSE)
+  }
+
+  mlx_array(data_vec, length(data_vec), dtype = dtype, device = device)
+}
+
+#' Construct MLX scalars
+#'
+#' @inheritParams mlx_array
+#' @param value Single value (numeric, logical, or complex).
+#' @return A dimensionless `mlx` scalar.
+#' @export
+mlx_scalar <- function(value,
+                       dtype = NULL,
+                       device = mlx_default_device()) {
+  if (length(value) != 1L) {
+    stop("value must be length 1.", call. = FALSE)
+  }
+
+  mlx_array(
+    value,
+    dim = integer(0),
+    dtype = dtype,
+    device = device,
+    allow_scalar = TRUE
+  )
 }
 
 #' Identity matrices on MLX devices
@@ -530,8 +581,11 @@ mlx_linspace <- function(start,
 #' @param dim Integer or numeric vector of dimension sizes.
 #' @return Integer vector of positive dimensions.
 #' @noRd
-.validate_shape <- function(dim) {
+.validate_shape <- function(dim, allow_scalar = FALSE) {
   if (length(dim) == 0L) {
+    if (allow_scalar && identical(dim, integer(0))) {
+      return(integer(0))
+    }
     stop("dim must contain at least one element.", call. = FALSE)
   }
   dim <- as.integer(dim)

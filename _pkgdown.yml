@@ -49,6 +49,10 @@ reference:
       - mlx_enable_compile
   - title: Creation & Randomness
     contents:
+      - mlx_array
+      - mlx_matrix
+      - mlx_vector
+      - mlx_scalar
       - mlx_zeros
       - mlx_ones
       - mlx_zeros_like

@@ -54,6 +54,7 @@
 - Favor markdown lists/tables in roxygen over `\item`.
 - Add `@seealso` links to relevant MLX online docs for new exports.
 - When adding features, update the pkgdown reference index.
+- GitHub Actions builds pkgdown for production; local `pkgdown::build_reference()` runs are only for smoke testing (no need to commit rendered HTML).
 
 ### Handy Tips
 - `usethis::` helpers provide the canonical workflows for package chores—prefer them when possible.

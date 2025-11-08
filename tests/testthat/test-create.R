@@ -101,3 +101,25 @@ test_that("mlx_matrix respects dimensions and byrow flag", {
   mat_byrow <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE, device = "cpu")
   expect_equal(as.matrix(mat_byrow), matrix(1:6, 2, 3, byrow = TRUE))
 })
+
+test_that("mlx_vector creates 1D arrays", {
+  vec <- mlx_vector(1:5, device = "cpu")
+  expect_equal(mlx_dim(vec), 5L)
+  expect_equal(as.vector(vec), as.numeric(1:5))
+
+  expect_error(mlx_vector(list(1, 2)), "atomic")
+  expect_error(mlx_vector(numeric(0)), "at least one element")
+})
+
+test_that("mlx_scalar creates dimensionless arrays", {
+  s <- mlx_scalar(3.14, device = "cpu")
+  expect_equal(mlx_dim(s), integer(0))
+  expect_equal(as.vector(s), 3.14, tolerance = 1e-6)
+
+  logical_scalar <- mlx_scalar(TRUE, dtype = "bool", device = "cpu")
+  expect_equal(mlx_dtype(logical_scalar), "bool")
+  expect_equal(as.vector(logical_scalar), TRUE)
+
+  expect_error(mlx_scalar(1:2), "length 1")
+  expect_error(mlx_array(1:2, dim = integer(0)), "at least one element")
+})
