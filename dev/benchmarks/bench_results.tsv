@@ -1,5 +1,5 @@
 Median milliseconds per operation
      op   n500  n1000   n2000
- matmul 0.4011 1.2663  7.2963
-  solve 1.3972 7.0723 42.3285
- as_mlx 0.2176 0.8067  2.9985
+ matmul 0.5528 1.2417  7.2130
+  solve 1.4897 8.5633 42.3383
+ as_mlx 0.2169 0.7773  2.9287
