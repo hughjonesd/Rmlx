@@ -11,6 +11,6 @@ if [ ! -x "$BENCH_SCRIPT" ]; then
 fi
 
 echo "[pre-commit] Running MLX benchmarks..."
-Rscript "$BENCH_SCRIPT" --output "$OUTPUT_FILE"
+Rscript "$BENCH_SCRIPT" > "$OUTPUT_FILE"
 echo "[pre-commit] Benchmark TSV updated at $OUTPUT_FILE"
 echo "  (stage it if you want the results tracked in this commit.)"

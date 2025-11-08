@@ -1,7 +1,5 @@
 #!/usr/bin/env Rscript
 
-`%||%` <- function(x, y) if (!is.null(x)) x else y
-
 args_full <- commandArgs(FALSE)
 script_dir <- {
   file_arg <- grep("^--file=", args_full, value = TRUE)
@@ -12,91 +10,59 @@ script_dir <- {
   }
 }
 repo_root <- normalizePath(file.path(script_dir, "..", ".."), mustWork = TRUE)
-source(file.path(repo_root, "dev", "benchmarks", "bench_helpers.R"))
-
-default_sizes <- c(small = 500L, medium = 1000L, large = 2000L)
-
-args <- commandArgs(trailingOnly = TRUE)
-output_path <- file.path(repo_root, "bench_results.tsv")
-sizes_arg <- NULL
-
-i <- 1L
-while (i <= length(args)) {
-  arg <- args[i]
-  if (arg == "--output") {
-    if (i == length(args)) stop("--output requires a value")
-    i <- i + 1L
-    output_path <- args[i]
-  } else if (startsWith(arg, "--output=")) {
-    output_path <- substring(arg, 10)
-  } else if (arg == "--sizes") {
-    if (i == length(args)) stop("--sizes requires a value")
-    i <- i + 1L
-    sizes_arg <- args[i]
-  } else if (startsWith(arg, "--sizes=")) {
-    sizes_arg <- substring(arg, 9)
-  } else {
-    stop("Unknown argument: ", arg)
-  }
-  i <- i + 1L
-}
-
-size_vals <- if (is.null(sizes_arg)) {
-  default_sizes
-} else {
-  vals <- as.integer(strsplit(sizes_arg, ",", fixed = TRUE)[[1]])
-  vals <- vals[!is.na(vals) & vals > 0]
-  if (!length(vals)) {
-    stop("Invalid sizes: ", sizes_arg)
-  }
-  vals
-}
-
-sizes <- size_vals
-names(sizes) <- if (!is.null(names(size_vals)) && all(names(size_vals) != "")) {
-  names(size_vals)
-} else {
-  sprintf("n%d", sizes)
-}
-
-inputs <- build_benchmark_inputs(sizes)
-operations <- benchmark_operations()
-results <- run_benchmarks(operations, inputs)
-
-results$median_ms <- as.numeric(results$median, units = "seconds") * 1000
-backends <- c("base", "mlx")
-col_keys <- as.vector(t(outer(names(sizes), backends, paste, sep = "_")))
-col_headers <- paste0(col_keys, "_ms")
-
-summary <- data.frame(
-  operation = vapply(operations, `[[`, character(1), "label"),
-  matrix(NA_real_, nrow = length(operations), ncol = length(col_headers)),
-  stringsAsFactors = FALSE
+suppressPackageStartupMessages(
+  source(file.path(repo_root, "dev", "benchmarks", "bench_helpers.R"))
 )
-names(summary)[-1] <- col_headers
 
-for (i in seq_len(nrow(results))) {
-  op <- results$operation[i]
-  key <- paste(results$size[i], results$backend[i], sep = "_")
-  col <- paste0(key, "_ms")
-  summary[summary$operation == op, col] <- results$median_ms[i]
+sizes <- c(n500 = 500L, n1000 = 1000L, n2000 = 2000L)
+inputs <- build_benchmark_inputs(sizes)
+
+ops <- list(
+  list(
+    label = "matmul",
+    fn = function(input) force_mlx(input$mlx$a %*% input$mlx$b)
+  ),
+  list(
+    label = "solve",
+    fn = function(input) force_mlx(solve(input$mlx$spd, input$mlx$rhs))
+  ),
+  list(
+    label = "as_mlx",
+    fn = function(input) force_mlx(as_mlx(input$base$a, dtype = "float32"))
+  )
+)
+
+min_time <- 0.05
+min_iter <- 2L
+
+results <- matrix(
+  NA_real_,
+  nrow = length(ops),
+  ncol = length(sizes),
+  dimnames = list(vapply(ops, `[[`, character(1), "label"), names(sizes))
+)
+
+for (size_name in names(sizes)) {
+  data <- inputs[[size_name]]
+  for (op in ops) {
+    bench_res <- bench::mark(
+      op$fn(data),
+      min_time = min_time,
+      min_iterations = min_iter,
+      check = FALSE,
+      filter_gc = FALSE
+    )
+    results[op$label, size_name] <- as.numeric(bench_res$median, units = "secs") * 1000
+  }
 }
 
-format_val <- function(x) {
-  out <- rep("", length(x))
-  keep <- !is.na(x)
-  out[keep] <- sprintf("%.4f", x[keep])
-  out
-}
-summary[-1] <- lapply(summary[-1], format_val)
+df <- data.frame(
+  op = rownames(results),
+  results,
+  row.names = NULL,
+  check.names = FALSE
+)
+df[-1] <- lapply(df[-1], function(x) sprintf("%.4f", x))
 
-write_tsv <- function(df, path) {
-  con <- if (is.null(path)) stdout() else file(path, open = "w")
-  on.exit(if (!is.null(path)) close(con), add = TRUE)
-  header <- paste(names(df), collapse = "\t")
-  writeLines(header, con)
-  apply(df, 1, function(row) writeLines(paste(row, collapse = "\t"), con))
-}
-
-write_tsv(summary, output_path)
-message("Benchmark results written to ", output_path, " (", nrow(results), " measurements).")
+cat("Median milliseconds per operation\n")
+print(df, row.names = FALSE)
