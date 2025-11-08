@@ -13,4 +13,6 @@ fi
 echo "[pre-commit] Running MLX benchmarks..."
 Rscript "$BENCH_SCRIPT" > "$OUTPUT_FILE"
 echo "[pre-commit] Benchmark TSV updated at $OUTPUT_FILE"
-echo "  (stage it if you want the results tracked in this commit.)"
+echo "[pre-commit] Latest benchmark results:" >&2
+cat "$OUTPUT_FILE"
+git add "$OUTPUT_FILE"

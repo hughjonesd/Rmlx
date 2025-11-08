@@ -55,7 +55,7 @@
 - Add `@seealso` links to relevant MLX online docs for new exports.
 - When adding features, update the pkgdown reference index.
 - GitHub Actions builds pkgdown for production; local `pkgdown::build_reference()` runs are only for smoke testing (no need to commit rendered HTML).
-- Benchmarks: reuse helpers in `dev/benchmarks/bench_helpers.R`. Run `Rscript dev/benchmarks/run_benchmarks_cli.R > dev/benchmarks/bench_results.tsv` (the pre-commit hook under `githooks/` does the same once you `git config core.hooksPath githooks`). Diff that TSV across commits to track perf trends.
+- Benchmarks: reuse helpers in `dev/benchmarks/bench_helpers.R`. Run `Rscript dev/benchmarks/run_benchmarks_cli.R > dev/benchmarks/bench_results.tsv` (the pre-commit hook under `githooks/` does the same, prints the table, and stages the TSV once you `git config core.hooksPath githooks`). Diff that TSV across commits to track perf trends.
 
 ### Handy Tips
 - `usethis::` helpers provide the canonical workflows for package chores—prefer them when possible.
