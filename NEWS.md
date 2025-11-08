@@ -23,7 +23,7 @@
 * `as.matrix.mlx()` now preserves any user-set attributes (including the MLX
   scaling metadata) when copying arrays back to base R.
 * Created a new benchmarks vignette.
-* Added pre-commit hooks to run, commit and print a short benchmark.
+* Added pre-commit hooks to run, commit and print benchmark.
 
 # Rmlx 0.1.0
 
