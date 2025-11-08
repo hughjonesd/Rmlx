@@ -14,5 +14,5 @@ echo "[pre-commit] Running MLX benchmarks..."
 Rscript "$BENCH_SCRIPT" > "$OUTPUT_FILE"
 echo "[pre-commit] Benchmark TSV updated at $OUTPUT_FILE"
 echo "[pre-commit] Latest benchmark results:" >&2
-cat "$OUTPUT_FILE"
+cat "$OUTPUT_FILE" >&2
 git add "$OUTPUT_FILE"
