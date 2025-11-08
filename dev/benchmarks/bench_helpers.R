@@ -12,6 +12,18 @@ force_mlx <- function(x) {
   invisible(NULL)
 }
 
+encode_matrix32 <- function(mat) {
+  list(
+    dim = dim(mat),
+    raw = writeBin(as.vector(mat), raw(), size = 4)
+  )
+}
+
+decode_matrix32 <- function(obj) {
+  vals <- readBin(obj$raw, what = "double", size = 4, n = prod(obj$dim))
+  matrix(vals, nrow = obj$dim[1], ncol = obj$dim[2])
+}
+
 build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
   if (!is.null(cache_dir)) {
     dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
@@ -31,13 +43,8 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
     list(base = base_data, mlx = mlx_data)
   }
 
-  get_or_create <- function(n) {
+  regenerate <- function(n) {
     cache_path <- if (is.null(cache_dir)) NULL else file.path(cache_dir, sprintf("inputs_%s.rds", n))
-    if (!is.null(cache_path) && file.exists(cache_path)) {
-      base_data <- readRDS(cache_path)
-      return(make_payload(base_data))
-    }
-
     set.seed(seed + n)
     a <- matrix(rnorm(n * n), n, n)
     b <- matrix(rnorm(n * n), n, n)
@@ -59,11 +66,45 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
       idx_vec = idx_vec,
       idx_mat = idx_mat
     )
-    result <- make_payload(base_data)
     if (!is.null(cache_path)) {
-      saveRDS(base_data, cache_path, compress = "gzip")
+      cache_obj <- list(
+        a = encode_matrix32(a),
+        b = encode_matrix32(b),
+        rhs = encode_matrix32(rhs),
+        idx_vec = idx_vec,
+        idx_mat = idx_mat
+      )
+      saveRDS(cache_obj, cache_path, compress = "xz")
     }
-    result
+
+    make_payload(base_data)
+  }
+
+  load_from_cache <- function(cache_path, n) {
+    cache_obj <- readRDS(cache_path)
+    a <- decode_matrix32(cache_obj$a)
+    b <- decode_matrix32(cache_obj$b)
+    rhs <- decode_matrix32(cache_obj$rhs)
+    spd <- crossprod(a) + diag(n) * 1e-3
+    chol_base <- chol(spd)
+    base_data <- list(
+      a = a,
+      b = b,
+      spd = spd,
+      rhs = rhs,
+      chol = chol_base,
+      idx_vec = cache_obj$idx_vec,
+      idx_mat = cache_obj$idx_mat
+    )
+    make_payload(base_data)
+  }
+
+  get_or_create <- function(n) {
+    cache_path <- if (is.null(cache_dir)) NULL else file.path(cache_dir, sprintf("inputs_%s.rds", n))
+    if (!is.null(cache_path) && file.exists(cache_path)) {
+      return(load_from_cache(cache_path, n))
+    }
+    regenerate(n)
   }
 
   lapply(sizes, get_or_create)
