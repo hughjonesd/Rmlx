@@ -30,8 +30,11 @@ SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
     }
   }();
 
-array result_target = astype(result, target_dtype, target_device);
+  if (device_str == "cpu") {
+    return make_mlx_xptr(std::move(result));
+  }
 
+  array result_target = astype(result, target_dtype, target_device);
   return make_mlx_xptr(std::move(result_target));
 }
 
