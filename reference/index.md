@@ -69,6 +69,14 @@
 
 ## Creation & Randomness
 
+- [`mlx_array()`](https://hughjonesd.github.io/Rmlx/reference/mlx_array.md)
+  : Construct an MLX array from R data
+- [`mlx_matrix()`](https://hughjonesd.github.io/Rmlx/reference/mlx_matrix.md)
+  : Construct MLX matrices efficiently
+- [`mlx_vector()`](https://hughjonesd.github.io/Rmlx/reference/mlx_vector.md)
+  : Construct MLX vectors
+- [`mlx_scalar()`](https://hughjonesd.github.io/Rmlx/reference/mlx_scalar.md)
+  : Construct MLX scalars
 - [`mlx_zeros()`](https://hughjonesd.github.io/Rmlx/reference/mlx_zeros.md)
   : Create arrays of zeros on MLX devices
 - [`mlx_ones()`](https://hughjonesd.github.io/Rmlx/reference/mlx_ones.md)

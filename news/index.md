@@ -5,6 +5,14 @@
 - Added negative numeric indexing support for `[`/`[<-` on `mlx` arrays
   and documented subsetting semantics.
 - Added
+  [`mlx_array()`](https://hughjonesd.github.io/Rmlx/reference/mlx_array.md),
+  [`mlx_matrix()`](https://hughjonesd.github.io/Rmlx/reference/mlx_matrix.md),
+  [`mlx_vector()`](https://hughjonesd.github.io/Rmlx/reference/mlx_vector.md),
+  and
+  [`mlx_scalar()`](https://hughjonesd.github.io/Rmlx/reference/mlx_scalar.md)
+  for fast construction of MLX objects when data and dimensions are
+  already known.
+- Added
   [`mlx_fft()`](https://hughjonesd.github.io/Rmlx/reference/mlx_fft.md),
   [`mlx_fft2()`](https://hughjonesd.github.io/Rmlx/reference/mlx_fft.md),
   and

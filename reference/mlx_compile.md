@@ -117,7 +117,6 @@ recompilation costs. Use it when processing variable-sized batches.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 # Simple example
 matmul_add <- function(x, w, b) {
   (x %*% w) + b
@@ -128,7 +127,7 @@ fast_fn <- mlx_compile(matmul_add)
 
 # First call: slow (traces and compiles)
 x <- mlx_rand_normal(c(32, 128))
-w <- mlx_rand_normal(c(256, 128))
+w <- mlx_rand_normal(c(128, 256))
 b <- mlx_rand_normal(c(256))
 result <- fast_fn(x, w, b)  # Compiles during this call
 
@@ -136,6 +135,7 @@ result <- fast_fn(x, w, b)  # Compiles during this call
 for (i in 1:1000) {
   result <- fast_fn(batch_data[[i]], w, b)  # Very fast!
 }
+#> Error: object 'batch_data' not found
 
 # Multiple returns
 forward_and_norm <- function(x, w) {
@@ -146,5 +146,4 @@ forward_and_norm <- function(x, w) {
 
 compiled_fn <- mlx_compile(forward_and_norm)
 results <- compiled_fn(x, w)  # Returns list(y, norm)
-} # }
 ```
