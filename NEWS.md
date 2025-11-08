@@ -23,6 +23,7 @@
 * `as.matrix.mlx()` now preserves any user-set attributes (including the MLX
   scaling metadata) when copying arrays back to base R.
 * Created a new benchmarks vignette.
+* Added benchmark commit hook.
 
 # Rmlx 0.1.0
 
