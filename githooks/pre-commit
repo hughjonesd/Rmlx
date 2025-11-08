@@ -3,7 +3,7 @@ set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 BENCH_SCRIPT="$REPO_ROOT/dev/benchmarks/run_benchmarks_cli.R"
-OUTPUT_FILE="$REPO_ROOT/bench_results.tsv"
+OUTPUT_FILE="$REPO_ROOT/dev/benchmarks/bench_results.tsv"
 
 if [ ! -x "$BENCH_SCRIPT" ]; then
   echo "Benchmark script not found at $BENCH_SCRIPT" >&2

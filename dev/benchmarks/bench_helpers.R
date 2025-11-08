@@ -12,9 +12,33 @@ force_mlx <- function(x) {
   invisible(NULL)
 }
 
-build_benchmark_inputs <- function(sizes, seed = 20251031L) {
-  set.seed(seed)
-  lapply(sizes, function(n) {
+build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
+  if (!is.null(cache_dir)) {
+    dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
+  }
+
+  make_payload <- function(base_data) {
+    mlx_data <- list(
+      a = as_mlx(base_data$a, dtype = "float32"),
+      b = as_mlx(base_data$b, dtype = "float32"),
+      spd = as_mlx(base_data$spd, dtype = "float32"),
+      rhs = as_mlx(base_data$rhs, dtype = "float32"),
+      chol = as_mlx(base_data$chol, dtype = "float32"),
+      idx_vec = base_data$idx_vec,
+      idx_mat = base_data$idx_mat
+    )
+    force_mlx(mlx_data)
+    list(base = base_data, mlx = mlx_data)
+  }
+
+  get_or_create <- function(n) {
+    cache_path <- if (is.null(cache_dir)) NULL else file.path(cache_dir, sprintf("inputs_%s.rds", n))
+    if (!is.null(cache_path) && file.exists(cache_path)) {
+      base_data <- readRDS(cache_path)
+      return(make_payload(base_data))
+    }
+
+    set.seed(seed + n)
     a <- matrix(rnorm(n * n), n, n)
     b <- matrix(rnorm(n * n), n, n)
     spd <- crossprod(a) + diag(n) * 1e-3
@@ -35,19 +59,14 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L) {
       idx_vec = idx_vec,
       idx_mat = idx_mat
     )
-    mlx_data <- list(
-      a = as_mlx(a, dtype = "float32"),
-      b = as_mlx(b, dtype = "float32"),
-      spd = as_mlx(spd, dtype = "float32"),
-      rhs = as_mlx(rhs, dtype = "float32"),
-      chol = as_mlx(chol_base, dtype = "float32"),
-      idx_vec = idx_vec,
-      idx_mat = idx_mat
-    )
-    force_mlx(mlx_data)
+    result <- make_payload(base_data)
+    if (!is.null(cache_path)) {
+      saveRDS(base_data, cache_path)
+    }
+    result
+  }
 
-    list(base = base_data, mlx = mlx_data)
-  })
+  lapply(sizes, get_or_create)
 }
 
 default_min_time <- 0.25

@@ -1,13 +1,11 @@
 #!/usr/bin/env Rscript
 
-args_full <- commandArgs(FALSE)
-script_dir <- {
-  file_arg <- grep("^--file=", args_full, value = TRUE)
-  if (length(file_arg)) {
-    dirname(sub("^--file=", "", file_arg[1]))
-  } else {
-    getwd()
-  }
+args_full <- commandArgs(trailingOnly = FALSE)
+file_arg <- grep("^--file=", args_full, value = TRUE)
+script_dir <- if (length(file_arg)) {
+  dirname(normalizePath(sub("^--file=", "", file_arg[1])))
+} else {
+  getwd()
 }
 repo_root <- normalizePath(file.path(script_dir, "..", ".."), mustWork = TRUE)
 suppressPackageStartupMessages(
@@ -15,7 +13,8 @@ suppressPackageStartupMessages(
 )
 
 sizes <- c(n500 = 500L, n1000 = 1000L, n2000 = 2000L)
-inputs <- build_benchmark_inputs(sizes)
+cache_dir <- file.path(repo_root, "dev", "benchmarks", "cache")
+inputs <- build_benchmark_inputs(sizes, cache_dir = cache_dir)
 
 ops <- list(
   list(
