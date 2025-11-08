@@ -20,9 +20,6 @@ SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
 
-  lhs = astype(lhs, target_dtype);
-  rhs = astype(rhs, target_dtype);
-
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
 
