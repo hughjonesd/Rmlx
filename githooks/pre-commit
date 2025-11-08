@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+BENCH_SCRIPT="$REPO_ROOT/dev/benchmarks/run_benchmarks_cli.R"
+OUTPUT_FILE="$REPO_ROOT/bench_results.tsv"
+
+if [ ! -x "$BENCH_SCRIPT" ]; then
+  echo "Benchmark script not found at $BENCH_SCRIPT" >&2
+  exit 1
+fi
+
+echo "[pre-commit] Running MLX benchmarks..."
+Rscript "$BENCH_SCRIPT" --output "$OUTPUT_FILE"
+echo "[pre-commit] Benchmark TSV updated at $OUTPUT_FILE"
+echo "  (stage it if you want the results tracked in this commit.)"
