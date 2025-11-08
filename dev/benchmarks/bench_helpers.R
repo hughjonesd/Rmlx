@@ -61,7 +61,7 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
     )
     result <- make_payload(base_data)
     if (!is.null(cache_path)) {
-      saveRDS(base_data, cache_path)
+      saveRDS(base_data, cache_path, compress = "gzip")
     }
     result
   }
