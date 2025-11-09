@@ -190,6 +190,7 @@ reference:
       - mlx_load_safetensors
       - mlx_save_gguf
       - mlx_load_gguf
+      - mlx_import_function
   - title: Neural Network Layers
     contents:
       - mlx_linear
