@@ -17,15 +17,37 @@ An R function. Calling it returns an \code{mlx} array if the imported
 function has a single output, or a list of \code{mlx} arrays otherwise.
 }
 \description{
-Loads a function previously exported with \code{mlx.export_function()} (Python)
-and returns an R callable that accepts MLX-compatible arguments.
+Loads a function previously exported with the MLX Python utilities and
+returns an R callable.
+}
+\details{
+Imported functions behave like regular R closures:
+\itemize{
+\item Positional arguments are passed first and become the positional inputs
+the original MLX function expects.
+\item Named arguments (e.g. \code{bias = ...}) become MLX keyword arguments and must
+match the names that were used when exporting.
+\item Each argument is coerced to \code{mlx} via \code{\link[=as_mlx]{as_mlx()}} and automatically moved to
+the requested device/stream before execution.
+\item If the MLX function yields a single array the result is returned as an
+\code{mlx} object; multiple outputs are returned as a list in the order MLX
+produced them.
+}
+
+Because \code{.mlxfn} files can bundle multiple traces (different shapes or
+keyword combinations), the imported callable keeps a varargs (\code{...})
+signature. MLX selects the appropriate trace at runtime based on the shapes
+and keyword names you provide.
 }
 \examples{
 \
 \dontrun{
-add_fn <- mlx_import_function(system.file("examples", "add.mlxfn", package = "Rmlx"))
-x <- as_mlx(matrix(1:4, 2))
-y <- as_mlx(matrix(5:8, 2))
-add_fn(x, y)
+add_fn <- mlx_import_function(
+  system.file("testthat/fixtures/add_matrix.mlxfn", package = "Rmlx"),
+  device = "cpu"
+)
+x <- as_mlx(matrix(1:4, 2, 2))
+y <- as_mlx(matrix(5:8, 2, 2))
+add_fn(x, bias = y)  # positional + keyword argument
 }
 }
