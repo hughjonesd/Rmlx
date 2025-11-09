@@ -206,6 +206,9 @@ mlx_eye <- function(n,
 #' @param dim Integer vector of array dimensions (product must equal `length(data)`).
 #' @param dtype Optional MLX dtype. Defaults to `"float32"` for numeric input,
 #'   `"bool"` for logical, and `"complex64"` for complex.
+#' @param allow_scalar Logical; set `TRUE` to permit `dim = integer(0)` so
+#'   scalar payloads can be represented. When enabled, `data` must be length 1
+#'   and the resulting array is dimensionless.
 #' @return An `mlx` array with the requested shape.
 #' @export
 #' @examples

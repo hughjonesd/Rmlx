@@ -16,11 +16,9 @@ An mlx array containing the elementwise minimum.
 Elementwise minimum of two mlx arrays
 }
 \examples{
-\dontrun{
 a <- as_mlx(matrix(1:4, 2, 2))
 b <- as_mlx(matrix(c(4, 3, 2, 1), 2, 2))
 mlx_minimum(a, b)
-}
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum}{mlx.core.minimum}

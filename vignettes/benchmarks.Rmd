@@ -22,7 +22,19 @@ This vignette compares base R and MLX timings across core matrix routines.
 library(Rmlx)
 library(bench)
 library(ggplot2)
-source(file.path("dev", "benchmarks", "bench_helpers.R"))
+
+helpers_path <- system.file("benchmarks", "bench_helpers.R", package = "Rmlx")
+if (!nzchar(helpers_path)) {
+  fallbacks <- c(
+    file.path("inst", "benchmarks", "bench_helpers.R"),
+    file.path("dev", "benchmarks", "bench_helpers.R")
+  )
+  helpers_path <- fallbacks[file.exists(fallbacks)][1]
+}
+if (is.na(helpers_path)) {
+  stop("bench_helpers.R not found. Ensure the package is installed or the inst/benchmarks directory is available.")
+}
+source(helpers_path)
 ```
 
 ```{r benchmark}

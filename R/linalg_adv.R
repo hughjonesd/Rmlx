@@ -423,11 +423,7 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' # Extract diagonal
 #' x <- as_mlx(matrix(1:9, 3, 3))
 #' mlx_diagonal(x)
-#' \dontrun{
-#' # Create diagonal matrix (not yet supported for 1D input)
-#' v <- as_mlx(c(1, 2, 3))
-#' mlx_diagonal(v)
-#' }
+#' # (Constructing diagonals from 1D inputs is not yet supported.)
 mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_diagonal(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), x$device)

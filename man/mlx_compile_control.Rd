@@ -30,14 +30,15 @@ You can also disable compilation by setting the \code{MLX_DISABLE_COMPILE}
 environment variable before loading the package.
 }
 \examples{
-\dontrun{
+demo_fn <- mlx_compile(function(x) x + 1)
+x <- mlx_rand_normal(c(4, 4))
+
 # Disable compilation for debugging
 mlx_disable_compile()
-result <- compiled_fn(x)  # Runs without optimization
+demo_fn(x)  # Runs without optimization
 
 # Re-enable compilation
 mlx_enable_compile()
-result <- compiled_fn(x)  # Runs with optimization
-}
+demo_fn(x)  # Runs with optimization
 
 }

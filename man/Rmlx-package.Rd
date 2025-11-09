@@ -29,8 +29,9 @@ executed until:
 }
 
 The package implements most of the C++ API via calls with the \code{mlx_} prefix,
-but it also provides \link[=mlx-specific methods]{mlx-methods} for common R matrix
-operations. R conventions are used: for example, indexing is 1-based.
+but it also ships S3 methods (prefixed \code{mlx_} or attached to base generics)
+so common R matrix operations continue to work on MLX arrays. R conventions
+are used throughout: for example, indexing is 1-based.
 }
 
 \seealso{

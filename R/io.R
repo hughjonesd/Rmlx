@@ -10,11 +10,9 @@
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.save>
 #' @export
 #' @examples
-#' \dontrun{
 #' path <- tempfile(fileext = ".mlx")
 #' mlx_save(as_mlx(matrix(1:4, 2, 2), device = "cpu"), path)
 #' restored <- mlx_load(path, device = "cpu")
-#' }
 mlx_save <- function(x, file) {
   x <- as_mlx(x)
   file <- .ensure_extension(path.expand(.validate_path(file)), ".npy")

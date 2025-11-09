@@ -40,14 +40,11 @@ signature. MLX selects the appropriate trace at runtime based on the shapes
 and keyword names you provide.
 }
 \examples{
-\
-\dontrun{
 add_fn <- mlx_import_function(
-  system.file("testthat/fixtures/add_matrix.mlxfn", package = "Rmlx"),
+  system.file("extdata/add_matrix.mlxfn", package = "Rmlx"),
   device = "cpu"
 )
 x <- as_mlx(matrix(1:4, 2, 2))
 y <- as_mlx(matrix(5:8, 2, 2))
 add_fn(x, bias = y)  # positional + keyword argument
-}
 }

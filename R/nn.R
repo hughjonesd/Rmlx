@@ -887,11 +887,9 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
 #' stored to enable approximate reconstruction of the original values.
 #'
 #' @examples
-#' \dontrun{
-#' w <- mlx_random_normal(c(512, 256))
-#' quant <- mlx_quantize(w, group_size = 64, bits = 4)
+#' w <- mlx_rand_normal(c(64, 32))
+#' quant <- mlx_quantize(w, group_size = 32, bits = 4)
 #' # Use quant$w_q, quant$scales, quant$biases with mlx_quantized_matmul()
-#' }
 #'
 #' @seealso [mlx_dequantize()], [mlx_quantized_matmul()]
 #' @export
@@ -936,11 +934,9 @@ mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
 #' precision is lost during quantization and cannot be recovered.
 #'
 #' @examples
-#' \dontrun{
-#' w <- mlx_random_normal(c(512, 256))
-#' quant <- mlx_quantize(w)
-#' w_reconstructed <- mlx_dequantize(quant$w_q, quant$scales, quant$biases)
-#' }
+#' w <- mlx_rand_normal(c(64, 32))
+#' quant <- mlx_quantize(w, group_size = 32)
+#' w_reconstructed <- mlx_dequantize(quant$w_q, quant$scales, quant$biases, group_size = 32)
 #'
 #' @seealso [mlx_quantize()], [mlx_quantized_matmul()]
 #' @export
@@ -999,16 +995,14 @@ mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L
 #' [mlx_quantize()] and reuse them.
 #'
 #' @examples
-#' \dontrun{
 #' # Automatic quantization (convenient but slower for repeated use)
-#' x <- mlx_random_normal(c(10, 256))
-#' w <- mlx_random_normal(c(512, 256))
-#' result <- mlx_quantized_matmul(x, w)
+#' x <- mlx_rand_normal(c(4, 64))
+#' w <- mlx_rand_normal(c(128, 64))
+#' result <- mlx_quantized_matmul(x, w, group_size = 32)
 #'
 #' # Pre-quantized weights (faster for repeated operations)
-#' quant <- mlx_quantize(w, group_size = 64, bits = 4)
-#' result <- mlx_quantized_matmul(x, quant$w_q, quant$scales, quant$biases)
-#' }
+#' quant <- mlx_quantize(w, group_size = 32, bits = 4)
+#' result <- mlx_quantized_matmul(x, quant$w_q, quant$scales, quant$biases, group_size = 32)
 #'
 #' @seealso [mlx_quantize()], [mlx_dequantize()], [mlx_gather_qmm()]
 #' @export

@@ -18,3 +18,9 @@
 ^dev$
 ^doc$
 ^Meta$
+^TEST_HOOK$
+^githooks$
+^precommit_hook_demo\.txt$
+^bench_.*\.R$
+^bench_results_.*\.txt$
+^profile_.*$

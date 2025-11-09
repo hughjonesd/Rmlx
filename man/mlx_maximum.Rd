@@ -16,9 +16,7 @@ An mlx array containing the elementwise maximum.
 Elementwise maximum of two mlx arrays
 }
 \examples{
-\dontrun{
 mlx_maximum(1:3, c(3, 2, 1))
-}
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum}{mlx.core.maximum}

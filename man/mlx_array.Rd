@@ -4,7 +4,13 @@
 \alias{mlx_array}
 \title{Construct an MLX array from R data}
 \usage{
-mlx_array(data, dim, dtype = NULL, device = mlx_default_device())
+mlx_array(
+  data,
+  dim,
+  dtype = NULL,
+  device = mlx_default_device(),
+  allow_scalar = FALSE
+)
 }
 \arguments{
 \item{data}{Numeric, logical, or complex vector supplying the payload.
@@ -18,6 +24,10 @@ Any dimension attributes are ignored; pass \code{dim} explicitly.}
 \item{device}{Execution target: provide \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
 \code{\link[=mlx_default_device]{mlx_default_device()}}.}
+
+\item{allow_scalar}{Logical; set \code{TRUE} to permit \code{dim = integer(0)} so
+scalar payloads can be represented. When enabled, \code{data} must be length 1
+and the resulting array is dimensionless.}
 }
 \value{
 An \code{mlx} array with the requested shape.

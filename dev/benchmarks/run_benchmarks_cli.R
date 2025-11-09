@@ -8,9 +8,15 @@ script_dir <- if (length(file_arg)) {
   getwd()
 }
 repo_root <- normalizePath(file.path(script_dir, "..", ".."), mustWork = TRUE)
-suppressPackageStartupMessages(
-  source(file.path(repo_root, "dev", "benchmarks", "bench_helpers.R"))
+helpers_candidates <- c(
+  file.path(repo_root, "inst", "benchmarks", "bench_helpers.R"),
+  file.path(repo_root, "dev", "benchmarks", "bench_helpers.R")
 )
+helpers_path <- helpers_candidates[file.exists(helpers_candidates)][1]
+if (is.na(helpers_path)) {
+  stop("Could not locate bench_helpers.R. Ensure inst/benchmarks is available.")
+}
+suppressPackageStartupMessages(source(helpers_path))
 
 sizes <- c(n500 = 500L, n1000 = 1000L, n2000 = 2000L)
 cache_dir <- file.path(repo_root, "dev", "benchmarks", "cache")

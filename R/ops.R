@@ -7,12 +7,10 @@
 #' @export
 #' @method Ops mlx
 #' @examples
-#' \dontrun{
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' y <- as_mlx(matrix(5:8, 2, 2))
 #' x + y
 #' x < y
-#' }
 Ops.mlx <- function(e1, e2 = NULL) {
   op <- .Generic
 
@@ -65,11 +63,9 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' @export
 #' @method %*% mlx
 #' @examples
-#' \dontrun{
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' y <- as_mlx(matrix(1:6, 3, 2))
 #' x %*% y
-#' }
 `%*%.mlx` <- function(x, y) {
   x <- as_mlx(x)
   y <- as_mlx(y)
@@ -107,12 +103,10 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' @seealso [mlx.core.addmm](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.addmm)
 #' @export
 #' @examples
-#' \dontrun{
 #' input <- as_mlx(diag(3))
 #' mat1 <- as_mlx(matrix(rnorm(9), 3, 3))
 #' mat2 <- as_mlx(matrix(rnorm(9), 3, 3))
 #' mlx_addmm(input, mat1, mat2, alpha = 0.5, beta = 2)
-#' }
 mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   input <- as_mlx(input)
   mat1 <- as_mlx(mat1)
@@ -269,11 +263,9 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @seealso [mlx.core.minimum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum)
 #' @export
 #' @examples
-#' \dontrun{
 #' a <- as_mlx(matrix(1:4, 2, 2))
 #' b <- as_mlx(matrix(c(4, 3, 2, 1), 2, 2))
 #' mlx_minimum(a, b)
-#' }
 mlx_minimum <- function(x, y) {
   .mlx_binary_result(x, y, cpp_mlx_minimum)
 }
@@ -285,9 +277,7 @@ mlx_minimum <- function(x, y) {
 #' @seealso [mlx.core.maximum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum)
 #' @export
 #' @examples
-#' \dontrun{
 #' mlx_maximum(1:3, c(3, 2, 1))
-#' }
 mlx_maximum <- function(x, y) {
   .mlx_binary_result(x, y, cpp_mlx_maximum)
 }
@@ -322,10 +312,8 @@ mlx_maximum <- function(x, y) {
 #' @seealso [mlx.core.clip](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.clip)
 #' @export
 #' @examples
-#' \dontrun{
 #' x <- as_mlx(rnorm(4))
 #' mlx_clip(x, min = -1, max = 1)
-#' }
 mlx_clip <- function(x, min = NULL, max = NULL) {
   x <- as_mlx(x)
   if (is.null(min) && is.null(max)) {

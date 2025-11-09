@@ -23,12 +23,10 @@ Computes \code{beta * input + alpha * (mat1 \%*\% mat2)} in a single MLX kernel.
 All operands are promoted to a common dtype/device prior to evaluation.
 }
 \examples{
-\dontrun{
 input <- as_mlx(diag(3))
 mat1 <- as_mlx(matrix(rnorm(9), 3, 3))
 mat2 <- as_mlx(matrix(rnorm(9), 3, 3))
 mlx_addmm(input, mat1, mat2, alpha = 0.5, beta = 2)
-}
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.addmm}{mlx.core.addmm}

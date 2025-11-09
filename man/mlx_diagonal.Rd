@@ -33,11 +33,7 @@ Extract a diagonal from a matrix or construct a diagonal matrix from a vector.
 # Extract diagonal
 x <- as_mlx(matrix(1:9, 3, 3))
 mlx_diagonal(x)
-\dontrun{
-# Create diagonal matrix (not yet supported for 1D input)
-v <- as_mlx(c(1, 2, 3))
-mlx_diagonal(v)
-}
+# (Constructing diagonals from 1D inputs is not yet supported.)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.diagonal.html}{mlx.core.diagonal}

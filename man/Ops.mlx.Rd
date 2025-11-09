@@ -18,12 +18,10 @@ An mlx object
 Arithmetic and comparison operators for MLX arrays
 }
 \examples{
-\dontrun{
 x <- as_mlx(matrix(1:4, 2, 2))
 y <- as_mlx(matrix(5:8, 2, 2))
 x + y
 x < y
-}
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html}{mlx.core.array}

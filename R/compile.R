@@ -92,8 +92,9 @@
 #' result <- fast_fn(x, w, b)  # Compiles during this call
 #'
 #' # Subsequent calls: fast (uses cached graph)
-#' for (i in 1:1000) {
-#'   result <- fast_fn(batch_data[[i]], w, b)  # Very fast!
+#' batches <- replicate(10, mlx_rand_normal(c(32, 128)), simplify = FALSE)
+#' for (bat in batches) {
+#'   result <- fast_fn(bat, w, b)  # Uses cached graph
 #' }
 #'
 #' # Multiple returns
@@ -161,15 +162,16 @@ mlx_compile <- function(f, shapeless = FALSE) {
 #' @return Invisibly returns `NULL`.
 #'
 #' @examples
-#' \dontrun{
+#' demo_fn <- mlx_compile(function(x) x + 1)
+#' x <- mlx_rand_normal(c(4, 4))
+#'
 #' # Disable compilation for debugging
 #' mlx_disable_compile()
-#' result <- compiled_fn(x)  # Runs without optimization
+#' demo_fn(x)  # Runs without optimization
 #'
 #' # Re-enable compilation
 #' mlx_enable_compile()
-#' result <- compiled_fn(x)  # Runs with optimization
-#' }
+#' demo_fn(x)  # Runs with optimization
 #'
 #' @rdname mlx_compile_control
 #' @export

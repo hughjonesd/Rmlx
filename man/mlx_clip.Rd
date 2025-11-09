@@ -18,10 +18,8 @@ An mlx array with values clipped to \verb{[min, max]}.
 Clip mlx array values into a range
 }
 \examples{
-\dontrun{
 x <- as_mlx(rnorm(4))
 mlx_clip(x, min = -1, max = 1)
-}
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.clip}{mlx.core.clip}
