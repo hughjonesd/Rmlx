@@ -97,6 +97,14 @@ cpp_mlx_set_default_device <- function(device_str) {
     invisible(.Call(`_Rmlx_cpp_mlx_set_default_device`, device_str))
 }
 
+cpp_mlx_import_function <- function(path) {
+    .Call(`_Rmlx_cpp_mlx_import_function`, path)
+}
+
+cpp_mlx_call_imported <- function(fn_xp, args_ptrs, kwargs_ptrs, device_str) {
+    .Call(`_Rmlx_cpp_mlx_call_imported`, fn_xp, args_ptrs, kwargs_ptrs, device_str)
+}
+
 cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_where`, cond_xp_, xp_true_, xp_false_, dtype_str, device_str)
 }

@@ -6,6 +6,7 @@
 #include <mlx/mlx.h>
 #include <string>
 #include <memory>
+#include <mlx/export.h>
 
 namespace rmlx {
 
@@ -52,18 +53,34 @@ public:
   const mlx::core::Stream& get() const { return stream_; }
 };
 
+class MlxImportedFunctionWrapper {
+private:
+  mlx::core::ImportedFunction function_;
+
+public:
+  explicit MlxImportedFunctionWrapper(mlx::core::ImportedFunction function)
+      : function_(std::move(function)) {}
+  ~MlxImportedFunctionWrapper() = default;
+
+  const mlx::core::ImportedFunction& get() const { return function_; }
+};
+
 // Finalizer for R external pointers
 void mlx_array_finalizer(SEXP xp);
 void mlx_stream_finalizer(SEXP xp);
+void mlx_imported_function_finalizer(SEXP xp);
 
 // Helper to unwrap external pointer to MlxArrayWrapper
 MlxArrayWrapper* get_mlx_wrapper(SEXP xp);
 mlx::core::Stream get_mlx_stream(SEXP xp);
+class MlxImportedFunctionWrapper;
+MlxImportedFunctionWrapper* get_mlx_imported_function(SEXP xp);
 
 // Helper to wrap MLX array in external pointer
 SEXP make_mlx_xptr(const mlx::core::array& arr);
 SEXP make_mlx_xptr(mlx::core::array&& arr);
 SEXP make_mlx_stream_xptr(mlx::core::Stream stream);
+SEXP make_mlx_imported_function_xptr(mlx::core::ImportedFunction function);
 
 // Helper: convert dtype string to MLX dtype
 mlx::core::Dtype string_to_dtype(const std::string& dtype);

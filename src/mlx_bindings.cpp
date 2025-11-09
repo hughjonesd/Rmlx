@@ -51,6 +51,16 @@ void mlx_stream_finalizer(SEXP xp) {
   }
 }
 
+void mlx_imported_function_finalizer(SEXP xp) {
+  if (TYPEOF(xp) == EXTPTRSXP) {
+    auto* wrapper = static_cast<MlxImportedFunctionWrapper*>(R_ExternalPtrAddr(xp));
+    if (wrapper != nullptr) {
+      delete wrapper;
+      R_ClearExternalPtr(xp);
+    }
+  }
+}
+
 // Get MlxArrayWrapper from external pointer
 MlxArrayWrapper* get_mlx_wrapper(SEXP xp) {
   if (TYPEOF(xp) != EXTPTRSXP) {
@@ -79,6 +89,17 @@ Stream get_mlx_stream(SEXP xp) {
   return wrapper->get();
 }
 
+MlxImportedFunctionWrapper* get_mlx_imported_function(SEXP xp) {
+  if (TYPEOF(xp) != EXTPTRSXP) {
+    Rcpp::stop("Expected external pointer");
+  }
+  auto* wrapper = static_cast<MlxImportedFunctionWrapper*>(R_ExternalPtrAddr(xp));
+  if (wrapper == nullptr) {
+    Rcpp::stop("Invalid MLX imported function pointer");
+  }
+  return wrapper;
+}
+
 // Wrap MLX array in external pointer
 SEXP make_mlx_xptr(const array& arr) {
   MlxArrayWrapper* wrapper = new MlxArrayWrapper(arr);
@@ -98,6 +119,13 @@ SEXP make_mlx_stream_xptr(Stream stream) {
   auto* wrapper = new MlxStreamWrapper(stream);
   SEXP xp = R_MakeExternalPtr(wrapper, stream_tag(), R_NilValue);
   R_RegisterCFinalizerEx(xp, mlx_stream_finalizer, TRUE);
+  return xp;
+}
+
+SEXP make_mlx_imported_function_xptr(ImportedFunction function) {
+  auto* wrapper = new MlxImportedFunctionWrapper(std::move(function));
+  SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, R_NilValue);
+  R_RegisterCFinalizerEx(xp, mlx_imported_function_finalizer, TRUE);
   return xp;
 }
 

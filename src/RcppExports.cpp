@@ -306,6 +306,31 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// cpp_mlx_import_function
+SEXP cpp_mlx_import_function(const std::string& path);
+RcppExport SEXP _Rmlx_cpp_mlx_import_function(SEXP pathSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::string& >::type path(pathSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_import_function(path));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_call_imported
+SEXP cpp_mlx_call_imported(SEXP fn_xp, List args_ptrs, List kwargs_ptrs, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_call_imported(SEXP fn_xpSEXP, SEXP args_ptrsSEXP, SEXP kwargs_ptrsSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type fn_xp(fn_xpSEXP);
+    Rcpp::traits::input_parameter< List >::type args_ptrs(args_ptrsSEXP);
+    Rcpp::traits::input_parameter< List >::type kwargs_ptrs(kwargs_ptrsSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_call_imported(fn_xp, args_ptrs, kwargs_ptrs, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_where
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_where(SEXP cond_xp_SEXP, SEXP xp_true_SEXP, SEXP xp_false_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1944,6 +1969,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_enable_compile", (DL_FUNC) &_Rmlx_cpp_mlx_enable_compile, 0},
     {"_Rmlx_cpp_mlx_default_device", (DL_FUNC) &_Rmlx_cpp_mlx_default_device, 0},
     {"_Rmlx_cpp_mlx_set_default_device", (DL_FUNC) &_Rmlx_cpp_mlx_set_default_device, 1},
+    {"_Rmlx_cpp_mlx_import_function", (DL_FUNC) &_Rmlx_cpp_mlx_import_function, 1},
+    {"_Rmlx_cpp_mlx_call_imported", (DL_FUNC) &_Rmlx_cpp_mlx_call_imported, 4},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_slice", (DL_FUNC) &_Rmlx_cpp_mlx_slice, 4},
