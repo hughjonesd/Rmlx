@@ -79,102 +79,102 @@ ggplot(
 ``` r
 bench_results
 #>                operation size implementation median_seconds  itr_per_sec
-#> 1        Matrix multiply  500         base R   0.0050193840 1.742726e+02
-#> 2        Matrix multiply  500            mlx   0.0023854620 3.846013e+02
-#> 3        Matrix multiply 1000         base R   0.0349343370 2.830907e+01
-#> 4        Matrix multiply 1000            mlx   0.0063950160 1.459129e+02
-#> 5        Matrix multiply 2000         base R   0.2927612380 3.610433e+00
-#> 6        Matrix multiply 2000            mlx   0.0240113425 3.863392e+01
-#> 7        Matrix addition  500         base R   0.0005588710 3.638532e+02
-#> 8        Matrix addition  500            mlx   0.0017171415 4.685872e+02
-#> 9        Matrix addition 1000         base R   0.0029643000 1.932511e+02
-#> 10       Matrix addition 1000            mlx   0.0044482540 2.103953e+02
-#> 11       Matrix addition 2000         base R   0.0069194265 1.093501e+02
-#> 12       Matrix addition 2000            mlx   0.0115670840 7.455226e+01
-#> 13  Subset rows (vector)  500         base R   0.0005361570 8.668606e+02
-#> 14  Subset rows (vector)  500            mlx   0.0019079350 4.646896e+02
-#> 15  Subset rows (vector) 1000         base R   0.0018945485 4.137142e+02
-#> 16  Subset rows (vector) 1000            mlx   0.0016058060 4.260506e+02
-#> 17  Subset rows (vector) 2000         base R   0.0108336965 8.696214e+01
-#> 18  Subset rows (vector) 2000            mlx   0.0079647010 8.923212e+01
-#> 19 Subset (matrix index)  500         base R   0.0000058630 8.228705e+04
-#> 20 Subset (matrix index)  500            mlx   0.0017674690 5.437482e+02
-#> 21 Subset (matrix index) 1000         base R   0.0000105370 4.786412e+04
-#> 22 Subset (matrix index) 1000            mlx   0.0032195250 2.878275e+02
-#> 23 Subset (matrix index) 2000         base R   0.0000189830 3.973586e+04
-#> 24 Subset (matrix index) 2000            mlx   0.0050784445 1.396728e+02
-#> 25                   Sum  500         base R   0.0002524370 3.794500e+03
-#> 26                   Sum  500            mlx   0.0009230945 9.493091e+02
-#> 27                   Sum 1000         base R   0.0010172510 9.831240e+02
-#> 28                   Sum 1000            mlx   0.0008582940 1.047312e+03
-#> 29                   Sum 2000         base R   0.0041417585 2.066437e+02
-#> 30                   Sum 2000            mlx   0.0007783030 1.266304e+03
-#> 31                  Mean  500         base R   0.0004681380 2.074708e+03
-#> 32                  Mean  500            mlx   0.0004456700 2.108055e+03
-#> 33                  Mean 1000         base R   0.0019398330 5.105870e+02
-#> 34                  Mean 1000            mlx   0.0006018800 1.414074e+03
-#> 35                  Mean 2000         base R   0.0075115690 1.314297e+02
-#> 36                  Mean 2000            mlx   0.0007894550 1.240865e+03
-#> 37              Row sums  500         base R   0.0000465760 1.772464e+04
-#> 38              Row sums  500            mlx   0.0006047910 1.542552e+03
-#> 39              Row sums 1000         base R   0.0001852790 5.284556e+03
-#> 40              Row sums 1000            mlx   0.0005605520 1.720991e+03
-#> 41              Row sums 2000         base R   0.0007950720 1.171308e+03
-#> 42              Row sums 2000            mlx   0.0010007690 9.225728e+02
-#> 43             Row means  500         base R   0.0000466170 1.952324e+04
-#> 44             Row means  500            mlx   0.0005866690 1.659640e+03
-#> 45             Row means 1000         base R   0.0001829830 5.333633e+03
-#> 46             Row means 1000            mlx   0.0005593220 1.769197e+03
-#> 47             Row means 2000         base R   0.0007678070 1.288549e+03
-#> 48             Row means 2000            mlx   0.0009747750 9.709249e+02
-#> 49            tcrossprod  500         base R   0.0025003850 3.528191e+02
-#> 50            tcrossprod  500            mlx   0.0017764480 5.576358e+02
-#> 51            tcrossprod 1000         base R   0.0180093115 5.599148e+01
-#> 52            tcrossprod 1000            mlx   0.0036438545 2.579169e+02
-#> 53            tcrossprod 2000         base R   0.1000121200 1.012811e+01
-#> 54            tcrossprod 2000            mlx   0.0185162970 5.404302e+01
-#> 55               scale()  500         base R   0.0063189200 1.302327e+02
-#> 56               scale()  500            mlx   0.0022041190 3.910823e+02
-#> 57               scale() 1000         base R   0.0525354730 1.768157e+01
-#> 58               scale() 1000            mlx   0.0056885860 1.708040e+02
-#> 59               scale() 2000         base R   0.1482356640 7.081711e+00
-#> 60               scale() 2000            mlx   0.0115465635 6.930481e+01
-#> 61          Solve Ax = b  500         base R   0.0048934320 1.675599e+02
-#> 62          Solve Ax = b  500            mlx   0.0061884580 1.412916e+02
-#> 63          Solve Ax = b 1000         base R   0.0174851880 4.719789e+01
-#> 64          Solve Ax = b 1000            mlx   0.0259267395 3.830638e+01
-#> 65          Solve Ax = b 2000         base R   0.1158095020 8.399765e+00
-#> 66          Solve Ax = b 2000            mlx   0.2272330290 4.436153e+00
-#> 67             Backsolve  500         base R   0.0000437880 2.183377e+04
-#> 68             Backsolve  500            mlx   0.0011923210 7.642856e+02
-#> 69             Backsolve 1000         base R   0.0001989730 4.806241e+03
-#> 70             Backsolve 1000            mlx   0.0106372655 9.337964e+01
-#> 71             Backsolve 2000         base R   0.0012561990 8.519892e+02
-#> 72             Backsolve 2000            mlx   0.0813118970 1.184090e+01
-#> 73              Cholesky  500         base R   0.0023989100 3.553342e+02
-#> 74              Cholesky  500            mlx   0.0012289955 8.257075e+02
-#> 75              Cholesky 1000         base R   0.0095132915 1.013678e+02
-#> 76              Cholesky 1000            mlx   0.0026129300 3.055058e+02
-#> 77              Cholesky 2000         base R   0.0633836630 1.487158e+01
-#> 78              Cholesky 2000            mlx   0.0197353090 4.696218e+01
-#> 79              chol2inv  500         base R   0.0030582720 3.088156e+02
-#> 80              chol2inv  500            mlx   0.0018265910 5.336827e+02
-#> 81              chol2inv 1000         base R   0.0204288650 4.755962e+01
-#> 82              chol2inv 1000            mlx   0.0124003680 8.020957e+01
-#> 83              chol2inv 2000         base R   0.1735785020 5.837254e+00
-#> 84              chol2inv 2000            mlx   0.1028988890 9.631307e+00
-#> 85     SVD (values only)  500         base R   0.0254169250 3.887208e+01
-#> 86     SVD (values only)  500            mlx   0.0167963880 5.927340e+01
-#> 87     SVD (values only) 1000         base R   0.2396846265 4.172149e+00
-#> 88     SVD (values only) 1000            mlx   0.1179425270 8.229783e+00
-#> 89     SVD (values only) 2000         base R   1.6843731110 5.936927e-01
-#> 90     SVD (values only) 2000            mlx   0.7042644210 1.419921e+00
-#> 91              Diagonal  500         base R   0.0000104140 4.238395e+04
-#> 92              Diagonal  500            mlx   0.0000597780 1.493437e+04
-#> 93              Diagonal 1000         base R   0.0000102500 5.553831e+04
-#> 94              Diagonal 1000            mlx   0.0000701920 1.295298e+04
-#> 95              Diagonal 2000         base R   0.0000161540 3.855850e+04
-#> 96              Diagonal 2000            mlx   0.0000990970 9.207110e+03
+#> 1        Matrix multiply  500         base R   0.0024753340 2.619792e+02
+#> 2        Matrix multiply  500            mlx   0.0011954370 6.247334e+02
+#> 3        Matrix multiply 1000         base R   0.0190236720 4.395051e+01
+#> 4        Matrix multiply 1000            mlx   0.0046640985 1.679161e+02
+#> 5        Matrix multiply 2000         base R   0.1461716420 6.585680e+00
+#> 6        Matrix multiply 2000            mlx   0.0177136195 4.317815e+01
+#> 7        Matrix addition  500         base R   0.0002410800 1.163390e+03
+#> 8        Matrix addition  500            mlx   0.0006984350 1.166048e+03
+#> 9        Matrix addition 1000         base R   0.0011685820 4.514375e+02
+#> 10       Matrix addition 1000            mlx   0.0018526260 4.163320e+02
+#> 11       Matrix addition 2000         base R   0.0030980215 2.468754e+02
+#> 12       Matrix addition 2000            mlx   0.0084501615 1.177255e+02
+#> 13  Subset rows (vector)  500         base R   0.0003724645 1.455555e+03
+#> 14  Subset rows (vector)  500            mlx   0.0007106940 1.319652e+03
+#> 15  Subset rows (vector) 1000         base R   0.0014299980 5.461792e+02
+#> 16  Subset rows (vector) 1000            mlx   0.0015627970 6.208401e+02
+#> 17  Subset rows (vector) 2000         base R   0.0064935185 1.336738e+02
+#> 18  Subset rows (vector) 2000            mlx   0.0044347445 1.980558e+02
+#> 19 Subset (matrix index)  500         base R   0.0000063550 1.305289e+05
+#> 20 Subset (matrix index)  500            mlx   0.0008210660 1.108016e+03
+#> 21 Subset (matrix index) 1000         base R   0.0000092660 8.186951e+04
+#> 22 Subset (matrix index) 1000            mlx   0.0010499895 9.337375e+02
+#> 23 Subset (matrix index) 2000         base R   0.0000173020 5.146663e+04
+#> 24 Subset (matrix index) 2000            mlx   0.0031220270 2.404876e+02
+#> 25                   Sum  500         base R   0.0002313220 4.210233e+03
+#> 26                   Sum  500            mlx   0.0004579495 2.116990e+03
+#> 27                   Sum 1000         base R   0.0009290190 1.062690e+03
+#> 28                   Sum 1000            mlx   0.0005387810 1.765635e+03
+#> 29                   Sum 2000         base R   0.0040279425 2.479852e+02
+#> 30                   Sum 2000            mlx   0.0008035180 1.229896e+03
+#> 31                  Mean  500         base R   0.0004882895 2.004472e+03
+#> 32                  Mean  500            mlx   0.0004866700 2.022726e+03
+#> 33                  Mean 1000         base R   0.0019941170 4.940310e+02
+#> 34                  Mean 1000            mlx   0.0005352960 1.839222e+03
+#> 35                  Mean 2000         base R   0.0078746855 1.257134e+02
+#> 36                  Mean 2000            mlx   0.0007993770 1.231332e+03
+#> 37              Row sums  500         base R   0.0000453460 2.072120e+04
+#> 38              Row sums  500            mlx   0.0004914465 2.007851e+03
+#> 39              Row sums 1000         base R   0.0001723640 5.457683e+03
+#> 40              Row sums 1000            mlx   0.0005407900 1.821476e+03
+#> 41              Row sums 2000         base R   0.0007112885 1.310104e+03
+#> 42              Row sums 2000            mlx   0.0007921610 1.233006e+03
+#> 43             Row means  500         base R   0.0000460430 2.060420e+04
+#> 44             Row means  500            mlx   0.0004891915 2.022602e+03
+#> 45             Row means 1000         base R   0.0001755210 5.597488e+03
+#> 46             Row means 1000            mlx   0.0005519420 1.786078e+03
+#> 47             Row means 2000         base R   0.0006953600 1.424234e+03
+#> 48             Row means 2000            mlx   0.0008190365 1.199570e+03
+#> 49            tcrossprod  500         base R   0.0014920925 5.413073e+02
+#> 50            tcrossprod  500            mlx   0.0009262720 8.815322e+02
+#> 51            tcrossprod 1000         base R   0.0105721780 8.289675e+01
+#> 52            tcrossprod 1000            mlx   0.0030424460 3.226751e+02
+#> 53            tcrossprod 2000         base R   0.0725093815 1.366682e+01
+#> 54            tcrossprod 2000            mlx   0.0121604975 7.875306e+01
+#> 55               scale()  500         base R   0.0060329040 1.204775e+02
+#> 56               scale()  500            mlx   0.0013830940 7.713564e+02
+#> 57               scale() 1000         base R   0.0273437200 2.532245e+01
+#> 58               scale() 1000            mlx   0.0028047485 3.236396e+02
+#> 59               scale() 2000         base R   0.1832500740 5.273578e+00
+#> 60               scale() 2000            mlx   0.0207369800 4.777054e+01
+#> 61          Solve Ax = b  500         base R   0.0027026380 3.625851e+02
+#> 62          Solve Ax = b  500            mlx   0.0042304005 2.442463e+02
+#> 63          Solve Ax = b 1000         base R   0.0130645270 5.596831e+01
+#> 64          Solve Ax = b 1000            mlx   0.0243911665 3.975141e+01
+#> 65          Solve Ax = b 2000         base R   0.0701741650 1.401404e+01
+#> 66          Solve Ax = b 2000            mlx   0.1777443890 5.322684e+00
+#> 67             Backsolve  500         base R   0.0000477650 2.094512e+04
+#> 68             Backsolve  500            mlx   0.0013753040 7.348256e+02
+#> 69             Backsolve 1000         base R   0.0001507570 6.461902e+03
+#> 70             Backsolve 1000            mlx   0.0091550950 1.074366e+02
+#> 71             Backsolve 2000         base R   0.0009305360 1.048274e+03
+#> 72             Backsolve 2000            mlx   0.0703910345 1.410861e+01
+#> 73              Cholesky  500         base R   0.0014434665 6.445818e+02
+#> 74              Cholesky  500            mlx   0.0007095050 1.258827e+03
+#> 75              Cholesky 1000         base R   0.0081364090 1.066146e+02
+#> 76              Cholesky 1000            mlx   0.0043486650 2.272458e+02
+#> 77              Cholesky 2000         base R   0.0678114170 1.492333e+01
+#> 78              Cholesky 2000            mlx   0.0212427970 4.272313e+01
+#> 79              chol2inv  500         base R   0.0031944740 3.055230e+02
+#> 80              chol2inv  500            mlx   0.0020928860 4.734437e+02
+#> 81              chol2inv 1000         base R   0.0229165400 4.246879e+01
+#> 82              chol2inv 1000            mlx   0.0150880000 6.637836e+01
+#> 83              chol2inv 2000         base R   0.1685920000 5.853495e+00
+#> 84              chol2inv 2000            mlx   0.1129528680 8.734245e+00
+#> 85     SVD (values only)  500         base R   0.0324149075 3.088924e+01
+#> 86     SVD (values only)  500            mlx   0.0195502350 4.937810e+01
+#> 87     SVD (values only) 1000         base R   0.1661634060 6.018172e+00
+#> 88     SVD (values only) 1000            mlx   0.0960484860 1.058381e+01
+#> 89     SVD (values only) 2000         base R   1.3880643480 7.204277e-01
+#> 90     SVD (values only) 2000            mlx   0.6391082870 1.564680e+00
+#> 91              Diagonal  500         base R   0.0000066420 7.217236e+04
+#> 92              Diagonal  500            mlx   0.0000523160 1.507311e+04
+#> 93              Diagonal 1000         base R   0.0000111930 5.304630e+04
+#> 94              Diagonal 1000            mlx   0.0000651900 1.495894e+04
+#> 95              Diagonal 2000         base R   0.0000166050 3.527051e+04
+#> 96              Diagonal 2000            mlx   0.0000839680 1.143221e+04
 #>    mem_alloc_bytes
 #> 1          2000048
 #> 2            63968
