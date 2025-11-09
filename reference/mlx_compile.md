@@ -132,10 +132,10 @@ b <- mlx_rand_normal(c(256))
 result <- fast_fn(x, w, b)  # Compiles during this call
 
 # Subsequent calls: fast (uses cached graph)
-for (i in 1:1000) {
-  result <- fast_fn(batch_data[[i]], w, b)  # Very fast!
+batches <- replicate(10, mlx_rand_normal(c(32, 128)), simplify = FALSE)
+for (bat in batches) {
+  result <- fast_fn(bat, w, b)  # Uses cached graph
 }
-#> Error: object 'batch_data' not found
 
 # Multiple returns
 forward_and_norm <- function(x, w) {

@@ -30,10 +30,22 @@ An mlx object
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 x <- as_mlx(matrix(1:4, 2, 2))
 y <- as_mlx(matrix(5:8, 2, 2))
 x + y
+#> mlx array [2 x 2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2]
+#> [1,]    6   10
+#> [2,]    8   12
 x < y
-} # }
+#> mlx array [2 x 2]
+#>   dtype: bool
+#>   device: gpu
+#>   values:
+#>      [,1] [,2]
+#> [1,] TRUE TRUE
+#> [2,] TRUE TRUE
 ```

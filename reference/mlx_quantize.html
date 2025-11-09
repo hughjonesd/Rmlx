@@ -110,11 +110,9 @@ stored to enable approximate reconstruction of the original values.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu">mlx_random_normal</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">512</span>, <span class="fl">256</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">quant</span> <span class="op">&lt;-</span> <span class="fu">mlx_quantize</span><span class="op">(</span><span class="va">w</span>, group_size <span class="op">=</span> <span class="fl">64</span>, bits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="mlx_rand_normal.html">mlx_rand_normal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">64</span>, <span class="fl">32</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">quant</span> <span class="op">&lt;-</span> <span class="fu">mlx_quantize</span><span class="op">(</span><span class="va">w</span>, group_size <span class="op">=</span> <span class="fl">32</span>, bits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Use quant$w_q, quant$scales, quant$biases with mlx_quantized_matmul()</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

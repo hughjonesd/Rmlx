@@ -59,9 +59,5 @@ mlx_diagonal(x)
 #>   device: gpu
 #>   values:
 #> [1] 1 5 9
-if (FALSE) { # \dontrun{
-# Create diagonal matrix (not yet supported for 1D input)
-v <- as_mlx(c(1, 2, 3))
-mlx_diagonal(v)
-} # }
+# (Constructing diagonals from 1D inputs is not yet supported.)
 ```

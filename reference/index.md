@@ -342,6 +342,8 @@
   : Save MLX arrays to the GGUF format
 - [`mlx_load_gguf()`](https://hughjonesd.github.io/Rmlx/reference/mlx_load_gguf.md)
   : Load MLX tensors from the GGUF format
+- [`mlx_import_function()`](https://hughjonesd.github.io/Rmlx/reference/mlx_import_function.md)
+  : Import an exported MLX function
 
 ## Neural Network Layers
 

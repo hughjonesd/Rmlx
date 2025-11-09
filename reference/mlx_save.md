@@ -31,9 +31,7 @@ suffix.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 path <- tempfile(fileext = ".mlx")
 mlx_save(as_mlx(matrix(1:4, 2, 2), device = "cpu"), path)
 restored <- mlx_load(path, device = "cpu")
-} # }
 ```

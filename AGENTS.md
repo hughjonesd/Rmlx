@@ -109,6 +109,13 @@
 - GitHub Actions builds pkgdown for production; local
   [`pkgdown::build_reference()`](https://pkgdown.r-lib.org/reference/build_reference.html)
   runs are only for smoke testing (no need to commit rendered HTML).
+- Benchmarks: reuse helpers in `inst/benchmarks/bench_helpers.R` (the
+  dev CLI sources this file). Run
+  `Rscript dev/benchmarks/run_benchmarks_cli.R > dev/benchmarks/bench_results.tsv`
+  (the pre-commit hook under `githooks/` does the same, prints the
+  table, and stages the TSV once you
+  `git config core.hooksPath githooks`). Diff that TSV across commits to
+  track perf trends.
 
 ### Handy Tips
 

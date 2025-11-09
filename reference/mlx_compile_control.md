@@ -31,13 +31,32 @@ environment variable before loading the package.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+demo_fn <- mlx_compile(function(x) x + 1)
+x <- mlx_rand_normal(c(4, 4))
+
 # Disable compilation for debugging
 mlx_disable_compile()
-result <- compiled_fn(x)  # Runs without optimization
+demo_fn(x)  # Runs without optimization
+#> mlx array [4 x 4]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>             [,1]      [,2]       [,3]      [,4]
+#> [1,]  0.51623178 1.8188224  0.9151021 3.3284950
+#> [2,] -0.08738339 1.5947782  0.5444540 1.4675422
+#> [3,]  0.15351206 0.9349688  0.8956350 0.2279654
+#> [4,]  0.52433914 1.5378816 -0.5787476 1.4603232
 
 # Re-enable compilation
 mlx_enable_compile()
-result <- compiled_fn(x)  # Runs with optimization
-} # }
+demo_fn(x)  # Runs with optimization
+#> mlx array [4 x 4]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>             [,1]      [,2]       [,3]      [,4]
+#> [1,]  0.51623178 1.8188224  0.9151021 3.3284950
+#> [2,] -0.08738339 1.5947782  0.5444540 1.4675422
+#> [3,]  0.15351206 0.9349688  0.8956350 0.2279654
+#> [4,]  0.52433914 1.5378816 -0.5787476 1.4603232
 ```

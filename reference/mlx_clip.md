@@ -30,8 +30,11 @@ An mlx array with values clipped to `[min, max]`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 x <- as_mlx(rnorm(4))
 mlx_clip(x, min = -1, max = 1)
-} # }
+#> mlx array [4]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] -0.1557955 -1.0000000 -0.4781501  0.4179416
 ```

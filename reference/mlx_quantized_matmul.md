@@ -103,14 +103,12 @@ and reuse them.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 # Automatic quantization (convenient but slower for repeated use)
-x <- mlx_random_normal(c(10, 256))
-w <- mlx_random_normal(c(512, 256))
-result <- mlx_quantized_matmul(x, w)
+x <- mlx_rand_normal(c(4, 64))
+w <- mlx_rand_normal(c(128, 64))
+result <- mlx_quantized_matmul(x, w, group_size = 32)
 
 # Pre-quantized weights (faster for repeated operations)
-quant <- mlx_quantize(w, group_size = 64, bits = 4)
-result <- mlx_quantized_matmul(x, quant$w_q, quant$scales, quant$biases)
-} # }
+quant <- mlx_quantize(w, group_size = 32, bits = 4)
+result <- mlx_quantized_matmul(x, quant$w_q, quant$scales, quant$biases, group_size = 32)
 ```

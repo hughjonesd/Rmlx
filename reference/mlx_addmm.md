@@ -39,10 +39,16 @@ An `mlx` matrix with the same shape as `input`.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 input <- as_mlx(diag(3))
 mat1 <- as_mlx(matrix(rnorm(9), 3, 3))
 mat2 <- as_mlx(matrix(rnorm(9), 3, 3))
 mlx_addmm(input, mat1, mat2, alpha = 0.5, beta = 2)
-} # }
+#> mlx array [3 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>            [,1]      [,2]       [,3]
+#> [1,]  1.2454726 1.0555043 -0.6680055
+#> [2,]  0.2695507 1.7581121 -0.2717301
+#> [3,] -0.6731524 0.7715072  1.5802329
 ```

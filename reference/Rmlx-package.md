@@ -30,8 +30,10 @@ not executed until:
 - The result is needed for another computation
 
 The package implements most of the C++ API via calls with the `mlx_`
-prefix, but it also provides mlx-methods for common R matrix operations.
-R conventions are used: for example, indexing is 1-based.
+prefix, but it also ships S3 methods (prefixed `mlx_` or attached to
+base generics) so common R matrix operations continue to work on MLX
+arrays. R conventions are used throughout: for example, indexing is
+1-based.
 
 ## See also
 

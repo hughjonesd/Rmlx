@@ -75,9 +75,7 @@ the original values.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-w <- mlx_random_normal(c(512, 256))
-quant <- mlx_quantize(w, group_size = 64, bits = 4)
+w <- mlx_rand_normal(c(64, 32))
+quant <- mlx_quantize(w, group_size = 32, bits = 4)
 # Use quant$w_q, quant$scales, quant$biases with mlx_quantized_matmul()
-} # }
 ```

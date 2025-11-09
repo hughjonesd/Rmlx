@@ -8,7 +8,13 @@ plus an explicit shape and it pipes the data straight into MLX.
 ## Usage
 
 ``` r
-mlx_array(data, dim, dtype = NULL, device = mlx_default_device())
+mlx_array(
+  data,
+  dim,
+  dtype = NULL,
+  device = mlx_default_device(),
+  allow_scalar = FALSE
+)
 ```
 
 ## Arguments
@@ -36,6 +42,12 @@ mlx_array(data, dim, dtype = NULL, device = mlx_default_device())
   Defaults to the current
   [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md).
 
+- allow_scalar:
+
+  Logical; set `TRUE` to permit `dim = integer(0)` so scalar payloads
+  can be represented. When enabled, `data` must be length 1 and the
+  resulting array is dimensionless.
+
 ## Value
 
 An `mlx` array with the requested shape.
@@ -46,7 +58,7 @@ An `mlx` array with the requested shape.
 payload <- runif(6)
 arr <- mlx_array(payload, dim = c(2, 3))
 as.matrix(arr)
-#>           [,1]      [,2]       [,3]
-#> [1,] 0.4936370 0.2041783 0.06521611
-#> [2,] 0.7793086 0.7133973 0.35420680
+#>           [,1]      [,2]      [,3]
+#> [1,] 0.9970691 0.5185567 0.7182697
+#> [2,] 0.1490355 0.8461201 0.2413140
 ```

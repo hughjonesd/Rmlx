@@ -113,6 +113,7 @@
 <li>Add <code>@seealso</code> links to relevant MLX online docs for new exports.</li>
 <li>When adding features, update the pkgdown reference index.</li>
 <li>GitHub Actions builds pkgdown for production; local <code><a href="https://pkgdown.r-lib.org/reference/build_reference.html" class="external-link">pkgdown::build_reference()</a></code> runs are only for smoke testing (no need to commit rendered HTML).</li>
+<li>Benchmarks: reuse helpers in <code>inst/benchmarks/bench_helpers.R</code> (the dev CLI sources this file). Run <code>Rscript dev/benchmarks/run_benchmarks_cli.R &gt; dev/benchmarks/bench_results.tsv</code> (the pre-commit hook under <code>githooks/</code> does the same, prints the table, and stages the TSV once you <code>git config core.hooksPath githooks</code>). Diff that TSV across commits to track perf trends.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="handy-tips">Handy Tips<a class="anchor" aria-label="anchor" href="#handy-tips"></a></h3>

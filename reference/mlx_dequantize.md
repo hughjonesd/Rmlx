@@ -72,9 +72,7 @@ be recovered.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-w <- mlx_random_normal(c(512, 256))
-quant <- mlx_quantize(w)
-w_reconstructed <- mlx_dequantize(quant$w_q, quant$scales, quant$biases)
-} # }
+w <- mlx_rand_normal(c(64, 32))
+quant <- mlx_quantize(w, group_size = 32)
+w_reconstructed <- mlx_dequantize(quant$w_q, quant$scales, quant$biases, group_size = 32)
 ```
