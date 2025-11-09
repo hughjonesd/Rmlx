@@ -270,6 +270,7 @@ mlx_array <- function(data,
 #'
 #' `mlx_matrix()` wraps [mlx_array()] for the common 2-D case. It accepts the same
 #' style arguments as [base::matrix()] but without recycling, so mistakes surface early.
+#' Omit `nrow` or `ncol` to infer the missing dimension from `length(data)`.
 #'
 #' @inheritParams mlx_array
 #' @param nrow,ncol Matrix dimensions (positive integers).
@@ -280,29 +281,61 @@ mlx_array <- function(data,
 #' mx <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
 #' as.matrix(mx)
 mlx_matrix <- function(data,
-                       nrow,
-                       ncol,
+                       nrow = NULL,
+                       ncol = NULL,
                        byrow = FALSE,
                        dtype = NULL,
                        device = mlx_default_device()) {
-  nrow <- as.integer(nrow)
-  ncol <- as.integer(ncol)
-
-  if (length(nrow) != 1L || is.na(nrow) || nrow <= 0) {
-    stop("nrow must be a positive integer.", call. = FALSE)
-  }
-  if (length(ncol) != 1L || is.na(ncol) || ncol <= 0) {
-    stop("ncol must be a positive integer.", call. = FALSE)
-  }
-
-  total <- nrow * ncol
   data_vec <- as.vector(data)
-  if (length(data_vec) != total) {
-    stop(
-      "length(data) (", length(data_vec),
-      ") must equal nrow * ncol (", total, ").",
-      call. = FALSE
-    )
+  total <- length(data_vec)
+
+  missing_nrow <- missing(nrow) || is.null(nrow)
+  missing_ncol <- missing(ncol) || is.null(ncol)
+
+  as_pos_int <- function(value, name) {
+    value <- as.integer(value)
+    if (length(value) != 1L || is.na(value) || value <= 0) {
+      stop(name, " must be a positive integer.", call. = FALSE)
+    }
+    value
+  }
+
+  if (missing_nrow && missing_ncol) {
+    if (total == 0L) {
+      stop("Provide nrow or ncol when data is empty.", call. = FALSE)
+    }
+    nrow <- total
+    ncol <- 1L
+  } else if (missing_nrow) {
+    ncol <- as_pos_int(ncol, "ncol")
+    if (total %% ncol != 0) {
+      stop(
+        "length(data) (", total,
+        ") must be divisible by ncol (", ncol, ").",
+        call. = FALSE
+      )
+    }
+    nrow <- total %/% ncol
+  } else if (missing_ncol) {
+    nrow <- as_pos_int(nrow, "nrow")
+    if (total %% nrow != 0) {
+      stop(
+        "length(data) (", total,
+        ") must be divisible by nrow (", nrow, ").",
+        call. = FALSE
+      )
+    }
+    ncol <- total %/% nrow
+  } else {
+    nrow <- as_pos_int(nrow, "nrow")
+    ncol <- as_pos_int(ncol, "ncol")
+    if (nrow * ncol != total) {
+      stop(
+        "length(data) (", total,
+        ") must equal nrow * ncol (", nrow * ncol, ").",
+        call. = FALSE
+      )
+    }
   }
 
   if (isTRUE(byrow)) {

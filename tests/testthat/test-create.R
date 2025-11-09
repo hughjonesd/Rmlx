@@ -100,6 +100,18 @@ test_that("mlx_matrix respects dimensions and byrow flag", {
 
   mat_byrow <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE, device = "cpu")
   expect_equal(as.matrix(mat_byrow), matrix(1:6, 2, 3, byrow = TRUE))
+
+  inferred_rows <- mlx_matrix(1:6, ncol = 3, device = "cpu")
+  expect_equal(mlx_dim(inferred_rows), c(2L, 3L))
+
+  inferred_cols <- mlx_matrix(1:6, nrow = 3, device = "cpu")
+  expect_equal(mlx_dim(inferred_cols), c(3L, 2L))
+
+  default_shape <- mlx_matrix(1:4, device = "cpu")
+  expect_equal(mlx_dim(default_shape), c(4L, 1L))
+
+  expect_error(mlx_matrix(1:5, ncol = 4, device = "cpu"), "divisible by ncol")
+  expect_error(mlx_matrix(integer(0)), "Provide nrow or ncol")
 })
 
 test_that("mlx_vector creates 1D arrays", {
