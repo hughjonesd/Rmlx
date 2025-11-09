@@ -34,7 +34,7 @@ An \code{mlx} matrix with \code{dim = c(nrow, ncol)}.
 \description{
 \code{mlx_matrix()} wraps \code{\link[=mlx_array]{mlx_array()}} for the common 2-D case. It accepts the same
 style arguments as \code{\link[base:matrix]{base::matrix()}} but without recycling, so mistakes surface early.
-Omit \code{nrow} or \code{ncol} to infer the missing dimension from \code{length(data)}.
+Supply \code{nrow} or \code{ncol} (the other may be inferred from \code{length(data)}).
 }
 \examples{
 mx <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)

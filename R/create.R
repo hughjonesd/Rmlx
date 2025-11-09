@@ -270,7 +270,7 @@ mlx_array <- function(data,
 #'
 #' `mlx_matrix()` wraps [mlx_array()] for the common 2-D case. It accepts the same
 #' style arguments as [base::matrix()] but without recycling, so mistakes surface early.
-#' Omit `nrow` or `ncol` to infer the missing dimension from `length(data)`.
+#' Supply `nrow` or `ncol` (the other may be inferred from `length(data)`).
 #'
 #' @inheritParams mlx_array
 #' @param nrow,ncol Matrix dimensions (positive integers).
@@ -290,24 +290,35 @@ mlx_matrix <- function(data,
   total <- length(data_vec)
 
   if (is.null(nrow) && is.null(ncol)) {
-    if (!total) {
-      stop("Provide nrow or ncol when data has length zero.", call. = FALSE)
-    }
-    nrow <- total
-    ncol <- 1L
-  } else if (is.null(nrow)) {
-    ncol <- as.integer(ncol)
-    nrow <- total %/% ncol
-  } else if (is.null(ncol)) {
-    nrow <- as.integer(nrow)
-    ncol <- total %/% nrow
-  } else {
-    nrow <- as.integer(nrow)
-    ncol <- as.integer(ncol)
+    stop("Provide either nrow or ncol when calling mlx_matrix().", call. = FALSE)
   }
 
-  if (nrow * ncol != total) {
-    stop("length(data) must equal nrow * ncol.", call. = FALSE)
+  as_dim <- function(value, name) {
+    value <- as.integer(value)
+    if (length(value) != 1L || is.na(value) || value <= 0) {
+      stop(name, " must be a positive integer.", call. = FALSE)
+    }
+    value
+  }
+
+  if (is.null(nrow)) {
+    ncol <- as_dim(ncol, "ncol")
+    if (total %% ncol != 0) {
+      stop("length(data) must be divisible by ncol.", call. = FALSE)
+    }
+    nrow <- total %/% ncol
+  } else if (is.null(ncol)) {
+    nrow <- as_dim(nrow, "nrow")
+    if (total %% nrow != 0) {
+      stop("length(data) must be divisible by nrow.", call. = FALSE)
+    }
+    ncol <- total %/% nrow
+  } else {
+    nrow <- as_dim(nrow, "nrow")
+    ncol <- as_dim(ncol, "ncol")
+    if (nrow * ncol != total) {
+      stop("length(data) must equal nrow * ncol.", call. = FALSE)
+    }
   }
 
   if (isTRUE(byrow)) {
