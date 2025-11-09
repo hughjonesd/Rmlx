@@ -110,7 +110,7 @@ test_that("mlx_matrix respects dimensions and byrow flag", {
   default_shape <- mlx_matrix(1:4, device = "cpu")
   expect_equal(mlx_dim(default_shape), c(4L, 1L))
 
-  expect_error(mlx_matrix(1:5, ncol = 4, device = "cpu"), "divisible by ncol")
+  expect_error(mlx_matrix(1:5, ncol = 4, device = "cpu"), "length(data) must equal nrow * ncol", fixed = TRUE)
   expect_error(mlx_matrix(integer(0)), "Provide nrow or ncol")
 })
 

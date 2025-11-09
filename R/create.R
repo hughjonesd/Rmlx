@@ -289,53 +289,25 @@ mlx_matrix <- function(data,
   data_vec <- as.vector(data)
   total <- length(data_vec)
 
-  missing_nrow <- missing(nrow) || is.null(nrow)
-  missing_ncol <- missing(ncol) || is.null(ncol)
-
-  as_pos_int <- function(value, name) {
-    value <- as.integer(value)
-    if (length(value) != 1L || is.na(value) || value <= 0) {
-      stop(name, " must be a positive integer.", call. = FALSE)
-    }
-    value
-  }
-
-  if (missing_nrow && missing_ncol) {
-    if (total == 0L) {
-      stop("Provide nrow or ncol when data is empty.", call. = FALSE)
+  if (is.null(nrow) && is.null(ncol)) {
+    if (!total) {
+      stop("Provide nrow or ncol when data has length zero.", call. = FALSE)
     }
     nrow <- total
     ncol <- 1L
-  } else if (missing_nrow) {
-    ncol <- as_pos_int(ncol, "ncol")
-    if (total %% ncol != 0) {
-      stop(
-        "length(data) (", total,
-        ") must be divisible by ncol (", ncol, ").",
-        call. = FALSE
-      )
-    }
+  } else if (is.null(nrow)) {
+    ncol <- as.integer(ncol)
     nrow <- total %/% ncol
-  } else if (missing_ncol) {
-    nrow <- as_pos_int(nrow, "nrow")
-    if (total %% nrow != 0) {
-      stop(
-        "length(data) (", total,
-        ") must be divisible by nrow (", nrow, ").",
-        call. = FALSE
-      )
-    }
+  } else if (is.null(ncol)) {
+    nrow <- as.integer(nrow)
     ncol <- total %/% nrow
   } else {
-    nrow <- as_pos_int(nrow, "nrow")
-    ncol <- as_pos_int(ncol, "ncol")
-    if (nrow * ncol != total) {
-      stop(
-        "length(data) (", total,
-        ") must equal nrow * ncol (", nrow * ncol, ").",
-        call. = FALSE
-      )
-    }
+    nrow <- as.integer(nrow)
+    ncol <- as.integer(ncol)
+  }
+
+  if (nrow * ncol != total) {
+    stop("length(data) must equal nrow * ncol.", call. = FALSE)
   }
 
   if (isTRUE(byrow)) {
