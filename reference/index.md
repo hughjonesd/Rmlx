@@ -245,6 +245,9 @@
 - [`mlx_degrees()`](https://hughjonesd.github.io/Rmlx/reference/mlx_degrees.md)
   [`mlx_radians()`](https://hughjonesd.github.io/Rmlx/reference/mlx_degrees.md)
   : Convert between radians and degrees
+- [`mlx_erf()`](https://hughjonesd.github.io/Rmlx/reference/mlx_erf.md)
+  [`mlx_erfinv()`](https://hughjonesd.github.io/Rmlx/reference/mlx_erf.md)
+  : Error function and inverse error function
 - [`mlx_isclose()`](https://hughjonesd.github.io/Rmlx/reference/mlx_isclose.md)
   : Element-wise approximate equality
 - [`mlx_allclose()`](https://hughjonesd.github.io/Rmlx/reference/mlx_allclose.md)
@@ -267,6 +270,29 @@
   [`mlx_fft2()`](https://hughjonesd.github.io/Rmlx/reference/mlx_fft.md)
   [`mlx_fftn()`](https://hughjonesd.github.io/Rmlx/reference/mlx_fft.md)
   : Fast Fourier transforms for MLX arrays
+
+## Probability Distributions
+
+- [`mlx_dnorm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dnorm.md)
+  [`mlx_pnorm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dnorm.md)
+  [`mlx_qnorm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dnorm.md)
+  : Normal distribution functions
+- [`mlx_dunif()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dunif.md)
+  [`mlx_punif()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dunif.md)
+  [`mlx_qunif()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dunif.md)
+  : Uniform distribution functions
+- [`mlx_dexp()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dexp.md)
+  [`mlx_pexp()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dexp.md)
+  [`mlx_qexp()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dexp.md)
+  : Exponential distribution functions
+- [`mlx_dlnorm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dlnorm.md)
+  [`mlx_plnorm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dlnorm.md)
+  [`mlx_qlnorm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dlnorm.md)
+  : Lognormal distribution functions
+- [`mlx_dlogis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dlogis.md)
+  [`mlx_plogis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dlogis.md)
+  [`mlx_qlogis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dlogis.md)
+  : Logistic distribution functions
 
 ## Linear Algebra
 
