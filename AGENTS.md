@@ -45,6 +45,12 @@
 - Run `R -q -e 'devtools::test()'` locally; no conditional skips—tests
   are allowed to fail if MLX is absent.
 
+## Issue Tracking
+
+- File tasks straight to GitHub via `gh issue create` rather than
+  maintaining local scratchpads. Reference the issue numbers in
+  downstream docs/PRs.
+
 ## Commit & Pull Request Guidelines
 
 - Follow the repository’s imperative, capitalized commit style (e.g.,

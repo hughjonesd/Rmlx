@@ -200,6 +200,8 @@
   : Math operations for MLX arrays
 - [`Ops(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/Ops.mlx.md)
   : Arithmetic and comparison operators for MLX arrays
+- [`Summary(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/Summary.mlx.md)
+  : Summary operations for MLX arrays
 - [`mlx_sum()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sum.md)
   [`mlx_prod()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sum.md)
   [`mlx_all()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sum.md)

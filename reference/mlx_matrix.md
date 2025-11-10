@@ -4,8 +4,8 @@
 [`mlx_array()`](https://hughjonesd.github.io/Rmlx/reference/mlx_array.md)
 for the common 2-D case. It accepts the same style arguments as
 [`base::matrix()`](https://rdrr.io/r/base/matrix.html) but without
-recycling, so mistakes surface early. Omit `nrow` or `ncol` to infer the
-missing dimension from `length(data)`.
+recycling, so mistakes surface early. Supply `nrow` or `ncol` (the other
+may be inferred from `length(data)`).
 
 ## Usage
 
