@@ -2,6 +2,22 @@
 % Please edit documentation in R/ops.R
 \name{Ops.mlx}
 \alias{Ops.mlx}
+\alias{+.mlx}
+\alias{-.mlx}
+\alias{*.mlx}
+\alias{/.mlx}
+\alias{^.mlx}
+\alias{==.mlx}
+\alias{!=.mlx}
+\alias{<.mlx}
+\alias{>.mlx}
+\alias{<=.mlx}
+\alias{>=.mlx}
+\alias{!.mlx}
+\alias{&.mlx}
+\alias{|.mlx}
+\alias{\%/\%.mlx}
+\alias{\%\%.mlx}
 \title{Arithmetic and comparison operators for MLX arrays}
 \usage{
 \method{Ops}{mlx}(e1, e2 = NULL)

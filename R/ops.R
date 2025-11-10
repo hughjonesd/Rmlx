@@ -4,6 +4,7 @@
 #' @param e2 Second operand (mlx or numeric)
 #' @return An mlx object
 #' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html)
+#' @aliases +.mlx -.mlx *.mlx /.mlx ^.mlx ==.mlx !=.mlx <.mlx >.mlx <=.mlx >=.mlx !.mlx &.mlx |.mlx %/%.mlx %%.mlx
 #' @export
 #' @method Ops mlx
 #' @examples

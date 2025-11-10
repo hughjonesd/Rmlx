@@ -347,7 +347,23 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   .mlx_reduce_axes(x, op, axes, drop = drop, ddof = ddof)
 }
 
+#' Summary operations for MLX arrays
+#'
+#' S3 group generic for summary functions including `sum()`, `prod()`, `min()`, `max()`, `all()`, and `any()`.
+#'
+#' @param x mlx array or object coercible to mlx
+#' @param ... Additional mlx arrays (for reducing multiple arrays), or named arguments `axis` and `drop`
+#' @param na.rm Logical; currently ignored for mlx arrays (generates warning if TRUE)
+#' @return An mlx array with the summary result
+#' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html)
+#' @aliases sum.mlx prod.mlx min.mlx max.mlx all.mlx any.mlx
 #' @export
+#' @method Summary mlx
+#' @examples
+#' x <- as_mlx(matrix(1:6, 2, 3))
+#' sum(x)
+#' any(x > 3)
+#' all(x > 0)
 Summary.mlx <- function(x, ..., na.rm = FALSE) {
   op <- .Generic
   if (!(op %in% c("sum", "prod", "min", "max", "all", "any"))) {

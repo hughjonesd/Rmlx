@@ -2,6 +2,39 @@
 % Please edit documentation in R/math.R
 \name{Math.mlx}
 \alias{Math.mlx}
+\alias{abs.mlx}
+\alias{sign.mlx}
+\alias{sqrt.mlx}
+\alias{floor.mlx}
+\alias{ceiling.mlx}
+\alias{trunc.mlx}
+\alias{round.mlx}
+\alias{signif.mlx}
+\alias{exp.mlx}
+\alias{log.mlx}
+\alias{log10.mlx}
+\alias{log2.mlx}
+\alias{log1p.mlx}
+\alias{expm1.mlx}
+\alias{cos.mlx}
+\alias{sin.mlx}
+\alias{tan.mlx}
+\alias{acos.mlx}
+\alias{asin.mlx}
+\alias{atan.mlx}
+\alias{cosh.mlx}
+\alias{sinh.mlx}
+\alias{tanh.mlx}
+\alias{acosh.mlx}
+\alias{asinh.mlx}
+\alias{atanh.mlx}
+\alias{cospi.mlx}
+\alias{sinpi.mlx}
+\alias{tanpi.mlx}
+\alias{cumsum.mlx}
+\alias{cumprod.mlx}
+\alias{cummax.mlx}
+\alias{cummin.mlx}
 \title{Math operations for MLX arrays}
 \usage{
 \method{Math}{mlx}(x, ...)
