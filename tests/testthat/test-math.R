@@ -334,3 +334,315 @@ test_that("all.equal.mlx follows R semantics", {
   expect_type(result_shape, "character")
   expect_match(result_shape, "shape|length|dim", ignore.case = TRUE)
 })
+
+test_that("mlx_erf works", {
+  x <- c(-2, -1, 0, 1, 2)
+  x_mlx <- as_mlx(x)
+
+  result <- as.vector(mlx_erf(x_mlx))
+  # R doesn't have erf, but we can use 2*pnorm(x*sqrt(2)) - 1
+  expected <- 2 * pnorm(x * sqrt(2)) - 1
+  expect_equal(result, expected, tolerance = 1e-6)
+})
+
+test_that("mlx_erfinv works", {
+  p <- c(-0.5, 0, 0.5)
+  p_mlx <- as_mlx(p)
+
+  result <- as.vector(mlx_erfinv(p_mlx))
+  # erfinv should be the inverse of erf
+  # erf(erfinv(p)) = p
+  back <- as.vector(mlx_erf(as_mlx(result)))
+  expect_equal(back, p, tolerance = 1e-6)
+})
+
+test_that("mlx_dnorm works", {
+  x <- seq(-3, 3, by = 0.5)
+  x_mlx <- as_mlx(x)
+
+  # Standard normal
+  result <- as.vector(mlx_dnorm(x_mlx))
+  expected <- dnorm(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard normal
+  result_nonstd <- as.vector(mlx_dnorm(x_mlx, mean = 1, sd = 2))
+  expected_nonstd <- dnorm(x, mean = 1, sd = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Log density
+  result_log <- as.vector(mlx_dnorm(x_mlx, log = TRUE))
+  expected_log <- dnorm(x, log = TRUE)
+  expect_equal(result_log, expected_log, tolerance = 1e-6)
+})
+
+test_that("mlx_pnorm works", {
+  x <- seq(-3, 3, by = 0.5)
+  x_mlx <- as_mlx(x)
+
+  # Standard normal
+  result <- as.vector(mlx_pnorm(x_mlx))
+  expected <- pnorm(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard normal
+  result_nonstd <- as.vector(mlx_pnorm(x_mlx, mean = 1, sd = 2))
+  expected_nonstd <- pnorm(x, mean = 1, sd = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+})
+
+test_that("mlx_qnorm works", {
+  p <- c(0.025, 0.25, 0.5, 0.75, 0.975)
+  p_mlx <- as_mlx(p)
+
+  # Standard normal
+  result <- as.vector(mlx_qnorm(p_mlx))
+  expected <- qnorm(p)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard normal
+  result_nonstd <- as.vector(mlx_qnorm(p_mlx, mean = 1, sd = 2))
+  expected_nonstd <- qnorm(p, mean = 1, sd = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Round trip: qnorm(pnorm(x)) = x
+  x <- seq(-2, 2, by = 0.5)
+  x_mlx <- as_mlx(x)
+  p_result <- mlx_pnorm(x_mlx)
+  back <- as.vector(mlx_qnorm(p_result))
+  expect_equal(back, x, tolerance = 1e-6)
+})
+
+test_that("mlx_dunif works", {
+  x <- seq(-0.5, 1.5, by = 0.1)
+  x_mlx <- as_mlx(x)
+
+  # Standard uniform
+  result <- as.vector(mlx_dunif(x_mlx))
+  expected <- dunif(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard uniform
+  result_nonstd <- as.vector(mlx_dunif(x_mlx, min = -1, max = 2))
+  expected_nonstd <- dunif(x, min = -1, max = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Log density
+  result_log <- as.vector(mlx_dunif(x_mlx, log = TRUE))
+  expected_log <- dunif(x, log = TRUE)
+  expect_equal(result_log, expected_log, tolerance = 1e-6)
+})
+
+test_that("mlx_punif works", {
+  x <- seq(-0.5, 1.5, by = 0.1)
+  x_mlx <- as_mlx(x)
+
+  # Standard uniform
+  result <- as.vector(mlx_punif(x_mlx))
+  expected <- punif(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard uniform
+  result_nonstd <- as.vector(mlx_punif(x_mlx, min = -1, max = 2))
+  expected_nonstd <- punif(x, min = -1, max = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+})
+
+test_that("mlx_qunif works", {
+  p <- seq(0, 1, by = 0.1)
+  p_mlx <- as_mlx(p)
+
+  # Standard uniform
+  result <- as.vector(mlx_qunif(p_mlx))
+  expected <- qunif(p)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard uniform
+  result_nonstd <- as.vector(mlx_qunif(p_mlx, min = -1, max = 2))
+  expected_nonstd <- qunif(p, min = -1, max = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Round trip
+  x <- seq(0, 1, by = 0.1)
+  x_mlx <- as_mlx(x)
+  p_result <- mlx_punif(x_mlx)
+  back <- as.vector(mlx_qunif(p_result))
+  expect_equal(back, x, tolerance = 1e-6)
+})
+
+test_that("mlx_dexp works", {
+  x <- seq(0, 5, by = 0.5)
+  x_mlx <- as_mlx(x)
+
+  # Standard exponential
+  result <- as.vector(mlx_dexp(x_mlx))
+  expected <- dexp(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard rate
+  result_nonstd <- as.vector(mlx_dexp(x_mlx, rate = 2))
+  expected_nonstd <- dexp(x, rate = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Log density
+  result_log <- as.vector(mlx_dexp(x_mlx, log = TRUE))
+  expected_log <- dexp(x, log = TRUE)
+  expect_equal(result_log, expected_log, tolerance = 1e-6)
+
+  # Negative values should be 0
+  x_neg <- as_mlx(c(-1, -0.5, 0, 0.5, 1))
+  result_neg <- as.vector(mlx_dexp(x_neg))
+  expected_neg <- dexp(c(-1, -0.5, 0, 0.5, 1))
+  expect_equal(result_neg, expected_neg, tolerance = 1e-6)
+})
+
+test_that("mlx_pexp works", {
+  x <- seq(0, 5, by = 0.5)
+  x_mlx <- as_mlx(x)
+
+  # Standard exponential
+  result <- as.vector(mlx_pexp(x_mlx))
+  expected <- pexp(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard rate
+  result_nonstd <- as.vector(mlx_pexp(x_mlx, rate = 2))
+  expected_nonstd <- pexp(x, rate = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+})
+
+test_that("mlx_qexp works", {
+  p <- seq(0.1, 0.9, by = 0.1)
+  p_mlx <- as_mlx(p)
+
+  # Standard exponential
+  result <- as.vector(mlx_qexp(p_mlx))
+  expected <- qexp(p)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard rate
+  result_nonstd <- as.vector(mlx_qexp(p_mlx, rate = 2))
+  expected_nonstd <- qexp(p, rate = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Round trip
+  x <- seq(0.5, 5, by = 0.5)
+  x_mlx <- as_mlx(x)
+  p_result <- mlx_pexp(x_mlx)
+  back <- as.vector(mlx_qexp(p_result))
+  expect_equal(back, x, tolerance = 1e-6)
+})
+
+test_that("mlx_dlnorm works", {
+  x <- seq(0.1, 3, by = 0.2)
+  x_mlx <- as_mlx(x)
+
+  # Standard lognormal
+  result <- as.vector(mlx_dlnorm(x_mlx))
+  expected <- dlnorm(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard lognormal
+  result_nonstd <- as.vector(mlx_dlnorm(x_mlx, meanlog = 1, sdlog = 0.5))
+  expected_nonstd <- dlnorm(x, meanlog = 1, sdlog = 0.5)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Log density
+  result_log <- as.vector(mlx_dlnorm(x_mlx, log = TRUE))
+  expected_log <- dlnorm(x, log = TRUE)
+  expect_equal(result_log, expected_log, tolerance = 1e-6)
+})
+
+test_that("mlx_plnorm works", {
+  x <- seq(0.1, 3, by = 0.2)
+  x_mlx <- as_mlx(x)
+
+  # Standard lognormal
+  result <- as.vector(mlx_plnorm(x_mlx))
+  expected <- plnorm(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard lognormal
+  result_nonstd <- as.vector(mlx_plnorm(x_mlx, meanlog = 1, sdlog = 0.5))
+  expected_nonstd <- plnorm(x, meanlog = 1, sdlog = 0.5)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+})
+
+test_that("mlx_qlnorm works", {
+  p <- seq(0.1, 0.9, by = 0.1)
+  p_mlx <- as_mlx(p)
+
+  # Standard lognormal
+  result <- as.vector(mlx_qlnorm(p_mlx))
+  expected <- qlnorm(p)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard lognormal
+  result_nonstd <- as.vector(mlx_qlnorm(p_mlx, meanlog = 1, sdlog = 0.5))
+  expected_nonstd <- qlnorm(p, meanlog = 1, sdlog = 0.5)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Round trip
+  x <- seq(0.5, 3, by = 0.25)
+  x_mlx <- as_mlx(x)
+  p_result <- mlx_plnorm(x_mlx)
+  back <- as.vector(mlx_qlnorm(p_result))
+  expect_equal(back, x, tolerance = 1e-6)
+})
+
+test_that("mlx_dlogis works", {
+  x <- seq(-3, 3, by = 0.5)
+  x_mlx <- as_mlx(x)
+
+  # Standard logistic
+  result <- as.vector(mlx_dlogis(x_mlx))
+  expected <- dlogis(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard logistic
+  result_nonstd <- as.vector(mlx_dlogis(x_mlx, location = 1, scale = 2))
+  expected_nonstd <- dlogis(x, location = 1, scale = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Log density
+  result_log <- as.vector(mlx_dlogis(x_mlx, log = TRUE))
+  expected_log <- dlogis(x, log = TRUE)
+  expect_equal(result_log, expected_log, tolerance = 1e-6)
+})
+
+test_that("mlx_plogis works", {
+  x <- seq(-3, 3, by = 0.5)
+  x_mlx <- as_mlx(x)
+
+  # Standard logistic
+  result <- as.vector(mlx_plogis(x_mlx))
+  expected <- plogis(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard logistic
+  result_nonstd <- as.vector(mlx_plogis(x_mlx, location = 1, scale = 2))
+  expected_nonstd <- plogis(x, location = 1, scale = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+})
+
+test_that("mlx_qlogis works", {
+  p <- seq(0.1, 0.9, by = 0.1)
+  p_mlx <- as_mlx(p)
+
+  # Standard logistic
+  result <- as.vector(mlx_qlogis(p_mlx))
+  expected <- qlogis(p)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Non-standard logistic
+  result_nonstd <- as.vector(mlx_qlogis(p_mlx, location = 1, scale = 2))
+  expected_nonstd <- qlogis(p, location = 1, scale = 2)
+  expect_equal(result_nonstd, expected_nonstd, tolerance = 1e-6)
+
+  # Round trip
+  x <- seq(-2, 2, by = 0.5)
+  x_mlx <- as_mlx(x)
+  p_result <- mlx_plogis(x_mlx)
+  back <- as.vector(mlx_qlogis(p_result))
+  expect_equal(back, x, tolerance = 1e-6)
+})

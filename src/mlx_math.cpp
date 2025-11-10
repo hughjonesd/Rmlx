@@ -61,6 +61,10 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
       return arccosh(wrapper->get());
     } else if (op == "atanh") {
       return arctanh(wrapper->get());
+    } else if (op == "erf") {
+      return erf(wrapper->get());
+    } else if (op == "erfinv") {
+      return erfinv(wrapper->get());
     } else if (op == "floor") {
       return floor(wrapper->get());
     } else if (op == "ceil") {

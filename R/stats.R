@@ -625,3 +625,406 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive)
   .mlx_wrap_result(ptr, x$device)
 }
+
+#' Normal distribution functions
+#'
+#' Compute density (`mlx_dnorm`), cumulative distribution (`mlx_pnorm`),
+#' and quantile (`mlx_qnorm`) functions for the normal distribution using MLX.
+#'
+#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @param mean Mean of the distribution (default: 0)
+#' @param sd Standard deviation of the distribution (default: 1)
+#' @param log If `TRUE`, return log density for `mlx_dnorm` (default: `FALSE`)
+#' @inheritParams common_params
+#' @return An mlx array with the computed values
+#' @seealso [mlx_erf()], [mlx_erfinv()],
+#'   [mlx.core.erf](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erf.html),
+#'   [mlx.core.erfinv](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erfinv.html)
+#' @export
+#' @examples
+#' x <- as_mlx(seq(-3, 3, by = 0.5))
+#' as.matrix(mlx_dnorm(x))
+#' as.matrix(mlx_pnorm(x))
+#'
+#' p <- as_mlx(c(0.025, 0.5, 0.975))
+#' as.matrix(mlx_qnorm(p))
+mlx_dnorm <- function(x, mean = 0, sd = 1, log = FALSE, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (sd <= 0) {
+    stop("sd must be positive", call. = FALSE)
+  }
+
+  # Convert mean and sd to mlx arrays
+  mean_mlx <- as_mlx(mean, device = device)
+  sd_mlx <- as_mlx(sd, device = device)
+
+  # Standardize
+  z <- (x - mean_mlx) / sd_mlx
+
+  # dnorm(x, mean, sd) = (1/sqrt(2*pi*sd^2)) * exp(-0.5 * z^2)
+  # = (1/(sd * sqrt(2*pi))) * exp(-0.5 * z^2)
+
+  sqrt_2pi <- as_mlx(sqrt(2 * pi), device = device)
+  log_density <- -0.5 * z^2 - log(sd_mlx) - log(sqrt_2pi)
+
+  if (log) {
+    return(log_density)
+  } else {
+    return(exp(log_density))
+  }
+}
+
+#' @rdname mlx_dnorm
+#' @export
+#' @param p Vector of probabilities (mlx array or coercible to mlx)
+mlx_pnorm <- function(x, mean = 0, sd = 1, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (sd <= 0) {
+    stop("sd must be positive", call. = FALSE)
+  }
+
+  # Convert mean and sd to mlx arrays
+  mean_mlx <- as_mlx(mean, device = device)
+  sd_mlx <- as_mlx(sd, device = device)
+
+  # Standardize
+  z <- (x - mean_mlx) / sd_mlx
+
+  # pnorm(x) = 0.5 * (1 + erf(z / sqrt(2)))
+  sqrt_2 <- as_mlx(sqrt(2), device = device)
+  return(0.5 * (1 + mlx_erf(z / sqrt_2)))
+}
+
+#' @rdname mlx_dnorm
+#' @export
+mlx_qnorm <- function(p, mean = 0, sd = 1, device = mlx_default_device()) {
+  p <- as_mlx(p, device = device)
+
+  if (sd <= 0) {
+    stop("sd must be positive", call. = FALSE)
+  }
+
+  # Convert mean and sd to mlx arrays
+  mean_mlx <- as_mlx(mean, device = device)
+  sd_mlx <- as_mlx(sd, device = device)
+
+  # qnorm(p) = mean + sd * sqrt(2) * erfinv(2*p - 1)
+  sqrt_2 <- as_mlx(sqrt(2), device = device)
+  return(mean_mlx + sd_mlx * sqrt_2 * mlx_erfinv(2 * p - 1))
+}
+
+#' Uniform distribution functions
+#'
+#' Compute density (`mlx_dunif`), cumulative distribution (`mlx_punif`),
+#' and quantile (`mlx_qunif`) functions for the uniform distribution using MLX.
+#'
+#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @param min,max Lower and upper limits of the distribution (default: 0, 1)
+#' @param log If `TRUE`, return log density for `mlx_dunif` (default: `FALSE`)
+#' @inheritParams common_params
+#' @return An mlx array with the computed values
+#' @export
+#' @examples
+#' x <- as_mlx(seq(0, 1, by = 0.1))
+#' as.matrix(mlx_dunif(x))
+#' as.matrix(mlx_punif(x))
+#'
+#' p <- as_mlx(c(0.25, 0.5, 0.75))
+#' as.matrix(mlx_qunif(p))
+mlx_dunif <- function(x, min = 0, max = 1, log = FALSE, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (min >= max) {
+    stop("min must be less than max", call. = FALSE)
+  }
+
+  min_mlx <- as_mlx(min, device = device)
+  max_mlx <- as_mlx(max, device = device)
+
+  # dunif(x, min, max) = 1/(max-min) for x in [min, max], 0 otherwise
+  width <- max_mlx - min_mlx
+  in_range <- (x >= min_mlx) & (x <= max_mlx)
+
+  if (log) {
+    # log(1/width) = -log(width)
+    log_density <- -log(width)
+    # Set out of range to -Inf
+    result <- mlx_where(in_range, log_density, as_mlx(-Inf, device = device))
+  } else {
+    density <- 1 / width
+    result <- mlx_where(in_range, density, as_mlx(0, device = device))
+  }
+
+  return(result)
+}
+
+#' @rdname mlx_dunif
+#' @export
+#' @param p Vector of probabilities (mlx array or coercible to mlx)
+mlx_punif <- function(x, min = 0, max = 1, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (min >= max) {
+    stop("min must be less than max", call. = FALSE)
+  }
+
+  min_mlx <- as_mlx(min, device = device)
+  max_mlx <- as_mlx(max, device = device)
+
+  # punif(x, min, max) = (x-min)/(max-min), clipped to [0, 1]
+  prob <- (x - min_mlx) / (max_mlx - min_mlx)
+  return(mlx_clip(prob, 0, 1))
+}
+
+#' @rdname mlx_dunif
+#' @export
+mlx_qunif <- function(p, min = 0, max = 1, device = mlx_default_device()) {
+  p <- as_mlx(p, device = device)
+
+  if (min >= max) {
+    stop("min must be less than max", call. = FALSE)
+  }
+
+  min_mlx <- as_mlx(min, device = device)
+  max_mlx <- as_mlx(max, device = device)
+
+  # qunif(p, min, max) = min + p*(max-min)
+  return(min_mlx + p * (max_mlx - min_mlx))
+}
+
+#' Exponential distribution functions
+#'
+#' Compute density (`mlx_dexp`), cumulative distribution (`mlx_pexp`),
+#' and quantile (`mlx_qexp`) functions for the exponential distribution using MLX.
+#'
+#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @param rate Rate parameter (default: 1)
+#' @param log If `TRUE`, return log density for `mlx_dexp` (default: `FALSE`)
+#' @inheritParams common_params
+#' @return An mlx array with the computed values
+#' @export
+#' @examples
+#' x <- as_mlx(seq(0, 5, by = 0.5))
+#' as.matrix(mlx_dexp(x))
+#' as.matrix(mlx_pexp(x))
+#'
+#' p <- as_mlx(c(0.25, 0.5, 0.75))
+#' as.matrix(mlx_qexp(p))
+mlx_dexp <- function(x, rate = 1, log = FALSE, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (rate <= 0) {
+    stop("rate must be positive", call. = FALSE)
+  }
+
+  rate_mlx <- as_mlx(rate, device = device)
+
+  # dexp(x, rate) = rate * exp(-rate*x) for x >= 0, 0 otherwise
+  non_negative <- x >= 0
+
+  if (log) {
+    # log(rate * exp(-rate*x)) = log(rate) - rate*x
+    log_density <- log(rate_mlx) - rate_mlx * x
+    result <- mlx_where(non_negative, log_density, as_mlx(-Inf, device = device))
+  } else {
+    density <- rate_mlx * exp(-rate_mlx * x)
+    result <- mlx_where(non_negative, density, as_mlx(0, device = device))
+  }
+
+  return(result)
+}
+
+#' @rdname mlx_dexp
+#' @export
+#' @param p Vector of probabilities (mlx array or coercible to mlx)
+mlx_pexp <- function(x, rate = 1, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (rate <= 0) {
+    stop("rate must be positive", call. = FALSE)
+  }
+
+  rate_mlx <- as_mlx(rate, device = device)
+
+  # pexp(x, rate) = 1 - exp(-rate*x) for x >= 0, 0 otherwise
+  prob <- 1 - exp(-rate_mlx * x)
+  non_negative <- x >= 0
+  return(mlx_where(non_negative, prob, as_mlx(0, device = device)))
+}
+
+#' @rdname mlx_dexp
+#' @export
+mlx_qexp <- function(p, rate = 1, device = mlx_default_device()) {
+  p <- as_mlx(p, device = device)
+
+  if (rate <= 0) {
+    stop("rate must be positive", call. = FALSE)
+  }
+
+  rate_mlx <- as_mlx(rate, device = device)
+
+  # qexp(p, rate) = -log(1-p) / rate
+  return(-log(1 - p) / rate_mlx)
+}
+
+#' Lognormal distribution functions
+#'
+#' Compute density (`mlx_dlnorm`), cumulative distribution (`mlx_plnorm`),
+#' and quantile (`mlx_qlnorm`) functions for the lognormal distribution using MLX.
+#'
+#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @param meanlog,sdlog Mean and standard deviation of distribution on log scale
+#'   (default: 0, 1)
+#' @param log If `TRUE`, return log density for `mlx_dlnorm` (default: `FALSE`)
+#' @inheritParams common_params
+#' @return An mlx array with the computed values
+#' @export
+#' @examples
+#' x <- as_mlx(seq(0.1, 3, by = 0.2))
+#' as.matrix(mlx_dlnorm(x))
+#' as.matrix(mlx_plnorm(x))
+#'
+#' p <- as_mlx(c(0.25, 0.5, 0.75))
+#' as.matrix(mlx_qlnorm(p))
+mlx_dlnorm <- function(x, meanlog = 0, sdlog = 1, log = FALSE,
+                       device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (sdlog <= 0) {
+    stop("sdlog must be positive", call. = FALSE)
+  }
+
+  # dlnorm(x) = dnorm(log(x), meanlog, sdlog) / x for x > 0
+  positive <- x > 0
+
+  log_x <- log(x)
+  log_dnorm <- mlx_dnorm(log_x, mean = meanlog, sd = sdlog, log = TRUE, device = device)
+
+  if (log) {
+    # log(dnorm(log(x)) / x) = log(dnorm(log(x))) - log(x)
+    log_density <- log_dnorm - log_x
+    result <- mlx_where(positive, log_density, as_mlx(-Inf, device = device))
+  } else {
+    density <- exp(log_dnorm) / x
+    result <- mlx_where(positive, density, as_mlx(0, device = device))
+  }
+
+  return(result)
+}
+
+#' @rdname mlx_dlnorm
+#' @export
+#' @param p Vector of probabilities (mlx array or coercible to mlx)
+mlx_plnorm <- function(x, meanlog = 0, sdlog = 1, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (sdlog <= 0) {
+    stop("sdlog must be positive", call. = FALSE)
+  }
+
+  # plnorm(x) = pnorm(log(x), meanlog, sdlog) for x > 0, 0 otherwise
+  positive <- x > 0
+  prob <- mlx_pnorm(log(x), mean = meanlog, sd = sdlog, device = device)
+  return(mlx_where(positive, prob, as_mlx(0, device = device)))
+}
+
+#' @rdname mlx_dlnorm
+#' @export
+mlx_qlnorm <- function(p, meanlog = 0, sdlog = 1, device = mlx_default_device()) {
+  p <- as_mlx(p, device = device)
+
+  if (sdlog <= 0) {
+    stop("sdlog must be positive", call. = FALSE)
+  }
+
+  # qlnorm(p) = exp(qnorm(p, meanlog, sdlog))
+  return(exp(mlx_qnorm(p, mean = meanlog, sd = sdlog, device = device)))
+}
+
+#' Logistic distribution functions
+#'
+#' Compute density (`mlx_dlogis`), cumulative distribution (`mlx_plogis`),
+#' and quantile (`mlx_qlogis`) functions for the logistic distribution using MLX.
+#'
+#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @param location,scale Location and scale parameters (default: 0, 1)
+#' @param log If `TRUE`, return log density for `mlx_dlogis` (default: `FALSE`)
+#' @inheritParams common_params
+#' @return An mlx array with the computed values
+#' @export
+#' @examples
+#' x <- as_mlx(seq(-3, 3, by = 0.5))
+#' as.matrix(mlx_dlogis(x))
+#' as.matrix(mlx_plogis(x))
+#'
+#' p <- as_mlx(c(0.25, 0.5, 0.75))
+#' as.matrix(mlx_qlogis(p))
+mlx_dlogis <- function(x, location = 0, scale = 1, log = FALSE,
+                       device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (scale <= 0) {
+    stop("scale must be positive", call. = FALSE)
+  }
+
+  location_mlx <- as_mlx(location, device = device)
+  scale_mlx <- as_mlx(scale, device = device)
+
+  # Standardize
+  z <- (x - location_mlx) / scale_mlx
+
+  # dlogis(x) = exp(z) / (scale * (1 + exp(z))^2)
+  # For numerical stability, use different forms for positive/negative z
+  # log(dlogis) = z - log(scale) - 2*log(1 + exp(z))
+  #             = z - log(scale) - 2*log1p(exp(z))  for z < 0
+  #             = -log(scale) - z - 2*log1p(exp(-z)) for z >= 0
+
+  if (log) {
+    # Use log1p for better numerical stability
+    exp_z <- exp(z)
+    log_density <- z - log(scale_mlx) - 2 * log(1 + exp_z)
+    return(log_density)
+  } else {
+    exp_z <- exp(z)
+    density <- exp_z / (scale_mlx * (1 + exp_z)^2)
+    return(density)
+  }
+}
+
+#' @rdname mlx_dlogis
+#' @export
+#' @param p Vector of probabilities (mlx array or coercible to mlx)
+mlx_plogis <- function(x, location = 0, scale = 1, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (scale <= 0) {
+    stop("scale must be positive", call. = FALSE)
+  }
+
+  location_mlx <- as_mlx(location, device = device)
+  scale_mlx <- as_mlx(scale, device = device)
+
+  # Standardize
+  z <- (x - location_mlx) / scale_mlx
+
+  # plogis(x) = 1 / (1 + exp(-z))
+  return(1 / (1 + exp(-z)))
+}
+
+#' @rdname mlx_dlogis
+#' @export
+mlx_qlogis <- function(p, location = 0, scale = 1, device = mlx_default_device()) {
+  p <- as_mlx(p, device = device)
+
+  if (scale <= 0) {
+    stop("scale must be positive", call. = FALSE)
+  }
+
+  location_mlx <- as_mlx(location, device = device)
+  scale_mlx <- as_mlx(scale, device = device)
+
+  # qlogis(p) = location + scale * log(p / (1-p))
+  return(location_mlx + scale_mlx * log(p / (1 - p)))
+}

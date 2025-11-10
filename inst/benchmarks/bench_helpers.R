@@ -24,6 +24,31 @@ decode_matrix32 <- function(obj) {
   matrix(vals, nrow = obj$dim[1], ncol = obj$dim[2])
 }
 
+build_distribution_inputs <- function(sizes, seed = 20251031L) {
+  make_payload <- function(base_data) {
+    mlx_data <- list(
+      vec = as_mlx(base_data$vec, dtype = "float32"),
+      prob = as_mlx(base_data$prob, dtype = "float32")
+    )
+    force_mlx(mlx_data)
+    list(base = base_data, mlx = mlx_data)
+  }
+
+  regenerate <- function(n) {
+    set.seed(seed + n)
+    vec <- rnorm(n)
+    prob <- runif(n)
+
+    base_data <- list(
+      vec = vec,
+      prob = prob
+    )
+    make_payload(base_data)
+  }
+
+  lapply(sizes, regenerate)
+}
+
 build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
   if (!is.null(cache_dir)) {
     dir.create(cache_dir, showWarnings = FALSE, recursive = TRUE)
@@ -37,7 +62,9 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
       rhs = as_mlx(base_data$rhs, dtype = "float32"),
       chol = as_mlx(base_data$chol, dtype = "float32"),
       idx_vec = base_data$idx_vec,
-      idx_mat = base_data$idx_mat
+      idx_mat = base_data$idx_mat,
+      vec = as_mlx(base_data$vec, dtype = "float32"),
+      prob = as_mlx(base_data$prob, dtype = "float32")
     )
     force_mlx(mlx_data)
     list(base = base_data, mlx = mlx_data)
@@ -56,6 +83,8 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
       sample.int(n, size = n, replace = TRUE),
       sample.int(n, size = n, replace = TRUE)
     )
+    vec <- rnorm(n)
+    prob <- runif(n)
 
     base_data <- list(
       a = a,
@@ -64,7 +93,9 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
       rhs = rhs,
       chol = chol_base,
       idx_vec = idx_vec,
-      idx_mat = idx_mat
+      idx_mat = idx_mat,
+      vec = vec,
+      prob = prob
     )
     if (!is.null(cache_path)) {
       cache_obj <- list(
@@ -72,7 +103,9 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
         b = encode_matrix32(b),
         rhs = encode_matrix32(rhs),
         idx_vec = idx_vec,
-        idx_mat = idx_mat
+        idx_mat = idx_mat,
+        vec = vec,
+        prob = prob
       )
       saveRDS(cache_obj, cache_path, compress = "xz")
     }
@@ -87,6 +120,17 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
     rhs <- decode_matrix32(cache_obj$rhs)
     spd <- crossprod(a) + diag(n) * 1e-3
     chol_base <- chol(spd)
+
+    # For backwards compatibility with old cache files
+    if (is.null(cache_obj$vec) || is.null(cache_obj$prob)) {
+      set.seed(20251031L + n + 1000L)
+      vec <- rnorm(n)
+      prob <- runif(n)
+    } else {
+      vec <- cache_obj$vec
+      prob <- cache_obj$prob
+    }
+
     base_data <- list(
       a = a,
       b = b,
@@ -94,7 +138,9 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
       rhs = rhs,
       chol = chol_base,
       idx_vec = cache_obj$idx_vec,
-      idx_mat = cache_obj$idx_mat
+      idx_mat = cache_obj$idx_mat,
+      vec = vec,
+      prob = prob
     )
     make_payload(base_data)
   }
@@ -112,6 +158,101 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
 
 default_min_time <- 0.25
 default_min_iterations <- 3L
+
+distribution_operations <- function() {
+  list(
+    list(
+      id = "dnorm",
+      label = "dnorm",
+      base = function(data) { dnorm(data$vec); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_dnorm(data$vec)) }
+    ),
+    list(
+      id = "pnorm",
+      label = "pnorm",
+      base = function(data) { pnorm(data$vec); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_pnorm(data$vec)) }
+    ),
+    list(
+      id = "qnorm",
+      label = "qnorm",
+      base = function(data) { qnorm(data$prob); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_qnorm(data$prob)) }
+    ),
+    list(
+      id = "dunif",
+      label = "dunif",
+      base = function(data) { dunif(data$vec); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_dunif(data$vec)) }
+    ),
+    list(
+      id = "punif",
+      label = "punif",
+      base = function(data) { punif(data$vec); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_punif(data$vec)) }
+    ),
+    list(
+      id = "qunif",
+      label = "qunif",
+      base = function(data) { qunif(data$prob); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_qunif(data$prob)) }
+    ),
+    list(
+      id = "dexp",
+      label = "dexp",
+      base = function(data) { dexp(abs(data$vec)); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_dexp(abs(data$vec))) }
+    ),
+    list(
+      id = "pexp",
+      label = "pexp",
+      base = function(data) { pexp(abs(data$vec)); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_pexp(abs(data$vec))) }
+    ),
+    list(
+      id = "qexp",
+      label = "qexp",
+      base = function(data) { qexp(data$prob); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_qexp(data$prob)) }
+    ),
+    list(
+      id = "dlnorm",
+      label = "dlnorm",
+      base = function(data) { dlnorm(abs(data$vec)); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_dlnorm(abs(data$vec))) }
+    ),
+    list(
+      id = "plnorm",
+      label = "plnorm",
+      base = function(data) { plnorm(abs(data$vec)); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_plnorm(abs(data$vec))) }
+    ),
+    list(
+      id = "qlnorm",
+      label = "qlnorm",
+      base = function(data) { qlnorm(data$prob); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_qlnorm(data$prob)) }
+    ),
+    list(
+      id = "dlogis",
+      label = "dlogis",
+      base = function(data) { dlogis(data$vec); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_dlogis(data$vec)) }
+    ),
+    list(
+      id = "plogis",
+      label = "plogis",
+      base = function(data) { plogis(data$vec); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_plogis(data$vec)) }
+    ),
+    list(
+      id = "qlogis",
+      label = "qlogis",
+      base = function(data) { qlogis(data$prob); invisible(NULL) },
+      mlx = function(data) { force_mlx(mlx_qlogis(data$prob)) }
+    )
+  )
+}
 
 benchmark_operations <- function() {
   list(

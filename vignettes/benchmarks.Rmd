@@ -80,6 +80,52 @@ ggplot(
   theme(legend.position = "bottom")
 ```
 
-```{r results-table}
-bench_results
+
+## Distribution Functions
+
+Distribution functions operate on vectors rather than matrices, so we benchmark them
+at larger sizes: 1,000, 100,000, and 10,000,000 elements.
+
+```{r dist-benchmark}
+dist_sizes <- c(small = 1000L, medium = 100000L, large = 10000000L)
+dist_inputs <- build_distribution_inputs(dist_sizes)
+dist_operations <- distribution_operations()
+
+dist_results <- run_benchmarks(dist_operations, dist_inputs)
+
+dist_results$size <- factor(
+  dist_results$size,
+  levels = names(dist_sizes),
+  labels = format(dist_sizes, scientific = FALSE, big.mark = ",")
+)
+dist_results$implementation <- factor(
+  dist_results$implementation,
+  levels = c("base", "mlx"),
+  labels = c("base R", "mlx")
+)
+dist_results$operation <- factor(
+  dist_results$operation,
+  levels = vapply(dist_operations, `[[`, character(1), "label")
+)
 ```
+
+```{r dist-plot}
+ggplot(
+  dist_results,
+  aes(x = size, y = median_seconds, colour = implementation, group = implementation)
+) +
+  geom_line() +
+  geom_point(size = 2) +
+  scale_colour_manual(values = c("base R" = "#4A4A4A", "mlx" = "#D63230")) +
+  facet_wrap(~ operation, scales = "free_y") +
+  labs(
+    title = "Distribution function benchmarks",
+    subtitle = "Time taken (less is better)",
+    x = "Vector length",
+    y = "Median time (seconds)",
+    colour = ""
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "bottom")
+```
+

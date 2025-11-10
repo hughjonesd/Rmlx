@@ -405,3 +405,33 @@ all.equal.mlx <- function(target, current, tolerance = sqrt(.Machine$double.eps)
     return("Arrays are not all close within tolerance")
   }
 }
+
+#' Error function and inverse error function
+#'
+#' `mlx_erf()` computes the error function elementwise.
+#' `mlx_erfinv()` computes the inverse error function elementwise.
+#'
+#' @inheritParams mlx_array_required
+#' @return An mlx array with the result.
+#' @seealso [mlx.core.erf](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erf.html),
+#'   [mlx.core.erfinv](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erfinv.html)
+#' @export
+#' @examples
+#' x <- as_mlx(c(-1, 0, 1))
+#' as.matrix(mlx_erf(x))
+mlx_erf <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "erf")
+  .mlx_wrap_result(ptr, x$device)
+}
+
+#' @rdname mlx_erf
+#' @export
+#' @examples
+#' p <- as_mlx(c(-0.5, 0, 0.5))
+#' as.matrix(mlx_erfinv(p))
+mlx_erfinv <- function(x) {
+  x <- as_mlx(x)
+  ptr <- cpp_mlx_unary(x$ptr, "erfinv")
+  .mlx_wrap_result(ptr, x$device)
+}

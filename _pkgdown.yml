@@ -141,6 +141,8 @@ reference:
       - mlx_conjugate
       - mlx_degrees
       - mlx_radians
+      - mlx_erf
+      - mlx_erfinv
       - mlx_isclose
       - mlx_allclose
       - all.equal.mlx
@@ -153,6 +155,23 @@ reference:
       - mlx_fft
       - mlx_fft2
       - mlx_fftn
+  - title: Probability Distributions
+    contents:
+      - mlx_dnorm
+      - mlx_pnorm
+      - mlx_qnorm
+      - mlx_dunif
+      - mlx_punif
+      - mlx_qunif
+      - mlx_dexp
+      - mlx_pexp
+      - mlx_qexp
+      - mlx_dlnorm
+      - mlx_plnorm
+      - mlx_qlnorm
+      - mlx_dlogis
+      - mlx_plogis
+      - mlx_qlogis
   - title: Linear Algebra
     contents:
       - "%*%.mlx"
