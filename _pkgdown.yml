@@ -112,6 +112,7 @@ reference:
     contents:
       - Math.mlx
       - Ops.mlx
+      - Summary.mlx
       - mlx_sum
       - mlx_prod
       - mlx_mean
