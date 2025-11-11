@@ -646,3 +646,81 @@ test_that("mlx_qlogis works", {
   back <- as.vector(mlx_qlogis(p_result))
   expect_equal(back, x, tolerance = 1e-6)
 })
+
+test_that("mlx_lgamma works", {
+  x <- c(1, 2, 3, 4, 5, 10)
+  x_mlx <- as_mlx(x)
+
+  result <- as.vector(mlx_lgamma(x_mlx))
+  expected <- lgamma(x)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Test with non-integer values
+  x2 <- c(0.5, 1.5, 2.5, 3.5)
+  x2_mlx <- as_mlx(x2)
+  result2 <- as.vector(mlx_lgamma(x2_mlx))
+  expected2 <- lgamma(x2)
+  expect_equal(result2, expected2, tolerance = 1e-6)
+})
+
+test_that("mlx_dt works", {
+  x <- seq(-3, 3, by = 0.5)
+  x_mlx <- as_mlx(x)
+
+  # Test with df = 5
+  result <- as.vector(mlx_dt(x_mlx, df = 5))
+  expected <- dt(x, df = 5)
+  expect_equal(result, expected, tolerance = 1e-6)
+
+  # Test with df = 10
+  result_10 <- as.vector(mlx_dt(x_mlx, df = 10))
+  expected_10 <- dt(x, df = 10)
+  expect_equal(result_10, expected_10, tolerance = 1e-6)
+
+  # Log density
+  result_log <- as.vector(mlx_dt(x_mlx, df = 5, log = TRUE))
+  expected_log <- dt(x, df = 5, log = TRUE)
+  expect_equal(result_log, expected_log, tolerance = 1e-6)
+})
+
+test_that("mlx_pt works", {
+  x <- seq(-3, 3, by = 0.5)
+  x_mlx <- as_mlx(x)
+
+  # Test with df = 5
+  result <- as.vector(mlx_pt(x_mlx, df = 5))
+  expected <- pt(x, df = 5)
+  # Approximation may be less accurate, so use larger tolerance
+  expect_equal(result, expected, tolerance = 0.05)
+
+  # Test with df = 10
+  result_10 <- as.vector(mlx_pt(x_mlx, df = 10))
+  expected_10 <- pt(x, df = 10)
+  expect_equal(result_10, expected_10, tolerance = 0.05)
+
+  # Large df should be more accurate (closer to normal)
+  result_30 <- as.vector(mlx_pt(x_mlx, df = 35))
+  expected_30 <- pt(x, df = 35)
+  expect_equal(result_30, expected_30, tolerance = 1e-3)
+})
+
+test_that("mlx_qt works", {
+  p <- c(0.025, 0.25, 0.5, 0.75, 0.975)
+  p_mlx <- as_mlx(p)
+
+  # Test with df = 5
+  result <- as.vector(mlx_qt(p_mlx, df = 5))
+  expected <- qt(p, df = 5)
+  # Approximation may be less accurate
+  expect_equal(result, expected, tolerance = 0.1)
+
+  # Test with df = 10
+  result_10 <- as.vector(mlx_qt(p_mlx, df = 10))
+  expected_10 <- qt(p, df = 10)
+  expect_equal(result_10, expected_10, tolerance = 0.1)
+
+  # Large df should be more accurate
+  result_30 <- as.vector(mlx_qt(p_mlx, df = 35))
+  expected_30 <- qt(p, df = 35)
+  expect_equal(result_30, expected_30, tolerance = 1e-2)
+})

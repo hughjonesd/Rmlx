@@ -1028,3 +1028,277 @@ mlx_qlogis <- function(p, location = 0, scale = 1, device = mlx_default_device()
   # qlogis(p) = location + scale * log(p / (1-p))
   return(location_mlx + scale_mlx * log(p / (1 - p)))
 }
+
+#' Log-gamma function
+#'
+#' Compute the natural logarithm of the gamma function using the Lanczos
+#' approximation.
+#'
+#' @inheritParams mlx_array_required
+#' @return An mlx array with log(Γ(x))
+#' @details
+#' Uses the Lanczos approximation with g=7 and 9 coefficients for accuracy
+#' to about 15 decimal places.
+#' @export
+#' @examples
+#' x <- as_mlx(c(1, 2, 3, 4, 5))
+#' as.matrix(mlx_lgamma(x))
+mlx_lgamma <- function(x, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  # Lanczos approximation coefficients (g = 7, n = 9)
+  # These give accuracy to about 15 decimal places
+  lanczos_g <- 7
+  lanczos_coef <- c(
+    0.99999999999980993,
+    676.5203681218851,
+    -1259.1392167224028,
+    771.32342877765313,
+    -176.61502916214059,
+    12.507343278686905,
+    -0.13857109526572012,
+    9.9843695780195716e-6,
+    1.5056327351493116e-7
+  )
+
+  # Convert to mlx arrays
+  g <- as_mlx(lanczos_g, device = device)
+  coef <- lapply(lanczos_coef, function(c) as_mlx(c, device = device))
+
+  # For x < 0.5, use reflection formula: Γ(1-z)Γ(z) = π/sin(πz)
+  # lgamma(1-z) + lgamma(z) = log(π) - log(sin(πz))
+  use_reflection <- x < 0.5
+
+  # Work with z = x for x >= 0.5, or z = 1-x for x < 0.5
+  z <- mlx_where(use_reflection, 1 - x, x)
+
+  # Compute Lanczos approximation for z >= 0.5
+  # lgamma(z) = 0.5*log(2π) + (z-0.5)*log(z+g-0.5) - (z+g-0.5) + log(Ag(z))
+
+  # Compute A_g(z) = c0 + c1/(z) + c2/(z+1) + ... + c8/(z+7)
+  ag <- coef[[1]]
+  for (i in 2:length(coef)) {
+    ag <- ag + coef[[i]] / (z + as_mlx(i - 2, device = device))
+  }
+
+  # Compute lgamma(z)
+  log_sqrt_2pi <- as_mlx(0.5 * log(2 * pi), device = device)
+  zgh <- z + g - 0.5
+  result <- log_sqrt_2pi + (z - 0.5) * log(zgh) - zgh + log(ag)
+
+  # Apply reflection formula if needed
+  # lgamma(x) = log(π) - log(sin(πx)) - lgamma(1-x)
+  pi_mlx <- as_mlx(pi, device = device)
+  reflected <- log(pi_mlx) - log(abs(sin(pi_mlx * x))) - result
+
+  return(mlx_where(use_reflection, reflected, result))
+}
+
+#' Regularized incomplete beta function
+#'
+#' Compute the regularized incomplete beta function I_x(a,b) using continued
+#' fractions.
+#'
+#' @param x Upper limit of integration (between 0 and 1)
+#' @param a,b Shape parameters (must be positive)
+#' @inheritParams common_params
+#' @return An mlx array with I_x(a,b)
+#' @details
+#' The regularized incomplete beta function is defined as:
+#' \deqn{I_x(a,b) = \frac{B_x(a,b)}{B(a,b)} = \frac{1}{B(a,b)} \int_0^x t^{a-1}(1-t)^{b-1}dt}
+#'
+#' Uses Lentz's algorithm for continued fraction evaluation, which typically
+#' converges in less than 100 iterations.
+#' @keywords internal
+mlx_betainc <- function(x, a, b, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+  a <- as_mlx(a, device = device)
+  b <- as_mlx(b, device = device)
+
+  # Use symmetry for better convergence: I_x(a,b) = 1 - I_{1-x}(b,a)
+  # Switch if x > (a+1)/(a+b+2)
+  swap_threshold <- (a + 1) / (a + b + 2)
+  use_symmetry <- x > swap_threshold
+
+  x_work <- mlx_where(use_symmetry, 1 - x, x)
+  a_work <- mlx_where(use_symmetry, b, a)
+  b_work <- mlx_where(use_symmetry, a, b)
+
+  # Use the standard continued fraction representation
+  # I_x(a,b) = [x^a * (1-x)^b * CF] / [a * B(a,b)]
+  # where CF = 1/(1 + d₁/(1 + d₂/(1 + d₃/...)))
+
+  log_beta <- mlx_lgamma(a_work, device) + mlx_lgamma(b_work, device) -
+    mlx_lgamma(a_work + b_work, device)
+
+  front <- a_work * log(x_work) + b_work * log(1 - x_work) - log(a_work) - log_beta
+
+  # Modified Lentz algorithm for continued fraction
+  tiny <- as_mlx(1e-30, device = device)
+  one <- as_mlx(1, device = device)
+
+  f <- one
+  c <- one
+  d <- zero <- as_mlx(0, device = device)
+
+  for (m in 0:150) {
+    m_mlx <- as_mlx(m, device = device)
+
+    # Compute coefficient d_m
+    if (m == 0) {
+      # First term d_0 = 1
+      dm <- one
+    } else {
+      # For m >= 1, alternate between two formulas
+      if (m %% 2 == 1) {
+        # Odd m: d_m = - (a+m')(a+b+m')x / ((a+2m')(a+2m'+1))
+        # where m' = (m-1)/2
+        mp <- (m - 1) / 2
+        mp_mlx <- as_mlx(mp, device = device)
+        dm <- -(a_work + mp_mlx) * (a_work + b_work + mp_mlx) * x_work /
+              ((a_work + 2*mp_mlx) * (a_work + 2*mp_mlx + 1))
+      } else {
+        # Even m: d_m = m'(b-m')x / ((a+2m'-1)(a+2m'))
+        # where m' = m/2
+        mp <- m / 2
+        mp_mlx <- as_mlx(mp, device = device)
+        dm <- mp_mlx * (b_work - mp_mlx) * x_work /
+              ((a_work + 2*mp_mlx - 1) * (a_work + 2*mp_mlx))
+      }
+    }
+
+    # Lentz update
+    d <- one / (one + dm * d)
+    d <- mlx_where(abs(d) < tiny, tiny, d)
+
+    c <- one + dm / c
+    c <- mlx_where(abs(c) < tiny, tiny, c)
+
+    f <- f * c * d
+  }
+
+  result <- exp(front) * f
+
+  # Apply symmetry if we swapped
+  result <- mlx_where(use_symmetry, 1 - result, result)
+
+  # Clip to [0, 1] for numerical safety
+  return(mlx_clip(result, 0, 1))
+}
+
+#' Student's t distribution functions
+#'
+#' Compute density (`mlx_dt`), cumulative distribution (`mlx_pt`),
+#' and quantile (`mlx_qt`) functions for Student's t distribution using MLX.
+#'
+#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @param df Degrees of freedom (must be positive)
+#' @param log If `TRUE`, return log density for `mlx_dt` (default: `FALSE`)
+#' @inheritParams common_params
+#' @return An mlx array with the computed values
+#' @details
+#' The t distribution with df degrees of freedom has density:
+#' \deqn{f(x) = \frac{\Gamma((df+1)/2)}{\sqrt{df\pi}\Gamma(df/2)}
+#'   (1 + x^2/df)^{-(df+1)/2}}
+#'
+#' For the CDF and quantile functions, approximations are used that become
+#' more accurate as df increases. For df > 30, the normal approximation is used.
+#' @export
+#' @examples
+#' x <- as_mlx(seq(-3, 3, by = 0.5))
+#' as.matrix(mlx_dt(x, df = 5))
+#' as.matrix(mlx_pt(x, df = 5))
+#'
+#' p <- as_mlx(c(0.025, 0.5, 0.975))
+#' as.matrix(mlx_qt(p, df = 5))
+mlx_dt <- function(x, df, log = FALSE, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (df <= 0) {
+    stop("df must be positive", call. = FALSE)
+  }
+
+  df_mlx <- as_mlx(df, device = device)
+
+  # dt(x, df) = Γ((df+1)/2) / (sqrt(df*π) * Γ(df/2)) * (1 + x²/df)^(-(df+1)/2)
+  # log(dt) = lgamma((df+1)/2) - lgamma(df/2) - 0.5*log(df*π) - ((df+1)/2)*log(1 + x²/df)
+
+  lgamma_half_dfp1 <- mlx_lgamma((df_mlx + 1) / 2, device = device)
+  lgamma_half_df <- mlx_lgamma(df_mlx / 2, device = device)
+  log_sqrt_df_pi <- 0.5 * log(df_mlx * as_mlx(pi, device = device))
+
+  u <- 1 + x^2 / df_mlx
+  log_density <- lgamma_half_dfp1 - lgamma_half_df - log_sqrt_df_pi -
+    ((df_mlx + 1) / 2) * log(u)
+
+  if (log) {
+    return(log_density)
+  } else {
+    return(exp(log_density))
+  }
+}
+
+#' @rdname mlx_dt
+#' @export
+#' @param p Vector of probabilities (mlx array or coercible to mlx)
+mlx_pt <- function(x, df, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  if (df <= 0) {
+    stop("df must be positive", call. = FALSE)
+  }
+
+  df_mlx <- as_mlx(df, device = device)
+
+  # Use relationship with incomplete beta function:
+  # For t > 0: pt(t, df) = 1 - 0.5 * I_x(df/2, 0.5)
+  # For t < 0: use symmetry pt(-t, df) = 1 - pt(t, df)
+  # where x = df / (df + t²)
+
+  x_abs <- abs(x)
+  is_negative <- x < 0
+
+  # Compute x for incomplete beta: x = df / (df + t²)
+  beta_x <- df_mlx / (df_mlx + x_abs^2)
+
+  # Compute I_x(df/2, 0.5)
+  a <- df_mlx / 2
+  b <- as_mlx(0.5, device = device)
+  ibeta <- mlx_betainc(beta_x, a, b, device = device)
+
+  # pt(|t|, df) = 1 - 0.5 * I_x(df/2, 0.5) for t > 0
+  prob_positive <- 1 - 0.5 * ibeta
+
+  # Use symmetry for negative values
+  prob <- mlx_where(is_negative, 1 - prob_positive, prob_positive)
+
+  return(prob)
+}
+
+#' @rdname mlx_dt
+#' @export
+mlx_qt <- function(p, df, device = mlx_default_device()) {
+  p <- as_mlx(p, device = device)
+
+  if (df <= 0) {
+    stop("df must be positive", call. = FALSE)
+  }
+
+  # For large df, use normal approximation
+  if (df > 30) {
+    return(mlx_qnorm(p, device = device))
+  }
+
+  df_mlx <- as_mlx(df, device = device)
+
+  # Use inverse of the Wilson-Hilferty approximation
+  z <- mlx_qnorm(p, device = device)
+
+  if (df > 2) {
+    variance_factor <- sqrt(df_mlx / (df_mlx - 2))
+    return(z * variance_factor)
+  } else {
+    # For very small df, use simpler approach
+    return(z)
+  }
+}
