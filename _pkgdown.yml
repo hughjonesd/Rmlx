@@ -32,6 +32,7 @@ reference:
       - as.array.mlx
       - as.vector.mlx
       - as.logical.mlx
+      - as.double.mlx
   - title: Device & Execution
     contents:
       - mlx_default_device
