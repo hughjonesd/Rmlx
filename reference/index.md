@@ -40,6 +40,9 @@
   : Convert MLX array to R vector
 - [`as.logical(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.logical.mlx.md)
   : Convert MLX array to logical vector
+- [`as.double(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.double.mlx.md)
+  [`as.numeric(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.double.mlx.md)
+  : Convert MLX array to numeric vector
 
 ## Device & Execution
 
