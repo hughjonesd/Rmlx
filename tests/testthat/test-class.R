@@ -82,17 +82,54 @@ test_that("as.vector.mlx works for 1D arrays", {
   expect_equal(v_back, as.numeric(v))
 })
 
-test_that("as.vector.mlx warns for multi-dimensional arrays", {
+test_that("as.vector.mlx flattens multi-dimensional arrays", {
   m <- matrix(1:12, 3, 4)
   m_mlx <- as_mlx(m)
 
-  expect_warning(
-    result <- as.vector(m_mlx),
-    "Converting multi-dimensional mlx array to vector"
-  )
+  result <- as.vector(m_mlx)
 
   # Should flatten in column-major order (R's default)
   expect_equal(result, as.vector(m))
+})
+
+test_that("as.numeric.mlx works for different dtypes", {
+  # Float (already numeric)
+  x_float <- as_mlx(c(1.5, 2.5, 3.5), dtype = "float32")
+  result_float <- as.numeric(x_float)
+  expect_type(result_float, "double")
+  expect_equal(result_float, c(1.5, 2.5, 3.5))
+
+  # Integer (converts to numeric)
+  x_int <- as_mlx(c(1L, 2L, 3L), dtype = "int32")
+  result_int <- as.numeric(x_int)
+  expect_type(result_int, "double")
+  expect_equal(result_int, c(1, 2, 3))
+
+  # Boolean (converts to 0/1)
+  x_bool <- as_mlx(c(TRUE, FALSE, TRUE))
+  result_bool <- as.numeric(x_bool)
+  expect_type(result_bool, "double")
+  expect_equal(result_bool, c(1, 0, 1))
+})
+
+test_that("as.numeric.mlx drops dimensions", {
+  # Matrix
+  m <- matrix(1:6, 2, 3)
+  m_mlx <- as_mlx(m)
+
+  result <- as.numeric(m_mlx)
+
+  expect_type(result, "double")
+  expect_equal(result, as.numeric(as.vector(m)))
+
+  # 3D array
+  arr <- array(1:24, dim = c(2, 3, 4))
+  arr_mlx <- as_mlx(arr)
+
+  result_3d <- as.numeric(arr_mlx)
+
+  expect_type(result_3d, "double")
+  expect_equal(result_3d, as.numeric(as.vector(arr)))
 })
 
 test_that("row()/col() match base results for mlx matrices", {

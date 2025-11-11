@@ -16,13 +16,13 @@ A vector of the specified mode
 }
 \description{
 Converts an MLX array to an R vector. For multi-dimensional arrays (2+ dimensions),
-a warning is issued and the array is flattened in column-major order (R's default).
+the array is flattened in column-major order (R's default).
 }
 \examples{
 x <- as_mlx(1:5)
 as.vector(x)
 
-# Multi-dimensional arrays produce a warning
+# Multi-dimensional arrays are flattened
 m <- as_mlx(matrix(1:6, 2, 3))
-v <- suppressWarnings(as.vector(m))  # Flattened in column-major order
+v <- as.vector(m)  # Flattened in column-major order
 }

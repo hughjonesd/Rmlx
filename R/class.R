@@ -225,7 +225,7 @@ as.array.mlx <- function(x, ...) {
 #' Convert MLX array to R vector
 #'
 #' Converts an MLX array to an R vector. For multi-dimensional arrays (2+ dimensions),
-#' a warning is issued and the array is flattened in column-major order (R's default).
+#' the array is flattened in column-major order (R's default).
 #'
 #' @inheritParams mlx_array_required
 #' @param mode Character string specifying the type of vector to return (passed to [base::as.vector()])
@@ -235,15 +235,10 @@ as.array.mlx <- function(x, ...) {
 #' x <- as_mlx(1:5)
 #' as.vector(x)
 #'
-#' # Multi-dimensional arrays produce a warning
+#' # Multi-dimensional arrays are flattened
 #' m <- as_mlx(matrix(1:6, 2, 3))
-#' v <- suppressWarnings(as.vector(m))  # Flattened in column-major order
+#' v <- as.vector(m)  # Flattened in column-major order
 as.vector.mlx <- function(x, mode = "any") {
-  # Warn for 2+ dimensional arrays
-  if (length(x$dim) >= 2) {
-    warning("Converting multi-dimensional mlx array to vector (flattening in column-major order)")
-  }
-
   as.vector(as.matrix(x), mode = mode)
 }
 
@@ -259,6 +254,29 @@ as.vector.mlx <- function(x, mode = "any") {
 as.logical.mlx <- function(x, ...) {
   as.logical(as.vector(x))
 }
+
+#' Convert MLX array to numeric vector
+#'
+#' Converts an MLX array to a numeric (double) vector, dropping dimensions
+#' and coercing types as needed. Integers and booleans are converted to doubles.
+#'
+#' @inheritParams mlx_array_required
+#' @param ... Additional arguments (currently unused).
+#' @return A numeric vector.
+#' @export
+#' @examples
+#' x_int <- as_mlx(c(1L, 2L, 3L), dtype = "int32")
+#' as.numeric(x_int)  # Returns c(1.0, 2.0, 3.0)
+#'
+#' x_bool <- as_mlx(c(TRUE, FALSE, TRUE))
+#' as.numeric(x_bool)  # Returns c(1.0, 0.0, 1.0)
+as.double.mlx <- function(x, ...) {
+  as.double(as.matrix(x))
+}
+
+#' @rdname as.double.mlx
+#' @export
+as.numeric.mlx <- as.double.mlx
 
 #' Test if object is an MLX array
 #'
