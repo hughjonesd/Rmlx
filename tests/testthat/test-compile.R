@@ -153,3 +153,35 @@ test_that("compiled functions auto-convert arguments to mlx", {
   expect_s3_class(result, "mlx")
   expect_equal(mlx_dim(result), c(2, 3))
 })
+
+test_that("compiled functions preserve list names", {
+  # Simple function returning a named list
+  test_func <- function(x, y) {
+    sum_result <- x + y
+    product_result <- x * y
+    list(sum = sum_result, product = product_result)
+  }
+
+  x <- as_mlx(matrix(1:5, ncol = 1))
+  y <- as_mlx(matrix(6:10, ncol = 1))
+
+  # Uncompiled: should have names
+  result_uncompiled <- test_func(x, y)
+  expect_equal(names(result_uncompiled), c("sum", "product"))
+  expect_s3_class(result_uncompiled$sum, "mlx")
+  expect_s3_class(result_uncompiled$product, "mlx")
+
+  # Compiled: should also preserve names
+  test_func_compiled <- mlx_compile(test_func)
+  result_compiled <- test_func_compiled(x, y)
+
+  expect_type(result_compiled, "list")
+  expect_length(result_compiled, 2)
+  expect_equal(names(result_compiled), c("sum", "product"))
+  expect_s3_class(result_compiled$sum, "mlx")
+  expect_s3_class(result_compiled$product, "mlx")
+
+  # Verify we can access by name
+  expect_equal(mlx_dim(result_compiled$sum), c(5, 1))
+  expect_equal(mlx_dim(result_compiled$product), c(5, 1))
+})

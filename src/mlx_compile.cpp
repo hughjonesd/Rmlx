@@ -62,10 +62,17 @@ std::vector<array> extract_arrays_from_result(SEXP result) {
 struct CompiledFunctionWrapper {
   Function r_fun;
   std::function<std::vector<array>(const std::vector<array>&)> compiled_fn;
+  std::shared_ptr<std::vector<std::string>> result_names;
 
   CompiledFunctionWrapper(Function f, bool shapeless) : r_fun(f) {
+    // Create shared storage for result names (captured by lambda)
+    result_names = std::make_shared<std::vector<std::string>>();
+
+    // Capture shared_ptr by value in lambda
+    auto names_ptr = result_names;
+
     // Create wrapper lambda that calls R function
-    auto wrapper = [f](const std::vector<array>& inputs) -> std::vector<array> {
+    auto wrapper = [f, names_ptr](const std::vector<array>& inputs) -> std::vector<array> {
       // Wrap inputs as mlx objects
       List wrapped_inputs(inputs.size());
       for (size_t i = 0; i < inputs.size(); ++i) {
@@ -92,6 +99,18 @@ struct CompiledFunctionWrapper {
           "Compiled functions must be pure and use only MLX operations.",
           e.what()
         );
+      }
+
+      // Capture names from result (happens during tracing)
+      if (Rf_isVectorList(result)) {
+        SEXP names_sexp = Rf_getAttrib(result, R_NamesSymbol);
+        if (!Rf_isNull(names_sexp) && Rf_isString(names_sexp)) {
+          CharacterVector names_vec(names_sexp);
+          names_ptr->clear();
+          for (int i = 0; i < names_vec.size(); ++i) {
+            names_ptr->push_back(as<std::string>(names_vec[i]));
+          }
+        }
       }
 
       // Extract arrays from result
@@ -196,6 +215,16 @@ List cpp_mlx_compile_call(SEXP compiled_xp, List mlx_args) {
   std::string result_device = devices.empty() ? "gpu" : devices[0];
   for (size_t i = 0; i < outputs.size(); ++i) {
     result[i] = wrap_array_as_mlx(outputs[i], result_device);
+  }
+
+  // Apply stored names if available
+  if (!wrapper->result_names->empty() &&
+      wrapper->result_names->size() == outputs.size()) {
+    CharacterVector names_cv(wrapper->result_names->size());
+    for (size_t i = 0; i < wrapper->result_names->size(); ++i) {
+      names_cv[i] = (*wrapper->result_names)[i];
+    }
+    result.names() = names_cv;
   }
 
   return result;
