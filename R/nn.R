@@ -414,7 +414,7 @@ mlx_silu <- function() {
 mlx_softmax_layer <- function(axis = -1L) {
   forward <- function(x) {
     # Convert negative axis to positive (Python convention: -1 = last axis)
-    ax <- if (axis < 0) length(x$dim) + axis + 1L else axis
+    ax <- if (axis < 0) length(dim(x)) + axis + 1L else axis
     mlx_softmax(x, axis = ax)
   }
 
@@ -453,7 +453,7 @@ mlx_dropout <- function(p = 0.5) {
       return(x * 0)
     }
     # Generate dropout mask
-    mask <- mlx_rand_bernoulli(x$dim, prob = 1 - env$p, device = x$device)
+    mask <- mlx_rand_bernoulli(dim(x), prob = 1 - env$p, device = x$device)
     # Scale by 1/(1-p) to maintain expected value
     x * mask / (1 - env$p)
   }
@@ -499,7 +499,7 @@ mlx_layer_norm <- function(normalized_shape, eps = 1e-5, device = mlx_default_de
 
   forward <- function(x) {
     # Normalize across last dimension
-    ndim <- length(x$dim)
+    ndim <- length(dim(x))
     last_axis <- ndim
     mean_x <- mlx_mean(x, axis = last_axis, drop = FALSE)
     var_x <- mlx_var(x, axis = last_axis, drop = FALSE, ddof = 0L)
@@ -636,7 +636,7 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
     indices <- as_mlx(indices)
 
     # indices are 0-based token IDs
-    orig_shape <- indices$dim
+    orig_shape <- dim(indices)
     indices_r <- as.integer(as.matrix(indices))
 
     # Take embeddings

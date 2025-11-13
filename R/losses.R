@@ -117,8 +117,8 @@ mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "non
   log_probs <- logits - log_sum_exp
 
   # Get log probability of target class (targets are assumed 0-indexed)
-  n_samples <- logits$dim[1]
-  n_classes <- logits$dim[2]
+  n_samples <- dim(logits)[1]
+  n_classes <- dim(logits)[2]
   targets_vec <- as.integer(as.matrix(targets))
   if (length(targets_vec) != n_samples) {
     stop("targets must provide one class index per sample.", call. = FALSE)

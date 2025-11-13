@@ -87,5 +87,5 @@ mlx_value_grad <- function(f, ..., argnums = NULL) {
 mlx_stop_gradient <- function(x) {
   x <- as_mlx(x)
   new_ptr <- cpp_mlx_stop_gradient(x$ptr)
-  new_mlx(new_ptr, x$dim, x$dtype, x$device)
+  new_mlx(new_ptr, dim(x), x$dtype, x$device)
 }

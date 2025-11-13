@@ -15,7 +15,7 @@
     return(x)
   }
   ptr <- cpp_mlx_cast(x$ptr, dtype, device)
-  new_mlx(ptr, x$dim, dtype, device)
+  new_mlx(ptr, dim(x), dtype, device)
 }
 
 #' Normalize axes for insertion operations
@@ -78,7 +78,7 @@ mlx_stack <- function(..., axis = 1L) {
   device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
   arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = device)
 
-  axis0 <- .mlx_normalize_new_axis(axis, arrays[[1]]$dim)
+  axis0 <- .mlx_normalize_new_axis(axis, dim(arrays[[1]]))
   ptr <- cpp_mlx_stack(arrays, axis0, device)
   .mlx_wrap_result(ptr, device)
 }
@@ -144,7 +144,7 @@ mlx_squeeze <- function(x, axis = NULL) {
 #' mlx_expand_dims(x, axis = 1)
 mlx_expand_dims <- function(x, axis) {
   x <- as_mlx(x)
-  axis0 <- .mlx_normalize_new_axes(axis, x$dim)
+  axis0 <- .mlx_normalize_new_axes(axis, dim(x))
   ptr <- cpp_mlx_expand_dims(x$ptr, axis0)
   .mlx_wrap_result(ptr, x$device)
 }
@@ -268,7 +268,7 @@ mlx_pad <- function(x,
   x <- as_mlx(x)
   mode <- match.arg(mode)
 
-  ndim <- length(x$dim)
+  ndim <- length(dim(x))
   if (ndim == 0L) {
     stop("Cannot pad a scalar mlx array.", call. = FALSE)
   }
@@ -313,7 +313,7 @@ mlx_split <- function(x, sections, axis = 1L) {
     stop("sections must be supplied.", call. = FALSE)
   }
   axis_idx <- .mlx_normalize_axis(axis, x)
-  dim_len <- x$dim[axis_idx + 1L]
+  dim_len <- dim(x)[axis_idx + 1L]
 
   sections <- as.integer(sections)
   sections <- sections[!is.na(sections)]
@@ -385,15 +385,15 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
     stop("asplit() for mlx arrays currently supports a single margin.", call. = FALSE)
   }
   axis_idx <- .mlx_normalize_axis(MARGIN, x)
-  dim_len <- x$dim[axis_idx + 1L]
+  dim_len <- dim(x)[axis_idx + 1L]
   splits <- mlx_split(x, sections = dim_len, axis = MARGIN)
 
-  rest_dim <- x$dim[-(axis_idx + 1L)]
+  rest_dim <- dim(x)[-(axis_idx + 1L)]
   splits <- lapply(splits, function(part) {
     if (isTRUE(drop)) {
-      part$dim <- integer(0L)
+      dim(part) <- integer(0L)
     } else {
-      part$dim <- if (length(rest_dim)) rest_dim else integer(0L)
+      dim(part) <- if (length(rest_dim)) rest_dim else integer(0L)
     }
     part
   })
@@ -517,7 +517,7 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
     stop("`resize = FALSE` is not supported for mlx arrays.", call. = FALSE)
   }
 
-  ndim <- length(x$dim)
+  ndim <- length(dim(x))
   if (ndim == 0L) {
     return(x)
   }
@@ -591,7 +591,7 @@ mlx_contiguous <- function(x, device = NULL) {
 mlx_flatten <- function(x, start_axis = 1L, end_axis = -1L) {
   x <- as_mlx(x)
 
-  if (length(x$dim) == 0L) {
+  if (length(dim(x)) == 0L) {
     return(x)
   }
 

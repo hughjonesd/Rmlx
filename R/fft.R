@@ -61,10 +61,10 @@ mlx_fftn <- function(x,
                               inverse,
                               device) {
   mlx_x <- as_mlx(x)
-  ndim <- length(mlx_x$dim)
+  ndim <- length(dim(mlx_x))
 
   axes_zero <- .mlx_normalize_axes(axes, mlx_x)
-  ndim <- length(mlx_x$dim)
+  ndim <- length(dim(mlx_x))
 
   handle <- .mlx_resolve_device(device, mlx_x$device)
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
@@ -84,7 +84,7 @@ mlx_fftn <- function(x,
         }
       }, integer(1))
     }
-    scale <- prod(mlx_x$dim[scale_axes])
+    scale <- prod(dim(mlx_x)[scale_axes])
     result <- result * scale
   }
 

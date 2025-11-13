@@ -15,7 +15,7 @@
 
   mlx_objs <- lapply(objs, as_mlx)
   ref <- mlx_objs[[1L]]
-  ref_dim <- ref$dim
+  ref_dim <- dim(ref)
   ndim <- length(ref_dim)
   if (!ndim) {
     stop("Cannot bind scalar mlx arrays.", call. = FALSE)
@@ -25,10 +25,10 @@
   }
 
   for (obj in mlx_objs) {
-    if (length(obj$dim) != ndim) {
+    if (length(dim(obj)) != ndim) {
       stop("All inputs must have the same number of dimensions.", call. = FALSE)
     }
-    if (!identical(obj$dim[-axis], ref_dim[-axis])) {
+    if (!identical(dim(obj)[-axis], ref_dim[-axis])) {
       stop("Non-bound dimensions must match across all inputs.", call. = FALSE)
     }
   }
@@ -43,8 +43,8 @@
 
   aligned <- lapply(mlx_objs, .mlx_cast, dtype = dtype, device = device)
   ptr <- cpp_mlx_concat(aligned, axis - 1L)
-  axis_lengths <- vapply(aligned, function(x) x$dim[axis], integer(1))
-  new_dim <- aligned[[1L]]$dim
+  axis_lengths <- vapply(aligned, function(x) dim(x)[axis], integer(1))
+  new_dim <- dim(aligned[[1L]])
   new_dim[axis] <- sum(axis_lengths)
   new_mlx(ptr, as.integer(new_dim), dtype, device)
 }

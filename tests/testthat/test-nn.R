@@ -7,7 +7,7 @@ test_that("activation functions work correctly", {
   gelu <- mlx_gelu()
   result <- mlx_forward(gelu, x)
   expect_s3_class(result, "mlx")
-  expect_equal(result$dim, c(5L, 1L))
+  expect_equal(dim(result), c(5L, 1L))
   # GELU(0) should be 0
   expect_equal(as.numeric(as.matrix(result)[3, 1]), 0, tolerance = 1e-6)
 
@@ -68,7 +68,7 @@ test_that("dropout layer works correctly", {
   # In training mode, some values should be zeroed
   result <- mlx_forward(dropout, x)
   expect_s3_class(result, "mlx")
-  expect_equal(result$dim, x$dim)
+  expect_equal(dim(result), dim(x))
 
   # Set to eval mode
   mlx_set_training(dropout, FALSE)
@@ -96,7 +96,7 @@ test_that("layer normalization works correctly", {
 
   result <- mlx_forward(ln, x)
   expect_s3_class(result, "mlx")
-  expect_equal(result$dim, c(3L, 4L))
+  expect_equal(dim(result), c(3L, 4L))
 
   # Each row should have approximately mean 0 and std 1
   result_mat <- as.matrix(result)
@@ -120,7 +120,7 @@ test_that("batch normalization works correctly", {
 
   result <- mlx_forward(bn, x)
   expect_s3_class(result, "mlx")
-  expect_equal(result$dim, c(3L, 4L))
+  expect_equal(dim(result), c(3L, 4L))
 
   # In training mode, each column should be normalized
   result_mat <- as.matrix(result)
@@ -149,19 +149,19 @@ test_that("embedding layer works correctly", {
   token <- as_mlx(5)
   result <- mlx_forward(emb, token)
   expect_s3_class(result, "mlx")
-  expect_equal(result$dim, c(1L, embed_dim))
+  expect_equal(dim(result), c(1L, embed_dim))
 
   # Test multiple tokens
   tokens <- as_mlx(c(1, 5, 10, 3))
   result <- mlx_forward(emb, tokens)
   expect_s3_class(result, "mlx")
-  expect_equal(result$dim, c(4L, embed_dim))
+  expect_equal(dim(result), c(4L, embed_dim))
 
   # Test 2D input
   tokens_2d <- as_mlx(matrix(c(1, 5, 10, 3), 2, 2))
   result <- mlx_forward(emb, tokens_2d)
   expect_s3_class(result, "mlx")
-  expect_equal(result$dim, c(2L, 2L, embed_dim))
+  expect_equal(dim(result), c(2L, 2L, embed_dim))
 
   # Check parameters
   params <- mlx_parameters(emb)
@@ -207,7 +207,7 @@ test_that("modules work in sequential", {
   result <- mlx_forward(net, x)
 
   expect_s3_class(result, "mlx")
-  expect_equal(result$dim, c(3L, 2L))
+  expect_equal(dim(result), c(3L, 2L))
 
   # Output should be probabilities (sum to 1)
   result_mat <- as.matrix(result)

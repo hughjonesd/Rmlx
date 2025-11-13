@@ -228,7 +228,7 @@ t.mlx <- function(x) {
   # Must transpose in MLX so MLX shape matches R dims
   # Layout conversion (physical reordering) happens at boundaries during copy
   ptr <- cpp_mlx_transpose(x$ptr)
-  new_mlx(ptr, rev(x$dim), x$dtype, x$device)
+  new_mlx(ptr, rev(dim(x)), x$dtype, x$device)
 }
 
 #' Cross product
@@ -288,7 +288,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @noRd
 .mlx_reduce_axis <- function(x, op, axis, drop, ddof = 0L) {
   axis0 <- as.integer(axis) - 1L
-  if (axis0 < 0L || axis0 >= length(x$dim)) {
+  if (axis0 < 0L || axis0 >= length(dim(x))) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
   ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
@@ -309,7 +309,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   if (any(is.na(axes))) {
     stop("axis must be a vector of integers", call. = FALSE)
   }
-  ndim <- length(x$dim)
+  ndim <- length(dim(x))
   if (any(axes < 1L | axes > ndim)) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
@@ -521,12 +521,12 @@ col.mlx <- function(x, as.factor = FALSE) {
 #' @exportS3Method scale mlx
 scale.mlx <- function(x, center = TRUE, scale = TRUE) {
   x_mlx <- as_mlx(x)
-  if (length(x_mlx$dim) != 2L) {
+  if (length(dim(x_mlx)) != 2L) {
     stop("scale.mlx() currently supports 2D arrays (matrices).", call. = FALSE)
   }
 
-  n_rows <- x_mlx$dim[1L]
-  n_cols <- x_mlx$dim[2L]
+  n_rows <- dim(x_mlx)[1L]
+  n_cols <- dim(x_mlx)[2L]
   result <- x_mlx
   center_attr <- NULL
   scale_attr <- NULL
@@ -1095,7 +1095,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
       axis <- as.integer(axis)
       axis_idx <- .mlx_normalize_axis_single(axis, x)
       sorted_x <- mlx_sort(x, axis = axis)  # mlx_sort uses 1-indexed already
-      n <- x$dim[axis]
+      n <- dim(x)[axis]
     } else {
       # Multiple axes: flatten those axes and compute quantiles
       stop("Multiple axes not yet implemented for mlx_quantile", call. = FALSE)
@@ -1103,7 +1103,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
   } else {
     # No axis: flatten and sort entire array
     sorted_x <- mlx_sort(mlx_flatten(x))
-    n <- prod(x$dim)
+    n <- prod(dim(x))
     axis <- NULL
   }
 
@@ -1122,7 +1122,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
       return(mlx_broadcast_to(sorted_x, length(probs)))
     } else {
       # For axis case, squeeze out the axis dimension and add quantile dimension
-      target_shape <- x$dim
+      target_shape <- dim(x)
       target_shape[axis] <- length(probs)
       return(mlx_broadcast_to(sorted_x, target_shape))
     }
@@ -1168,7 +1168,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
   # Handle drop parameter
   if (!is.null(axis) && drop && length(probs) == 1) {
     # Remove the quantile dimension of size 1
-    new_dim <- result$dim[-axis]
+    new_dim <- dim(result)[-axis]
     if (length(new_dim) == 0) {
       # Result is a scalar
       new_dim <- integer(0)

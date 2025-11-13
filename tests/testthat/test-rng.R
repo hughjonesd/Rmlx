@@ -6,7 +6,7 @@ test_that("mlx_rand_uniform generates correct shape and values", {
   mx_rng <- mlx_rand_uniform(shape, min = -1, max = 1)
 
   expect_s3_class(mx_rng, "mlx")
-  expect_equal(mx_rng$dim, shape)
+  expect_equal(dim(mx_rng), shape)
   vals <- as.matrix(mx_rng)
   expect_true(all(vals >= -1 & vals <= 1))
 })
@@ -17,7 +17,7 @@ test_that("mlx_rand_normal generates correct distribution", {
   mx_norm <- mlx_rand_normal(shape, mean = 2, sd = 0.5)
 
   expect_s3_class(mx_norm, "mlx")
-  expect_equal(mx_norm$dim, shape)
+  expect_equal(dim(mx_norm), shape)
   norm_vals <- as.matrix(mx_norm)
   expect_true(abs(mean(norm_vals) - 2) < 0.1)
   expect_true(sd(norm_vals) > 0)
@@ -29,7 +29,7 @@ test_that("mlx_rand_bernoulli generates binary values", {
   mx_bern <- mlx_rand_bernoulli(shape, prob = 0.3)
 
   expect_s3_class(mx_bern, "mlx")
-  expect_equal(mx_bern$dim, shape)
+  expect_equal(dim(mx_bern), shape)
   bern_vals <- as.matrix(mx_bern)
   expect_true(all(bern_vals %in% c(0, 1)))
 })
@@ -40,7 +40,7 @@ test_that("mlx_rand_gumbel generates correct distribution", {
   mx_gumbel <- mlx_rand_gumbel(shape)
 
   expect_s3_class(mx_gumbel, "mlx")
-  expect_equal(mx_gumbel$dim, shape)
+  expect_equal(dim(mx_gumbel), shape)
   gumbel_vals <- as.matrix(mx_gumbel)
   expect_true(all(is.finite(gumbel_vals)))
   # Gumbel distribution mean should be close to Euler-Mascheroni constant (~0.5772)
@@ -54,7 +54,7 @@ test_that("mlx_rand_truncated_normal generates values within bounds", {
   mx_tnorm <- mlx_rand_truncated_normal(-1, 1, c(100L, 100L))
 
   expect_s3_class(mx_tnorm, "mlx")
-  expect_equal(mx_tnorm$dim, c(100L, 100L))
+  expect_equal(dim(mx_tnorm), c(100L, 100L))
   tnorm_vals <- as.matrix(mx_tnorm)
   expect_true(all(tnorm_vals >= -1 & tnorm_vals <= 1))
   expect_true(all(is.finite(tnorm_vals)))
@@ -73,7 +73,7 @@ test_that("mlx_rand_truncated_normal works on CPU device", {
   mx_tnorm <- mlx_rand_truncated_normal(-2, 2, c(40L, 40L), device = "cpu")
 
   expect_equal(mx_tnorm$device, "cpu")
-  expect_equal(mx_tnorm$dim, c(40L, 40L))
+  expect_equal(dim(mx_tnorm), c(40L, 40L))
 })
 
 test_that("mlx_rand_multivariate_normal generates finite values", {
@@ -107,7 +107,7 @@ test_that("mlx_rand_laplace generates correct shape and values", {
   mx_laplace <- mlx_rand_laplace(shape, loc = 0, scale = 1)
 
   expect_s3_class(mx_laplace, "mlx")
-  expect_equal(mx_laplace$dim, shape)
+  expect_equal(dim(mx_laplace), shape)
   laplace_vals <- as.matrix(mx_laplace)
   expect_true(all(is.finite(laplace_vals)))
   # Mean should be close to loc
@@ -155,7 +155,7 @@ test_that("mlx_rand_randint generates integers in range", {
   samples <- mlx_rand_randint(c(100L, 100L), low = 0, high = 10)
 
   expect_s3_class(samples, "mlx")
-  expect_equal(samples$dim, c(100L, 100L))
+  expect_equal(dim(samples), c(100L, 100L))
   expect_equal(samples$dtype, "int32")
   sample_vals <- as.matrix(samples)
   expect_true(all(sample_vals >= 0 & sample_vals < 10))
@@ -184,8 +184,8 @@ test_that("mlx_rand_permutation generates valid permutation", {
 
   expect_s3_class(perm, "mlx")
   expect_equal(perm$dtype, "int32")
-  expect_equal(length(perm$dim), 1)
-  expect_equal(perm$dim, 10L)
+  expect_equal(length(dim(perm)), 1)
+  expect_equal(dim(perm), 10L)
 
   perm_vals <- as.vector(perm)
   # Should contain each of 0:9 exactly once
@@ -252,7 +252,7 @@ test_that("mlx_key_bits produces deterministic bit patterns", {
 
   expect_s3_class(bits1, "mlx")
   expect_equal(bits1$dtype, "uint32")
-  expect_equal(bits1$dim, c(4L, 2L))
+  expect_equal(dim(bits1), c(4L, 2L))
   expect_equal(as.matrix(bits1), as.matrix(bits2))
 
   bits_wide <- mlx_key_bits(c(2L, 2L), width = 2L)

@@ -68,13 +68,13 @@ NULL
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' print(x)
 print.mlx <- function(x, ...) {
-  cat(sprintf("mlx array [%s]\n", paste(x$dim, collapse = " x ")))
+  cat(sprintf("mlx array [%s]\n", paste(dim(x), collapse = " x ")))
   cat(sprintf("  dtype: %s\n", x$dtype))
   cat(sprintf("  device: %s\n", x$device))
 
   # Show preview for small arrays
-  total_size <- prod(x$dim)
-  if (total_size <= 100 && length(x$dim) <= 2) {
+  total_size <- prod(dim(x))
+  if (total_size <= 100 && length(dim(x)) <= 2) {
     cat("  values:\n")
     mat <- as.matrix(x)
     print(mat)
@@ -96,7 +96,7 @@ print.mlx <- function(x, ...) {
 str.mlx <- function(object, ...) {
   cat(sprintf(
     "mlx [%s] %s on %s\n",
-    paste(object$dim, collapse = " x "),
+    paste(dim(object), collapse = " x "),
     object$dtype,
     object$device
   ))
@@ -113,7 +113,7 @@ str.mlx <- function(object, ...) {
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' dim(x)
 dim.mlx <- function(x) {
-  x$dim
+  cpp_mlx_shape(x$ptr)
 }
 
 #' Set dimensions of MLX array
@@ -141,8 +141,14 @@ dim.mlx <- function(x) {
     stop("dims cannot be negative", call. = FALSE)
   }
 
+  # Special case: setting dim to integer(0) means convert to 1D vector
+  if (length(value) == 0) {
+    current_size <- prod(dim(x))
+    return(mlx_reshape(x, current_size))
+  }
+
   # Check that product matches
-  current_size <- prod(x$dim)
+  current_size <- prod(dim(x))
   new_size <- prod(value)
 
   if (current_size != new_size) {
@@ -179,7 +185,7 @@ mlx_reshape <- function(x, newshape) {
     stop("newshape cannot contain negative values", call. = FALSE)
   }
 
-  current_size <- prod(x$dim)
+  current_size <- prod(dim(x))
   new_size <- prod(newshape)
 
   if (current_size != new_size) {
@@ -205,7 +211,7 @@ mlx_reshape <- function(x, newshape) {
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' length(x)
 length.mlx <- function(x) {
-  prod(x$dim)
+  prod(dim(x))
 }
 
 #' Get dimensions helper
@@ -218,7 +224,7 @@ length.mlx <- function(x) {
 #' mlx_dim(x)
 mlx_dim <- function(x) {
   stopifnot(is.mlx(x))
-  x$dim
+  dim(x)
 }
 
 #' Get data type helper

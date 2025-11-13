@@ -218,7 +218,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   if (is.na(axis)) {
     stop("axis cannot be NA", call. = FALSE)
   }
-  ndim <- length(x$dim)
+  ndim <- length(dim(x))
   if (axis < 0L) {
     axis <- ndim + axis + 1L
   }

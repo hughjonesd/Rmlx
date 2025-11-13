@@ -36,7 +36,7 @@
 #' x <- as_mlx(matrix(1:9, 3, 3))
 #' x[1, ]
 `[.mlx` <- function(x, ..., drop = FALSE) {
-  ndim <- length(x$dim)
+  ndim <- length(dim(x))
   if (ndim == 0L) {
     stop("Cannot subset a scalar mlx array.", call. = FALSE)
   }
@@ -47,7 +47,7 @@
 
   # Handle matrix-style coordinates or flattened vector indices via dedicated helper
   if (length(dot_expr) == 1L) {
-    resolved <- .mlx_resolve_single_index(idx_list[[1]], x$dim)
+    resolved <- .mlx_resolve_single_index(idx_list[[1]], dim(x))
     if (!is.null(resolved)) {
       return(.mlx_matrix_subset(x, resolved$coord))
     }
@@ -57,7 +57,7 @@
   out <- x
   for (axis in seq_len(ndim)) {
     idx <- if (axis <= length(idx_list)) idx_list[[axis]] else NULL
-    sel <- .normalize_index_vector(idx, out$dim[axis])
+    sel <- .normalize_index_vector(idx, dim(out)[axis])
     if (is.null(sel)) next
 
     # If sel is an mlx array, pass its pointer; otherwise pass the R vector
@@ -68,9 +68,9 @@
 
   # Optionally drop singleton dimensions (default is FALSE to mirror package conventions)
   if (drop) {
-    keep <- out$dim != 1L
-    if (!all(keep) && length(out$dim) > 0L) {
-      new_dim <- out$dim[keep]
+    keep <- dim(out) != 1L
+    if (!all(keep) && length(dim(out)) > 0L) {
+      new_dim <- dim(out)[keep]
       ptr <- if (length(new_dim) == 0L) {
         out$ptr
       } else {
@@ -78,7 +78,7 @@
       }
       out <- .mlx_wrap_result(ptr, out$device)
       if (length(new_dim) == 0L) {
-        out$dim <- integer(0)
+        dim(out) <- integer(0)
       }
     }
   }
@@ -91,7 +91,7 @@
 #' @export
 `[<-.mlx` <- function(x, ..., value) {
   stopifnot(is.mlx(x))
-  ndim <- length(x$dim)
+  ndim <- length(dim(x))
   if (ndim == 0L) {
     stop("Cannot assign to a scalar mlx array.", call. = FALSE)
   }
@@ -102,13 +102,13 @@
 
   # Matrix/array indexing (one coordinate per row) delegates to helper
   if (length(dot_expr) == 1L) {
-    resolved <- .mlx_resolve_single_index(idx_list[[1]], x$dim)
+    resolved <- .mlx_resolve_single_index(idx_list[[1]], dim(x))
     if (!is.null(resolved)) {
       return(.mlx_matrix_assign(x, resolved$coord, value))
     }
   }
 
-  prep <- .mlx_prepare_assignment_indices(idx_list, x$dim)
+  prep <- .mlx_prepare_assignment_indices(idx_list, dim(x))
   if (prep$empty) {
     return(x)
   }
@@ -126,14 +126,14 @@
   value_array <- array(value_vec, dim = dims_sel)
   value_mlx <- as_mlx(value_array, dtype = x$dtype, device = x$device)
 
-  slice <- .mlx_slice_parameters(prep$normalized, x$dim)
+  slice <- .mlx_slice_parameters(prep$normalized, dim(x))
   if (slice$can_slice) {
     ptr <- cpp_mlx_slice_update(x$ptr, value_mlx$ptr, slice$start, slice$stop, slice$stride)
     return(.mlx_wrap_result(ptr, x$device))
   }
 
   # Otherwise materialise the cartesian product and update element-wise
-  full_indices <- .mlx_expand_indices(prep$normalized, x$dim)
+  full_indices <- .mlx_expand_indices(prep$normalized, dim(x))
 
   grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
   coord_mat <- as.matrix(grid)
@@ -160,15 +160,15 @@
 #' @return An `mlx` array containing the selected elements.
 #' @noRd
 .mlx_matrix_subset <- function(x, idx_mat) {
-  idx_mat <- .mlx_coerce_index_matrix(idx_mat, x$dim, type = "subset")
+  idx_mat <- .mlx_coerce_index_matrix(idx_mat, dim(x), type = "subset")
   if (!nrow(idx_mat)) {
     flat <- mlx_flatten(x)
     res <- .mlx_wrap_result(cpp_mlx_take(flat$ptr, integer(0), 0L), x$device)
-    res$dim <- integer(1)
+    dim(res) <- integer(1)
     return(res)
   }
 
-  linear_idx <- .mlx_linear_indices(idx_mat, x$dim)
+  linear_idx <- .mlx_linear_indices(idx_mat, dim(x))
   flat <- mlx_flatten(x)
   ptr <- cpp_mlx_take(flat$ptr, linear_idx, 0L)
   .mlx_wrap_result(ptr, x$device)
@@ -182,12 +182,12 @@
 #' @return An `mlx` array with the assignments applied.
 #' @noRd
 .mlx_matrix_assign <- function(x, idx_mat, value) {
-  idx_mat <- .mlx_coerce_index_matrix(idx_mat, x$dim, type = "assign")
+  idx_mat <- .mlx_coerce_index_matrix(idx_mat, dim(x), type = "assign")
   if (!nrow(idx_mat)) {
     return(x)
   }
 
-  linear_idx <- .mlx_linear_indices(idx_mat, x$dim)
+  linear_idx <- .mlx_linear_indices(idx_mat, dim(x))
   total <- length(linear_idx)
 
   val_vec <- as.vector(value)
@@ -202,7 +202,7 @@
 
   flat <- mlx_flatten(x)
   flat_updated <- .mlx_scatter_axis(flat, idx_mlx, updates_mlx, axis = 0L)
-  mlx_reshape(flat_updated, x$dim)
+  mlx_reshape(flat_updated, dim(x))
 }
 
 #' Evaluate and align index expressions with dimension count
@@ -475,7 +475,7 @@
   }
 
   if (is.mlx(idx)) {
-    return(isTRUE(length(idx$dim) >= 2L && tail(idx$dim, 1) == ndim) &&
+    return(isTRUE(length(dim(idx)) >= 2L && tail(dim(idx), 1) == ndim) &&
              !identical(idx$dtype, "bool"))
   }
 
@@ -499,7 +499,7 @@
   }
 
   if (is.mlx(idx)) {
-    return(!identical(idx$dtype, "bool") && length(idx$dim) >= 2L)
+    return(!identical(idx$dtype, "bool") && length(dim(idx)) >= 2L)
   }
 
   (is.matrix(idx) || (is.array(idx) && length(dim(idx)) >= 2L)) && is.numeric(idx)

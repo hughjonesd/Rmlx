@@ -73,7 +73,7 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
 #' qr(x)
 qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   x <- as_mlx(x)
-  stopifnot(length(x$dim) == 2L)
+  stopifnot(length(dim(x)) == 2L)
 
   if (!missing(tol) && !isTRUE(all.equal(tol, 1e-7))) {
     stop("Custom tolerance is not supported for mlx QR decomposition.", call. = FALSE)
@@ -122,10 +122,10 @@ svd.default <- function(x, ...) base::svd(x, ...)
 #' svd(x)
 svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
   x <- as_mlx(x)
-  stopifnot(length(x$dim) == 2L)
+  stopifnot(length(dim(x)) == 2L)
 
-  n <- x$dim[1]
-  p <- x$dim[2]
+  n <- dim(x)[1]
+  p <- dim(x)[2]
   full_cols <- min(n, p)
 
   if (!nu %in% c(0L, full_cols)) {
@@ -165,7 +165,7 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
 #' pinv(x)
 pinv <- function(x) {
   x <- as_mlx(x)
-  stopifnot(length(x$dim) == 2L)
+  stopifnot(length(dim(x)) == 2L)
 
   ptr <- cpp_mlx_pinv(x$ptr, x$dtype, x$device)
   .mlx_wrap_result(ptr, x$device)
@@ -243,7 +243,7 @@ mlx_norm <- function(x, ord = NULL, axis = NULL, drop = TRUE) {
 #' eig$vectors
 mlx_eig <- function(x) {
   x <- as_mlx(x)
-  stopifnot(length(x$dim) == 2L, x$dim[1] == x$dim[2])
+  stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
 
   res <- cpp_mlx_eig(x$ptr, x$device)
   list(
@@ -263,7 +263,7 @@ mlx_eig <- function(x) {
 #' mlx_eigvals(x)
 mlx_eigvals <- function(x) {
   x <- as_mlx(x)
-  stopifnot(length(x$dim) == 2L, x$dim[1] == x$dim[2])
+  stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
   ptr <- cpp_mlx_eigvals(x$ptr, x$device)
   .mlx_wrap_result(ptr, x$device)
 }
@@ -280,7 +280,7 @@ mlx_eigvals <- function(x) {
 #' mlx_eigvalsh(x)
 mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
   x <- as_mlx(x)
-  stopifnot(length(x$dim) == 2L, x$dim[1] == x$dim[2])
+  stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
   uplo <- match.arg(uplo)
   ptr <- cpp_mlx_eigvalsh(x$ptr, uplo, x$device)
   .mlx_wrap_result(ptr, x$device)
@@ -297,7 +297,7 @@ mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
 #' mlx_eigh(x)
 mlx_eigh <- function(x, uplo = c("L", "U")) {
   x <- as_mlx(x)
-  stopifnot(length(x$dim) == 2L, x$dim[1] == x$dim[2])
+  stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
   uplo <- match.arg(uplo)
   res <- cpp_mlx_eigh(x$ptr, uplo, x$device)
   list(
@@ -322,7 +322,7 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
 mlx_solve_triangular <- function(a, b, upper = FALSE) {
   a <- as_mlx(a)
   b <- as_mlx(b)
-  stopifnot(length(a$dim) == 2L, a$dim[1] == a$dim[2])
+  stopifnot(length(dim(a)) == 2L, dim(a)[1] == dim(a)[2])
   ptr <- cpp_mlx_solve_triangular(a$ptr, b$ptr, upper, a$device)
   .mlx_wrap_result(ptr, a$device)
 }
@@ -350,14 +350,14 @@ backsolve.mlx <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, .
   r_mlx <- as_mlx(r)
   x_mlx <- as_mlx(x, device = r_mlx$device)
 
-  if (length(r_mlx$dim) != 2L) {
+  if (length(dim(r_mlx)) != 2L) {
     stop("`r` must be a matrix when using backsolve() with mlx arrays.", call. = FALSE)
   }
 
   if (is.null(k)) {
-    k <- r_mlx$dim[2L]
+    k <- dim(r_mlx)[2L]
   }
-  if (!identical(k, r_mlx$dim[2L])) {
+  if (!identical(k, dim(r_mlx)[2L])) {
     stop("`k` values other than ncol(r) are not yet supported for mlx arrays.", call. = FALSE)
   }
 

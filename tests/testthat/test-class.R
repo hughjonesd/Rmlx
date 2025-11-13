@@ -3,13 +3,13 @@ test_that("as_mlx converts R objects correctly", {
   v <- 1:10
   v_mlx <- as_mlx(v)
   expect_s3_class(v_mlx, "mlx")
-  expect_equal(v_mlx$dim, 10L)
+  expect_equal(dim(v_mlx), 10L)
 
   # Matrix
   m <- matrix(1:12, 3, 4)
   m_mlx <- as_mlx(m)
   expect_s3_class(m_mlx, "mlx")
-  expect_equal(m_mlx$dim, c(3L, 4L))
+  expect_equal(dim(m_mlx), c(3L, 4L))
   expect_equal(m_mlx$dtype, "float32")  # Default is float32 for GPU compatibility
 })
 
@@ -43,7 +43,7 @@ test_that("logical inputs create boolean MLX arrays", {
 
   expect_s3_class(m_mlx, "mlx")
   expect_equal(m_mlx$dtype, "bool")
-  expect_equal(m_mlx$dim, dim(m))
+  expect_equal(dim(m_mlx), dim(m))
   expect_identical(as.matrix(m_mlx), m)
 })
 
@@ -53,7 +53,7 @@ test_that("complex inputs create complex MLX arrays", {
 
   expect_s3_class(m_mlx, "mlx")
   expect_equal(m_mlx$dtype, "complex64")
-  expect_equal(m_mlx$dim, dim(m))
+  expect_equal(dim(m_mlx), dim(m))
   expect_equal(as.matrix(m_mlx), m, tolerance = 1e-5)
 })
 

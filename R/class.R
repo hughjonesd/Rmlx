@@ -194,10 +194,10 @@ mlx_eval <- function(x) {
 as.matrix.mlx <- function(x, ...) {
   mlx_eval(x)
   out <- cpp_mlx_to_r(x$ptr)
-  if (length(x$dim) == 0) {
+  if (length(dim(x)) == 0) {
     return(as.vector(out))
   }
-  dim(out) <- x$dim
+  dim(out) <- dim(x)
   attrs <- attributes(x)
   attrs$names <- NULL
   attrs$class <- NULL
@@ -299,10 +299,10 @@ is.mlx <- function(x) {
 #' @keywords internal
 #' @noRd
 new_mlx <- function(ptr, dim, dtype, device) {
+  # dim parameter kept for compatibility but not stored
   structure(
     list(
       ptr = ptr,
-      dim = as.integer(dim),
       dtype = dtype,
       device = device
     ),

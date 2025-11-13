@@ -48,7 +48,7 @@ test_that("transpose works", {
   xt <- as.matrix(xt_mlx)
 
   expect_equal(xt, t(x), tolerance = 1e-6)
-  expect_equal(xt_mlx$dim, c(4L, 3L))
+  expect_equal(dim(xt_mlx), c(4L, 3L))
 })
 
 test_that("crossprod works", {
