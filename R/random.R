@@ -20,7 +20,7 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_random_uniform(dim, min, max, dtype, dev)
   })
-  new_mlx(ptr, dim, dtype, handle$device)
+  new_mlx(ptr, dtype, handle$device)
 }
 
 #' Sample from a normal distribution on mlx arrays
@@ -44,7 +44,7 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_random_normal(dim, mean, sd, dtype, dev)
   })
-  new_mlx(ptr, dim, dtype, handle$device)
+  new_mlx(ptr, dtype, handle$device)
 }
 
 #' Sample Bernoulli random variables on mlx arrays
@@ -66,7 +66,7 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_random_bernoulli(dim, prob, dev)
   })
-  new_mlx(ptr, dim, "bool", handle$device)
+  new_mlx(ptr, "bool", handle$device)
 }
 
 #' Sample from the Gumbel distribution on mlx arrays
@@ -87,7 +87,7 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_random_gumbel(dim, dtype, dev)
   })
-  new_mlx(ptr, dim, dtype, handle$device)
+  new_mlx(ptr, dtype, handle$device)
 }
 
 #' Sample from a truncated normal distribution on mlx arrays
@@ -117,7 +117,7 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_random_truncated_normal(lower, upper, dim, dtype, dev)
   })
-  new_mlx(ptr, dim, dtype, handle$device)
+  new_mlx(ptr, dtype, handle$device)
 }
 
 #' Sample from a multivariate normal distribution on mlx arrays
@@ -157,7 +157,7 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
   })
   # Get the actual output shape from the result
   output_shape <- cpp_mlx_shape(ptr)
-  new_mlx(ptr, output_shape, dtype, handle$device)
+  new_mlx(ptr, dtype, handle$device)
 }
 
 #' Sample from the Laplace distribution on mlx arrays
@@ -187,7 +187,7 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_random_laplace(dim, loc, scale, dtype, dev)
   })
-  new_mlx(ptr, dim, dtype, handle$device)
+  new_mlx(ptr, dtype, handle$device)
 }
 
 #' Sample from a categorical distribution on mlx arrays
@@ -225,7 +225,7 @@ mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
 
   ptr <- cpp_mlx_random_categorical(logits, axis, num_samples)
   output_shape <- cpp_mlx_shape(ptr)
-  new_mlx(ptr, output_shape, "int32", logits$device)
+  new_mlx(ptr, "int32", logits$device)
 }
 
 #' Sample random integers on mlx arrays
@@ -266,7 +266,7 @@ mlx_rand_randint <- function(dim, low, high,
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_random_randint(dim, low, high, dtype, dev)
   })
-  new_mlx(ptr, dim, dtype, handle$device)
+  new_mlx(ptr, dtype, handle$device)
 }
 
 #' Generate random permutations on mlx arrays
@@ -306,13 +306,13 @@ mlx_rand_permutation <- function(x, axis = 0L, device = mlx_default_device()) {
     }
     handle <- .mlx_resolve_device(device, mlx_default_device())
     ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_random_permutation_n(n, dev))
-    new_mlx(ptr, n, "int32", handle$device)
+    new_mlx(ptr, "int32", handle$device)
   } else {
     # Permute array along axis
     x <- as_mlx(x)
     ptr <- cpp_mlx_random_permutation(x, axis)
     output_shape <- cpp_mlx_shape(ptr)
-    new_mlx(ptr, output_shape, x$dtype, x$device)
+    new_mlx(ptr, x$dtype, x$device)
   }
 }
 

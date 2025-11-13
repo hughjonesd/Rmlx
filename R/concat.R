@@ -46,7 +46,7 @@
   axis_lengths <- vapply(aligned, function(x) dim(x)[axis], integer(1))
   new_dim <- dim(aligned[[1L]])
   new_dim[axis] <- sum(axis_lengths)
-  new_mlx(ptr, as.integer(new_dim), dtype, device)
+  new_mlx(ptr, dtype, device)
 }
 
 #' Row-bind mlx arrays

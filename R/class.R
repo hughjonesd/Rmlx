@@ -298,8 +298,7 @@ is.mlx <- function(x) {
 #' @param device Device
 #' @keywords internal
 #' @noRd
-new_mlx <- function(ptr, dim, dtype, device) {
-  # dim parameter kept for compatibility but not stored
+new_mlx <- function(ptr, dtype, device) {
   structure(
     list(
       ptr = ptr,

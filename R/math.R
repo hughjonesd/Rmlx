@@ -21,7 +21,7 @@ Math.mlx <- function(x, ...) {
   if (op %in% c("cumsum", "cumprod", "cummax", "cummin")) {
     ptr <- cpp_mlx_cumulative(x$ptr, op)
     len <- as.integer(prod(dim(x)))
-    return(new_mlx(ptr, len, x$dtype, x$device))
+    return(new_mlx(ptr, x$dtype, x$device))
   }
 
   # Map R function names to MLX operations
@@ -44,7 +44,7 @@ Math.mlx <- function(x, ...) {
   # Try MLX operation first
   result <- tryCatch({
     ptr <- cpp_mlx_unary(x$ptr, op)
-    new_mlx(ptr, dim(x), x$dtype, x$device)
+    new_mlx(ptr, x$dtype, x$device)
   }, error = function(e) {
     # If MLX doesn't support this operation, fall back to base R
     if (grepl("Unsupported unary operation", e$message)) {

@@ -228,7 +228,7 @@ t.mlx <- function(x) {
   # Must transpose in MLX so MLX shape matches R dims
   # Layout conversion (physical reordering) happens at boundaries during copy
   ptr <- cpp_mlx_transpose(x$ptr)
-  new_mlx(ptr, rev(dim(x)), x$dtype, x$device)
+  new_mlx(ptr, x$dtype, x$device)
 }
 
 #' Cross product

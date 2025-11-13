@@ -88,7 +88,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
   result_device <- .common_device(x$device, y$device)
 
   ptr <- cpp_mlx_matmul(x$ptr, y$ptr, result_dtype, result_device)
-  new_mlx(ptr, result_dim, result_dtype, result_device)
+  new_mlx(ptr, result_dtype, result_device)
 }
 
 #' Fused matrix multiply and add for MLX arrays
@@ -160,7 +160,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   mat2 <- .mlx_cast(mat2, dtype = result_dtype, device = result_device)
 
   ptr <- cpp_mlx_addmm(input$ptr, mat1$ptr, mat2$ptr, alpha, beta, result_dtype, result_device)
-  new_mlx(ptr, result_dim, result_dtype, result_device)
+  new_mlx(ptr, result_dtype, result_device)
 }
 
 #' Apply unary MLX operation
@@ -171,7 +171,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @noRd
 .mlx_unary <- function(x, op) {
   ptr <- cpp_mlx_unary(x$ptr, op)
-  new_mlx(ptr, dim(x), x$dtype, x$device)
+  new_mlx(ptr, x$dtype, x$device)
 }
 
 #' Apply binary MLX operation with type promotion
@@ -193,7 +193,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   result_dtype <- if (is_comparison) "bool" else input_dtype
 
   ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype, result_device)
-  new_mlx(ptr, integer(0), result_dtype, result_device)
+  new_mlx(ptr, result_dtype, result_device)
 }
 
 #' Apply logical MLX operation
@@ -206,7 +206,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   result_device <- .common_device(x$device, y$device)
 
   ptr <- cpp_mlx_logical(x$ptr, y$ptr, op, result_device)
-  new_mlx(ptr, integer(0), "bool", result_device)
+  new_mlx(ptr, "bool", result_device)
 }
 
 #' Apply logical NOT to mlx array
@@ -216,7 +216,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @noRd
 .mlx_logical_not <- function(x) {
   ptr <- cpp_mlx_logical_not(x$ptr)
-  new_mlx(ptr, dim(x), "bool", x$device)
+  new_mlx(ptr, "bool", x$device)
 }
 
 #' Integer division for mlx arrays
@@ -233,7 +233,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   }
 
   ptr <- cpp_mlx_floor_divide(x$ptr, y$ptr, result_device)
-  new_mlx(ptr, integer(0), result_dtype, result_device)
+  new_mlx(ptr, result_dtype, result_device)
 }
 
 #' Remainder operation for mlx arrays
@@ -250,7 +250,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   }
 
   ptr <- cpp_mlx_remainder(x$ptr, y$ptr, result_device)
-  new_mlx(ptr, integer(0), result_dtype, result_device)
+  new_mlx(ptr, result_dtype, result_device)
 }
 
 #' Elementwise minimum of two mlx arrays
@@ -297,7 +297,7 @@ mlx_maximum <- function(x, y) {
   }
 
   ptr <- cpp_fn(x$ptr, y$ptr, result_device)
-  new_mlx(ptr, integer(0), result_dtype, result_device)
+  new_mlx(ptr, result_dtype, result_device)
 }
 
 #' Clip mlx array values into a range
@@ -323,7 +323,7 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
   }
 
   ptr <- cpp_mlx_clip(x$ptr, min, max, x$device)
-  new_mlx(ptr, dim(x), if (x$dtype %in% c("float32", "float64")) x$dtype else "float32", x$device)
+  new_mlx(ptr, if (x$dtype %in% c("float32", "float64")) x$dtype else "float32", x$device)
 }
 
 #' Compute broadcast dimensions

@@ -19,7 +19,7 @@ solve.mlx <- function(a, b = NULL, ...) {
   if (is.null(b)) {
     # No b: compute matrix inverse
     ptr <- cpp_mlx_solve(a$ptr, NULL, target_dtype, target_device)
-    new_mlx(ptr, dim(a), target_dtype, target_device)
+    new_mlx(ptr, target_dtype, target_device)
   } else {
     # Convert b to mlx if needed
     if (!is.mlx(b)) {
@@ -31,7 +31,7 @@ solve.mlx <- function(a, b = NULL, ...) {
 
     # Result dimensions: if b is a vector, result is a vector
     # if b is a matrix with k columns, result has same dimensions as b
-    new_mlx(ptr, dim(b), target_dtype, target_device)
+    new_mlx(ptr, target_dtype, target_device)
   }
 }
 
@@ -78,7 +78,7 @@ mlx_kron <- function(a, b) {
 
   ptr <- cpp_mlx_kron(a$ptr, b$ptr, result_device)
   out_dim <- cpp_mlx_shape(ptr)
-  new_mlx(ptr, out_dim, result_dtype, result_device)
+  new_mlx(ptr, result_dtype, result_device)
 }
 
 setOldClass("mlx")

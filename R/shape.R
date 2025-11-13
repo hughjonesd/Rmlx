@@ -15,7 +15,7 @@
     return(x)
   }
   ptr <- cpp_mlx_cast(x$ptr, dtype, device)
-  new_mlx(ptr, dim(x), dtype, device)
+  new_mlx(ptr, dtype, device)
 }
 
 #' Normalize axes for insertion operations

@@ -8,7 +8,7 @@
 .mlx_wrap_result <- function(ptr, device) {
   dim <- cpp_mlx_shape(ptr)
   dtype <- cpp_mlx_dtype(ptr)
-  new_mlx(ptr, dim, dtype, device)
+  new_mlx(ptr, dtype, device)
 }
 
 .mlx_is_stream <- function(x) inherits(x, "mlx_stream")
@@ -198,7 +198,7 @@ mlx_reshape <- function(x, newshape) {
   ptr <- cpp_mlx_reshape(x$ptr, newshape)
   dim_result <- cpp_mlx_shape(ptr)
   dtype_result <- cpp_mlx_dtype(ptr)
-  new_mlx(ptr, dim_result, dtype_result, x$device)
+  new_mlx(ptr, dtype_result, x$device)
 }
 
 #' Get length of MLX array

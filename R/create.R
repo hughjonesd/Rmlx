@@ -507,7 +507,7 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
   ptr <- cpp_mlx_diag(x$ptr, k, x$device)
   dim <- cpp_mlx_shape(ptr)
   dtype <- cpp_mlx_dtype(ptr)
-  new_mlx(ptr, dim, dtype, x$device)
+  new_mlx(ptr, dtype, x$device)
 }
 
 #' Numerical ranges on MLX devices
