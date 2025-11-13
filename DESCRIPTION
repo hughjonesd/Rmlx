@@ -14,7 +14,8 @@ Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports:
     Rcpp (>= 1.0.10),
-    methods
+    methods,
+    stats
 LinkingTo:
     Rcpp
 Suggests:

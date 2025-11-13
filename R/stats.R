@@ -1182,6 +1182,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
 #' @rdname mlx_quantile
 #' @export
 #' @method quantile mlx
+#' @importFrom stats quantile
 quantile.mlx <- function(x, probs, ...) {
   mlx_quantile(x, probs = probs, axis = NULL, device = x$device)
 }

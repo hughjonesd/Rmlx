@@ -188,6 +188,10 @@ mlx_coordinate_descent <- function(loss_fn,
   # Create coordinate batches
   coord_batches <- split(seq_len(n_pred), ceiling(seq_len(n_pred) / batch_size))
 
+  # Convert constants to mlx once
+  lipschitz_mlx <- as_mlx(lipschitz)
+  lambda_mlx <- as_mlx(lambda)
+
   for (iter in seq_len(max_iter)) {
     beta_old <- as.numeric(beta)
 
@@ -199,18 +203,17 @@ mlx_coordinate_descent <- function(loss_fn,
       # Update all coordinates in the batch at once
       grad_coords <- grad[coords, , drop = FALSE]
       beta_coords <- beta[coords, , drop = FALSE]
-      L_coords <- lipschitz[coords]
+      L_coords <- lipschitz_mlx[coords]
 
-      # Convert L_coords to mlx column vector for proper broadcasting
-      L_mlx <- as_mlx(L_coords)
-      L_matrix <- mlx_reshape(L_mlx, c(length(L_coords), 1))
+      # Reshape to column vector for proper broadcasting
+      L_matrix <- mlx_reshape(L_coords, c(length(L_coords), 1))
 
       # Proximal gradient step (vectorized)
       z <- beta_coords - grad_coords / L_matrix
 
       # Soft thresholding (vectorized)
       abs_z <- abs(z)
-      threshold_mlx <- mlx_reshape(as_mlx(lambda / L_coords), c(length(L_coords), 1))
+      threshold_mlx <- mlx_reshape(lambda_mlx / L_coords, c(length(L_coords), 1))
 
       # Apply soft thresholding: max(abs_z - threshold, 0) * sign(z)
       beta[coords, ] <- sign(z) * mlx_maximum(abs_z - threshold_mlx, 0)
