@@ -18,7 +18,7 @@
 #' * The result is needed for another computation
 #'
 #' The package implements most of the C++ API via calls with the `mlx_` prefix,
-#' but it also ships S3 methods (prefixed `mlx_` or attached to base generics)
+#' but it also ships [S3 methods for many base generics][mlx-methods],
 #' so common R matrix operations continue to work on MLX arrays. R conventions
 #' are used throughout: for example, indexing is 1-based.
 #'
