@@ -293,6 +293,12 @@ benchmark_operations <- function() {
       mlx = function(data) { force_mlx(mean(data$a)) }
     ),
     list(
+      id = "quantile",
+      label = "Quantile",
+      base = function(data) { quantile(data$vec, probs = c(0.25, 0.5, 0.75), type = 7); invisible(NULL) },
+      mlx = function(data) { force_mlx(quantile(data$vec, probs = c(0.25, 0.5, 0.75))) }
+    ),
+    list(
       id = "rowsums",
       label = "Row sums",
       base = function(data) { rowSums(data$a); invisible(NULL) },
