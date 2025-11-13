@@ -201,18 +201,19 @@ mlx_coordinate_descent <- function(loss_fn,
       beta_coords <- beta[coords, , drop = FALSE]
       L_coords <- lipschitz[coords]
 
-      # Reshape L_coords to column vector for proper broadcasting
-      L_matrix <- as_mlx(matrix(L_coords, ncol = 1))
+      # Convert L_coords to mlx column vector for proper broadcasting
+      L_mlx <- as_mlx(L_coords)
+      L_matrix <- mlx_reshape(L_mlx, c(length(L_coords), 1))
 
       # Proximal gradient step (vectorized)
       z <- beta_coords - grad_coords / L_matrix
 
       # Soft thresholding (vectorized)
       abs_z <- abs(z)
-      threshold_matrix <- matrix(lambda / L_coords, ncol = 1)
+      threshold_mlx <- mlx_reshape(as_mlx(lambda / L_coords), c(length(L_coords), 1))
 
       # Apply soft thresholding: max(abs_z - threshold, 0) * sign(z)
-      beta[coords, ] <- sign(z) * mlx_maximum(abs_z - threshold_matrix, 0)
+      beta[coords, ] <- sign(z) * mlx_maximum(abs_z - threshold_mlx, 0)
     }
 
     # Check convergence
