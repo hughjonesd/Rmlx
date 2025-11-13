@@ -169,7 +169,7 @@ unbounded</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">w_sgd</span> <span class="op">&lt;-</span> <span class="fu">train_sgd</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Iteration 1000 - Loss: 5.012835e-05</span></span></code></pre></div>
+<span><span class="co">#&gt; Iteration 1000 - Loss: 5.045004e-05</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-2-closed-form-regression-via-matrix-algebra">Method 2: Closed-form Regression via Matrix Algebra<a class="anchor" aria-label="anchor" href="#method-2-closed-form-regression-via-matrix-algebra"></a>
@@ -199,7 +199,7 @@ and solve the triangular system
 <span><span class="va">closed_error</span> <span class="op">&lt;-</span> <span class="va">w_closed</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">closed_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">closed_error</span> <span class="op">*</span> <span class="va">closed_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">closed_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.000942284</span></span></code></pre></div>
+<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.001128754</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accelerating-the-closed-form-solution-with-mlx_compile">Accelerating the Closed-form Solution with
@@ -222,7 +222,7 @@ graph.</p>
 <span><span class="va">compiled_error</span> <span class="op">&lt;-</span> <span class="va">w_compiled</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">compiled_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">compiled_error</span> <span class="op">*</span> <span class="va">compiled_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Compiled closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">compiled_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.000942284</span></span></code></pre></div>
+<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.001128754</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accuracy-and-performance-comparison">Accuracy and Performance Comparison<a class="anchor" aria-label="anchor" href="#accuracy-and-performance-comparison"></a>
@@ -294,23 +294,23 @@ as a reference.</p>
 <tbody>
 <tr class="odd">
 <td align="left">SGD</td>
-<td align="right">1.41s</td>
-<td align="right">1e-03</td>
+<td align="right">2.75s</td>
+<td align="right">0.0012</td>
 </tr>
 <tr class="even">
 <td align="left">MLX closed form</td>
-<td align="right">29.02ms</td>
-<td align="right">9e-04</td>
+<td align="right">26.26ms</td>
+<td align="right">0.0011</td>
 </tr>
 <tr class="odd">
 <td align="left">MLX closed form (compiled)</td>
-<td align="right">20.84ms</td>
-<td align="right">9e-04</td>
+<td align="right">31.54ms</td>
+<td align="right">0.0011</td>
 </tr>
 <tr class="even">
 <td align="left">Base R</td>
-<td align="right">35.25ms</td>
-<td align="right">9e-04</td>
+<td align="right">35.54ms</td>
+<td align="right">0.0011</td>
 </tr>
 </tbody>
 </table>
