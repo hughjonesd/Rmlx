@@ -192,6 +192,24 @@ mlx_coordinate_descent <- function(loss_fn,
   lipschitz_mlx <- mlx_reshape(as_mlx(lipschitz), c(n_pred, 1))
   lambda_mlx <- as_mlx(lambda)
 
+  # Define update for a single batch
+  update_batch <- function(beta, grad_coords, beta_coords, L_matrix) {
+    # Proximal gradient step (vectorized)
+    z <- beta_coords - grad_coords / L_matrix
+
+    # Soft thresholding (vectorized)
+    abs_z <- abs(z)
+    threshold_mlx <- lambda_mlx / L_matrix
+
+    # Apply soft thresholding: max(abs_z - threshold, 0) * sign(z)
+    sign(z) * mlx_maximum(abs_z - threshold_mlx, 0)
+  }
+
+  # Compile the batch update function if requested
+  if (compile) {
+    update_batch <- mlx_compile(update_batch)
+  }
+
   for (iter in seq_len(max_iter)) {
     beta_old <- beta
 
@@ -205,15 +223,8 @@ mlx_coordinate_descent <- function(loss_fn,
       beta_coords <- beta[coords, , drop = FALSE]
       L_matrix <- lipschitz_mlx[coords, , drop = FALSE]
 
-      # Proximal gradient step (vectorized)
-      z <- beta_coords - grad_coords / L_matrix
-
-      # Soft thresholding (vectorized)
-      abs_z <- abs(z)
-      threshold_mlx <- lambda_mlx / L_matrix
-
-      # Apply soft thresholding: max(abs_z - threshold, 0) * sign(z)
-      beta[coords, ] <- sign(z) * mlx_maximum(abs_z - threshold_mlx, 0)
+      # Apply the update (possibly compiled)
+      beta[coords, ] <- update_batch(beta, grad_coords, beta_coords, L_matrix)
     }
 
     # Check convergence (compute in mlx, convert only the scalar result)
