@@ -69,3 +69,8 @@
 - Never edit `NAMESPACE` or `R/RcppExports.R` by hand—regenerate them with `devtools::document()` / `Rcpp::compileAttributes()` after updating roxygen or C++ signatures.
 - In user-facing APIs and docs, prefer the term *array* over *tensor* to match R conventions.
 - Add concise internal documentation (comments or helper docstrings) for non-obvious internal helpers; keep the codebase self-explanatory.
+
+### MLX Core Capabilities
+- **Integer array indexing**: MLX supports indexing with integer arrays via `[.mlx`. Both R vectors and mlx arrays work as indices. Example: `sorted_x[indices_mlx]` where `indices_mlx` is an mlx array of integers extracts values at those positions.
+- **Sorting**: `mlx_sort()` and `mlx_argsort()` are available. Note that `mlx_argsort()` returns 1-based indices following R conventions.
+- **Arithmetic interpolation**: Linear interpolation is straightforward with mlx arrays: `result <- (1 - weight) * lower + weight * upper` where all values are mlx arrays. This leverages lazy evaluation to build the computation graph efficiently.

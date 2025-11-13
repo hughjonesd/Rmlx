@@ -124,6 +124,8 @@ reference:
       - mlx_any
       - mlx_cumsum
       - mlx_cumprod
+      - mlx_quantile
+      - quantile.mlx
       - mlx_clip
       - mlx_maximum
       - mlx_minimum

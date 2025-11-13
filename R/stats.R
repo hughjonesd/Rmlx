@@ -1028,3 +1028,160 @@ mlx_qlogis <- function(p, location = 0, scale = 1, device = mlx_default_device()
   # qlogis(p) = location + scale * log(p / (1-p))
   return(location_mlx + scale_mlx * log(p / (1 - p)))
 }
+
+#' Compute quantiles of MLX arrays
+#'
+#' Calculates sample quantiles corresponding to given probabilities using linear
+#' interpolation (R's type 7 quantiles, the default in [stats::quantile()]).
+#' The S3 method `quantile.mlx()` provides an interface compatible with the
+#' generic [stats::quantile()].
+#'
+#' @inheritParams common_params
+#' @param probs Numeric vector of probabilities in \[0, 1\].
+#' @param axis Optional integer axis (or vector of axes) along which to compute
+#'   quantiles. When `NULL` (default), quantiles are computed over the entire
+#'   flattened array.
+#' @param drop Logical; when `TRUE` and computing quantiles along an axis with a
+#'   single probability, removes the quantile dimension of length 1. Defaults to
+#'   `FALSE` to match the behavior of other reduction functions.
+#' @param ... Additional arguments (currently ignored by `quantile.mlx()`).
+#' @return An mlx array containing the requested quantiles. The shape depends on
+#'   `probs`, `axis`, and `drop`: when `axis = NULL`, returns a scalar for a
+#'   single probability or a vector for multiple probabilities. When `axis` is
+#'   specified, the quantile dimension replaces the reduced axis (e.g., a `(3, 4)`
+#'   matrix with `axis = 1` and 2 quantiles gives `(2, 4)`), unless `drop = TRUE`
+#'   with a single probability removes that dimension.
+#' @seealso
+#'   [stats::quantile()],
+#'   [mlx.core.sort](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sort)
+#' @details
+#' Uses type 7 quantiles (linear interpolation): for probability p and n
+#' observations, the quantile is computed as:
+#'
+#' - h = (n-1) * p
+#' - Interpolate between floor(h) and ceiling(h)
+#'
+#' This matches the default behavior of [stats::quantile()].
+#'
+#' @export
+#' @examples
+#' x <- as_mlx(1:10)
+#' as.numeric(mlx_quantile(x, 0.5))  # median
+#' as.numeric(mlx_quantile(x, c(0.25, 0.5, 0.75)))  # quartiles
+#'
+#' # S3 method:
+#' quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
+#'
+#' # With axis parameter, quantile dimension replaces the reduced axis:
+#' mat <- as_mlx(matrix(1:12, 3, 4))  # shape (3, 4)
+#' result <- mlx_quantile(mat, c(0.25, 0.75), axis = 1)  # shape (2, 4)
+#' result <- mlx_quantile(mat, 0.5, axis = 1)  # shape (1, 4)
+#' result <- mlx_quantile(mat, 0.5, axis = 1, drop = TRUE)  # shape (4,)
+mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_default_device()) {
+  x <- as_mlx(x, device = device)
+
+  # Validate probs
+  if (!is.numeric(probs) || any(is.na(probs))) {
+    stop("probs must be numeric without NA values", call. = FALSE)
+  }
+  if (any(probs < 0) || any(probs > 1)) {
+    stop("probs must be in [0, 1]", call. = FALSE)
+  }
+
+  # Handle axis parameter
+  if (!is.null(axis)) {
+    if (length(axis) == 1) {
+      # Single axis case
+      axis <- as.integer(axis)
+      axis_idx <- .mlx_normalize_axis_single(axis, x)
+      sorted_x <- mlx_sort(x, axis = axis)  # mlx_sort uses 1-indexed already
+      n <- x$dim[axis]
+    } else {
+      # Multiple axes: flatten those axes and compute quantiles
+      stop("Multiple axes not yet implemented for mlx_quantile", call. = FALSE)
+    }
+  } else {
+    # No axis: flatten and sort entire array
+    sorted_x <- mlx_sort(mlx_flatten(x))
+    n <- prod(x$dim)
+    axis <- NULL
+  }
+
+  if (n == 0) {
+    stop("Cannot compute quantiles of empty array", call. = FALSE)
+  }
+
+  # Convert probs to mlx array
+  probs_mlx <- as_mlx(probs, device = device)
+
+  # Compute positions using type 7 formula: h = (n-1) * p
+  # In 0-indexed: positions range from 0 to n-1
+  if (n == 1) {
+    # Special case: single element, return it for all probs
+    if (is.null(axis)) {
+      return(mlx_broadcast_to(sorted_x, length(probs)))
+    } else {
+      # For axis case, squeeze out the axis dimension and add quantile dimension
+      target_shape <- x$dim
+      target_shape[axis] <- length(probs)
+      return(mlx_broadcast_to(sorted_x, target_shape))
+    }
+  }
+
+  h <- (n - 1) * probs_mlx
+
+  # Get lower and upper indices (0-indexed for internal use)
+  lower_idx <- floor(h)
+  upper_idx <- mlx_clip(lower_idx + 1, 0, n - 1)  # Don't exceed array bounds
+
+  # Compute interpolation weight
+  weight <- h - lower_idx
+
+  # Extract values at the indices
+  if (is.null(axis)) {
+    # Simple case: 1D sorted array, use direct indexing (1-indexed for R)
+    lower_idx_1based <- lower_idx + 1
+    upper_idx_1based <- upper_idx + 1
+    lower_vals <- sorted_x[lower_idx_1based]
+    upper_vals <- sorted_x[upper_idx_1based]
+  } else {
+    # Axis-specific case: use mlx_gather
+    # mlx_gather accepts mlx arrays and expects 1-indexed indices
+    lower_idx_1based <- lower_idx + 1
+    upper_idx_1based <- upper_idx + 1
+
+    lower_vals <- mlx_gather(sorted_x, list(lower_idx_1based), axes = axis)
+    upper_vals <- mlx_gather(sorted_x, list(upper_idx_1based), axes = axis)
+
+    # Reshape weight to be broadcastable
+    # weight has shape (n_probs,), need to add dimensions for broadcasting
+    # Result from gather has the axis dimension replaced by the index dimension
+    # So we need to reshape weight to (n_probs, 1, 1, ...) with extra dims after axis
+    weight_shape <- rep(1L, length(dim(lower_vals)))
+    weight_shape[axis] <- length(probs)
+    weight <- mlx_reshape(weight, weight_shape)
+  }
+
+  # Linear interpolation: (1 - weight) * lower + weight * upper
+  result <- (1 - weight) * lower_vals + weight * upper_vals
+
+  # Handle drop parameter
+  if (!is.null(axis) && drop && length(probs) == 1) {
+    # Remove the quantile dimension of size 1
+    new_dim <- result$dim[-axis]
+    if (length(new_dim) == 0) {
+      # Result is a scalar
+      new_dim <- integer(0)
+    }
+    result <- mlx_reshape(result, new_dim)
+  }
+
+  return(result)
+}
+
+#' @rdname mlx_quantile
+#' @export
+#' @method quantile mlx
+quantile.mlx <- function(x, probs, ...) {
+  mlx_quantile(x, probs = probs, axis = NULL, device = x$device)
+}

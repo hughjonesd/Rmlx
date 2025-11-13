@@ -108,3 +108,83 @@ test_that("mlx_cumprod computes cumulative product", {
   expected_excl <- apply(mat, 2, function(col) c(1, cumprod(col[-length(col)])))
   expect_equal(as.matrix(result_excl), expected_excl)
 })
+
+test_that("mlx_quantile computes sample quantiles", {
+  # Simple vector case
+  x <- as_mlx(1:10)
+  result <- mlx_quantile(x, 0.5)
+  expected <- quantile(1:10, 0.5, type = 7)
+  expect_equal(as.numeric(result), as.numeric(expected), tolerance = 1e-6)
+
+  # Multiple probabilities
+  result_multi <- mlx_quantile(x, c(0.25, 0.5, 0.75))
+  expected_multi <- quantile(1:10, c(0.25, 0.5, 0.75), type = 7)
+  expect_equal(as.numeric(result_multi), as.numeric(expected_multi), tolerance = 1e-6)
+
+  # Quartiles
+  result_quartiles <- quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
+  expected_quartiles <- quantile(1:10, probs = c(0, 0.25, 0.5, 0.75, 1), type = 7)
+  expect_equal(as.numeric(result_quartiles), as.numeric(expected_quartiles), tolerance = 1e-6)
+
+  # Edge cases
+  expect_equal(as.numeric(mlx_quantile(x, 0)), 1, tolerance = 1e-6)
+  expect_equal(as.numeric(mlx_quantile(x, 1)), 10, tolerance = 1e-6)
+
+  # Random data
+  set.seed(123)
+  vec <- rnorm(100)
+  x_mlx <- as_mlx(vec)
+  result_random <- mlx_quantile(x_mlx, c(0.1, 0.5, 0.9))
+  expected_random <- quantile(vec, c(0.1, 0.5, 0.9), type = 7)
+  expect_equal(as.numeric(result_random), as.numeric(expected_random), tolerance = 1e-6)
+})
+
+test_that("mlx_quantile handles edge cases", {
+  # Single element
+  x_single <- as_mlx(5)
+  expect_equal(as.numeric(mlx_quantile(x_single, 0.5)), 5, tolerance = 1e-6)
+  expect_equal(as.numeric(mlx_quantile(x_single, c(0, 0.5, 1))), c(5, 5, 5), tolerance = 1e-6)
+
+  # Two elements
+  x_two <- as_mlx(c(1, 2))
+  expect_equal(as.numeric(mlx_quantile(x_two, 0.5)), 1.5, tolerance = 1e-6)
+  expect_equal(as.numeric(mlx_quantile(x_two, c(0, 1))), c(1, 2), tolerance = 1e-6)
+})
+
+test_that("mlx_quantile works with axis parameter", {
+  # Matrix case: compute quantiles along axis 1 (columns)
+  mat <- matrix(1:9, 3, 3, byrow = TRUE)
+  x <- as_mlx(mat)
+  result <- mlx_quantile(x, probs = c(1/3, 2/3), axis = 1)
+
+  # Expected: quantiles for each column
+  expected <- matrix(c(3, 5, 4, 6, 5, 7), nrow = 2, ncol = 3)
+  expect_equal(as.matrix(result), expected, tolerance = 1e-6)
+
+  # Single quantile with axis
+  result_single <- mlx_quantile(x, probs = 0.5, axis = 1)
+  expected_single <- apply(mat, 2, quantile, probs = 0.5, type = 7)
+  expect_equal(as.numeric(result_single), expected_single, tolerance = 1e-6)
+
+  # Compare with column-wise quantiles
+  for (j in 1:3) {
+    col_data <- mat[, j]
+    for (p in c(0.25, 0.5, 0.75)) {
+      result_p <- mlx_quantile(x, probs = p, axis = 1)
+      expected_p <- unname(quantile(col_data, probs = p, type = 7))
+      expect_equal(as.numeric(result_p)[j], expected_p, tolerance = 1e-6)
+    }
+  }
+
+  # Test drop parameter
+  result_no_drop <- mlx_quantile(x, probs = 0.5, axis = 1, drop = FALSE)
+  expect_equal(dim(result_no_drop), c(1L, 3L))
+
+  result_drop <- mlx_quantile(x, probs = 0.5, axis = 1, drop = TRUE)
+  expect_equal(dim(result_drop), 3L)
+  expect_equal(as.vector(result_drop), apply(mat, 2, median), tolerance = 1e-6)
+
+  # drop should not affect multiple quantiles
+  result_multi <- mlx_quantile(x, probs = c(0.25, 0.75), axis = 1, drop = TRUE)
+  expect_equal(dim(result_multi), c(2L, 3L))
+})

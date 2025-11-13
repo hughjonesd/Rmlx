@@ -181,7 +181,6 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with broadcasted dimensions.
 #' @noRd
 .mlx_binary <- function(x, y, op) {
-  result_dim <- .broadcast_dim(x$dim, y$dim)
   input_dtype <- .promote_dtype(x$dtype, y$dtype)
   result_device <- .common_device(x$device, y$device)
 
@@ -194,6 +193,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   result_dtype <- if (is_comparison) "bool" else input_dtype
 
   ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype, result_device)
+  result_dim <- cpp_mlx_shape(ptr)
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
@@ -204,10 +204,10 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with dtype "bool".
 #' @noRd
 .mlx_logical <- function(x, y, op) {
-  result_dim <- .broadcast_dim(x$dim, y$dim)
   result_device <- .common_device(x$device, y$device)
 
   ptr <- cpp_mlx_logical(x$ptr, y$ptr, op, result_device)
+  result_dim <- cpp_mlx_shape(ptr)
   new_mlx(ptr, result_dim, "bool", result_device)
 }
 
@@ -227,7 +227,6 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with floor-divided values.
 #' @noRd
 .mlx_floor_divide <- function(x, y) {
-  result_dim <- .broadcast_dim(x$dim, y$dim)
   result_device <- .common_device(x$device, y$device)
   result_dtype <- .promote_dtype(x$dtype, y$dtype)
 
@@ -236,6 +235,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   }
 
   ptr <- cpp_mlx_floor_divide(x$ptr, y$ptr, result_device)
+  result_dim <- cpp_mlx_shape(ptr)
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
@@ -245,7 +245,6 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with remainder values.
 #' @noRd
 .mlx_remainder <- function(x, y) {
-  result_dim <- .broadcast_dim(x$dim, y$dim)
   result_device <- .common_device(x$device, y$device)
   result_dtype <- .promote_dtype(x$dtype, y$dtype)
 
@@ -254,6 +253,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   }
 
   ptr <- cpp_mlx_remainder(x$ptr, y$ptr, result_device)
+  result_dim <- cpp_mlx_shape(ptr)
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
@@ -293,7 +293,6 @@ mlx_maximum <- function(x, y) {
   x <- as_mlx(x)
   y <- as_mlx(y)
 
-  result_dim <- .broadcast_dim(x$dim, y$dim)
   result_device <- .common_device(x$device, y$device)
   result_dtype <- .promote_dtype(x$dtype, y$dtype)
 
@@ -302,6 +301,7 @@ mlx_maximum <- function(x, y) {
   }
 
   ptr <- cpp_fn(x$ptr, y$ptr, result_device)
+  result_dim <- cpp_mlx_shape(ptr)
   new_mlx(ptr, result_dim, result_dtype, result_device)
 }
 
