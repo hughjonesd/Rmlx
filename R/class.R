@@ -293,7 +293,6 @@ is.mlx <- function(x) {
 #' Internal constructor for mlx objects
 #'
 #' @param ptr External pointer to MLX array
-#' @param dim Dimensions
 #' @param dtype Data type
 #' @param device Device
 #' @keywords internal
