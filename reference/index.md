@@ -456,3 +456,5 @@
   : Stochastic gradient descent optimizer
 - [`mlx_train_step()`](https://hughjonesd.github.io/Rmlx/reference/mlx_train_step.md)
   : Single training step helper
+- [`mlx_coordinate_descent()`](https://hughjonesd.github.io/Rmlx/reference/mlx_coordinate_descent.md)
+  : Coordinate Descent with L1 Regularization
