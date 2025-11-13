@@ -83,7 +83,6 @@ Ops.mlx <- function(e1, e2 = NULL) {
     ))
   }
 
-  result_dim <- c(dim(x)[1], dim(y)[2])
   result_dtype <- .promote_dtype(x$dtype, y$dtype)
   result_device <- .common_device(x$device, y$device)
 
