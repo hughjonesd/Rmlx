@@ -255,3 +255,4 @@ reference:
       - mlx_param_set_values
       - mlx_optimizer_sgd
       - mlx_train_step
+      - mlx_coordinate_descent

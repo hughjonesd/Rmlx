@@ -26,13 +26,12 @@ set.seed(1)
 model <- mlx_linear(2, 1, bias = FALSE)
 opt <- mlx_optimizer_sgd(mlx_parameters(model), lr = 0.1)
 data_x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
-data_y <- as_mlx(matrix(c(1, 2), 2, 1))
-loss_fn <- function(mod, x, y) {
-  preds <- mlx_forward(mod, x)
-  diff <- preds - y
-  sum(diff * diff)
+data_y <- as_mlx(matrix(c(5, 6), 2, 1))
+loss_fn <- function(model, x, y) {
+  pred <- model(x)
+  mean((pred - y)^2)
 }
-mlx_train_step(model, loss_fn, opt, data_x, data_y)
+result <- mlx_train_step(model, loss_fn, opt, data_x, data_y)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.optimizers.Optimizer}{mlx.optimizers.Optimizer}
