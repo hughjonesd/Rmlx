@@ -6,7 +6,6 @@
 #' @return An mlx array.
 #' @noRd
 .mlx_wrap_result <- function(ptr, device) {
-  dim <- cpp_mlx_shape(ptr)
   dtype <- cpp_mlx_dtype(ptr)
   new_mlx(ptr, dtype, device)
 }
@@ -196,7 +195,6 @@ mlx_reshape <- function(x, newshape) {
   }
 
   ptr <- cpp_mlx_reshape(x$ptr, newshape)
-  dim_result <- cpp_mlx_shape(ptr)
   dtype_result <- cpp_mlx_dtype(ptr)
   new_mlx(ptr, dtype_result, x$device)
 }

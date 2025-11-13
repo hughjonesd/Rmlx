@@ -155,8 +155,6 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_random_multivariate_normal(mean, cov, dim, dtype, dev)
   })
-  # Get the actual output shape from the result
-  output_shape <- cpp_mlx_shape(ptr)
   new_mlx(ptr, dtype, handle$device)
 }
 
@@ -224,7 +222,6 @@ mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
   }
 
   ptr <- cpp_mlx_random_categorical(logits, axis, num_samples)
-  output_shape <- cpp_mlx_shape(ptr)
   new_mlx(ptr, "int32", logits$device)
 }
 
@@ -311,7 +308,6 @@ mlx_rand_permutation <- function(x, axis = 0L, device = mlx_default_device()) {
     # Permute array along axis
     x <- as_mlx(x)
     ptr <- cpp_mlx_random_permutation(x, axis)
-    output_shape <- cpp_mlx_shape(ptr)
     new_mlx(ptr, x$dtype, x$device)
   }
 }

@@ -77,7 +77,6 @@ mlx_kron <- function(a, b) {
   b <- .mlx_cast(b, dtype = result_dtype, device = result_device)
 
   ptr <- cpp_mlx_kron(a$ptr, b$ptr, result_device)
-  out_dim <- cpp_mlx_shape(ptr)
   new_mlx(ptr, result_dtype, result_device)
 }
 
