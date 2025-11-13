@@ -130,6 +130,15 @@
 <li>In user-facing APIs and docs, prefer the term <em>array</em> over <em>tensor</em> to match R conventions.</li>
 <li>Add concise internal documentation (comments or helper docstrings) for non-obvious internal helpers; keep the codebase self-explanatory.</li>
 </ul></div>
+<div class="section level3">
+<h3 id="mlx-core-capabilities">MLX Core Capabilities<a class="anchor" aria-label="anchor" href="#mlx-core-capabilities"></a></h3>
+<ul><li>
+<strong>Integer array indexing</strong>: MLX supports indexing with integer arrays via <code>[.mlx</code>. Both R vectors and mlx arrays work as indices. Example: <code>sorted_x[indices_mlx]</code> where <code>indices_mlx</code> is an mlx array of integers extracts values at those positions.</li>
+<li>
+<strong>Sorting</strong>: <code><a href="reference/mlx_sort.html">mlx_sort()</a></code> and <code><a href="reference/mlx_sort.html">mlx_argsort()</a></code> are available. Note that <code><a href="reference/mlx_sort.html">mlx_argsort()</a></code> returns 1-based indices following R conventions.</li>
+<li>
+<strong>Arithmetic interpolation</strong>: Linear interpolation is straightforward with mlx arrays: <code>result &lt;- (1 - weight) * lower + weight * upper</code> where all values are mlx arrays. This leverages lazy evaluation to build the computation graph efficiently.</li>
+</ul></div>
 </div>
 </div>
 

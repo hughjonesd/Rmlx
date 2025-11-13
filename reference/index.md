@@ -218,6 +218,9 @@
 - [`mlx_cumsum()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cumsum.md)
   [`mlx_cumprod()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cumsum.md)
   : Cumulative sum and product
+- [`mlx_quantile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_quantile.md)
+  [`quantile(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx_quantile.md)
+  : Compute quantiles of MLX arrays
 - [`mlx_clip()`](https://hughjonesd.github.io/Rmlx/reference/mlx_clip.md)
   : Clip mlx array values into a range
 - [`mlx_maximum()`](https://hughjonesd.github.io/Rmlx/reference/mlx_maximum.md)
