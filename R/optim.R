@@ -193,7 +193,7 @@ mlx_coordinate_descent <- function(loss_fn,
   lambda_mlx <- as_mlx(lambda)
 
   for (iter in seq_len(max_iter)) {
-    beta_old <- as.numeric(beta)
+    beta_old <- beta
 
     # Cycle through coordinate batches
     for (coords in coord_batches) {
@@ -216,9 +216,8 @@ mlx_coordinate_descent <- function(loss_fn,
       beta[coords, ] <- sign(z) * mlx_maximum(abs_z - threshold_mlx, 0)
     }
 
-    # Check convergence
-    delta <- max(abs(as.numeric(beta) - beta_old))
-    if (delta < tol) {
+    # Check convergence (compute in mlx, convert only the scalar result)
+    if (as.numeric(max(abs(beta - beta_old))) < tol) {
       return(list(
         beta = beta,
         n_iter = iter,
