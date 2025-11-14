@@ -23,11 +23,13 @@ mlx_slice_update(x, value, start, stop, strides = NULL)
 
 - start:
 
-  Integer vector (0-indexed) giving the starting index for each axis.
+  Integer vector (1-indexed) giving the inclusive starting index for
+  each axis.
 
 - stop:
 
-  Integer vector (exclusive) giving the stopping index for each axis.
+  Integer vector (1-indexed) giving the inclusive stopping index for
+  each axis.
 
 - strides:
 
@@ -42,7 +44,7 @@ An `mlx` array with the specified slice replaced.
 ``` r
 x <- as_mlx(matrix(1:9, 3, 3))
 replacement <- as_mlx(matrix(100:103, nrow = 2))
-updated <- mlx_slice_update(x, replacement, start = c(0L, 1L), stop = c(2L, 3L))
+updated <- mlx_slice_update(x, replacement, start = c(1L, 2L), stop = c(2L, 3L))
 as.matrix(updated)
 #>      [,1] [,2] [,3]
 #> [1,]    1  100  102

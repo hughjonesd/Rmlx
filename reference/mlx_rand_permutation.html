@@ -48,7 +48,7 @@ along a specified axis.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_rand_permutation</span><span class="op">(</span><span class="va">x</span>, axis <span class="op">=</span> <span class="fl">0L</span>, device <span class="op">=</span> <span class="fu"><a href="mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_rand_permutation</span><span class="op">(</span><span class="va">x</span>, axis <span class="op">=</span> <span class="fl">1L</span>, device <span class="op">=</span> <span class="fu"><a href="mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -56,13 +56,13 @@ along a specified axis.</p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>Either an integer n (to generate a permutation of 0:(n-1)), or an
+<dd><p>Either an integer n (to generate a permutation of 1:n), or an
 mlx array or matrix to permute.</p></dd>
 
 
 <dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
-<dd><p>The axis along which to permute when x is an array. Default is 0
-(permute rows).</p></dd>
+<dd><p>The axis (1-indexed, negatives count from the end) along which to permute
+when x is an array. Default is 1L (permute rows).</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
@@ -87,7 +87,7 @@ device.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Generate a random permutation of 0:9</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Generate a random permutation of 1:10</span></span></span>
 <span class="r-in"><span><span class="va">perm</span> <span class="op">&lt;-</span> <span class="fu">mlx_rand_permutation</span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Permute the rows of a matrix</span></span></span>

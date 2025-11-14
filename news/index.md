@@ -2,6 +2,16 @@
 
 ## Rmlx 0.1.0.9000 (development)
 
+- [`mlx_slice_update()`](https://hughjonesd.github.io/Rmlx/reference/mlx_slice_update.md)
+  now accepts 1-based (inclusive) `start`/`stop` indices to match the
+  rest of the R API; internal callers were updated accordingly.
+- [`mlx_rand_categorical()`](https://hughjonesd.github.io/Rmlx/reference/mlx_rand_categorical.md),
+  [`mlx_rand_permutation()`](https://hughjonesd.github.io/Rmlx/reference/mlx_rand_permutation.md),
+  [`mlx_cross_entropy()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cross_entropy.md),
+  and
+  [`mlx_embedding()`](https://hughjonesd.github.io/Rmlx/reference/mlx_embedding.md)
+  now accept 1-based indices for inputs/outputs, keeping all exported
+  APIs consistent with R conventions.
 - Added negative numeric indexing support for `[`/`[<-` on `mlx` arrays
   and documented subsetting semantics.
 - Added

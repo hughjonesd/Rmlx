@@ -22,8 +22,8 @@ mlx_rand_categorical(logits, axis = -1L, num_samples = 1L)
 
 - axis:
 
-  The axis along which to sample. Default is -1 (last axis, typically
-  the class dimension).
+  The axis (1-indexed, negatives count from the end) along which to
+  sample. Default is -1L (last axis, typically the class dimension).
 
 - num_samples:
 
@@ -31,7 +31,7 @@ mlx_rand_categorical(logits, axis = -1L, num_samples = 1L)
 
 ## Value
 
-An mlx array of integer indices (0-indexed) sampled from the categorical
+An mlx array of integer indices (1-indexed) sampled from the categorical
 distributions.
 
 ## See also

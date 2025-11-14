@@ -6,20 +6,20 @@ array along a specified axis.
 ## Usage
 
 ``` r
-mlx_rand_permutation(x, axis = 0L, device = mlx_default_device())
+mlx_rand_permutation(x, axis = 1L, device = mlx_default_device())
 ```
 
 ## Arguments
 
 - x:
 
-  Either an integer n (to generate a permutation of 0:(n-1)), or an mlx
+  Either an integer n (to generate a permutation of 1:n), or an mlx
   array or matrix to permute.
 
 - axis:
 
-  The axis along which to permute when x is an array. Default is 0
-  (permute rows).
+  The axis (1-indexed, negatives count from the end) along which to
+  permute when x is an array. Default is 1L (permute rows).
 
 - device:
 
@@ -45,7 +45,7 @@ stream; otherwise the permutation follows the input array's device.
 ## Examples
 
 ``` r
-# Generate a random permutation of 0:9
+# Generate a random permutation of 1:10
 perm <- mlx_rand_permutation(10)
 
 # Permute the rows of a matrix

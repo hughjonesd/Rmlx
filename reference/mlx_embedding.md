@@ -39,7 +39,7 @@ An `mlx_module` for token embeddings.
 ``` r
 set.seed(1)
 emb <- mlx_embedding(num_embeddings = 100, embedding_dim = 16)
-# Token indices (0-indexed)
+# Token indices (1-indexed)
 tokens <- as_mlx(matrix(c(5, 10, 3, 7), 2, 2))
 mlx_forward(emb, tokens)
 #> mlx array [2 x 2 x 16]
