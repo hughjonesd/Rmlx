@@ -201,8 +201,8 @@ mlx_coordinate_descent <- function(loss_fn,
     beta <- prox_update(beta, grad, lipschitz_mlx)
 
     # Check convergence (compute in mlx, convert only the scalar result)
-    delta <- as.numeric(max(abs(beta - beta_old)))
-    if (is.finite(delta) && delta < tol) {
+    delta <- abs(beta - beta_old)
+    if (all(is.finite(delta) & delta < tol)) {
       return(list(
         beta = beta,
         n_iter = iter,
