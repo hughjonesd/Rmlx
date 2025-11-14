@@ -4,6 +4,7 @@
 
 * Added negative numeric indexing support for `[`/`[<-` on `mlx` arrays and
   documented subsetting semantics.
+* Added `mlx_import_function()` to import MLX functions from (e.g.) Python.
 * Added `mlx_array()`, `mlx_matrix()`, `mlx_vector()`, and `mlx_scalar()` for
   fast construction of MLX objects when data and dimensions are already known.
 * Added `mlx_fft()`, `mlx_fft2()`, and `mlx_fftn()` wrappers around MLX FFT 
