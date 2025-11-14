@@ -96,10 +96,9 @@ test_that("mlx_coordinate_descent validates inputs", {
     mlx_coordinate_descent(loss_fn, beta_init, lambda = 0.1, max_iter = 10)
   )
 
-  # Should error with non-MLX beta
-  expect_error(
-    mlx_coordinate_descent(loss_fn, matrix(0, 10, 1), lambda = 0.1),
-    "MLX array"
+  # Should accept non-MLX beta and coerce automatically
+  expect_no_error(
+    mlx_coordinate_descent(loss_fn, matrix(0, 10, 1), lambda = 0.1)
   )
 
   # Should error with wrong length lipschitz
@@ -110,4 +109,48 @@ test_that("mlx_coordinate_descent validates inputs", {
     ),
     "length equal"
   )
+})
+
+test_that("mlx_coordinate_descent keeps coefficients finite when supplied lipschitz constants", {
+  set.seed(654)
+  n <- 300
+  p <- 100
+
+  X_r <- matrix(rnorm(n * p), n, p)
+  beta_true <- numeric(p)
+  beta_true[sample(p, 3)] <- rnorm(3, sd = 3)
+  y_r <- drop(X_r %*% beta_true + rnorm(n))
+
+  X <- as_mlx(X_r)
+  y <- as_mlx(matrix(y_r, ncol = 1))
+
+  loss_fn <- function(beta) {
+    residual <- y - X %*% beta
+    sum(residual^2) / (2 * n)
+  }
+
+  grad_fn <- function(beta) {
+    residual <- y - X %*% beta
+    -crossprod(X, residual) / n
+  }
+
+  beta_init <- mlx_zeros(c(p, 1))
+  lipschitz <- colSums(X_r^2) / n + 1e-8
+
+  result <- mlx_coordinate_descent(
+    loss_fn = loss_fn,
+    beta_init = beta_init,
+    lambda = 0.01,
+    grad_fn = grad_fn,
+    lipschitz = lipschitz,
+    max_iter = 1000,
+    tol = 1e-6,
+    block_size = 8
+  )
+
+  beta_vals <- as.numeric(as.matrix(result$beta))
+  expect_true(result$converged,
+              info = "With accurate Lipschitz constants this quadratic problem should converge.")
+  expect_false(any(is.nan(beta_vals)),
+               info = "Coordinate descent should not introduce NaNs when gradients are finite.")
 })

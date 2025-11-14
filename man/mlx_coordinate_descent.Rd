@@ -10,9 +10,10 @@ mlx_coordinate_descent(
   lambda = 0,
   grad_fn = NULL,
   lipschitz = NULL,
-  compile = FALSE,
   max_iter = 1000,
-  tol = 1e-06
+  tol = 1e-06,
+  block_size = 1,
+  grad_cache = NULL
 )
 }
 \arguments{
@@ -27,11 +28,14 @@ mlx_coordinate_descent(
 \item{lipschitz}{Optional Lipschitz constants for each coordinate (length p vector).
 If NULL, uses simple constant estimates.}
 
-\item{compile}{Whether to compile the update step (default FALSE).}
-
 \item{max_iter}{Maximum number of iterations (default 1000).}
 
 \item{tol}{Convergence tolerance (default 1e-6).}
+
+\item{block_size}{Number of coordinates to update before recomputing the gradient.
+Set to 1 for strict coordinate descent; larger values trade accuracy for speed.}
+
+\item{grad_cache}{Optional environment for specialized gradient updates (internal use).}
 }
 \value{
 List with:
@@ -71,6 +75,20 @@ loss_fn <- function(beta) {
 result <- mlx_coordinate_descent(
   loss_fn = loss_fn,
   beta_init = beta_init,
-  lambda = 0.1
+  lambda = 0.1,
+  block_size = 8
+)
+
+# Reuse cached residuals for a Gaussian problem
+grad_cache <- new.env(parent = emptyenv())
+grad_cache$type <- "gaussian"
+grad_cache$x <- X
+grad_cache$n_obs <- n
+grad_cache$residual <- y - X \%*\% beta_init
+cached <- mlx_coordinate_descent(
+  loss_fn = loss_fn,
+  beta_init = beta_init,
+  lambda = 0.1,
+  grad_cache = grad_cache
 )
 }

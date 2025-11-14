@@ -98,9 +98,15 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
 #' @param grad_fn Optional gradient function. If NULL, computed via mlx_grad(loss_fn).
 #' @param lipschitz Optional Lipschitz constants for each coordinate (length p vector).
 #'   If NULL, uses simple constant estimates.
-#' @param compile Whether to compile the update step (default FALSE).
 #' @param max_iter Maximum number of iterations (default 1000).
 #' @param tol Convergence tolerance (default 1e-6).
+#' @param block_size Number of coordinates to update before recomputing the gradient.
+#'   Set to 1 for strict coordinate descent; larger values trade accuracy for speed.
+#' @param grad_cache Optional environment for supplying cached gradient components.
+#'   Supported fields are `type = "gaussian"` with entries `x`, `residual`, `n_obs`,
+#'   and optional `ridge_penalty`; or `type = "binomial"` with entries `x`, `eta`,
+#'   `mu`, `residual`, `y`, `n_obs`, and optional `ridge_penalty`.
+#' @param grad_cache Optional environment for specialized gradient updates (internal use).
 #'
 #' @return List with:
 #'   - beta: Optimized parameter vector (MLX tensor)
@@ -134,22 +140,33 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
 #' result <- mlx_coordinate_descent(
 #'   loss_fn = loss_fn,
 #'   beta_init = beta_init,
-#'   lambda = 0.1
+#'   lambda = 0.1,
+#'   block_size = 8
+#' )
+#'
+#' # Reuse cached residuals for a Gaussian problem
+#' grad_cache <- new.env(parent = emptyenv())
+#' grad_cache$type <- "gaussian"
+#' grad_cache$x <- X
+#' grad_cache$n_obs <- n
+#' grad_cache$residual <- y - X %*% beta_init
+#' cached <- mlx_coordinate_descent(
+#'   loss_fn = loss_fn,
+#'   beta_init = beta_init,
+#'   lambda = 0.1,
+#'   grad_cache = grad_cache
 #' )
 mlx_coordinate_descent <- function(loss_fn,
                                     beta_init,
                                     lambda = 0,
                                     grad_fn = NULL,
                                     lipschitz = NULL,
-                                    compile = FALSE,
                                     max_iter = 1000,
-                                    tol = 1e-6) {
+                                    tol = 1e-6,
+                                    block_size = 1,
+                                    grad_cache = NULL) {
 
-  if (!is.mlx(beta_init)) {
-    stop("beta_init must be an MLX array", call. = FALSE)
-  }
-
-  beta <- beta_init
+  beta <- as_mlx(beta_init)
   n_pred <- nrow(beta)
 
   # Gradient computation function
@@ -161,48 +178,104 @@ mlx_coordinate_descent <- function(loss_fn,
 
   # Default Lipschitz constants
   if (is.null(lipschitz)) {
-    lipschitz <- rep(1.0, n_pred)
+    lips_numeric <- rep(1.0, n_pred)
   } else {
-    lipschitz <- as.numeric(lipschitz)
-    if (length(lipschitz) != n_pred) {
+    lips_numeric <- as.numeric(lipschitz)
+    if (length(lips_numeric) != n_pred) {
       stop("lipschitz must have length equal to number of parameters", call. = FALSE)
     }
   }
 
-  # Convert constants to mlx once and reshape to column vectors
-  lipschitz_mlx <- mlx_reshape(as_mlx(lipschitz), c(n_pred, 1))
-  lambda_mlx <- as_mlx(lambda)
-
-  # Define proximal gradient update
-  prox_update <- function(beta, grad, L_matrix) {
-    # Proximal gradient step
-    z <- beta - grad / L_matrix
-
-    # Soft thresholding
-    abs_z <- abs(z)
-    threshold <- lambda_mlx / L_matrix
-
-    # Apply soft thresholding: max(abs_z - threshold, 0) * sign(z)
-    sign(z) * mlx_maximum(abs_z - threshold, 0)
+  if (!all(is.finite(lips_numeric)) || any(lips_numeric <= 0)) {
+    stop("All Lipschitz constants must be finite and positive.", call. = FALSE)
   }
 
-  # Compile the update function if requested
-  if (compile) {
-    prox_update <- mlx_compile(prox_update)
+  if (!is.numeric(lambda) || length(lambda) != 1L) {
+    stop("lambda must be a numeric scalar.", call. = FALSE)
   }
+  lambda_numeric <- as.numeric(lambda)
+  if (!is.finite(lambda_numeric) || lambda_numeric < 0) {
+    stop("lambda must be finite and non-negative.", call. = FALSE)
+  }
+
+  block_size <- as.integer(block_size)
+  if (is.na(block_size) || block_size < 1L) {
+    block_size <- 1L
+  }
+  block_size <- min(block_size, n_pred)
+
+  lipschitz_mlx <- if (is.mlx(lipschitz)) {
+    arr <- lipschitz
+    if (length(dim(arr)) == 1L) {
+      mlx_reshape(arr, c(n_pred, 1))
+    } else {
+      arr
+    }
+  } else {
+    mlx_reshape(as_mlx(lips_numeric), c(n_pred, 1))
+  }
+  lambda_mlx <- as_mlx(matrix(lambda_numeric, nrow = 1, ncol = 1))
+
+  blocks <- split(seq_len(n_pred), ceiling(seq_len(n_pred) / block_size))
 
   for (iter in seq_len(max_iter)) {
-    beta_old <- beta
+    beta_prev <- beta
 
-    # Compute gradient
-    grad <- compute_grad(beta)
+    for (block in blocks) {
+      if (!is.null(grad_cache) && grad_cache$type %in% c("gaussian", "binomial")) {
+        x_block <- grad_cache$x[, block, drop = FALSE]
+        if (identical(grad_cache$type, "gaussian")) {
+          grad_block <- -crossprod(x_block, grad_cache$residual) / grad_cache$n_obs
+        } else {
+          grad_block <- crossprod(x_block, grad_cache$residual) / grad_cache$n_obs
+        }
+        ridge_val <- if (!is.null(grad_cache$ridge_penalty)) grad_cache$ridge_penalty else ridge_penalty
+        grad_block <- grad_block + ridge_val * beta[block, , drop = FALSE]
+      } else {
+        grad <- compute_grad(beta)
+        grad_block <- grad[block, , drop = FALSE]
+      }
 
-    # Apply proximal gradient update to all coordinates
-    beta <- prox_update(beta, grad, lipschitz_mlx)
+      L_block <- lipschitz_mlx[block, , drop = FALSE]
+      beta_block <- beta[block, , drop = FALSE]
 
-    # Check convergence (compute in mlx, convert only the scalar result)
-    delta <- abs(beta - beta_old)
-    if (all(is.finite(delta) & delta < tol)) {
+      z_block <- beta_block - grad_block / L_block
+      thresh_block <- lambda_mlx / L_block
+      abs_z <- abs(z_block)
+      magnitude <- mlx_maximum(abs_z - thresh_block, 0)
+      beta_block_new <- sign(z_block) * magnitude
+
+      start_row <- block[1] - 1L
+      stop_row <- start_row + length(block)
+      beta <- mlx_slice_update(beta, beta_block_new,
+                               start = c(start_row, 0L),
+                               stop = c(stop_row, dim(beta)[2]))
+
+      if (!is.null(grad_cache) && grad_cache$type %in% c("gaussian", "binomial")) {
+        delta <- beta_block_new - beta_block
+        if (identical(grad_cache$type, "gaussian")) {
+          grad_cache$residual <- grad_cache$residual - x_block %*% delta
+        } else {
+          grad_cache$eta <- grad_cache$eta + x_block %*% delta
+          grad_cache$mu <- 1 / (1 + exp(-grad_cache$eta))
+          grad_cache$residual <- grad_cache$mu - grad_cache$y
+        }
+      }
+    }
+
+    delta <- abs(beta - beta_prev)
+    delta_max <- as.numeric(max(delta))
+    if (!is.finite(delta_max)) {
+      warning("Encountered non-finite updates during coordinate descent.", call. = FALSE)
+      break
+    }
+    beta_vals <- as.numeric(beta)
+    beta_finite <- all(is.finite(beta_vals))
+    if (!beta_finite) {
+      warning("Encountered non-finite coefficients during coordinate descent.", call. = FALSE)
+      break
+    }
+    if (delta_max < tol) {
       return(list(
         beta = beta,
         n_iter = iter,
