@@ -134,8 +134,8 @@ test_that("mlx_rand_categorical generates valid indices", {
   expect_s3_class(samples, "mlx")
   expect_equal(samples$dtype, "int32")
   sample_vals <- as.vector(as.matrix(samples))
-  # Indices should be in valid range [0, 2] for 3 classes
-  expect_true(all(sample_vals >= 0 & sample_vals < 3))
+  # Indices should be in valid range [1, 3] for 3 classes
+  expect_true(all(sample_vals >= 1 & sample_vals <= 3))
 })
 
 test_that("mlx_rand_categorical works with multiple rows", {
@@ -146,8 +146,8 @@ test_that("mlx_rand_categorical works with multiple rows", {
 
   expect_s3_class(samples, "mlx")
   sample_vals <- as.matrix(samples)
-  # Indices should be in valid range [0, 2] for 3 classes
-  expect_true(all(sample_vals >= 0 & sample_vals < 3))
+  # Indices should be in valid range [1, 3] for 3 classes
+  expect_true(all(sample_vals >= 1 & sample_vals <= 3))
 })
 
 test_that("mlx_rand_randint generates integers in range", {
@@ -188,8 +188,8 @@ test_that("mlx_rand_permutation generates valid permutation", {
   expect_equal(dim(perm), 10L)
 
   perm_vals <- as.vector(perm)
-  # Should contain each of 0:9 exactly once
-  expect_equal(sort(perm_vals), 0:9)
+  # Should contain each of 1:10 exactly once
+  expect_equal(sort(perm_vals), 1:10)
 })
 
 test_that("mlx_rand_permutation permutes array rows", {

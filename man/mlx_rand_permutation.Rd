@@ -4,14 +4,14 @@
 \alias{mlx_rand_permutation}
 \title{Generate random permutations on mlx arrays}
 \usage{
-mlx_rand_permutation(x, axis = 0L, device = mlx_default_device())
+mlx_rand_permutation(x, axis = 1L, device = mlx_default_device())
 }
 \arguments{
-\item{x}{Either an integer n (to generate a permutation of 0:(n-1)), or an
+\item{x}{Either an integer n (to generate a permutation of 1:n), or an
 mlx array or matrix to permute.}
 
-\item{axis}{The axis along which to permute when x is an array. Default is 0
-(permute rows).}
+\item{axis}{The axis (1-indexed, negatives count from the end) along which to permute
+when x is an array. Default is 1L (permute rows).}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
@@ -29,7 +29,7 @@ device or stream; otherwise the permutation follows the input array's
 device.
 }
 \examples{
-# Generate a random permutation of 0:9
+# Generate a random permutation of 1:10
 perm <- mlx_rand_permutation(10)
 
 # Permute the rows of a matrix

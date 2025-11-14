@@ -2,6 +2,11 @@
 
 # Rmlx 0.1.0.9000 (development)
 
+* `mlx_slice_update()` now accepts 1-based (inclusive) `start`/`stop` indices to
+  match the rest of the R API; internal callers were updated accordingly.
+* `mlx_rand_categorical()`, `mlx_rand_permutation()`, `mlx_cross_entropy()`,
+  and `mlx_embedding()` now accept 1-based indices for inputs/outputs, keeping
+  all exported APIs consistent with R conventions.
 * Added negative numeric indexing support for `[`/`[<-` on `mlx` arrays and
   documented subsetting semantics.
 * Added `mlx_import_function()` to import MLX functions from (e.g.) Python.

@@ -67,15 +67,17 @@ mlx_gather <- function(x, indices, axes = NULL) {
 #' @inheritParams mlx_array_required
 #' @param value Replacement `mlx` (or coercible) array. Must broadcast to the
 #'   slice determined by `start`, `stop`, and `strides`.
-#' @param start Integer vector (0-indexed) giving the starting index for each axis.
-#' @param stop Integer vector (exclusive) giving the stopping index for each axis.
+#' @param start Integer vector (1-indexed) giving the inclusive starting index
+#'   for each axis.
+#' @param stop Integer vector (1-indexed) giving the inclusive stopping index
+#'   for each axis.
 #' @param strides Optional integer vector of strides (defaults to ones).
 #' @return An `mlx` array with the specified slice replaced.
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:9, 3, 3))
 #' replacement <- as_mlx(matrix(100:103, nrow = 2))
-#' updated <- mlx_slice_update(x, replacement, start = c(0L, 1L), stop = c(2L, 3L))
+#' updated <- mlx_slice_update(x, replacement, start = c(1L, 2L), stop = c(2L, 3L))
 #' as.matrix(updated)
 mlx_slice_update <- function(x,
                              value,
@@ -96,7 +98,17 @@ mlx_slice_update <- function(x,
     stop("`start`, `stop`, and `strides` must have the same length.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_slice_update(x$ptr, value$ptr, start, stop, strides)
+  if (any(start < 1L)) {
+    stop("`start` must use 1-based indices (>= 1).", call. = FALSE)
+  }
+  if (any(stop < start)) {
+    stop("Each `stop` entry must be >= the corresponding `start` value.", call. = FALSE)
+  }
+
+  start0 <- start - 1L
+  stop0 <- stop
+
+  ptr <- cpp_mlx_slice_update(x$ptr, value$ptr, start0, stop0, strides)
   .mlx_wrap_result(ptr, x$device)
 }
 

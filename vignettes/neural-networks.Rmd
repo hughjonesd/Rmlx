@@ -174,7 +174,7 @@ embedding_net <- mlx_sequential(
   mlx_linear(64, 1)
 )
 
-# Input: token indices (0-indexed)
+# Input: token indices (1-indexed)
 tokens <- as_mlx(c(42, 17, 99))
 output <- mlx_forward(embedding_net, tokens)
 ```

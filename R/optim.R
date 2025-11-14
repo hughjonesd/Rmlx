@@ -245,10 +245,10 @@ mlx_coordinate_descent <- function(loss_fn,
       magnitude <- mlx_maximum(abs_z - thresh_block, 0)
       beta_block_new <- sign(z_block) * magnitude
 
-      start_row <- block[1] - 1L
-      stop_row <- start_row + length(block)
+      start_row <- block[1]
+      stop_row <- utils::tail(block, 1L)
       beta <- mlx_slice_update(beta, beta_block_new,
-                               start = c(start_row, 0L),
+                               start = c(start_row, 1L),
                                stop = c(stop_row, dim(beta)[2]))
 
       if (!is.null(grad_cache) && grad_cache$type %in% c("gaussian", "binomial")) {

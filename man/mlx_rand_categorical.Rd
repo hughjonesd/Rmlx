@@ -12,13 +12,13 @@ need to be normalized (the function applies softmax internally). For a single
 distribution over K classes, use a 1×K matrix. For multiple independent
 distributions, use an N×K matrix where each row is a distribution.}
 
-\item{axis}{The axis along which to sample. Default is -1 (last axis, typically
-the class dimension).}
+\item{axis}{The axis (1-indexed, negatives count from the end) along which to sample.
+Default is -1L (last axis, typically the class dimension).}
 
 \item{num_samples}{Number of samples to draw from each distribution.}
 }
 \value{
-An mlx array of integer indices (0-indexed) sampled from the
+An mlx array of integer indices (1-indexed) sampled from the
 categorical distributions.
 }
 \description{

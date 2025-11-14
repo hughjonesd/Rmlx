@@ -168,8 +168,8 @@ test_that("embedding layer works correctly", {
   expect_length(params, 1)
 
   # Test out of bounds
-  expect_error(mlx_forward(emb, as_mlx(100)), "out of range")
-  expect_error(mlx_forward(emb, as_mlx(-1)), "out of range")
+  expect_error(mlx_forward(emb, as_mlx(101)), "out of range")
+  expect_error(mlx_forward(emb, as_mlx(0)), "out of range")
 })
 
 test_that("activation modules have no parameters", {

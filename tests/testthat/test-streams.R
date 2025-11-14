@@ -28,7 +28,7 @@ test_that("operations accept stream arguments", {
 
   perm <- mlx_rand_permutation(5, device = stream)
   expect_equal(perm$device, dev)
-  expect_equal(sort(as.vector(perm)), 0:4)
+  expect_equal(sort(as.vector(perm)), 1:5)
 })
 
 test_that("mlx_synchronize accepts stream", {

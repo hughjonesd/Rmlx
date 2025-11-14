@@ -90,7 +90,7 @@ test_that("cross entropy works correctly", {
   # 3 samples, 4 classes
   set.seed(1)
   logits <- as_mlx(matrix(rnorm(12), 3, 4))
-  targets <- as_mlx(c(0, 2, 1)) # 0-indexed class labels
+  targets <- as_mlx(c(1, 3, 2))
 
   # Test mean reduction
   loss <- mlx_cross_entropy(logits, targets, reduction = "mean")
@@ -110,9 +110,9 @@ test_that("cross entropy works correctly", {
 
   # Test with very confident correct predictions
   confident_logits <- matrix(0, 3, 4)
-  confident_logits[1, 1] <- 10  # Class 0
-  confident_logits[2, 3] <- 10  # Class 2
-  confident_logits[3, 2] <- 10  # Class 1
+  confident_logits[1, 1] <- 10  # Class 1
+  confident_logits[2, 3] <- 10  # Class 3
+  confident_logits[3, 2] <- 10  # Class 2
   confident_logits <- as_mlx(confident_logits)
 
   loss_confident <- mlx_cross_entropy(confident_logits, targets)

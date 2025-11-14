@@ -12,9 +12,11 @@ mlx_slice_update(x, value, start, stop, strides = NULL)
 \item{value}{Replacement \code{mlx} (or coercible) array. Must broadcast to the
 slice determined by \code{start}, \code{stop}, and \code{strides}.}
 
-\item{start}{Integer vector (0-indexed) giving the starting index for each axis.}
+\item{start}{Integer vector (1-indexed) giving the inclusive starting index
+for each axis.}
 
-\item{stop}{Integer vector (exclusive) giving the stopping index for each axis.}
+\item{stop}{Integer vector (1-indexed) giving the inclusive stopping index
+for each axis.}
 
 \item{strides}{Optional integer vector of strides (defaults to ones).}
 }
@@ -28,6 +30,6 @@ that replaces a contiguous strided region with \code{value}.
 \examples{
 x <- as_mlx(matrix(1:9, 3, 3))
 replacement <- as_mlx(matrix(100:103, nrow = 2))
-updated <- mlx_slice_update(x, replacement, start = c(0L, 1L), stop = c(2L, 3L))
+updated <- mlx_slice_update(x, replacement, start = c(1L, 2L), stop = c(2L, 3L))
 as.matrix(updated)
 }

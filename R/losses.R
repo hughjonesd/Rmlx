@@ -103,7 +103,7 @@ mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean",
 #' @examples
 #' # Logits for 3 samples, 4 classes
 #' logits <- as_mlx(matrix(rnorm(12), 3, 4))
-#' targets <- as_mlx(c(1, 3, 2))  # 0-indexed class labels
+#' targets <- as_mlx(c(1, 3, 2))
 #' mlx_cross_entropy(logits, targets)
 mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "none")) {
   reduction <- match.arg(reduction)
@@ -116,19 +116,19 @@ mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "non
   log_sum_exp <- mlx_logsumexp(logits, axis = 2, drop = FALSE)
   log_probs <- logits - log_sum_exp
 
-  # Get log probability of target class (targets are assumed 0-indexed)
+  # Get log probability of target class (targets are 1-indexed)
   n_samples <- dim(logits)[1]
   n_classes <- dim(logits)[2]
   targets_vec <- as.integer(as.matrix(targets))
   if (length(targets_vec) != n_samples) {
     stop("targets must provide one class index per sample.", call. = FALSE)
   }
-  if (any(targets_vec < 0L | targets_vec >= n_classes)) {
-    stop("targets contain class indices outside 0:(n_classes - 1).", call. = FALSE)
+  if (any(targets_vec < 1L | targets_vec > n_classes)) {
+    stop("targets contain class indices outside 1:n_classes.", call. = FALSE)
   }
 
   eye_dtype <- if (identical(logits$dtype, "float64")) "float64" else "float32"
-  one_hot <- mlx_eye(n_classes, dtype = eye_dtype, device = logits$device)[targets_vec + 1L, , drop = FALSE]
+  one_hot <- mlx_eye(n_classes, dtype = eye_dtype, device = logits$device)[targets_vec, , drop = FALSE]
   one_hot <- .mlx_cast(one_hot, dtype = logits$dtype, device = logits$device)
 
   # Compute negative log likelihood

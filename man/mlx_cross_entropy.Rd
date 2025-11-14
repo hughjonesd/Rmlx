@@ -22,7 +22,7 @@ Computes cross-entropy loss for multi-class classification.
 \examples{
 # Logits for 3 samples, 4 classes
 logits <- as_mlx(matrix(rnorm(12), 3, 4))
-targets <- as_mlx(c(1, 3, 2))  # 0-indexed class labels
+targets <- as_mlx(c(1, 3, 2))
 mlx_cross_entropy(logits, targets)
 }
 \seealso{

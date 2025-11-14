@@ -223,7 +223,7 @@ test_that("direct gather and slice_update mirror MLX semantics", {
   updated <- mlx_slice_update(
     x,
     as_mlx(matrix(c(100, 200, 300, 400), nrow = 2)),
-    start = c(0L, 1L),
+    start = c(1L, 2L),
     stop = c(2L, 3L),
     strides = c(1L, 1L)
   )

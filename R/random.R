@@ -197,10 +197,10 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
 #'   need to be normalized (the function applies softmax internally). For a single
 #'   distribution over K classes, use a 1×K matrix. For multiple independent
 #'   distributions, use an N×K matrix where each row is a distribution.
-#' @param axis The axis along which to sample. Default is -1 (last axis, typically
-#'   the class dimension).
+#' @param axis The axis (1-indexed, negatives count from the end) along which to sample.
+#'   Default is -1L (last axis, typically the class dimension).
 #' @param num_samples Number of samples to draw from each distribution.
-#' @return An mlx array of integer indices (0-indexed) sampled from the
+#' @return An mlx array of integer indices (1-indexed) sampled from the
 #'   categorical distributions.
 #' @seealso [mlx.core.random.categorical](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.categorical)
 #' @export
@@ -215,14 +215,16 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
 #' samples <- mlx_rand_categorical(logits, num_samples = 5)
 mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
   logits <- as_mlx(logits)
-  axis <- as.integer(axis)
   num_samples <- as.integer(num_samples)
   if (num_samples < 1) {
     stop("num_samples must be at least 1.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_random_categorical(logits, axis, num_samples)
-  new_mlx(ptr, "int32", logits$device)
+  axis0 <- .mlx_normalize_axis_single(as.integer(axis), logits)
+
+  ptr <- cpp_mlx_random_categorical(logits, axis0, num_samples)
+  samples <- new_mlx(ptr, "int32", logits$device)
+  samples + as_mlx(1L, dtype = samples$dtype, device = samples$device)
 }
 
 #' Sample random integers on mlx arrays
@@ -271,10 +273,10 @@ mlx_rand_randint <- function(dim, low, high,
 #' Generate a random permutation of integers or permute the entries of an array
 #' along a specified axis.
 #'
-#' @param x Either an integer n (to generate a permutation of 0:(n-1)), or an
+#' @param x Either an integer n (to generate a permutation of 1:n), or an
 #'   mlx array or matrix to permute.
-#' @param axis The axis along which to permute when x is an array. Default is 0
-#'   (permute rows).
+#' @param axis The axis (1-indexed, negatives count from the end) along which to permute
+#'   when x is an array. Default is 1L (permute rows).
 #' @inheritParams common_params
 #' @details When `x` is an integer, the result is created on the specified
 #'   device or stream; otherwise the permutation follows the input array's
@@ -283,7 +285,7 @@ mlx_rand_randint <- function(dim, low, high,
 #' @seealso [mlx.core.random.permutation](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.permutation)
 #' @export
 #' @examples
-#' # Generate a random permutation of 0:9
+#' # Generate a random permutation of 1:10
 #' perm <- mlx_rand_permutation(10)
 #'
 #' # Permute the rows of a matrix
@@ -292,22 +294,22 @@ mlx_rand_randint <- function(dim, low, high,
 #'
 #' # Permute columns instead
 #' perm_cols <- mlx_rand_permutation(mat, axis = 1)
-mlx_rand_permutation <- function(x, axis = 0L, device = mlx_default_device()) {
-  axis <- as.integer(axis)
-
+mlx_rand_permutation <- function(x, axis = 1L, device = mlx_default_device()) {
   if (is.numeric(x) && length(x) == 1) {
-    # Generate permutation of 0:(x-1)
+    # Generate permutation of 1:x
     n <- as.integer(x)
     if (n < 1) {
       stop("n must be at least 1.", call. = FALSE)
     }
     handle <- .mlx_resolve_device(device, mlx_default_device())
     ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_random_permutation_n(n, dev))
-    new_mlx(ptr, "int32", handle$device)
+    perm <- new_mlx(ptr, "int32", handle$device)
+    return(perm + as_mlx(1L, dtype = perm$dtype, device = perm$device))
   } else {
     # Permute array along axis
     x <- as_mlx(x)
-    ptr <- cpp_mlx_random_permutation(x, axis)
+    axis0 <- .mlx_normalize_axis_single(as.integer(axis), x)
+    ptr <- cpp_mlx_random_permutation(x, axis0)
     new_mlx(ptr, x$dtype, x$device)
   }
 }

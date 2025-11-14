@@ -615,7 +615,7 @@ mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1, device = ml
 #' @examples
 #' set.seed(1)
 #' emb <- mlx_embedding(num_embeddings = 100, embedding_dim = 16)
-#' # Token indices (0-indexed)
+#' # Token indices (1-indexed)
 #' tokens <- as_mlx(matrix(c(5, 10, 3, 7), 2, 2))
 #' mlx_forward(emb, tokens)
 mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_device()) {
@@ -635,16 +635,16 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
   forward <- function(indices) {
     indices <- as_mlx(indices)
 
-    # indices are 0-based token IDs
+    # indices are 1-based token IDs
     orig_shape <- dim(indices)
     indices_r <- as.integer(as.matrix(indices))
 
     # Take embeddings
     result_list <- lapply(indices_r, function(idx) {
-      if (idx < 0 || idx >= env$num_embeddings) {
+      if (idx < 1 || idx > env$num_embeddings) {
         stop("Index out of range: ", idx, call. = FALSE)
       }
-      as.numeric(as.matrix(env$weight[idx + 1, ]))
+      as.numeric(as.matrix(env$weight[idx, ]))
     })
 
     # Stack results and reshape
