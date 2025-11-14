@@ -17,14 +17,18 @@
   [`mlx_fft2()`](https://hughjonesd.github.io/Rmlx/reference/mlx_fft.md),
   and
   [`mlx_fftn()`](https://hughjonesd.github.io/Rmlx/reference/mlx_fft.md)
-  wrappers around MLX FFT kernels and aligned pkgdown coverage.
+  wrappers around MLX FFT kernels.
+- Added distribution functions `mlx_d/p/qnorm()`, `mlx_d/p/qunif()` etc.
+- Added
+  [`mlx_quantile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_quantile.md).
+- Added
+  [`mlx_coordinate_descent()`](https://hughjonesd.github.io/Rmlx/reference/mlx_coordinate_descent.md),
+  a coordinate descent algorithm.
 - Fixed several `[`/`[<-` bugs affecting non-contiguous, unsorted, and
   duplicate subsetting patterns on `mlx` arrays.
 - [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md)
   now takes a much faster path for large numeric matrices by letting MLX
-  handle column-major inputs directly; 20-iteration GPU benchmarks show
-  6×–10× speedups for 1000–4000 square matrices and similar gains on
-  CPU.
+  handle column-major inputs directly.
 - Base reducers [`all()`](https://rdrr.io/r/base/all.html) and
   [`any()`](https://rdrr.io/r/base/any.html) applied to mlx arrays now
   return plain R logical scalars;

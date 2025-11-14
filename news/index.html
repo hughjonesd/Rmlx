@@ -42,10 +42,13 @@
 <h2 class="pkg-version" data-toc-text="0.1.0.9000" id="rmlx-0109000-development">Rmlx 0.1.0.9000 (development)<a class="anchor" aria-label="anchor" href="#rmlx-0109000-development"></a></h2>
 <ul><li>Added negative numeric indexing support for <code>[</code>/<code>[&lt;-</code> on <code>mlx</code> arrays and documented subsetting semantics.</li>
 <li>Added <code><a href="../reference/mlx_array.html">mlx_array()</a></code>, <code><a href="../reference/mlx_matrix.html">mlx_matrix()</a></code>, <code><a href="../reference/mlx_vector.html">mlx_vector()</a></code>, and <code><a href="../reference/mlx_scalar.html">mlx_scalar()</a></code> for fast construction of MLX objects when data and dimensions are already known.</li>
-<li>Added <code><a href="../reference/mlx_fft.html">mlx_fft()</a></code>, <code><a href="../reference/mlx_fft.html">mlx_fft2()</a></code>, and <code><a href="../reference/mlx_fft.html">mlx_fftn()</a></code> wrappers around MLX FFT kernels and aligned pkgdown coverage.</li>
+<li>Added <code><a href="../reference/mlx_fft.html">mlx_fft()</a></code>, <code><a href="../reference/mlx_fft.html">mlx_fft2()</a></code>, and <code><a href="../reference/mlx_fft.html">mlx_fftn()</a></code> wrappers around MLX FFT kernels.</li>
+<li>Added distribution functions <code>mlx_d/p/qnorm()</code>, <code>mlx_d/p/qunif()</code> etc.</li>
+<li>Added <code><a href="../reference/mlx_quantile.html">mlx_quantile()</a></code>.</li>
+<li>Added <code><a href="../reference/mlx_coordinate_descent.html">mlx_coordinate_descent()</a></code>, a coordinate descent algorithm.</li>
 <li>Fixed several <code>[</code>/<code>[&lt;-</code> bugs affecting non-contiguous, unsorted, and duplicate subsetting patterns on <code>mlx</code> arrays.</li>
 <li>
-<code><a href="../reference/as_mlx.html">as_mlx()</a></code> now takes a much faster path for large numeric matrices by letting MLX handle column-major inputs directly; 20-iteration GPU benchmarks show 6×–10× speedups for 1000–4000 square matrices and similar gains on CPU.</li>
+<code><a href="../reference/as_mlx.html">as_mlx()</a></code> now takes a much faster path for large numeric matrices by letting MLX handle column-major inputs directly.</li>
 <li>Base reducers <code><a href="https://rdrr.io/r/base/all.html" class="external-link">all()</a></code> and <code><a href="https://rdrr.io/r/base/any.html" class="external-link">any()</a></code> applied to mlx arrays now return plain R logical scalars; <code><a href="../reference/mlx_sum.html">mlx_all()</a></code>/<code><a href="../reference/mlx_sum.html">mlx_any()</a></code> continue to yield mlx booleans.</li>
 <li>Added mlx-aware wrappers for <code><a href="../reference/row.html">row()</a></code>, <code><a href="../reference/row.html">col()</a></code>, <code><a href="../reference/asplit.html">asplit()</a></code>, and <code><a href="../reference/mlx_solve_triangular.html">backsolve()</a></code>.</li>
 <li>Added <code><a href="../reference/scale.mlx.html">scale.mlx()</a></code> to center/scale matrices entirely on the MLX backend (with MLX arrays stored in the <code>scaled:center</code> / <code>scaled:scale</code> attributes).</li>
