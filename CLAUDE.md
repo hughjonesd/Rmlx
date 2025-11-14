@@ -114,7 +114,6 @@ R -q -e 'devtools::test_file("tests/testthat/test-ops.R")'
 
 - Roxygen2 comments in R files
 - Vignette in `vignettes/getting-started.Rmd`
-- Examples use `\dontrun{}` since MLX required
 
 After editing docs:
 ```r
@@ -127,3 +126,4 @@ R -q -e 'devtools::document()'
 - You can use library(help = "Rmlx") to find exported R functions in the package, with descriptions of what they do. You can use ls(envir = asNamespace("Rmlx"), all.names = TRUE) to find all functions including unexported ones.
 - The url https://ml-explore.github.io/mlx/build/html/search.html?q=foobar will search the documentation for foobar
 - Always use markdown in roxygen where possible (e.g. markdown lists rather than \item).
+- Always default to using mlx for data-related variables. If you have to drop to R with e.g. as.numeric(), think hard how to avoid that, or ask the user for advice.

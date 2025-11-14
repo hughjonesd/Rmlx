@@ -98,11 +98,7 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
 #' @param grad_fn Optional gradient function. If NULL, computed via mlx_grad(loss_fn).
 #' @param lipschitz Optional Lipschitz constants for each coordinate (length p vector).
 #'   If NULL, uses simple constant estimates.
-#' @param batch_size Number of coordinates to update per iteration (default: adaptive based on p).
-#'   - 1 = pure coordinate descent (sequential)
-#'   - p = full batch (all coordinates updated together)
-#'   - intermediate values = mini-batch coordinate descent
-#' @param compile Whether to compile the update step (default FALSE, not yet implemented).
+#' @param compile Whether to compile the update step (default FALSE).
 #' @param max_iter Maximum number of iterations (default 1000).
 #' @param tol Convergence tolerance (default 1e-6).
 #'
@@ -112,17 +108,14 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
 #'   - converged: Whether convergence criterion was met
 #'
 #' @details
-#' This function implements proximal coordinate descent for problems of the form:
+#' This function implements proximal gradient descent for problems of the form:
 #'   min_beta f(beta) + lambda * ||beta||_1
 #'
-#' where f is smooth. At each iteration, coordinates are updated via the proximal gradient step:
-#'   z_j = beta_j - (1/L_j) * grad_f(beta)_j
-#'   beta_j = soft_threshold(z_j, lambda/L_j)
+#' where f is smooth. At each iteration, all coordinates are updated via:
+#'   z = beta - (1/L) * grad_f(beta)
+#'   beta = soft_threshold(z, lambda/L)
 #'
-#' where L_j is a Lipschitz constant for coordinate j.
-#'
-#' Batching updates multiple coordinates simultaneously, which can significantly improve
-#' performance by reducing R-to-MLX call overhead.
+#' where L are Lipschitz constants for each coordinate.
 #'
 #' @export
 #' @examples
@@ -141,15 +134,13 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
 #' result <- mlx_coordinate_descent(
 #'   loss_fn = loss_fn,
 #'   beta_init = beta_init,
-#'   lambda = 0.1,
-#'   batch_size = 10
+#'   lambda = 0.1
 #' )
 mlx_coordinate_descent <- function(loss_fn,
                                     beta_init,
                                     lambda = 0,
                                     grad_fn = NULL,
                                     lipschitz = NULL,
-                                    batch_size = NULL,
                                     compile = FALSE,
                                     max_iter = 1000,
                                     tol = 1e-6) {
@@ -161,11 +152,6 @@ mlx_coordinate_descent <- function(loss_fn,
   beta <- beta_init
   n_pred <- nrow(beta)
 
-  # Default batch size: sequential for small p, batched for large p
-  if (is.null(batch_size)) {
-    batch_size <- if (n_pred <= 100) 1 else min(50, n_pred)
-  }
-
   # Gradient computation function
   compute_grad <- if (is.null(grad_fn)) {
     function(beta) mlx_grad(loss_fn, beta)[[1]]
@@ -174,61 +160,49 @@ mlx_coordinate_descent <- function(loss_fn,
   }
 
   # Default Lipschitz constants
-  use_backtracking <- is.null(lipschitz)
-  if (!use_backtracking) {
+  if (is.null(lipschitz)) {
+    lipschitz <- rep(1.0, n_pred)
+  } else {
     lipschitz <- as.numeric(lipschitz)
     if (length(lipschitz) != n_pred) {
       stop("lipschitz must have length equal to number of parameters", call. = FALSE)
     }
-  } else {
-    # Conservative default
-    lipschitz <- rep(1.0, n_pred)
   }
-
-  # Create coordinate batches
-  coord_batches <- split(seq_len(n_pred), ceiling(seq_len(n_pred) / batch_size))
 
   # Convert constants to mlx once and reshape to column vectors
   lipschitz_mlx <- mlx_reshape(as_mlx(lipschitz), c(n_pred, 1))
   lambda_mlx <- as_mlx(lambda)
 
-  # Define update for a single batch
-  update_batch <- function(beta, grad_coords, beta_coords, L_matrix) {
-    # Proximal gradient step (vectorized)
-    z <- beta_coords - grad_coords / L_matrix
+  # Define proximal gradient update
+  prox_update <- function(beta, grad, L_matrix) {
+    # Proximal gradient step
+    z <- beta - grad / L_matrix
 
-    # Soft thresholding (vectorized)
+    # Soft thresholding
     abs_z <- abs(z)
-    threshold_mlx <- lambda_mlx / L_matrix
+    threshold <- lambda_mlx / L_matrix
 
     # Apply soft thresholding: max(abs_z - threshold, 0) * sign(z)
-    sign(z) * mlx_maximum(abs_z - threshold_mlx, 0)
+    sign(z) * mlx_maximum(abs_z - threshold, 0)
   }
 
-  # Compile the batch update function if requested
+  # Compile the update function if requested
   if (compile) {
-    update_batch <- mlx_compile(update_batch)
+    prox_update <- mlx_compile(prox_update)
   }
 
   for (iter in seq_len(max_iter)) {
     beta_old <- beta
 
-    # Cycle through coordinate batches
-    for (coords in coord_batches) {
-      # Compute gradient
-      grad <- compute_grad(beta)
+    # Compute gradient
+    grad <- compute_grad(beta)
 
-      # Update all coordinates in the batch at once
-      grad_coords <- grad[coords, , drop = FALSE]
-      beta_coords <- beta[coords, , drop = FALSE]
-      L_matrix <- lipschitz_mlx[coords, , drop = FALSE]
-
-      # Apply the update (possibly compiled)
-      beta[coords, ] <- update_batch(beta, grad_coords, beta_coords, L_matrix)
-    }
+    # Apply proximal gradient update to all coordinates
+    beta <- prox_update(beta, grad, lipschitz_mlx)
 
     # Check convergence (compute in mlx, convert only the scalar result)
-    if (as.numeric(max(abs(beta - beta_old))) < tol) {
+    delta <- as.numeric(max(abs(beta - beta_old)))
+    if (is.finite(delta) && delta < tol) {
       return(list(
         beta = beta,
         n_iter = iter,

@@ -20,7 +20,6 @@ test_that("mlx_coordinate_descent solves lasso regression", {
     loss_fn = loss_fn,
     beta_init = beta_init,
     lambda = 0.1,
-    batch_size = 5,
     max_iter = 100,
     tol = 1e-6
   )
@@ -38,37 +37,6 @@ test_that("mlx_coordinate_descent solves lasso regression", {
   final_loss <- as.numeric(loss_fn(result$beta))
   initial_loss <- as.numeric(loss_fn(beta_init))
   expect_lt(final_loss, initial_loss)
-})
-
-test_that("mlx_coordinate_descent works with different batch sizes", {
-  set.seed(123)
-  n <- 50
-  p <- 10
-
-  X <- as_mlx(matrix(rnorm(n * p), n, p))
-  y <- as_mlx(matrix(rnorm(n), ncol = 1))
-
-  loss_fn <- function(beta) {
-    residual <- y - X %*% beta
-    sum(residual^2) / (2 * n)
-  }
-
-  beta_init <- mlx_zeros(c(p, 1))
-
-  # Test different batch sizes
-  for (bs in c(1, 5, 10)) {
-    result <- mlx_coordinate_descent(
-      loss_fn = loss_fn,
-      beta_init = beta_init,
-      lambda = 0.05,
-      batch_size = bs,
-      max_iter = 50
-    )
-
-    expect_true(result$converged || result$n_iter == 50)
-    expect_true(is.mlx(result$beta))
-    expect_equal(dim(result$beta), c(p, 1))
-  }
 })
 
 test_that("mlx_coordinate_descent with custom gradient", {
@@ -98,7 +66,6 @@ test_that("mlx_coordinate_descent with custom gradient", {
     beta_init = beta_init,
     lambda = 0.1,
     grad_fn = grad_fn,
-    batch_size = 5,
     max_iter = 50
   )
 
@@ -108,7 +75,6 @@ test_that("mlx_coordinate_descent with custom gradient", {
     beta_init = beta_init,
     lambda = 0.1,
     grad_fn = NULL,
-    batch_size = 5,
     max_iter = 50
   )
 
