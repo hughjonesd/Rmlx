@@ -54,7 +54,6 @@ where f is a smooth differentiable loss function.</p>
 <span>  lambda <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  grad_fn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lipschitz <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  batch_size <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  compile <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  max_iter <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">1e-06</span></span>
@@ -86,15 +85,8 @@ where f is a smooth differentiable loss function.</p>
 If NULL, uses simple constant estimates.</p></dd>
 
 
-<dt id="arg-batch-size">batch_size<a class="anchor" aria-label="anchor" href="#arg-batch-size"></a></dt>
-<dd><p>Number of coordinates to update per iteration (default: adaptive based on p).</p><ul><li><p>1 = pure coordinate descent (sequential)</p></li>
-<li><p>p = full batch (all coordinates updated together)</p></li>
-<li><p>intermediate values = mini-batch coordinate descent</p></li>
-</ul></dd>
-
-
 <dt id="arg-compile">compile<a class="anchor" aria-label="anchor" href="#arg-compile"></a></dt>
-<dd><p>Whether to compile the update step (default FALSE, not yet implemented).</p></dd>
+<dd><p>Whether to compile the update step (default FALSE).</p></dd>
 
 
 <dt id="arg-max-iter">max_iter<a class="anchor" aria-label="anchor" href="#arg-max-iter"></a></dt>
@@ -113,14 +105,12 @@ If NULL, uses simple constant estimates.</p></dd>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>This function implements proximal coordinate descent for problems of the form:
+    <p>This function implements proximal gradient descent for problems of the form:
 min_beta f(beta) + lambda * ||beta||_1</p>
-<p>where f is smooth. At each iteration, coordinates are updated via the proximal gradient step:
-z_j = beta_j - (1/L_j) * grad_f(beta)_j
-beta_j = soft_threshold(z_j, lambda/L_j)</p>
-<p>where L_j is a Lipschitz constant for coordinate j.</p>
-<p>Batching updates multiple coordinates simultaneously, which can significantly improve
-performance by reducing R-to-MLX call overhead.</p>
+<p>where f is smooth. At each iteration, all coordinates are updated via:
+z = beta - (1/L) * grad_f(beta)
+beta = soft_threshold(z, lambda/L)</p>
+<p>where L are Lipschitz constants for each coordinate.</p>
     </div>
 
     <div class="section level2">
@@ -140,8 +130,7 @@ performance by reducing R-to-MLX call overhead.</p>
 <span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">mlx_coordinate_descent</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  loss_fn <span class="op">=</span> <span class="va">loss_fn</span>,</span></span>
 <span class="r-in"><span>  beta_init <span class="op">=</span> <span class="va">beta_init</span>,</span></span>
-<span class="r-in"><span>  lambda <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
-<span class="r-in"><span>  batch_size <span class="op">=</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span>  lambda <span class="op">=</span> <span class="fl">0.1</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>

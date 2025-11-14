@@ -177,7 +177,6 @@
 <ul><li>Roxygen2 comments in R files</li>
 <li>Vignette in <code>vignettes/getting-started.Rmd</code>
 </li>
-<li>Examples use <code>\dontrun{}</code> since MLX required</li>
 </ul><p>After editing docs:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>R <span class="sc">-</span>q <span class="sc">-</span>e <span class="st">'devtools::document()'</span></span></code></pre></div>
 <ul><li>Where possible, use usethis:: package commands to do things the canonical way.</li>
@@ -188,6 +187,7 @@
 <li>The url <a href="https://ml-explore.github.io/mlx/build/html/search.html?q=foobar" class="external-link uri">https://ml-explore.github.io/mlx/build/html/search.html?q=foobar</a> will search the documentation for foobar</li>
 <li>Always use markdown in roxygen where possible (e.g. markdown lists rather than
 ).</li>
+<li>Always default to using mlx for data-related variables. If you have to drop to R with e.g. as.numeric(), think hard how to avoid that, or ask the user for advice.</li>
 </ul></div>
 </div>
 

@@ -144,7 +144,6 @@ R -q -e 'devtools::test_file("tests/testthat/test-ops.R")'
 
 - Roxygen2 comments in R files
 - Vignette in `vignettes/getting-started.Rmd`
-- Examples use `\dontrun{}` since MLX required
 
 After editing docs:
 
@@ -167,3 +166,6 @@ R -q -e 'devtools::document()'
   will search the documentation for foobar
 - Always use markdown in roxygen where possible (e.g. markdown lists
   rather than ).
+- Always default to using mlx for data-related variables. If you have to
+  drop to R with e.g. as.numeric(), think hard how to avoid that, or ask
+  the user for advice.

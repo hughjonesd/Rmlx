@@ -12,7 +12,6 @@ mlx_coordinate_descent(
   lambda = 0,
   grad_fn = NULL,
   lipschitz = NULL,
-  batch_size = NULL,
   compile = FALSE,
   max_iter = 1000,
   tol = 1e-06
@@ -43,21 +42,9 @@ mlx_coordinate_descent(
   Optional Lipschitz constants for each coordinate (length p vector). If
   NULL, uses simple constant estimates.
 
-- batch_size:
-
-  Number of coordinates to update per iteration (default: adaptive based
-  on p).
-
-  - 1 = pure coordinate descent (sequential)
-
-  - p = full batch (all coordinates updated together)
-
-  - intermediate values = mini-batch coordinate descent
-
 - compile:
 
-  Whether to compile the update step (default FALSE, not yet
-  implemented).
+  Whether to compile the update step (default FALSE).
 
 - max_iter:
 
@@ -79,17 +66,13 @@ List with:
 
 ## Details
 
-This function implements proximal coordinate descent for problems of the
+This function implements proximal gradient descent for problems of the
 form: min_beta f(beta) + lambda \* \|\|beta\|\|\_1
 
-where f is smooth. At each iteration, coordinates are updated via the
-proximal gradient step: z_j = beta_j - (1/L_j) \* grad_f(beta)\_j beta_j
-= soft_threshold(z_j, lambda/L_j)
+where f is smooth. At each iteration, all coordinates are updated via: z
+= beta - (1/L) \* grad_f(beta) beta = soft_threshold(z, lambda/L)
 
-where L_j is a Lipschitz constant for coordinate j.
-
-Batching updates multiple coordinates simultaneously, which can
-significantly improve performance by reducing R-to-MLX call overhead.
+where L are Lipschitz constants for each coordinate.
 
 ## Examples
 
@@ -109,7 +92,6 @@ loss_fn <- function(beta) {
 result <- mlx_coordinate_descent(
   loss_fn = loss_fn,
   beta_init = beta_init,
-  lambda = 0.1,
-  batch_size = 10
+  lambda = 0.1
 )
 ```
