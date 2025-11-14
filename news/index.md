@@ -5,6 +5,9 @@
 - Added negative numeric indexing support for `[`/`[<-` on `mlx` arrays
   and documented subsetting semantics.
 - Added
+  [`mlx_import_function()`](https://hughjonesd.github.io/Rmlx/reference/mlx_import_function.md)
+  to import MLX functions from (e.g.) Python.
+- Added
   [`mlx_array()`](https://hughjonesd.github.io/Rmlx/reference/mlx_array.md),
   [`mlx_matrix()`](https://hughjonesd.github.io/Rmlx/reference/mlx_matrix.md),
   [`mlx_vector()`](https://hughjonesd.github.io/Rmlx/reference/mlx_vector.md),
