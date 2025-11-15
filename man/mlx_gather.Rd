@@ -11,7 +11,8 @@ mlx_gather(x, indices, axes = NULL)
 
 \item{indices}{List of index tensors. Each element can be a numeric/logical
 vector, array, or an \code{mlx} array of integer type. Shapes must broadcast to a
-common result.}
+common result. Negative values follow base R semantics and omit the
+specified locations rather than counting from the end.}
 
 \item{axes}{Integer vector of axes (1-indexed, negatives count from the end)
 corresponding to \code{indices}. Defaults to the first \code{length(indices)} axes.}

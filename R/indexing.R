@@ -7,7 +7,8 @@
 #' @inheritParams mlx_array_required
 #' @param indices List of index tensors. Each element can be a numeric/logical
 #'   vector, array, or an `mlx` array of integer type. Shapes must broadcast to a
-#'   common result.
+#'   common result. Negative values follow base R semantics and omit the
+#'   specified locations rather than counting from the end.
 #' @param axes Integer vector of axes (1-indexed, negatives count from the end)
 #'   corresponding to `indices`. Defaults to the first `length(indices)` axes.
 #' @return An `mlx` array containing the gathered elements.
