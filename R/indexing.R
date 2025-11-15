@@ -51,10 +51,8 @@ mlx_gather <- function(x, indices, axes = NULL) {
   axis0 <- axes0[[1]]
   axis_len <- dim(x)[axis0 + 1L]
   idx_vals <- idx_list[[1]]
-  if (is.mlx(idx_vals)) {
-    idx_vals <- as.vector(idx_vals)
-  }
-  sel <- .normalize_index_vector(idx_vals, axis_len)
+  idx_vec <- if (is.null(idx_vals)) NULL else as.vector(idx_vals)
+  sel <- .normalize_index_vector(idx_vec, axis_len)
   ptr <- cpp_mlx_take(x$ptr, sel, axis0)
   .mlx_wrap_result(ptr, x$device)
 }

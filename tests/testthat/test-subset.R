@@ -266,6 +266,16 @@ test_that("direct gather and slice_update mirror MLX semantics", {
   expect_equal(as.matrix(updated), mat, tolerance = 1e-6)
 })
 
+test_that("mlx_gather treats negative indices as omissions", {
+  x <- as_mlx(1:10)
+
+  dropped <- mlx_gather(x, list(c(-1L, -2L)))
+  expect_equal(as.vector(dropped), 3:10)
+
+  dropped_mlx <- mlx_gather(x, list(as_mlx(c(-1L, -2L))))
+  expect_equal(as.vector(dropped_mlx), 3:10)
+})
+
 test_that("mlx vector indexing works (1-based)", {
   mat <- matrix(1:12, 3, 4)
   x <- as_mlx(mat)
