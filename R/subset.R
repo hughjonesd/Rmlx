@@ -123,34 +123,44 @@
     stop("Replacement value must have length >= 1.", call. = FALSE)
   }
   value_vec <- rep_len(value_vec, total_elems)
+
+  # Store values for both slice (array) and scatter (vector) paths
   value_array <- array(value_vec, dim = dims_sel)
-  value_mlx <- as_mlx(value_array, dtype = x$dtype, device = x$device)
+  value_mlx_tensor <- as_mlx(value_array, dtype = x$dtype, device = x$device)
+
+  value_matrix <- matrix(value_vec, ncol = 1L)
+  value_mlx_vec <- as_mlx(value_matrix, dtype = x$dtype, device = x$device)
 
   slice <- .mlx_slice_parameters(prep$normalized, dim(x))
   if (slice$can_slice) {
-    ptr <- cpp_mlx_slice_update(x$ptr, value_mlx$ptr, slice$start, slice$stop, slice$stride)
+    ptr <- cpp_mlx_slice_update(x$ptr, value_mlx_tensor$ptr, slice$start, slice$stop, slice$stride)
     return(.mlx_wrap_result(ptr, x$device))
   }
 
-  # Otherwise materialise the cartesian product and update element-wise
-  full_indices <- .mlx_expand_indices(prep$normalized, dim(x))
+  has_dupes <- any(vapply(prep$normalized, function(sel) {
+    !is.null(sel) && length(sel) > 1L && anyDuplicated(sel)
+  }, logical(1)))
 
-  grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
-  coord_mat <- as.matrix(grid)
-  if (!is.matrix(coord_mat)) {
-    coord_mat <- matrix(coord_mat, ncol = ndim)
-  }
-  idx_mat <- coord_mat + 1L
-
-  # Base R applies repeated indices in order; emulate by dropping to host when duplicates appear
-  has_dupes <- nrow(idx_mat) > 1L && anyDuplicated(idx_mat)
   if (has_dupes) {
+    full_indices <- .mlx_expand_indices(prep$normalized, dim(x))
+    grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
+    coord_mat <- as.matrix(grid)
+    if (!is.matrix(coord_mat)) {
+      coord_mat <- matrix(coord_mat, ncol = ndim)
+    }
+    idx_mat <- coord_mat + 1L
+
     base <- as.array(x)
-    base[idx_mat] <- as.vector(value_array)
+    base[idx_mat] <- value_vec
     return(as_mlx(base, dtype = x$dtype, device = x$device))
   }
 
-  .mlx_matrix_assign(x, idx_mat, value_array)
+  normalized_int <- lapply(prep$normalized, function(sel) {
+    if (is.null(sel)) NULL else as.integer(sel)
+  })
+
+  ptr <- cpp_mlx_assign(x$ptr, normalized_int, value_mlx_vec$ptr, as.integer(dim(x)))
+  .mlx_wrap_result(ptr, x$device)
 }
 
 #' Matrix-style subsetting helper.
@@ -345,6 +355,9 @@
       can_slice <- FALSE
     }
     stride_val <- if (length(diffs) == 0L) 1L else diffs[1L]
+    if (stride_val <= 0L) {
+      can_slice <- FALSE
+    }
     start[axis] <- sel[1L]
     stride[axis] <- stride_val
     stop[axis] <- utils::tail(sel, 1L) + stride_val

@@ -8,6 +8,7 @@ mlx_coordinate_descent(
   loss_fn,
   beta_init,
   lambda = 0,
+  ridge_penalty = 0,
   grad_fn = NULL,
   lipschitz = NULL,
   max_iter = 1000,
@@ -23,6 +24,10 @@ mlx_coordinate_descent(
 
 \item{lambda}{L1 penalty parameter (scalar, default 0).}
 
+\item{ridge_penalty}{Optional ridge (L2) penalty term applied per-coordinate when
+computing gradients. Can be a scalar, numeric vector of length p, or an \code{mlx}
+array with shape compatible with \code{beta_init}.}
+
 \item{grad_fn}{Optional gradient function. If NULL, computed via mlx_grad(loss_fn).}
 
 \item{lipschitz}{Optional Lipschitz constants for each coordinate (length p vector).
@@ -35,7 +40,10 @@ If NULL, uses simple constant estimates.}
 \item{block_size}{Number of coordinates to update before recomputing the gradient.
 Set to 1 for strict coordinate descent; larger values trade accuracy for speed.}
 
-\item{grad_cache}{Optional environment for specialized gradient updates (internal use).}
+\item{grad_cache}{Optional environment for supplying cached gradient components.
+Supported fields are \code{type = "gaussian"} with entries \code{x}, \code{residual}, \code{n_obs},
+and optional \code{ridge_penalty}; or \code{type = "binomial"} with entries \code{x}, \code{eta},
+\code{mu}, \code{residual}, \code{y}, \code{n_obs}, and optional \code{ridge_penalty}.}
 }
 \value{
 List with:

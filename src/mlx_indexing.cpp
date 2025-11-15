@@ -125,3 +125,96 @@ SEXP cpp_mlx_scatter(SEXP xp_,
   array result = scatter(src_wrapper->get(), indices_vec, upd_wrapper->get(), axes_vec);
   return make_mlx_xptr(std::move(result));
 }
+
+namespace {
+
+struct AxisSelection {
+  bool full = false;
+  std::vector<int64_t> values;
+  int64_t length = 0;
+};
+
+} // namespace
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_assign(SEXP xp_,
+                    List normalized_,
+                    SEXP updates_flat_xp_,
+                    IntegerVector dim_sizes_) {
+  MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
+  MlxArrayWrapper* updates_wrapper = get_mlx_wrapper(updates_flat_xp_);
+
+  array src = src_wrapper->get();
+  array updates = updates_wrapper->get();
+
+  Shape dims(dim_sizes_.begin(), dim_sizes_.end());
+  const int ndim = static_cast<int>(dims.size());
+  if (normalized_.size() != ndim) {
+    Rcpp::stop("Index count does not match array rank.");
+  }
+
+  std::vector<AxisSelection> axes(ndim);
+  std::vector<int64_t> axis_lengths(ndim, 0);
+
+  for (int axis = 0; axis < ndim; ++axis) {
+    AxisSelection sel;
+    SEXP idx = normalized_[axis];
+    if (Rf_isNull(idx)) {
+      sel.full = true;
+      sel.length = dims[axis];
+    } else {
+      IntegerVector axis_idx(idx);
+      sel.length = axis_idx.size();
+      sel.values.assign(axis_idx.begin(), axis_idx.end());
+    }
+    axes[axis] = std::move(sel);
+    axis_lengths[axis] = axes[axis].length;
+  }
+
+  size_t total = 1;
+  for (int axis = 0; axis < ndim; ++axis) {
+    total *= static_cast<size_t>(axis_lengths[axis]);
+  }
+
+  if (static_cast<size_t>(updates.size()) != total) {
+    Rcpp::stop("Replacement value has incorrect length for selection.");
+  }
+
+  array flat_src = reshape(src, Shape{static_cast<int>(src.size())});
+  array flat_updates = reshape(updates, Shape{static_cast<int>(total), 1});
+
+  std::vector<int64_t> strides(ndim, 1);
+  for (int axis = ndim - 2; axis >= 0; --axis) {
+    strides[axis] = strides[axis + 1] * static_cast<int64_t>(dims[axis + 1]);
+  }
+
+  std::vector<int64_t> counters(ndim, 0);
+  std::vector<int64_t> linear(total, 0);
+
+  for (size_t idx = 0; idx < total; ++idx) {
+    int64_t flat = 0;
+    for (int axis = 0; axis < ndim; ++axis) {
+      const AxisSelection& sel = axes[axis];
+      int64_t coord = sel.full ? counters[axis] : sel.values[counters[axis]];
+      flat += coord * strides[axis];
+    }
+    linear[idx] = flat;
+
+    for (int axis = 0; axis < ndim; ++axis) {
+      counters[axis]++;
+      if (counters[axis] < axis_lengths[axis]) {
+        break;
+      }
+      counters[axis] = 0;
+    }
+  }
+
+  array idx_array(linear.data(), Shape{static_cast<int>(linear.size())}, int64);
+  std::vector<array> idx_vec;
+  idx_vec.push_back(idx_array);
+  std::vector<int> axes_vec{0};
+
+  array scattered = scatter(flat_src, idx_vec, flat_updates, axes_vec);
+  array reshaped = reshape(scattered, src.shape());
+  return make_mlx_xptr(std::move(reshaped));
+}
