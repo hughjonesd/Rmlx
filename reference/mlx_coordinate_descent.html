@@ -52,6 +52,7 @@ where f is a smooth differentiable loss function.</p>
 <span>  <span class="va">loss_fn</span>,</span>
 <span>  <span class="va">beta_init</span>,</span>
 <span>  lambda <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  ridge_penalty <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  grad_fn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lipschitz <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  max_iter <span class="op">=</span> <span class="fl">1000</span>,</span>
@@ -77,6 +78,12 @@ where f is a smooth differentiable loss function.</p>
 <dd><p>L1 penalty parameter (scalar, default 0).</p></dd>
 
 
+<dt id="arg-ridge-penalty">ridge_penalty<a class="anchor" aria-label="anchor" href="#arg-ridge-penalty"></a></dt>
+<dd><p>Optional ridge (L2) penalty term applied per-coordinate when
+computing gradients. Can be a scalar, numeric vector of length p, or an <code>mlx</code>
+array with shape compatible with <code>beta_init</code>.</p></dd>
+
+
 <dt id="arg-grad-fn">grad_fn<a class="anchor" aria-label="anchor" href="#arg-grad-fn"></a></dt>
 <dd><p>Optional gradient function. If NULL, computed via mlx_grad(loss_fn).</p></dd>
 
@@ -100,7 +107,10 @@ Set to 1 for strict coordinate descent; larger values trade accuracy for speed.<
 
 
 <dt id="arg-grad-cache">grad_cache<a class="anchor" aria-label="anchor" href="#arg-grad-cache"></a></dt>
-<dd><p>Optional environment for specialized gradient updates (internal use).</p></dd>
+<dd><p>Optional environment for supplying cached gradient components.
+Supported fields are <code>type = "gaussian"</code> with entries <code>x</code>, <code>residual</code>, <code>n_obs</code>,
+and optional <code>ridge_penalty</code>; or <code>type = "binomial"</code> with entries <code>x</code>, <code>eta</code>,
+<code>mu</code>, <code>residual</code>, <code>y</code>, <code>n_obs</code>, and optional <code>ridge_penalty</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -152,7 +162,6 @@ beta = soft_threshold(z, lambda/L)</p>
 <span class="r-in"><span>  lambda <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
 <span class="r-in"><span>  grad_cache <span class="op">=</span> <span class="va">grad_cache</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in mlx_coordinate_descent(loss_fn = loss_fn, beta_init = beta_init,     lambda = 0.1, grad_cache = grad_cache):</span> object 'ridge_penalty' not found</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -10,6 +10,7 @@ mlx_coordinate_descent(
   loss_fn,
   beta_init,
   lambda = 0,
+  ridge_penalty = 0,
   grad_fn = NULL,
   lipschitz = NULL,
   max_iter = 1000,
@@ -33,6 +34,12 @@ mlx_coordinate_descent(
 - lambda:
 
   L1 penalty parameter (scalar, default 0).
+
+- ridge_penalty:
+
+  Optional ridge (L2) penalty term applied per-coordinate when computing
+  gradients. Can be a scalar, numeric vector of length p, or an `mlx`
+  array with shape compatible with `beta_init`.
 
 - grad_fn:
 
@@ -59,7 +66,11 @@ mlx_coordinate_descent(
 
 - grad_cache:
 
-  Optional environment for specialized gradient updates (internal use).
+  Optional environment for supplying cached gradient components.
+  Supported fields are `type = "gaussian"` with entries `x`, `residual`,
+  `n_obs`, and optional `ridge_penalty`; or `type = "binomial"` with
+  entries `x`, `eta`, `mu`, `residual`, `y`, `n_obs`, and optional
+  `ridge_penalty`.
 
 ## Value
 
@@ -115,5 +126,4 @@ cached <- mlx_coordinate_descent(
   lambda = 0.1,
   grad_cache = grad_cache
 )
-#> Error in mlx_coordinate_descent(loss_fn = loss_fn, beta_init = beta_init,     lambda = 0.1, grad_cache = grad_cache): object 'ridge_penalty' not found
 ```
