@@ -416,6 +416,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_assign
+SEXP cpp_mlx_assign(SEXP xp_, List normalized_, SEXP updates_flat_xp_, IntegerVector dim_sizes_);
+RcppExport SEXP _Rmlx_cpp_mlx_assign(SEXP xp_SEXP, SEXP normalized_SEXP, SEXP updates_flat_xp_SEXP, SEXP dim_sizes_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< List >::type normalized_(normalized_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type updates_flat_xp_(updates_flat_xp_SEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type dim_sizes_(dim_sizes_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_assign(xp_, normalized_, updates_flat_xp_, dim_sizes_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_save
 void cpp_mlx_save(SEXP xp_, std::string file);
 RcppExport SEXP _Rmlx_cpp_mlx_save(SEXP xp_SEXP, SEXP fileSEXP) {
@@ -1977,6 +1991,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_slice_update", (DL_FUNC) &_Rmlx_cpp_mlx_slice_update, 5},
     {"_Rmlx_cpp_mlx_gather", (DL_FUNC) &_Rmlx_cpp_mlx_gather, 4},
     {"_Rmlx_cpp_mlx_scatter", (DL_FUNC) &_Rmlx_cpp_mlx_scatter, 4},
+    {"_Rmlx_cpp_mlx_assign", (DL_FUNC) &_Rmlx_cpp_mlx_assign, 4},
     {"_Rmlx_cpp_mlx_save", (DL_FUNC) &_Rmlx_cpp_mlx_save, 2},
     {"_Rmlx_cpp_mlx_load", (DL_FUNC) &_Rmlx_cpp_mlx_load, 2},
     {"_Rmlx_cpp_mlx_save_safetensors", (DL_FUNC) &_Rmlx_cpp_mlx_save_safetensors, 5},

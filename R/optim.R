@@ -102,11 +102,13 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
 #' @param tol Convergence tolerance (default 1e-6).
 #' @param block_size Number of coordinates to update before recomputing the gradient.
 #'   Set to 1 for strict coordinate descent; larger values trade accuracy for speed.
+#' @param ridge_penalty Optional ridge (L2) penalty term applied per-coordinate when
+#'   computing gradients. Can be a scalar, numeric vector of length p, or an `mlx`
+#'   array with shape compatible with `beta_init`.
 #' @param grad_cache Optional environment for supplying cached gradient components.
 #'   Supported fields are `type = "gaussian"` with entries `x`, `residual`, `n_obs`,
 #'   and optional `ridge_penalty`; or `type = "binomial"` with entries `x`, `eta`,
 #'   `mu`, `residual`, `y`, `n_obs`, and optional `ridge_penalty`.
-#' @param grad_cache Optional environment for specialized gradient updates (internal use).
 #'
 #' @return List with:
 #'   - beta: Optimized parameter vector (MLX tensor)
@@ -159,6 +161,7 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
 mlx_coordinate_descent <- function(loss_fn,
                                     beta_init,
                                     lambda = 0,
+                                    ridge_penalty = 0,
                                     grad_fn = NULL,
                                     lipschitz = NULL,
                                     max_iter = 1000,
@@ -216,6 +219,28 @@ mlx_coordinate_descent <- function(loss_fn,
   }
   lambda_mlx <- as_mlx(matrix(lambda_numeric, nrow = 1, ncol = 1))
 
+  as_column_mlx <- function(val) {
+    if (is.mlx(val)) {
+      arr <- val
+      if (length(dim(arr)) == 1L) {
+        return(mlx_reshape(arr, c(n_pred, 1)))
+      }
+      return(arr)
+    }
+    vec <- as.numeric(val)
+    if (length(vec) == 0L) {
+      vec <- 0
+    }
+    if (length(vec) == 1L) {
+      vec <- rep(vec, n_pred)
+    } else if (length(vec) != n_pred) {
+      stop("ridge_penalty must be a scalar or length n_pred.", call. = FALSE)
+    }
+    mlx_reshape(as_mlx(vec), c(n_pred, 1))
+  }
+
+  ridge_mlx <- as_column_mlx(ridge_penalty)
+
   blocks <- split(seq_len(n_pred), ceiling(seq_len(n_pred) / block_size))
 
   for (iter in seq_len(max_iter)) {
@@ -229,8 +254,13 @@ mlx_coordinate_descent <- function(loss_fn,
         } else {
           grad_block <- crossprod(x_block, grad_cache$residual) / grad_cache$n_obs
         }
-        ridge_val <- if (!is.null(grad_cache$ridge_penalty)) grad_cache$ridge_penalty else ridge_penalty
-        grad_block <- grad_block + ridge_val * beta[block, , drop = FALSE]
+        ridge_val <- if (!is.null(grad_cache$ridge_penalty)) {
+          as_column_mlx(grad_cache$ridge_penalty)
+        } else {
+          ridge_mlx
+        }
+        ridge_block <- ridge_val[block, , drop = FALSE]
+        grad_block <- grad_block + ridge_block * beta[block, , drop = FALSE]
       } else {
         grad <- compute_grad(beta)
         grad_block <- grad[block, , drop = FALSE]

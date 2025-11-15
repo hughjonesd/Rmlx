@@ -155,6 +155,41 @@ test_that("subset assignment with mlx indices matches base R", {
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 
+test_that("subset assignment handles irregular numeric axes", {
+  set.seed(20251115)
+  arr <- array(runif(4 * 5 * 6), dim = c(4, 5, 6))
+  x <- as_mlx(arr)
+
+  rows <- c(4L, 1L)
+  cols <- c(5L, 2L, 4L)
+  slabs <- c(6L, 1L, 3L)
+  repl <- array(runif(length(rows) * length(cols) * length(slabs)),
+                dim = c(length(rows), length(cols), length(slabs)))
+
+  x[rows, cols, slabs] <- repl
+  arr[rows, cols, slabs] <- repl
+
+  expect_equal(as.array(x), arr, tolerance = 1e-6)
+})
+
+test_that("subset assignment handles irregular mlx indices with missing axes", {
+  set.seed(20251116)
+  arr <- array(runif(3 * 7 * 5), dim = c(3, 7, 5))
+  x <- as_mlx(arr)
+
+  rows_vec <- c(3L, 1L)
+  slabs_vec <- c(5L, 2L)
+  rows <- as_mlx(rows_vec)
+  slabs <- as_mlx(slabs_vec)
+  repl <- array(runif(length(rows_vec) * dim(arr)[2] * length(slabs_vec)),
+                dim = c(length(rows_vec), dim(arr)[2], length(slabs_vec)))
+
+  x[rows, , slabs] <- repl
+  arr[rows_vec, , slabs_vec] <- repl
+
+  expect_equal(as.array(x), arr, tolerance = 1e-6)
+})
+
 test_that("subset assignment handles repeated numeric indices", {
   set.seed(20251101)
   mat <- matrix(seq_len(100), nrow = 10, ncol = 10)
