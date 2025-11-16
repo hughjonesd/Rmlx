@@ -22,8 +22,7 @@ mlx_default_device <- function(value) {
 #'
 #' Waits for outstanding operations on the specified device or stream to complete.
 #'
-#' @param device Device identifier ("gpu" or "cpu") or an `mlx_stream` created by
-#'   [mlx_new_stream()].
+#' @inheritParams common_params
 #' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 #' @export
 #' @examples
@@ -31,20 +30,20 @@ mlx_default_device <- function(value) {
 #' mlx_synchronize("gpu")
 #' stream <- mlx_new_stream()
 #' mlx_synchronize(stream)
-mlx_synchronize <- function(device = c("gpu", "cpu")) {
+mlx_synchronize <- function(device = mlx_default_device()) {
   if (.mlx_is_stream(device)) {
     cpp_mlx_synchronize_stream(device$ptr)
     return(invisible(NULL))
   }
 
-  device <- match.arg(device)
+  device <- match.arg(device, c("gpu", "cpu"))
   cpp_mlx_synchronize(device)
   invisible(NULL)
 }
 
 #' Temporarily set the default MLX device
 #'
-#' @param device Device to use (`"gpu"` or `"cpu"`).
+#' @inheritParams common_params
 #' @param code Expression to evaluate while `device` is active.
 #' @return The result of evaluating `code`.
 #' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
@@ -53,8 +52,8 @@ mlx_synchronize <- function(device = c("gpu", "cpu")) {
 #' old <- mlx_default_device()
 #' with_default_device("cpu", mlx_default_device())
 #' mlx_default_device(old)
-with_default_device <- function(device = c("gpu", "cpu"), code) {
-  device <- match.arg(device)
+with_default_device <- function(device, code) {
+  device <- match.arg(device, c("gpu", "cpu"))
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device), add = TRUE)
   mlx_default_device(device)

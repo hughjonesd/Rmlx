@@ -16,10 +16,6 @@ NULL
 #' (akin to setting `drop = FALSE` in base R).
 #'
 #' @inheritParams common_params
-#' @param axis Optional integer vector of axes (1-indexed) to reduce.
-#'   When `NULL`, the reduction is performed over all elements.
-#' @param drop Logical flag controlling dimension dropping: `TRUE` (default)
-#'   removes reduced axes, while `FALSE` retains them with length one.
 #' @param ddof Non-negative integer delta degrees of freedom for variance or
 #'   standard deviation reductions.
 #' @return An mlx array containing the reduction result.
@@ -38,12 +34,12 @@ NULL
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_sum(x)
-#' mlx_sum(x, axis = 1)
-#' mlx_prod(x, axis = 2, drop = FALSE)
+#' mlx_sum(x, axes = 1)
+#' mlx_prod(x, axes = 2, drop = FALSE)
 #' mlx_all(x > 0)
 #' mlx_any(x > 3)
-#' mlx_mean(x, axis = 1)
-#' mlx_var(x, axis = 2)
+#' mlx_mean(x, axes = 1)
+#' mlx_var(x, axes = 2)
 #' mlx_std(x, ddof = 1)
 #' @aliases mlx_sum mlx_prod mlx_all mlx_any mlx_mean mlx_var mlx_std
 #' @name mlx_sum
@@ -51,44 +47,44 @@ NULL
 
 #' @rdname mlx_sum
 #' @export
-mlx_sum <- function(x, axis = NULL, drop = TRUE) {
-  .mlx_reduce_dispatch(x, "sum", axis = axis, drop = drop)
+mlx_sum <- function(x, axes = NULL, drop = TRUE) {
+  .mlx_reduce_dispatch(x, "sum", axes = axes, drop = drop)
 }
 
 #' @rdname mlx_sum
 #' @export
-mlx_prod <- function(x, axis = NULL, drop = TRUE) {
-  .mlx_reduce_dispatch(x, "prod", axis = axis, drop = drop)
+mlx_prod <- function(x, axes = NULL, drop = TRUE) {
+  .mlx_reduce_dispatch(x, "prod", axes = axes, drop = drop)
 }
 
 #' @rdname mlx_sum
 #' @export
-mlx_all <- function(x, axis = NULL, drop = TRUE) {
-  .mlx_reduce_dispatch(x, "all", axis = axis, drop = drop)
+mlx_all <- function(x, axes = NULL, drop = TRUE) {
+  .mlx_reduce_dispatch(x, "all", axes = axes, drop = drop)
 }
 
 #' @rdname mlx_sum
 #' @export
-mlx_any <- function(x, axis = NULL, drop = TRUE) {
-  .mlx_reduce_dispatch(x, "any", axis = axis, drop = drop)
+mlx_any <- function(x, axes = NULL, drop = TRUE) {
+  .mlx_reduce_dispatch(x, "any", axes = axes, drop = drop)
 }
 
 #' @rdname mlx_sum
 #' @export
-mlx_mean <- function(x, axis = NULL, drop = TRUE) {
-  .mlx_reduce_dispatch(x, "mean", axis = axis, drop = drop)
+mlx_mean <- function(x, axes = NULL, drop = TRUE) {
+  .mlx_reduce_dispatch(x, "mean", axes = axes, drop = drop)
 }
 
 #' @rdname mlx_sum
 #' @export
-mlx_var <- function(x, axis = NULL, drop = TRUE, ddof = 0L) {
-  .mlx_reduce_dispatch(x, "var", axis = axis, drop = drop, ddof = ddof)
+mlx_var <- function(x, axes = NULL, drop = TRUE, ddof = 0L) {
+  .mlx_reduce_dispatch(x, "var", axes = axes, drop = drop, ddof = ddof)
 }
 
 #' @rdname mlx_sum
 #' @export
-mlx_std <- function(x, axis = NULL, drop = TRUE, ddof = 0L) {
-  .mlx_reduce_dispatch(x, "std", axis = axis, drop = drop, ddof = ddof)
+mlx_std <- function(x, axes = NULL, drop = TRUE, ddof = 0L) {
+  .mlx_reduce_dispatch(x, "std", axes = axes, drop = drop, ddof = ddof)
 }
 
 #' Mean of MLX array elements
@@ -265,26 +261,26 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   x %*% t(y)
 }
 
-#' Reduce mlx array over all axes
+#' Reduce an mlx array over all axes
 #'
-#' @param x mlx array.
-#' @param op Character string naming the reduction.
-#' @param ddof Integer delta degrees of freedom.
-#' @return mlx scalar array.
+#' @param x mlx array (or object coercible to one).
+#' @param op Character string naming the reduction ("sum", "mean", etc.).
+#' @param ddof Delta degrees of freedom passed to variance-like reducers.
+#' @return An mlx array containing the fully reduced result.
 #' @noRd
 .mlx_reduce <- function(x, op, ddof = 0L) {
   ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof))
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Reduce mlx array along single axis
+#' Reduce an mlx array along a single axis
 #'
 #' @param x mlx array.
 #' @param op Character string naming the reduction.
-#' @param axis Integer (1-indexed).
-#' @param drop Logical indicating whether to drop the reduced axis (default `TRUE`).
-#' @param ddof Integer delta degrees of freedom.
-#' @return mlx array with reduced axis.
+#' @param axis Single 1-indexed axis to reduce.
+#' @param drop Logical flag: keep (`FALSE`) or drop (`TRUE`) the reduced axis.
+#' @param ddof Delta degrees of freedom for variance-like reducers.
+#' @return An mlx array with the selected axis reduced.
 #' @noRd
 .mlx_reduce_axis <- function(x, op, axis, drop, ddof = 0L) {
   axis0 <- as.integer(axis) - 1L
@@ -295,14 +291,14 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Reduce mlx array along multiple axes
+#' Reduce an mlx array along multiple axes
 #'
 #' @param x mlx array.
 #' @param op Character string naming the reduction.
-#' @param axes Integer vector of 1-indexed axes.
-#' @param drop Logical controlling dimension dropping.
-#' @param ddof Integer delta degrees of freedom.
-#' @return mlx array with reduced axes.
+#' @param axes Integer vector of 1-indexed axes to reduce.
+#' @param drop Logical flag: keep (`FALSE`) or drop (`TRUE`) reduced axes.
+#' @param ddof Delta degrees of freedom for variance-like reducers.
+#' @return An mlx array with the specified axes reduced.
 #' @noRd
 .mlx_reduce_axes <- function(x, op, axes, drop, ddof = 0L) {
   axes <- as.integer(axes)
@@ -330,20 +326,19 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #'
 #' @param x mlx array or coercible object.
 #' @param op Character string naming the reduction.
-#' @param axis Integer vector of axes or NULL.
+#' @param axes Integer vector of axes or NULL.
 #' @param drop Logical controlling dimension dropping.
 #' @param ddof Integer delta degrees of freedom.
 #' @return mlx array with reduction result.
 #' @noRd
-.mlx_reduce_dispatch <- function(x, op, axis = NULL, drop = TRUE, ddof = 0L) {
+.mlx_reduce_dispatch <- function(x, op, axes = NULL, drop = TRUE, ddof = 0L) {
   x <- if (inherits(x, "mlx")) x else as_mlx(x)
-  if (is.null(axis)) {
+  if (is.null(axes)) {
     return(.mlx_reduce(x, op, ddof = ddof))
   }
   if (!is.logical(drop) || length(drop) != 1L) {
     stop("drop must be a single logical value", call. = FALSE)
   }
-  axes <- axis
   .mlx_reduce_axes(x, op, axes, drop = drop, ddof = ddof)
 }
 
@@ -352,7 +347,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' S3 group generic for summary functions including `sum()`, `prod()`, `min()`, `max()`, `all()`, and `any()`.
 #'
 #' @param x mlx array or object coercible to mlx
-#' @param ... Additional mlx arrays (for reducing multiple arrays), or named arguments `axis` and `drop`
+#' @param ... Additional mlx arrays (for reducing multiple arrays), or named arguments `axes` (legacy `axis`) and `drop`
 #' @param na.rm Logical; currently ignored for mlx arrays (generates warning if TRUE)
 #' @return An mlx array with the summary result
 #' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html)
@@ -375,16 +370,26 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
 
   dots <- list(...)
   axis <- dots$axis
+  axes <- dots$axes
   drop_arg <- dots$drop
   if (!is.null(axis)) dots$axis <- NULL
+  if (!is.null(axes)) dots$axes <- NULL
   if (!is.null(drop_arg)) dots$drop <- NULL
+
+  if (!is.null(axis)) {
+    if (!is.null(axes)) {
+      stop("Specify only one of `axis` or `axes`.", call. = FALSE)
+    }
+    warning("`axis` is deprecated; use `axes` instead.", call. = FALSE)
+    axes <- axis
+  }
 
   args <- c(list(x), dots)
 
   # If axis/drop specified, limit to single operand
-  if (!is.null(axis) || !is.null(drop_arg)) {
+  if (!is.null(axes) || !is.null(drop_arg)) {
     if (length(args) > 1L) {
-      stop("axis/drop arguments are only supported when reducing a single array", call. = FALSE)
+      stop("axes/drop arguments are only supported when reducing a single array", call. = FALSE)
     }
     drop_val <- if (is.null(drop_arg)) TRUE else drop_arg
     res <- .mlx_reduce_dispatch(args[[1L]], switch(op,
@@ -394,7 +399,7 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
       max = "max",
       all = "all",
       any = "any"
-    ), axis = axis, drop = drop_val)
+    ), axes = axes, drop = drop_val)
     if (op %in% c("all", "any")) {
       return(as.logical(as.matrix(res)))
     }
@@ -534,7 +539,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
   # Centering
   if (!identical(center, FALSE)) {
     if (isTRUE(center)) {
-      centers <- mlx_mean(result, axis = 1L, drop = FALSE)
+      centers <- mlx_mean(result, axes = 1L, drop = FALSE)
       center_attr <- centers
     } else {
       center_vec <- as.numeric(center)
@@ -556,7 +561,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
   if (!identical(scale, FALSE)) {
     if (isTRUE(scale)) {
       ddof <- if (n_rows > 1L) 1L else 0L
-      scales <- mlx_std(result, axis = 1L, drop = FALSE, ddof = ddof)
+      scales <- mlx_std(result, axes = 1L, drop = FALSE, ddof = ddof)
       scale_attr <- scales
     } else {
       scale_vec <- as.numeric(scale)
@@ -589,9 +594,10 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
 #'
 #' Compute cumulative sums or products along an axis.
 #'
-#' @inheritParams mlx_array_required
-#' @param axis Optional axis along which to compute cumulative operation.
-#'   If `NULL` (default), the array is flattened first.
+#' @inheritParams common_params
+#'
+#' @details When `axis` is `NULL` (default), the array is flattened before
+#' computing the cumulative result.
 #' @param reverse If `TRUE`, compute in reverse order.
 #' @param inclusive If `TRUE` (default), include the current element in the cumulative operation.
 #'   If `FALSE`, the cumulative operation is exclusive (starts from identity element).

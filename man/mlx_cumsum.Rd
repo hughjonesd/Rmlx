@@ -10,10 +10,11 @@ mlx_cumsum(x, axis = NULL, reverse = FALSE, inclusive = TRUE)
 mlx_cumprod(x, axis = NULL, reverse = FALSE, inclusive = TRUE)
 }
 \arguments{
-\item{x}{An mlx array.}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{axis}{Optional axis along which to compute cumulative operation.
-If \code{NULL} (default), the array is flattened first.}
+\item{axis}{Single axis (1-indexed). Supply a positive integer between 1 and
+the array rank. Use \code{NULL} when the helper interprets it as "all axes" (see
+individual docs).}
 
 \item{reverse}{If \code{TRUE}, compute in reverse order.}
 
@@ -25,6 +26,10 @@ An mlx array with cumulative sums or products.
 }
 \description{
 Compute cumulative sums or products along an axis.
+}
+\details{
+When \code{axis} is \code{NULL} (default), the array is flattened before
+computing the cumulative result.
 }
 \examples{
 x <- as_mlx(1:5)

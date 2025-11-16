@@ -5,7 +5,9 @@
 \title{Common Parameter Documentation}
 \arguments{
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 
 \item{dtype}{Data type string. Supported types include:
 \itemize{
@@ -16,8 +18,13 @@
 
 Not all functions support all types. See individual function documentation.}
 
-\item{axis}{Axis or axes to operate on (1-indexed). Negative values count from
-the end. \code{NULL} operates on all axes or the entire array.}
+\item{axis}{Single axis (1-indexed). Supply a positive integer between 1 and
+the array rank. Use \code{NULL} when the helper interprets it as "all axes" (see
+individual docs).}
+
+\item{axes}{Integer vector of axes (1-indexed). Supply positive integers
+between 1 and the array rank. Many helpers interpret \code{NULL} to mean "all
+axes"—see the function details for specifics.}
 
 \item{drop}{If \code{TRUE} (default), drop dimensions of length 1. If \code{FALSE},
 retain all dimensions. Equivalent to \code{keepdims = TRUE} in underlying

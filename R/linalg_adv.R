@@ -178,6 +178,7 @@ pinv <- function(x) {
 #'
 #' @param z Input to transform. May be a numeric, complex, or mlx object.
 #' @param inverse Logical flag; if `TRUE` compute the inverse transform.
+#' @inheritParams common
 #' @param ... Passed through to the default method.
 #' @return For mlx inputs, an mlx object containing complex frequency
 #'   coefficients; otherwise the base R result.
@@ -197,9 +198,7 @@ fft.default <- function(z, inverse = FALSE, ...) {
 }
 
 #' @export
-fft.mlx <- function(z, inverse = FALSE, ...) {
-  args <- list(...)
-  axis <- if (!is.null(args$axis)) args$axis else -1L
+fft.mlx <- function(z, inverse = FALSE, axis, ...) {
   mlx_fft(z, axis = axis, inverse = inverse)
 }
 
@@ -207,7 +206,6 @@ fft.mlx <- function(z, inverse = FALSE, ...) {
 #'
 #' @inheritParams mlx_array_required
 #' @param ord Numeric or character norm order. Use `NULL` for the default 2-norm.
-#' @param axis Optional integer vector of axes (1-indexed) along which to compute the norm.
 #' @inheritParams common_params
 #' @return An mlx array containing the requested norm.
 #' @seealso [mlx.linalg.norm](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.norm)
@@ -216,8 +214,8 @@ fft.mlx <- function(z, inverse = FALSE, ...) {
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mlx_norm(x)
 #' mlx_norm(x, ord = 2)
-#' mlx_norm(x, axis = 2)
-mlx_norm <- function(x, ord = NULL, axis = NULL, drop = TRUE) {
+#' mlx_norm(x, axes = 2)
+mlx_norm <- function(x, ord = NULL, axes = NULL, drop = TRUE) {
   x <- as_mlx(x)
   if (!is.null(ord) && !is.numeric(ord) && !is.character(ord)) {
     stop("ord must be numeric, character, or NULL.", call. = FALSE)
@@ -225,7 +223,7 @@ mlx_norm <- function(x, ord = NULL, axis = NULL, drop = TRUE) {
   if (is.character(ord) && length(ord) == 1L) {
     ord <- toupper(ord)
   }
-  axes_arg <- if (is.null(axis)) NULL else as.integer(axis)
+  axes_arg <- if (is.null(axes)) NULL else as.integer(axes)
   ptr <- cpp_mlx_norm(x$ptr, ord, axes_arg, !isTRUE(drop), x$device)
   .mlx_wrap_result(ptr, x$device)
 }
@@ -373,7 +371,8 @@ backsolve.mlx <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, .
 #' Vector cross product with mlx arrays
 #'
 #' @param a,b Input mlx arrays containing 3D vectors.
-#' @param axis Axis along which to compute the cross product (1-indexed, default last).
+#' @param axis Axis along which to compute the cross product (1-indexed).
+#'   Omit the argument to use the trailing dimension.
 #' @return An mlx array of cross products.
 #' @seealso [mlx.linalg.cross](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cross)
 #' @export
@@ -381,10 +380,14 @@ backsolve.mlx <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, .
 #' u <- as_mlx(c(1, 0, 0))
 #' v <- as_mlx(c(0, 1, 0))
 #' mlx_cross(u, v)
-mlx_cross <- function(a, b, axis = -1L) {
+mlx_cross <- function(a, b, axis = NULL) {
   a <- as_mlx(a)
   b <- as_mlx(b)
-  ptr <- cpp_mlx_cross(a$ptr, b$ptr, as.integer(axis), a$device)
+  axis_val <- if (missing(axis) || is.null(axis)) length(dim(a)) else axis
+  if (length(axis_val) != 1L || is.na(axis_val)) {
+    stop("`axis` must be NULL or a single positive integer.", call. = FALSE)
+  }
+  ptr <- cpp_mlx_cross(a$ptr, b$ptr, as.integer(axis_val), a$device)
   .mlx_wrap_result(ptr, a$device)
 }
 

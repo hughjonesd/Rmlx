@@ -8,7 +8,7 @@ test_that("mlx_norm matches base computations", {
   inf_norm <- as.numeric(as.matrix(mlx_norm(x, ord = Inf)))
   expect_equal(inf_norm, base::norm(mat, type = "I"), tolerance = 1e-6)
 
-  row_norms <- as.numeric(as.matrix(mlx_norm(x, axis = 2)))
+  row_norms <- as.numeric(as.matrix(mlx_norm(x, axes = 2)))
   expected_rows <- apply(mat, 1, function(row) sqrt(sum(row^2)))
   expect_equal(row_norms, expected_rows, tolerance = 1e-6)
 })

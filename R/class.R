@@ -45,6 +45,7 @@
 
 #' Create MLX array from R object
 #'
+#' @inheritParams common_params
 #' @param x Numeric, logical, or complex vector, matrix, or array to convert
 #' @param dtype Data type for the MLX array. One of:
 #'   - Floating point: `"float32"`, `"float64"`
@@ -54,7 +55,6 @@
 #'
 #'   If not specified, defaults to `"float32"` for numeric, `"bool"` for logical,
 #'   and `"complex64"` for complex inputs.
-#' @param device Device: "gpu" (default) or "cpu"
 #' @return An object of class `mlx`
 #' @details
 #' ## Default type behavior

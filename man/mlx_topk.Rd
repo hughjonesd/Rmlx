@@ -17,8 +17,9 @@ mlx_argpartition(x, kth, axis = NULL)
 
 \item{k}{Positive integer specifying the number of elements to select.}
 
-\item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-array is flattened first.}
+\item{axis}{Single axis (1-indexed). Supply a positive integer between 1 and
+the array rank. Use \code{NULL} when the helper interprets it as "all axes" (see
+individual docs).}
 
 \item{kth}{Zero-based index of the element that should be placed in-order
 after partitioning.}

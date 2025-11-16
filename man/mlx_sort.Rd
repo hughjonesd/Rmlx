@@ -12,8 +12,9 @@ mlx_argsort(x, axis = NULL)
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-array is flattened first.}
+\item{axis}{Single axis (1-indexed). Supply a positive integer between 1 and
+the array rank. Use \code{NULL} when the helper interprets it as "all axes" (see
+individual docs).}
 }
 \value{
 An mlx array containing sorted values (for \code{mlx_sort()}) or

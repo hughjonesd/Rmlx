@@ -25,7 +25,10 @@ as_mlx(
 If not specified, defaults to \code{"float32"} for numeric, \code{"bool"} for logical,
 and \code{"complex64"} for complex inputs.}
 
-\item{device}{Device: "gpu" (default) or "cpu"}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 }
 \value{
 An object of class \code{mlx}

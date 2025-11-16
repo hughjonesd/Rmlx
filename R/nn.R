@@ -403,7 +403,8 @@ mlx_silu <- function() {
 
 #' Softmax activation
 #'
-#' @param axis Axis along which to apply softmax (default: -1, last axis).
+#' @param axis Axis (1-indexed) along which to apply softmax. Omit the argument
+#'   to use the last dimension at runtime.
 #' @return An `mlx_module` applying softmax activation.
 #' @seealso [mlx.nn.Softmax](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Softmax)
 #' @export
@@ -411,11 +412,16 @@ mlx_silu <- function() {
 #' act <- mlx_softmax_layer()
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' mlx_forward(act, x)
-mlx_softmax_layer <- function(axis = -1L) {
+mlx_softmax_layer <- function(axis = NULL) {
+  if (!is.null(axis)) {
+    axis <- as.integer(axis)
+    if (length(axis) != 1L || is.na(axis) || axis < 1L) {
+      stop("`axis` must be NULL or a single positive integer.", call. = FALSE)
+    }
+  }
   forward <- function(x) {
-    # Convert negative axis to positive (Python convention: -1 = last axis)
-    ax <- if (axis < 0) length(dim(x)) + axis + 1L else axis
-    mlx_softmax(x, axis = ax)
+    axis_val <- if (is.null(axis)) length(dim(x)) else axis
+    mlx_softmax(x, axes = axis_val)
   }
 
   new_mlx_module(
@@ -501,8 +507,8 @@ mlx_layer_norm <- function(normalized_shape, eps = 1e-5, device = mlx_default_de
     # Normalize across last dimension
     ndim <- length(dim(x))
     last_axis <- ndim
-    mean_x <- mlx_mean(x, axis = last_axis, drop = FALSE)
-    var_x <- mlx_var(x, axis = last_axis, drop = FALSE, ddof = 0L)
+    mean_x <- mlx_mean(x, axes = last_axis, drop = FALSE)
+    var_x <- mlx_var(x, axes = last_axis, drop = FALSE, ddof = 0L)
 
     # Normalize
     x_norm <- (x - mean_x) / sqrt(var_x + env$eps)
@@ -559,8 +565,8 @@ mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1, device = ml
   forward <- function(x) {
     if (env$training) {
       # Compute batch statistics
-      batch_mean <- mlx_mean(x, axis = 1L, drop = FALSE)
-      batch_var <- mlx_var(x, axis = 1L, drop = FALSE, ddof = 0L)
+      batch_mean <- mlx_mean(x, axes = 1L, drop = FALSE)
+      batch_var <- mlx_var(x, axes = 1L, drop = FALSE, ddof = 0L)
 
       # Update running statistics
       env$running_mean <- (1 - env$momentum) * env$running_mean + env$momentum * batch_mean

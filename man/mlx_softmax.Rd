@@ -4,13 +4,14 @@
 \alias{mlx_softmax}
 \title{Softmax for mlx arrays}
 \usage{
-mlx_softmax(x, axis = NULL, precise = FALSE)
+mlx_softmax(x, axes = NULL, precise = FALSE)
 }
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-array is flattened first.}
+\item{axes}{Integer vector of axes (1-indexed). Supply positive integers
+between 1 and the array rank. Many helpers interpret \code{NULL} to mean "all
+axes"—see the function details for specifics.}
 
 \item{precise}{Logical; compute in higher precision for stability.}
 }
@@ -22,7 +23,7 @@ Softmax for mlx arrays
 }
 \examples{
 x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 2, 3))
-sm <- mlx_softmax(x, axis = 2)
+sm <- mlx_softmax(x, axes = 2)
 rowSums(as.matrix(sm))
 }
 \seealso{

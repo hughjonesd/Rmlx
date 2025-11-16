@@ -33,10 +33,10 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
 #' Argmax and argmin on mlx arrays
 #'
 #' @inheritParams common_params
-#' @param axis Optional axis to operate over (1-indexed like R). When `NULL`, the
-#'   array is flattened first.
-#' @param drop Logical; when `TRUE` (default) the reduced axis is removed.
-#'   Set to `FALSE` to keep the axis as length one.
+#'
+#' @details When `axis = NULL`, the array is flattened before computing extrema.
+#' Setting `drop = FALSE` retains the reduced axis as length one in the
+#' returned indices.
 #'
 #' @return An mlx array of indices. Indices are 1-based to match R's
 #'   conventions.
@@ -191,11 +191,11 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   .mlx_wrap_result(ptr, x$device)
 }
 
-#' Normalize multiple axes to 0-indexed
+#' Normalize multiple axes to 0-indexed values
 #'
-#' @param axes Integer vector of 1-indexed axes (negatives allowed) or NULL.
-#' @param x mlx array providing dimensionality.
-#' @return Integer vector (0-indexed) or NULL.
+#' @param axes Integer vector of 1-indexed axes or `NULL`.
+#' @param x mlx array providing dimensionality information.
+#' @return Integer vector of 0-indexed axes or `NULL`.
 #' @noRd
 .mlx_normalize_axes <- function(axes, x) {
   if (is.null(axes)) {
@@ -208,10 +208,10 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   vapply(axes, .mlx_normalize_axis_single, integer(1), x = x)
 }
 
-#' Convert single 1-indexed axis to 0-indexed
+#' Normalize a single axis to 0-indexed form
 #'
-#' @param axis Integer (1-indexed, negatives allowed).
-#' @param x mlx array providing dimensionality.
+#' @param axis Single 1-indexed axis value.
+#' @param x mlx array providing dimensionality information.
 #' @return Integer scalar (0-indexed).
 #' @noRd
 .mlx_normalize_axis_single <- function(axis, x) {
@@ -219,20 +219,17 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
     stop("axis cannot be NA", call. = FALSE)
   }
   ndim <- length(dim(x))
-  if (axis < 0L) {
-    axis <- ndim + axis + 1L
-  }
   if (axis < 1L || axis > ndim) {
     stop(sprintf("axis=%d is out of bounds for an array with %d dimensions.", axis, ndim), call. = FALSE)
   }
   axis - 1L
 }
 
-#' Convert single axis to 0-indexed or return NULL
+#' Normalize a possibly `NULL` axis
 #'
-#' @param axis Integer (1-indexed, negatives allowed) or NULL.
-#' @param x mlx array providing dimensionality.
-#' @return Integer scalar (0-indexed) or NULL.
+#' @param axis Single 1-indexed axis or `NULL`.
+#' @param x mlx array providing dimensionality information.
+#' @return Integer scalar (0-indexed) or `NULL`.
 #' @noRd
 .mlx_normalize_axis <- function(axis, x) {
   if (is.null(axis)) {
@@ -247,7 +244,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 
 #' Log-sum-exp reduction for mlx arrays
 #'
-#' @inheritParams mlx_argmax
+#' @inheritParams common_params
 #' @param drop Logical indicating whether the reduced axes should be dropped (default `TRUE`).
 #' @return An mlx array containing log-sum-exp results.
 #' @seealso [mlx.core.logsumexp](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp)
@@ -255,17 +252,17 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 #' @examples
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' as.matrix(mlx_logsumexp(x))
-#' as.matrix(mlx_logsumexp(x, axis = 2))
-mlx_logsumexp <- function(x, axis = NULL, drop = TRUE) {
+#' as.matrix(mlx_logsumexp(x, axes = 2))
+mlx_logsumexp <- function(x, axes = NULL, drop = TRUE) {
   x <- as_mlx(x)
-  axes_idx <- .mlx_normalize_axes(axis, x)
+  axes_idx <- .mlx_normalize_axes(axes, x)
   ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, !isTRUE(drop))
   .mlx_wrap_result(ptr, x$device)
 }
 
 #' Log cumulative sum exponential for mlx arrays
 #'
-#' @inheritParams mlx_argmax
+#' @inheritParams common_params
 #' @param axis Optional axis (single integer) to operate over.
 #' @param reverse Logical flag for reverse accumulation.
 #' @param inclusive Logical flag controlling inclusivity.
@@ -286,18 +283,18 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
 
 #' Softmax for mlx arrays
 #'
-#' @inheritParams mlx_argmax
+#' @inheritParams common_params
 #' @param precise Logical; compute in higher precision for stability.
 #' @return An mlx array with normalized probabilities.
 #' @seealso [mlx.core.softmax](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 2, 3))
-#' sm <- mlx_softmax(x, axis = 2)
+#' sm <- mlx_softmax(x, axes = 2)
 #' rowSums(as.matrix(sm))
-mlx_softmax <- function(x, axis = NULL, precise = FALSE) {
+mlx_softmax <- function(x, axes = NULL, precise = FALSE) {
   x <- as_mlx(x)
-  axes_idx <- .mlx_normalize_axes(axis, x)
+  axes_idx <- .mlx_normalize_axes(axes, x)
   ptr <- cpp_mlx_softmax(x$ptr, axes_idx, precise)
   .mlx_wrap_result(ptr, x$device)
 }

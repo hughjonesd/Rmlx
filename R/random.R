@@ -197,8 +197,8 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
 #'   need to be normalized (the function applies softmax internally). For a single
 #'   distribution over K classes, use a 1×K matrix. For multiple independent
 #'   distributions, use an N×K matrix where each row is a distribution.
-#' @param axis The axis (1-indexed, negatives count from the end) along which to sample.
-#'   Default is -1L (last axis, typically the class dimension).
+#' @param axis Axis (1-indexed) along which to sample. Omit the argument to use
+#'   the last dimension (typically the class dimension).
 #' @param num_samples Number of samples to draw from each distribution.
 #' @return An mlx array of integer indices (1-indexed) sampled from the
 #'   categorical distributions.
@@ -213,14 +213,18 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
 #' logits <- matrix(c(1, 2, 3,
 #'                    3, 2, 1), nrow = 2, byrow = TRUE)
 #' samples <- mlx_rand_categorical(logits, num_samples = 5)
-mlx_rand_categorical <- function(logits, axis = -1L, num_samples = 1L) {
+mlx_rand_categorical <- function(logits, axis = NULL, num_samples = 1L) {
   logits <- as_mlx(logits)
   num_samples <- as.integer(num_samples)
   if (num_samples < 1) {
     stop("num_samples must be at least 1.", call. = FALSE)
   }
 
-  axis0 <- .mlx_normalize_axis_single(as.integer(axis), logits)
+  axis_val <- if (missing(axis) || is.null(axis)) length(dim(logits)) else axis
+  if (length(axis_val) != 1L || is.na(axis_val)) {
+    stop("`axis` must be NULL or a single positive integer.", call. = FALSE)
+  }
+  axis0 <- .mlx_normalize_axis_single(as.integer(axis_val), logits)
 
   ptr <- cpp_mlx_random_categorical(logits, axis0, num_samples)
   samples <- new_mlx(ptr, "int32", logits$device)
@@ -275,8 +279,8 @@ mlx_rand_randint <- function(dim, low, high,
 #'
 #' @param x Either an integer n (to generate a permutation of 1:n), or an
 #'   mlx array or matrix to permute.
-#' @param axis The axis (1-indexed, negatives count from the end) along which to permute
-#'   when x is an array. Default is 1L (permute rows).
+#' @param axis Axis (1-indexed) along which to permute when `x` is an array.
+#'   Default is 1L (permute rows).
 #' @inheritParams common_params
 #' @details When `x` is an integer, the result is created on the specified
 #'   device or stream; otherwise the permutation follows the input array's
@@ -293,7 +297,7 @@ mlx_rand_randint <- function(dim, low, high,
 #' perm_mat <- mlx_rand_permutation(mat)
 #'
 #' # Permute columns instead
-#' perm_cols <- mlx_rand_permutation(mat, axis = 1)
+#' perm_cols <- mlx_rand_permutation(mat, axis = 2)
 mlx_rand_permutation <- function(x, axis = 1L, device = mlx_default_device()) {
   if (is.numeric(x) && length(x) == 1) {
     # Generate permutation of 1:x

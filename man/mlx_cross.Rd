@@ -4,12 +4,13 @@
 \alias{mlx_cross}
 \title{Vector cross product with mlx arrays}
 \usage{
-mlx_cross(a, b, axis = -1L)
+mlx_cross(a, b, axis = NULL)
 }
 \arguments{
 \item{a, b}{Input mlx arrays containing 3D vectors.}
 
-\item{axis}{Axis along which to compute the cross product (1-indexed, default last).}
+\item{axis}{Axis along which to compute the cross product (1-indexed).
+Omit the argument to use the trailing dimension.}
 }
 \value{
 An mlx array of cross products.

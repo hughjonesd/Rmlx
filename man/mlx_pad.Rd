@@ -27,13 +27,13 @@ axis.}
 \item{mode}{Padding mode passed to MLX (e.g., \code{"constant"}, \code{"edge"},
 \code{"reflect"}).}
 
-\item{axes}{Optional integer vector of axes (1-indexed, negatives count from
-the end) to which \code{pad_width} applies. Unlisted axes receive zero padding.}
+\item{axes}{Optional integer vector of axes (1-indexed) to which \code{pad_width}
+applies. Unlisted axes receive zero padding.}
 
 \item{sections}{Either a single integer (number of equal parts) or an integer
 vector of 1-based split points along \code{axis}.}
 
-\item{axis}{Axis (1-indexed, negatives count from the end) to operate on.}
+\item{axis}{Axis (1-indexed) to operate on.}
 }
 \value{
 For \code{mlx_pad()}, an mlx array; for \code{mlx_split()}, a list of mlx

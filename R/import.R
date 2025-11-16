@@ -20,8 +20,7 @@
 #' and keyword names you provide.
 #'
 #' @param path Path to a `.mlxfn` file created via MLX export utilities.
-#' @param device Default execution device (`"gpu"`, `"cpu"`, or an
-#'   `mlx_stream`).
+#' @inheritParams common_params
 #' @return An R function. Calling it returns an `mlx` array if the imported
 #'   function has a single output, or a list of `mlx` arrays otherwise.
 #' @export

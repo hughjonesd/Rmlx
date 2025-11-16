@@ -4,14 +4,14 @@
 \alias{mlx_roll}
 \title{Roll array elements}
 \usage{
-mlx_roll(x, shift, axis = NULL)
+mlx_roll(x, shift, axes = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}
 
 \item{shift}{Integer vector giving the number of places by which elements are shifted.}
 
-\item{axis}{Optional axis (or axes) along which elements are shifted.
+\item{axes}{Optional integer vector (1-indexed) along which elements are shifted.
 When \code{NULL}, the array is flattened and shifted.}
 }
 \value{
@@ -22,7 +22,7 @@ Roll array elements
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))
-mlx_roll(x, shift = 1, axis = 2)
+mlx_roll(x, shift = 1, axes = 2)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.roll}{mlx.core.roll}

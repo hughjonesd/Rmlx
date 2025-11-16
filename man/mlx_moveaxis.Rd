@@ -12,12 +12,10 @@ mlx_moveaxis(x, source, destination)
 \arguments{
 \item{x, a}{An object coercible to mlx via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{source}{Integer vector of axis indices to move (1-indexed; negatives
-count from the end).}
+\item{source}{Integer vector of axis indices to move (1-indexed).}
 
 \item{destination}{Integer vector giving the target positions for \code{source}
-axes (1-indexed; negatives count from the end). Must be the same length as
-\code{source}.}
+axes (1-indexed). Must be the same length as \code{source}.}
 
 \item{perm}{Integer permutation describing the desired axis order, matching
 the semantics of \code{\link[base:aperm]{base::aperm()}}.}

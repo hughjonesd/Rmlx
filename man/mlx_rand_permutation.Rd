@@ -10,11 +10,13 @@ mlx_rand_permutation(x, axis = 1L, device = mlx_default_device())
 \item{x}{Either an integer n (to generate a permutation of 1:n), or an
 mlx array or matrix to permute.}
 
-\item{axis}{The axis (1-indexed, negatives count from the end) along which to permute
-when x is an array. Default is 1L (permute rows).}
+\item{axis}{Axis (1-indexed) along which to permute when \code{x} is an array.
+Default is 1L (permute rows).}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Default: \code{mlx_default_device()}.}
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 }
 \value{
 An mlx array containing the random permutation.
@@ -37,7 +39,7 @@ mat <- matrix(1:12, 4, 3)
 perm_mat <- mlx_rand_permutation(mat)
 
 # Permute columns instead
-perm_cols <- mlx_rand_permutation(mat, axis = 1)
+perm_cols <- mlx_rand_permutation(mat, axis = 2)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.permutation}{mlx.core.random.permutation}

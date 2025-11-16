@@ -15,7 +15,7 @@
 \arguments{
 \item{x}{mlx array or object coercible to mlx}
 
-\item{...}{Additional mlx arrays (for reducing multiple arrays), or named arguments \code{axis} and \code{drop}}
+\item{...}{Additional mlx arrays (for reducing multiple arrays), or named arguments \code{axes} (legacy \code{axis}) and \code{drop}}
 
 \item{na.rm}{Logical; currently ignored for mlx arrays (generates warning if TRUE)}
 }

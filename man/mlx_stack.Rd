@@ -9,7 +9,8 @@ mlx_stack(..., axis = 1L)
 \arguments{
 \item{...}{One or more arrays (or a single list of arrays) coercible to mlx.}
 
-\item{axis}{Position of the new axis (1-indexed, negative values count from the end).}
+\item{axis}{Position of the new axis (1-indexed). Supply values between 1 and
+\code{length(dim(x)) + 1} to insert anywhere along the dimension list.}
 }
 \value{
 An mlx array with one additional dimension.

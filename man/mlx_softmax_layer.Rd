@@ -4,10 +4,11 @@
 \alias{mlx_softmax_layer}
 \title{Softmax activation}
 \usage{
-mlx_softmax_layer(axis = -1L)
+mlx_softmax_layer(axis = NULL)
 }
 \arguments{
-\item{axis}{Axis along which to apply softmax (default: -1, last axis).}
+\item{axis}{Axis (1-indexed) along which to apply softmax. Omit the argument
+to use the last dimension at runtime.}
 }
 \value{
 An \code{mlx_module} applying softmax activation.

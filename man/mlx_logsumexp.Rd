@@ -4,13 +4,14 @@
 \alias{mlx_logsumexp}
 \title{Log-sum-exp reduction for mlx arrays}
 \usage{
-mlx_logsumexp(x, axis = NULL, drop = TRUE)
+mlx_logsumexp(x, axes = NULL, drop = TRUE)
 }
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-array is flattened first.}
+\item{axes}{Integer vector of axes (1-indexed). Supply positive integers
+between 1 and the array rank. Many helpers interpret \code{NULL} to mean "all
+axes"—see the function details for specifics.}
 
 \item{drop}{Logical indicating whether the reduced axes should be dropped (default \code{TRUE}).}
 }
@@ -23,7 +24,7 @@ Log-sum-exp reduction for mlx arrays
 \examples{
 x <- as_mlx(matrix(1:6, 2, 3))
 as.matrix(mlx_logsumexp(x))
-as.matrix(mlx_logsumexp(x, axis = 2))
+as.matrix(mlx_logsumexp(x, axes = 2))
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp}{mlx.core.logsumexp}

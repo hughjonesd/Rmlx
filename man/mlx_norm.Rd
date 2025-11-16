@@ -4,14 +4,16 @@
 \alias{mlx_norm}
 \title{Matrix and vector norms for mlx arrays}
 \usage{
-mlx_norm(x, ord = NULL, axis = NULL, drop = TRUE)
+mlx_norm(x, ord = NULL, axes = NULL, drop = TRUE)
 }
 \arguments{
 \item{x}{An mlx array.}
 
 \item{ord}{Numeric or character norm order. Use \code{NULL} for the default 2-norm.}
 
-\item{axis}{Optional integer vector of axes (1-indexed) along which to compute the norm.}
+\item{axes}{Integer vector of axes (1-indexed). Supply positive integers
+between 1 and the array rank. Many helpers interpret \code{NULL} to mean "all
+axes"—see the function details for specifics.}
 
 \item{drop}{If \code{TRUE} (default), drop dimensions of length 1. If \code{FALSE},
 retain all dimensions. Equivalent to \code{keepdims = TRUE} in underlying
@@ -27,7 +29,7 @@ Matrix and vector norms for mlx arrays
 x <- as_mlx(matrix(1:4, 2, 2))
 mlx_norm(x)
 mlx_norm(x, ord = 2)
-mlx_norm(x, axis = 2)
+mlx_norm(x, axes = 2)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.norm}{mlx.linalg.norm}

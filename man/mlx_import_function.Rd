@@ -9,8 +9,10 @@ mlx_import_function(path, device = mlx_default_device())
 \arguments{
 \item{path}{Path to a \code{.mlxfn} file created via MLX export utilities.}
 
-\item{device}{Default execution device (\code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream}).}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 }
 \value{
 An R function. Calling it returns an \code{mlx} array if the imported

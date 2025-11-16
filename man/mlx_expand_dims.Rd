@@ -4,12 +4,12 @@
 \alias{mlx_expand_dims}
 \title{Insert singleton dimensions}
 \usage{
-mlx_expand_dims(x, axis)
+mlx_expand_dims(x, axes)
 }
 \arguments{
 \item{x}{An mlx array.}
 
-\item{axis}{Integer vector of axis positions (1-indexed) where new singleton
+\item{axes}{Integer vector of axis positions (1-indexed) where new singleton
 dimensions should be inserted.}
 }
 \value{
@@ -20,7 +20,7 @@ Insert singleton dimensions
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))
-mlx_expand_dims(x, axis = 1)
+mlx_expand_dims(x, axes = 1)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.expand_dims}{mlx.core.expand_dims}

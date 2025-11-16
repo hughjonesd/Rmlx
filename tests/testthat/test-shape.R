@@ -9,7 +9,7 @@ test_that("mlx_stack stacks tensors along arbitrary axes", {
   expected[2, , ] <- as.matrix(y)
   expect_equal(as.array(stacked), expected, tolerance = 1e-6)
 
-  stacked_last <- mlx_stack(list(x, y), axis = -1)
+  stacked_last <- mlx_stack(list(x, y), axis = 3)
   expect_equal(dim(stacked_last), c(2L, 2L, 2L))
   arr <- array(0, dim = c(2, dim(as.matrix(x))))
   arr[1, , ] <- as.matrix(x)
@@ -23,10 +23,10 @@ test_that("mlx_squeeze and mlx_expand_dims adjust shapes", {
   squeezed_all <- mlx_squeeze(x)
   expect_equal(dim(squeezed_all), c(2L, 2L))
 
-  squeezed_axis <- mlx_squeeze(x, axis = c(1, 3))
+  squeezed_axis <- mlx_squeeze(x, axes = c(1, 3))
   expect_equal(dim(squeezed_axis), c(2L, 2L))
 
-  expanded <- mlx_expand_dims(squeezed_axis, axis = c(1, 3))
+  expanded <- mlx_expand_dims(squeezed_axis, axes = c(1, 3))
   expect_equal(dim(expanded), c(1L, 2L, 1L, 2L))
 })
 
@@ -74,7 +74,7 @@ test_that("mlx_pad pads tensors with various specifications", {
 
 test_that("mlx_roll shifts elements circularly", {
   x <- as_mlx(matrix(1:4, 2, 2))
-  rolled_cols <- mlx_roll(x, shift = 1, axis = 2)
+  rolled_cols <- mlx_roll(x, shift = 1, axes = 2)
   expected_cols <- t(apply(as.matrix(x), 1, function(row) c(tail(row, 1), head(row, -1))))
   expect_equal(as.matrix(rolled_cols), expected_cols)
 
@@ -161,7 +161,7 @@ test_that("mlx_swapaxes swaps specified axes", {
   expect_equal(mlx_dim(swapped), c(4L, 3L, 2L))
   expect_equal(as.array(swapped), aperm(arr, c(3, 2, 1)), tolerance = 1e-6)
 
-  swapped_neg <- mlx_swapaxes(x, axis1 = -2, axis2 = -1)
+  swapped_neg <- mlx_swapaxes(x, axis1 = 2, axis2 = 3)
   expect_equal(as.array(swapped_neg), aperm(arr, c(1, 3, 2)), tolerance = 1e-6)
 })
 

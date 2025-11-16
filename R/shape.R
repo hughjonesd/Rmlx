@@ -1,11 +1,11 @@
 # Internal casting helper ----------------------------------------------------
 
-#' Cast mlx array to different dtype or device
+#' Cast an mlx array to a different dtype or device
 #'
-#' @inheritParams mlx_array_required
-#' @param dtype Character string naming target dtype.
-#' @param device Character string naming target device.
-#' @return mlx array with requested dtype and device.
+#' @param x mlx array to cast.
+#' @param dtype Target dtype string. Defaults to the array's current dtype.
+#' @param device Target device string. Defaults to the array's current device.
+#' @return An mlx array with the requested dtype and device.
 #' @noRd
 .mlx_cast <- function(x, dtype = x$dtype, device = x$device) {
   if (!inherits(x, "mlx")) {
@@ -20,9 +20,9 @@
 
 #' Normalize axes for insertion operations
 #'
-#' @param axes Integer vector of 1-indexed axes (negatives allowed).
-#' @param dims Integer vector of current dimensions.
-#' @return Integer vector of 0-indexed sorted unique axes.
+#' @param axes Integer vector of 1-indexed target axes for the new dimensions.
+#' @param dims Integer vector of the current dimensions.
+#' @return Integer vector of 0-indexed axes suitable for MLX.
 #' @noRd
 .mlx_normalize_new_axes <- function(axes, dims) {
   if (length(axes) == 0L) {
@@ -33,18 +33,21 @@
     stop("axes cannot contain NA values.", call. = FALSE)
   }
   result_ndim <- length(dims) + 1L
-  axes0 <- ifelse(axes < 0L, axes + result_ndim, axes - 1L)
-  if (any(axes0 < 0L | axes0 >= result_ndim)) {
+  if (any(axes < 1L | axes > result_ndim)) {
+    stop("axes must be between 1 and length(dim) + 1.", call. = FALSE)
+  }
+  axes0 <- axes - 1L
+  if (any(axes0 >= result_ndim)) {
     stop("axis values are out of bounds.", call. = FALSE)
   }
   sort(unique(axes0))
 }
 
-#' Normalize single axis for insertion operations
+#' Normalize a single insertion axis
 #'
-#' @param axis Integer (1-indexed, negatives allowed).
-#' @param dims Integer vector of current dimensions.
-#' @return Integer scalar (0-indexed).
+#' @param axis Single 1-indexed axis where the new dimension should be inserted.
+#' @param dims Integer vector of the current dimensions.
+#' @return A single 0-indexed axis suitable for MLX APIs.
 #' @noRd
 .mlx_normalize_new_axis <- function(axis, dims) {
   axes0 <- .mlx_normalize_new_axes(axis, dims)
@@ -57,7 +60,8 @@
 #' Stack mlx arrays along a new axis
 #'
 #' @param ... One or more arrays (or a single list of arrays) coercible to mlx.
-#' @param axis Position of the new axis (1-indexed, negative values count from the end).
+#' @param axis Position of the new axis (1-indexed). Supply values between 1 and
+#'   `length(dim(x)) + 1` to insert anywhere along the dimension list.
 #' @return An mlx array with one additional dimension.
 #' @seealso [mlx.core.stack](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.stack)
 #' @export
@@ -111,7 +115,7 @@ drop.mlx <- function(x) {
 #' Remove singleton dimensions
 #'
 #' @inheritParams mlx_array_required
-#' @param axis Optional integer vector of axes (1-indexed) to remove. When `NULL`
+#' @param axes Optional integer vector of axes (1-indexed) to remove. When `NULL`
 #'   all axes of length one are removed.
 #' @return An mlx array with the selected axes removed.
 #' @seealso [mlx.core.squeeze](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze)
@@ -119,14 +123,14 @@ drop.mlx <- function(x) {
 #' @examples
 #' x <- as_mlx(array(1:4, dim = c(1, 2, 2, 1)))
 #' mlx_squeeze(x)
-#' mlx_squeeze(x, axis = 1)
-mlx_squeeze <- function(x, axis = NULL) {
+#' mlx_squeeze(x, axes = 1)
+mlx_squeeze <- function(x, axes = NULL) {
   x <- as_mlx(x)
-  if (is.null(axis)) {
+  if (is.null(axes)) {
     ptr <- cpp_mlx_squeeze(x$ptr, NULL)
   } else {
-    axes <- .mlx_normalize_axes(axis, x)
-    ptr <- cpp_mlx_squeeze(x$ptr, axes)
+    axes_idx <- .mlx_normalize_axes(axes, x)
+    ptr <- cpp_mlx_squeeze(x$ptr, axes_idx)
   }
   .mlx_wrap_result(ptr, x$device)
 }
@@ -134,18 +138,18 @@ mlx_squeeze <- function(x, axis = NULL) {
 #' Insert singleton dimensions
 #'
 #' @inheritParams mlx_array_required
-#' @param axis Integer vector of axis positions (1-indexed) where new singleton
+#' @param axes Integer vector of axis positions (1-indexed) where new singleton
 #'   dimensions should be inserted.
 #' @return An mlx array with additional dimensions of length one.
 #' @seealso [mlx.core.expand_dims](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.expand_dims)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
-#' mlx_expand_dims(x, axis = 1)
-mlx_expand_dims <- function(x, axis) {
+#' mlx_expand_dims(x, axes = 1)
+mlx_expand_dims <- function(x, axes) {
   x <- as_mlx(x)
-  axis0 <- .mlx_normalize_new_axes(axis, dim(x))
-  ptr <- cpp_mlx_expand_dims(x$ptr, axis0)
+  axes0 <- .mlx_normalize_new_axes(axes, dim(x))
+  ptr <- cpp_mlx_expand_dims(x$ptr, axes0)
   .mlx_wrap_result(ptr, x$device)
 }
 
@@ -201,27 +205,27 @@ mlx_tile <- function(x, reps) {
 #'
 #' @inheritParams mlx_array_required
 #' @param shift Integer vector giving the number of places by which elements are shifted.
-#' @param axis Optional axis (or axes) along which elements are shifted.
+#' @param axes Optional integer vector (1-indexed) along which elements are shifted.
 #'   When `NULL`, the array is flattened and shifted.
 #' @return An mlx array with elements circularly shifted.
 #' @seealso [mlx.core.roll](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.roll)
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
-#' mlx_roll(x, shift = 1, axis = 2)
-mlx_roll <- function(x, shift, axis = NULL) {
+#' mlx_roll(x, shift = 1, axes = 2)
+mlx_roll <- function(x, shift, axes = NULL) {
   x <- as_mlx(x)
   shift <- as.integer(shift)
   if (length(shift) == 0L || any(is.na(shift))) {
     stop("shift must contain integer values.", call. = FALSE)
   }
 
-  if (is.null(axis)) {
+  if (is.null(axes)) {
     ptr <- cpp_mlx_roll(x$ptr, shift, NULL)
   } else {
-    axes0 <- .mlx_normalize_axes(axis, x)
+    axes0 <- .mlx_normalize_axes(axes, x)
     if (length(shift) != length(axes0)) {
-      stop("shift and axis must have the same length.", call. = FALSE)
+      stop("shift and axes must have the same length.", call. = FALSE)
     }
     ptr <- cpp_mlx_roll(x$ptr, shift, axes0)
   }
@@ -245,11 +249,11 @@ mlx_roll <- function(x, shift, axis = NULL) {
 #' @param value Constant fill value used when `mode = "constant"`.
 #' @param mode Padding mode passed to MLX (e.g., `"constant"`, `"edge"`,
 #'   `"reflect"`).
-#' @param axes Optional integer vector of axes (1-indexed, negatives count from
-#'   the end) to which `pad_width` applies. Unlisted axes receive zero padding.
+#' @param axes Optional integer vector of axes (1-indexed) to which `pad_width`
+#'   applies. Unlisted axes receive zero padding.
 #' @param sections Either a single integer (number of equal parts) or an integer
 #'   vector of 1-based split points along `axis`.
-#' @param axis Axis (1-indexed, negatives count from the end) to operate on.
+#' @param axis Axis (1-indexed) to operate on.
 #' @return For `mlx_pad()`, an mlx array; for `mlx_split()`, a list of mlx
 #'   arrays.
 #' @seealso [mlx.core.pad](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad)
@@ -464,11 +468,9 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
 #'   to `perm` via repeated calls to `mlx_moveaxis()`.
 #'
 #' @param x,a An object coercible to mlx via [as_mlx()].
-#' @param source Integer vector of axis indices to move (1-indexed; negatives
-#'   count from the end).
+#' @param source Integer vector of axis indices to move (1-indexed).
 #' @param destination Integer vector giving the target positions for `source`
-#'   axes (1-indexed; negatives count from the end). Must be the same length as
-#'   `source`.
+#'   axes (1-indexed). Must be the same length as `source`.
 #' @param perm Integer permutation describing the desired axis order, matching
 #'   the semantics of [base::aperm()].
 #' @param resize Logical flag from [base::aperm()]. Only `TRUE` is currently
@@ -579,8 +581,9 @@ mlx_contiguous <- function(x, device = NULL) {
 #' collapsing a contiguous range of axes into a single dimension.
 #'
 #' @inheritParams mlx_array_required
-#' @param start_axis First axis (1-indexed, negatives count from the end) in the flattened range.
-#' @param end_axis Last axis (1-indexed, negatives count from the end) in the flattened range.
+#' @param start_axis First axis (1-indexed) in the flattened range.
+#' @param end_axis Last axis (1-indexed) in the flattened range. Omit to use the
+#'   final dimension.
 #' @return An mlx array with the selected axes collapsed.
 #' @seealso [mlx.core.flatten](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.flatten)
 #' @export
@@ -588,7 +591,7 @@ mlx_contiguous <- function(x, device = NULL) {
 #' x <- as_mlx(array(1:12, dim = c(2, 3, 2)))
 #' mlx_flatten(x)
 #' mlx_flatten(x, start_axis = 2, end_axis = 3)
-mlx_flatten <- function(x, start_axis = 1L, end_axis = -1L) {
+mlx_flatten <- function(x, start_axis = 1L, end_axis = NULL) {
   x <- as_mlx(x)
 
   if (length(dim(x)) == 0L) {
@@ -596,7 +599,16 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = -1L) {
   }
 
   start_axis <- as.integer(start_axis)
+  if (length(start_axis) != 1L || is.na(start_axis)) {
+    stop("start_axis must be a single positive integer.", call. = FALSE)
+  }
+  if (missing(end_axis) || is.null(end_axis)) {
+    end_axis <- length(dim(x))
+  }
   end_axis <- as.integer(end_axis)
+  if (length(end_axis) != 1L || is.na(end_axis)) {
+    stop("end_axis must be NULL or a single positive integer.", call. = FALSE)
+  }
 
   start_idx <- .mlx_normalize_axis_single(start_axis, x)
   end_idx <- .mlx_normalize_axis_single(end_axis, x)
@@ -615,7 +627,7 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = -1L) {
 #' exchanging two dimensions while leaving others intact.
 #'
 #' @inheritParams mlx_array_required
-#' @param axis1,axis2 Axes to swap (1-indexed, negatives count from the end).
+#' @param axis1,axis2 Axes to swap (1-indexed).
 #' @return An mlx array with the specified axes exchanged.
 #' @seealso [mlx.core.swapaxes](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.swapaxes)
 #' @export

@@ -3,8 +3,7 @@
 #' Streams provide independent execution queues on a device, allowing overlap of
 #' computation and finer control over scheduling.
 #'
-#' @param device Device identifier (`"gpu"` or `"cpu"`). Defaults to the current
-#'   [mlx_default_device()].
+#' @inheritParams common_params
 #' @return An object of class `mlx_stream`.
 #' @seealso <https://ml-explore.github.io/mlx/build/html/usage/using_streams.html>
 #' @export

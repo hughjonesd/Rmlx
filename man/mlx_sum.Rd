@@ -10,28 +10,30 @@
 \alias{mlx_std}
 \title{Reduce mlx arrays}
 \usage{
-mlx_sum(x, axis = NULL, drop = TRUE)
+mlx_sum(x, axes = NULL, drop = TRUE)
 
-mlx_prod(x, axis = NULL, drop = TRUE)
+mlx_prod(x, axes = NULL, drop = TRUE)
 
-mlx_all(x, axis = NULL, drop = TRUE)
+mlx_all(x, axes = NULL, drop = TRUE)
 
-mlx_any(x, axis = NULL, drop = TRUE)
+mlx_any(x, axes = NULL, drop = TRUE)
 
-mlx_mean(x, axis = NULL, drop = TRUE)
+mlx_mean(x, axes = NULL, drop = TRUE)
 
-mlx_var(x, axis = NULL, drop = TRUE, ddof = 0L)
+mlx_var(x, axes = NULL, drop = TRUE, ddof = 0L)
 
-mlx_std(x, axis = NULL, drop = TRUE, ddof = 0L)
+mlx_std(x, axes = NULL, drop = TRUE, ddof = 0L)
 }
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{axis}{Optional integer vector of axes (1-indexed) to reduce.
-When \code{NULL}, the reduction is performed over all elements.}
+\item{axes}{Integer vector of axes (1-indexed). Supply positive integers
+between 1 and the array rank. Many helpers interpret \code{NULL} to mean "all
+axes"—see the function details for specifics.}
 
-\item{drop}{Logical flag controlling dimension dropping: \code{TRUE} (default)
-removes reduced axes, while \code{FALSE} retains them with length one.}
+\item{drop}{If \code{TRUE} (default), drop dimensions of length 1. If \code{FALSE},
+retain all dimensions. Equivalent to \code{keepdims = TRUE} in underlying
+mlx functions.}
 
 \item{ddof}{Non-negative integer delta degrees of freedom for variance or
 standard deviation reductions.}
@@ -52,12 +54,12 @@ logical scalars.
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))
 mlx_sum(x)
-mlx_sum(x, axis = 1)
-mlx_prod(x, axis = 2, drop = FALSE)
+mlx_sum(x, axes = 1)
+mlx_prod(x, axes = 2, drop = FALSE)
 mlx_all(x > 0)
 mlx_any(x > 3)
-mlx_mean(x, axis = 1)
-mlx_var(x, axis = 2)
+mlx_mean(x, axes = 1)
+mlx_var(x, axes = 2)
 mlx_std(x, ddof = 1)
 }
 \seealso{

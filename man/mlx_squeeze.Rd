@@ -4,12 +4,12 @@
 \alias{mlx_squeeze}
 \title{Remove singleton dimensions}
 \usage{
-mlx_squeeze(x, axis = NULL)
+mlx_squeeze(x, axes = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}
 
-\item{axis}{Optional integer vector of axes (1-indexed) to remove. When \code{NULL}
+\item{axes}{Optional integer vector of axes (1-indexed) to remove. When \code{NULL}
 all axes of length one are removed.}
 }
 \value{
@@ -21,7 +21,7 @@ Remove singleton dimensions
 \examples{
 x <- as_mlx(array(1:4, dim = c(1, 2, 2, 1)))
 mlx_squeeze(x)
-mlx_squeeze(x, axis = 1)
+mlx_squeeze(x, axes = 1)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze}{mlx.core.squeeze}

@@ -142,7 +142,7 @@ test_that("mlx_rand_categorical works with multiple rows", {
   set.seed(123)
   # Multiple categorical distributions
   logits <- as_mlx(matrix(c(1, 2, 3, 3, 2, 1), 2, 3, byrow = TRUE))
-  samples <- mlx_rand_categorical(logits, axis = -1L, num_samples = 10)
+  samples <- mlx_rand_categorical(logits, axis = 2L, num_samples = 10)
 
   expect_s3_class(samples, "mlx")
   sample_vals <- as.matrix(samples)

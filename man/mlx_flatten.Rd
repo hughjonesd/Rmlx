@@ -4,14 +4,15 @@
 \alias{mlx_flatten}
 \title{Flatten axes of an mlx array}
 \usage{
-mlx_flatten(x, start_axis = 1L, end_axis = -1L)
+mlx_flatten(x, start_axis = 1L, end_axis = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}
 
-\item{start_axis}{First axis (1-indexed, negatives count from the end) in the flattened range.}
+\item{start_axis}{First axis (1-indexed) in the flattened range.}
 
-\item{end_axis}{Last axis (1-indexed, negatives count from the end) in the flattened range.}
+\item{end_axis}{Last axis (1-indexed) in the flattened range. Omit to use the
+final dimension.}
 }
 \value{
 An mlx array with the selected axes collapsed.

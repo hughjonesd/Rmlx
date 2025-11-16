@@ -4,7 +4,7 @@
 \alias{mlx_rand_categorical}
 \title{Sample from a categorical distribution on mlx arrays}
 \usage{
-mlx_rand_categorical(logits, axis = -1L, num_samples = 1L)
+mlx_rand_categorical(logits, axis = NULL, num_samples = 1L)
 }
 \arguments{
 \item{logits}{A matrix or mlx array of log-probabilities. The values don't
@@ -12,8 +12,8 @@ need to be normalized (the function applies softmax internally). For a single
 distribution over K classes, use a 1×K matrix. For multiple independent
 distributions, use an N×K matrix where each row is a distribution.}
 
-\item{axis}{The axis (1-indexed, negatives count from the end) along which to sample.
-Default is -1L (last axis, typically the class dimension).}
+\item{axis}{Axis (1-indexed) along which to sample. Omit the argument to use
+the last dimension (typically the class dimension).}
 
 \item{num_samples}{Number of samples to draw from each distribution.}
 }

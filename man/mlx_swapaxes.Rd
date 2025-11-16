@@ -9,7 +9,7 @@ mlx_swapaxes(x, axis1, axis2)
 \arguments{
 \item{x}{An mlx array.}
 
-\item{axis1, axis2}{Axes to swap (1-indexed, negatives count from the end).}
+\item{axis1, axis2}{Axes to swap (1-indexed).}
 }
 \value{
 An mlx array with the specified axes exchanged.

@@ -113,7 +113,7 @@ mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "non
 
   # Compute log-softmax for numerical stability
   # log_softmax(x) = x - log(sum(exp(x)))
-  log_sum_exp <- mlx_logsumexp(logits, axis = 2, drop = FALSE)
+  log_sum_exp <- mlx_logsumexp(logits, axes = 2, drop = FALSE)
   log_probs <- logits - log_sum_exp
 
   # Get log probability of target class (targets are 1-indexed)
@@ -132,7 +132,7 @@ mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "non
   one_hot <- .mlx_cast(one_hot, dtype = logits$dtype, device = logits$device)
 
   # Compute negative log likelihood
-  loss <- -mlx_sum(log_probs * one_hot, axis = 2)
+  loss <- -mlx_sum(log_probs * one_hot, axes = 2)
 
   switch(reduction,
     "mean" = mlx_mean(loss),

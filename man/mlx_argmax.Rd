@@ -12,11 +12,13 @@ mlx_argmin(x, axis = NULL, drop = TRUE)
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{axis}{Optional axis to operate over (1-indexed like R). When \code{NULL}, the
-array is flattened first.}
+\item{axis}{Single axis (1-indexed). Supply a positive integer between 1 and
+the array rank. Use \code{NULL} when the helper interprets it as "all axes" (see
+individual docs).}
 
-\item{drop}{Logical; when \code{TRUE} (default) the reduced axis is removed.
-Set to \code{FALSE} to keep the axis as length one.}
+\item{drop}{If \code{TRUE} (default), drop dimensions of length 1. If \code{FALSE},
+retain all dimensions. Equivalent to \code{keepdims = TRUE} in underlying
+mlx functions.}
 }
 \value{
 An mlx array of indices. Indices are 1-based to match R's
@@ -24,6 +26,11 @@ conventions.
 }
 \description{
 Argmax and argmin on mlx arrays
+}
+\details{
+When \code{axis = NULL}, the array is flattened before computing extrema.
+Setting \code{drop = FALSE} retains the reduced axis as length one in the
+returned indices.
 }
 \examples{
 x <- as_mlx(matrix(c(1, 5, 3, 2), 2, 2))

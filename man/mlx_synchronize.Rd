@@ -4,11 +4,13 @@
 \alias{mlx_synchronize}
 \title{Synchronize MLX execution}
 \usage{
-mlx_synchronize(device = c("gpu", "cpu"))
+mlx_synchronize(device = mlx_default_device())
 }
 \arguments{
-\item{device}{Device identifier ("gpu" or "cpu") or an \code{mlx_stream} created by
-\code{\link[=mlx_new_stream]{mlx_new_stream()}}.}
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 }
 \description{
 Waits for outstanding operations on the specified device or stream to complete.

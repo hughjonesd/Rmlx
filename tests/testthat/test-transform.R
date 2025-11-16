@@ -121,7 +121,7 @@ test_that("mlx_logsumexp matches base computations", {
 
   mat <- matrix(seq_len(6), nrow = 2)
   mlx_mat <- as_mlx(mat)
-  lse_axis2 <- as.matrix(mlx_logsumexp(mlx_mat, axis = 2))
+  lse_axis2 <- as.matrix(mlx_logsumexp(mlx_mat, axes = 2))
   expected <- apply(mat, 1, function(row) log(sum(exp(row))))
   expect_equal(as.numeric(lse_axis2), expected, tolerance = 1e-6)
 })
@@ -145,14 +145,14 @@ test_that("mlx_logcumsumexp matches cumulative reference", {
 test_that("mlx_softmax normalizes along the requested axis", {
   mat <- matrix(c(1, 2, 3, 4, 5, 6), nrow = 2, byrow = TRUE)
   mlx_mat <- as_mlx(mat)
-  sm_rows <- as.matrix(mlx_softmax(mlx_mat, axis = 2))
+  sm_rows <- as.matrix(mlx_softmax(mlx_mat, axes = 2))
   expected_rows <- t(apply(mat, 1, function(row) {
     ex <- exp(row - max(row))
     ex / sum(ex)
   }))
   expect_equal(sm_rows, expected_rows, tolerance = 1e-6)
 
-  sm_cols <- as.matrix(mlx_softmax(mlx_mat, axis = 1))
+  sm_cols <- as.matrix(mlx_softmax(mlx_mat, axes = 1))
   expected_cols <- apply(mat, 2, function(col) {
     ex <- exp(col - max(col))
     ex / sum(ex)
