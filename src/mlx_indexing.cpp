@@ -1,5 +1,6 @@
 // Indexing and slicing operations
 #include "mlx_helpers.hpp"
+#include <algorithm>
 #include <mlx/mlx.h>
 #include <Rcpp.h>
 
@@ -94,6 +95,7 @@ SEXP cpp_mlx_gather(SEXP xp_,
                     IntegerVector axes_,
                     std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array src = wrapper->get();
   std::vector<array> indices;
   indices.reserve(indices_.size());
   for (int i = 0; i < indices_.size(); ++i) {
@@ -103,9 +105,14 @@ SEXP cpp_mlx_gather(SEXP xp_,
 
   std::vector<int> axes(axes_.begin(), axes_.end());
   StreamOrDevice dev = string_to_device(device_str);
-  Shape slice_sizes(axes.size(), 1);
+  Shape slice_sizes(src.ndim(), 0);
+  Shape src_shape = src.shape();
+  for (int i = 0; i < src.ndim(); ++i) {
+    const bool is_gather_axis = std::find(axes.begin(), axes.end(), i) != axes.end();
+    slice_sizes[i] = is_gather_axis ? 1 : src_shape[i];
+  }
 
-  array result = gather(wrapper->get(), indices, axes, slice_sizes, dev);
+  array result = gather(src, indices, axes, slice_sizes, dev);
   return make_mlx_xptr(std::move(result));
 }
 

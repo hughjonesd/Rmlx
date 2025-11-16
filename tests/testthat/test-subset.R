@@ -276,6 +276,41 @@ test_that("mlx_gather treats negative indices as omissions", {
   expect_equal(as.vector(dropped_mlx), 3:10)
 })
 
+test_that("mlx_gather supports multi-axis tensors", {
+  mat <- matrix(1:9, 3, 3)
+  x <- as_mlx(mat)
+
+  idx_rows <- matrix(c(1L, 2L, 3L, 1L), nrow = 2, byrow = TRUE)
+  idx_cols <- matrix(c(1L, 3L, 2L, 2L), nrow = 2, byrow = TRUE)
+
+  gathered <- mlx_gather(x, list(idx_rows, idx_cols), axes = c(1L, 2L))
+  expected <- array(mat[cbind(as.vector(idx_rows), as.vector(idx_cols))], dim(idx_rows))
+
+  expect_equal(as.array(gathered), expected, tolerance = 1e-6)
+})
+
+test_that("mlx_gather preserves remaining axes and errors on invalid axes", {
+  arr <- array(seq_len(24), dim = c(4, 3, 2))
+  x <- as_mlx(arr)
+
+  idx_rows <- matrix(c(1L, 4L, 2L, 3L), nrow = 2, byrow = TRUE)
+  idx_cols <- as_mlx(matrix(c(2L, 1L, 3L, 2L), nrow = 2, byrow = TRUE))
+  idx_cols_mat <- as.matrix(idx_cols)
+
+  gathered <- mlx_gather(x, list(idx_rows, idx_cols), axes = c(1L, 2L))
+
+  expected <- array(0, dim = c(dim(idx_rows), dim(arr)[3]))
+  for (i in seq_len(dim(idx_rows)[1])) {
+    for (j in seq_len(dim(idx_rows)[2])) {
+      expected[i, j, ] <- arr[idx_rows[i, j], idx_cols_mat[i, j], ]
+    }
+  }
+
+  expect_equal(as.array(gathered), expected, tolerance = 1e-6)
+  expect_error(mlx_gather(x, list(1L), axes = -1L), "Negative axes")
+  expect_error(mlx_gather(x, list(1L, 2L), axes = c(1L, 1L)), "must not contain duplicates")
+})
+
 test_that("mlx vector indexing works (1-based)", {
   mat <- matrix(1:12, 3, 4)
   x <- as_mlx(mat)

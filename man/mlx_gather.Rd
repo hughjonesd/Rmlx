@@ -9,25 +9,37 @@ mlx_gather(x, indices, axes = NULL)
 \arguments{
 \item{x}{An mlx array.}
 
-\item{indices}{List of index tensors. Each element can be a numeric/logical
-vector, array, or an \code{mlx} array of integer type. Shapes must broadcast to a
-common result. Negative values follow base R semantics and omit the
-specified locations rather than counting from the end.}
+\item{indices}{List of numeric/logical vectors or arrays (R or \code{mlx}). All
+entries must broadcast to a common shape.}
 
-\item{axes}{Integer vector of axes (1-indexed, negatives count from the end)
-corresponding to \code{indices}. Defaults to the first \code{length(indices)} axes.}
+\item{axes}{Integer vector of axes (1-indexed). Defaults to the first
+\code{length(indices)} axes.}
 }
 \value{
 An \code{mlx} array containing the gathered elements.
 }
 \description{
-Mirrors \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.gather}{\code{mlx.core.gather()}},
-selecting elements according to index tensors along the specified axes. The
-current implementation supports gathering along a single axis at a time.
+Wraps \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.gather}{\code{mlx.core.gather()}}
+so you can pull elements by axis. Provide one index per axis. Axes must
+be positive integers (we don't allow negative indices, unlike Python).
 }
+\section{Element-wise indexing}{
+
+The output has the same shape as the indices. Each element of the output
+is \code{x[index_1, index_2, ...]} from the corresponding position of each
+index. See the examples below.
+}
+
 \examples{
 x <- as_mlx(matrix(1:9, 3, 3))
-idx_rows <- c(1L, 3L)
-gathered <- mlx_gather(x, list(idx_rows), axes = 1L)
-as.matrix(gathered)
+
+# Simple cartesian gather:
+as.matrix(mlx_gather(x, list(1:2, 1:2), axes = 1:2))
+
+# Element-wise pairs: grab a custom 2x2 grid of coordinates
+row_idx <- matrix(c(1, 1,
+                    2, 3), nrow = 2, byrow = TRUE)
+col_idx <- matrix(c(1, 3,
+                    2, 2), nrow = 2, byrow = TRUE)
+as.array(mlx_gather(x, list(row_idx, col_idx), axes = c(1L, 2L)))
 }
