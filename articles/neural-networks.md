@@ -104,12 +104,12 @@ for (epoch in seq_len(n_epochs)) {
     cat(sprintf("Epoch %d, Loss: %.4f\n", epoch, loss_value))
   }
 }
-#> Epoch 100, Loss: 0.6651
-#> Epoch 200, Loss: 0.6622
-#> Epoch 300, Loss: 0.6592
-#> Epoch 400, Loss: 0.6572
-#> Epoch 500, Loss: 0.6546
-#> Epoch 600, Loss: 0.6543
+#> Epoch 100, Loss: 0.6691
+#> Epoch 200, Loss: 0.6643
+#> Epoch 300, Loss: 0.6605
+#> Epoch 400, Loss: 0.6617
+#> Epoch 500, Loss: 0.6566
+#> Epoch 600, Loss: 0.6511
 
 mlx_set_training(mlp, FALSE)
 ```

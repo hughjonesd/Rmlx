@@ -1,10 +1,9 @@
 # Gather elements from an mlx array
 
-Mirrors
-[`mlx.core.gather()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.gather),
-selecting elements according to index tensors along the specified axes.
-The current implementation supports gathering along a single axis at a
-time.
+Wraps
+[`mlx.core.gather()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.gather)
+so you can pull elements by axis. Provide one index per axis. Axes must
+be positive integers (we don't allow negative indices, unlike Python).
 
 ## Usage
 
@@ -20,28 +19,40 @@ mlx_gather(x, indices, axes = NULL)
 
 - indices:
 
-  List of index tensors. Each element can be a numeric/logical vector,
-  array, or an `mlx` array of integer type. Shapes must broadcast to a
-  common result.
+  List of numeric/logical vectors or arrays (R or `mlx`). All entries
+  must broadcast to a common shape.
 
 - axes:
 
-  Integer vector of axes (1-indexed, negatives count from the end)
-  corresponding to `indices`. Defaults to the first `length(indices)`
-  axes.
+  Integer vector of axes (1-indexed). Defaults to the first
+  `length(indices)` axes.
 
 ## Value
 
 An `mlx` array containing the gathered elements.
 
+## Element-wise indexing
+
+The output has the same shape as the indices. Each element of the output
+is `x[index_1, index_2, ...]` from the corresponding position of each
+index. See the examples below.
+
 ## Examples
 
 ``` r
 x <- as_mlx(matrix(1:9, 3, 3))
-idx_rows <- c(1L, 3L)
-gathered <- mlx_gather(x, list(idx_rows), axes = 1L)
-as.matrix(gathered)
-#>      [,1] [,2] [,3]
-#> [1,]    1    4    7
-#> [2,]    3    6    9
+
+# Simple cartesian gather:
+as.matrix(mlx_gather(x, list(1:2, 1:2), axes = 1:2))
+#> [1] 1 5
+
+# Element-wise pairs: grab a custom 2x2 grid of coordinates
+row_idx <- matrix(c(1, 1,
+                    2, 3), nrow = 2, byrow = TRUE)
+col_idx <- matrix(c(1, 3,
+                    2, 2), nrow = 2, byrow = TRUE)
+as.array(mlx_gather(x, list(row_idx, col_idx), axes = c(1L, 2L)))
+#>      [,1] [,2]
+#> [1,]    1    7
+#> [2,]    5    6
 ```
