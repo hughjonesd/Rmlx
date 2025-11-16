@@ -174,7 +174,25 @@ mlx_load_gguf <- function(file, device = mlx_default_device()) {
   names(out) <- names(metadata)
   for (nm in names(metadata)) {
     value <- metadata[[nm]]
-    entry_type <- .gguf_entry_type(value)
+    entry_type <- {
+      if (is.null(value)) {
+        stop("GGUF metadata does not support NULL entries.", call. = FALSE)
+      }
+      if (inherits(value, "mlx")) {
+        "array"
+      } else if (is.character(value)) {
+        if (!length(value)) {
+          stop("Character metadata entries must have length >= 1.", call. = FALSE)
+        }
+        if (length(value) == 1L) "string" else "string_vec"
+      } else {
+        stop(
+          "Unsupported GGUF metadata entry of class: ",
+          paste(class(value), collapse = ", "),
+          call. = FALSE
+        )
+      }
+    }
     out[[nm]] <- switch(
       entry_type,
       array = list(type = "array", ptr = value$ptr),
@@ -185,35 +203,12 @@ mlx_load_gguf <- function(file, device = mlx_default_device()) {
   out
 }
 
-.gguf_entry_type <- function(value) {
-  if (is.null(value)) {
-    stop("GGUF metadata does not support NULL entries.", call. = FALSE)
-  }
-  if (inherits(value, "mlx")) {
-    return("array")
-  }
-  if (is.character(value)) {
-    if (!length(value)) {
-      stop("Character metadata entries must have length >= 1.", call. = FALSE)
-    }
-    return(if (length(value) == 1L) "string" else "string_vec")
-  }
-  stop("Unsupported GGUF metadata entry of class: ", paste(class(value), collapse = ", "), call. = FALSE)
-}
-
 .ensure_extension <- function(path, ext) {
-  if (.ends_with_ci(path, ext)) {
-    path
-  } else {
-    paste0(path, ext)
+  has_ext <- nchar(path) >= nchar(ext) && {
+    suffix <- substr(path, nchar(path) - nchar(ext) + 1L, nchar(path))
+    tolower(suffix) == tolower(ext)
   }
-}
-.ends_with_ci <- function(path, ext) {
-  if (nchar(path) < nchar(ext)) {
-    return(FALSE)
-  }
-  suffix <- substr(path, nchar(path) - nchar(ext) + 1L, nchar(path))
-  tolower(suffix) == tolower(ext)
+  if (has_ext) path else paste0(path, ext)
 }
 
 .ensure_parent_dir <- function(path) {

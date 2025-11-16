@@ -142,7 +142,13 @@
   }, logical(1)))
 
   if (has_dupes) {
-    full_indices <- .mlx_expand_indices(prep$normalized, dim(x))
+    full_indices <- Map(function(sel, dim_len) {
+      if (is.null(sel)) {
+        if (dim_len == 0L) integer(0) else seq.int(0L, dim_len - 1L)
+      } else {
+        sel
+      }
+    }, prep$normalized, dim(x))
     grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
     coord_mat <- as.matrix(grid)
     if (!is.matrix(coord_mat)) {
@@ -369,22 +375,6 @@
     stop = stop,
     stride = stride
   )
-}
-
-#' Expand normalised indices to full coordinate vectors
-#'
-#' @param normalized List of per-axis selections (0-based integer vectors or `NULL`).
-#' @param dim_sizes Integer vector of dimension sizes.
-#' @return List of integer vectors suitable for `expand.grid()`.
-#' @noRd
-.mlx_expand_indices <- function(normalized, dim_sizes) {
-  Map(function(sel, dim_len) {
-    if (is.null(sel)) {
-      if (dim_len == 0L) integer(0) else seq.int(0L, dim_len - 1L)
-    } else {
-      sel
-    }
-  }, normalized, dim_sizes)
 }
 
 #' Compute linear indices from multi-axis coordinates.

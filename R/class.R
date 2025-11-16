@@ -1,19 +1,3 @@
-#' Infer dimensions for MLX conversion
-#'
-#' @param x Input object destined for MLX conversion.
-#' @return Integer vector of dimensions (possibly length zero).
-#' @noRd
-.mlx_infer_dim <- function(x) {
-  dims <- dim(x)
-  if (!is.null(dims)) {
-    return(as.integer(dims))
-  }
-  if (length(x) == 1L && is.null(dims)) {
-    return(integer(0))
-  }
-  as.integer(length(x))
-}
-
 #' Coerce R payload into the storage format expected by MLX
 #'
 #' @param x Input object (vector/array).
@@ -144,7 +128,16 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
     stop("Cannot convert object of class ", class(x)[1], " to mlx")
   }
 
-  dim_vec <- .mlx_infer_dim(x)
+  dim_vec <- {
+    dims <- dim(x)
+    if (!is.null(dims)) {
+      as.integer(dims)
+    } else if (length(x) == 1L) {
+      integer(0)
+    } else {
+      as.integer(length(x))
+    }
+  }
   x_payload <- .mlx_coerce_payload(x, dtype_val)
 
   # Create MLX array via C++

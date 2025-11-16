@@ -43,20 +43,6 @@
   sort(unique(axes0))
 }
 
-#' Normalize a single insertion axis
-#'
-#' @param axis Single 1-indexed axis where the new dimension should be inserted.
-#' @param dims Integer vector of the current dimensions.
-#' @return A single 0-indexed axis suitable for MLX APIs.
-#' @noRd
-.mlx_normalize_new_axis <- function(axis, dims) {
-  axes0 <- .mlx_normalize_new_axes(axis, dims)
-  if (length(axes0) != 1L) {
-    stop("axis must be a single integer.", call. = FALSE)
-  }
-  axes0
-}
-
 #' Stack mlx arrays along a new axis
 #'
 #' @param ... One or more arrays (or a single list of arrays) coercible to mlx.
@@ -82,7 +68,11 @@ mlx_stack <- function(..., axis = 1L) {
   device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
   arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = device)
 
-  axis0 <- .mlx_normalize_new_axis(axis, dim(arrays[[1]]))
+  axis_vec <- .mlx_normalize_new_axes(axis, dim(arrays[[1]]))
+  if (length(axis_vec) != 1L) {
+    stop("`axis` must be a single insertion position.", call. = FALSE)
+  }
+  axis0 <- axis_vec
   ptr <- cpp_mlx_stack(arrays, axis0, device)
   .mlx_wrap_result(ptr, device)
 }

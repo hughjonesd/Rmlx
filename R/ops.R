@@ -325,31 +325,6 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
   new_mlx(ptr, if (x$dtype %in% c("float32", "float64")) x$dtype else "float32", x$device)
 }
 
-#' Compute broadcast dimensions
-#'
-#' @param dim1,dim2 Integer vectors of dimensions.
-#' @return Integer vector of broadcasted dimensions.
-#' @noRd
-.broadcast_dim <- function(dim1, dim2) {
-  # Simplified broadcasting rules
-  # In reality, this should follow NumPy-style broadcasting
-  if (identical(dim1, dim2)) {
-    return(dim1)
-  }
-
-  # If one is a scalar (length 1), use the other's dimensions
-  if (prod(dim1) == 1) return(dim2)
-  if (prod(dim2) == 1) return(dim1)
-
-  # For now, assume dimensions match or one broadcasts
-  # A more complete implementation would handle general broadcasting
-  if (length(dim1) >= length(dim2)) {
-    return(dim1)
-  } else {
-    return(dim2)
-  }
-}
-
 #' Promote dtypes for mixed operations
 #'
 #' @param dtype1,dtype2 Character strings naming dtypes.
