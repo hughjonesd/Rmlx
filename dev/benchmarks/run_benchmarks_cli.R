@@ -18,7 +18,22 @@ if (is.na(helpers_path)) {
 }
 suppressPackageStartupMessages(source(helpers_path))
 
-sizes <- c(n500 = 500L, n1000 = 1000L, n2000 = 2000L)
+all_sizes <- c(n500 = 500L, n1000 = 1000L, n2000 = 2000L)
+requested <- Sys.getenv("RMLX_BENCH_SIZES", "")
+if (nzchar(requested)) {
+  vals <- as.integer(strsplit(requested, ",")[[1]])
+  if (any(is.na(vals))) {
+    stop("RMLX_BENCH_SIZES must be a comma-separated list of integers (e.g. 2000)")
+  }
+  names <- paste0("n", vals)
+  missing <- setdiff(names, names(all_sizes))
+  if (length(missing)) {
+    stop("Unsupported benchmark sizes requested: ", paste(missing, collapse = ", "))
+  }
+  sizes <- all_sizes[names]
+} else {
+  sizes <- all_sizes
+}
 cache_dir <- file.path(repo_root, "dev", "benchmarks", "cache")
 inputs <- build_benchmark_inputs(sizes, cache_dir = cache_dir)
 
