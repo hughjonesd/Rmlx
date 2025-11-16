@@ -18,16 +18,18 @@ mlx_rand_permutation(x, axis = 1L, device = mlx_default_device())
 
 - axis:
 
-  The axis (1-indexed, negatives count from the end) along which to
-  permute when x is an array. Default is 1L (permute rows).
+  Axis (1-indexed) along which to permute when `x` is an array. Default
+  is 1L (permute rows).
 
 - device:
 
   Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
   via
   [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  Default:
-  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md).
+  Defaults to the current
+  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
+  unless noted otherwise (helpers that act on an existing array
+  typically reuse that array's device or stream).
 
 ## Value
 
@@ -53,5 +55,5 @@ mat <- matrix(1:12, 4, 3)
 perm_mat <- mlx_rand_permutation(mat)
 
 # Permute columns instead
-perm_cols <- mlx_rand_permutation(mat, axis = 1)
+perm_cols <- mlx_rand_permutation(mat, axis = 2)
 ```

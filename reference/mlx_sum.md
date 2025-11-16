@@ -7,19 +7,19 @@ or more axes. Use `drop = FALSE` to retain reduced axes with length one
 ## Usage
 
 ``` r
-mlx_sum(x, axis = NULL, drop = TRUE)
+mlx_sum(x, axes = NULL, drop = TRUE)
 
-mlx_prod(x, axis = NULL, drop = TRUE)
+mlx_prod(x, axes = NULL, drop = TRUE)
 
-mlx_all(x, axis = NULL, drop = TRUE)
+mlx_all(x, axes = NULL, drop = TRUE)
 
-mlx_any(x, axis = NULL, drop = TRUE)
+mlx_any(x, axes = NULL, drop = TRUE)
 
-mlx_mean(x, axis = NULL, drop = TRUE)
+mlx_mean(x, axes = NULL, drop = TRUE)
 
-mlx_var(x, axis = NULL, drop = TRUE, ddof = 0L)
+mlx_var(x, axes = NULL, drop = TRUE, ddof = 0L)
 
-mlx_std(x, axis = NULL, drop = TRUE, ddof = 0L)
+mlx_std(x, axes = NULL, drop = TRUE, ddof = 0L)
 ```
 
 ## Arguments
@@ -29,15 +29,17 @@ mlx_std(x, axis = NULL, drop = TRUE, ddof = 0L)
   An mlx array, or an R array/matrix/vector that will be converted via
   [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
 
-- axis:
+- axes:
 
-  Optional integer vector of axes (1-indexed) to reduce. When `NULL`,
-  the reduction is performed over all elements.
+  Integer vector of axes (1-indexed). Supply positive integers between 1
+  and the array rank. Many helpers interpret `NULL` to mean "all
+  axes"—see the function details for specifics.
 
 - drop:
 
-  Logical flag controlling dimension dropping: `TRUE` (default) removes
-  reduced axes, while `FALSE` retains them with length one.
+  If `TRUE` (default), drop dimensions of length 1. If `FALSE`, retain
+  all dimensions. Equivalent to `keepdims = TRUE` in underlying mlx
+  functions.
 
 - ddof:
 
@@ -75,13 +77,13 @@ mlx_sum(x)
 #>   device: gpu
 #>   values:
 #> [1] 10
-mlx_sum(x, axis = 1)
+mlx_sum(x, axes = 1)
 #> mlx array [2]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 3 7
-mlx_prod(x, axis = 2, drop = FALSE)
+mlx_prod(x, axes = 2, drop = FALSE)
 #> mlx array [2 x 1]
 #>   dtype: float32
 #>   device: gpu
@@ -101,13 +103,13 @@ mlx_any(x > 3)
 #>   device: gpu
 #>   values:
 #> [1] TRUE
-mlx_mean(x, axis = 1)
+mlx_mean(x, axes = 1)
 #> mlx array [2]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 1.5 3.5
-mlx_var(x, axis = 2)
+mlx_var(x, axes = 2)
 #> mlx array [2]
 #>   dtype: float32
 #>   device: gpu

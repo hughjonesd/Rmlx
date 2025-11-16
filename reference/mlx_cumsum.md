@@ -14,12 +14,14 @@ mlx_cumprod(x, axis = NULL, reverse = FALSE, inclusive = TRUE)
 
 - x:
 
-  An mlx array.
+  An mlx array, or an R array/matrix/vector that will be converted via
+  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
 
 - axis:
 
-  Optional axis along which to compute cumulative operation. If `NULL`
-  (default), the array is flattened first.
+  Single axis (1-indexed). Supply a positive integer between 1 and the
+  array rank. Use `NULL` when the helper interprets it as "all axes"
+  (see individual docs).
 
 - reverse:
 
@@ -34,6 +36,11 @@ mlx_cumprod(x, axis = NULL, reverse = FALSE, inclusive = TRUE)
 ## Value
 
 An mlx array with cumulative sums or products.
+
+## Details
+
+When `axis` is `NULL` (default), the array is flattened before computing
+the cumulative result.
 
 ## See also
 

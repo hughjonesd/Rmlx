@@ -30,8 +30,9 @@ mlx_argpartition(x, kth, axis = NULL)
 
 - axis:
 
-  Optional axis to operate over (1-indexed like R). When `NULL`, the
-  array is flattened first.
+  Single axis (1-indexed). Supply a positive integer between 1 and the
+  array rank. Use `NULL` when the helper interprets it as "all axes"
+  (see individual docs).
 
 - kth:
 

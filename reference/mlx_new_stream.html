@@ -61,8 +61,10 @@ computation and finer control over scheduling.</p>
 
 
 <dl><dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Device identifier (<code>"gpu"</code> or <code>"cpu"</code>). Defaults to the current
-<code><a href="mlx_default_device.html">mlx_default_device()</a></code>.</p></dd>
+<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
+<code>mlx_stream</code> created via <code>mlx_new_stream()</code>. Defaults to the current
+<code><a href="mlx_default_device.html">mlx_default_device()</a></code> unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).</p></dd>
 
 </dl></div>
     <div class="section level2">

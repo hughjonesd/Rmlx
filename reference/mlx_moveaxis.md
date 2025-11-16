@@ -23,14 +23,12 @@ aperm(a, perm = NULL, resize = TRUE, ...)
 
 - source:
 
-  Integer vector of axis indices to move (1-indexed; negatives count
-  from the end).
+  Integer vector of axis indices to move (1-indexed).
 
 - destination:
 
   Integer vector giving the target positions for `source` axes
-  (1-indexed; negatives count from the end). Must be the same length as
-  `source`.
+  (1-indexed). Must be the same length as `source`.
 
 - perm:
 

@@ -50,7 +50,9 @@
 
 <dl><dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
 <dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Default: <code><a href="mlx_default_device.html">mlx_default_device()</a></code>.</p></dd>
+<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Defaults to the current
+<code><a href="mlx_default_device.html">mlx_default_device()</a></code> unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).</p></dd>
 
 
 <dt id="arg-dtype">dtype<a class="anchor" aria-label="anchor" href="#arg-dtype"></a></dt>
@@ -61,8 +63,15 @@
 
 
 <dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
-<dd><p>Axis or axes to operate on (1-indexed). Negative values count from
-the end. <code>NULL</code> operates on all axes or the entire array.</p></dd>
+<dd><p>Single axis (1-indexed). Supply a positive integer between 1 and
+the array rank. Use <code>NULL</code> when the helper interprets it as "all axes" (see
+individual docs).</p></dd>
+
+
+<dt id="arg-axes">axes<a class="anchor" aria-label="anchor" href="#arg-axes"></a></dt>
+<dd><p>Integer vector of axes (1-indexed). Supply positive integers
+between 1 and the array rank. Many helpers interpret <code>NULL</code> to mean "all
+axes"—see the function details for specifics.</p></dd>
 
 
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>

@@ -48,7 +48,7 @@ collapsing a contiguous range of axes into a single dimension.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_flatten</span><span class="op">(</span><span class="va">x</span>, start_axis <span class="op">=</span> <span class="fl">1L</span>, end_axis <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_flatten</span><span class="op">(</span><span class="va">x</span>, start_axis <span class="op">=</span> <span class="fl">1L</span>, end_axis <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -60,11 +60,12 @@ collapsing a contiguous range of axes into a single dimension.</p>
 
 
 <dt id="arg-start-axis">start_axis<a class="anchor" aria-label="anchor" href="#arg-start-axis"></a></dt>
-<dd><p>First axis (1-indexed, negatives count from the end) in the flattened range.</p></dd>
+<dd><p>First axis (1-indexed) in the flattened range.</p></dd>
 
 
 <dt id="arg-end-axis">end_axis<a class="anchor" aria-label="anchor" href="#arg-end-axis"></a></dt>
-<dd><p>Last axis (1-indexed, negatives count from the end) in the flattened range.</p></dd>
+<dd><p>Last axis (1-indexed) in the flattened range. Omit to use the
+final dimension.</p></dd>
 
 </dl></div>
     <div class="section level2">

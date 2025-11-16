@@ -55,12 +55,13 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>An mlx array.</p></dd>
+<dd><p>An mlx array, or an R array/matrix/vector that will be converted via <code><a href="as_mlx.html">as_mlx()</a></code>.</p></dd>
 
 
 <dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
-<dd><p>Optional axis along which to compute cumulative operation.
-If <code>NULL</code> (default), the array is flattened first.</p></dd>
+<dd><p>Single axis (1-indexed). Supply a positive integer between 1 and
+the array rank. Use <code>NULL</code> when the helper interprets it as "all axes" (see
+individual docs).</p></dd>
 
 
 <dt id="arg-reverse">reverse<a class="anchor" aria-label="anchor" href="#arg-reverse"></a></dt>
@@ -75,6 +76,11 @@ If <code>FALSE</code>, the cumulative operation is exclusive (starts from identi
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An mlx array with cumulative sums or products.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>When <code>axis</code> is <code>NULL</code> (default), the array is flattened before
+computing the cumulative result.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

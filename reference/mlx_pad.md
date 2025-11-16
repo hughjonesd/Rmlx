@@ -46,8 +46,8 @@ mlx_split(x, sections, axis = 1L)
 
 - axes:
 
-  Optional integer vector of axes (1-indexed, negatives count from the
-  end) to which `pad_width` applies. Unlisted axes receive zero padding.
+  Optional integer vector of axes (1-indexed) to which `pad_width`
+  applies. Unlisted axes receive zero padding.
 
 - sections:
 
@@ -56,7 +56,7 @@ mlx_split(x, sections, axis = 1L)
 
 - axis:
 
-  Axis (1-indexed, negatives count from the end) to operate on.
+  Axis (1-indexed) to operate on.
 
 ## Value
 

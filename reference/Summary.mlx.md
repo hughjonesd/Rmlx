@@ -24,7 +24,7 @@ Summary(x, ..., na.rm = FALSE)
 - ...:
 
   Additional mlx arrays (for reducing multiple arrays), or named
-  arguments `axis` and `drop`
+  arguments `axes` (legacy `axis`) and `drop`
 
 - na.rm:
 

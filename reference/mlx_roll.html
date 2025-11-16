@@ -45,7 +45,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_roll</span><span class="op">(</span><span class="va">x</span>, <span class="va">shift</span>, axis <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_roll</span><span class="op">(</span><span class="va">x</span>, <span class="va">shift</span>, axes <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -60,8 +60,8 @@
 <dd><p>Integer vector giving the number of places by which elements are shifted.</p></dd>
 
 
-<dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
-<dd><p>Optional axis (or axes) along which elements are shifted.
+<dt id="arg-axes">axes<a class="anchor" aria-label="anchor" href="#arg-axes"></a></dt>
+<dd><p>Optional integer vector (1-indexed) along which elements are shifted.
 When <code>NULL</code>, the array is flattened and shifted.</p></dd>
 
 </dl></div>
@@ -77,7 +77,7 @@ When <code>NULL</code>, the array is flattened and shifted.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">mlx_roll</span><span class="op">(</span><span class="va">x</span>, shift <span class="op">=</span> <span class="fl">1</span>, axis <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mlx_roll</span><span class="op">(</span><span class="va">x</span>, shift <span class="op">=</span> <span class="fl">1</span>, axes <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [2 x 2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>

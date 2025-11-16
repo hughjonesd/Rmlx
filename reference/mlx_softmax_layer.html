@@ -45,7 +45,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_softmax_layer</span><span class="op">(</span>axis <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_softmax_layer</span><span class="op">(</span>axis <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -53,7 +53,8 @@
 
 
 <dl><dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
-<dd><p>Axis along which to apply softmax (default: -1, last axis).</p></dd>
+<dd><p>Axis (1-indexed) along which to apply softmax. Omit the argument
+to use the last dimension at runtime.</p></dd>
 
 </dl></div>
     <div class="section level2">

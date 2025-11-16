@@ -5,7 +5,7 @@ Vector cross product with mlx arrays
 ## Usage
 
 ``` r
-mlx_cross(a, b, axis = -1L)
+mlx_cross(a, b, axis = NULL)
 ```
 
 ## Arguments
@@ -16,8 +16,8 @@ mlx_cross(a, b, axis = -1L)
 
 - axis:
 
-  Axis along which to compute the cross product (1-indexed, default
-  last).
+  Axis along which to compute the cross product (1-indexed). Omit the
+  argument to use the trailing dimension.
 
 ## Value
 

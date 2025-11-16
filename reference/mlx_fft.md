@@ -8,9 +8,9 @@ results are returned as `mlx` arrays.
 ## Usage
 
 ``` r
-mlx_fft(x, axis = -1L, inverse = FALSE, device = NULL)
+mlx_fft(x, axis, inverse = FALSE, device = NULL)
 
-mlx_fft2(x, axes = c(-2L, -1L), inverse = FALSE, device = NULL)
+mlx_fft2(x, axes, inverse = FALSE, device = NULL)
 
 mlx_fftn(x, axes = NULL, inverse = FALSE, device = NULL)
 ```
@@ -23,8 +23,8 @@ mlx_fftn(x, axes = NULL, inverse = FALSE, device = NULL)
 
 - axis:
 
-  Optional integer axis (1-indexed, negatives count from the end) for
-  the one-dimensional transform.
+  Optional integer axis (1-indexed) for the one-dimensional transform.
+  Omit the argument to use the last dimension (no negative axes).
 
 - inverse:
 
@@ -35,18 +35,31 @@ mlx_fftn(x, axes = NULL, inverse = FALSE, device = NULL)
 
 - device:
 
-  Target device or stream. Defaults to the input array's device (or
+  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
+  via
+  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
+  Defaults to the current
   [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
-  for non-mlx inputs).
+  unless noted otherwise (helpers that act on an existing array
+  typically reuse that array's device or stream).
 
 - axes:
 
   Optional integer vector of axes for the multi-dimensional transforms.
-  When `NULL`, MLX uses all axes.
+  Supply positive, 1-based axes; omit the argument to use the trailing
+  axes (`mlx_fft()` defaults to the last axis, `mlx_fft2()` defaults to
+  the last two axes, and `mlx_fftn()` defaults to all axes).
 
 ## Value
 
 An `mlx` array containing complex frequency coefficients.
+
+## Details
+
+When `device` is `NULL`, the transform runs on the input array's device,
+falling back to
+[`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
+only when coercing non-mlx inputs.
 
 ## See also
 

@@ -5,7 +5,7 @@ Insert singleton dimensions
 ## Usage
 
 ``` r
-mlx_expand_dims(x, axis)
+mlx_expand_dims(x, axes)
 ```
 
 ## Arguments
@@ -14,7 +14,7 @@ mlx_expand_dims(x, axis)
 
   An mlx array.
 
-- axis:
+- axes:
 
   Integer vector of axis positions (1-indexed) where new singleton
   dimensions should be inserted.
@@ -31,7 +31,7 @@ An mlx array with additional dimensions of length one.
 
 ``` r
 x <- as_mlx(matrix(1:4, 2, 2))
-mlx_expand_dims(x, axis = 1)
+mlx_expand_dims(x, axes = 1)
 #> mlx array [1 x 2 x 2]
 #>   dtype: float32
 #>   device: gpu

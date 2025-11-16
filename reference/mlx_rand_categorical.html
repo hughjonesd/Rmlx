@@ -48,7 +48,7 @@ specified axis) represents a separate categorical distribution over classes.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_rand_categorical</span><span class="op">(</span><span class="va">logits</span>, axis <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, num_samples <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_rand_categorical</span><span class="op">(</span><span class="va">logits</span>, axis <span class="op">=</span> <span class="cn">NULL</span>, num_samples <span class="op">=</span> <span class="fl">1L</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -63,8 +63,8 @@ distributions, use an N×K matrix where each row is a distribution.</p></dd>
 
 
 <dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
-<dd><p>The axis (1-indexed, negatives count from the end) along which to sample.
-Default is -1L (last axis, typically the class dimension).</p></dd>
+<dd><p>Axis (1-indexed) along which to sample. Omit the argument to use
+the last dimension (typically the class dimension).</p></dd>
 
 
 <dt id="arg-num-samples">num_samples<a class="anchor" aria-label="anchor" href="#arg-num-samples"></a></dt>

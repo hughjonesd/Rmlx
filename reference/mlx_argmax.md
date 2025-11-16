@@ -19,17 +19,25 @@ mlx_argmin(x, axis = NULL, drop = TRUE)
 
 - axis:
 
-  Optional axis to operate over (1-indexed like R). When `NULL`, the
-  array is flattened first.
+  Single axis (1-indexed). Supply a positive integer between 1 and the
+  array rank. Use `NULL` when the helper interprets it as "all axes"
+  (see individual docs).
 
 - drop:
 
-  Logical; when `TRUE` (default) the reduced axis is removed. Set to
-  `FALSE` to keep the axis as length one.
+  If `TRUE` (default), drop dimensions of length 1. If `FALSE`, retain
+  all dimensions. Equivalent to `keepdims = TRUE` in underlying mlx
+  functions.
 
 ## Value
 
 An mlx array of indices. Indices are 1-based to match R's conventions.
+
+## Details
+
+When `axis = NULL`, the array is flattened before computing extrema.
+Setting `drop = FALSE` retains the reduced axis as length one in the
+returned indices.
 
 ## See also
 

@@ -61,13 +61,15 @@ mlx array or matrix to permute.</p></dd>
 
 
 <dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
-<dd><p>The axis (1-indexed, negatives count from the end) along which to permute
-when x is an array. Default is 1L (permute rows).</p></dd>
+<dd><p>Axis (1-indexed) along which to permute when <code>x</code> is an array.
+Default is 1L (permute rows).</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
 <dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Default: <code><a href="mlx_default_device.html">mlx_default_device()</a></code>.</p></dd>
+<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Defaults to the current
+<code><a href="mlx_default_device.html">mlx_default_device()</a></code> unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -95,7 +97,7 @@ device.</p>
 <span class="r-in"><span><span class="va">perm_mat</span> <span class="op">&lt;-</span> <span class="fu">mlx_rand_permutation</span><span class="op">(</span><span class="va">mat</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Permute columns instead</span></span></span>
-<span class="r-in"><span><span class="va">perm_cols</span> <span class="op">&lt;-</span> <span class="fu">mlx_rand_permutation</span><span class="op">(</span><span class="va">mat</span>, axis <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">perm_cols</span> <span class="op">&lt;-</span> <span class="fu">mlx_rand_permutation</span><span class="op">(</span><span class="va">mat</span>, axis <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

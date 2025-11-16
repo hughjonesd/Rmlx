@@ -51,9 +51,9 @@ returned as <code>mlx</code> arrays.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_fft</span><span class="op">(</span><span class="va">x</span>, axis <span class="op">=</span> <span class="op">-</span><span class="fl">1L</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, device <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_fft</span><span class="op">(</span><span class="va">x</span>, <span class="va">axis</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, device <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mlx_fft2</span><span class="op">(</span><span class="va">x</span>, axes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2L</span>, <span class="op">-</span><span class="fl">1L</span><span class="op">)</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, device <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">mlx_fft2</span><span class="op">(</span><span class="va">x</span>, <span class="va">axes</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, device <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">mlx_fftn</span><span class="op">(</span><span class="va">x</span>, axes <span class="op">=</span> <span class="cn">NULL</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, device <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -67,8 +67,8 @@ returned as <code>mlx</code> arrays.</p>
 
 
 <dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
-<dd><p>Optional integer axis (1-indexed, negatives count from the end)
-for the one-dimensional transform.</p></dd>
+<dd><p>Optional integer axis (1-indexed) for the one-dimensional
+transform. Omit the argument to use the last dimension (no negative axes).</p></dd>
 
 
 <dt id="arg-inverse">inverse<a class="anchor" aria-label="anchor" href="#arg-inverse"></a></dt>
@@ -78,18 +78,27 @@ multiplied by the product of the transformed axis lengths.</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Target device or stream. Defaults to the input array's device
-(or <code><a href="mlx_default_device.html">mlx_default_device()</a></code> for non-mlx inputs).</p></dd>
+<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
+<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Defaults to the current
+<code><a href="mlx_default_device.html">mlx_default_device()</a></code> unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).</p></dd>
 
 
 <dt id="arg-axes">axes<a class="anchor" aria-label="anchor" href="#arg-axes"></a></dt>
 <dd><p>Optional integer vector of axes for the multi-dimensional
-transforms. When <code>NULL</code>, MLX uses all axes.</p></dd>
+transforms. Supply positive, 1-based axes; omit the argument to use the
+trailing axes (<code>mlx_fft()</code> defaults to the last axis, <code>mlx_fft2()</code> defaults
+to the last two axes, and <code>mlx_fftn()</code> defaults to all axes).</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An <code>mlx</code> array containing complex frequency coefficients.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>When <code>device</code> is <code>NULL</code>, the transform runs on the input array's device,
+falling back to <code><a href="mlx_default_device.html">mlx_default_device()</a></code> only when coercing non-mlx inputs.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

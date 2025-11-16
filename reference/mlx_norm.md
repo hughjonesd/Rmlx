@@ -5,7 +5,7 @@ Matrix and vector norms for mlx arrays
 ## Usage
 
 ``` r
-mlx_norm(x, ord = NULL, axis = NULL, drop = TRUE)
+mlx_norm(x, ord = NULL, axes = NULL, drop = TRUE)
 ```
 
 ## Arguments
@@ -18,10 +18,11 @@ mlx_norm(x, ord = NULL, axis = NULL, drop = TRUE)
 
   Numeric or character norm order. Use `NULL` for the default 2-norm.
 
-- axis:
+- axes:
 
-  Optional integer vector of axes (1-indexed) along which to compute the
-  norm.
+  Integer vector of axes (1-indexed). Supply positive integers between 1
+  and the array rank. Many helpers interpret `NULL` to mean "all
+  axes"—see the function details for specifics.
 
 - drop:
 
@@ -53,7 +54,7 @@ mlx_norm(x, ord = 2)
 #>   device: gpu
 #>   values:
 #> [1] 5.464986
-mlx_norm(x, axis = 2)
+mlx_norm(x, axes = 2)
 #> mlx array [2]
 #>   dtype: float32
 #>   device: gpu

@@ -9,8 +9,10 @@ Common Parameter Documentation
   Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
   via
   [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  Default:
-  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md).
+  Defaults to the current
+  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
+  unless noted otherwise (helpers that act on an existing array
+  typically reuse that array's device or stream).
 
 - dtype:
 
@@ -28,8 +30,15 @@ Common Parameter Documentation
 
 - axis:
 
-  Axis or axes to operate on (1-indexed). Negative values count from the
-  end. `NULL` operates on all axes or the entire array.
+  Single axis (1-indexed). Supply a positive integer between 1 and the
+  array rank. Use `NULL` when the helper interprets it as "all axes"
+  (see individual docs).
+
+- axes:
+
+  Integer vector of axes (1-indexed). Supply positive integers between 1
+  and the array rank. Many helpers interpret `NULL` to mean "all
+  axes"—see the function details for specifics.
 
 - drop:
 

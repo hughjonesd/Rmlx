@@ -18,7 +18,7 @@ mlx_swapaxes(x, axis1, axis2)
 
 - axis1, axis2:
 
-  Axes to swap (1-indexed, negatives count from the end).
+  Axes to swap (1-indexed).
 
 ## Value
 

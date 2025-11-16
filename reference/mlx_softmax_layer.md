@@ -5,14 +5,15 @@ Softmax activation
 ## Usage
 
 ``` r
-mlx_softmax_layer(axis = -1L)
+mlx_softmax_layer(axis = NULL)
 ```
 
 ## Arguments
 
 - axis:
 
-  Axis along which to apply softmax (default: -1, last axis).
+  Axis (1-indexed) along which to apply softmax. Omit the argument to
+  use the last dimension at runtime.
 
 ## Value
 

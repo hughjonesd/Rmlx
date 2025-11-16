@@ -7,7 +7,7 @@ classes.
 ## Usage
 
 ``` r
-mlx_rand_categorical(logits, axis = -1L, num_samples = 1L)
+mlx_rand_categorical(logits, axis = NULL, num_samples = 1L)
 ```
 
 ## Arguments
@@ -22,8 +22,8 @@ mlx_rand_categorical(logits, axis = -1L, num_samples = 1L)
 
 - axis:
 
-  The axis (1-indexed, negatives count from the end) along which to
-  sample. Default is -1L (last axis, typically the class dimension).
+  Axis (1-indexed) along which to sample. Omit the argument to use the
+  last dimension (typically the class dimension).
 
 - num_samples:
 

@@ -7,7 +7,7 @@ collapsing a contiguous range of axes into a single dimension.
 ## Usage
 
 ``` r
-mlx_flatten(x, start_axis = 1L, end_axis = -1L)
+mlx_flatten(x, start_axis = 1L, end_axis = NULL)
 ```
 
 ## Arguments
@@ -18,13 +18,12 @@ mlx_flatten(x, start_axis = 1L, end_axis = -1L)
 
 - start_axis:
 
-  First axis (1-indexed, negatives count from the end) in the flattened
-  range.
+  First axis (1-indexed) in the flattened range.
 
 - end_axis:
 
-  Last axis (1-indexed, negatives count from the end) in the flattened
-  range.
+  Last axis (1-indexed) in the flattened range. Omit to use the final
+  dimension.
 
 ## Value
 
