@@ -13,15 +13,20 @@ force_mlx <- function(x) {
 }
 
 encode_matrix32 <- function(mat) {
+  shape <- dim(mat)
   list(
-    dim = dim(mat),
+    shape = shape,
     raw = writeBin(as.vector(mat), raw(), size = 4)
   )
 }
 
 decode_matrix32 <- function(obj) {
-  vals <- readBin(obj$raw, what = "double", size = 4, n = prod(obj$dim))
-  matrix(vals, nrow = obj$dim[1], ncol = obj$dim[2])
+  shape <- obj$shape %||% obj$dim
+  if (is.null(shape)) {
+    stop("Cached matrix is missing shape metadata.")
+  }
+  vals <- readBin(obj$raw, what = "double", size = 4, n = prod(shape))
+  matrix(vals, nrow = shape[1], ncol = shape[2])
 }
 
 build_distribution_inputs <- function(sizes, seed = 20251031L) {
