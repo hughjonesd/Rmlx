@@ -145,15 +145,8 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
     cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val, dev)
   })
 
-  # Create S3 object
-  structure(
-    list(
-      ptr = ptr,
-      dim = as.integer(dim_vec),
-      device = handle$device
-    ),
-    class = "mlx"
-  )
+  # Create S3 object (dim is always read from MLX via dim.mlx())
+  new_mlx(ptr, handle$device)
 }
 
 #' Force evaluation of lazy MLX operations
