@@ -150,7 +150,6 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
     list(
       ptr = ptr,
       dim = as.integer(dim_vec),
-      dtype = dtype_val,
       device = handle$device
     ),
     class = "mlx"
@@ -286,15 +285,13 @@ is.mlx <- function(x) {
 #' Internal constructor for mlx objects
 #'
 #' @param ptr External pointer to MLX array
-#' @param dtype Data type
 #' @param device Device
 #' @keywords internal
 #' @noRd
-new_mlx <- function(ptr, dtype, device) {
+new_mlx <- function(ptr, device) {
   structure(
     list(
       ptr = ptr,
-      dtype = dtype,
       device = device
     ),
     class = "mlx"

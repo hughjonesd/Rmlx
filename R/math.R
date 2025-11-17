@@ -15,13 +15,14 @@ Math.mlx <- function(x, ...) {
   # .Generic contains the name of the function that was called
   op <- .Generic
   dots <- list(...)
+  x_dtype <- mlx_dtype(x)
 
   # Cumulative operations flatten the array in column-major order (like R)
   # MLX flattens in row-major order, so we need to fall back to R
   if (op %in% c("cumsum", "cumprod", "cummax", "cummin")) {
     ptr <- cpp_mlx_cumulative(x$ptr, op)
     len <- as.integer(prod(dim(x)))
-    return(new_mlx(ptr, x$dtype, x$device))
+    return(new_mlx(ptr, x$device))
   }
 
   # Map R function names to MLX operations
@@ -34,7 +35,7 @@ Math.mlx <- function(x, ...) {
   if (length(dots) > 0 && op %in% c("log", "round", "signif")) {
     x_r <- as.matrix(x)
     result_r <- do.call(get(op, mode = "function"), c(list(x_r), dots))
-    return(as_mlx(result_r, dtype = x$dtype, device = x$device))
+    return(as_mlx(result_r, dtype = x_dtype, device = x$device))
   }
 
   if (op %in% names(op_map)) {
@@ -44,7 +45,7 @@ Math.mlx <- function(x, ...) {
   # Try MLX operation first
   result <- tryCatch({
     ptr <- cpp_mlx_unary(x$ptr, op)
-    new_mlx(ptr, x$dtype, x$device)
+    new_mlx(ptr, x$device)
   }, error = function(e) {
     # If MLX doesn't support this operation, fall back to base R
     if (grepl("Unsupported unary operation", e$message)) {
@@ -53,7 +54,7 @@ Math.mlx <- function(x, ...) {
       # Convert to R matrix, apply operation, convert back
       x_r <- as.matrix(x)
       result_r <- get(.Generic, mode = "function")(x_r, ...)
-      as_mlx(result_r, dtype = x$dtype, device = x$device)
+      as_mlx(result_r, dtype = x_dtype, device = x$device)
     } else {
       # Re-throw other errors
       stop(e)

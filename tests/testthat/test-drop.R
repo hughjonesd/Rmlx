@@ -24,7 +24,7 @@ test_that("drop.mlx preserves scalar payloads, dtype, and device", {
   dropped <- drop(scalar)
 
   expect_equal(mlx_dim(dropped), integer(0))
-  expect_equal(dropped$dtype, scalar$dtype)
+  expect_equal(mlx_dtype(dropped), mlx_dtype(scalar))
   expect_equal(dropped$device, scalar$device)
   expect_equal(as.vector(dropped), 5, tolerance = 1e-6)
 })

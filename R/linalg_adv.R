@@ -16,8 +16,8 @@
 chol.mlx <- function(x, pivot = FALSE, ...) {
   x <- as_mlx(x)
   if (pivot) stop("pivoted Cholesky is not supported for mlx objects.", call. = FALSE)
-
-  ptr <- cpp_mlx_cholesky(x$ptr, TRUE, x$dtype, x$device)
+  x_dtype <- mlx_dtype(x)
+  ptr <- cpp_mlx_cholesky(x$ptr, TRUE, x_dtype, x$device)
   .mlx_wrap_result(ptr, x$device)
 }
 
@@ -74,13 +74,14 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
 qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   x <- as_mlx(x)
   stopifnot(length(dim(x)) == 2L)
+  x_dtype <- mlx_dtype(x)
 
   if (!missing(tol) && !isTRUE(all.equal(tol, 1e-7))) {
     stop("Custom tolerance is not supported for mlx QR decomposition.", call. = FALSE)
   }
   if (LAPACK) stop("LAPACK = TRUE is not supported for mlx objects.", call. = FALSE)
 
-  res <- cpp_mlx_qr(x$ptr, x$dtype, x$device)
+  res <- cpp_mlx_qr(x$ptr, x_dtype, x$device)
   device <- x$device
   structure(
     list(
@@ -136,7 +137,8 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
   }
 
   compute_uv <- (nu > 0 || nv > 0)
-  res <- cpp_mlx_svd(x$ptr, compute_uv, x$dtype, x$device)
+  x_dtype <- mlx_dtype(x)
+  res <- cpp_mlx_svd(x$ptr, compute_uv, x_dtype, x$device)
 
   if (!compute_uv) {
     s_ptr <- res[[1L]]
@@ -167,7 +169,8 @@ pinv <- function(x) {
   x <- as_mlx(x)
   stopifnot(length(dim(x)) == 2L)
 
-  ptr <- cpp_mlx_pinv(x$ptr, x$dtype, x$device)
+  x_dtype <- mlx_dtype(x)
+  ptr <- cpp_mlx_pinv(x$ptr, x_dtype, x$device)
   .mlx_wrap_result(ptr, x$device)
 }
 

@@ -81,7 +81,7 @@ test_that("solve stages to cpu and restores gpu device", {
   x_gpu <- solve(A_gpu, b_gpu)
 
   expect_equal(x_gpu$device, "gpu")
-  expect_equal(x_gpu$dtype, "float32")
+  expect_equal(mlx_dtype(x_gpu), "float32")
   expect_equal(as.matrix(x_gpu), solve(A, b), tolerance = 1e-5)
 
   A_inv_gpu <- solve(A_gpu)
@@ -139,7 +139,7 @@ test_that("chol.mlx preserves device and dtype", {
   R_gpu <- chol(spd_gpu)
 
   expect_equal(R_gpu$device, "gpu")
-  expect_equal(R_gpu$dtype, "float32")
+  expect_equal(mlx_dtype(R_gpu), "float32")
   expect_equal(as.matrix(R_gpu), chol(spd), tolerance = 1e-4)
 })
 
@@ -287,8 +287,8 @@ test_that("svd.mlx preserves device and dtype", {
 
   expect_equal(svd_gpu$u$device, "gpu")
   expect_equal(svd_gpu$v$device, "gpu")
-  expect_equal(svd_gpu$u$dtype, "float32")
-  expect_equal(svd_gpu$v$dtype, "float32")
+  expect_equal(mlx_dtype(svd_gpu$u), "float32")
+  expect_equal(mlx_dtype(svd_gpu$v), "float32")
 
   # Check values still match
   svd_r <- svd(A)

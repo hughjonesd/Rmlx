@@ -127,9 +127,10 @@ mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "non
     stop("targets contain class indices outside 1:n_classes.", call. = FALSE)
   }
 
-  eye_dtype <- if (identical(logits$dtype, "float64")) "float64" else "float32"
+  logits_dtype <- mlx_dtype(logits)
+  eye_dtype <- if (identical(logits_dtype, "float64")) "float64" else "float32"
   one_hot <- mlx_eye(n_classes, dtype = eye_dtype, device = logits$device)[targets_vec, , drop = FALSE]
-  one_hot <- .mlx_cast(one_hot, dtype = logits$dtype, device = logits$device)
+  one_hot <- .mlx_cast(one_hot, dtype = logits_dtype, device = logits$device)
 
   # Compute negative log likelihood
   loss <- -mlx_sum(log_probs * one_hot, axes = 2)

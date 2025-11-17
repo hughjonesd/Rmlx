@@ -62,7 +62,7 @@ test_that("dim<-.mlx preserves device and dtype", {
   dim(x) <- c(3, 4)
 
   expect_equal(x$device, "gpu")
-  expect_equal(x$dtype, "float32")
+  expect_equal(mlx_dtype(x), "float32")
 })
 
 test_that("dim<-.mlx errors when product doesn't match", {

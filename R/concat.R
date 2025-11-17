@@ -34,10 +34,11 @@
   }
 
   if (length(mlx_objs) > 1L) {
-    dtype <- Reduce(.promote_dtype, lapply(mlx_objs, `[[`, "dtype"))
+    dtypes <- lapply(mlx_objs, mlx_dtype)
+    dtype <- Reduce(.promote_dtype, dtypes)
     device <- Reduce(.common_device, lapply(mlx_objs, `[[`, "device"))
   } else {
-    dtype <- mlx_objs[[1L]]$dtype
+    dtype <- mlx_dtype(mlx_objs[[1L]])
     device <- mlx_objs[[1L]]$device
   }
 
@@ -46,7 +47,7 @@
   axis_lengths <- vapply(aligned, function(x) dim(x)[axis], integer(1))
   new_dim <- dim(aligned[[1L]])
   new_dim[axis] <- sum(axis_lengths)
-  new_mlx(ptr, dtype, device)
+  new_mlx(ptr, device)
 }
 
 #' Row-bind mlx arrays

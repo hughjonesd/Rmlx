@@ -7,15 +7,19 @@
 #' @param device Target device string. Defaults to the array's current device.
 #' @return An mlx array with the requested dtype and device.
 #' @noRd
-.mlx_cast <- function(x, dtype = x$dtype, device = x$device) {
+.mlx_cast <- function(x, dtype = NULL, device = x$device) {
   if (!inherits(x, "mlx")) {
     stop("Expected an mlx array.", call. = FALSE)
   }
-  if (identical(dtype, x$dtype) && identical(device, x$device)) {
+  current_dtype <- mlx_dtype(x)
+  if (is.null(dtype)) {
+    dtype <- current_dtype
+  }
+  if (identical(dtype, current_dtype) && identical(device, x$device)) {
     return(x)
   }
   ptr <- cpp_mlx_cast(x$ptr, dtype, device)
-  new_mlx(ptr, dtype, device)
+  new_mlx(ptr, device)
 }
 
 #' Normalize axes for insertion operations
@@ -64,7 +68,8 @@ mlx_stack <- function(..., axis = 1L) {
     stop("No arrays supplied.", call. = FALSE)
   }
   arrays <- lapply(arrays, as_mlx)
-  dtype <- Reduce(.promote_dtype, lapply(arrays, `[[`, "dtype"))
+  dtypes <- lapply(arrays, mlx_dtype)
+  dtype <- Reduce(.promote_dtype, dtypes)
   device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
   arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = device)
 
@@ -260,6 +265,7 @@ mlx_pad <- function(x,
                     mode = c("constant", "edge", "reflect", "symmetric"),
                     axes = NULL) {
   x <- as_mlx(x)
+  x_dtype <- mlx_dtype(x)
   mode <- match.arg(mode)
 
   ndim <- length(dim(x))
@@ -291,7 +297,7 @@ mlx_pad <- function(x,
     x$ptr,
     pad_matrix,
     as.numeric(value),
-    x$dtype,
+    x_dtype,
     x$device,
     mode
   )
@@ -303,6 +309,7 @@ mlx_pad <- function(x,
 #' @export
 mlx_split <- function(x, sections, axis = 1L) {
   x <- as_mlx(x)
+  x_dtype <- mlx_dtype(x)
   if (missing(sections)) {
     stop("sections must be supplied.", call. = FALSE)
   }
@@ -325,7 +332,7 @@ mlx_split <- function(x, sections, axis = 1L) {
       num_splits_ = num,
       indices_ = NULL,
       axis = axis_idx,
-      dtype_str = x$dtype,
+      dtype_str = x_dtype,
       device_str = x$device
     )
   } else {
@@ -340,7 +347,7 @@ mlx_split <- function(x, sections, axis = 1L) {
       num_splits_ = NULL,
       indices_ = sections,
       axis = axis_idx,
-      dtype_str = x$dtype,
+      dtype_str = x_dtype,
       device_str = x$device
     )
   }
@@ -672,7 +679,8 @@ mlx_meshgrid <- function(...,
   }
   arrays <- lapply(arrays, as_mlx)
 
-  dtype <- Reduce(.promote_dtype, lapply(arrays, `[[`, "dtype"))
+  dtypes <- lapply(arrays, mlx_dtype)
+  dtype <- Reduce(.promote_dtype, dtypes)
   default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
   target <- if (is.null(device)) default_device else device
   handle <- .mlx_resolve_device(target, default_device)
@@ -733,7 +741,8 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
   }
   arrays <- lapply(arrays, as_mlx)
 
-  dtype <- Reduce(.promote_dtype, lapply(arrays, `[[`, "dtype"))
+  dtypes <- lapply(arrays, mlx_dtype)
+  dtype <- Reduce(.promote_dtype, dtypes)
   default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
   target <- if (is.null(device)) default_device else device
   handle <- .mlx_resolve_device(target, default_device)
@@ -762,7 +771,9 @@ mlx_where <- function(condition, x, y) {
   x <- as_mlx(x)
   y <- as_mlx(y)
 
-  result_dtype <- .promote_dtype(x$dtype, y$dtype)
+  x_dtype <- mlx_dtype(x)
+  y_dtype <- mlx_dtype(y)
+  result_dtype <- .promote_dtype(x_dtype, y_dtype)
   result_device <- .common_device(x$device, y$device)
 
   condition <- .mlx_cast(condition, dtype = "bool", device = result_device)

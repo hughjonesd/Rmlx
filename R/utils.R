@@ -6,8 +6,7 @@
 #' @return An mlx array.
 #' @noRd
 .mlx_wrap_result <- function(ptr, device) {
-  dtype <- cpp_mlx_dtype(ptr)
-  new_mlx(ptr, dtype, device)
+  new_mlx(ptr, device)
 }
 
 .mlx_is_stream <- function(x) inherits(x, "mlx_stream")
@@ -68,7 +67,7 @@ NULL
 #' print(x)
 print.mlx <- function(x, ...) {
   cat(sprintf("mlx array [%s]\n", paste(dim(x), collapse = " x ")))
-  cat(sprintf("  dtype: %s\n", x$dtype))
+  cat(sprintf("  dtype: %s\n", mlx_dtype(x)))
   cat(sprintf("  device: %s\n", x$device))
 
   # Show preview for small arrays
@@ -96,7 +95,7 @@ str.mlx <- function(object, ...) {
   cat(sprintf(
     "mlx [%s] %s on %s\n",
     paste(dim(object), collapse = " x "),
-    object$dtype,
+    mlx_dtype(object),
     object$device
   ))
   invisible(NULL)
@@ -195,8 +194,7 @@ mlx_reshape <- function(x, newshape) {
   }
 
   ptr <- cpp_mlx_reshape(x$ptr, newshape)
-  dtype_result <- cpp_mlx_dtype(ptr)
-  new_mlx(ptr, dtype_result, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Get length of MLX array
@@ -235,5 +233,5 @@ mlx_dim <- function(x) {
 #' mlx_dtype(x)
 mlx_dtype <- function(x) {
   stopifnot(is.mlx(x))
-  x$dtype
+  cpp_mlx_dtype(x$ptr)
 }

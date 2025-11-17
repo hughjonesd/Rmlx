@@ -10,7 +10,7 @@ test_that("as_mlx converts R objects correctly", {
   m_mlx <- as_mlx(m)
   expect_s3_class(m_mlx, "mlx")
   expect_equal(dim(m_mlx), c(3L, 4L))
-  expect_equal(m_mlx$dtype, "float32")  # Default is float32 for GPU compatibility
+  expect_equal(mlx_dtype(m_mlx), "float32")  # Default is float32 for GPU compatibility
 })
 
 test_that("roundtrip conversion preserves values", {
@@ -34,7 +34,7 @@ test_that("dtype argument works", {
   m_fp32 <- as_mlx(m, dtype = "float32")
   expect_warning(as_mlx(m, dtype = "float64"), "stored in float32", fixed = TRUE)
 
-  expect_equal(m_fp32$dtype, "float32")
+  expect_equal(mlx_dtype(m_fp32), "float32")
 })
 
 test_that("logical inputs create boolean MLX arrays", {
@@ -42,7 +42,7 @@ test_that("logical inputs create boolean MLX arrays", {
   m_mlx <- as_mlx(m)
 
   expect_s3_class(m_mlx, "mlx")
-  expect_equal(m_mlx$dtype, "bool")
+  expect_equal(mlx_dtype(m_mlx), "bool")
   expect_equal(dim(m_mlx), dim(m))
   expect_identical(as.matrix(m_mlx), m)
 })
@@ -52,7 +52,7 @@ test_that("complex inputs create complex MLX arrays", {
   m_mlx <- as_mlx(m)
 
   expect_s3_class(m_mlx, "mlx")
-  expect_equal(m_mlx$dtype, "complex64")
+  expect_equal(mlx_dtype(m_mlx), "complex64")
   expect_equal(dim(m_mlx), dim(m))
   expect_equal(as.matrix(m_mlx), m, tolerance = 1e-5)
 })

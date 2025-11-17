@@ -133,7 +133,7 @@ mlx_slice_update <- function(x,
                              stop,
                              strides = NULL) {
   x <- as_mlx(x)
-  value <- as_mlx(value, dtype = x$dtype, device = x$device)
+  value <- as_mlx(value, dtype = mlx_dtype(x), device = x$device)
 
   start <- as.integer(start)
   stop <- as.integer(stop)

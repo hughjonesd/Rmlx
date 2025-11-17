@@ -126,10 +126,11 @@
 
   # Store values for both slice (array) and scatter (vector) paths
   value_array <- array(value_vec, dim = dims_sel)
-  value_mlx_tensor <- as_mlx(value_array, dtype = x$dtype, device = x$device)
+  x_dtype <- mlx_dtype(x)
+  value_mlx_tensor <- as_mlx(value_array, dtype = x_dtype, device = x$device)
 
   value_matrix <- matrix(value_vec, ncol = 1L)
-  value_mlx_vec <- as_mlx(value_matrix, dtype = x$dtype, device = x$device)
+  value_mlx_vec <- as_mlx(value_matrix, dtype = x_dtype, device = x$device)
 
   slice <- .mlx_slice_parameters(prep$normalized, dim(x))
   if (slice$can_slice) {
@@ -158,7 +159,7 @@
 
     base <- as.array(x)
     base[idx_mat] <- value_vec
-    return(as_mlx(base, dtype = x$dtype, device = x$device))
+    return(as_mlx(base, dtype = x_dtype, device = x$device))
   }
 
   normalized_int <- lapply(prep$normalized, function(sel) {
@@ -202,6 +203,7 @@
   if (!nrow(idx_mat)) {
     return(x)
   }
+  x_dtype <- mlx_dtype(x)
 
   linear_idx <- .mlx_linear_indices(idx_mat, dim(x))
   total <- length(linear_idx)
@@ -213,7 +215,7 @@
   val_vec <- rep_len(val_vec, total)
 
   value_mat <- matrix(val_vec, ncol = 1L)
-  updates_mlx <- as_mlx(value_mat, dtype = x$dtype, device = x$device)
+  updates_mlx <- as_mlx(value_mat, dtype = x_dtype, device = x$device)
   idx_mlx <- as_mlx(linear_idx, dtype = "int64", device = x$device)
 
   flat <- mlx_flatten(x)
@@ -479,7 +481,7 @@
 
   if (is.mlx(idx)) {
     return(isTRUE(length(dim(idx)) >= 2L && tail(dim(idx), 1) == ndim) &&
-             !identical(idx$dtype, "bool"))
+             !identical(mlx_dtype(idx), "bool"))
   }
 
   is_array <- is.matrix(idx) || (is.array(idx) && length(dim(idx)) >= 2L)
@@ -502,7 +504,7 @@
   }
 
   if (is.mlx(idx)) {
-    return(!identical(idx$dtype, "bool") && length(dim(idx)) >= 2L)
+    return(!identical(mlx_dtype(idx), "bool") && length(dim(idx)) >= 2L)
   }
 
   (is.matrix(idx) || (is.array(idx) && length(dim(idx)) >= 2L)) && is.numeric(idx)

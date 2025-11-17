@@ -45,7 +45,7 @@ test_that("comparison operators work", {
   lt <- x_mlx < y_mlx
   z <- as.matrix(lt)
   expect_equal(z, x < y)
-  expect_equal(lt$dtype, "bool")
+  expect_equal(mlx_dtype(lt), "bool")
 
   # Equal
   z <- as.matrix(x_mlx == y_mlx)
@@ -79,12 +79,12 @@ test_that("boolean operands coerce for arithmetic", {
   sum_obj <- bool_mlx + num_mlx
   sum_res <- as.matrix(sum_obj)
   expect_equal(sum_res, num_mat + (bool_mat * 1), tolerance = 1e-6)
-  expect_equal(sum_obj$dtype, "float32")
+  expect_equal(mlx_dtype(sum_obj), "float32")
 
   bool_sum_obj <- bool_mlx + bool_mlx
   bool_sum <- as.matrix(bool_sum_obj)
   expect_equal(bool_sum, (bool_mat * 1) + (bool_mat * 1), tolerance = 1e-6)
-  expect_equal(bool_sum_obj$dtype, "float32")
+  expect_equal(mlx_dtype(bool_sum_obj), "float32")
 })
 
 test_that("binary operations align devices and dtypes", {
@@ -99,7 +99,7 @@ test_that("binary operations align devices and dtypes", {
   result <- x_gpu + y_cpu
 
   expect_equal(result$device, "gpu")
-  expect_equal(result$dtype, "float32")
+  expect_equal(mlx_dtype(result), "float32")
   expect_equal(as.matrix(result), matrix(c(6, 8, 10, 12), 2, 2), tolerance = 1e-6)
 })
 
@@ -118,7 +118,7 @@ test_that("logical operators work", {
   expect_equal(as.matrix(a_mlx | b_mlx), a | b)
 
   res_and <- a_mlx & b_mlx
-  expect_equal(res_and$dtype, "bool")
+  expect_equal(mlx_dtype(res_and), "bool")
   expect_equal(res_and$device, "gpu")
 
   # Unary not
@@ -140,10 +140,10 @@ test_that("mlx_minimum and mlx_maximum compute elementwise extrema", {
   max_res <- mlx_maximum(as_mlx(x, dtype = "float32"), 1)
 
   expect_equal(as.matrix(min_res), pmin(x, y), tolerance = 1e-6)
-  expect_equal(min_res$dtype, "float32")
+  expect_equal(mlx_dtype(min_res), "float32")
 
   expect_equal(as.matrix(max_res), pmax(x, 1), tolerance = 1e-6)
-  expect_equal(max_res$dtype, "float32")
+  expect_equal(mlx_dtype(max_res), "float32")
 })
 
 test_that("mlx_clip clamps values", {
@@ -170,6 +170,6 @@ test_that("floor division and modulo work", {
 
   expect_equal(as.matrix(floor_res), matrix(c(2, -3, -4, 3), 2, 2), tolerance = 1e-6)
   expect_equal(as.matrix(mod_res), matrix(c(1, 1, -2, -1), 2, 2), tolerance = 1e-6)
-  expect_equal(floor_res$dtype, "float32")
-  expect_equal(mod_res$dtype, "float32")
+  expect_equal(mlx_dtype(floor_res), "float32")
+  expect_equal(mlx_dtype(mod_res), "float32")
 })

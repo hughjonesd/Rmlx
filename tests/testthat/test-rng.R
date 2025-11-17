@@ -84,7 +84,7 @@ test_that("mlx_rand_multivariate_normal generates finite values", {
 
   expect_s3_class(mx_mvn, "mlx")
   expect_equal(mx_mvn$device, "cpu")
-  expect_equal(mx_mvn$dtype, "float32")
+  expect_equal(mlx_dtype(mx_mvn), "float32")
   mvn_vals <- as.vector(as.matrix(mx_mvn))
   expect_true(all(is.finite(mvn_vals)))
 })
@@ -132,7 +132,7 @@ test_that("mlx_rand_categorical generates valid indices", {
   samples <- mlx_rand_categorical(logits, num_samples = 100)
 
   expect_s3_class(samples, "mlx")
-  expect_equal(samples$dtype, "int32")
+  expect_equal(mlx_dtype(samples), "int32")
   sample_vals <- as.vector(as.matrix(samples))
   # Indices should be in valid range [1, 3] for 3 classes
   expect_true(all(sample_vals >= 1 & sample_vals <= 3))
@@ -156,7 +156,7 @@ test_that("mlx_rand_randint generates integers in range", {
 
   expect_s3_class(samples, "mlx")
   expect_equal(dim(samples), c(100L, 100L))
-  expect_equal(samples$dtype, "int32")
+  expect_equal(mlx_dtype(samples), "int32")
   sample_vals <- as.matrix(samples)
   expect_true(all(sample_vals >= 0 & sample_vals < 10))
 })
@@ -175,7 +175,7 @@ test_that("mlx_rand_randint works with different dtypes", {
   samples64 <- mlx_rand_randint(c(10L, 10L), low = 0, high = 100, dtype = "int64")
 
   expect_s3_class(samples64, "mlx")
-  expect_equal(samples64$dtype, "int64")
+  expect_equal(mlx_dtype(samples64), "int64")
 })
 
 test_that("mlx_rand_permutation generates valid permutation", {
@@ -183,7 +183,7 @@ test_that("mlx_rand_permutation generates valid permutation", {
   perm <- mlx_rand_permutation(10)
 
   expect_s3_class(perm, "mlx")
-  expect_equal(perm$dtype, "int32")
+  expect_equal(mlx_dtype(perm), "int32")
   expect_equal(length(dim(perm)), 1)
   expect_equal(dim(perm), 10L)
 
@@ -251,10 +251,10 @@ test_that("mlx_key_bits produces deterministic bit patterns", {
   bits2 <- mlx_key_bits(c(4L, 2L), key = key)
 
   expect_s3_class(bits1, "mlx")
-  expect_equal(bits1$dtype, "uint32")
+  expect_equal(mlx_dtype(bits1), "uint32")
   expect_equal(dim(bits1), c(4L, 2L))
   expect_equal(as.matrix(bits1), as.matrix(bits2))
 
   bits_wide <- mlx_key_bits(c(2L, 2L), width = 2L)
-  expect_equal(bits_wide$dtype, "uint16")
+  expect_equal(mlx_dtype(bits_wide), "uint16")
 })

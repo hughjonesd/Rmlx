@@ -67,7 +67,7 @@ mlx_zeros_like <- function(x,
   )
 
   dtype <- if (is.null(dtype)) {
-    x$dtype
+    mlx_dtype(x)
   } else {
     match.arg(dtype, valid_dtypes)
   }
@@ -103,7 +103,7 @@ mlx_ones_like <- function(x,
   )
 
   dtype <- if (is.null(dtype)) {
-    x$dtype
+    mlx_dtype(x)
   } else {
     match.arg(dtype, valid_dtypes)
   }
@@ -505,8 +505,7 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
   }
 
   ptr <- cpp_mlx_diag(x$ptr, k, x$device)
-  dtype <- cpp_mlx_dtype(ptr)
-  new_mlx(ptr, dtype, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Numerical ranges on MLX devices
