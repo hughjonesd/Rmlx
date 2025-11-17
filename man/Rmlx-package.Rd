@@ -48,7 +48,7 @@ Useful links:
 
 Other contributors:
 \itemize{
-  \item Apple Inc. (MLX library (bundled in src/mlx-src)) [copyright holder]
+  \item Apple Inc. (MLX library downloaded during installation) [copyright holder]
 }
 
 }

@@ -1,16 +1,19 @@
 # Vendoring MLX - Experimental Branch
 
-This branch explores bundling the MLX library source code with the Rmlx package, supporting both Metal backend (macOS) and CUDA backend (Linux).
+This branch now vendors MLX on-demand: configure first looks for a system MLX
+installation and, if missing, downloads MLX v0.29.4 from GitHub, supporting both
+Metal (macOS) and CUDA (Linux) builds alongside CPU.
 
 ## What Was Done
 
-1. **Bundled MLX source**: Copied MLX library to `src/mlx-src/` (~4.5 MB)
+1. **On-demand MLX source**: Download MLX v0.29.4 into `build/mlx-src/` when needed
 2. **Added copyright attribution**: Created `inst/COPYRIGHTS` with MLX's MIT license
-3. **Updated DESCRIPTION**: Added Apple Inc. as copyright holder for bundled MLX
-4. **Created configure script**: Builds MLX from source using CMake during package installation
-   - Detects platform (macOS or Linux)
-   - Builds Metal backend on macOS with Apple Silicon
-   - Builds CUDA backend on Linux with NVIDIA GPUs
+3. **Updated DESCRIPTION**: Credits Apple Inc. for the MLX code downloaded at install time
+4. **configure script**: Builds MLX from source via CMake when system MLX is absent
+   - Always builds CPU backend
+   - Prefers Metal backend on Apple Silicon when the `metal` tool is available
+   - Falls back to CUDA backend on Linux when `nvcc` is present
+   - Otherwise builds CPU-only
 5. **Updated cleanup script**: Removes all generated build artifacts
 
 ## Requirements
@@ -59,38 +62,31 @@ xcrun: error: unable to find utility "metal", not a developer tool or in PATH
 
 ## Recommendation
 
-**Do not vendor MLX source code for CRAN submission.**
-
-The current approach (requiring `brew install mlx`) is simpler and more maintainable:
-- Smaller package size
-- Faster installation
-- No Xcode requirement
-- Users who need MLX likely already have it or can easily install it
-- Standard practice for packages with system dependencies
+**Do not check MLX source into this repo.** Instead, ship a configure step that
+prefers system MLX (Homebrew, distro packages, etc.) and otherwise downloads the
+exact upstream tarball on demand. This keeps the package small, avoids forcing
+all users to install full Xcode, and still enables Metal/CUDA features when the
+tooling is present.
 
 ## Files in This Branch
 
-- `src/mlx-src/`: Bundled MLX source (4.5 MB)
-- `configure`: Builds MLX with CMake
-- `cleanup`: Removes build artifacts
+- `configure`: Downloads MLX v0.29.4 on demand and builds it with CMake
+- `cleanup`: Removes downloaded source/build artifacts (`build/mlx-*`)
 - `inst/COPYRIGHTS`: MLX license attribution
-- `DESCRIPTION`: Updated with Apple Inc. copyright
+- `DESCRIPTION`: Credits Apple Inc. for the MLX sources fetched during install
 
 ## Testing
 
-To test this branch (requires full Xcode):
 ```bash
 git checkout experiment-vendor-mlx
-./configure
+./configure   # auto-detects MLX or downloads it
 R CMD INSTALL .
 ```
 
 ## Conclusion
 
-While technically possible to vendor MLX, the requirement for full Xcode makes it impractical for general distribution. The experiment demonstrates that:
-
-1. MLX's MIT license permits bundling ✅
-2. The build system can be integrated ✅
-3. But the runtime requirements are prohibitive ❌
-
-Therefore, maintaining the current approach of requiring system-installed MLX is the better choice.
+Shipping the upstream MLX source in the repository was impractical (required
+full Xcode, bloated the tarball, and complicated maintenance). The current
+approach auto-detects system MLX and otherwise fetches the exact upstream
+release tarball during installation, keeping the package lightweight while still
+supporting Metal, CUDA, and CPU builds.

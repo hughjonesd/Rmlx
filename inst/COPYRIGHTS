@@ -1,10 +1,11 @@
-This package includes source code from the MLX project.
+This package downloads source code from the MLX project during installation.
 
 ================================================================================
 MLX (Machine Learning eXchange)
 ================================================================================
 
-The MLX library is bundled with this package and is located in src/mlx-src/.
+The MLX library is downloaded on demand (build/mlx-src/) when system-installed
+copies are unavailable.
 
 MLX is copyright Apple Inc. and is distributed under the MIT License:
 

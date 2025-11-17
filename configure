@@ -1,98 +1,96 @@
 #!/bin/sh
 
-# Configure script for Rmlx with bundled MLX
-# Supports Metal backend on macOS, CUDA backend on Linux, and CPU-only builds
+set -e
 
-# Detect platform first (needed for path detection)
+ROOT_DIR=$(pwd)
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-# Determine whether to use system MLX or build from bundled source
-# Default: Search for system MLX first, fall back to bundled build
-USE_SYSTEM_MLX=false
+MLX_VERSION="0.29.4"
+MLX_TAG="v${MLX_VERSION}"
+MLX_TARBALL_URL="https://github.com/ml-explore/mlx/archive/refs/tags/${MLX_TAG}.tar.gz"
+BUILD_DIR="build"
+MLX_SOURCE_DIR="${BUILD_DIR}/mlx-src"
+MLX_BUILD_DIR="${BUILD_DIR}/mlx-build"
+MLX_INSTALL_DIR="${BUILD_DIR}/mlx-install"
+MLX_TARBALL_PATH="${BUILD_DIR}/mlx-${MLX_VERSION}.tar.gz"
+MLX_VERSION_STAMP="${MLX_SOURCE_DIR}/.rmlx-source-version"
 
-# Force bundled build if requested
-if [ -n "$MLX_BUILD_FROM_SOURCE" ]; then
-  USE_SYSTEM_MLX=false
-  echo "==============================================="
-  echo "Configuring Rmlx with bundled MLX library"
-  echo "(forced via MLX_BUILD_FROM_SOURCE)"
-  echo "==============================================="
-# Use system MLX if explicitly requested
-elif [ -n "$MLX_USE_SYSTEM" ] || [ -n "$MLX_INCLUDE" ]; then
-  USE_SYSTEM_MLX=true
-  echo "==============================================="
-  echo "Configuring Rmlx with system MLX library"
-  echo "(requested via environment variable)"
-  echo "==============================================="
-# Otherwise, try to auto-detect system MLX
-else
-  echo "==============================================="
-  echo "Searching for system MLX installation..."
-  echo "==============================================="
-
-  # Search for MLX headers in standard locations
-  MLX_FOUND=false
-  for dir in \
-    /opt/homebrew/include \
-    /usr/local/include \
-    "$(xcrun --show-sdk-path 2>/dev/null)/usr/include"
-  do
-    if [ -d "$dir" ] && [ -f "$dir/mlx/mlx.h" ]; then
-      echo "Found MLX headers in: $dir"
-      MLX_FOUND=true
-      USE_SYSTEM_MLX=true
-      break
-    fi
-  done
-
-  if [ "$MLX_FOUND" = "false" ]; then
-    echo "System MLX not found in standard locations"
-    echo "Will build from bundled source"
-    echo ""
-    echo "==============================================="
-    echo "Configuring Rmlx with bundled MLX library"
-    echo "==============================================="
-  else
-    echo ""
-    echo "==============================================="
-    echo "Using system MLX library"
-    echo "==============================================="
-  fi
+if [ -z "${R_HOME:-}" ]; then
+  R_HOME=$(R RHOME)
 fi
 
-echo ""
-echo "Checking system requirements..."
-echo "Platform: $OS $ARCH"
+CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX17 2>/dev/null || "${R_HOME}/bin/R" CMD config CXX 2>/dev/null || true)
+if [ -z "$CXX_FULL" ]; then
+  die "Unable to determine C++ compiler from R CMD config"
+fi
+CXX=$(printf '%s\n' "$CXX_FULL" | awk '{print $1}')
+CXXFLAGS=$("${R_HOME}/bin/R" CMD config CXX17FLAGS 2>/dev/null || "${R_HOME}/bin/R" CMD config CXXFLAGS 2>/dev/null || true)
 
-# Default backend settings based on platform
-if [ "$OS" = "Darwin" ]; then
-  if [ "$ARCH" != "arm64" ]; then
-    echo "ERROR: On macOS, this package requires Apple Silicon (M1 or later)"
-    echo "Detected architecture: $ARCH"
-    exit 1
-  fi
-  # macOS defaults
-  MLX_BUILD_METAL=${MLX_BUILD_METAL:-ON}
-  MLX_BUILD_CPU=${MLX_BUILD_CPU:-ON}
-  MLX_BUILD_CUDA=${MLX_BUILD_CUDA:-OFF}
-elif [ "$OS" = "Linux" ]; then
-  # Linux defaults - auto-detect CUDA
-  MLX_BUILD_METAL=${MLX_BUILD_METAL:-OFF}
-  MLX_BUILD_CPU=${MLX_BUILD_CPU:-ON}
-  # Check if CUDA is available
-  if command -v nvcc >/dev/null 2>&1; then
-    MLX_BUILD_CUDA=${MLX_BUILD_CUDA:-ON}
-  else
-    MLX_BUILD_CUDA=${MLX_BUILD_CUDA:-OFF}
-  fi
-else
-  echo "ERROR: Unsupported platform: $OS"
-  echo "This package supports macOS and Linux only"
+log() {
+  printf '%s\n' "$1"
+}
+
+err() {
+  printf 'ERROR: %s\n' "$1" >&2
+}
+
+die() {
+  err "$1"
   exit 1
+}
+
+have_cmd() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+ensure_downloader() {
+  if have_cmd curl; then
+    DOWNLOADER="curl"
+  elif have_cmd wget; then
+    DOWNLOADER="wget"
+  else
+    die "curl or wget is required to download MLX ${MLX_VERSION}"
+  fi
+}
+
+# Determine backend capabilities
+METAL_AVAILABLE=false
+if [ "$OS" = "Darwin" ] && [ "$ARCH" = "arm64" ]; then
+  if have_cmd xcrun; then
+    if xcrun -f metal >/dev/null 2>&1; then
+      METAL_AVAILABLE=true
+    fi
+  fi
 fi
 
-# Parse configure.args from install.packages()
+CUDA_AVAILABLE=false
+if have_cmd nvcc; then
+  CUDA_AVAILABLE=true
+fi
+
+# Default backend selection (CPU always ON)
+if [ -z "${MLX_BUILD_CPU+x}" ]; then
+  MLX_BUILD_CPU=ON
+fi
+
+if [ -z "${MLX_BUILD_METAL+x}" ]; then
+  if [ "$METAL_AVAILABLE" = true ]; then
+    MLX_BUILD_METAL=ON
+  else
+    MLX_BUILD_METAL=OFF
+  fi
+fi
+
+if [ -z "${MLX_BUILD_CUDA+x}" ]; then
+  if [ "$METAL_AVAILABLE" = false ] && [ "$CUDA_AVAILABLE" = true ]; then
+    MLX_BUILD_CUDA=ON
+  else
+    MLX_BUILD_CUDA=OFF
+  fi
+fi
+
+# Parse configure args overrides
 for arg in "$@"; do
   case $arg in
     --with-cuda)
@@ -114,406 +112,206 @@ for arg in "$@"; do
       MLX_BUILD_CPU=OFF
       ;;
     --cpu-only)
+      MLX_BUILD_CPU=ON
       MLX_BUILD_METAL=OFF
       MLX_BUILD_CUDA=OFF
-      MLX_BUILD_CPU=ON
       ;;
     --help)
-      echo ""
-      echo "Configuration options:"
-      echo "  --with-cuda          Enable CUDA backend"
-      echo "  --without-cuda       Disable CUDA backend"
-      echo "  --with-metal         Enable Metal backend (macOS only)"
-      echo "  --without-metal      Disable Metal backend"
-      echo "  --with-cpu           Enable CPU backend"
-      echo "  --without-cpu        Disable CPU backend"
-      echo "  --cpu-only           Build CPU-only version"
-      echo ""
-      echo "MLX library source (default: auto-detect system MLX, fallback to bundled):"
-      echo "  MLX_USE_SYSTEM=1           Force system-installed MLX"
-      echo "  MLX_BUILD_FROM_SOURCE=1    Force build from bundled source"
-      echo "  MLX_INCLUDE=<path>         Path to MLX headers (implies system MLX)"
-      echo "  MLX_LIB_DIR=<path>         Path to MLX libraries (implies system MLX)"
-      echo ""
-      echo "Environment variables for bundled MLX build:"
-      echo "  MLX_BUILD_CUDA=ON|OFF      Control CUDA backend"
-      echo "  MLX_BUILD_METAL=ON|OFF     Control Metal backend"
-      echo "  MLX_BUILD_CPU=ON|OFF       Control CPU backend"
-      echo ""
+      cat <<USAGE
+Configuration options:
+  --with-cuda / --without-cuda
+  --with-metal / --without-metal
+  --with-cpu / --without-cpu
+  --cpu-only
+
+Environment overrides:
+  MLX_USE_SYSTEM=1           Force system-installed MLX
+  MLX_BUILD_FROM_SOURCE=1    Force download/build from source
+  MLX_INCLUDE=<path>         Path to MLX headers (implies system MLX)
+  MLX_LIB_DIR=<path>         Path to MLX libraries (implies system MLX)
+  MLX_BUILD_CPU=ON|OFF       Override CPU backend
+  MLX_BUILD_METAL=ON|OFF     Override Metal backend
+  MLX_BUILD_CUDA=ON|OFF      Override CUDA backend
+USAGE
       exit 0
       ;;
   esac
 done
 
-# Display selected backends
-echo ""
-echo "MLX build configuration:"
-echo "  Metal backend:  $MLX_BUILD_METAL"
-echo "  CPU backend:    $MLX_BUILD_CPU"
-echo "  CUDA backend:   $MLX_BUILD_CUDA"
-
-# Validate backend selection
-if [ "$MLX_BUILD_METAL" = "OFF" ] && [ "$MLX_BUILD_CPU" = "OFF" ] && [ "$MLX_BUILD_CUDA" = "OFF" ]; then
-  echo ""
-  echo "ERROR: At least one backend must be enabled"
-  exit 1
+if [ "$MLX_BUILD_CPU" = "OFF" ] && [ "$MLX_BUILD_METAL" = "OFF" ] && [ "$MLX_BUILD_CUDA" = "OFF" ]; then
+  die "At least one backend must be enabled"
 fi
 
-# Platform-specific validation
 if [ "$OS" = "Darwin" ] && [ "$MLX_BUILD_CUDA" = "ON" ]; then
-  echo ""
-  echo "WARNING: CUDA is not supported on macOS, disabling CUDA backend"
+  log "CUDA is not supported on macOS, disabling CUDA backend"
   MLX_BUILD_CUDA=OFF
 fi
 
 if [ "$OS" = "Linux" ] && [ "$MLX_BUILD_METAL" = "ON" ]; then
-  echo ""
-  echo "WARNING: Metal is not supported on Linux, disabling Metal backend"
+  log "Metal is not supported on Linux, disabling Metal backend"
   MLX_BUILD_METAL=OFF
 fi
 
-# Check for CMake
-if ! command -v cmake >/dev/null 2>&1; then
-  echo ""
-  echo "ERROR: CMake not found"
-  echo ""
-  echo "CMake is required to build the bundled MLX library."
-  if [ "$OS" = "Darwin" ]; then
-    echo "Please install CMake:"
-    echo "  brew install cmake"
-    echo "  or download from https://cmake.org/download/"
-  else
-    echo "Please install CMake:"
-    echo "  sudo apt-get install cmake"
-    echo "  or download from https://cmake.org/download/"
+log "Platform: ${OS} ${ARCH}"
+log "Backends => Metal: ${MLX_BUILD_METAL}, CUDA: ${MLX_BUILD_CUDA}, CPU: ${MLX_BUILD_CPU}"
+
+# Decide between system MLX and source build
+USE_SYSTEM_MLX=false
+if [ -n "${MLX_BUILD_FROM_SOURCE:-}" ]; then
+  log "Forcing MLX build from downloaded source"
+elif [ -n "${MLX_USE_SYSTEM:-}" ] || [ -n "${MLX_INCLUDE:-}" ]; then
+  USE_SYSTEM_MLX=true
+  log "Using system MLX as requested"
+else
+  log "Searching for system MLX headers..."
+  INCLUDE_DIR=""
+  SDK_INCLUDE=""
+  if [ "$OS" = "Darwin" ] && have_cmd xcrun; then
+    SDK_PATH=$(xcrun --show-sdk-path 2>/dev/null || true)
+    if [ -n "$SDK_PATH" ]; then
+      SDK_INCLUDE="$SDK_PATH/usr/include"
+    fi
   fi
-  echo ""
-  exit 1
-fi
-
-CMAKE_VERSION=$(cmake --version | head -n1 | sed 's/cmake version //')
-echo "✓ CMake found: version $CMAKE_VERSION"
-
-# Check CMake version
-CMAKE_MAJOR=$(echo $CMAKE_VERSION | cut -d. -f1)
-CMAKE_MINOR=$(echo $CMAKE_VERSION | cut -d. -f2)
-if [ "$CMAKE_MAJOR" -lt 3 ] || [ "$CMAKE_MAJOR" -eq 3 -a "$CMAKE_MINOR" -lt 24 ]; then
-  echo ""
-  echo "ERROR: CMake 3.24 or later required (found $CMAKE_VERSION)"
-  echo "Please upgrade CMake"
-  exit 1
-fi
-
-# Linux-specific checks
-if [ "$OS" = "Linux" ]; then
-  echo ""
-  echo "Checking for required Linux libraries..."
-
-  # Check for BLAS/LAPACK (required on Linux)
-  MISSING_LIBS=""
-  MISSING_HEADERS=""
-
-  if ! pkg-config --exists blas 2>/dev/null && ! ldconfig -p | grep -q libblas 2>/dev/null; then
-    MISSING_LIBS="${MISSING_LIBS}libblas-dev "
-  fi
-
-  if ! pkg-config --exists lapack 2>/dev/null && ! ldconfig -p | grep -q liblapack 2>/dev/null; then
-    MISSING_LIBS="${MISSING_LIBS}liblapack-dev "
-  fi
-
-  # Check for lapacke.h header
-  if ! find /usr/include -name "lapacke.h" 2>/dev/null | grep -q lapacke.h; then
-    MISSING_HEADERS="${MISSING_HEADERS}liblapacke-dev "
-  fi
-
-  if [ -n "$MISSING_LIBS" ] || [ -n "$MISSING_HEADERS" ]; then
-    echo "ERROR: Missing required libraries/headers: ${MISSING_LIBS}${MISSING_HEADERS}"
-    echo ""
-    echo "MLX requires BLAS, LAPACK, and LAPACKE on Linux."
-    echo "Please install:"
-    echo "  sudo apt-get install libblas-dev liblapack-dev liblapacke-dev"
-    echo "  or equivalent for your distribution"
-    exit 1
-  fi
-
-  echo "✓ BLAS/LAPACK libraries and headers found"
-fi
-
-# For CUDA backend, check for CUDA toolkit
-if [ "$MLX_BUILD_CUDA" = "ON" ]; then
-  echo ""
-  echo "Checking for CUDA toolkit..."
-
-  if ! command -v nvcc >/dev/null 2>&1; then
-    echo "ERROR: CUDA compiler (nvcc) not found"
-    echo ""
-    echo "CUDA toolkit 12.0 or later is required for CUDA backend."
-    echo "Please install CUDA toolkit:"
-    echo "  https://developer.nvidia.com/cuda-downloads"
-    echo ""
-    echo "Or build with --cpu-only or --without-cuda"
-    exit 1
-  fi
-
-  NVCC_VERSION=$(nvcc --version | grep "release" | sed 's/.*release \([0-9.]*\).*/\1/')
-  echo "✓ CUDA toolkit found: version $NVCC_VERSION"
-
-  # Check CUDA version
-  CUDA_MAJOR=$(echo $NVCC_VERSION | cut -d. -f1)
-  if [ "$CUDA_MAJOR" -lt 12 ]; then
-    echo "WARNING: CUDA 12.0 or later is recommended (found $NVCC_VERSION)"
-    echo "Build may fail or have reduced functionality"
+  for dir in /opt/homebrew/include /usr/local/include /usr/include $SDK_INCLUDE; do
+    if [ -z "$dir" ]; then
+      continue
+    fi
+    if [ -f "$dir/mlx/mlx.h" ] || [ -f "$dir/mlx.h" ]; then
+      INCLUDE_DIR="$dir"
+      break
+    fi
+  done
+  if [ -n "$INCLUDE_DIR" ]; then
+    MLX_INCLUDE="$INCLUDE_DIR"
+    USE_SYSTEM_MLX=true
+    log "Found MLX headers in $INCLUDE_DIR"
   fi
 fi
 
-# Get R compiler settings
-echo ""
-echo "Getting R compiler configuration..."
-
-# Find R
-if [ -z "$R_HOME" ]; then
-  R_HOME=$(R RHOME)
-fi
-
-CXX_FULL=$(${R_HOME}/bin/R CMD config CXX17)
-if [ -z "$CXX_FULL" ]; then
-  CXX_FULL=$(${R_HOME}/bin/R CMD config CXX)
-fi
-CXXFLAGS=$(${R_HOME}/bin/R CMD config CXX17FLAGS)
-if [ -z "$CXXFLAGS" ]; then
-  CXXFLAGS=$(${R_HOME}/bin/R CMD config CXXFLAGS)
-fi
-
-# Extract just the compiler binary (first word)
-CXX=$(echo $CXX_FULL | awk '{print $1}')
-
-echo "C++ compiler: $CXX"
-echo "C++ flags: $CXXFLAGS"
-
-# Detect or build MLX library
-if [ "$USE_SYSTEM_MLX" = "true" ]; then
-  # Use system-installed MLX
-  echo ""
-  echo "==============================================="
-  echo "Detecting system MLX installation..."
-  echo "==============================================="
-
-  # Allow environment variable overrides
-  MLX_INCLUDE_DIR=${MLX_INCLUDE:-""}
-  MLX_LIB_DIR=${MLX_LIB_DIR:-""}
-
-  # Search paths for headers if not specified
+# Additional library search for system MLX when detected automatically
+if [ "$USE_SYSTEM_MLX" = true ]; then
+  MLX_INCLUDE_DIR=${MLX_INCLUDE:-}
+  MLX_LIB_DIR=${MLX_LIB_DIR:-}
   if [ -z "$MLX_INCLUDE_DIR" ]; then
-    for dir in \
-      /opt/homebrew/include \
-      /usr/local/include \
-      "$(xcrun --show-sdk-path 2>/dev/null)/usr/include"
-    do
-      if [ -d "$dir" ] && [ -f "$dir/mlx/mlx.h" ]; then
-        MLX_INCLUDE_DIR="$dir"
-        echo "Found MLX headers in: $MLX_INCLUDE_DIR"
-        break
-      fi
-    done
+    die "MLX_INCLUDE must point to headers when using system MLX"
   fi
-
-  # Search paths for libraries if not specified
   if [ -z "$MLX_LIB_DIR" ]; then
-    for dir in \
-      /opt/homebrew/lib \
-      /usr/local/lib
-    do
+    for dir in /opt/homebrew/lib /usr/local/lib /usr/lib /usr/lib64 /usr/lib/x86_64-linux-gnu; do
       if [ -d "$dir" ] && { [ -f "$dir/libmlx.dylib" ] || [ -f "$dir/libmlx.so" ] || [ -f "$dir/libmlx.a" ]; }; then
         MLX_LIB_DIR="$dir"
-        echo "Found MLX library in: $MLX_LIB_DIR"
         break
       fi
     done
   fi
-
-  # Check if we found everything
-  if [ -z "$MLX_INCLUDE_DIR" ]; then
-    echo ""
-    echo "ERROR: MLX headers not found!"
-    echo ""
-    echo "Please install MLX or set MLX_INCLUDE environment variable."
-    echo "To use bundled MLX instead, unset MLX_USE_SYSTEM and MLX_INCLUDE."
-    echo ""
-    exit 1
-  fi
-
   if [ -z "$MLX_LIB_DIR" ]; then
-    echo ""
-    echo "ERROR: MLX library not found!"
-    echo ""
-    echo "Please install MLX or set MLX_LIB_DIR environment variable."
-    echo "To use bundled MLX instead, unset MLX_USE_SYSTEM and MLX_INCLUDE."
-    echo ""
-    exit 1
+    die "Unable to find MLX library directory. Set MLX_LIB_DIR or disable MLX_USE_SYSTEM."
   fi
-
-  # Set paths for Makevars
-  PKG_CPPFLAGS="-I$MLX_INCLUDE_DIR"
-  # Add rpath on macOS so the runtime linker can find both libmlx and mlx.metallib
-  if [ "$OS" = "Darwin" ]; then
-    PKG_LIBS="-L$MLX_LIB_DIR -Wl,-rpath,$MLX_LIB_DIR -lmlx"
-  else
-    PKG_LIBS="-L$MLX_LIB_DIR -lmlx"
-  fi
-
 else
-  # Build bundled MLX
-  echo ""
-  echo "==============================================="
-  echo "Building bundled MLX library..."
-  echo "==============================================="
-
-  cd src/mlx-src || exit 1
-
-# Create build directory
-mkdir -p build
-cd build || exit 1
-
-# Configure MLX with CMake
-# Use static library, disable unnecessary components
-echo ""
-echo "Running CMake with selected backends..."
-
-# Set up BLAS/LAPACK hints for Linux
-CMAKE_EXTRA_FLAGS=""
-if [ "$OS" = "Linux" ]; then
-  # Find BLAS/LAPACK libraries
-  echo "Locating BLAS/LAPACK libraries..."
-
-  # Try common locations
-  for lib_dir in /usr/lib/x86_64-linux-gnu /usr/lib64 /usr/lib /usr/local/lib; do
-    if [ -f "$lib_dir/libblas.so" ] || [ -f "$lib_dir/libblas.a" ]; then
-      BLAS_LIB_DIR="$lib_dir"
-      echo "Found BLAS in: $BLAS_LIB_DIR"
-      break
+  # Build from source (download if needed)
+  mkdir -p "$BUILD_DIR"
+  NEED_DOWNLOAD=true
+  if [ -d "$MLX_SOURCE_DIR" ] && [ -f "$MLX_VERSION_STAMP" ]; then
+    if [ "$(cat "$MLX_VERSION_STAMP")" = "$MLX_VERSION" ]; then
+      NEED_DOWNLOAD=false
     fi
-  done
-
-  for lib_dir in /usr/lib/x86_64-linux-gnu /usr/lib64 /usr/lib /usr/local/lib; do
-    if [ -f "$lib_dir/liblapack.so" ] || [ -f "$lib_dir/liblapack.a" ]; then
-      LAPACK_LIB_DIR="$lib_dir"
-      echo "Found LAPACK in: $LAPACK_LIB_DIR"
-      break
-    fi
-  done
-
-  # Set CMake variables to help find libraries
-  if [ -n "$BLAS_LIB_DIR" ] && [ -n "$LAPACK_LIB_DIR" ]; then
-    CMAKE_EXTRA_FLAGS="-DBLA_VENDOR=Generic"
-    # Add library directories to CMAKE_PREFIX_PATH
-    export CMAKE_PREFIX_PATH="${BLAS_LIB_DIR}:${LAPACK_LIB_DIR}:${CMAKE_PREFIX_PATH}"
   fi
-fi
-
-cmake .. \
-  -DCMAKE_BUILD_TYPE=Release \
-  -DCMAKE_CXX_COMPILER="$CXX" \
-  -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
-  -DCMAKE_CXX_STANDARD=17 \
-  -DBUILD_SHARED_LIBS=OFF \
-  -DMLX_BUILD_TESTS=OFF \
-  -DMLX_BUILD_EXAMPLES=OFF \
-  -DMLX_BUILD_BENCHMARKS=OFF \
-  -DMLX_BUILD_PYTHON_BINDINGS=OFF \
-  -DMLX_BUILD_METAL=$MLX_BUILD_METAL \
-  -DMLX_BUILD_CPU=$MLX_BUILD_CPU \
-  -DMLX_BUILD_CUDA=$MLX_BUILD_CUDA \
-  -DCMAKE_INSTALL_PREFIX=../install \
-  $CMAKE_EXTRA_FLAGS \
-  || { echo "CMake configuration failed"; cd ../../..; exit 1; }
-
-# Build MLX
-echo ""
-echo "Compiling MLX (this may take several minutes)..."
-cmake --build . --config Release --parallel || { echo "MLX build failed"; cd ../../..; exit 1; }
-
-# Install to local prefix
-echo ""
-echo "Installing MLX locally..."
-cmake --install . || { echo "MLX install failed"; cd ../../..; exit 1; }
-
-cd ../../.. || exit 1
-
-echo ""
-echo "✓ MLX built successfully"
-
-# Create src/Makevars with paths to built MLX
-echo ""
-echo "Generating src/Makevars..."
-
-  # Base compiler flags and MLX library
-  PKG_CPPFLAGS="-I./mlx-src/install/include -I./mlx-src/mlx"
-  # Add rpath on macOS for bundled MLX - use @loader_path to find metallib relative to .so
-  if [ "$OS" = "Darwin" ]; then
-    PKG_LIBS="-L./mlx-src/install/lib -Wl,-rpath,@loader_path/../mlx-src/install/lib -lmlx"
+  if [ "$NEED_DOWNLOAD" = true ]; then
+    log "Downloading MLX ${MLX_VERSION}..."
+    ensure_downloader
+    rm -rf "$MLX_SOURCE_DIR" "$MLX_BUILD_DIR" "$MLX_INSTALL_DIR"
+    if [ "$DOWNLOADER" = "curl" ]; then
+      curl -L "$MLX_TARBALL_URL" -o "$MLX_TARBALL_PATH"
+    else
+      wget -O "$MLX_TARBALL_PATH" "$MLX_TARBALL_URL"
+    fi
+    tar -xzf "$MLX_TARBALL_PATH" -C "$BUILD_DIR"
+    mv "$BUILD_DIR/mlx-${MLX_VERSION}" "$MLX_SOURCE_DIR"
+    printf '%s' "$MLX_VERSION" > "$MLX_VERSION_STAMP"
   else
-    PKG_LIBS="-L./mlx-src/install/lib -lmlx"
+    log "Reusing downloaded MLX ${MLX_VERSION}"
+  fi
+
+  rm -rf "$MLX_BUILD_DIR" "$MLX_INSTALL_DIR"
+  mkdir -p "$MLX_BUILD_DIR"
+  log "Configuring MLX with CMake..."
+  CMAKE_EXTRA_FLAGS=""
+  if [ "$OS" = "Linux" ]; then
+    export CMAKE_PREFIX_PATH="/usr/lib/x86_64-linux-gnu:/usr/lib64:/usr/local/lib:${CMAKE_PREFIX_PATH:-}"
+  fi
+  cmake -S "$MLX_SOURCE_DIR" -B "$MLX_BUILD_DIR" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_COMPILER="$CXX" \
+    -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+    -DCMAKE_INSTALL_PREFIX="$ROOT_DIR/$MLX_INSTALL_DIR" \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DMLX_BUILD_TESTS=OFF \
+    -DMLX_BUILD_EXAMPLES=OFF \
+    -DMLX_BUILD_BENCHMARKS=OFF \
+    -DMLX_BUILD_PYTHON_BINDINGS=OFF \
+    -DMLX_BUILD_METAL=$MLX_BUILD_METAL \
+    -DMLX_BUILD_CPU=$MLX_BUILD_CPU \
+    -DMLX_BUILD_CUDA=$MLX_BUILD_CUDA \
+    $CMAKE_EXTRA_FLAGS
+
+  log "Compiling MLX (this may take a while)..."
+  cmake --build "$MLX_BUILD_DIR" --config Release --parallel
+
+  log "Installing MLX locally..."
+  cmake --install "$MLX_BUILD_DIR"
+
+  MLX_INCLUDE_DIR="$ROOT_DIR/$MLX_INSTALL_DIR/include"
+  MLX_LIB_DIR="$ROOT_DIR/$MLX_INSTALL_DIR/lib"
+fi
+
+# Prepare compiler/linker flags
+if [ "$USE_SYSTEM_MLX" = true ]; then
+  PKG_CPPFLAGS="-I${MLX_INCLUDE_DIR}"
+  if [ "$OS" = "Darwin" ]; then
+    PKG_LIBS="-L${MLX_LIB_DIR} -Wl,-rpath,${MLX_LIB_DIR} -lmlx"
+  else
+    PKG_LIBS="-L${MLX_LIB_DIR} -lmlx"
+  fi
+else
+  REL_INCLUDE_INSTALL="../${MLX_INSTALL_DIR}/include"
+  REL_INCLUDE_SOURCE="../${MLX_SOURCE_DIR}/mlx"
+  REL_LIB_DIR="../${MLX_INSTALL_DIR}/lib"
+  PKG_CPPFLAGS="-I${REL_INCLUDE_INSTALL} -I${REL_INCLUDE_SOURCE}"
+  if [ "$OS" = "Darwin" ]; then
+    PKG_LIBS="-L${REL_LIB_DIR} -Wl,-rpath,@loader_path/../${MLX_INSTALL_DIR}/lib -lmlx"
+  else
+    PKG_LIBS="-L${REL_LIB_DIR} -lmlx"
   fi
 fi
 
-# Add platform-specific libraries based on enabled backends
 if [ "$MLX_BUILD_METAL" = "ON" ]; then
-  # macOS Metal frameworks
   PKG_LIBS="$PKG_LIBS -framework Metal -framework Foundation -framework QuartzCore -framework Accelerate"
 fi
 
 if [ "$MLX_BUILD_CUDA" = "ON" ]; then
-  # CUDA libraries
-  # Find CUDA library path
-  if [ -n "$CUDA_HOME" ]; then
-    CUDA_LIB_DIR="$CUDA_HOME/lib64"
-  elif [ -d "/usr/local/cuda/lib64" ]; then
-    CUDA_LIB_DIR="/usr/local/cuda/lib64"
-  else
+  CUDA_LIB_DIR="${CUDA_HOME:-/usr/local/cuda}/lib64"
+  if [ ! -d "$CUDA_LIB_DIR" ]; then
     CUDA_LIB_DIR="/usr/lib/x86_64-linux-gnu"
   fi
   PKG_LIBS="$PKG_LIBS -L${CUDA_LIB_DIR} -lcudart -lcublas -lcublasLt"
 fi
 
-cat > src/Makevars <<EOF
+cat > src/Makevars <<EOF_MAKEVARS
 # Generated by configure - do not edit by hand
 # Backends: Metal=$MLX_BUILD_METAL CPU=$MLX_BUILD_CPU CUDA=$MLX_BUILD_CUDA
 
 PKG_CPPFLAGS = $PKG_CPPFLAGS
 PKG_LIBS = $PKG_LIBS
 CXX_STD = CXX17
-EOF
+EOF_MAKEVARS
 
-echo "✓ src/Makevars created"
+log "✓ src/Makevars created"
 
-# For bundled builds with Metal, copy metallib to inst/libs so it's co-located with Rmlx.so
-if [ "$USE_SYSTEM_MLX" = "false" ] && [ "$MLX_BUILD_METAL" = "ON" ]; then
-  if [ -f "src/mlx-src/install/lib/mlx.metallib" ]; then
-    echo "Copying mlx.metallib to inst/libs..."
+if [ "$USE_SYSTEM_MLX" = false ] && [ "$MLX_BUILD_METAL" = "ON" ]; then
+  if [ -f "$MLX_LIB_DIR/mlx.metallib" ]; then
     mkdir -p inst/libs
-    cp src/mlx-src/install/lib/mlx.metallib inst/libs/
-    echo "✓ mlx.metallib copied"
+    cp "$MLX_LIB_DIR/mlx.metallib" inst/libs/
+    log "Copied mlx.metallib to inst/libs"
   fi
 fi
 
-echo ""
-echo "==============================================="
-echo "Configuration successful!"
-echo "==============================================="
-echo ""
-echo "Enabled backends:"
-if [ "$MLX_BUILD_METAL" = "ON" ]; then
-  echo "  ✓ Metal (GPU acceleration on macOS)"
-fi
-if [ "$MLX_BUILD_CPU" = "ON" ]; then
-  echo "  ✓ CPU"
-fi
-if [ "$MLX_BUILD_CUDA" = "ON" ]; then
-  echo "  ✓ CUDA (GPU acceleration on Linux)"
-fi
-echo ""
-echo "Next steps:"
-echo "  R CMD INSTALL will compile the package"
-echo ""
-
-exit 0
+log "Configuration complete."

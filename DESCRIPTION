@@ -4,10 +4,10 @@ Title: R Interface to MLX Arrays (GPU-Accelerated with Metal or CUDA)
 Version: 0.1.0.9000
 Authors@R: c(
     person("David", "Hugh-Jones", email = "david@hughjones.com", role = c("aut", "cre")),
-    person("Apple Inc.", role = "cph", comment = "MLX library bundled in src/mlx-src")
+    person("Apple Inc.", role = "cph", comment = "MLX library downloaded at install time")
     )
 Author: David Hugh-Jones [aut, cre],
-    Apple Inc. [cph] (MLX library bundled in src/mlx-src)
+    Apple Inc. [cph] (MLX library downloaded at install time)
 Maintainer: David Hugh-Jones <david@hughjones.com>
 Description: S3 class 'mlx' backed by Apple's MLX library, allowing array operations
     on Apple Silicon GPUs/CPUs and CUDA-enabled Linux systems through lazy evaluation,

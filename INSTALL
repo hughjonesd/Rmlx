@@ -1,14 +1,16 @@
 Rmlx Installation Guide
 ========================
 
-Rmlx can use either a system-installed MLX library or build from bundled source.
-By default, it searches for system MLX first and falls back to building from source.
+Rmlx can use either a system-installed MLX library or build from an MLX source
+tarball. By default, it searches for system MLX first and, if not found,
+downloads MLX v0.29.4 from GitHub before building locally.
 
 Default Installation
 --------------------
 
 The default installation searches for system MLX in standard locations
-(/opt/homebrew, /usr/local). If not found, it builds from bundled source:
+(/opt/homebrew, /usr/local, /usr/include). If not found, it downloads MLX
+v0.29.4 and builds it automatically:
 
 ```r
 install.packages("Rmlx", type = "source")
@@ -70,11 +72,11 @@ Configure arguments:
 
 Environment variables (MLX library source):
   MLX_USE_SYSTEM=1           Force use of system MLX
-  MLX_BUILD_FROM_SOURCE=1    Force build from bundled source
+  MLX_BUILD_FROM_SOURCE=1    Force download/build from source
   MLX_INCLUDE=/path          Path to MLX headers (implies system MLX)
   MLX_LIB_DIR=/path          Path to MLX libraries (implies system MLX)
 
-Environment variables (bundled MLX build):
+Environment variables (source build):
   MLX_BUILD_CUDA=ON|OFF      Control CUDA backend
   MLX_BUILD_METAL=ON|OFF     Control Metal backend
   MLX_BUILD_CPU=ON|OFF       Control CPU backend
@@ -104,10 +106,10 @@ From shell:
 MLX_INCLUDE=/opt/homebrew/include R CMD INSTALL Rmlx_*.tar.gz
 ```
 
-Building from Bundled Source
+Building from Source Tarball
 ------------------------------
 
-To force building from bundled source even if system MLX is available:
+To force downloading MLX v0.29.4 and building it even if system MLX is available:
 
 ```r
 # From R

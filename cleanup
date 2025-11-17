@@ -6,18 +6,15 @@
 rm -f src/Makevars
 
 # Clean up MLX build artifacts
-if [ -d "src/mlx-src/build" ]; then
-  echo "Removing MLX build directory..."
-  rm -rf src/mlx-src/build
+if [ -d "build/mlx-build" ] || [ -d "build/mlx-src" ] || [ -d "build/mlx-install" ]; then
+  echo "Removing downloaded MLX sources and build output..."
+  rm -rf build/mlx-build build/mlx-src build/mlx-install
 fi
 
-if [ -d "src/mlx-src/install" ]; then
-  echo "Removing MLX install directory..."
-  rm -rf src/mlx-src/install
-fi
+# Remove downloaded tarballs and version stamps
+rm -f build/mlx-*.tar.gz
 
-# Remove any CMake cache files
-rm -f src/mlx-src/CMakeCache.txt
-rm -rf src/mlx-src/CMakeFiles
+# Remove any copied Metal libraries
+rm -f inst/libs/mlx.metallib
 
 exit 0

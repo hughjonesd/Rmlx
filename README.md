@@ -29,8 +29,8 @@ python-only features such as large neural network layers.
 ## Installation
 
 By default, Rmlx searches for a system-installed MLX library. If not
-found, it builds from bundled source (typically 5-15 minutes on first
-install).
+found, configure downloads MLX v0.29.4 from GitHub and builds it locally
+(typically 5–15 minutes on first install).
 
 ### Default Installation
 
@@ -47,8 +47,9 @@ devtools::install_github("hughjonesd/Rmlx")
 install.packages("Rmlx", repos = "https://hughjonesd.r-universe.dev")
 ```
 
-This will: 1. Search for system MLX in `/opt/homebrew` or `/usr/local`
-2. If not found, build from bundled source with optimal backends: -
+This will: 1. Search for system MLX in common locations
+(`/opt/homebrew`, `/usr/local`, `/usr/include`, etc.) 2. If not found,
+download MLX v0.29.4 and build it with optimal backends: -
 **macOS (Apple Silicon):** Metal + CPU backends - **Linux with CUDA:**
 CUDA + CPU backends (requires CUDA toolkit) - **Linux without CUDA:**
 CPU-only backend
@@ -95,9 +96,9 @@ Sys.setenv(MLX_LIB_DIR = "/opt/homebrew/lib")
 remotes::install_github("hughjonesd/Rmlx")
 ```
 
-### Force Building from Source
+### Force Downloading MLX from Source
 
-To force building from bundled source even if system MLX is available:
+To force downloading MLX v0.29.4 and building it even if system MLX is available:
 
 ``` r
 Sys.setenv(MLX_BUILD_FROM_SOURCE = "1")
