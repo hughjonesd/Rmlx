@@ -37,21 +37,6 @@
 
 #' Common parameters for MLX array creation
 #'
-#' @param dim Integer vector specifying the array shape/dimensions.
-#' @param dtype Character string specifying the MLX data type. Common options:
-#'   - Floating point: `"float32"`, `"float64"`
-#'   - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`,
-#'     `"uint32"`, `"uint64"`
-#'   - Other: `"bool"`, `"complex64"`
-#'
-#'   Supported types vary by function; see individual function documentation.
-#' @param device Execution target: provide `"gpu"`, `"cpu"`, or an
-#'   `mlx_stream` created via [mlx_new_stream()]. Defaults to the current
-#'   [mlx_default_device()].
-#' @name mlx_creation_params
-#' @keywords internal
-NULL
-
 #' Print MLX array
 #'
 #' @inheritParams common_params

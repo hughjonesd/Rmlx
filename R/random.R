@@ -1,6 +1,6 @@
 #' Sample from a uniform distribution on mlx arrays
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param min Lower bound for the uniform distribution.
 #' @param max Upper bound for the uniform distribution.
@@ -25,7 +25,7 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
 
 #' Sample from a normal distribution on mlx arrays
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param mean Mean of the normal distribution.
 #' @param sd Standard deviation of the normal distribution.
@@ -49,7 +49,7 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
 
 #' Sample Bernoulli random variables on mlx arrays
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param prob Probability of a one.
 #' @return An mlx boolean array.
 #' @seealso [mlx.core.random.bernoulli](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.bernoulli)
@@ -71,7 +71,7 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
 
 #' Sample from the Gumbel distribution on mlx arrays
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @return An mlx array with Gumbel-distributed entries.
 #' @seealso [mlx.core.random.gumbel](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.gumbel)
@@ -92,7 +92,7 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
 
 #' Sample from a truncated normal distribution on mlx arrays
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param lower Lower bound of the truncated normal.
 #' @param upper Upper bound of the truncated normal.
@@ -122,7 +122,7 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
 
 #' Sample from a multivariate normal distribution on mlx arrays
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param mean An mlx array or vector for the mean.
 #' @param cov An mlx array or matrix for the covariance.
@@ -160,7 +160,7 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
 
 #' Sample from the Laplace distribution on mlx arrays
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param dtype Desired MLX dtype ("float32" or "float64").
 #' @param loc Location parameter (mean) of the Laplace distribution.
 #' @param scale Scale parameter (diversity) of the Laplace distribution.
@@ -236,7 +236,7 @@ mlx_rand_categorical <- function(logits, axis = NULL, num_samples = 1L) {
 #'
 #' Generates random integers uniformly distributed over the interval [low, high).
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param low Lower bound (inclusive).
 #' @param high Upper bound (exclusive).
 #' @param dtype Desired integer dtype ("int32", "int64", "uint32", "uint64").
@@ -360,7 +360,7 @@ mlx_key_split <- function(key, num = 2L) {
 
 #' Generate raw random bits on MLX arrays
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param width Number of bytes per element (default 4 = 32 bits). Must be
 #'   positive.
 #' @param key Optional `mlx` key array. If omitted, MLX's default generator is

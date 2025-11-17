@@ -1,6 +1,6 @@
 #' Create arrays of zeros on MLX devices
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param dtype MLX dtype to use. One of `"float32"`, `"float64"`, `"int8"`,
 #'   `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`, `"uint32"`,
 #'   `"uint64"`, `"bool"`, or `"complex64"`.
@@ -200,7 +200,7 @@ mlx_eye <- function(n,
 #' and dimension guessing. Supply the raw payload vector plus an explicit shape
 #' and it pipes the data straight into MLX.
 #'
-#' @inheritParams mlx_creation_params
+#' @inheritParams common_params
 #' @param data Numeric, logical, or complex vector supplying the payload.
 #'   Any dimension attributes are ignored; pass `dim` explicitly.
 #' @param dim Integer vector of array dimensions (product must equal `length(data)`).
