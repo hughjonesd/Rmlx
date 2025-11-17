@@ -6,7 +6,7 @@ ROOT_DIR=$(pwd)
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-MLX_VERSION="0.29.4"
+MLX_VERSION="0.29.3"
 MLX_TAG="v${MLX_VERSION}"
 MLX_TARBALL_URL="https://github.com/ml-explore/mlx/archive/refs/tags/${MLX_TAG}.tar.gz"
 BUILD_DIR="build"
@@ -190,19 +190,44 @@ fi
 
 # Additional library search for system MLX when detected automatically
 if [ "$USE_SYSTEM_MLX" = true ]; then
+  SDK_INCLUDE_ALT=""
+  if [ "$OS" = "Darwin" ] && have_cmd xcrun; then
+    SDK_PATH=$(xcrun --show-sdk-path 2>/dev/null || true)
+    if [ -n "$SDK_PATH" ]; then
+      SDK_INCLUDE_ALT="$SDK_PATH/usr/include"
+    fi
+  fi
+
   MLX_INCLUDE_DIR=${MLX_INCLUDE:-}
   MLX_LIB_DIR=${MLX_LIB_DIR:-}
+
   if [ -z "$MLX_INCLUDE_DIR" ]; then
-    die "MLX_INCLUDE must point to headers when using system MLX"
-  fi
-  if [ -z "$MLX_LIB_DIR" ]; then
-    for dir in /opt/homebrew/lib /usr/local/lib /usr/lib /usr/lib64 /usr/lib/x86_64-linux-gnu; do
-      if [ -d "$dir" ] && { [ -f "$dir/libmlx.dylib" ] || [ -f "$dir/libmlx.so" ] || [ -f "$dir/libmlx.a" ]; }; then
-        MLX_LIB_DIR="$dir"
+    for dir in /opt/homebrew/include /usr/local/include /usr/include $SDK_INCLUDE_ALT; do
+      if [ -z "$dir" ]; then
+        continue
+      fi
+      if [ -f "$dir/mlx/mlx.h" ] || [ -f "$dir/mlx.h" ]; then
+        MLX_INCLUDE_DIR="$dir"
+        log "Detected MLX headers in $dir"
         break
       fi
     done
   fi
+
+  if [ -z "$MLX_INCLUDE_DIR" ]; then
+    die "MLX_INCLUDE must point to headers when using system MLX"
+  fi
+
+  if [ -z "$MLX_LIB_DIR" ]; then
+    for dir in /opt/homebrew/lib /usr/local/lib /usr/lib /usr/lib64 /usr/lib/x86_64-linux-gnu; do
+      if [ -d "$dir" ] && { [ -f "$dir/libmlx.dylib" ] || [ -f "$dir/libmlx.so" ] || [ -f "$dir/libmlx.a" ]; }; then
+        MLX_LIB_DIR="$dir"
+        log "Detected MLX libraries in $dir"
+        break
+      fi
+    done
+  fi
+
   if [ -z "$MLX_LIB_DIR" ]; then
     die "Unable to find MLX library directory. Set MLX_LIB_DIR or disable MLX_USE_SYSTEM."
   fi
