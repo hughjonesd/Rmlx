@@ -5,10 +5,6 @@
 #' @param device Device string associated with the array.
 #' @return An mlx array.
 #' @noRd
-.mlx_wrap_result <- function(ptr, device) {
-  new_mlx(ptr, device)
-}
-
 .mlx_is_stream <- function(x) inherits(x, "mlx_stream")
 
 .mlx_resolve_device <- function(device, default = mlx_default_device()) {

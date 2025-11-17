@@ -270,7 +270,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @noRd
 .mlx_reduce <- function(x, op, ddof = 0L) {
   ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof))
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Reduce an mlx array along a single axis
@@ -288,7 +288,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
   ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Reduce an mlx array along multiple axes
@@ -618,7 +618,7 @@ mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- .mlx_normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumsum(x$ptr, axis_mlx, reverse, inclusive)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' @rdname mlx_cumsum
@@ -629,7 +629,7 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- .mlx_normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Normal distribution functions

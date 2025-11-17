@@ -27,7 +27,7 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
   }
 
   ptr <- cpp_mlx_hadamard_transform(x$ptr, scale, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Argmax and argmin on mlx arrays
@@ -53,7 +53,7 @@ mlx_argmax <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_argmax(x$ptr, axis_idx, !isTRUE(drop))
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' @rdname mlx_argmax
@@ -62,7 +62,7 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_argmin(x$ptr, axis_idx, !isTRUE(drop))
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Sort and argsort for mlx arrays
@@ -106,7 +106,7 @@ mlx_sort <- function(x, axis = NULL) {
   x <- as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_sort(x$ptr, axis_idx)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' @rdname mlx_sort
@@ -115,7 +115,7 @@ mlx_argsort <- function(x, axis = NULL) {
   x <- as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_argsort(x$ptr, axis_idx)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Top-k selection and partitioning on mlx arrays
@@ -164,7 +164,7 @@ mlx_topk <- function(x, k, axis = NULL) {
   }
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_topk(x$ptr, as.integer(k), axis_idx)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' @rdname mlx_topk
@@ -176,7 +176,7 @@ mlx_partition <- function(x, kth, axis = NULL) {
   }
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_partition(x$ptr, as.integer(kth), axis_idx)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' @rdname mlx_topk
@@ -188,7 +188,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   }
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_argpartition(x$ptr, as.integer(kth), axis_idx)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Normalize multiple axes to 0-indexed values
@@ -257,7 +257,7 @@ mlx_logsumexp <- function(x, axes = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axes_idx <- .mlx_normalize_axes(axes, x)
   ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, !isTRUE(drop))
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Log cumulative sum exponential for mlx arrays
@@ -278,7 +278,7 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
   x <- as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
   ptr <- cpp_mlx_logcumsumexp(x$ptr, axis_idx, reverse, inclusive)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Softmax for mlx arrays
@@ -296,5 +296,5 @@ mlx_softmax <- function(x, axes = NULL, precise = FALSE) {
   x <- as_mlx(x)
   axes_idx <- .mlx_normalize_axes(axes, x)
   ptr <- cpp_mlx_softmax(x$ptr, axes_idx, precise)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }

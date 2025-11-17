@@ -227,7 +227,7 @@ mlx_rand_categorical <- function(logits, axis = NULL, num_samples = 1L) {
   axis0 <- .mlx_normalize_axis_single(as.integer(axis_val), logits)
 
   ptr <- cpp_mlx_random_categorical(logits, axis0, num_samples)
-  samples <- .mlx_wrap_result(ptr, logits$device)
+  samples <- new_mlx(ptr, logits$device)
   samples <- .mlx_cast(samples, dtype = "int32", device = logits$device)
   samples + as_mlx(1L, dtype = mlx_dtype(samples), device = samples$device)
 }
@@ -308,7 +308,7 @@ mlx_rand_permutation <- function(x, axis = 1L, device = mlx_default_device()) {
     }
     handle <- .mlx_resolve_device(device, mlx_default_device())
     ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_random_permutation_n(n, dev))
-    perm <- .mlx_wrap_result(ptr, handle$device)
+    perm <- new_mlx(ptr, handle$device)
     perm <- .mlx_cast(perm, dtype = "int32", device = handle$device)
     return(perm + as_mlx(1L, dtype = mlx_dtype(perm), device = perm$device))
   } else {
@@ -338,7 +338,7 @@ mlx_key <- function(seed) {
     stop("`seed` must be a single numeric value.", call. = FALSE)
   }
   ptr <- cpp_mlx_random_key(as.numeric(seed))
-  .mlx_wrap_result(ptr, "cpu")
+  new_mlx(ptr, "cpu")
 }
 
 #' @rdname mlx_key
@@ -355,7 +355,7 @@ mlx_key_split <- function(key, num = 2L) {
     stop("`num` must be a positive integer.", call. = FALSE)
   }
   raw <- cpp_mlx_random_split(key$ptr, num)
-  lapply(raw, function(ptr) .mlx_wrap_result(ptr, key$device))
+  lapply(raw, function(ptr) new_mlx(ptr, key$device))
 }
 
 #' Generate raw random bits on MLX arrays
@@ -391,5 +391,5 @@ mlx_key_bits <- function(dim, width = 4L, key = NULL, device = mlx_default_devic
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_random_bits(dim, width, key_ptr, dev)
   })
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }

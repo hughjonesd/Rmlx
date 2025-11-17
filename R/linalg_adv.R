@@ -18,7 +18,7 @@ chol.mlx <- function(x, pivot = FALSE, ...) {
   if (pivot) stop("pivoted Cholesky is not supported for mlx objects.", call. = FALSE)
   x_dtype <- mlx_dtype(x)
   ptr <- cpp_mlx_cholesky(x$ptr, TRUE, x_dtype, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Inverse from Cholesky decomposition
@@ -85,8 +85,8 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   device <- x$device
   structure(
     list(
-      Q = .mlx_wrap_result(res$Q, device),
-      R = .mlx_wrap_result(res$R, device)
+      Q = new_mlx(res$Q, device),
+      R = new_mlx(res$R, device)
     ),
     class = c("mlx_qr", "list")
   )
@@ -142,16 +142,16 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
 
   if (!compute_uv) {
     s_ptr <- res[[1L]]
-    d <- .mlx_wrap_result(s_ptr, x$device)
+    d <- new_mlx(s_ptr, x$device)
     return(list(d = d, u = NULL, v = NULL))
   }
 
-  U <- .mlx_wrap_result(res$U, x$device)
-  S <- .mlx_wrap_result(res$S, x$device)
-  Vh <- .mlx_wrap_result(res$Vh, x$device)
+  U <- new_mlx(res$U, x$device)
+  S <- new_mlx(res$S, x$device)
+  Vh <- new_mlx(res$Vh, x$device)
 
   d <- S
-  V <- .mlx_wrap_result(cpp_mlx_transpose(Vh$ptr), Vh$device)
+  V <- new_mlx(cpp_mlx_transpose(Vh$ptr), Vh$device)
 
   list(d = d, u = U, v = V)
 }
@@ -171,7 +171,7 @@ pinv <- function(x) {
 
   x_dtype <- mlx_dtype(x)
   ptr <- cpp_mlx_pinv(x$ptr, x_dtype, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Fast Fourier Transform
@@ -228,7 +228,7 @@ mlx_norm <- function(x, ord = NULL, axes = NULL, drop = TRUE) {
   }
   axes_arg <- if (is.null(axes)) NULL else as.integer(axes)
   ptr <- cpp_mlx_norm(x$ptr, ord, axes_arg, !isTRUE(drop), x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Eigen decomposition for mlx arrays
@@ -248,8 +248,8 @@ mlx_eig <- function(x) {
 
   res <- cpp_mlx_eig(x$ptr, x$device)
   list(
-    values = .mlx_wrap_result(res$values, x$device),
-    vectors = .mlx_wrap_result(res$vectors, x$device)
+    values = new_mlx(res$values, x$device),
+    vectors = new_mlx(res$vectors, x$device)
   )
 }
 
@@ -266,7 +266,7 @@ mlx_eigvals <- function(x) {
   x <- as_mlx(x)
   stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
   ptr <- cpp_mlx_eigvals(x$ptr, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Eigenvalues of Hermitian mlx arrays
@@ -284,7 +284,7 @@ mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
   stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
   uplo <- match.arg(uplo)
   ptr <- cpp_mlx_eigvalsh(x$ptr, uplo, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Eigen decomposition of Hermitian mlx arrays
@@ -302,8 +302,8 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
   uplo <- match.arg(uplo)
   res <- cpp_mlx_eigh(x$ptr, uplo, x$device)
   list(
-    values = .mlx_wrap_result(res$values, x$device),
-    vectors = .mlx_wrap_result(res$vectors, x$device)
+    values = new_mlx(res$values, x$device),
+    vectors = new_mlx(res$vectors, x$device)
   )
 }
 
@@ -325,7 +325,7 @@ mlx_solve_triangular <- function(a, b, upper = FALSE) {
   b <- as_mlx(b)
   stopifnot(length(dim(a)) == 2L, dim(a)[1] == dim(a)[2])
   ptr <- cpp_mlx_solve_triangular(a$ptr, b$ptr, upper, a$device)
-  .mlx_wrap_result(ptr, a$device)
+  new_mlx(ptr, a$device)
 }
 
 #' @rdname mlx_solve_triangular
@@ -391,7 +391,7 @@ mlx_cross <- function(a, b, axis = NULL) {
     stop("`axis` must be NULL or a single positive integer.", call. = FALSE)
   }
   ptr <- cpp_mlx_cross(a$ptr, b$ptr, as.integer(axis_val), a$device)
-  .mlx_wrap_result(ptr, a$device)
+  new_mlx(ptr, a$device)
 }
 
 #' Matrix trace for mlx arrays
@@ -412,7 +412,7 @@ mlx_cross <- function(a, b, axis = NULL) {
 mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_trace(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Extract diagonal or construct diagonal matrix for mlx arrays
@@ -433,7 +433,7 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_diagonal(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Outer product of two vectors
@@ -461,7 +461,7 @@ outer.mlx <- function(X, Y, FUN = "*", ...) {
   X <- as_mlx(X)
   Y <- as_mlx(Y)
   ptr <- cpp_mlx_outer(X$ptr, Y$ptr, X$device)
-  .mlx_wrap_result(ptr, X$device)
+  new_mlx(ptr, X$device)
 }
 
 #' Unflatten an axis into multiple axes
@@ -482,7 +482,7 @@ outer.mlx <- function(X, Y, FUN = "*", ...) {
 mlx_unflatten <- function(x, axis, shape) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_unflatten(x$ptr, as.integer(axis), as.integer(shape), x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Compute matrix inverse
@@ -501,7 +501,7 @@ mlx_unflatten <- function(x, axis, shape) {
 mlx_inv <- function(x) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_inv(x$ptr, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Compute triangular matrix inverse
@@ -520,7 +520,7 @@ mlx_inv <- function(x) {
 mlx_tri_inv <- function(x, upper = FALSE) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_tri_inv(x$ptr, upper, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Compute matrix inverse via Cholesky decomposition
@@ -546,7 +546,7 @@ mlx_tri_inv <- function(x, upper = FALSE) {
 mlx_cholesky_inv <- function(x, upper = FALSE) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_cholesky_inv(x$ptr, upper, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' LU factorization
@@ -568,8 +568,8 @@ mlx_lu <- function(x) {
   x <- as_mlx(x)
   result <- cpp_mlx_lu(x$ptr, x$device)
   list(
-    p = .mlx_wrap_result(result$p, x$device),
-    l = .mlx_wrap_result(result$l, x$device),
-    u = .mlx_wrap_result(result$u, x$device)
+    p = new_mlx(result$p, x$device),
+    l = new_mlx(result$l, x$device),
+    u = new_mlx(result$u, x$device)
   )
 }

@@ -1,5 +1,5 @@
 Median milliseconds per operation
      op   n2000
- matmul  7.2782
-  solve 48.6332
- as_mlx  3.3730
+ matmul  7.1249
+  solve 46.6769
+ as_mlx  3.3480

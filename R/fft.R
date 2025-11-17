@@ -134,7 +134,7 @@ mlx_fftn <- function(x,
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_fft(mlx_x$ptr, axes_zero, isTRUE(inverse), dev)
   })
-  result <- .mlx_wrap_result(ptr, handle$device)
+  result <- new_mlx(ptr, handle$device)
 
   if (isTRUE(inverse)) {
     scale_axes <- if (is.null(axes_zero)) {

@@ -18,7 +18,7 @@ mlx_zeros <- function(dim,
   dtype <- match.arg(dtype)
   handle <- .mlx_resolve_device(device, mlx_default_device())
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_zeros(dim, dtype, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Create arrays of ones on MLX devices
@@ -38,7 +38,7 @@ mlx_ones <- function(dim,
   dtype <- match.arg(dtype)
   handle <- .mlx_resolve_device(device, mlx_default_device())
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_ones(dim, dtype, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Zeros shaped like an existing mlx array
@@ -75,7 +75,7 @@ mlx_zeros_like <- function(x,
   target_device <- if (is.null(device)) x$device else device
   handle <- .mlx_resolve_device(target_device, x$device)
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_zeros_like(x$ptr, dtype, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Ones shaped like an existing mlx array
@@ -111,7 +111,7 @@ mlx_ones_like <- function(x,
   target_device <- if (is.null(device)) x$device else device
   handle <- .mlx_resolve_device(target_device, x$device)
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_ones_like(x$ptr, dtype, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Fill an mlx array with a constant value
@@ -156,7 +156,7 @@ mlx_full <- function(dim,
 
   handle <- .mlx_resolve_device(device, mlx_default_device())
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_full(dim, value, dtype, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Identity-like matrices on MLX devices
@@ -191,7 +191,7 @@ mlx_eye <- function(n,
   dtype <- match.arg(dtype)
   handle <- .mlx_resolve_device(device, mlx_default_device())
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_eye(n, m, k, dtype, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Construct an MLX array from R data
@@ -263,7 +263,7 @@ mlx_array <- function(data,
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_from_r(payload, as.integer(dim), dtype_val, dev)
   })
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Construct MLX matrices efficiently
@@ -393,7 +393,7 @@ mlx_identity <- function(n,
   dtype <- match.arg(dtype)
   handle <- .mlx_resolve_device(device, mlx_default_device())
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_identity(n, dtype, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Triangular helpers for MLX arrays
@@ -441,7 +441,7 @@ mlx_tri <- function(n,
   dtype <- match.arg(dtype)
   handle <- .mlx_resolve_device(device, mlx_default_device())
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_tri(n, m_arg, k, dtype, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' @rdname mlx_tri
@@ -455,7 +455,7 @@ mlx_tril <- function(x, k = 0L) {
   }
 
   ptr <- cpp_mlx_tril(x$ptr, k, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' @rdname mlx_tri
@@ -469,7 +469,7 @@ mlx_triu <- function(x, k = 0L) {
   }
 
   ptr <- cpp_mlx_triu(x$ptr, k, x$device)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 
@@ -550,7 +550,7 @@ mlx_arange <- function(stop,
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
     cpp_mlx_arange(start_arg, as.numeric(stop), step_arg, dtype, dev)
   })
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Evenly spaced ranges on MLX devices
@@ -588,7 +588,7 @@ mlx_linspace <- function(start,
       dev
     )
   })
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 # Helper to validate shapes ----------------------------------------------------

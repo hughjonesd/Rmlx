@@ -63,7 +63,7 @@
     # If sel is an mlx array, pass its pointer; otherwise pass the R vector
     sel_arg <- if (is.mlx(sel)) sel$ptr else sel
     ptr <- cpp_mlx_take(out$ptr, sel_arg, axis - 1L)
-    out <- .mlx_wrap_result(ptr, out$device)
+    out <- new_mlx(ptr, out$device)
   }
 
   # Optionally drop singleton dimensions (default is FALSE to mirror package conventions)
@@ -76,7 +76,7 @@
       } else {
         cpp_mlx_reshape(out$ptr, as.integer(new_dim))
       }
-      out <- .mlx_wrap_result(ptr, out$device)
+      out <- new_mlx(ptr, out$device)
       if (length(new_dim) == 0L) {
         dim(out) <- integer(0)
       }
@@ -135,7 +135,7 @@
   slice <- .mlx_slice_parameters(prep$normalized, dim(x))
   if (slice$can_slice) {
     ptr <- cpp_mlx_slice_update(x$ptr, value_mlx_tensor$ptr, slice$start, slice$stop, slice$stride)
-    return(.mlx_wrap_result(ptr, x$device))
+    return(new_mlx(ptr, x$device))
   }
 
   has_dupes <- any(vapply(prep$normalized, function(sel) {
@@ -167,7 +167,7 @@
   })
 
   ptr <- cpp_mlx_assign(x$ptr, normalized_int, value_mlx_vec$ptr, as.integer(dim(x)))
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Matrix-style subsetting helper.
@@ -180,7 +180,7 @@
   idx_mat <- .mlx_coerce_index_matrix(idx_mat, dim(x), type = "subset")
   if (!nrow(idx_mat)) {
     flat <- mlx_flatten(x)
-    res <- .mlx_wrap_result(cpp_mlx_take(flat$ptr, integer(0), 0L), x$device)
+    res <- new_mlx(cpp_mlx_take(flat$ptr, integer(0), 0L), x$device)
     dim(res) <- integer(1)
     return(res)
   }
@@ -188,7 +188,7 @@
   linear_idx <- .mlx_linear_indices(idx_mat, dim(x))
   flat <- mlx_flatten(x)
   ptr <- cpp_mlx_take(flat$ptr, linear_idx, 0L)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Matrix-style assignment helper.

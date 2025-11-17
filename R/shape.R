@@ -79,7 +79,7 @@ mlx_stack <- function(..., axis = 1L) {
   }
   axis0 <- axis_vec
   ptr <- cpp_mlx_stack(arrays, axis0, device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }
 
 #' Drop singleton dimensions
@@ -127,7 +127,7 @@ mlx_squeeze <- function(x, axes = NULL) {
     axes_idx <- .mlx_normalize_axes(axes, x)
     ptr <- cpp_mlx_squeeze(x$ptr, axes_idx)
   }
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Insert singleton dimensions
@@ -145,7 +145,7 @@ mlx_expand_dims <- function(x, axes) {
   x <- as_mlx(x)
   axes0 <- .mlx_normalize_new_axes(axes, dim(x))
   ptr <- cpp_mlx_expand_dims(x$ptr, axes0)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Repeat array elements
@@ -173,7 +173,7 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
     axis0 <- .mlx_normalize_axis(axis, x)
     ptr <- cpp_mlx_repeat(x$ptr, repeats, axis0)
   }
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Tile an array
@@ -193,7 +193,7 @@ mlx_tile <- function(x, reps) {
     stop("reps must be positive integers.", call. = FALSE)
   }
   ptr <- cpp_mlx_tile(x$ptr, reps)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Roll array elements
@@ -224,7 +224,7 @@ mlx_roll <- function(x, shift, axes = NULL) {
     }
     ptr <- cpp_mlx_roll(x$ptr, shift, axes0)
   }
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Pad or split mlx arrays
@@ -301,7 +301,7 @@ mlx_pad <- function(x,
     x$device,
     mode
   )
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' @rdname mlx_pad
@@ -352,7 +352,7 @@ mlx_split <- function(x, sections, axis = 1L) {
     )
   }
 
-  res <- lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, x$device))
+  res <- lapply(ptrs, function(ptr) new_mlx(ptr, x$device))
   res
 }
 
@@ -504,7 +504,7 @@ mlx_moveaxis <- function(x, source, destination) {
   }
 
   ptr <- cpp_mlx_moveaxis(x$ptr, source_idx, dest_idx)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' @rdname mlx_moveaxis
@@ -569,7 +569,7 @@ mlx_contiguous <- function(x, device = NULL) {
   target <- if (is.null(device)) x$device else device
   handle <- .mlx_resolve_device(target, x$device)
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_contiguous(x$ptr, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Flatten axes of an mlx array
@@ -615,7 +615,7 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = NULL) {
   }
 
   ptr <- cpp_mlx_flatten(x$ptr, start_idx, end_idx)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Swap two axes of an mlx array
@@ -646,7 +646,7 @@ mlx_swapaxes <- function(x, axis1, axis2) {
   axis2_idx <- .mlx_normalize_axis_single(axis2, x)
 
   ptr <- cpp_mlx_swapaxes(x$ptr, axis1_idx, axis2_idx)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 #' Construct coordinate arrays from input vectors
@@ -688,7 +688,7 @@ mlx_meshgrid <- function(...,
 
   indexing <- match.arg(indexing)
   ptrs <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_meshgrid(arrays, sparse, indexing, dev))
-  lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, handle$device))
+  lapply(ptrs, function(ptr) new_mlx(ptr, handle$device))
 }
 
 #' Broadcast an array to a new shape
@@ -713,7 +713,7 @@ mlx_broadcast_to <- function(x, shape, device = NULL) {
   handle <- .mlx_resolve_device(target, x$device)
 
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_broadcast_to(x$ptr, shape, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Broadcast multiple arrays to a shared shape
@@ -749,7 +749,7 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
   arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = handle$device)
 
   ptrs <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_broadcast_arrays(arrays, dev))
-  lapply(ptrs, function(ptr) .mlx_wrap_result(ptr, handle$device))
+  lapply(ptrs, function(ptr) new_mlx(ptr, handle$device))
 }
 
 #' Elementwise conditional selection
@@ -781,5 +781,5 @@ mlx_where <- function(condition, x, y) {
   y <- .mlx_cast(y, dtype = result_dtype, device = result_device)
 
   ptr <- cpp_mlx_where(condition$ptr, x$ptr, y$ptr, result_dtype, result_device)
-  .mlx_wrap_result(ptr, result_device)
+  new_mlx(ptr, result_device)
 }

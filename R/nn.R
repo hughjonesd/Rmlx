@@ -698,7 +698,7 @@ mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
   ptr <- cpp_mlx_conv1d(input$ptr, weight$ptr, as.integer(stride),
                        as.integer(padding), as.integer(dilation),
                        as.integer(groups), device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }
 
 #' 2D Convolution
@@ -733,7 +733,7 @@ mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
   ptr <- cpp_mlx_conv2d(input$ptr, weight$ptr, as.integer(stride),
                        as.integer(padding), as.integer(dilation),
                        as.integer(groups), device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }
 
 #' 3D Convolution
@@ -763,7 +763,7 @@ mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L
   ptr <- cpp_mlx_conv3d(input$ptr, weight$ptr, as.integer(stride),
                        as.integer(padding), as.integer(dilation),
                        as.integer(groups), device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }
 
 #' 1D Transposed Convolution
@@ -792,7 +792,7 @@ mlx_conv_transpose1d <- function(input, weight, stride = 1L, padding = 0L,
                                    as.integer(padding), as.integer(dilation),
                                    as.integer(output_padding), as.integer(groups),
                                    device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }
 
 #' 2D Transposed Convolution
@@ -829,7 +829,7 @@ mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
                                    as.integer(padding), as.integer(dilation),
                                    as.integer(output_padding), as.integer(groups),
                                    device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }
 
 #' 3D Transposed Convolution
@@ -866,7 +866,7 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
                                    as.integer(padding), as.integer(dilation),
                                    as.integer(output_padding), as.integer(groups),
                                    device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }
 
 #' Quantize a Matrix
@@ -908,10 +908,10 @@ mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
 
   # Wrap the returned pointers as mlx objects
   out <- list()
-  out$w_q <- .mlx_wrap_result(result$w_q, device)
-  out$scales <- .mlx_wrap_result(result$scales, device)
+  out$w_q <- new_mlx(result$w_q, device)
+  out$scales <- new_mlx(result$scales, device)
   if (!is.null(result$biases)) {
-    out$biases <- .mlx_wrap_result(result$biases, device)
+    out$biases <- new_mlx(result$biases, device)
   } else {
     out$biases <- NULL
   }
@@ -959,7 +959,7 @@ mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L
 
   ptr <- cpp_mlx_dequantize(w$ptr, scales$ptr, biases_ptr,
                             as.integer(group_size), as.integer(bits), mode, device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }
 
 #' Quantized Matrix Multiplication
@@ -1039,7 +1039,7 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
   ptr <- cpp_mlx_quantized_matmul(x$ptr, w$ptr, scales$ptr, biases_ptr,
                                    transpose, as.integer(group_size),
                                    as.integer(bits), mode, device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }
 
 #' Gather-based Quantized Matrix Multiplication
@@ -1105,5 +1105,5 @@ mlx_gather_qmm <- function(x, w, scales, biases = NULL, lhs_indices = NULL,
                             lhs_indices_ptr, rhs_indices_ptr, transpose,
                             as.integer(group_size), as.integer(bits), mode,
                             sorted_indices, device)
-  .mlx_wrap_result(ptr, device)
+  new_mlx(ptr, device)
 }

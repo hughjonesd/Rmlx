@@ -44,7 +44,7 @@ mlx_load <- function(file, device = mlx_default_device()) {
 
   handle <- .mlx_resolve_device(device, mlx_default_device())
   ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_load(file, dev))
-  .mlx_wrap_result(ptr, handle$device)
+  new_mlx(ptr, handle$device)
 }
 
 #' Save MLX arrays to the safetensors format

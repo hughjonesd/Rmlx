@@ -77,7 +77,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
     (is.null(idx_dims[[1]]) || !length(idx_dims[[1]]))
   if (use_take) {
     ptr <- cpp_mlx_take(x$ptr, normalized[[1]], axes0[[1]])
-    return(.mlx_wrap_result(ptr, x$device))
+    return(new_mlx(ptr, x$device))
   }
 
   # Convert normalized vectors into mlx int64 arrays, reapplying the user
@@ -90,7 +90,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
   }, normalized, idx_dims)
 
   ptr <- cpp_mlx_gather(x$ptr, idx_mlx, axes0, x$device)
-  res <- .mlx_wrap_result(ptr, x$device)
+  res <- new_mlx(ptr, x$device)
 
   res_dims <- dim(res)
   ndim <- length(dims)
@@ -157,7 +157,7 @@ mlx_slice_update <- function(x,
   stop0 <- stop
 
   ptr <- cpp_mlx_slice_update(x$ptr, value$ptr, start0, stop0, strides)
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
 
 # Internal helper for scatter-based updates on flattened tensors
@@ -174,5 +174,5 @@ mlx_slice_update <- function(x,
     stop("All inputs to .mlx_scatter_axis must be mlx arrays.", call. = FALSE)
   }
   ptr <- cpp_mlx_scatter(x$ptr, indices$ptr, updates$ptr, as.integer(axis))
-  .mlx_wrap_result(ptr, x$device)
+  new_mlx(ptr, x$device)
 }
