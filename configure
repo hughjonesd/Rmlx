@@ -286,6 +286,7 @@ else
 
   MLX_INCLUDE_DIR="$ROOT_DIR/$MLX_INSTALL_DIR/include"
   MLX_LIB_DIR="$ROOT_DIR/$MLX_INSTALL_DIR/lib"
+  GGUF_STATIC_LIB="$ROOT_DIR/$MLX_BUILD_DIR/mlx/io/libgguflib.a"
 fi
 
 # Prepare compiler/linker flags
@@ -306,6 +307,11 @@ else
   else
     PKG_LIBS="-L${REL_LIB_DIR} -lmlx"
   fi
+fi
+
+# Link gguf static helper when bundling MLX to satisfy gguf_* symbols (Linux)
+if [ "$USE_SYSTEM_MLX" = false ] && [ -f "$GGUF_STATIC_LIB" ]; then
+  PKG_LIBS="$PKG_LIBS $GGUF_STATIC_LIB"
 fi
 
 if [ "$MLX_BUILD_METAL" = "ON" ]; then
