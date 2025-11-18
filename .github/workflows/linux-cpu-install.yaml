@@ -5,9 +5,9 @@ name: Linux Install
 
 on:
   push:
-    branches: [experiment-vendor-mlx]
+    branches: [master]
   pull_request:
-    branches: [experiment-vendor-mlx]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
