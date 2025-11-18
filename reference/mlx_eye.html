@@ -19,6 +19,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/benchmarks.html">MLX Benchmarks</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/linear-regression.html">Linear Regression with MLX</a></li>
     <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
   </ul></li>
@@ -78,9 +79,10 @@ negative values shift downward.</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Execution target: provide <code>"gpu"</code>, <code>"cpu"</code>, or an
+<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
 <code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Defaults to the current
-<code><a href="mlx_default_device.html">mlx_default_device()</a></code>.</p></dd>
+<code><a href="mlx_default_device.html">mlx_default_device()</a></code> unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).</p></dd>
 
 </dl></div>
     <div class="section level2">

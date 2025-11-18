@@ -42,13 +42,13 @@ otherwise the base R result.
 ``` r
 z <- as_mlx(c(1, 2, 3, 4))
 fft(z)
-#> mlx array [4]
+#> mlx array []
 #>   dtype: complex64
 #>   device: gpu
 #>   values:
 #> [1] 10+0i -2+2i -2+0i -2-2i
 fft(z, inverse = TRUE)
-#> mlx array [4]
+#> mlx array []
 #>   dtype: complex64
 #>   device: gpu
 #>   values:

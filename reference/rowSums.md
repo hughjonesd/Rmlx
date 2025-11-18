@@ -46,7 +46,7 @@ An mlx array if `x` is mlx, otherwise a numeric vector.
 ``` r
 x <- as_mlx(matrix(1:6, 3, 2))
 rowSums(x)
-#> mlx array [3]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:

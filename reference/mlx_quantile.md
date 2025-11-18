@@ -96,7 +96,7 @@ as.numeric(mlx_quantile(x, c(0.25, 0.5, 0.75)))  # quartiles
 
 # S3 method:
 quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
-#> mlx array [5]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:

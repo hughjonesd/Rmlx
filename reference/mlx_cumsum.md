@@ -54,7 +54,7 @@ the cumulative result.
 ``` r
 x <- as_mlx(1:5)
 mlx_cumsum(x)  # [1, 3, 6, 10, 15]
-#> mlx array [5]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:

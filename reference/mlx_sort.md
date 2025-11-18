@@ -53,7 +53,7 @@ and
 ``` r
 x <- as_mlx(c(3, 1, 4, 2))
 mlx_sort(x)
-#> mlx array [4]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:

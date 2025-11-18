@@ -19,6 +19,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/benchmarks.html">MLX Benchmarks</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/linear-regression.html">Linear Regression with MLX</a></li>
     <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
   </ul></li>
@@ -42,6 +43,7 @@
 <h2 class="pkg-version" data-toc-text="0.1.0.9000" id="rmlx-0109000-development">Rmlx 0.1.0.9000 (development)<a class="anchor" aria-label="anchor" href="#rmlx-0109000-development"></a></h2>
 <ul><li>
 <code><a href="../reference/mlx_slice_update.html">mlx_slice_update()</a></code> now accepts 1-based (inclusive) <code>start</code>/<code>stop</code> indices to match the rest of the R API; internal callers were updated accordingly.</li>
+<li>Added <code><a href="../reference/dim.mlx.html">mlx_shape()</a></code> to expose MLX-native shapes (never <code>NULL</code>) and aligned <code><a href="../reference/dim.mlx.html">dim.mlx()</a></code> with base R semantics (returns <code>NULL</code> for 1-D vectors/scalars).</li>
 <li>
 <code><a href="../reference/mlx_rand_categorical.html">mlx_rand_categorical()</a></code>, <code><a href="../reference/mlx_rand_permutation.html">mlx_rand_permutation()</a></code>, <code><a href="../reference/mlx_cross_entropy.html">mlx_cross_entropy()</a></code>, and <code><a href="../reference/mlx_embedding.html">mlx_embedding()</a></code> now accept 1-based indices for inputs/outputs, keeping all exported APIs consistent with R conventions.</li>
 <li>Added negative numeric indexing support for <code>[</code>/<code>[&lt;-</code> on <code>mlx</code> arrays and documented subsetting semantics.</li>

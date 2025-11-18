@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/benchmarks.html">MLX Benchmarks</a></li>
+    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
     <li><a class="dropdown-item" href="../articles/linear-regression.html">Linear Regression with MLX</a></li>
     <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
   </ul>
@@ -85,18 +86,7 @@ dimension 100 - A random design matrix <code>X</code> of 10,000 cases ×
 100 features - Noisy labels
 <code>y = X @ w_star + small_noise</code></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hughjonesd.github.io/Rmlx/">Rmlx</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'Rmlx'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     fft</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     asplit, backsolve, chol2inv, col, colMeans, colSums, diag, drop,</span></span>
-<span><span class="co">#&gt;     outer, row, rowMeans, rowSums, svd</span></span>
-<span></span>
-<span><span class="co"># Problem metadata</span></span>
+<code class="sourceCode R"><span><span class="co"># Problem metadata</span></span>
 <span><span class="va">num_features</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
 <span><span class="va">num_cases</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
 <span><span class="va">num_iters</span> <span class="op">&lt;-</span> <span class="fl">1200</span>          <span class="co"># iterations of SGD</span></span>
@@ -169,7 +159,7 @@ unbounded</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">w_sgd</span> <span class="op">&lt;-</span> <span class="fu">train_sgd</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Iteration 1000 - Loss: 5.005911e-05</span></span></code></pre></div>
+<span><span class="co">#&gt; Iteration 1000 - Loss: 5.04549e-05</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-2-closed-form-regression-via-matrix-algebra">Method 2: Closed-form Regression via Matrix Algebra<a class="anchor" aria-label="anchor" href="#method-2-closed-form-regression-via-matrix-algebra"></a>
@@ -199,7 +189,7 @@ and solve the triangular system
 <span><span class="va">closed_error</span> <span class="op">&lt;-</span> <span class="va">w_closed</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">closed_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">closed_error</span> <span class="op">*</span> <span class="va">closed_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">closed_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.0009034264</span></span></code></pre></div>
+<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.0009084051</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accelerating-the-closed-form-solution-with-mlx_compile">Accelerating the Closed-form Solution with
@@ -222,7 +212,7 @@ graph.</p>
 <span><span class="va">compiled_error</span> <span class="op">&lt;-</span> <span class="va">w_compiled</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">compiled_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">compiled_error</span> <span class="op">*</span> <span class="va">compiled_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Compiled closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">compiled_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.0009034264</span></span></code></pre></div>
+<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.0009084051</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accuracy-and-performance-comparison">Accuracy and Performance Comparison<a class="anchor" aria-label="anchor" href="#accuracy-and-performance-comparison"></a>
@@ -294,22 +284,22 @@ as a reference.</p>
 <tbody>
 <tr class="odd">
 <td align="left">SGD</td>
-<td align="right">1.54s</td>
+<td align="right">2.81s</td>
 <td align="right">9e-04</td>
 </tr>
 <tr class="even">
 <td align="left">MLX closed form</td>
-<td align="right">19.23ms</td>
+<td align="right">74.71ms</td>
 <td align="right">9e-04</td>
 </tr>
 <tr class="odd">
 <td align="left">MLX closed form (compiled)</td>
-<td align="right">17.42ms</td>
+<td align="right">64.73ms</td>
 <td align="right">9e-04</td>
 </tr>
 <tr class="even">
 <td align="left">Base R</td>
-<td align="right">32.06ms</td>
+<td align="right">53.78ms</td>
 <td align="right">9e-04</td>
 </tr>
 </tbody>
@@ -318,15 +308,15 @@ as a reference.</p>
 <div class="section level2">
 <h2 id="device-selection">Device Selection<a class="anchor" aria-label="anchor" href="#device-selection"></a>
 </h2>
-<p>By default, computations run on GPU for speed. Switch to CPU if
-needed:</p>
+<p>By default, computations run on the best available device. Switch to
+CPU if needed:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Use CPU (useful for debugging)</span></span>
 <span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="st">"cpu"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "cpu"</span></span>
 <span></span>
-<span><span class="co"># Or back to GPU</span></span>
-<span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="st">"gpu"</span><span class="op">)</span></span>
+<span><span class="co"># Or back to best available device</span></span>
+<span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "gpu"</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

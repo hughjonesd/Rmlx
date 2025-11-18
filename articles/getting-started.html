@@ -107,21 +107,10 @@ when you call functions like <code><a href="https://rdrr.io/r/base/matrix.html" 
 </h2>
 <p>Convert R objects to MLX arrays using <code><a href="../reference/as_mlx.html">as_mlx()</a></code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hughjonesd.github.io/Rmlx/">Rmlx</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'Rmlx'</span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:stats':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     fft</span></span>
-<span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     asplit, backsolve, chol2inv, col, colMeans, colSums, diag, drop,</span></span>
-<span><span class="co">#&gt;     outer, row, rowMeans, rowSums, svd</span></span>
-<span></span>
-<span><span class="co"># From a vector</span></span>
+<code class="sourceCode R"><span><span class="co"># From a vector</span></span>
 <span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
-<span><span class="co">#&gt; mlx array [10]</span></span>
+<span><span class="co">#&gt; mlx array []</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
@@ -140,8 +129,8 @@ when you call functions like <code><a href="https://rdrr.io/r/base/matrix.html" 
 <span><span class="co">#&gt; [2,]    2    5    8   11</span></span>
 <span><span class="co">#&gt; [3,]    3    6    9   12</span></span>
 <span></span>
-<span><span class="co"># Move the array to the GPU</span></span>
-<span><span class="va">x_gpu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">m</span>, device <span class="op">=</span> <span class="st">"gpu"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Specify the device explicitly (uses GPU if available, CPU otherwise)</span></span>
+<span><span class="va">x_dev</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">m</span>, device <span class="op">=</span> <span class="va">device</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
 <p><strong>Precision note:</strong> Numeric inputs are stored in single
 precision (<code>float32</code>). Requesting
@@ -180,8 +169,8 @@ computed until needed:</p>
 <span><span class="co">#&gt;  [9,]  227  257  287  317  347  377  407  437  467   497</span></span>
 <span><span class="co">#&gt; [10,]  230  260  290  320  350  380  410  440  470   500</span></span>
 <span></span>
-<span><span class="co"># Wait for all queued work on the GPU if needed</span></span>
-<span><span class="fu"><a href="../reference/mlx_synchronize.html">mlx_synchronize</a></span><span class="op">(</span><span class="st">"gpu"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># Wait for all queued work on the available device</span></span>
+<span><span class="fu"><a href="../reference/mlx_synchronize.html">mlx_synchronize</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="arithmetic-operations">Arithmetic Operations<a class="anchor" aria-label="anchor" href="#arithmetic-operations"></a>
@@ -338,13 +327,13 @@ computed until needed:</p>
 <span></span>
 <span><span class="co"># Column and row means</span></span>
 <span><span class="fu"><a href="../reference/colMeans.html">colMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; mlx array [10]</span></span>
+<span><span class="co">#&gt; mlx array []</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt;  [1]  5.5 15.5 25.5 35.5 45.5 55.5 65.5 75.5 85.5 95.5</span></span>
 <span><span class="fu"><a href="../reference/rowMeans.html">rowMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; mlx array [10]</span></span>
+<span><span class="co">#&gt; mlx array []</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
@@ -396,8 +385,8 @@ computed until needed:</p>
 <span><span class="co"># Create array on CPU</span></span>
 <span><span class="va">x_cpu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, device <span class="op">=</span> <span class="st">"cpu"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Set back to GPU</span></span>
-<span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="st">"gpu"</span><span class="op">)</span></span>
+<span><span class="co"># Set back to best available device</span></span>
+<span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "gpu"</span></span></code></pre></div>
 <p>Remember that numeric computations are always performed in
 <code>float32</code>; the CPU mode is useful when you need to compare
@@ -428,9 +417,9 @@ multiplication:</p>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Base R:"</span>, <span class="va">t1</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Base R: 0.027 seconds</span></span>
+<span><span class="co">#&gt; Base R: 0.066 seconds</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"MLX:"</span>, <span class="va">t2</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; MLX: 0.009 seconds</span></span></code></pre></div>
+<span><span class="co">#&gt; MLX: 0.029 seconds</span></span></code></pre></div>
 <p>Note: This is an informal comparison, not a rigorous benchmark.
 Performance gains depend on array size, operation type, and
 hardware.</p>
@@ -479,7 +468,7 @@ release)</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

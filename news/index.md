@@ -5,6 +5,11 @@
 - [`mlx_slice_update()`](https://hughjonesd.github.io/Rmlx/reference/mlx_slice_update.md)
   now accepts 1-based (inclusive) `start`/`stop` indices to match the
   rest of the R API; internal callers were updated accordingly.
+- Added
+  [`mlx_shape()`](https://hughjonesd.github.io/Rmlx/reference/dim.mlx.md)
+  to expose MLX-native shapes (never `NULL`) and aligned
+  [`dim.mlx()`](https://hughjonesd.github.io/Rmlx/reference/dim.mlx.md)
+  with base R semantics (returns `NULL` for 1-D vectors/scalars).
 - [`mlx_rand_categorical()`](https://hughjonesd.github.io/Rmlx/reference/mlx_rand_categorical.md),
   [`mlx_rand_permutation()`](https://hughjonesd.github.io/Rmlx/reference/mlx_rand_permutation.md),
   [`mlx_cross_entropy()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cross_entropy.md),

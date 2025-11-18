@@ -11,8 +11,6 @@
   : Rmlx: R Interface to Apple's MLX Arrays
 - [`mlx-methods`](https://hughjonesd.github.io/Rmlx/reference/mlx-methods.md)
   : Base R generics with mlx methods
-- [`mlx_dim()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dim.md)
-  : Get dimensions helper
 - [`mlx_dtype()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dtype.md)
   : Get data type helper
 - [`mlx_eval()`](https://hughjonesd.github.io/Rmlx/reference/mlx_eval.md)
@@ -21,13 +19,14 @@
   [`` `[<-`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx_subset.md)
   : Subset MLX array
 - [`dim(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/dim.mlx.md)
+  [`mlx_shape()`](https://hughjonesd.github.io/Rmlx/reference/dim.mlx.md)
   : Get dimensions of MLX array
 - [`` `dim<-`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/dim-set-.mlx.md)
   : Set dimensions of MLX array
 - [`length(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/length.mlx.md)
   : Get length of MLX array
 - [`print(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/print.mlx.md)
-  : Print MLX array
+  : Common parameters for MLX array creation
 - [`str(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/str.mlx.md)
   : Object structure for MLX array
 - [`t(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/t.mlx.md)
@@ -55,6 +54,10 @@
   : MLX streams for asynchronous execution
 - [`mlx_set_default_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_set_default_stream.md)
   : Set the default MLX stream
+- [`mlx_get_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_get_device.md)
+  : Get best available device
+- [`mlx_has_gpu()`](https://hughjonesd.github.io/Rmlx/reference/mlx_has_gpu.md)
+  : Check if GPU backend is available
 - [`mlx_synchronize()`](https://hughjonesd.github.io/Rmlx/reference/mlx_synchronize.md)
   : Synchronize MLX execution
 - [`mlx_forward()`](https://hughjonesd.github.io/Rmlx/reference/mlx_forward.md)

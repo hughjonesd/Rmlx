@@ -38,7 +38,7 @@ An mlx array with the selected axes collapsed.
 ``` r
 x <- as_mlx(array(1:12, dim = c(2, 3, 2)))
 mlx_flatten(x)
-#> mlx array [12]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:

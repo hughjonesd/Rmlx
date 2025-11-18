@@ -31,7 +31,7 @@ An mlx array containing eigenvalues.
 ``` r
 x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
 mlx_eigvalsh(x)
-#> mlx array [2]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:

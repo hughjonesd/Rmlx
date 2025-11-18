@@ -1,4 +1,4 @@
-# Print MLX array
+# Common parameters for MLX array creation
 
 Print MLX array
 

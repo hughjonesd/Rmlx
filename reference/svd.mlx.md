@@ -42,7 +42,7 @@ A list with components `d`, `u`, and `v`.
 x <- as_mlx(matrix(c(1, 0, 0, 2), 2, 2))
 svd(x)
 #> $d
-#> mlx array [2]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:

@@ -4,7 +4,9 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/CLAUDE.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/LICENSE-text.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/LICENSE.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/VENDOR-MLX-NOTES.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/articles/benchmarks.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/articles/getting-started.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/articles/index.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/articles/linear-regression.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/articles/neural-networks.html</loc></url>
@@ -66,7 +68,6 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv_transpose2d.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_conv_transpose3d.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_coordinate_descent.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_creation_params.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_cross.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_cross_entropy.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_cumsum.html</loc></url>
@@ -75,7 +76,6 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dequantize.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dexp.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_diagonal.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dim.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dlnorm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dlogis.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dnorm.html</loc></url>
@@ -98,8 +98,10 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gather.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gather_qmm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gelu.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_get_device.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_grad.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_hadamard_transform.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_has_gpu.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_identity.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_import_function.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_inv.html</loc></url>

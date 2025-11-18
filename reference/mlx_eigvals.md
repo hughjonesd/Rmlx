@@ -27,7 +27,7 @@ An mlx array containing eigenvalues.
 ``` r
 x <- as_mlx(matrix(c(3, 1, 0, 2), 2, 2))
 mlx_eigvals(x)
-#> mlx array [2]
+#> mlx array []
 #>   dtype: complex64
 #>   device: gpu
 #>   values:

@@ -36,13 +36,13 @@ An `mlx` array containing the requested component.
 ``` r
 z <- as_mlx(1:4 + 1i * (4:1))
 mlx_real(z)
-#> mlx array [4]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 1 2 3 4
 Im(z)
-#> mlx array [4]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:

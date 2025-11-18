@@ -5,14 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>R Interface to Apple's MLX library for GPU-accelerated arrays • Rmlx</title>
+<title>R Interface to MLX Arrays (GPU-Accelerated with Metal or CUDA) • Rmlx</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="R Interface to Apple's MLX library for GPU-accelerated arrays">
-<meta name="description" content="An R interface to Apple's MLX library, allowing array operations on Apple Silicon GPUs and CPUs. Features include shared memory between the chips, CUDA support, lazy evaluation and automatic differentiation.">
-<meta property="og:description" content="An R interface to Apple's MLX library, allowing array operations on Apple Silicon GPUs and CPUs. Features include shared memory between the chips, CUDA support, lazy evaluation and automatic differentiation.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="R Interface to MLX Arrays (GPU-Accelerated with Metal or CUDA)">
+<meta name="description" content="S3 class mlx backed by Apple's MLX library, allowing array operations on Apple Silicon GPUs/CPUs and CUDA-enabled Linux systems through lazy evaluation, shared memory between chips, and automatic differentiation.">
+<meta property="og:description" content="S3 class mlx backed by Apple's MLX library, allowing array operations on Apple Silicon GPUs/CPUs and CUDA-enabled Linux systems through lazy evaluation, shared memory between chips, and automatic differentiation.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -36,6 +36,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/benchmarks.html">MLX Benchmarks</a></li>
+    <li><a class="dropdown-item" href="articles/getting-started.html">Getting Started with Rmlx</a></li>
     <li><a class="dropdown-item" href="articles/linear-regression.html">Linear Regression with MLX</a></li>
     <li><a class="dropdown-item" href="articles/neural-networks.html">Neural Networks with Rmlx</a></li>
   </ul>
@@ -59,23 +60,82 @@
 </h1></div>
 <!-- badges: start -->
 
+<p>R interface to Apple’s MLX (Machine Learning eXchange) library.</p>
+<div class="section level2">
+<h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
+</h2>
 <p>Rmlx provides an R interface to Apple’s <a href="https://ml-explore.github.io/mlx/" class="external-link">MLX framework</a>, enabling high-performance GPU computing on Apple Silicon.</p>
-<p>Modern Macs have a GPU, which is great for performing matrix operations. Statistics uses a lot of matrix operations. But until now, there has been no way for R on the Mac to use the GPU. Rmlx exists to fill that gap. It is very early stage and was largely vibe-coded with Claude/OpenAI Codex. Obviously, use at your own risk! <strong>Contributions are very welcome.</strong> In particular it would be great to implement function import/export, more neural network components, etc.</p>
-<p>There is a companion library at <a href="https://github.com/hughjonesd/RmlxStats" class="external-link">hughjonesd/RmlxStats</a>, which focuses on implementing common statistical methods on the GPU.</p>
-<p>Most C++ functions are implemented via R functions with an <code>mlx_</code> prefix. In addition, the package defines mlx-specific methods for many R matrix operations, including arithmetic, subsetting and matrix algebra.</p>
+<p>This package was vibe-coded with Claude/OpenAI Codex in a week. Use at your own risk! Much of the C++ API has been implemented, but not python-only features such as large neural network layers.</p>
+</div>
 <div class="section level2">
 <h2 id="requirements">Requirements<a class="anchor" aria-label="anchor" href="#requirements"></a>
 </h2>
-<p>MacOS on Apple Silicon <em>or</em> Linux with CUDA <em>or</em> MacOS/Linux for a CPU-only build.</p>
+<ul>
+<li>macOS on Apple Silicon (M1/M2/M3 or later) <em>or</em> Linux with CUDA <em>or</em> macOS/Linux for a CPU-only build</li>
+<li>CMake 3.24 or later</li>
+<li>C++17 compatible compiler</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p><code>brew install mlx</code></p>
-<p>or the Linux equivalent. Then just install the package as normal:</p>
+<p>By default, Rmlx searches for a system-installed MLX library. If not found, configure downloads MLX v0.29.4 from GitHub and builds it locally (typically 5–15 minutes on first install).</p>
+<div class="section level3">
+<h3 id="default-installation">Default Installation<a class="anchor" aria-label="anchor" href="#default-installation"></a>
+</h3>
+<p>Install from GitHub:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="st">"hughjonesd/Rmlx"</span><span class="op">)</span></span></code></pre></div>
-<p>Alternatively, you can build mlx from the <a href="https://github.com/ml-explore/mlx" class="external-link">source</a>.</p>
+<code class="sourceCode R"><span><span class="co"># Using remotes</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"hughjonesd/Rmlx"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or using devtools</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"hughjonesd/Rmlx"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or from r-universe</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"Rmlx"</span>, repos <span class="op">=</span> <span class="st">"https://hughjonesd.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
+<p>This will: 1. Search for system MLX in common locations (<code>/opt/homebrew</code>, <code>/usr/local</code>, <code>/usr/include</code>, etc.) 2. If not found, download MLX v0.29.4 and build it with optimal backends: - <strong>macOS (Apple Silicon):</strong> Metal + CPU backends - <strong>Linux with CUDA:</strong> CUDA + CPU backends (requires CUDA toolkit) - <strong>Linux without CUDA:</strong> CPU-only backend</p>
+</div>
+<div class="section level3">
+<h3 id="custom-backend-configuration">Custom Backend Configuration<a class="anchor" aria-label="anchor" href="#custom-backend-configuration"></a>
+</h3>
+<p>Control which backends to build using <code>configure.args</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># CPU-only build (no GPU acceleration)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"hughjonesd/Rmlx"</span>,</span>
+<span>                        configure.args <span class="op">=</span> <span class="st">"--cpu-only"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Force CUDA on Linux</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"hughjonesd/Rmlx"</span>,</span>
+<span>                        configure.args <span class="op">=</span> <span class="st">"--with-cuda"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Disable Metal on macOS</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"hughjonesd/Rmlx"</span>,</span>
+<span>                        configure.args <span class="op">=</span> <span class="st">"--without-metal"</span><span class="op">)</span></span></code></pre></div>
+<p>Or use environment variables:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MLX_BUILD_CPU <span class="op">=</span> <span class="st">"ON"</span>, MLX_BUILD_CUDA <span class="op">=</span> <span class="st">"OFF"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"hughjonesd/Rmlx"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="using-system-installed-mlx">Using System-Installed MLX<a class="anchor" aria-label="anchor" href="#using-system-installed-mlx"></a>
+</h3>
+<p>To install system MLX on macOS:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="ex">brew</span> install mlx</span></code></pre></div>
+<p>The configure script will auto-detect it. If it doesn’t, specify paths explicitly:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MLX_INCLUDE <span class="op">=</span> <span class="st">"/opt/homebrew/include"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MLX_LIB_DIR <span class="op">=</span> <span class="st">"/opt/homebrew/lib"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"hughjonesd/Rmlx"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="force-downloading-mlx-from-source">Force Downloading MLX from Source<a class="anchor" aria-label="anchor" href="#force-downloading-mlx-from-source"></a>
+</h3>
+<p>To force downloading MLX v0.29.4 and building it even if system MLX is available:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Sys.setenv.html" class="external-link">Sys.setenv</a></span><span class="op">(</span>MLX_BUILD_FROM_SOURCE <span class="op">=</span> <span class="st">"1"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"hughjonesd/Rmlx"</span><span class="op">)</span></span></code></pre></div>
+<p>See the <a href="INSTALL">INSTALL</a> file for detailed platform-specific instructions and troubleshooting.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
@@ -83,7 +143,7 @@
 <div class="section level3">
 <h3 id="fast-gpu-operations">Fast GPU Operations<a class="anchor" aria-label="anchor" href="#fast-gpu-operations"></a>
 </h3>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://hughjonesd.github.io/Rmlx/">Rmlx</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -93,23 +153,21 @@
 <span><span class="co">#&gt;     fft</span></span>
 <span><span class="co">#&gt; The following objects are masked from 'package:base':</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     asplit, backsolve, chol2inv, col, colMeans, colSums, diag, drop,</span></span>
-<span><span class="co">#&gt;     outer, row, rowMeans, rowSums, svd</span></span>
+<span><span class="co">#&gt;     chol2inv, colMeans, colSums, diag, outer, rowMeans, rowSums, svd</span></span>
 <span></span>
 <span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1e6</span><span class="op">)</span>, <span class="fl">1e3</span>, <span class="fl">1e3</span><span class="op">)</span></span>
-<span><span class="va">A_mlx</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.378   0.005   0.555</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu"><a href="reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">A_mlx</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="co">#&gt;   0.371   0.002   0.374</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;   0.008   0.006   0.015</span></span></code></pre></div>
+<span><span class="co">#&gt;   0.038   0.050   0.090</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="lazy-evaluation">Lazy Evaluation<a class="anchor" aria-label="anchor" href="#lazy-evaluation"></a>
 </h3>
 <p>Operations are recorded but not executed until explicitly evaluated:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">101</span><span class="op">:</span><span class="fl">125</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
@@ -133,7 +191,7 @@
 <h3 id="device-management">Device Management<a class="anchor" aria-label="anchor" href="#device-management"></a>
 </h3>
 <p>M series chips have shared memory between the CPU and GPU, so switching between devices is costless.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check/set default device</span></span>
 <span><span class="va">dev</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span>           </span>
 <span><span class="fu"><a href="reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="st">"cpu"</span><span class="op">)</span>    <span class="co"># Switch to CPU</span></span>
@@ -147,53 +205,46 @@
 <h3 id="subsetting">Subsetting<a class="anchor" aria-label="anchor" href="#subsetting"></a>
 </h3>
 <p>Subsetting works like base R:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span>
-<span><span class="co">#&gt; mlx array [2 x 2]</span></span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
+<span><span class="co">#&gt; mlx array [5 x 5]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
-<span><span class="co">#&gt;      [,1] [,2]</span></span>
-<span><span class="co">#&gt; [1,]    1    4</span></span>
-<span><span class="co">#&gt; [2,]    2    5</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5]</span></span>
+<span><span class="co">#&gt; [1,]    1   11   21   31   41</span></span>
+<span><span class="co">#&gt; [2,]    2   12   22   32   42</span></span>
+<span><span class="co">#&gt; [3,]    3   13   23   33   43</span></span>
+<span><span class="co">#&gt; [4,]    4   14   24   34   44</span></span>
+<span><span class="co">#&gt; [5,]    5   15   25   35   45</span></span>
 <span></span>
 <span><span class="co"># drop = FALSE by default</span></span>
 <span><span class="va">x</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; mlx array [1 x 3]</span></span>
+<span><span class="co">#&gt; mlx array [1 x 10]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
-<span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
-<span><span class="co">#&gt; [1,]    1    4    7</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
+<span><span class="co">#&gt; [1,]    1   11   21   31   41   51   61   71   81    91</span></span>
 <span></span>
-<span><span class="va">logical_mask</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">logical_mask</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">x</span><span class="op">[</span><span class="va">logical_mask</span>, <span class="op">]</span></span>
-<span><span class="co">#&gt; mlx array [2 x 3]</span></span>
+<span><span class="co">#&gt; mlx array [5 x 10]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
-<span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
-<span><span class="co">#&gt; [1,]    1    4    7</span></span>
-<span><span class="co">#&gt; [2,]    3    6    9</span></span>
-<span></span>
-<span><span class="co"># subset assignment</span></span>
-<span></span>
-<span><span class="va">x</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
-<span><span class="va">x</span></span>
-<span><span class="co">#&gt; mlx array [3 x 3]</span></span>
-<span><span class="co">#&gt;   dtype: float32</span></span>
-<span><span class="co">#&gt;   device: gpu</span></span>
-<span><span class="co">#&gt;   values:</span></span>
-<span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
-<span><span class="co">#&gt; [1,]    1    0    7</span></span>
-<span><span class="co">#&gt; [2,]    2    0    8</span></span>
-<span><span class="co">#&gt; [3,]    3    0    9</span></span></code></pre></div>
+<span><span class="co">#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]</span></span>
+<span><span class="co">#&gt; [1,]    1   11   21   31   41   51   61   71   81    91</span></span>
+<span><span class="co">#&gt; [2,]    3   13   23   33   43   53   63   73   83    93</span></span>
+<span><span class="co">#&gt; [3,]    5   15   25   35   45   55   65   75   85    95</span></span>
+<span><span class="co">#&gt; [4,]    7   17   27   37   47   57   67   77   87    97</span></span>
+<span><span class="co">#&gt; [5,]    9   19   29   39   49   59   69   79   89    99</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="arithmetic">Arithmetic<a class="anchor" aria-label="anchor" href="#arithmetic"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">13</span><span class="op">:</span><span class="fl">24</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -224,7 +275,7 @@
 <h3 id="matrix-operations">Matrix Operations<a class="anchor" aria-label="anchor" href="#matrix-operations"></a>
 </h3>
 <p>Many base R matrix functions have mlx-specific methods:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -248,49 +299,111 @@
 <span><span class="co">#&gt; [1,]    1    3    5    1    2    3</span></span>
 <span><span class="co">#&gt; [2,]    2    4    6    4    5    6</span></span>
 <span></span>
-<span><span class="co"># Matrix algebra</span></span>
-<span><span class="va">a</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">b</span></span>
-<span><span class="co">#&gt; mlx array [2 x 2]</span></span>
-<span><span class="co">#&gt;   dtype: float32</span></span>
-<span><span class="co">#&gt;   device: gpu</span></span>
-<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co"># Matrix multiplication</span></span>
+<span><span class="va">c</span> <span class="op">&lt;-</span> <span class="va">a</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">b</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">c</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      [,1] [,2]</span></span>
 <span><span class="co">#&gt; [1,]   22   49</span></span>
 <span><span class="co">#&gt; [2,]   28   64</span></span>
 <span></span>
 <span><span class="co"># Reductions</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array []</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt; [1] 21</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mlx array []</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   device: gpu</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt; [1] 3.5</span></span>
 <span><span class="fu"><a href="reference/colMeans.html">colMeans</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array [3]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt; [1] 1.5 3.5 5.5</span></span>
-<span></span>
-<span><span class="co"># Cumulative operations flatten column-major</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cumsum</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
-<span><span class="co">#&gt; mlx array [6]</span></span>
+<span><span class="fu"><a href="reference/rowMeans.html">rowMeans</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mlx array [2]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt; [1] 3 4</span></span>
+<span></span>
+<span><span class="co"># Cumulative operations flatten column-major</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cumsum</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]  1  3  6 10 15 21</span></span>
 <span></span>
 <span><span class="va">qr_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/qr.html" class="external-link">qr</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
 <span><span class="va">svd_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/svd.html">svd</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
-<span><span class="va">chol_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chol.html" class="external-link">chol</a></span><span class="op">(</span><span class="va">a</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">chol_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chol.html" class="external-link">chol</a></span><span class="op">(</span><span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">fft_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fft.html">fft</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span>
-<span><span class="va">crossprod_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">solve_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve</a></span><span class="op">(</span><span class="va">a</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, <span class="va">b</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<span></span>
+<span><span class="va">qr_res</span><span class="op">$</span><span class="va">Q</span></span>
+<span><span class="co">#&gt; mlx array [2 x 2]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   device: gpu</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt;            [,1]       [,2]</span></span>
+<span><span class="co">#&gt; [1,] -0.4472135 -0.8944272</span></span>
+<span><span class="co">#&gt; [2,] -0.8944272  0.4472136</span></span>
+<span><span class="va">svd_res</span><span class="op">$</span><span class="va">d</span></span>
+<span><span class="co">#&gt; mlx array [2]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   device: gpu</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt; [1] 9.5255194 0.5143015</span></span>
+<span><span class="va">chol_res</span></span>
+<span><span class="co">#&gt; mlx array [2 x 2]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   device: gpu</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt;          [,1]     [,2]</span></span>
+<span><span class="co">#&gt; [1,] 3.741657 8.552360</span></span>
+<span><span class="co">#&gt; [2,] 0.000000 1.963962</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="random-sampling">Random Sampling<a class="anchor" aria-label="anchor" href="#random-sampling"></a>
+</h3>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="reference/mlx_rand_uniform.html">mlx_rand_uniform</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">512</span>, <span class="fl">512</span><span class="op">)</span>, min <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mlx array [512 x 512]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   device: gpu</span></span>
+<span><span class="co">#&gt;   (262144 elements, not shown)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="data-transformations">Data Transformations<a class="anchor" aria-label="anchor" href="#data-transformations"></a>
+</h3>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.7</span>, <span class="fl">0.4</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/mlx_sort.html">mlx_sort</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mlx array [4]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   device: gpu</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt; [1] 0.1 0.4 0.7 0.9</span></span>
+<span><span class="fu"><a href="reference/mlx_topk.html">mlx_topk</a></span><span class="op">(</span><span class="va">scores</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mlx array [2]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   device: gpu</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt; [1] 0.7 0.9</span></span>
+<span><span class="fu"><a href="reference/mlx_argmax.html">mlx_argmax</a></span><span class="op">(</span><span class="va">scores</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mlx array []</span></span>
+<span><span class="co">#&gt;   dtype: uint32</span></span>
+<span><span class="co">#&gt;   device: gpu</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt; [1] 3</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="automatic-differentiation">Automatic Differentiation<a class="anchor" aria-label="anchor" href="#automatic-differentiation"></a>
 </h3>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">loss</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">w</span>, <span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">preds</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">w</span></span>
 <span>  <span class="va">resids</span> <span class="op">&lt;-</span> <span class="va">preds</span> <span class="op">-</span> <span class="va">y</span></span>
@@ -305,11 +418,11 @@
 <span></span>
 <span><span class="co"># Inspect gradient</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">grads</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="co">#&gt;           [,1]</span></span>
-<span><span class="co">#&gt; [1,] 0.9005783</span></span>
-<span><span class="co">#&gt; [2,] 0.2985840</span></span>
-<span><span class="co">#&gt; [3,] 0.6431852</span></span>
-<span><span class="co">#&gt; [4,] 0.7269748</span></span>
+<span><span class="co">#&gt;            [,1]</span></span>
+<span><span class="co">#&gt; [1,]  2.0031688</span></span>
+<span><span class="co">#&gt; [2,]  0.5444943</span></span>
+<span><span class="co">#&gt; [3,] -1.3796213</span></span>
+<span><span class="co">#&gt; [4,]  0.2550257</span></span>
 <span></span>
 <span><span class="co"># Simple SGD loop</span></span>
 <span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mlx_linear.html">mlx_linear</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">1</span>, bias <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -324,24 +437,50 @@
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># Check final loss</span></span>
-<span><span class="va">ypred</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mlx_forward.html">mlx_forward</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">x</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">ypred</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">ypred</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">final_loss</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mlx_forward.html">mlx_forward</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">final_loss</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">final_loss</span> <span class="op">-</span> <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array []</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
-<span><span class="co">#&gt; [1] 0.1833142</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.1707606</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
-<h2 id="learning-more">Learning more<a class="anchor" aria-label="anchor" href="#learning-more"></a>
+<h2 id="data-types">Data Types<a class="anchor" aria-label="anchor" href="#data-types"></a>
 </h2>
+<p>Supported data types:</p>
 <ul>
-<li><a href="https://hughjonesd.github.io/Rmlx">Package website</a></li>
-<li><a href="https://ml-explore.github.io/mlx/build/html/index.html" class="external-link">Apple MLX documentation</a></li>
-<li><a href="https://hughjonesd.github.io/Rmlx/reference/Rmlx-package.html">Package help</a></li>
-<li><a href="https://hughjonesd.github.io/Rmlx/reference/index.html">Function reference</a></li>
+<li>
+<code>float32</code> for numeric data (default)</li>
+<li>
+<code>bool</code> for logical data</li>
+<li>Integer types <code>int8</code>, <code>int16</code>, <code>int32</code>, <code>int64</code>, <code>uint8</code>, <code>uint16</code>, <code>uint32</code>, <code>uint64</code>.</li>
+<li><code>complex64</code></li>
 </ul>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">x_f32</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, dtype <span class="op">=</span> <span class="st">"float32"</span><span class="op">)</span></span>
+<span><span class="va">logical_mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Integer matrix must be requested explicitly:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/typeof.html" class="external-link">typeof</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "integer"</span></span>
+<span><span class="va">x_float</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">x_int</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, dtype <span class="op">=</span> <span class="st">"int32"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># The Apple GPU uses float32 internally. Requests for `dtype = "float64"` </span></span>
+<span><span class="co"># are downcast with a warning.</span></span>
+<span><span class="fu"><a href="reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, dtype <span class="op">=</span> <span class="st">"float64"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: MLX arrays are stored in float32; downcasting input.</span></span>
+<span><span class="co">#&gt; mlx array [3 x 4]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   device: gpu</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3] [,4]</span></span>
+<span><span class="co">#&gt; [1,]    1    4    7   10</span></span>
+<span><span class="co">#&gt; [2,]    2    5    8   11</span></span>
+<span><span class="co">#&gt; [3,]    3    6    9   12</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -372,6 +511,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>David Hugh-Jones <br><small class="roles"> Author, maintainer </small>   </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 

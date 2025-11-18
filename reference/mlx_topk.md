@@ -70,13 +70,13 @@ if you need fully sorted indices.
 ``` r
 scores <- as_mlx(c(0.7, 0.2, 0.9, 0.4))
 mlx_topk(scores, k = 2)
-#> mlx array [2]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 0.7 0.9
 mlx_partition(scores, kth = 1)
-#> mlx array [4]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:

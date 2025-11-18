@@ -78,7 +78,7 @@ mlx_sum(x)
 #>   values:
 #> [1] 10
 mlx_sum(x, axes = 1)
-#> mlx array [2]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
@@ -104,13 +104,13 @@ mlx_any(x > 3)
 #>   values:
 #> [1] TRUE
 mlx_mean(x, axes = 1)
-#> mlx array [2]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 1.5 3.5
 mlx_var(x, axes = 2)
-#> mlx array [2]
+#> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
