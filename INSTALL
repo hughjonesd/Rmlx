@@ -1,0 +1,226 @@
+Rmlx Installation Guide
+========================
+
+Rmlx can use either a system-installed MLX library or build from an MLX source
+tarball. By default, it searches for system MLX first and, if not found,
+downloads MLX v0.29.4 from GitHub before building locally.
+
+Default Installation
+--------------------
+
+The default installation searches for system MLX in standard locations
+(/opt/homebrew, /usr/local, /usr/include). If not found, it downloads MLX
+v0.29.4 and builds it automatically:
+
+```r
+install.packages("Rmlx", type = "source")
+```
+
+When building from source, backends are auto-detected:
+- **macOS (Apple Silicon)**: Builds Metal + CPU backends
+- **Linux**: Builds CUDA + CPU backends (if CUDA toolkit is found)
+- **Linux (no CUDA)**: Builds CPU-only backend
+
+
+Backend Configuration Options
+------------------------------
+
+You can customize which backends to build using either configure arguments or
+environment variables.
+
+### Using configure.args
+
+```r
+# CPU-only build (no GPU acceleration)
+install.packages("Rmlx", type = "source", configure.args = "--cpu-only")
+
+# Force CUDA on Linux (requires CUDA toolkit)
+install.packages("Rmlx", type = "source", configure.args = "--with-cuda")
+
+# Disable Metal on macOS (CPU-only)
+install.packages("Rmlx", type = "source", configure.args = "--without-metal")
+
+# Multiple options
+install.packages("Rmlx",
+                 type = "source",
+                 configure.args = c("--with-cpu", "--without-cuda"))
+```
+
+### Using Environment Variables
+
+```r
+# From R
+Sys.setenv(MLX_BUILD_CUDA = "OFF")
+Sys.setenv(MLX_BUILD_CPU = "ON")
+install.packages("Rmlx", type = "source")
+
+# From shell
+MLX_BUILD_CUDA=OFF R CMD INSTALL Rmlx_*.tar.gz
+```
+
+### Available Options
+
+Configure arguments:
+  --with-cuda          Enable CUDA backend (Linux only)
+  --without-cuda       Disable CUDA backend
+  --with-metal         Enable Metal backend (macOS only)
+  --without-metal      Disable Metal backend
+  --with-cpu           Enable CPU backend
+  --without-cpu        Disable CPU backend
+  --cpu-only           Build CPU-only version (shortcut)
+  --help               Show configuration help
+
+Environment variables (MLX library source):
+  MLX_USE_SYSTEM=1           Force use of system MLX
+  MLX_BUILD_FROM_SOURCE=1    Force download/build from source
+  MLX_INCLUDE=/path          Path to MLX headers (implies system MLX)
+  MLX_LIB_DIR=/path          Path to MLX libraries (implies system MLX)
+
+Environment variables (source build):
+  MLX_BUILD_CUDA=ON|OFF      Control CUDA backend
+  MLX_BUILD_METAL=ON|OFF     Control Metal backend
+  MLX_BUILD_CPU=ON|OFF       Control CPU backend
+
+
+Using System MLX
+----------------
+
+By default, configure searches for system MLX in /opt/homebrew and /usr/local.
+To install system MLX on macOS:
+
+```bash
+brew install mlx
+```
+
+If configure doesn't auto-detect your system MLX, specify paths explicitly:
+
+```r
+# From R
+Sys.setenv(MLX_INCLUDE = "/opt/homebrew/include")
+Sys.setenv(MLX_LIB_DIR = "/opt/homebrew/lib")
+install.packages("Rmlx", type = "source")
+```
+
+From shell:
+```bash
+MLX_INCLUDE=/opt/homebrew/include R CMD INSTALL Rmlx_*.tar.gz
+```
+
+Building from Source Tarball
+------------------------------
+
+To force downloading MLX v0.29.4 and building it even if system MLX is available:
+
+```r
+# From R
+Sys.setenv(MLX_BUILD_FROM_SOURCE = "1")
+install.packages("Rmlx", type = "source")
+```
+
+From shell:
+```bash
+MLX_BUILD_FROM_SOURCE=1 R CMD INSTALL Rmlx_*.tar.gz
+```
+
+
+System Requirements
+-------------------
+
+### All Platforms
+- CMake 3.24 or later
+- C++17 compatible compiler
+
+### macOS
+- macOS 13.5 or later
+- Apple Silicon (M1, M2, M3, or later)
+- Xcode Command Line Tools
+
+Install requirements:
+```bash
+xcode-select --install
+brew install cmake
+```
+
+### Linux
+- BLAS, LAPACK, and LAPACKE libraries (required)
+- CUDA Toolkit 12.0 or later (optional, for GPU acceleration)
+- NVIDIA GPU with compute capability 7.0+ (for CUDA)
+
+Install requirements (Ubuntu/Debian):
+```bash
+sudo apt-get update
+sudo apt-get install cmake build-essential libblas-dev liblapack-dev liblapacke-dev
+
+# For CUDA support (optional)
+# Download from https://developer.nvidia.com/cuda-downloads
+```
+
+**Note**: BLAS, LAPACK, and LAPACKE are always required on Linux, even for CPU-only builds.
+For CPU-only builds on Linux, CUDA is not required.
+
+
+Examples
+--------
+
+### macOS with default settings
+```r
+# Builds Metal + CPU backends
+install.packages("Rmlx", type = "source")
+```
+
+### Linux with CUDA
+```r
+# Auto-detects CUDA if available
+install.packages("Rmlx", type = "source")
+
+# Or explicitly enable
+install.packages("Rmlx", type = "source", configure.args = "--with-cuda")
+```
+
+### Linux without CUDA (CPU-only)
+```r
+install.packages("Rmlx", type = "source", configure.args = "--cpu-only")
+```
+
+### Development installation
+```r
+# Install from GitHub
+remotes::install_github("hughjonesd/Rmlx", configure.args = "--cpu-only")
+
+# Or clone and install locally
+# git clone https://github.com/hughjonesd/Rmlx.git
+# cd Rmlx
+# R CMD INSTALL . --configure-args="--cpu-only"
+```
+
+
+Troubleshooting
+---------------
+
+### CMake not found
+Install CMake using your system package manager or from https://cmake.org/
+
+### CUDA errors on Linux
+If you see CUDA-related errors but don't have CUDA installed:
+```r
+install.packages("Rmlx", type = "source", configure.args = "--without-cuda")
+```
+
+### Build takes too long
+The first installation compiles the MLX library, which can take 5-15 minutes
+depending on your system. Subsequent reinstalls will be faster if you don't
+clean the build artifacts.
+
+### Out of memory during compilation
+Reduce parallel build jobs by setting:
+```bash
+MAKEFLAGS="-j2" R CMD INSTALL Rmlx_*.tar.gz
+```
+
+
+Getting Help
+------------
+
+For issues and questions:
+- GitHub Issues: https://github.com/hughjonesd/Rmlx/issues
+- MLX Documentation: https://ml-explore.github.io/mlx/

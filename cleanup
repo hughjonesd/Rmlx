@@ -2,5 +2,19 @@
 
 # Cleanup script for Rmlx
 
+# Remove generated Makevars
 rm -f src/Makevars
+
+# Clean up MLX build artifacts
+if [ -d "build/mlx-build" ] || [ -d "build/mlx-src" ] || [ -d "build/mlx-install" ]; then
+  echo "Removing downloaded MLX sources and build output..."
+  rm -rf build/mlx-build build/mlx-src build/mlx-install
+fi
+
+# Remove downloaded tarballs and version stamps
+rm -f build/mlx-*.tar.gz
+
+# Remove any copied Metal libraries
+rm -f inst/libs/mlx.metallib
+
 exit 0

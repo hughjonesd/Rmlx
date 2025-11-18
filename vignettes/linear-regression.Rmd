@@ -8,10 +8,15 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
+library(Rmlx)
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+
+# Detect available device
+device <- mlx_get_device()
 ```
 
 ## Overview
@@ -26,8 +31,6 @@ We'll create synthetic data for linear regression with high dimensionality:
 - Noisy labels `y = X @ w_star + small_noise`
 
 ```{r}
-library(Rmlx)
-
 # Problem metadata
 num_features <- 100
 num_cases <- 10000
@@ -211,12 +214,12 @@ knitr::kable(results, digits = 4)
 
 ## Device Selection
 
-By default, computations run on GPU for speed. Switch to CPU if needed:
+By default, computations run on the best available device. Switch to CPU if needed:
 
 ```{r}
 # Use CPU (useful for debugging)
 mlx_default_device("cpu")
 
-# Or back to GPU
-mlx_default_device("gpu")
+# Or back to best available device
+mlx_default_device(device)
 ```

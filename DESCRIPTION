@@ -1,14 +1,17 @@
 Package: Rmlx
 Type: Package
-Title: R Interface to Apple's MLX library for GPU-accelerated arrays
+Title: R Interface to MLX Arrays (GPU-Accelerated with Metal or CUDA)
 Version: 0.1.0.9000
-Authors@R:
-    person("David", "Hugh-Jones", email = "david@hughjones.com", role = c("aut", "cre"))
-Author: David Hugh-Jones [aut, cre]
+Authors@R: c(
+    person("David", "Hugh-Jones", email = "david@hughjones.com", role = c("aut", "cre")),
+    person("Apple Inc.", role = "cph", comment = "MLX library downloaded at install time")
+    )
+Author: David Hugh-Jones [aut, cre],
+    Apple Inc. [cph] (MLX library downloaded at install time)
 Maintainer: David Hugh-Jones <david@hughjones.com>
-Description: An R interface to Apple's MLX library, allowing array operations on 
-    Apple Silicon GPUs and CPUs. Features include shared memory between the chips,
-    CUDA support, lazy evaluation and automatic differentiation.
+Description: S3 class 'mlx' backed by Apple's MLX library, allowing array operations
+    on Apple Silicon GPUs/CPUs and CUDA-enabled Linux systems through lazy evaluation,
+    shared memory between chips, and automatic differentiation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
@@ -27,7 +30,7 @@ Suggests:
     ggplot2
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-SystemRequirements: MLX (Apple Machine Learning eXchange) with C/C++ headers and library; macOS on Apple Silicon
+SystemRequirements: C++17, CMake (>= 3.24); macOS on Apple Silicon (M1 or later) for Metal backend; Linux with NVIDIA GPU and CUDA toolkit (>= 12.0) for CUDA backend
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 URL: https://hughjonesd.github.io/Rmlx/, https://github.com/hughjonesd/Rmlx

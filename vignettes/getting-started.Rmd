@@ -1,0 +1,291 @@
+---
+title: "Getting Started with Rmlx"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with Rmlx}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+library(Rmlx)
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+# Detect available device
+device <- mlx_get_device()
+```
+
+
+## Introduction
+
+Apple MLX (Machine Learning eXchange) is Apple’s high-performance array and machine-learning framework for Apple Silicon, built on top of Metal for GPU execution and optimized CPU kernels. It offers lazy evaluation, vectorized math, automatic differentiation, and neural network building blocks (see the [official MLX documentation](https://ml-explore.github.io/mlx/) for full details).
+
+`Rmlx` is a thin R layer over MLX that lets you:
+
+* Create MLX tensors from R data (`as_mlx()`).
+* Run GPU-accelerated math, linear algebra, FFTs, and reductions with familiar R syntax.
+* Use automatic differentiation (`mlx_grad()`, `mlx_value_grad()`) for optimization.
+* Build simple models with MLX modules and update them using SGD helpers.
+
+All heavy computation stays in MLX land; you only copy back to base R when you call functions like `as.matrix()`.
+
+## System Requirements
+
+Before using Rmlx, ensure MLX is installed:
+
+```bash
+# Using Homebrew (if available)
+brew install mlx
+
+# Or build from source
+git clone https://github.com/ml-explore/mlx.git
+cd mlx && mkdir build && cd build
+cmake .. && make && sudo make install
+```
+
+## Creating MLX Arrays
+
+Convert R objects to MLX arrays using `as_mlx()`:
+
+```{r}
+# From a vector
+v <- as_mlx(1:10)
+print(v)
+
+# From a matrix
+m <- matrix(1:12, nrow = 3, ncol = 4)
+x <- as_mlx(m)
+print(x)
+
+# Specify the device explicitly (uses GPU if available, CPU otherwise)
+x_dev <- as_mlx(m, device = device)
+```
+
+> **Precision note:** Numeric inputs are stored in single precision (`float32`).
+> Requesting `dtype = "float64"` will downcast the input with a warning.
+> Logical inputs are stored as MLX `bool` tensors (logical `NA` values are not
+> supported). Complex inputs are stored as `complex64` (single-precision real
+> and imaginary parts). Use base R arrays if you need double precision arithmetic.
+
+## Lazy Evaluation
+
+MLX arrays use lazy evaluation - operations are recorded but not computed
+until needed:
+
+```{r}
+# These operations are not computed immediately
+x <- as_mlx(matrix(1:100, 10, 10))
+y <- as_mlx(matrix(101:200, 10, 10))
+z <- x + y * 2
+
+# Force evaluation of a specific array
+mlx_eval(z)
+
+# Or convert to R (automatically evaluates)
+as.matrix(z)
+
+# Wait for all queued work on the available device
+mlx_synchronize(device)
+```
+
+## Arithmetic Operations
+
+Rmlx supports standard arithmetic operators:
+
+```{r}
+x <- as_mlx(matrix(1:12, 3, 4))
+y <- as_mlx(matrix(13:24, 3, 4))
+
+# Element-wise operations
+sum_xy <- x + y
+diff_xy <- x - y
+prod_xy <- x * y
+quot_xy <- x / y
+pow_xy <- x ^ 2
+
+# Convert back to R to see results
+as.matrix(sum_xy)
+```
+
+## Matrix Operations
+
+### Matrix Multiplication
+
+```{r}
+a <- as_mlx(matrix(1:6, 2, 3))
+b <- as_mlx(matrix(1:6, 3, 2))
+
+# Matrix multiplication
+c <- a %*% b
+as.matrix(c)
+```
+
+### Transpose
+
+```{r}
+x <- as_mlx(matrix(1:12, 3, 4))
+x_t <- t(x)
+print(x_t)
+```
+
+### Cross Products
+
+```{r}
+x <- as_mlx(matrix(rnorm(20), 5, 4))
+true_w <- as_mlx(matrix(c(2, -1, 0.5, 0.25), 4, 1))
+y <- x %*% true_w
+w <- as_mlx(matrix(0, 4, 1))
+
+# Loss must stay entirely in MLX-land: no conversions back to base R
+loss <- function(theta, data_x, data_y) {
+  preds <- data_x %*% theta
+  resids <- preds - data_y
+  sum(resids * resids) / length(data_y)
+}
+
+grads <- mlx_grad(loss, w, x, y)
+
+# Wrong: converting to base R breaks the gradient
+bad_loss <- function(theta, data_x, data_y) {
+  preds <- as.matrix(data_x %*% theta)  # leaves MLX
+  resids <- preds - as.matrix(data_y)
+  sum(resids * resids) / nrow(resids)
+}
+try(mlx_grad(bad_loss, w, x, y))
+
+# A small SGD loop using the module/optimizer helpers
+model <- mlx_linear(4, 1, bias = FALSE)  # learns a single weight vector
+parameters <- mlx_parameters(model)
+opt <- mlx_optimizer_sgd(parameters, lr = 0.1)
+loss_fn <- function(mod, data_x, data_y) {
+  theta <- mlx_param_values(parameters)[[1]]
+  loss(theta, data_x, data_y)
+}
+
+loss_history <- numeric(50)
+for (step in seq_along(loss_history)) {
+  step_res <- mlx_train_step(model, loss_fn, opt, x, y)
+  loss_history[step] <- as.vector(step_res$loss)
+}
+
+# Check final loss and inspect learned parameters
+final_loss <- mlx_forward(model, x)
+residual_mse <- as.vector(mean((final_loss - y) * (final_loss - y)))
+residual_mse
+loss_history
+
+learned_w <- mlx_param_values(parameters)[[1]]
+as.matrix(learned_w)
+as.matrix(true_w)
+```
+
+## Reductions
+
+Compute summaries across arrays:
+
+```{r}
+x <- as_mlx(matrix(1:100, 10, 10))
+
+# Overall reductions
+sum(x)
+mean(x)
+
+# Column and row means
+colMeans(x)
+rowMeans(x)
+
+# Convert to R to see values
+as.matrix(colMeans(x))
+
+# Cumulative operations flatten the array in column-major order
+as.vector(cumsum(x))
+```
+
+## Indexing
+
+Subset MLX arrays similar to R:
+
+```{r}
+x <- as_mlx(matrix(1:100, 10, 10))
+
+# Select rows and columns
+x_sub <- x[1:5, 1:5]
+
+# Select specific row
+row_1 <- x[1, ]
+
+# Select specific column
+col_1 <- x[, 1]
+```
+
+## Device Management
+
+Control whether computations run on GPU or CPU:
+
+```{r}
+# Check default device
+mlx_default_device()
+
+# Set to CPU for debugging
+mlx_default_device("cpu")
+
+# Create array on CPU
+x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
+
+# Set back to best available device
+mlx_default_device(device)
+```
+
+Remember that numeric computations are always performed in `float32`; the CPU
+mode is useful when you need to compare against base R or debug without a GPU.
+
+## Performance Comparison
+
+Here's a simple timing comparison for large matrix multiplication:
+
+```{r}
+n <- 1000
+
+# R base
+m1 <- matrix(rnorm(n * n), n, n)
+m2 <- matrix(rnorm(n * n), n, n)
+t1 <- system.time(r_result <- m1 %*% m2)
+
+# MLX
+x1 <- as_mlx(m1)
+x2 <- as_mlx(m2)
+mlx_eval(x1)
+mlx_eval(x2)
+t2 <- system.time({
+  mlx_result <- x1 %*% x2
+  mlx_eval(mlx_result)
+  final <- as.matrix(mlx_result)
+})
+
+cat("Base R:", t1["elapsed"], "seconds\n")
+cat("MLX:", t2["elapsed"], "seconds\n")
+```
+
+Note: This is an informal comparison, not a rigorous benchmark. Performance
+gains depend on array size, operation type, and hardware.
+
+## Best Practices
+
+1. **Keep data on GPU**: Minimize transfers between R and MLX
+2. **Use lazy evaluation**: Build computation graphs before evaluating
+3. **Batch operations**: Combine operations before forcing evaluation
+4. **Monitor memory**: GPU memory is limited; free unused arrays
+5. **Start with CPU**: Use CPU device for debugging, then switch to GPU
+
+## Limitations
+
+Current limitations in this initial version:
+
+- Apple Silicon only (no Intel Mac or other platforms)
+- 2D arrays (matrices) are primary focus
+- Limited indexing operations
+- No autodiff or gradient computation (planned for future release)

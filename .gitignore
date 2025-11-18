@@ -9,3 +9,5 @@ docs
 Rplots.pdf
 /doc/
 /Meta/
+build/
+inst/libs/mlx.metallib

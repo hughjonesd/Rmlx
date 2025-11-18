@@ -1,82 +1,335 @@
 #!/bin/sh
 
-# Configure script for Rmlx: detect MLX headers and libraries
+set -e
 
-echo "Checking for MLX (Apple Machine Learning eXchange)..."
+ROOT_DIR=$(pwd)
+OS=$(uname -s)
+ARCH=$(uname -m)
 
-# Allow environment variable overrides
-MLX_INCLUDE=${MLX_INCLUDE:-""}
-MLX_LIB_DIR=${MLX_LIB_DIR:-""}
-MLX_LIBS=${MLX_LIBS:-"-lmlx"}
+MLX_VERSION="0.29.3"
+MLX_TAG="v${MLX_VERSION}"
+MLX_TARBALL_URL="https://github.com/ml-explore/mlx/archive/refs/tags/${MLX_TAG}.tar.gz"
+BUILD_DIR="build"
+MLX_SOURCE_DIR="${BUILD_DIR}/mlx-src"
+MLX_BUILD_DIR="${BUILD_DIR}/mlx-build"
+MLX_INSTALL_DIR="${BUILD_DIR}/mlx-install"
+MLX_TARBALL_PATH="${ROOT_DIR}/vendor/mlx-${MLX_VERSION}.tar.gz"
+MLX_VERSION_STAMP="${MLX_SOURCE_DIR}/.rmlx-source-version"
 
-# Search paths for headers if not specified
-if [ -z "$MLX_INCLUDE" ]; then
-  for dir in \
-    /opt/homebrew/include \
-    /usr/local/include \
-    "$(xcrun --show-sdk-path 2>/dev/null)/usr/include"
-  do
-    if [ -d "$dir" ] && [ -f "$dir/mlx/mlx.h" ]; then
-      MLX_INCLUDE="$dir"
-      echo "Found MLX headers in: $MLX_INCLUDE"
+if [ -z "${R_HOME:-}" ]; then
+  R_HOME=$(R RHOME)
+fi
+
+CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX17 2>/dev/null || "${R_HOME}/bin/R" CMD config CXX 2>/dev/null || true)
+if [ -z "$CXX_FULL" ]; then
+  die "Unable to determine C++ compiler from R CMD config"
+fi
+CXX=$(printf '%s\n' "$CXX_FULL" | awk '{print $1}')
+CXXFLAGS=$("${R_HOME}/bin/R" CMD config CXX17FLAGS 2>/dev/null || "${R_HOME}/bin/R" CMD config CXXFLAGS 2>/dev/null || true)
+
+log() {
+  printf '%s\n' "$1"
+}
+
+err() {
+  printf 'ERROR: %s\n' "$1" >&2
+}
+
+die() {
+  err "$1"
+  exit 1
+}
+
+have_cmd() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+# Determine backend capabilities
+METAL_AVAILABLE=false
+if [ "$OS" = "Darwin" ] && [ "$ARCH" = "arm64" ]; then
+  if have_cmd xcrun; then
+    if xcrun -f metal >/dev/null 2>&1; then
+      METAL_AVAILABLE=true
+    fi
+  fi
+fi
+
+CUDA_AVAILABLE=false
+if have_cmd nvcc; then
+  CUDA_AVAILABLE=true
+fi
+
+# Default backend selection (CPU always ON)
+if [ -z "${MLX_BUILD_CPU+x}" ]; then
+  MLX_BUILD_CPU=ON
+fi
+
+if [ -z "${MLX_BUILD_METAL+x}" ]; then
+  if [ "$METAL_AVAILABLE" = true ]; then
+    MLX_BUILD_METAL=ON
+  else
+    MLX_BUILD_METAL=OFF
+  fi
+fi
+
+if [ -z "${MLX_BUILD_CUDA+x}" ]; then
+  if [ "$METAL_AVAILABLE" = false ] && [ "$CUDA_AVAILABLE" = true ]; then
+    MLX_BUILD_CUDA=ON
+  else
+    MLX_BUILD_CUDA=OFF
+  fi
+fi
+
+# Parse configure args overrides
+for arg in "$@"; do
+  case $arg in
+    --with-cuda)
+      MLX_BUILD_CUDA=ON
+      ;;
+    --without-cuda)
+      MLX_BUILD_CUDA=OFF
+      ;;
+    --with-metal)
+      MLX_BUILD_METAL=ON
+      ;;
+    --without-metal)
+      MLX_BUILD_METAL=OFF
+      ;;
+    --with-cpu)
+      MLX_BUILD_CPU=ON
+      ;;
+    --without-cpu)
+      MLX_BUILD_CPU=OFF
+      ;;
+    --cpu-only)
+      MLX_BUILD_CPU=ON
+      MLX_BUILD_METAL=OFF
+      MLX_BUILD_CUDA=OFF
+      ;;
+    --help)
+      cat <<USAGE
+Configuration options:
+  --with-cuda / --without-cuda
+  --with-metal / --without-metal
+  --with-cpu / --without-cpu
+  --cpu-only
+
+Environment overrides:
+  MLX_USE_SYSTEM=1           Force system-installed MLX
+  MLX_BUILD_FROM_SOURCE=1    Force download/build from source
+  MLX_INCLUDE=<path>         Path to MLX headers (implies system MLX)
+  MLX_LIB_DIR=<path>         Path to MLX libraries (implies system MLX)
+  MLX_BUILD_CPU=ON|OFF       Override CPU backend
+  MLX_BUILD_METAL=ON|OFF     Override Metal backend
+  MLX_BUILD_CUDA=ON|OFF      Override CUDA backend
+USAGE
+      exit 0
+      ;;
+  esac
+done
+
+if [ "$MLX_BUILD_CPU" = "OFF" ] && [ "$MLX_BUILD_METAL" = "OFF" ] && [ "$MLX_BUILD_CUDA" = "OFF" ]; then
+  die "At least one backend must be enabled"
+fi
+
+if [ "$OS" = "Darwin" ] && [ "$MLX_BUILD_CUDA" = "ON" ]; then
+  log "CUDA is not supported on macOS, disabling CUDA backend"
+  MLX_BUILD_CUDA=OFF
+fi
+
+if [ "$OS" = "Linux" ] && [ "$MLX_BUILD_METAL" = "ON" ]; then
+  log "Metal is not supported on Linux, disabling Metal backend"
+  MLX_BUILD_METAL=OFF
+fi
+
+log "Platform: ${OS} ${ARCH}"
+log "Backends => Metal: ${MLX_BUILD_METAL}, CUDA: ${MLX_BUILD_CUDA}, CPU: ${MLX_BUILD_CPU}"
+
+# Decide between system MLX and source build
+USE_SYSTEM_MLX=false
+if [ -n "${MLX_BUILD_FROM_SOURCE:-}" ]; then
+  log "Forcing MLX build from downloaded source"
+elif [ -n "${MLX_USE_SYSTEM:-}" ] || [ -n "${MLX_INCLUDE:-}" ]; then
+  USE_SYSTEM_MLX=true
+  log "Using system MLX as requested"
+else
+  log "Searching for system MLX headers..."
+  INCLUDE_DIR=""
+  SDK_INCLUDE=""
+  if [ "$OS" = "Darwin" ] && have_cmd xcrun; then
+    SDK_PATH=$(xcrun --show-sdk-path 2>/dev/null || true)
+    if [ -n "$SDK_PATH" ]; then
+      SDK_INCLUDE="$SDK_PATH/usr/include"
+    fi
+  fi
+  for dir in /opt/homebrew/include /usr/local/include /usr/include $SDK_INCLUDE; do
+    if [ -z "$dir" ]; then
+      continue
+    fi
+    if [ -f "$dir/mlx/mlx.h" ] || [ -f "$dir/mlx.h" ]; then
+      INCLUDE_DIR="$dir"
       break
     fi
   done
+  if [ -n "$INCLUDE_DIR" ]; then
+    MLX_INCLUDE="$INCLUDE_DIR"
+    USE_SYSTEM_MLX=true
+    log "Found MLX headers in $INCLUDE_DIR"
+  fi
 fi
 
-# Search paths for libraries if not specified
-if [ -z "$MLX_LIB_DIR" ]; then
-  for dir in \
-    /opt/homebrew/lib \
-    /usr/local/lib
-  do
-    if [ -d "$dir" ] && { [ -f "$dir/libmlx.dylib" ] || [ -f "$dir/libmlx.a" ]; }; then
-      MLX_LIB_DIR="$dir"
-      echo "Found MLX library in: $MLX_LIB_DIR"
-      break
+# Additional library search for system MLX when detected automatically
+if [ "$USE_SYSTEM_MLX" = true ]; then
+  SDK_INCLUDE_ALT=""
+  if [ "$OS" = "Darwin" ] && have_cmd xcrun; then
+    SDK_PATH=$(xcrun --show-sdk-path 2>/dev/null || true)
+    if [ -n "$SDK_PATH" ]; then
+      SDK_INCLUDE_ALT="$SDK_PATH/usr/include"
     fi
-  done
+  fi
+
+  MLX_INCLUDE_DIR=${MLX_INCLUDE:-}
+  MLX_LIB_DIR=${MLX_LIB_DIR:-}
+
+  if [ -z "$MLX_INCLUDE_DIR" ]; then
+    for dir in /opt/homebrew/include /usr/local/include /usr/include $SDK_INCLUDE_ALT; do
+      if [ -z "$dir" ]; then
+        continue
+      fi
+      if [ -f "$dir/mlx/mlx.h" ] || [ -f "$dir/mlx.h" ]; then
+        MLX_INCLUDE_DIR="$dir"
+        log "Detected MLX headers in $dir"
+        break
+      fi
+    done
+  fi
+
+  if [ -z "$MLX_INCLUDE_DIR" ]; then
+    die "MLX_INCLUDE must point to headers when using system MLX"
+  fi
+
+  if [ -z "$MLX_LIB_DIR" ]; then
+    for dir in /opt/homebrew/lib /usr/local/lib /usr/lib /usr/lib64 /usr/lib/x86_64-linux-gnu; do
+      if [ -d "$dir" ] && { [ -f "$dir/libmlx.dylib" ] || [ -f "$dir/libmlx.so" ] || [ -f "$dir/libmlx.a" ]; }; then
+        MLX_LIB_DIR="$dir"
+        log "Detected MLX libraries in $dir"
+        break
+      fi
+    done
+  fi
+
+  if [ -z "$MLX_LIB_DIR" ]; then
+    die "Unable to find MLX library directory. Set MLX_LIB_DIR or disable MLX_USE_SYSTEM."
+  fi
+else
+  # Build from bundled source (tarball checked into repository)
+  mkdir -p "$BUILD_DIR"
+  NEED_UNPACK=true
+  if [ -d "$MLX_SOURCE_DIR" ] && [ -f "$MLX_VERSION_STAMP" ]; then
+    if [ "$(cat "$MLX_VERSION_STAMP")" = "$MLX_VERSION" ]; then
+      NEED_UNPACK=false
+    fi
+  fi
+  if [ "$NEED_UNPACK" = true ]; then
+    if [ ! -f "$MLX_TARBALL_PATH" ]; then
+      die "Bundled MLX tarball missing at $MLX_TARBALL_PATH. Download ${MLX_TARBALL_URL} and place it there."
+    fi
+    log "Extracting bundled MLX ${MLX_VERSION}..."
+    rm -rf "$MLX_SOURCE_DIR" "$MLX_BUILD_DIR" "$MLX_INSTALL_DIR"
+    tar -xzf "$MLX_TARBALL_PATH" -C "$BUILD_DIR"
+    mv "$BUILD_DIR/mlx-${MLX_VERSION}" "$MLX_SOURCE_DIR"
+    printf '%s' "$MLX_VERSION" > "$MLX_VERSION_STAMP"
+  else
+    log "Reusing bundled MLX ${MLX_VERSION}"
+    rm -rf "$MLX_BUILD_DIR" "$MLX_INSTALL_DIR"
+  fi
+
+  mkdir -p "$MLX_BUILD_DIR"
+  log "Configuring MLX with CMake..."
+  CMAKE_EXTRA_FLAGS=""
+  if [ "$OS" = "Linux" ]; then
+    export CMAKE_PREFIX_PATH="/usr/lib/x86_64-linux-gnu:/usr/lib64:/usr/local/lib:${CMAKE_PREFIX_PATH:-}"
+  fi
+  cmake -S "$MLX_SOURCE_DIR" -B "$MLX_BUILD_DIR" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_COMPILER="$CXX" \
+    -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+    -DCMAKE_INSTALL_PREFIX="$ROOT_DIR/$MLX_INSTALL_DIR" \
+    -DBUILD_SHARED_LIBS=OFF \
+    -DMLX_BUILD_TESTS=OFF \
+    -DMLX_BUILD_EXAMPLES=OFF \
+    -DMLX_BUILD_BENCHMARKS=OFF \
+    -DMLX_BUILD_PYTHON_BINDINGS=OFF \
+    -DMLX_BUILD_METAL=$MLX_BUILD_METAL \
+    -DMLX_BUILD_CPU=$MLX_BUILD_CPU \
+    -DMLX_BUILD_CUDA=$MLX_BUILD_CUDA \
+    $CMAKE_EXTRA_FLAGS
+
+  log "Compiling MLX (this may take a while)..."
+  cmake --build "$MLX_BUILD_DIR" --config Release --parallel
+
+  log "Installing MLX locally..."
+  cmake --install "$MLX_BUILD_DIR"
+
+  MLX_INCLUDE_DIR="$ROOT_DIR/$MLX_INSTALL_DIR/include"
+  MLX_LIB_DIR="$ROOT_DIR/$MLX_INSTALL_DIR/lib"
+  GGUF_STATIC_LIB="$ROOT_DIR/$MLX_BUILD_DIR/mlx/io/libgguflib.a"
 fi
 
-# Check if we found everything
-if [ -z "$MLX_INCLUDE" ]; then
-  echo ""
-  echo "ERROR: MLX headers not found!"
-  echo ""
-  echo "MLX (Apple Machine Learning eXchange) is required to build this package."
-  echo "This package is designed for macOS on Apple Silicon."
-  echo ""
-  echo "To install MLX, you can:"
-  echo "  1. Use Homebrew: brew install mlx"
-  echo "  2. Build from source: https://github.com/ml-explore/mlx"
-  echo ""
-  echo "Or set environment variables:"
-  echo "  MLX_INCLUDE=/path/to/mlx/include"
-  echo "  MLX_LIB_DIR=/path/to/mlx/lib"
-  echo ""
-  exit 1
+# Prepare compiler/linker flags
+if [ "$USE_SYSTEM_MLX" = true ]; then
+  PKG_CPPFLAGS="-I${MLX_INCLUDE_DIR}"
+  if [ "$OS" = "Darwin" ]; then
+    PKG_LIBS="-L${MLX_LIB_DIR} -Wl,-rpath,${MLX_LIB_DIR} -lmlx"
+  else
+    PKG_LIBS="-L${MLX_LIB_DIR} -lmlx"
+  fi
+else
+  REL_INCLUDE_INSTALL="../${MLX_INSTALL_DIR}/include"
+  REL_INCLUDE_SOURCE="../${MLX_SOURCE_DIR}/mlx"
+  REL_LIB_DIR="../${MLX_INSTALL_DIR}/lib"
+  PKG_CPPFLAGS="-I${REL_INCLUDE_INSTALL} -I${REL_INCLUDE_SOURCE}"
+  if [ "$OS" = "Darwin" ]; then
+    PKG_LIBS="-L${REL_LIB_DIR} -Wl,-rpath,@loader_path/../${MLX_INSTALL_DIR}/lib -lmlx"
+  else
+    PKG_LIBS="-L${REL_LIB_DIR} -lmlx"
+  fi
 fi
 
-if [ -z "$MLX_LIB_DIR" ]; then
-  echo ""
-  echo "ERROR: MLX library not found!"
-  echo ""
-  echo "MLX (Apple Machine Learning eXchange) library is required."
-  echo "Please install MLX or set MLX_LIB_DIR environment variable."
-  echo ""
-  exit 1
+# Link gguf static helper when bundling MLX to satisfy gguf_* symbols (Linux)
+if [ "$USE_SYSTEM_MLX" = false ] && [ -f "$GGUF_STATIC_LIB" ]; then
+  PKG_LIBS="$PKG_LIBS $GGUF_STATIC_LIB"
 fi
 
-# Write src/Makevars
-echo "Writing src/Makevars..."
-cat > src/Makevars <<EOF
-PKG_CPPFLAGS = -I${MLX_INCLUDE}
-PKG_LIBS = -L${MLX_LIB_DIR} ${MLX_LIBS}
-EOF
+if [ "$MLX_BUILD_METAL" = "ON" ]; then
+  PKG_LIBS="$PKG_LIBS -framework Metal -framework Foundation -framework QuartzCore -framework Accelerate"
+fi
 
-echo "Configuration successful!"
-echo "  MLX_INCLUDE: $MLX_INCLUDE"
-echo "  MLX_LIB_DIR: $MLX_LIB_DIR"
-echo "  MLX_LIBS: $MLX_LIBS"
+if [ "$MLX_BUILD_CUDA" = "ON" ]; then
+  CUDA_LIB_DIR="${CUDA_HOME:-/usr/local/cuda}/lib64"
+  if [ ! -d "$CUDA_LIB_DIR" ]; then
+    CUDA_LIB_DIR="/usr/lib/x86_64-linux-gnu"
+  fi
+  PKG_LIBS="$PKG_LIBS -L${CUDA_LIB_DIR} -lcudart -lcublas -lcublasLt"
+fi
 
-exit 0
+cat > src/Makevars <<EOF_MAKEVARS
+# Generated by configure - do not edit by hand
+# Backends: Metal=$MLX_BUILD_METAL CPU=$MLX_BUILD_CPU CUDA=$MLX_BUILD_CUDA
+
+PKG_CPPFLAGS = $PKG_CPPFLAGS
+PKG_LIBS = $PKG_LIBS
+CXX_STD = CXX17
+EOF_MAKEVARS
+
+log "✓ src/Makevars created"
+
+if [ "$USE_SYSTEM_MLX" = false ] && [ "$MLX_BUILD_METAL" = "ON" ]; then
+  if [ -f "$MLX_LIB_DIR/mlx.metallib" ]; then
+    mkdir -p inst/libs
+    cp "$MLX_LIB_DIR/mlx.metallib" inst/libs/
+    log "Copied mlx.metallib to inst/libs"
+  fi
+fi
+
+log "Configuration complete."
