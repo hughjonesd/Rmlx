@@ -12,7 +12,7 @@ test_that("basic compilation works", {
   result <- compiled_fn(x, w, b)
 
   expect_s3_class(result, "mlx")
-  expect_equal(mlx_dim(result), c(10, 128))
+  expect_equal(mlx_shape(result), c(10, 128))
 })
 
 test_that("compiled functions can be called multiple times", {
@@ -53,8 +53,8 @@ test_that("compiled functions handle multiple returns", {
   expect_length(result, 2)
   expect_s3_class(result[[1]], "mlx")
   expect_s3_class(result[[2]], "mlx")
-  expect_equal(mlx_dim(result[[1]]), c(10, 128))
-  expect_equal(mlx_dim(result[[2]]), integer(0))  # Scalar
+  expect_equal(mlx_shape(result[[1]]), c(10, 128))
+  expect_equal(mlx_shape(result[[2]]), integer(0))  # Scalar
 })
 
 test_that("shapeless compilation works", {
@@ -66,17 +66,17 @@ test_that("shapeless compilation works", {
   # First call with shape (5, 5)
   x1 <- mlx_rand_normal(c(5, 5))
   r1 <- compiled_fn(x1)
-  expect_equal(mlx_dim(r1), c(5, 5))
+  expect_equal(mlx_shape(r1), c(5, 5))
 
   # Second call with different shape (10, 10) - should work without recompilation
   x2 <- mlx_rand_normal(c(10, 10))
   r2 <- compiled_fn(x2)
-  expect_equal(mlx_dim(r2), c(10, 10))
+  expect_equal(mlx_shape(r2), c(10, 10))
 
   # Third call with 1D array
   x3 <- mlx_rand_normal(c(20))
   r3 <- compiled_fn(x3)
-  expect_equal(mlx_dim(r3), 20)
+  expect_equal(mlx_shape(r3), 20)
 })
 
 test_that("compilation with complex operations works", {
@@ -96,7 +96,7 @@ test_that("compilation with complex operations works", {
   result <- compiled_fn(x, y)
 
   expect_s3_class(result, "mlx")
-  expect_equal(length(mlx_dim(result)), 0)  # Scalar
+  expect_equal(length(mlx_shape(result)), 0)  # Scalar
 })
 
 test_that("mlx_disable_compile and mlx_enable_compile work", {
@@ -151,7 +151,7 @@ test_that("compiled functions auto-convert arguments to mlx", {
   result <- compiled_fn(x_r, y_r)
 
   expect_s3_class(result, "mlx")
-  expect_equal(mlx_dim(result), c(2, 3))
+  expect_equal(mlx_shape(result), c(2, 3))
 })
 
 test_that("compiled functions preserve list names", {
@@ -182,6 +182,6 @@ test_that("compiled functions preserve list names", {
   expect_s3_class(result_compiled$product, "mlx")
 
   # Verify we can access by name
-  expect_equal(mlx_dim(result_compiled$sum), c(5, 1))
-  expect_equal(mlx_dim(result_compiled$product), c(5, 1))
+  expect_equal(mlx_shape(result_compiled$sum), c(5, 1))
+  expect_equal(mlx_shape(result_compiled$product), c(5, 1))
 })

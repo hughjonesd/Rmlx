@@ -1101,7 +1101,8 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
       axis <- as.integer(axis)
       axis_idx <- .mlx_normalize_axis_single(axis, x)
       sorted_x <- mlx_sort(x, axis = axis)  # mlx_sort uses 1-indexed already
-      n <- dim(x)[axis]
+      shape <- cpp_mlx_shape(x$ptr)
+      n <- shape[axis]
     } else {
       # Multiple axes: flatten those axes and compute quantiles
       stop("Multiple axes not yet implemented for mlx_quantile", call. = FALSE)
@@ -1109,7 +1110,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
   } else {
     # No axis: flatten and sort entire array
     sorted_x <- mlx_sort(mlx_flatten(x))
-    n <- prod(dim(x))
+    n <- length(x)
     axis <- NULL
   }
 
@@ -1148,8 +1149,8 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
     # Simple case: 1D sorted array, use direct indexing (1-indexed for R)
     lower_idx_1based <- lower_idx + 1
     upper_idx_1based <- upper_idx + 1
-    lower_vals <- sorted_x[lower_idx_1based]
-    upper_vals <- sorted_x[upper_idx_1based]
+    lower_vals <- mlx_gather(sorted_x, list(lower_idx_1based), axes = 1L)
+    upper_vals <- mlx_gather(sorted_x, list(upper_idx_1based), axes = 1L)
   } else {
     # Axis-specific case: use mlx_gather
     # mlx_gather accepts mlx arrays and expects 1-indexed indices
@@ -1163,7 +1164,8 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
     # weight has shape (n_probs,), need to add dimensions for broadcasting
     # Result from gather has the axis dimension replaced by the index dimension
     # So we need to reshape weight to (n_probs, 1, 1, ...) with extra dims after axis
-    weight_shape <- rep(1L, length(dim(lower_vals)))
+    lv_shape <- mlx_shape(lower_vals)
+    weight_shape <- rep(1L, length(lv_shape))
     weight_shape[axis] <- length(probs)
     weight <- mlx_reshape(weight, weight_shape)
   }
@@ -1174,7 +1176,8 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
   # Handle drop parameter
   if (!is.null(axis) && drop && length(probs) == 1) {
     # Remove the quantile dimension of size 1
-    new_dim <- dim(result)[-axis]
+    res_shape <- mlx_shape(result)
+    new_dim <- res_shape[-axis]
     if (length(new_dim) == 0) {
       # Result is a scalar
       new_dim <- integer(0)

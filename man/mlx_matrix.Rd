@@ -24,9 +24,10 @@ Any dimension attributes are ignored; pass \code{dim} explicitly.}
 \item{dtype}{Optional MLX dtype. Defaults to \code{"float32"} for numeric input,
 \code{"bool"} for logical, and \code{"complex64"} for complex.}
 
-\item{device}{Execution target: provide \code{"gpu"}, \code{"cpu"}, or an
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}}.}
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 }
 \value{
 An \code{mlx} matrix with \code{dim = c(nrow, ncol)}.

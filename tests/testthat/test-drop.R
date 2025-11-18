@@ -4,7 +4,7 @@ test_that("drop.mlx removes singleton axes", {
 
   dropped <- drop(x)
 
-  expect_equal(mlx_dim(dropped), c(3L, 2L))
+  expect_equal(mlx_shape(dropped), c(3L, 2L))
   expect_equal(as.array(dropped), drop(arr), tolerance = 1e-6)
 })
 
@@ -14,7 +14,7 @@ test_that("drop.mlx is a no-op when no singleton axes exist", {
 
   dropped <- drop(x)
 
-  expect_equal(mlx_dim(dropped), c(3L, 2L))
+  expect_equal(mlx_shape(dropped), c(3L, 2L))
   expect_equal(as.matrix(dropped), mat, tolerance = 1e-6)
 })
 
@@ -23,7 +23,7 @@ test_that("drop.mlx preserves scalar payloads, dtype, and device", {
 
   dropped <- drop(scalar)
 
-  expect_equal(mlx_dim(dropped), integer(0))
+  expect_equal(mlx_shape(dropped), integer(0))
   expect_equal(mlx_dtype(dropped), mlx_dtype(scalar))
   expect_equal(dropped$device, scalar$device)
   expect_equal(as.vector(dropped), 5, tolerance = 1e-6)

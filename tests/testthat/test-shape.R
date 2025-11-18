@@ -142,11 +142,11 @@ test_that("mlx_flatten collapses axes", {
   x <- as_mlx(arr)
 
   flat_all <- mlx_flatten(x)
-  expect_equal(mlx_dim(flat_all), c(12L))
+  expect_equal(mlx_shape(flat_all), c(12L))
   expect_equal(as.vector(flat_all), row_major_vec(arr), tolerance = 1e-6)
 
   flat_middle <- mlx_flatten(x, start_axis = 2, end_axis = 3)
-  expect_equal(mlx_dim(flat_middle), c(2L, 6L))
+  expect_equal(mlx_shape(flat_middle), c(2L, 6L))
   expected <- matrix(row_major_vec(arr), nrow = dim(arr)[1], byrow = TRUE)
   expect_equal(as.matrix(flat_middle), expected, tolerance = 1e-6)
 
@@ -158,7 +158,7 @@ test_that("mlx_swapaxes swaps specified axes", {
   x <- as_mlx(arr)
 
   swapped <- mlx_swapaxes(x, axis1 = 1, axis2 = 3)
-  expect_equal(mlx_dim(swapped), c(4L, 3L, 2L))
+  expect_equal(mlx_shape(swapped), c(4L, 3L, 2L))
   expect_equal(as.array(swapped), aperm(arr, c(3, 2, 1)), tolerance = 1e-6)
 
   swapped_neg <- mlx_swapaxes(x, axis1 = 2, axis2 = 3)
@@ -171,27 +171,27 @@ test_that("mlx_meshgrid creates coordinate tensors", {
 
   grids_xy <- mlx_meshgrid(x, y, indexing = "xy")
   expect_length(grids_xy, 2L)
-  expect_equal(mlx_dim(grids_xy[[1]]), c(3L, 2L))
-  expect_equal(mlx_dim(grids_xy[[2]]), c(3L, 2L))
+  expect_equal(mlx_shape(grids_xy[[1]]), c(3L, 2L))
+  expect_equal(mlx_shape(grids_xy[[2]]), c(3L, 2L))
   expect_equal(as.matrix(grids_xy[[1]]), outer(0:2, 0:1, function(y, x) x), tolerance = 1e-6)
   expect_equal(as.matrix(grids_xy[[2]]), outer(0:2, 0:1, function(y, x) y), tolerance = 1e-6)
 
   grids_ij <- mlx_meshgrid(x, y, indexing = "ij")
-  expect_equal(mlx_dim(grids_ij[[1]]), c(2L, 3L))
-  expect_equal(mlx_dim(grids_ij[[2]]), c(2L, 3L))
+  expect_equal(mlx_shape(grids_ij[[1]]), c(2L, 3L))
+  expect_equal(mlx_shape(grids_ij[[2]]), c(2L, 3L))
   expect_equal(as.matrix(grids_ij[[1]]), outer(0:1, 0:2, function(x, y) x), tolerance = 1e-6)
   expect_equal(as.matrix(grids_ij[[2]]), outer(0:1, 0:2, function(x, y) y), tolerance = 1e-6)
 
   sparse <- mlx_meshgrid(x, y, sparse = TRUE, indexing = "xy")
-  expect_equal(mlx_dim(sparse[[1]]), c(1L, 2L))
-  expect_equal(mlx_dim(sparse[[2]]), c(3L, 1L))
+  expect_equal(mlx_shape(sparse[[1]]), c(1L, 2L))
+  expect_equal(mlx_shape(sparse[[2]]), c(3L, 1L))
 })
 
 test_that("mlx_broadcast_to expands singleton dimensions", {
   x <- as_mlx(matrix(1:3, nrow = 1))
   broadcasted <- mlx_broadcast_to(x, c(4, 3))
 
-  expect_equal(mlx_dim(broadcasted), c(4L, 3L))
+  expect_equal(mlx_shape(broadcasted), c(4L, 3L))
   expected <- matrix(rep(1:3, times = 4), nrow = 4, byrow = TRUE)
   expect_equal(as.matrix(broadcasted), expected, tolerance = 1e-6)
 })
@@ -202,8 +202,8 @@ test_that("mlx_broadcast_arrays aligns shapes", {
 
   outs <- mlx_broadcast_arrays(a, b)
   expect_length(outs, 2L)
-  expect_equal(mlx_dim(outs[[1]]), c(3L, 3L))
-  expect_equal(mlx_dim(outs[[2]]), c(3L, 3L))
+  expect_equal(mlx_shape(outs[[1]]), c(3L, 3L))
+  expect_equal(mlx_shape(outs[[2]]), c(3L, 3L))
 
   expected_a <- matrix(rep(1:3, times = 3), nrow = 3, byrow = TRUE)
   expected_b <- matrix(c(10, 20, 30), nrow = 3, ncol = 3)

@@ -100,7 +100,8 @@ mlx_fftn <- function(x,
                               default_axes = c("none", "last", "last2", "all")) {
   default_axes <- match.arg(default_axes)
   mlx_x <- as_mlx(x)
-  ndim <- length(dim(mlx_x))
+  shape <- cpp_mlx_shape(mlx_x$ptr)
+  ndim <- length(shape)
 
   axes_zero <- if (!is.null(axes)) {
     .mlx_normalize_axes(axes, mlx_x)
@@ -148,7 +149,7 @@ mlx_fftn <- function(x,
         }
       }, integer(1))
     }
-    scale <- prod(dim(mlx_x)[scale_axes])
+    scale <- prod(shape[scale_axes])
     result <- result * scale
   }
 

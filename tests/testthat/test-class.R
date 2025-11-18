@@ -3,7 +3,7 @@ test_that("as_mlx converts R objects correctly", {
   v <- 1:10
   v_mlx <- as_mlx(v)
   expect_s3_class(v_mlx, "mlx")
-  expect_equal(dim(v_mlx), 10L)
+  expect_null(dim(v_mlx))
 
   # Matrix
   m <- matrix(1:12, 3, 4)

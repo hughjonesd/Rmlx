@@ -209,7 +209,7 @@ mlx_coordinate_descent <- function(loss_fn,
 
   lipschitz_mlx <- if (is.mlx(lipschitz)) {
     arr <- lipschitz
-    if (length(dim(arr)) == 1L) {
+    if (length(cpp_mlx_shape(arr$ptr)) == 1L) {
       mlx_reshape(arr, c(n_pred, 1))
     } else {
       arr
@@ -222,7 +222,7 @@ mlx_coordinate_descent <- function(loss_fn,
   as_column_mlx <- function(val) {
     if (is.mlx(val)) {
       arr <- val
-      if (length(dim(arr)) == 1L) {
+      if (length(cpp_mlx_shape(arr$ptr)) == 1L) {
         return(mlx_reshape(arr, c(n_pred, 1)))
       }
       return(arr)

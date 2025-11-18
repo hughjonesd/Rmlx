@@ -106,7 +106,7 @@ test_that("cross entropy works correctly", {
 
   # Test none reduction
   loss_none <- mlx_cross_entropy(logits, targets, reduction = "none")
-  expect_equal(dim(loss_none), 3L)
+  expect_equal(mlx_shape(loss_none), 3L)
 
   # Test with very confident correct predictions
   confident_logits <- matrix(0, 3, 4)

@@ -13,7 +13,7 @@ mlx_rand_randint(
 )
 }
 \arguments{
-\item{dim}{Integer vector specifying the array shape/dimensions.}
+\item{dim}{Integer vector specifying array dimensions (shape).}
 
 \item{low}{Lower bound (inclusive).}
 
@@ -21,9 +21,10 @@ mlx_rand_randint(
 
 \item{dtype}{Desired integer dtype ("int32", "int64", "uint32", "uint64").}
 
-\item{device}{Execution target: provide \code{"gpu"}, \code{"cpu"}, or an
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}}.}
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 }
 \value{
 An mlx array of random integers.

@@ -17,13 +17,14 @@ mlx_rand_truncated_normal(
 
 \item{upper}{Upper bound of the truncated normal.}
 
-\item{dim}{Integer vector specifying the array shape/dimensions.}
+\item{dim}{Integer vector specifying array dimensions (shape).}
 
 \item{dtype}{Desired MLX dtype ("float32" or "float64").}
 
-\item{device}{Execution target: provide \code{"gpu"}, \code{"cpu"}, or an
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}}.}
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 }
 \value{
 An mlx array with truncated normally distributed entries.

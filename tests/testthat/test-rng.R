@@ -184,8 +184,8 @@ test_that("mlx_rand_permutation generates valid permutation", {
 
   expect_s3_class(perm, "mlx")
   expect_equal(mlx_dtype(perm), "int32")
-  expect_equal(length(dim(perm)), 1)
-  expect_equal(dim(perm), 10L)
+  expect_null(dim(perm))
+  expect_equal(mlx_shape(perm), 10L)
 
   perm_vals <- as.vector(perm)
   # Should contain each of 1:10 exactly once

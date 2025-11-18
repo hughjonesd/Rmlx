@@ -52,7 +52,7 @@ print.mlx <- function(x, ...) {
   cat(sprintf("  device: %s\n", x$device))
 
   # Show preview for small arrays
-  total_size <- prod(dim(x))
+  total_size <- length(x)
   if (total_size <= 100 && length(dim(x)) <= 2) {
     cat("  values:\n")
     mat <- as.matrix(x)
@@ -84,14 +84,35 @@ str.mlx <- function(object, ...) {
 
 #' Get dimensions of MLX array
 #'
+#' `dim()` mirrors base R semantics and returns `NULL` for 1-D vectors and
+#' scalars, while [`mlx_shape()`] always returns the raw MLX shape (integers,
+#' never `NULL`). Use `mlx_shape()` when you need the underlying MLX dimension
+#' metadata and `dim()` when you want R-like behaviour.
+#'
 #' @inheritParams common_params
-#' @return Integer vector of dimensions
+#' @return For `dim()`, an integer vector of dimensions or `NULL` for vectors/
+#'   scalars. For `mlx_shape()`, an integer vector (length zero for scalars).
 #' @export
 #' @method dim mlx
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' dim(x)
+#'
+#' v <- as_mlx(1:3)
+#' dim(v)        # NULL (matches base R)
+#' mlx_shape(v)  # 3
 dim.mlx <- function(x) {
+  shape <- cpp_mlx_shape(x$ptr)
+  if (length(shape) <= 1L) {
+    return(NULL)
+  }
+  shape
+}
+
+#' @rdname dim.mlx
+#' @export
+mlx_shape <- function(x) {
+  stopifnot(is.mlx(x))
   cpp_mlx_shape(x$ptr)
 }
 
@@ -122,12 +143,12 @@ dim.mlx <- function(x) {
 
   # Special case: setting dim to integer(0) means convert to 1D vector
   if (length(value) == 0) {
-    current_size <- prod(dim(x))
+    current_size <- length(x)
     return(mlx_reshape(x, current_size))
   }
 
   # Check that product matches
-  current_size <- prod(dim(x))
+  current_size <- length(x)
   new_size <- prod(value)
 
   if (current_size != new_size) {
@@ -164,7 +185,7 @@ mlx_reshape <- function(x, newshape) {
     stop("newshape cannot contain negative values", call. = FALSE)
   }
 
-  current_size <- prod(dim(x))
+  current_size <- length(x)
   new_size <- prod(newshape)
 
   if (current_size != new_size) {
@@ -188,20 +209,11 @@ mlx_reshape <- function(x, newshape) {
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' length(x)
 length.mlx <- function(x) {
-  prod(dim(x))
-}
-
-#' Get dimensions helper
-#'
-#' @inheritParams common_params
-#' @return Dimensions
-#' @export
-#' @examples
-#' x <- as_mlx(matrix(1:6, 2, 3))
-#' mlx_dim(x)
-mlx_dim <- function(x) {
-  stopifnot(is.mlx(x))
-  dim(x)
+  shape <- cpp_mlx_shape(x$ptr)
+  if (length(shape) == 0L) {
+    return(1L)
+  }
+  prod(shape)
 }
 
 #' Get data type helper

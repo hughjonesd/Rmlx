@@ -2,20 +2,31 @@
 % Please edit documentation in R/utils.R
 \name{dim.mlx}
 \alias{dim.mlx}
+\alias{mlx_shape}
 \title{Get dimensions of MLX array}
 \usage{
 \method{dim}{mlx}(x)
+
+mlx_shape(x)
 }
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
-Integer vector of dimensions
+For \code{dim()}, an integer vector of dimensions or \code{NULL} for vectors/
+scalars. For \code{mlx_shape()}, an integer vector (length zero for scalars).
 }
 \description{
-Get dimensions of MLX array
+\code{dim()} mirrors base R semantics and returns \code{NULL} for 1-D vectors and
+scalars, while \code{\link[=mlx_shape]{mlx_shape()}} always returns the raw MLX shape (integers,
+never \code{NULL}). Use \code{mlx_shape()} when you need the underlying MLX dimension
+metadata and \code{dim()} when you want R-like behaviour.
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))
 dim(x)
+
+v <- as_mlx(1:3)
+dim(v)        # NULL (matches base R)
+mlx_shape(v)  # 3
 }

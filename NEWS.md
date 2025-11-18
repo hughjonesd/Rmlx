@@ -4,6 +4,8 @@
 
 * `mlx_slice_update()` now accepts 1-based (inclusive) `start`/`stop` indices to
   match the rest of the R API; internal callers were updated accordingly.
+* Added `mlx_shape()` to expose MLX-native shapes (never `NULL`) and aligned
+  `dim.mlx()` with base R semantics (returns `NULL` for 1-D vectors/scalars).
 * `mlx_rand_categorical()`, `mlx_rand_permutation()`, `mlx_cross_entropy()`,
   and `mlx_embedding()` now accept 1-based indices for inputs/outputs, keeping
   all exported APIs consistent with R conventions.

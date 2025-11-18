@@ -18,13 +18,13 @@ reference:
       - is.mlx
       - Rmlx-package
       - mlx-methods
-      - mlx_dim
       - mlx_dtype
       - mlx_eval
       - "[.mlx"
       - dim.mlx
       - "dim<-.mlx"
       - length.mlx
+      - mlx_shape
       - print.mlx
       - str.mlx
       - t.mlx

@@ -21,7 +21,6 @@ Math.mlx <- function(x, ...) {
   # MLX flattens in row-major order, so we need to fall back to R
   if (op %in% c("cumsum", "cumprod", "cummax", "cummin")) {
     ptr <- cpp_mlx_cumulative(x$ptr, op)
-    len <- as.integer(prod(dim(x)))
     return(new_mlx(ptr, x$device))
   }
 
@@ -386,11 +385,15 @@ all.equal.mlx <- function(target, current, tolerance = sqrt(.Machine$double.eps)
     return("'current' is not an mlx object")
   }
 
-  # Check dimensions first
-  if (!identical(dim(target), dim(current))) {
-    return(paste0("Arrays have different shapes: ",
-                  paste(dim(target), collapse = "x"), " vs ",
-                  paste(dim(current), collapse = "x")))
+  shape_target <- mlx_shape(target)
+  shape_current <- mlx_shape(current)
+
+  if (!identical(shape_target, shape_current)) {
+    fmt_shape <- function(s) if (length(s)) paste(s, collapse = "x") else "scalar"
+    return(paste0(
+      "Arrays have different shapes: ",
+      fmt_shape(shape_target), " vs ", fmt_shape(shape_current)
+    ))
   }
 
   # Use mlx_allclose with tolerance mapped to both rtol and atol

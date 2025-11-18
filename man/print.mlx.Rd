@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{print.mlx}
 \alias{print.mlx}
-\title{Print MLX array}
+\title{Common parameters for MLX array creation}
 \usage{
 \method{print}{mlx}(x, ...)
 }

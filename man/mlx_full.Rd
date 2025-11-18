@@ -7,7 +7,7 @@
 mlx_full(dim, value, dtype = NULL, device = mlx_default_device())
 }
 \arguments{
-\item{dim}{Integer vector specifying the array shape/dimensions.}
+\item{dim}{Integer vector specifying array dimensions (shape).}
 
 \item{value}{Scalar value used to fill the array. Numeric, logical, or complex.}
 
@@ -15,9 +15,10 @@ mlx_full(dim, value, dtype = NULL, device = mlx_default_device())
 If omitted, defaults to \code{"complex64"} for complex scalars, \code{"bool"} for logical scalars,
 and \code{"float32"} otherwise.}
 
-\item{device}{Execution target: provide \code{"gpu"}, \code{"cpu"}, or an
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}}.}
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 }
 \value{
 An mlx array filled with the supplied value.

@@ -12,7 +12,7 @@ test_that("int32 dtype creation requires explicit dtype argument", {
   m_r <- matrix(1:12, 3, 4)
   m <- as_mlx(m_r, dtype = "int32")
   expect_equal(mlx_dtype(m), "int32")
-  expect_equal(mlx_dim(m), c(3, 4))
+  expect_equal(mlx_shape(m), c(3, 4))
 })
 
 test_that("int64 dtype creation works", {
@@ -169,7 +169,7 @@ test_that("integer matrix multiplication limitation", {
   y_float <- as_mlx(matrix(1:6, 3, 2), dtype = "float32")
   z <- x_float %*% y_float
 
-  expect_equal(mlx_dim(z), c(2, 2))
+  expect_equal(mlx_shape(z), c(2, 2))
   z_r <- matrix(1:6, 2, 3) %*% matrix(1:6, 3, 2)
   expect_equal(as.matrix(z), z_r, tolerance = 1e-6)
 })

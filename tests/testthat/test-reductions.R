@@ -178,13 +178,14 @@ test_that("mlx_quantile works with axis parameter", {
 
   # Test drop parameter
   result_no_drop <- mlx_quantile(x, probs = 0.5, axis = 1, drop = FALSE)
-  expect_equal(dim(result_no_drop), c(1L, 3L))
+  expect_equal(mlx_shape(result_no_drop), c(1L, 3L))
 
   result_drop <- mlx_quantile(x, probs = 0.5, axis = 1, drop = TRUE)
-  expect_equal(dim(result_drop), 3L)
+  expect_null(dim(result_drop))
+  expect_equal(mlx_shape(result_drop), 3L)
   expect_equal(as.vector(result_drop), apply(mat, 2, median), tolerance = 1e-6)
 
   # drop should not affect multiple quantiles
   result_multi <- mlx_quantile(x, probs = c(0.25, 0.75), axis = 1, drop = TRUE)
-  expect_equal(dim(result_multi), c(2L, 3L))
+  expect_equal(mlx_shape(result_multi), c(2L, 3L))
 })

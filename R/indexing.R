@@ -56,8 +56,8 @@ mlx_gather <- function(x, indices, axes = NULL) {
     stop("`axes` must not contain duplicates.", call. = FALSE)
   }
 
-  dims <- dim(x)
-  ndim <- length(dims)
+  shape <- mlx_shape(x)
+  ndim <- length(shape)
   if (any(axes < 1L | axes > ndim)) {
     stop("Each axis must fall within the array's dimensions. ",
          "Negative axes are not supported", call. = FALSE)
@@ -71,7 +71,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
       stop("`indices` entries cannot be NULL.", call. = FALSE)
     }
     norm
-  }, idx_list, dims[axes])
+  }, idx_list, shape[axes])
 
   use_take <- length(axes0) == 1L && length(idx_dims) == 1L &&
     (is.null(idx_dims[[1]]) || !length(idx_dims[[1]]))
@@ -92,8 +92,8 @@ mlx_gather <- function(x, indices, axes = NULL) {
   ptr <- cpp_mlx_gather(x$ptr, idx_mlx, axes0, x$device)
   res <- new_mlx(ptr, x$device)
 
-  res_dims <- dim(res)
-  ndim <- length(dims)
+  res_dims <- mlx_shape(res)
+  ndim <- length(shape)
   index_rank <- max(length(res_dims) - ndim, 0L)
   # Gather collapses indexed axes to length-1 trailing dims; rebuild the
   # original shape by keeping only the untouched axes after the index dims.

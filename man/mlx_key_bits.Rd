@@ -7,7 +7,7 @@
 mlx_key_bits(dim, width = 4L, key = NULL, device = mlx_default_device())
 }
 \arguments{
-\item{dim}{Integer vector specifying the array shape/dimensions.}
+\item{dim}{Integer vector specifying array dimensions (shape).}
 
 \item{width}{Number of bytes per element (default 4 = 32 bits). Must be
 positive.}
@@ -15,9 +15,10 @@ positive.}
 \item{key}{Optional \code{mlx} key array. If omitted, MLX's default generator is
 used.}
 
-\item{device}{Execution target: provide \code{"gpu"}, \code{"cpu"}, or an
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}}.}
+\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
+array typically reuse that array's device or stream).}
 }
 \value{
 An \code{mlx} array of unsigned integers filled with random bits.

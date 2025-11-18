@@ -21,11 +21,11 @@ test_that("length.mlx works", {
   expect_equal(length(x_mlx), 12L)
 })
 
-test_that("mlx_dim works", {
+test_that("mlx_shape works", {
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
 
-  expect_equal(mlx_dim(x_mlx), c(3L, 4L))
+  expect_equal(mlx_shape(x_mlx), c(3L, 4L))
 })
 
 test_that("mlx_dtype works", {
@@ -37,7 +37,8 @@ test_that("mlx_dtype works", {
 
 test_that("dim<-.mlx works for basic reshaping", {
   x <- as_mlx(1:12)
-  expect_equal(dim(x), 12L)
+  expect_null(dim(x))
+  expect_equal(mlx_shape(x), 12L)
 
   dim(x) <- c(3, 4)
   expect_equal(dim(x), c(3L, 4L))
@@ -107,11 +108,13 @@ test_that("dim<-.mlx handles edge cases", {
   # Single element
   x <- as_mlx(5)
   dim(x) <- 1
-  expect_equal(dim(x), 1L)
+  expect_null(dim(x))
+  expect_equal(mlx_shape(x), 1L)
   expect_equal(as.numeric(as.matrix(x)), 5)
 
   # Reshape 1D to 1D
   x <- as_mlx(1:10)
   dim(x) <- 10
-  expect_equal(dim(x), 10L)
+  expect_null(dim(x))
+  expect_equal(mlx_shape(x), 10L)
 })

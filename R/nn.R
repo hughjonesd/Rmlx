@@ -642,7 +642,7 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
     indices <- as_mlx(indices)
 
     # indices are 1-based token IDs
-    orig_shape <- dim(indices)
+    orig_shape <- cpp_mlx_shape(indices$ptr)
     indices_r <- as.integer(as.matrix(indices))
 
     # Take embeddings
