@@ -13,7 +13,7 @@ BUILD_DIR="build"
 MLX_SOURCE_DIR="${BUILD_DIR}/mlx-src"
 MLX_BUILD_DIR="${BUILD_DIR}/mlx-build"
 MLX_INSTALL_DIR="${BUILD_DIR}/mlx-install"
-MLX_TARBALL_PATH="${BUILD_DIR}/mlx-${MLX_VERSION}.tar.gz"
+MLX_TARBALL_PATH="${ROOT_DIR}/vendor/mlx-${MLX_VERSION}.tar.gz"
 MLX_VERSION_STAMP="${MLX_SOURCE_DIR}/.rmlx-source-version"
 
 if [ -z "${R_HOME:-}" ]; then
@@ -42,16 +42,6 @@ die() {
 
 have_cmd() {
   command -v "$1" >/dev/null 2>&1
-}
-
-ensure_downloader() {
-  if have_cmd curl; then
-    DOWNLOADER="curl"
-  elif have_cmd wget; then
-    DOWNLOADER="wget"
-  else
-    die "curl or wget is required to download MLX ${MLX_VERSION}"
-  fi
 }
 
 # Determine backend capabilities
@@ -232,31 +222,28 @@ if [ "$USE_SYSTEM_MLX" = true ]; then
     die "Unable to find MLX library directory. Set MLX_LIB_DIR or disable MLX_USE_SYSTEM."
   fi
 else
-  # Build from source (download if needed)
+  # Build from bundled source (tarball checked into repository)
   mkdir -p "$BUILD_DIR"
-  NEED_DOWNLOAD=true
+  NEED_UNPACK=true
   if [ -d "$MLX_SOURCE_DIR" ] && [ -f "$MLX_VERSION_STAMP" ]; then
     if [ "$(cat "$MLX_VERSION_STAMP")" = "$MLX_VERSION" ]; then
-      NEED_DOWNLOAD=false
+      NEED_UNPACK=false
     fi
   fi
-  if [ "$NEED_DOWNLOAD" = true ]; then
-    log "Downloading MLX ${MLX_VERSION}..."
-    ensure_downloader
-    rm -rf "$MLX_SOURCE_DIR" "$MLX_BUILD_DIR" "$MLX_INSTALL_DIR"
-    if [ "$DOWNLOADER" = "curl" ]; then
-      curl -L "$MLX_TARBALL_URL" -o "$MLX_TARBALL_PATH"
-    else
-      wget -O "$MLX_TARBALL_PATH" "$MLX_TARBALL_URL"
+  if [ "$NEED_UNPACK" = true ]; then
+    if [ ! -f "$MLX_TARBALL_PATH" ]; then
+      die "Bundled MLX tarball missing at $MLX_TARBALL_PATH. Download ${MLX_TARBALL_URL} and place it there."
     fi
+    log "Extracting bundled MLX ${MLX_VERSION}..."
+    rm -rf "$MLX_SOURCE_DIR" "$MLX_BUILD_DIR" "$MLX_INSTALL_DIR"
     tar -xzf "$MLX_TARBALL_PATH" -C "$BUILD_DIR"
     mv "$BUILD_DIR/mlx-${MLX_VERSION}" "$MLX_SOURCE_DIR"
     printf '%s' "$MLX_VERSION" > "$MLX_VERSION_STAMP"
   else
-    log "Reusing downloaded MLX ${MLX_VERSION}"
+    log "Reusing bundled MLX ${MLX_VERSION}"
+    rm -rf "$MLX_BUILD_DIR" "$MLX_INSTALL_DIR"
   fi
 
-  rm -rf "$MLX_BUILD_DIR" "$MLX_INSTALL_DIR"
   mkdir -p "$MLX_BUILD_DIR"
   log "Configuring MLX with CMake..."
   CMAKE_EXTRA_FLAGS=""
