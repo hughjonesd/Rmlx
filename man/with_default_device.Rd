@@ -7,10 +7,7 @@
 with_default_device(device, code)
 }
 \arguments{
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).}
+\item{device}{\code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}.}
 
 \item{code}{Expression to evaluate while \code{device} is active.}
 }
@@ -21,9 +18,8 @@ The result of evaluating \code{code}.
 Temporarily set the default MLX device
 }
 \examples{
-old <- mlx_default_device()
-with_default_device("cpu", mlx_default_device())
-mlx_default_device(old)
+with_default_device("cpu", x <- mlx_vector(1:10))
+
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/metal.html}{mlx.core.default_device}

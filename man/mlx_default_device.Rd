@@ -7,7 +7,8 @@
 mlx_default_device(value)
 }
 \arguments{
-\item{value}{New default device ("gpu" or "cpu"). If missing, returns current default.}
+\item{value}{New default device ("gpu" or "cpu"). If missing, returns the
+current default.}
 }
 \value{
 Current default device (character).

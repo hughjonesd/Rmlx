@@ -40,7 +40,8 @@ reference:
       - mlx_default_stream
       - mlx_new_stream
       - mlx_set_default_stream
-      - mlx_get_device
+      - mlx_best_device
+      - mlx_device
       - mlx_has_gpu
       - mlx_synchronize
       - mlx_forward

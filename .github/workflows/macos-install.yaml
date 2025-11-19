@@ -70,7 +70,7 @@ jobs:
       - name: Check device availability
         run: |
           Rscript -e "library(Rmlx); cat('GPU available:', mlx_has_gpu(), '\n')"
-          Rscript -e "library(Rmlx); cat('Default device:', mlx_get_device(), '\n')"
+          Rscript -e "library(Rmlx); cat('Default device:', mlx_best_device(), '\n')"
 
   macos-system:
     runs-on: macos-14
@@ -115,7 +115,7 @@ jobs:
       - name: Check device availability
         run: |
           Rscript -e "library(Rmlx); cat('GPU available:', mlx_has_gpu(), '\n')"
-          Rscript -e "library(Rmlx); cat('Default device:', mlx_get_device(), '\n')"
+          Rscript -e "library(Rmlx); cat('Default device:', mlx_best_device(), '\n')"
 
       - name: Run simple test
         run: |

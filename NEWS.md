@@ -2,6 +2,8 @@
 
 # Rmlx 0.1.0.9000 (development)
 
+* New `mlx_device()` to return device associated with `x`.
+* Renamed `mlx_get_device()` to `mlx_best_device()`.
 * `mlx_slice_update()` now accepts 1-based (inclusive) `start`/`stop` indices to
   match the rest of the R API; internal callers were updated accordingly.
 * Added `mlx_shape()` to expose MLX-native shapes (never `NULL`) and aligned

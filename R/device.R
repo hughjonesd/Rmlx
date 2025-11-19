@@ -1,6 +1,7 @@
 #' Get or set default MLX device
 #'
-#' @param value New default device ("gpu" or "cpu"). If missing, returns current default.
+#' @param value New default device ("gpu" or "cpu"). If missing, returns the
+#'   current default.
 #' @return Current default device (character).
 #' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 #' @export
@@ -44,15 +45,14 @@ mlx_synchronize <- function(device = mlx_default_device()) {
 
 #' Temporarily set the default MLX device
 #'
-#' @inheritParams common_params
+#' @param device `"gpu"`, `"cpu"`, or an `mlx_stream` created via [mlx_new_stream()].
 #' @param code Expression to evaluate while `device` is active.
 #' @return The result of evaluating `code`.
 #' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 #' @export
 #' @examples
-#' old <- mlx_default_device()
-#' with_default_device("cpu", mlx_default_device())
-#' mlx_default_device(old)
+#' with_default_device("cpu", x <- mlx_vector(1:10))
+#'
 with_default_device <- function(device, code) {
   device <- match.arg(device, c("gpu", "cpu"))
   old_device <- mlx_default_device()
@@ -96,8 +96,21 @@ mlx_has_gpu <- function() {
 #' @return Character: `"gpu"` or `"cpu"`.
 #' @export
 #' @examples
-#' device <- mlx_get_device()
+#' device <- mlx_best_device()
 #' x <- as_mlx(1:10, device = device)
-mlx_get_device <- function() {
+mlx_best_device <- function() {
   if (mlx_has_gpu()) "gpu" else "cpu"
+}
+
+#' Get device associated with an MLX object
+#'
+#' @inheritParams common_params
+#' @return `"gpu"` or `"cpu"`.
+#' @export
+#' @examples
+#' x <- as_mlx(1:10)
+#' mlx_device(x)
+mlx_device <- function(x) {
+  stopifnot(is_mlx(x))
+  x$device
 }
