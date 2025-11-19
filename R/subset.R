@@ -28,7 +28,6 @@
 #' @return The subsetted MLX object.
 #' @seealso [mlx.core.take](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.take)
 #' @name mlx_subset
-#' @importFrom utils tail
 #' @export
 #' @method [ mlx
 #' @examples
@@ -491,17 +490,14 @@
   }
 
   if (is.mlx(idx)) {
-    return(isTRUE(length(dim(idx)) >= 2L && tail(dim(idx), 1) == ndim) &&
+    dims <- mlx_shape(idx)
+    return(isTRUE(length(dims) >= 2L && dims[length(dims)] == ndim) &&
              !identical(mlx_dtype(idx), "bool"))
   }
 
-  is_array <- is.matrix(idx) || (is.array(idx) && length(dim(idx)) >= 2L)
-  if (!is_array) {
-    return(FALSE)
-  }
-
   dims <- dim(idx)
-  is.numeric(idx) && tail(dims, 1) == ndim
+
+  is.array(idx) && is.numeric(idx) && dims[length(dims)] == ndim
 }
 
 #' Check whether an index has matrix/array shape (without validating columns)
@@ -545,7 +541,7 @@
   if (length(dims) < 2L) {
     stop("Matrix index must have at least two dimensions.", call. = FALSE)
   }
-  if (tail(dims, 1) != length(dim_sizes)) {
+  if (dims[length(dims)] != length(dim_sizes)) {
     stop("Matrix index must have one column per dimension.", call. = FALSE)
   }
 
