@@ -44,7 +44,7 @@ Supports NumPy-style broadcasting.
 \examples{
 a <- as_mlx(c(1.0, 2.0, 3.0))
 b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-6))
-as.logical(as.matrix(mlx_allclose(a, b)))  # TRUE
+mlx_allclose(a, b)  # TRUE
 }
 \seealso{
 \code{\link[=mlx_isclose]{mlx_isclose()}}, \code{\link[=all.equal.mlx]{all.equal.mlx()}},

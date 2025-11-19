@@ -2,9 +2,21 @@
 % Please edit documentation in R/class.R
 \name{as.vector.mlx}
 \alias{as.vector.mlx}
+\alias{as.logical.mlx}
+\alias{as.double.mlx}
+\alias{as.numeric.mlx}
+\alias{as.integer.mlx}
 \title{Convert MLX array to R vector}
 \usage{
 \method{as.vector}{mlx}(x, mode = "any")
+
+\method{as.logical}{mlx}(x, ...)
+
+\method{as.double}{mlx}(x, ...)
+
+\method{as.numeric}{mlx}(x, ...)
+
+\method{as.integer}{mlx}(x, ...)
 }
 \arguments{
 \item{x}{An mlx array.}
@@ -15,14 +27,16 @@
 A vector of the specified mode.
 }
 \description{
-Converts an MLX array to an R vector. For multi-dimensional arrays (2+ dimensions),
-the array is flattened in column-major order (R's default).
+Converts an MLX array to an R vector. Multi-dimensional arrays
+are flattened in column-major order (R's default).
 }
 \examples{
-x <- as_mlx(1:5)
+x <- as_mlx(-1:1)
 as.vector(x)
+as.logical(x)
+as.numeric(x)
 
 # Multi-dimensional arrays are flattened
 m <- as_mlx(matrix(1:6, 2, 3))
-v <- as.vector(m)  # Flattened in column-major order
+as.vector(m)  # Flattened in column-major order
 }

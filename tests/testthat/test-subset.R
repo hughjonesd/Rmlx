@@ -451,7 +451,7 @@ test_that("mlx matrix indexing works (1-based)", {
   idx_mat_mlx <- as_mlx(idx_mat)
   result <- x[idx_mat_mlx]
 
-  expect_equal(as.vector(as.matrix(result)), expected)
+  expect_equal(as.vector(result), expected)
 })
 
 test_that("mlx matrix indexing extracts specific elements", {
@@ -465,7 +465,7 @@ test_that("mlx matrix indexing extracts specific elements", {
   idx_diag_mlx <- as_mlx(idx_diag)
 
   result <- x[idx_diag_mlx]
-  expect_equal(as.vector(as.matrix(result)), c(1, 5, 9))
+  expect_equal(as.vector(result), c(1, 5, 9))
 
   # Extract corner elements
   idx_corners <- matrix(c(1, 1,
@@ -475,7 +475,7 @@ test_that("mlx matrix indexing extracts specific elements", {
   idx_corners_mlx <- as_mlx(idx_corners)
 
   result <- x[idx_corners_mlx]
-  expect_equal(as.vector(as.matrix(result)), c(1, 10, 3, 12))
+  expect_equal(as.vector(result), c(1, 10, 3, 12))
 })
 
 test_that("mlx matrix indexing uses 1-based convention", {
@@ -484,11 +484,11 @@ test_that("mlx matrix indexing uses 1-based convention", {
 
   # [1, 1] should get first element (1), not [0, 0]
   idx <- as_mlx(matrix(c(1, 1), nrow = 1))
-  expect_equal(as.vector(as.matrix(x[idx])), 1)
+  expect_equal(as.vector(x[idx]), 1)
 
   # [3, 4] should get last element (12)
   idx <- as_mlx(matrix(c(3, 4), nrow = 1))
-  expect_equal(as.vector(as.matrix(x[idx])), 12)
+  expect_equal(as.vector(x[idx]), 12)
 })
 
 test_that("mlx matrix assignment works", {
@@ -583,8 +583,8 @@ test_that("mlx and R indexing give identical results", {
                       5, 4), ncol = 2, byrow = TRUE)
   idx_mat_mlx <- as_mlx(idx_mat)
 
-  expect_equal(as.vector(as.matrix(x[idx_mat])),
-               as.vector(as.matrix(x[idx_mat_mlx])))
+  expect_equal(as.vector(x[idx_mat]),
+               as.vector(x[idx_mat_mlx]))
 })
 
 test_that("mlx indexing works with higher dimensional arrays", {

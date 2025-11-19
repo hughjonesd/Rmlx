@@ -32,7 +32,7 @@ A <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
 U <- chol(A)
 A_inv <- chol2inv(U)
 # Verify: A \%*\% A_inv should be identity
-as.matrix(A \%*\% A_inv)
+A \%*\% A_inv
 }
 \seealso{
 \code{\link[=chol]{chol()}}, \code{\link[=solve]{solve()}}, \code{\link[=mlx_cholesky_inv]{mlx_cholesky_inv()}}

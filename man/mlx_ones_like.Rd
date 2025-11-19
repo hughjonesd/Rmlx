@@ -25,8 +25,7 @@ creating an array of ones with the same shape. Optionally override dtype or devi
 }
 \examples{
 base <- mlx_full(c(2, 3), 5)
-ones <- mlx_ones_like(base)
-as.matrix(ones)
+mlx_ones_like(base)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like}{mlx.core.ones_like}

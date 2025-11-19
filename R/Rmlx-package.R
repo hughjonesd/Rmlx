@@ -14,7 +14,7 @@
 #' MLX arrays use lazy evaluation by default. Operations are recorded but not
 #' executed until:
 #' * You call [mlx_eval()]
-#' * You convert to R with [as.matrix()] or [as.vector()]
+#' * You convert to R with e.g. [as.array()] or [as.vector()]
 #' * The result is needed for another computation
 #'
 #' The package implements most of the C++ API via calls with the `mlx_` prefix,

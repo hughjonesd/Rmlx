@@ -179,8 +179,8 @@ test_that("scale.mlx matches base scale", {
   expect_equal(as.matrix(mlx_res), unclass(base_res), tolerance = 1e-6, ignore_attr = TRUE)
   expect_s3_class(attr(mlx_res, "scaled:center"), "mlx")
   expect_s3_class(attr(mlx_res, "scaled:scale"), "mlx")
-  expect_equal(as.vector(as.matrix(attr(mlx_res, "scaled:center"))), attr(base_res, "scaled:center"), tolerance = 1e-6)
-  expect_equal(as.vector(as.matrix(attr(mlx_res, "scaled:scale"))), attr(base_res, "scaled:scale"), tolerance = 1e-6)
+  expect_equal(as.vector(attr(mlx_res, "scaled:center")), attr(base_res, "scaled:center"), tolerance = 1e-6)
+  expect_equal(as.vector(attr(mlx_res, "scaled:scale")), attr(base_res, "scaled:scale"), tolerance = 1e-6)
 
   mlx_res2 <- scale(as_mlx(mat), center = FALSE, scale = c(1, 2, 3, 4))
   base_res2 <- scale(mat, center = FALSE, scale = c(1, 2, 3, 4))

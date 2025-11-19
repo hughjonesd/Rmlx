@@ -110,7 +110,7 @@ test_that("dim<-.mlx handles edge cases", {
   dim(x) <- 1
   expect_null(dim(x))
   expect_equal(mlx_shape(x), 1L)
-  expect_equal(as.numeric(as.matrix(x)), 5)
+  expect_equal(as.numeric(x), 5)
 
   # Reshape 1D to 1D
   x <- as_mlx(1:10)

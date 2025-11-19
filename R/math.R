@@ -31,7 +31,7 @@ Math.mlx <- function(x, ...) {
 
   # Additional arguments change semantics for some Math generics (e.g., log base, round digits)
   if (length(dots) > 0 && op %in% c("log", "round", "signif")) {
-    x_r <- as.matrix(x)
+    x_r <- as.array(x)
     result_r <- do.call(get(op, mode = "function"), c(list(x_r), dots))
     return(as_mlx(result_r, dtype = x_dtype, device = x$device))
   }
@@ -50,7 +50,7 @@ Math.mlx <- function(x, ...) {
       warning("MLX does not support '", .Generic, "', falling back to R implementation",
               call. = FALSE)
       # Convert to R matrix, apply operation, convert back
-      x_r <- as.matrix(x)
+      x_r <- as.array(x)
       result_r <- get(.Generic, mode = "function")(x_r, ...)
       as_mlx(result_r, dtype = x_dtype, device = x$device)
     } else {
@@ -124,7 +124,7 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #' @examples
 #' a <- as_mlx(c(1.0, 2.0, 3.0))
 #' b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-6))
-#' as.logical(as.matrix(mlx_allclose(a, b)))  # TRUE
+#' mlx_allclose(a, b)  # TRUE
 mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
                          device = mlx_default_device()) {
   a <- as_mlx(a)
@@ -185,7 +185,7 @@ mlx_conjugate <- function(x) {
 #' @export
 #' @examples
 #' x <- as_mlx(pi / 2)
-#' as.matrix(mlx_degrees(x))  # 90
+#' mlx_degrees(x)  # 90
 mlx_degrees <- function(x) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_unary(x$ptr, "degrees")
@@ -195,8 +195,7 @@ mlx_degrees <- function(x) {
 #' @rdname mlx_degrees
 #' @export
 #' @examples
-#' angles <- mlx_radians(as_mlx(c(0, 90, 180)))
-#' as.matrix(angles)
+#' mlx_radians(mlx_vector(c(0, 90, 180)))
 mlx_radians <- function(x) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_unary(x$ptr, "radians")
@@ -217,7 +216,8 @@ mlx_radians <- function(x) {
 #' @export
 #' @examples
 #' vals <- as_mlx(c(-Inf, -1, 0, Inf))
-#' as.matrix(mlx_isposinf(vals))
+#' mlx_isposinf(vals)
+#' mlx_isneginf(vals)
 mlx_isposinf <- function(x) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_unary(x$ptr, "isposinf")
@@ -226,8 +226,6 @@ mlx_isposinf <- function(x) {
 
 #' @rdname mlx_isposinf
 #' @export
-#' @examples
-#' as.matrix(mlx_isneginf(vals))
 mlx_isneginf <- function(x) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_unary(x$ptr, "isneginf")
@@ -286,7 +284,7 @@ mlx_isfinite <- function(x) {
 #' @export
 #' @examples
 #' x <- as_mlx(c(-Inf, -1, NaN, 3, Inf))
-#' as.matrix(mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10))
+#' mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10)
 mlx_nan_to_num <- function(x, nan = 0, posinf = NULL, neginf = NULL) {
   x <- as_mlx(x)
 
@@ -399,7 +397,7 @@ all.equal.mlx <- function(target, current, tolerance = sqrt(.Machine$double.eps)
                          equal_nan = FALSE, device = target$device)
 
   # Convert to logical
-  are_close <- as.logical(as.matrix(result))
+  are_close <- as.logical(result)
 
   if (are_close) {
     return(TRUE)
@@ -420,7 +418,7 @@ all.equal.mlx <- function(target, current, tolerance = sqrt(.Machine$double.eps)
 #' @export
 #' @examples
 #' x <- as_mlx(c(-1, 0, 1))
-#' as.matrix(mlx_erf(x))
+#' mlx_erf(x)
 mlx_erf <- function(x) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_unary(x$ptr, "erf")
@@ -431,7 +429,7 @@ mlx_erf <- function(x) {
 #' @export
 #' @examples
 #' p <- as_mlx(c(-0.5, 0, 0.5))
-#' as.matrix(mlx_erfinv(p))
+#' mlx_erfinv(p)
 mlx_erfinv <- function(x) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_unary(x$ptr, "erfinv")

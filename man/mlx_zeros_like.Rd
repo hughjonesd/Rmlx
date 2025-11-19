@@ -26,8 +26,7 @@ or device.
 }
 \examples{
 base <- mlx_ones(c(2, 2))
-zeros <- mlx_zeros_like(base)
-as.matrix(zeros)
+mlx_zeros_like(base)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like}{mlx.core.zeros_like}

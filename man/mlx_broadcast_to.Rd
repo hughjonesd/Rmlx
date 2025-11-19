@@ -24,7 +24,7 @@ An mlx array with the requested dimensions.
 repeating singleton dimensions without copying data.
 }
 \examples{
-x <- as_mlx(matrix(1:3, nrow = 1))
+x <- mlx_matrix(1:3, nrow = 1)
 broadcast <- mlx_broadcast_to(x, c(5, 3))
 dim(broadcast)
 }

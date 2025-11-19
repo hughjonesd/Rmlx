@@ -57,7 +57,7 @@ print.mlx <- function(x, ...) {
   total_size <- length(x)
   if (total_size <= 100 && length(mlx_shape(x)) <= 2) {
     cat("  values:\n")
-    mat <- as.matrix(x)
+    mat <- as.array(x)
     print(mat)
   } else {
     cat(sprintf("  (%d elements, not shown)\n", total_size))

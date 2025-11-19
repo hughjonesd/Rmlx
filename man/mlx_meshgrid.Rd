@@ -28,8 +28,7 @@ returning coordinate arrays suitable for vectorised evaluation on MLX devices.
 \examples{
 xs <- as_mlx(1:3)
 ys <- as_mlx(1:2)
-grids <- mlx_meshgrid(xs, ys, indexing = "xy")
-lapply(grids, as.matrix)
+mlx_meshgrid(xs, ys, indexing = "xy")
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.meshgrid}{mlx.core.meshgrid}

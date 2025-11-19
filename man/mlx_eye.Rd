@@ -36,8 +36,8 @@ An mlx matrix with ones on the selected diagonal and zeros elsewhere.
 Identity-like matrices on MLX devices
 }
 \examples{
-eye <- mlx_eye(3)
-upper_eye <- mlx_eye(3, k = 1)
+mlx_eye(3)
+mlx_eye(3, k = 1)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eye}{mlx.core.eye}

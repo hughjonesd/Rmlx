@@ -56,8 +56,8 @@ test_that("mlx_argmax and mlx_argmin match base behaviour", {
                   9, 2, 4), nrow = 2, byrow = TRUE)
   m_t <- as_mlx(mat)
 
-  col_argmax <- as.matrix(mlx_argmax(m_t, axis = 1L))
-  row_argmax <- as.matrix(mlx_argmax(m_t, axis = 2L))
+  col_argmax <- mlx_argmax(m_t, axis = 1L)
+  row_argmax <- mlx_argmax(m_t, axis = 2L)
 
   expect_equal(as.integer(col_argmax), apply(mat, 2, which.max))
   expect_equal(as.integer(row_argmax), apply(mat, 1, which.max))
@@ -114,14 +114,14 @@ test_that("mlx_logsumexp matches base computations", {
   vec <- c(-2, -1, 0, 1)
   mlx_vec <- as_mlx(vec)
   expect_equal(
-    as.numeric(as.matrix(mlx_logsumexp(mlx_vec))),
+    as.numeric(mlx_logsumexp(mlx_vec)),
     log(sum(exp(vec))),
     tolerance = 1e-6
   )
 
   mat <- matrix(seq_len(6), nrow = 2)
   mlx_mat <- as_mlx(mat)
-  lse_axis2 <- as.matrix(mlx_logsumexp(mlx_mat, axes = 2))
+  lse_axis2 <- mlx_logsumexp(mlx_mat, axes = 2)
   expected <- apply(mat, 1, function(row) log(sum(exp(row))))
   expect_equal(as.numeric(lse_axis2), expected, tolerance = 1e-6)
 })

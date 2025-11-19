@@ -35,9 +35,9 @@ and quantile (\code{mlx_qexp}) functions for the exponential distribution using 
 }
 \examples{
 x <- as_mlx(seq(0, 5, by = 0.5))
-as.matrix(mlx_dexp(x))
-as.matrix(mlx_pexp(x))
+mlx_dexp(x)
+mlx_pexp(x)
 
 p <- as_mlx(c(0.25, 0.5, 0.75))
-as.matrix(mlx_qexp(p))
+mlx_qexp(p)
 }

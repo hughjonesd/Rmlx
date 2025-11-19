@@ -37,7 +37,7 @@ chol.mlx <- function(x, pivot = FALSE, ...) {
 #' U <- chol(A)
 #' A_inv <- chol2inv(U)
 #' # Verify: A %*% A_inv should be identity
-#' as.matrix(A %*% A_inv)
+#' A %*% A_inv
 chol2inv <- function(x, size = NCOL(x), ...) {
   UseMethod("chol2inv")
 }
@@ -497,7 +497,7 @@ mlx_unflatten <- function(x, axis, shape) {
 #' A <- as_mlx(matrix(c(4, 7, 2, 6), 2, 2))
 #' A_inv <- mlx_inv(A)
 #' # Verify: A %*% A_inv should be identity
-#' as.matrix(A %*% A_inv)
+#' A %*% A_inv
 mlx_inv <- function(x) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_inv(x$ptr, x$device)
@@ -515,8 +515,8 @@ mlx_inv <- function(x) {
 #' @export
 #' @examples
 #' # Lower triangular matrix
-#' L <- as_mlx(matrix(c(1, 2, 0, 3, 0, 0, 4, 5, 6), 3, 3, byrow = TRUE))
-#' L_inv <- mlx_tri_inv(L, upper = FALSE)
+#' L <- mlx_matrix(c(1, 2, 0, 3, 0, 0, 4, 5, 6), 3, 3, byrow = TRUE)
+#' mlx_tri_inv(L, upper = FALSE)
 mlx_tri_inv <- function(x, upper = FALSE) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_tri_inv(x$ptr, upper, x$device)
@@ -542,7 +542,7 @@ mlx_tri_inv <- function(x, upper = FALSE) {
 #' # Compute Cholesky factor
 #' L <- chol(A, pivot = FALSE, upper = FALSE)
 #' # Get inverse from Cholesky factor
-#' A_inv <- mlx_cholesky_inv(as_mlx(L))
+#' mlx_cholesky_inv(as_mlx(L))
 mlx_cholesky_inv <- function(x, upper = FALSE) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_cholesky_inv(x$ptr, upper, x$device)

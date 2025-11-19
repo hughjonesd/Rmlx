@@ -22,9 +22,9 @@ An mlx array containing log-sum-exp results.
 Log-sum-exp reduction for mlx arrays
 }
 \examples{
-x <- as_mlx(matrix(1:6, 2, 3))
-as.matrix(mlx_logsumexp(x))
-as.matrix(mlx_logsumexp(x, axes = 2))
+x <- mlx_matrix(1:6, 2, 3)
+mlx_logsumexp(x)
+mlx_logsumexp(x, axes = 2)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp}{mlx.core.logsumexp}

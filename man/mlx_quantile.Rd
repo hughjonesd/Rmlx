@@ -61,8 +61,8 @@ This matches the default behavior of \code{\link[stats:quantile]{stats::quantile
 }
 \examples{
 x <- as_mlx(1:10)
-as.numeric(mlx_quantile(x, 0.5))  # median
-as.numeric(mlx_quantile(x, c(0.25, 0.5, 0.75)))  # quartiles
+mlx_quantile(x, 0.5)  # median
+mlx_quantile(x, c(0.25, 0.5, 0.75))  # quartiles
 
 # S3 method:
 quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))

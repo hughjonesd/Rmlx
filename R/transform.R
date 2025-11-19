@@ -250,9 +250,9 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
 #' @seealso [mlx.core.logsumexp](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.logsumexp)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 2, 3))
-#' as.matrix(mlx_logsumexp(x))
-#' as.matrix(mlx_logsumexp(x, axes = 2))
+#' x <- mlx_matrix(1:6, 2, 3)
+#' mlx_logsumexp(x)
+#' mlx_logsumexp(x, axes = 2)
 mlx_logsumexp <- function(x, axes = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axes_idx <- .mlx_normalize_axes(axes, x)
@@ -271,9 +271,9 @@ mlx_logsumexp <- function(x, axes = NULL, drop = TRUE) {
 #' @export
 #' @examples
 #' x <- as_mlx(1:4)
-#' as.vector(mlx_logcumsumexp(x))
-#' m <- as_mlx(matrix(1:6, 2, 3))
-#' as.matrix(mlx_logcumsumexp(m, axis = 2))
+#' mlx_logcumsumexp(x)
+#' m <- mlx_matrix(1:6, 2, 3)
+#' mlx_logcumsumexp(m, axis = 2)
 mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   x <- as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
@@ -289,9 +289,9 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
 #' @seealso [mlx.core.softmax](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 2, 3))
+#' x <- mlx_matrix(1:6, 2, 3)
 #' sm <- mlx_softmax(x, axes = 2)
-#' rowSums(as.matrix(sm))
+#' rowSums(sm)
 mlx_softmax <- function(x, axes = NULL, precise = FALSE) {
   x <- as_mlx(x)
   axes_idx <- .mlx_normalize_axes(axes, x)

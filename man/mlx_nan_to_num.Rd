@@ -25,7 +25,7 @@ filling non-finite entries with user-provided finite substitutes.
 }
 \examples{
 x <- as_mlx(c(-Inf, -1, NaN, 3, Inf))
-as.matrix(mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10))
+mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.nan_to_num}{mlx.core.nan_to_num}

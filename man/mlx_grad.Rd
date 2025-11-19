@@ -33,7 +33,7 @@ arrays. The function must keep all differentiable computations in MLX
 }
 \details{
 Keep the differentiated closure inside MLX operations. Coercing arrays back
-to base R objects (such as \code{as.matrix()}, \code{as.numeric()}, or \code{[[} extraction)
+to base R objects (e.g. via \code{\link[=as.matrix]{as.matrix()}} or \code{[[} extraction)
 breaks the gradient tape and results in an error.
 }
 \examples{

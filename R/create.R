@@ -55,8 +55,7 @@ mlx_ones <- function(dim,
 #' @export
 #' @examples
 #' base <- mlx_ones(c(2, 2))
-#' zeros <- mlx_zeros_like(base)
-#' as.matrix(zeros)
+#' mlx_zeros_like(base)
 mlx_zeros_like <- function(x,
                            dtype = NULL,
                            device = NULL) {
@@ -91,8 +90,7 @@ mlx_zeros_like <- function(x,
 #' @export
 #' @examples
 #' base <- mlx_full(c(2, 3), 5)
-#' ones <- mlx_ones_like(base)
-#' as.matrix(ones)
+#' mlx_ones_like(base)
 mlx_ones_like <- function(x,
                           dtype = NULL,
                           device = NULL) {
@@ -170,8 +168,8 @@ mlx_full <- function(dim,
 #' @seealso [mlx.core.eye](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eye)
 #' @export
 #' @examples
-#' eye <- mlx_eye(3)
-#' upper_eye <- mlx_eye(3, k = 1)
+#' mlx_eye(3)
+#' mlx_eye(3, k = 1)
 mlx_eye <- function(n,
                     m = n,
                     k = 0L,
@@ -213,8 +211,7 @@ mlx_eye <- function(n,
 #' @export
 #' @examples
 #' payload <- runif(6)
-#' arr <- mlx_array(payload, dim = c(2, 3))
-#' as.matrix(arr)
+#'mlx_array(payload, dim = c(2, 3))
 mlx_array <- function(data,
                       dim,
                       dtype = NULL,
@@ -278,8 +275,7 @@ mlx_array <- function(data,
 #' @return An `mlx` matrix with `dim = c(nrow, ncol)`.
 #' @export
 #' @examples
-#' mx <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
-#' as.matrix(mx)
+#' mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
 mlx_matrix <- function(data,
                        nrow = NULL,
                        ncol = NULL,

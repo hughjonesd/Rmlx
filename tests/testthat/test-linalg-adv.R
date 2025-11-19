@@ -2,13 +2,13 @@ test_that("mlx_norm matches base computations", {
   mat <- matrix(c(1, -2, 3, 4), 2, 2)
   x <- as_mlx(mat)
 
-  frob <- as.numeric(as.matrix(mlx_norm(x)))
+  frob <- as.numeric(mlx_norm(x))
   expect_equal(frob, base::norm(mat, type = "F"), tolerance = 1e-6)
 
-  inf_norm <- as.numeric(as.matrix(mlx_norm(x, ord = Inf)))
+  inf_norm <- as.numeric(mlx_norm(x, ord = Inf))
   expect_equal(inf_norm, base::norm(mat, type = "I"), tolerance = 1e-6)
 
-  row_norms <- as.numeric(as.matrix(mlx_norm(x, axes = 2)))
+  row_norms <- as.numeric(mlx_norm(x, axes = 2))
   expected_rows <- apply(mat, 1, function(row) sqrt(sum(row^2)))
   expect_equal(row_norms, expected_rows, tolerance = 1e-6)
 })

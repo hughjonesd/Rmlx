@@ -38,6 +38,5 @@ style arguments as \code{\link[base:matrix]{base::matrix()}} but without recycli
 Supply \code{nrow} or \code{ncol} (the other may be inferred from \code{length(data)}).
 }
 \examples{
-mx <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
-as.matrix(mx)
+mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
 }

@@ -18,17 +18,17 @@
 #'
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:9, 3, 3))
+#' x <- mlx_matrix(1:9, 3, 3)
 #'
 #' # Simple cartesian gather:
-#' as.matrix(mlx_gather(x, list(1:2, 1:2), axes = 1:2))
+#' mlx_gather(x, list(1:2, 1:2), axes = 1:2)
 #'
 #' # Element-wise pairs: grab a custom 2x2 grid of coordinates
 #' row_idx <- matrix(c(1, 1,
 #'                     2, 3), nrow = 2, byrow = TRUE)
 #' col_idx <- matrix(c(1, 3,
 #'                     2, 2), nrow = 2, byrow = TRUE)
-#' as.array(mlx_gather(x, list(row_idx, col_idx), axes = c(1L, 2L)))
+#' mlx_gather(x, list(row_idx, col_idx), axes = c(1L, 2L))
 mlx_gather <- function(x, indices, axes = NULL) {
   x <- as_mlx(x)
 
@@ -126,7 +126,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
 #' x <- as_mlx(matrix(1:9, 3, 3))
 #' replacement <- as_mlx(matrix(100:103, nrow = 2))
 #' updated <- mlx_slice_update(x, replacement, start = c(1L, 2L), stop = c(2L, 3L))
-#' as.matrix(updated)
+#' updated
 mlx_slice_update <- function(x,
                              value,
                              start,

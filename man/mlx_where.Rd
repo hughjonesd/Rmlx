@@ -22,9 +22,9 @@ Elementwise conditional selection
 Behaves like \code{\link[=ifelse]{ifelse()}} for arrays, but evaluates both branches.
 }
 \examples{
-cond <- as_mlx(matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2))
-a <- as_mlx(matrix(1:4, 2, 2))
-b <- as_mlx(matrix(5:8, 2, 2))
+cond <- mlx_matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2)
+a <- mlx_matrix(1:4, 2, 2)
+b <- mlx_matrix(5:8, 2, 2)
 mlx_where(cond, a, b)
 }
 \seealso{

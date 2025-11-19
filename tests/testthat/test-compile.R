@@ -32,7 +32,7 @@ test_that("compiled functions can be called multiple times", {
   expect_s3_class(r2, "mlx")
 
   # Results should be different for different inputs
-  expect_false(isTRUE(all.equal(as.matrix(r1), as.matrix(r2))))
+  expect_false(isTRUE(all.equal(r1, r2)))
 })
 
 test_that("compiled functions handle multiple returns", {

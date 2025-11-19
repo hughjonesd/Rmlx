@@ -47,7 +47,7 @@ test_that("solve works with vector b", {
   x_mlx <- solve(A_mlx, b_mlx)
   x_r <- solve(A, b)
 
-  expect_equal(as.numeric(as.matrix(x_mlx)), x_r, tolerance = 1e-5)
+  expect_equal(as.numeric(x_mlx), x_r, tolerance = 1e-5)
 })
 
 test_that("solve works when A is mlx and b is R matrix", {

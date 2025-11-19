@@ -643,26 +643,26 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
 
     # indices are 1-based token IDs
     orig_shape <- cpp_mlx_shape(indices$ptr)
-    indices_r <- as.integer(as.matrix(indices))
+    indices_r <- as.integer(indices)
 
     # Take embeddings
     result_list <- lapply(indices_r, function(idx) {
       if (idx < 1 || idx > env$num_embeddings) {
         stop("Index out of range: ", idx, call. = FALSE)
       }
-      as.numeric(as.matrix(env$weight[idx, ]))
+      as.numeric(env$weight[idx, ])
     })
 
     # Stack results and reshape
     if (length(orig_shape) == 0) {
       # Scalar index - return (1, embedding_dim)
-      as_mlx(matrix(result_list[[1]], 1, env$embedding_dim), device = indices$device)
+      mlx_matrix(result_list[[1]], nrow = 1, ncol = env$embedding_dim,
+                 device = indices$device)
     } else {
       # Stack into matrix then reshape to match input shape + embedding dimension
       result_mat <- do.call(rbind, lapply(result_list, function(x) matrix(x, 1, env$embedding_dim)))
       new_shape <- c(orig_shape, env$embedding_dim)
-      result_array <- array(as.numeric(result_mat), dim = new_shape)
-      as_mlx(result_array, device = indices$device)
+      mlx_array(as.numeric(result_mat), dim = new_shape, device = indices$device)
     }
   }
 

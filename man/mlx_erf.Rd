@@ -21,9 +21,9 @@ An mlx array with the result.
 }
 \examples{
 x <- as_mlx(c(-1, 0, 1))
-as.matrix(mlx_erf(x))
+mlx_erf(x)
 p <- as_mlx(c(-0.5, 0, 0.5))
-as.matrix(mlx_erfinv(p))
+mlx_erfinv(p)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erf.html}{mlx.core.erf},

@@ -22,9 +22,9 @@ An mlx array with normalized probabilities.
 Softmax for mlx arrays
 }
 \examples{
-x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 sm <- mlx_softmax(x, axes = 2)
-rowSums(as.matrix(sm))
+rowSums(sm)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.softmax}{mlx.core.softmax}

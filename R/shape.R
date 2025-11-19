@@ -663,8 +663,7 @@ mlx_swapaxes <- function(x, axis1, axis2) {
 #' @examples
 #' xs <- as_mlx(1:3)
 #' ys <- as_mlx(1:2)
-#' grids <- mlx_meshgrid(xs, ys, indexing = "xy")
-#' lapply(grids, as.matrix)
+#' mlx_meshgrid(xs, ys, indexing = "xy")
 mlx_meshgrid <- function(...,
                          sparse = FALSE,
                          indexing = c("xy", "ij"),
@@ -702,7 +701,7 @@ mlx_meshgrid <- function(...,
 #' @seealso [mlx.core.broadcast_to](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_to)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:3, nrow = 1))
+#' x <- mlx_matrix(1:3, nrow = 1)
 #' broadcast <- mlx_broadcast_to(x, c(5, 3))
 #' dim(broadcast)
 mlx_broadcast_to <- function(x, shape, device = NULL) {
@@ -761,9 +760,9 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
 #' @seealso [mlx.core.where](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.where)
 #' @export
 #' @examples
-#' cond <- as_mlx(matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2))
-#' a <- as_mlx(matrix(1:4, 2, 2))
-#' b <- as_mlx(matrix(5:8, 2, 2))
+#' cond <- mlx_matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2)
+#' a <- mlx_matrix(1:4, 2, 2)
+#' b <- mlx_matrix(5:8, 2, 2)
 #' mlx_where(cond, a, b)
 mlx_where <- function(condition, x, y) {
   condition <- as_mlx(condition)

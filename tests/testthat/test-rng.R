@@ -85,7 +85,7 @@ test_that("mlx_rand_multivariate_normal generates finite values", {
   expect_s3_class(mx_mvn, "mlx")
   expect_equal(mx_mvn$device, "cpu")
   expect_equal(mlx_dtype(mx_mvn), "float32")
-  mvn_vals <- as.vector(as.matrix(mx_mvn))
+  mvn_vals <- as.vector(mx_mvn)
   expect_true(all(is.finite(mvn_vals)))
 })
 
@@ -97,7 +97,7 @@ test_that("mlx_rand_multivariate_normal works with non-identity covariance", {
 
   expect_s3_class(mx_mvn, "mlx")
   expect_equal(mx_mvn$device, "cpu")
-  mvn_vals <- as.vector(as.matrix(mx_mvn))
+  mvn_vals <- as.vector(mx_mvn)
   expect_true(all(is.finite(mvn_vals)))
 })
 
@@ -227,8 +227,8 @@ test_that("mlx_key is deterministic for a given seed", {
 
   expect_s3_class(key1, "mlx")
   expect_equal(key1$device, "cpu")
-  expect_equal(as.matrix(key1), as.matrix(key2))
-  expect_false(all(as.matrix(key1) == as.matrix(key3)))
+  expect_equal(as.vector(key1), as.vector(key2))
+  expect_false(all(as.vector(key1) == as.vector(key3)))
 })
 
 test_that("mlx_key_split returns reproducible subkeys", {
@@ -240,9 +240,9 @@ test_that("mlx_key_split returns reproducible subkeys", {
 
   splits_again <- mlx_key_split(mlx_key(321), num = 3)
   for (i in seq_along(splits)) {
-    expect_equal(as.matrix(splits[[i]]), as.matrix(splits_again[[i]]))
+    expect_equal(as.vector(splits[[i]]), as.vector(splits_again[[i]]))
   }
-  expect_false(all(as.matrix(splits[[1]]) == as.matrix(splits[[2]])))
+  expect_false(all(as.vector(splits[[1]]) == as.vector(splits[[2]])))
 })
 
 test_that("mlx_key_bits produces deterministic bit patterns", {

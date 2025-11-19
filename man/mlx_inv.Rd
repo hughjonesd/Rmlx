@@ -19,7 +19,7 @@ Computes the inverse of a square matrix.
 A <- as_mlx(matrix(c(4, 7, 2, 6), 2, 2))
 A_inv <- mlx_inv(A)
 # Verify: A \%*\% A_inv should be identity
-as.matrix(A \%*\% A_inv)
+A \%*\% A_inv
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.inv}{mlx.core.linalg.inv}

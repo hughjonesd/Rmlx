@@ -35,9 +35,9 @@ and quantile (\code{mlx_qunif}) functions for the uniform distribution using MLX
 }
 \examples{
 x <- as_mlx(seq(0, 1, by = 0.1))
-as.matrix(mlx_dunif(x))
-as.matrix(mlx_punif(x))
+mlx_dunif(x)
+mlx_punif(x)
 
 p <- as_mlx(c(0.25, 0.5, 0.75))
-as.matrix(mlx_qunif(p))
+mlx_qunif(p)
 }

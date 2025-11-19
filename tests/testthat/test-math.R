@@ -152,11 +152,11 @@ test_that("cumulative operations work", {
 test_that("mlx_degrees and mlx_radians convert angles", {
   radians <- as_mlx(c(0, pi / 2, pi))
   degrees <- mlx_degrees(radians)
-  expect_equal(as.numeric(as.matrix(degrees)), c(0, 90, 180), tolerance = 1e-6)
+  expect_equal(as.numeric(degrees), c(0, 90, 180), tolerance = 1e-6)
 
   deg_values <- as_mlx(c(0, 180, 270))
   rad_out <- mlx_radians(deg_values)
-  expect_equal(as.numeric(as.matrix(rad_out)), c(0, pi, 3 * pi / 2), tolerance = 1e-6)
+  expect_equal(as.numeric(rad_out), c(0, pi, 3 * pi / 2), tolerance = 1e-6)
 })
 
 test_that("mlx_nan/inf helpers work", {
@@ -169,7 +169,7 @@ test_that("mlx_nan/inf helpers work", {
   expect_equal(as.vector(mlx_isfinite(x)), c(FALSE, TRUE, FALSE, TRUE, FALSE))
 
   replaced <- mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10)
-  expect_equal(as.numeric(as.matrix(replaced)), c(-10, -1, 0, 0, 10), tolerance = 1e-6)
+  expect_equal(as.numeric(replaced), c(-10, -1, 0, 0, 10), tolerance = 1e-6)
 })
 
 test_that("is.nan/is.infinite/is.finite methods dispatch", {
@@ -277,16 +277,16 @@ test_that("mlx_allclose returns scalar boolean", {
   # All elements close with default tolerance
   result <- mlx_allclose(a, b)
   expect_s3_class(result, "mlx")
-  expect_true(as.logical(as.matrix(result)))
+  expect_true(as.logical(result))
 
   # Not all close with stricter tolerance
   result_strict <- mlx_allclose(a, b, rtol = 1e-7, atol = 1e-9)
-  expect_false(as.logical(as.matrix(result_strict)))
+  expect_false(as.logical(result_strict))
 
   # Test with one element far off
   c <- as_mlx(c(1.0, 2.0, 100.0))
   result_diff <- mlx_allclose(a, c)
-  expect_false(as.logical(as.matrix(result_diff)))
+  expect_false(as.logical(result_diff))
 })
 
 test_that("mlx_isclose handles NaN with equal_nan parameter", {

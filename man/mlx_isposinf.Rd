@@ -23,8 +23,8 @@ returning boolean masks of positive or negative infinities.
 }
 \examples{
 vals <- as_mlx(c(-Inf, -1, 0, Inf))
-as.matrix(mlx_isposinf(vals))
-as.matrix(mlx_isneginf(vals))
+mlx_isposinf(vals)
+mlx_isneginf(vals)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.isposinf}{mlx.core.isposinf},

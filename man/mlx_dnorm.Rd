@@ -37,11 +37,11 @@ and quantile (\code{mlx_qnorm}) functions for the normal distribution using MLX.
 }
 \examples{
 x <- as_mlx(seq(-3, 3, by = 0.5))
-as.matrix(mlx_dnorm(x))
-as.matrix(mlx_pnorm(x))
+mlx_dnorm(x)
+mlx_pnorm(x)
 
 p <- as_mlx(c(0.025, 0.5, 0.975))
-as.matrix(mlx_qnorm(p))
+mlx_qnorm(p)
 }
 \seealso{
 \code{\link[=mlx_erf]{mlx_erf()}}, \code{\link[=mlx_erfinv]{mlx_erfinv()}},

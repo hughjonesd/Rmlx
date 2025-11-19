@@ -42,9 +42,9 @@ and quantile (\code{mlx_qlnorm}) functions for the lognormal distribution using 
 }
 \examples{
 x <- as_mlx(seq(0.1, 3, by = 0.2))
-as.matrix(mlx_dlnorm(x))
-as.matrix(mlx_plnorm(x))
+mlx_dlnorm(x)
+mlx_plnorm(x)
 
 p <- as_mlx(c(0.25, 0.5, 0.75))
-as.matrix(mlx_qlnorm(p))
+mlx_qlnorm(p)
 }

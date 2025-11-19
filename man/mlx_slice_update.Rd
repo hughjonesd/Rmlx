@@ -31,5 +31,5 @@ that replaces a contiguous strided region with \code{value}.
 x <- as_mlx(matrix(1:9, 3, 3))
 replacement <- as_mlx(matrix(100:103, nrow = 2))
 updated <- mlx_slice_update(x, replacement, start = c(1L, 2L), stop = c(2L, 3L))
-as.matrix(updated)
+updated
 }

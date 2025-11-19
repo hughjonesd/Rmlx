@@ -41,9 +41,9 @@ and quantile (\code{mlx_qlogis}) functions for the logistic distribution using M
 }
 \examples{
 x <- as_mlx(seq(-3, 3, by = 0.5))
-as.matrix(mlx_dlogis(x))
-as.matrix(mlx_plogis(x))
+mlx_dlogis(x)
+mlx_plogis(x)
 
 p <- as_mlx(c(0.25, 0.5, 0.75))
-as.matrix(mlx_qlogis(p))
+mlx_qlogis(p)
 }

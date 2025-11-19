@@ -2,7 +2,7 @@
 % Please edit documentation in R/class.R
 \name{as.matrix.mlx}
 \alias{as.matrix.mlx}
-\title{Convert MLX array to R matrix/array}
+\title{Convert MLX array to R matrix}
 \usage{
 \method{as.matrix}{mlx}(x, ...)
 }
@@ -15,7 +15,8 @@
 A vector, matrix or array (numeric or logical depending on dtype).
 }
 \description{
-MLX arrays without dimension are returned as R vectors.
+MLX arrays with other than 2 dimensions are converted to
+a 1 column matrix, with a warning.
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

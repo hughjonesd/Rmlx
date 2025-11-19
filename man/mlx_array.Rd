@@ -40,6 +40,5 @@ and it pipes the data straight into MLX.
 }
 \examples{
 payload <- runif(6)
-arr <- mlx_array(payload, dim = c(2, 3))
-as.matrix(arr)
+mlx_array(payload, dim = c(2, 3))
 }

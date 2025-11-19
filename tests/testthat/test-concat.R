@@ -35,9 +35,9 @@ test_that("rbind/cbind work on 3D arrays", {
   expect_equal(dim(cb), c(2L, 6L, 4L))
 
   # Check first slice values by dropping the third dimension
-  expect_equal(drop(as.matrix(rb[, , 1])),
+  expect_equal(drop(as.array(rb[, , 1])),
                rbind(matrix(1:6, 2, 3), matrix(25:30, 2, 3)))
-  expect_equal(drop(as.matrix(cb[, , 1])),
+  expect_equal(drop(as.array(cb[, , 1])),
                cbind(matrix(1:6, 2, 3), matrix(25:30, 2, 3)))
 })
 
@@ -64,12 +64,12 @@ test_that("abind concatenates along arbitrary axes", {
   expected3 <- array(0, dim = c(2, 3, 8))
   expected3[, , 1:4] <- arr1
   expected3[, , 5:8] <- arr2
-  expect_equal(as.matrix(along3), expected3)
+  expect_equal(as.array(along3), expected3)
 
   along2 <- abind(list(x, y), along = 2)
   expect_equal(dim(along2), c(2L, 6L, 4L))
   expected2 <- array(0, dim = c(2, 6, 4))
   expected2[, 1:3, ] <- arr1
   expected2[, 4:6, ] <- arr2
-  expect_equal(as.matrix(along2), expected2)
+  expect_equal(as.array(along2), expected2)
 })

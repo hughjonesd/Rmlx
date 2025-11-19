@@ -389,7 +389,7 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
       any = "any"
     ), axes = axes, drop = drop_val)
     if (op %in% c("all", "any")) {
-      return(as.logical(as.matrix(res)))
+      return(as.logical(res))
     }
     return(res)
   }
@@ -421,7 +421,7 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
     }
   }
   if (op %in% c("all", "any")) {
-    return(as.logical(as.matrix(result)))
+    return(as.logical(result))
   }
   result
 }
@@ -637,11 +637,11 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
 #' @export
 #' @examples
 #' x <- as_mlx(seq(-3, 3, by = 0.5))
-#' as.matrix(mlx_dnorm(x))
-#' as.matrix(mlx_pnorm(x))
+#' mlx_dnorm(x)
+#' mlx_pnorm(x)
 #'
 #' p <- as_mlx(c(0.025, 0.5, 0.975))
-#' as.matrix(mlx_qnorm(p))
+#' mlx_qnorm(p)
 mlx_dnorm <- function(x, mean = 0, sd = 1, log = FALSE, device = mlx_default_device()) {
   x <- as_mlx(x, device = device)
 
@@ -722,11 +722,11 @@ mlx_qnorm <- function(p, mean = 0, sd = 1, device = mlx_default_device()) {
 #' @export
 #' @examples
 #' x <- as_mlx(seq(0, 1, by = 0.1))
-#' as.matrix(mlx_dunif(x))
-#' as.matrix(mlx_punif(x))
+#' mlx_dunif(x)
+#' mlx_punif(x)
 #'
 #' p <- as_mlx(c(0.25, 0.5, 0.75))
-#' as.matrix(mlx_qunif(p))
+#' mlx_qunif(p)
 mlx_dunif <- function(x, min = 0, max = 1, log = FALSE, device = mlx_default_device()) {
   x <- as_mlx(x, device = device)
 
@@ -801,11 +801,11 @@ mlx_qunif <- function(p, min = 0, max = 1, device = mlx_default_device()) {
 #' @export
 #' @examples
 #' x <- as_mlx(seq(0, 5, by = 0.5))
-#' as.matrix(mlx_dexp(x))
-#' as.matrix(mlx_pexp(x))
+#' mlx_dexp(x)
+#' mlx_pexp(x)
 #'
 #' p <- as_mlx(c(0.25, 0.5, 0.75))
-#' as.matrix(mlx_qexp(p))
+#' mlx_qexp(p)
 mlx_dexp <- function(x, rate = 1, log = FALSE, device = mlx_default_device()) {
   x <- as_mlx(x, device = device)
 
@@ -877,11 +877,11 @@ mlx_qexp <- function(p, rate = 1, device = mlx_default_device()) {
 #' @export
 #' @examples
 #' x <- as_mlx(seq(0.1, 3, by = 0.2))
-#' as.matrix(mlx_dlnorm(x))
-#' as.matrix(mlx_plnorm(x))
+#' mlx_dlnorm(x)
+#' mlx_plnorm(x)
 #'
 #' p <- as_mlx(c(0.25, 0.5, 0.75))
-#' as.matrix(mlx_qlnorm(p))
+#' mlx_qlnorm(p)
 mlx_dlnorm <- function(x, meanlog = 0, sdlog = 1, log = FALSE,
                        device = mlx_default_device()) {
   x <- as_mlx(x, device = device)
@@ -950,11 +950,11 @@ mlx_qlnorm <- function(p, meanlog = 0, sdlog = 1, device = mlx_default_device())
 #' @export
 #' @examples
 #' x <- as_mlx(seq(-3, 3, by = 0.5))
-#' as.matrix(mlx_dlogis(x))
-#' as.matrix(mlx_plogis(x))
+#' mlx_dlogis(x)
+#' mlx_plogis(x)
 #'
 #' p <- as_mlx(c(0.25, 0.5, 0.75))
-#' as.matrix(mlx_qlogis(p))
+#' mlx_qlogis(p)
 mlx_dlogis <- function(x, location = 0, scale = 1, log = FALSE,
                        device = mlx_default_device()) {
   x <- as_mlx(x, device = device)
@@ -1060,8 +1060,8 @@ mlx_qlogis <- function(p, location = 0, scale = 1, device = mlx_default_device()
 #' @export
 #' @examples
 #' x <- as_mlx(1:10)
-#' as.numeric(mlx_quantile(x, 0.5))  # median
-#' as.numeric(mlx_quantile(x, c(0.25, 0.5, 0.75)))  # quartiles
+#' mlx_quantile(x, 0.5)  # median
+#' mlx_quantile(x, c(0.25, 0.5, 0.75))  # quartiles
 #'
 #' # S3 method:
 #' quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))

@@ -24,7 +24,7 @@ MLX arrays use lazy evaluation by default. Operations are recorded but not
 executed until:
 \itemize{
 \item You call \code{\link[=mlx_eval]{mlx_eval()}}
-\item You convert to R with \code{\link[=as.matrix]{as.matrix()}} or \code{\link[=as.vector]{as.vector()}}
+\item You convert to R with e.g. \code{\link[=as.array]{as.array()}} or \code{\link[=as.vector]{as.vector()}}
 \item The result is needed for another computation
 }
 

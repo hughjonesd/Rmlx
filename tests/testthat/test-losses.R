@@ -9,21 +9,21 @@ test_that("MSE loss works correctly", {
   expect_s3_class(loss, "mlx")
   expect_equal(length(dim(loss)), 0L) # scalar
   expected <- mean((c(1.5, 2.5, 3.5) - c(1, 2, 3))^2)
-  expect_equal(as.numeric(as.matrix(loss)), expected, tolerance = 1e-6)
+  expect_equal(as.numeric(loss), expected, tolerance = 1e-6)
 
   # Test sum reduction
   loss_sum <- mlx_mse_loss(preds, targets, reduction = "sum")
-  expect_equal(as.numeric(as.matrix(loss_sum)), expected * 3, tolerance = 1e-6)
+  expect_equal(as.numeric(loss_sum), expected * 3, tolerance = 1e-6)
 
   # Test none reduction
   loss_none <- mlx_mse_loss(preds, targets, reduction = "none")
   expect_equal(dim(loss_none), c(3L, 1L))
   expected_none <- (c(1.5, 2.5, 3.5) - c(1, 2, 3))^2
-  expect_equal(as.numeric(as.matrix(loss_none)), expected_none, tolerance = 1e-6)
+  expect_equal(as.numeric(loss_none), expected_none, tolerance = 1e-6)
 
   # Test perfect prediction
   loss_perfect <- mlx_mse_loss(preds, preds)
-  expect_equal(as.numeric(as.matrix(loss_perfect)), 0, tolerance = 1e-6)
+  expect_equal(as.numeric(loss_perfect), 0, tolerance = 1e-6)
 })
 
 test_that("L1 loss works correctly", {
@@ -36,11 +36,11 @@ test_that("L1 loss works correctly", {
   loss <- mlx_l1_loss(preds, targets, reduction = "mean")
   expect_s3_class(loss, "mlx")
   expected <- mean(abs(c(1.5, 2.5, 3.5) - c(1, 2, 3)))
-  expect_equal(as.numeric(as.matrix(loss)), expected, tolerance = 1e-6)
+  expect_equal(as.numeric(loss), expected, tolerance = 1e-6)
 
   # Test sum reduction
   loss_sum <- mlx_l1_loss(preds, targets, reduction = "sum")
-  expect_equal(as.numeric(as.matrix(loss_sum)), expected * 3, tolerance = 1e-6)
+  expect_equal(as.numeric(loss_sum), expected * 3, tolerance = 1e-6)
 
   # Test none reduction
   loss_none <- mlx_l1_loss(preds, targets, reduction = "none")
@@ -48,7 +48,7 @@ test_that("L1 loss works correctly", {
 
   # Test perfect prediction
   loss_perfect <- mlx_l1_loss(preds, preds)
-  expect_equal(as.numeric(as.matrix(loss_perfect)), 0, tolerance = 1e-6)
+  expect_equal(as.numeric(loss_perfect), 0, tolerance = 1e-6)
 })
 
 test_that("binary cross entropy works correctly", {
@@ -63,11 +63,11 @@ test_that("binary cross entropy works correctly", {
   expect_equal(length(dim(loss)), 0L) # scalar
 
   # Loss should be positive
-  expect_true(as.numeric(as.matrix(loss)) > 0)
+  expect_gt(as.numeric(loss),  0)
 
   # Test sum reduction
   loss_sum <- mlx_binary_cross_entropy(preds, targets, reduction = "sum")
-  expect_true(as.numeric(as.matrix(loss_sum)) > as.numeric(as.matrix(loss)))
+  expect_gt(as.numeric(loss_sum), as.numeric(loss))
 
   # Test none reduction
   loss_none <- mlx_binary_cross_entropy(preds, targets, reduction = "none")
@@ -76,17 +76,15 @@ test_that("binary cross entropy works correctly", {
   # Perfect predictions should give very low loss
   perfect_preds <- as_mlx(matrix(c(0.99, 0.01, 0.99, 0.01), 4, 1))
   loss_perfect <- mlx_binary_cross_entropy(perfect_preds, targets)
-  expect_true(as.numeric(as.matrix(loss_perfect)) < 0.1)
+  expect_lt(as.numeric(loss_perfect), 0.1)
 
   # Very wrong predictions should give high loss
   wrong_preds <- as_mlx(matrix(c(0.01, 0.99, 0.01, 0.99), 4, 1))
   loss_wrong <- mlx_binary_cross_entropy(wrong_preds, targets)
-  expect_true(as.numeric(as.matrix(loss_wrong)) > as.numeric(as.matrix(loss)))
+  expect_gt(as.numeric(loss_wrong), as.numeric(loss))
 })
 
 test_that("cross entropy works correctly", {
-  # Tests assume MLX is available
-
   # 3 samples, 4 classes
   set.seed(1)
   logits <- as_mlx(matrix(rnorm(12), 3, 4))
@@ -98,11 +96,11 @@ test_that("cross entropy works correctly", {
   expect_equal(length(dim(loss)), 0L) # scalar
 
   # Loss should be positive
-  expect_true(as.numeric(as.matrix(loss)) > 0)
+  expect_true(as.numeric(loss) > 0)
 
   # Test sum reduction
   loss_sum <- mlx_cross_entropy(logits, targets, reduction = "sum")
-  expect_true(as.numeric(as.matrix(loss_sum)) > as.numeric(as.matrix(loss)))
+  expect_gt(as.numeric(loss_sum), as.numeric(loss))
 
   # Test none reduction
   loss_none <- mlx_cross_entropy(logits, targets, reduction = "none")
@@ -116,7 +114,7 @@ test_that("cross entropy works correctly", {
   confident_logits <- as_mlx(confident_logits)
 
   loss_confident <- mlx_cross_entropy(confident_logits, targets)
-  expect_true(as.numeric(as.matrix(loss_confident)) < 0.1)
+  expect_lt(as.numeric(loss_confident), 0.1)
 })
 
 test_that("loss functions handle different input types", {

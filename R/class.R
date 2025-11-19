@@ -152,9 +152,10 @@ mlx_eval <- function(x) {
   invisible(x)
 }
 
-#' Convert MLX array to R matrix/array
+#' Convert MLX array to R matrix
 #'
-#' MLX arrays without dimension are returned as R vectors.
+#' MLX arrays with other than 2 dimensions are converted to
+#' a 1 column matrix, with a warning.
 #'
 #' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
@@ -164,11 +165,42 @@ mlx_eval <- function(x) {
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' as.matrix(x)
 as.matrix.mlx <- function(x, ...) {
+  x <- as.array.mlx(x, ...)
+  if (length(dim(x)) != 2L) {
+    warning("Converting array to 1-column matrix")
+    dim(x) <- c(length(x), 1L)
+  }
+
+  x
+}
+
+#' Convert MLX array to R matrix/array
+#'
+#' MLX vectors or scalars are returned as R vectors.
+#'
+#' @inheritParams mlx_array_required
+#' @param ... Additional arguments (ignored)
+#' @return A vector, matrix or array.
+#' @export
+#' @examples
+#' Convert MLX array to R array
+#'
+#' @inheritParams mlx_array_required
+#' @param ... Additional arguments (ignored)
+#' @return A numeric array.
+#' @export
+#' @examples
+#' x <- as_mlx(matrix(1:8, 2, 4))
+#' as.array(x)
+as.array.mlx <- function(x, ...) {
   mlx_eval(x)
   out <- cpp_mlx_to_r(x$ptr)
-  if (length(dim(x)) == 0) {
+  if (length(dim(x)) == 0L) {
     return(as.vector(out))
   }
+
+  # Be careful before changing the below; dim(), attributes() and
+  # class can interact surprisingly.
   dim(out) <- dim(x)
   attrs <- attributes(x)
   attrs$names <- NULL
@@ -181,74 +213,50 @@ as.matrix.mlx <- function(x, ...) {
   out
 }
 
-#' Convert MLX array to R array
-#'
-#' @inheritParams mlx_array_required
-#' @param ... Additional arguments (ignored)
-#' @return A numeric array.
-#' @export
-#' @examples
-#' x <- as_mlx(matrix(1:8, 2, 4))
-#' as.array(x)
-as.array.mlx <- function(x, ...) {
-  as.matrix.mlx(x, ...)
-}
-
 #' Convert MLX array to R vector
 #'
-#' Converts an MLX array to an R vector. For multi-dimensional arrays (2+ dimensions),
-#' the array is flattened in column-major order (R's default).
+#' Converts an MLX array to an R vector. Multi-dimensional arrays
+#' are flattened in column-major order (R's default).
 #'
 #' @inheritParams mlx_array_required
 #' @param mode Character string specifying the type of vector to return (passed to [base::as.vector()])
 #' @return A vector of the specified mode.
 #' @export
 #' @examples
-#' x <- as_mlx(1:5)
+#' x <- as_mlx(-1:1)
 #' as.vector(x)
+#' as.logical(x)
+#' as.numeric(x)
 #'
 #' # Multi-dimensional arrays are flattened
 #' m <- as_mlx(matrix(1:6, 2, 3))
-#' v <- as.vector(m)  # Flattened in column-major order
+#' as.vector(m)  # Flattened in column-major order
 as.vector.mlx <- function(x, mode = "any") {
-  as.vector(as.matrix(x), mode = mode)
+  as.vector(as.array(x), mode = mode)
 }
 
-#' Convert MLX array to logical vector
-#'
-#' @inheritParams mlx_array_required
-#' @param ... Additional arguments passed to [base::as.vector()].
-#' @return A logical vector.
+
 #' @export
-#' @examples
-#' x <- as_mlx(c(1, 0, 2))
-#' as.logical(x)
+#' @rdname as.vector.mlx
 as.logical.mlx <- function(x, ...) {
   as.logical(as.vector(x))
 }
 
-#' Convert MLX array to numeric vector
-#'
-#' Converts an MLX array to a numeric (double) vector, dropping dimensions
-#' and coercing types as needed. Integers and booleans are converted to doubles.
-#'
-#' @inheritParams mlx_array_required
-#' @param ... Additional arguments (currently unused).
-#' @return A numeric vector.
 #' @export
-#' @examples
-#' x_int <- as_mlx(c(1L, 2L, 3L), dtype = "int32")
-#' as.numeric(x_int)  # Returns c(1.0, 2.0, 3.0)
-#'
-#' x_bool <- as_mlx(c(TRUE, FALSE, TRUE))
-#' as.numeric(x_bool)  # Returns c(1.0, 0.0, 1.0)
+#' @rdname as.vector.mlx
 as.double.mlx <- function(x, ...) {
-  as.double(as.matrix(x))
+  as.double(as.vector(x))
 }
 
-#' @rdname as.double.mlx
+#' @rdname as.vector.mlx
 #' @export
 as.numeric.mlx <- as.double.mlx
+
+#' @export
+#' @rdname as.vector.mlx
+as.integer.mlx <- function(x, ...) {
+  as.integer(as.vector(x))
+}
 
 #' Test if object is an MLX array
 #'

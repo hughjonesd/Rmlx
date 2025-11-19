@@ -19,7 +19,7 @@
 #'
 #' @details
 #' Keep the differentiated closure inside MLX operations. Coercing arrays back
-#' to base R objects (such as `as.matrix()`, `as.numeric()`, or `[[` extraction)
+#' to base R objects (e.g. via [as.matrix()] or `[[` extraction)
 #' breaks the gradient tape and results in an error.
 #'
 #' @seealso [mlx.core.grad](https://ml-explore.github.io/mlx/build/html/python/transforms.html#mlx.core.grad),

@@ -23,9 +23,8 @@ converting angular values elementwise using MLX kernels.
 }
 \examples{
 x <- as_mlx(pi / 2)
-as.matrix(mlx_degrees(x))  # 90
-angles <- mlx_radians(as_mlx(c(0, 90, 180)))
-as.matrix(angles)
+mlx_degrees(x)  # 90
+mlx_radians(mlx_vector(c(0, 90, 180)))
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.degrees}{mlx.core.degrees},
