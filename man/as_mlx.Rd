@@ -32,39 +32,14 @@ array typically reuse that array's device or stream).}
 }
 \value{
 An object of class \code{mlx}
-}
-\description{
-Create MLX array from R object
-}
-\details{
-\subsection{Default type behavior}{
-
-When \code{dtype} is not specified:
-\itemize{
-\item Numeric vectors/arrays (including R integers from \code{1:10}) → \code{float32}
-\item Logical vectors/arrays → \code{bool}
-\item Complex vectors/arrays → \code{complex64}
-}
-}
-
 \subsection{Integer types require explicit dtype}{
 
-\strong{Important}: R integer vectors (like \code{1:10}) convert to \code{float32} by default.
+R integer vectors (like \code{1:10}) convert to \code{float32} by default.
 To create integer MLX arrays, you must explicitly specify \code{dtype}:
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{x <- as_mlx(1:10, dtype = "int32")  # Creates int32 array
 x <- as_mlx(1:10)                    # Creates float32 array
 }\if{html}{\out{</div>}}
-
-This design avoids unintentional integer promotion, since R creates integers
-in many contexts where floating-point is intended.
-}
-
-\subsection{Supported integer types}{
-\itemize{
-\item \strong{Signed}: \code{int8} (-128 to 127), \code{int16}, \code{int32}, \code{int64}
-\item \strong{Unsigned}: \code{uint8} (0 to 255), \code{uint16}, \code{uint32}, \code{uint64}
-}
 }
 
 \subsection{Type precision notes}{
@@ -79,8 +54,11 @@ in many contexts where floating-point is intended.
 
 MLX does not have an \code{NA} sentinel. When you pass numeric \code{NA} values from R,
 they are stored as \code{NaN} inside MLX and returned to R as \code{NaN}.
-Use \code{\link[=is.nan]{is.nan()}} on MLX arrays (method provided) if you need to detect them.
+Use \code{\link[=is.nan]{is.nan()}} on MLX arrays if you need to detect them.
 }
+}
+\description{
+Create MLX array from R object
 }
 \examples{
 # Default float32 for numeric

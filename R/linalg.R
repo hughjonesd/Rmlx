@@ -4,10 +4,9 @@
 #' @param b An mlx vector or matrix (the right-hand side). If omitted,
 #'   computes the matrix inverse.
 #' @param ... Additional arguments (for compatibility with base::solve)
-#' @return An mlx object containing the solution
+#' @return An mlx object containing the solution.
 #' @seealso [mlx.linalg.solve](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve)
 #' @export
-#' @method solve mlx
 #' @examples
 #' a <- as_mlx(matrix(c(3, 1, 1, 2), 2, 2))
 #' b <- as_mlx(c(9, 8))
@@ -136,7 +135,6 @@ setMethod(
 #' @return An `mlx` array.
 #' @rdname kronecker
 #' @export
-#' @method kronecker mlx
 kronecker.mlx <- function(X, Y, FUN = "*", ..., make.dimnames = FALSE) {
   if (!identical(FUN, "*")) {
     stop("Only FUN='*' is supported for mlx kronecker.", call. = FALSE)

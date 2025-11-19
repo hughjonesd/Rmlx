@@ -20,7 +20,7 @@ kronecker.default(X, Y, FUN = "*", make.dimnames = FALSE, ...)
 
 \S4method{kronecker}{ANY,mlx}(X, Y, FUN = "*", make.dimnames = FALSE, ...)
 
-\method{kronecker}{mlx}(X, Y, FUN = "*", ..., make.dimnames = FALSE)
+kronecker.mlx(X, Y, FUN = "*", ..., make.dimnames = FALSE)
 }
 \arguments{
 \item{X}{a vector or array.}

@@ -18,11 +18,10 @@ select the full extent. Logical indices recycle to the dimension length.}
 
 \item{drop}{Should dimensions be dropped? (default: FALSE)}
 
-\item{value}{Replacement value(s) for \verb{\code{[<-}} (scalar, vector, matrix,
-or array) recycled to match the selection.}
+\item{value}{Replacement values, recycled to match the selection.}
 }
 \value{
-Subsetted mlx object
+The subsetted MLX object.
 }
 \description{
 MLX subsetting mirrors base R for the common cases while avoiding a few of

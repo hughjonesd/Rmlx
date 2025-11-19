@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{mlx_dtype}
 \alias{mlx_dtype}
-\title{Get data type helper}
+\title{Get the data type of an MLX array}
 \usage{
 mlx_dtype(x)
 }
@@ -10,10 +10,10 @@ mlx_dtype(x)
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
-Data type string
+A data type string (see \code{\link[=as_mlx]{as_mlx()}} for possibilities).
 }
 \description{
-Get data type helper
+Get the data type of an MLX array
 }
 \examples{
 x <- as_mlx(matrix(1:6, 2, 3))

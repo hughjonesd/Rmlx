@@ -41,12 +41,20 @@ mlx_set_default_stream <- function(stream) {
   invisible(stream)
 }
 
+#' Print method for mlx_stream
+#' @param x An mlx_stream object.
+#' @param ... Additional arguments (ignored).
+#' @return Returns `x` invisibly.
 #' @export
 print.mlx_stream <- function(x, ...) {
   cat(sprintf("mlx stream [%s] index=%d\n", x$device, x$index))
   invisible(x)
 }
 
+#' Format method for mlx_stream
+#' @param x An mlx_stream object.
+#' @param ... Additional arguments (ignored).
+#' @return A character string.
 #' @export
 format.mlx_stream <- function(x, ...) {
   sprintf("<mlx_stream device=%s index=%d>", x$device, x$index)

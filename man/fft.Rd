@@ -2,9 +2,15 @@
 % Please edit documentation in R/linalg_adv.R
 \name{fft}
 \alias{fft}
+\alias{fft.default}
+\alias{fft.mlx}
 \title{Fast Fourier Transform}
 \usage{
 fft(z, inverse = FALSE, ...)
+
+\method{fft}{default}(z, inverse = FALSE, ...)
+
+\method{fft}{mlx}(z, inverse = FALSE, axis, ...)
 }
 \arguments{
 \item{z}{Input to transform. May be a numeric, complex, or mlx object.}
@@ -12,6 +18,10 @@ fft(z, inverse = FALSE, ...)
 \item{inverse}{Logical flag; if \code{TRUE} compute the inverse transform.}
 
 \item{...}{Passed through to the default method.}
+
+\item{axis}{Single axis (1-indexed). Supply a positive integer between 1 and
+the array rank. Use \code{NULL} when the helper interprets it as "all axes" (see
+individual docs).}
 }
 \value{
 For mlx inputs, an mlx object containing complex frequency

@@ -14,7 +14,7 @@
 \item{...}{Additional arguments passed to base::tcrossprod.}
 }
 \value{
-\code{x \%*\% t(y)} as an mlx object
+\code{x \%*\% t(y)} as an mlx object.
 }
 \description{
 Transposed cross product

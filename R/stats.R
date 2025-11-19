@@ -91,10 +91,9 @@ mlx_std <- function(x, axes = NULL, drop = TRUE, ddof = 0L) {
 #'
 #' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
-#' @return An mlx scalar
+#' @return An mlx scalar.
 #' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
-#' @method mean mlx
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' mean(x)
@@ -117,14 +116,12 @@ rowMeans <- function(x, ...) {
 
 #' @rdname rowMeans
 #' @export
-#' @method rowMeans default
 rowMeans.default <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::rowMeans(x, na.rm = na.rm, dims = dims, ...)
 }
 
 #' @rdname rowMeans
 #' @export
-#' @method rowMeans mlx
 rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
   .mlx_reduce_axis(x, "mean", axis = 2L, drop = TRUE)
 }
@@ -144,14 +141,12 @@ colMeans <- function(x, ...) {
 
 #' @rdname colMeans
 #' @export
-#' @method colMeans default
 colMeans.default <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::colMeans(x, na.rm = na.rm, dims = dims, ...)
 }
 
 #' @rdname colMeans
 #' @export
-#' @method colMeans mlx
 colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
   .mlx_reduce_axis(x, "mean", axis = 1L, drop = TRUE)
 }
@@ -171,14 +166,12 @@ rowSums <- function(x, ...) {
 
 #' @rdname rowSums
 #' @export
-#' @method rowSums default
 rowSums.default <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::rowSums(x, na.rm = na.rm, dims = dims, ...)
 }
 
 #' @rdname rowSums
 #' @export
-#' @method rowSums mlx
 rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
   .mlx_reduce_axis(x, "sum", axis = 2L, drop = TRUE)
 }
@@ -198,14 +191,12 @@ colSums <- function(x, ...) {
 
 #' @rdname colSums
 #' @export
-#' @method colSums default
 colSums.default <- function(x, na.rm = FALSE, dims = 1, ...) {
   base::colSums(x, na.rm = na.rm, dims = dims, ...)
 }
 
 #' @rdname colSums
 #' @export
-#' @method colSums mlx
 colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
   .mlx_reduce_axis(x, "sum", axis = 1L, drop = TRUE)
 }
@@ -213,15 +204,13 @@ colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' Transpose of MLX matrix
 #'
 #' @inheritParams mlx_matrix_required
-#' @return Transposed mlx matrix
+#' @return The transposed MLX matrix.
 #' @seealso [mlx.core.transpose](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.transpose)
 #' @export
-#' @method t mlx
 #' @examples
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' t(x)
 t.mlx <- function(x) {
-  # Must transpose in MLX so MLX shape matches R dims
   # Layout conversion (physical reordering) happens at boundaries during copy
   ptr <- cpp_mlx_transpose(x$ptr)
   new_mlx(ptr, x$device)
@@ -231,7 +220,7 @@ t.mlx <- function(x) {
 #'
 #' @inheritParams mlx_matrix_required
 #' @param y An mlx matrix (default: NULL, uses x)
-#' @return `t(x) %*% y` as an mlx object
+#' @return `t(x) %*% y` as an mlx object.
 #' @param ... Additional arguments passed to base::crossprod.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
@@ -248,7 +237,7 @@ crossprod.mlx <- function(x, y = NULL, ...) {
 #'
 #' @inheritParams mlx_matrix_required
 #' @param y An mlx matrix (default: NULL, uses x)
-#' @return `x %*% t(y)` as an mlx object
+#' @return `x %*% t(y)` as an mlx object.
 #' @param ... Additional arguments passed to base::tcrossprod.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
@@ -349,11 +338,10 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @param x mlx array or object coercible to mlx
 #' @param ... Additional mlx arrays (for reducing multiple arrays), or named arguments `axes` (legacy `axis`) and `drop`
 #' @param na.rm Logical; currently ignored for mlx arrays (generates warning if TRUE)
-#' @return An mlx array with the summary result
+#' @return An mlx array with the summary result.
 #' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html)
 #' @aliases sum.mlx prod.mlx min.mlx max.mlx all.mlx any.mlx
 #' @export
-#' @method Summary mlx
 #' @examples
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' sum(x)
@@ -642,7 +630,7 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
 #' @param sd Standard deviation of the distribution (default: 1)
 #' @param log If `TRUE`, return log density for `mlx_dnorm` (default: `FALSE`)
 #' @inheritParams common_params
-#' @return An mlx array with the computed values
+#' @return An mlx array with the computed values.
 #' @seealso [mlx_erf()], [mlx_erfinv()],
 #'   [mlx.core.erf](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erf.html),
 #'   [mlx.core.erfinv](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erfinv.html)
@@ -730,7 +718,7 @@ mlx_qnorm <- function(p, mean = 0, sd = 1, device = mlx_default_device()) {
 #' @param min,max Lower and upper limits of the distribution (default: 0, 1)
 #' @param log If `TRUE`, return log density for `mlx_dunif` (default: `FALSE`)
 #' @inheritParams common_params
-#' @return An mlx array with the computed values
+#' @return An mlx array with the computed values.
 #' @export
 #' @examples
 #' x <- as_mlx(seq(0, 1, by = 0.1))
@@ -809,7 +797,7 @@ mlx_qunif <- function(p, min = 0, max = 1, device = mlx_default_device()) {
 #' @param rate Rate parameter (default: 1)
 #' @param log If `TRUE`, return log density for `mlx_dexp` (default: `FALSE`)
 #' @inheritParams common_params
-#' @return An mlx array with the computed values
+#' @return An mlx array with the computed values.
 #' @export
 #' @examples
 #' x <- as_mlx(seq(0, 5, by = 0.5))
@@ -885,7 +873,7 @@ mlx_qexp <- function(p, rate = 1, device = mlx_default_device()) {
 #'   (default: 0, 1)
 #' @param log If `TRUE`, return log density for `mlx_dlnorm` (default: `FALSE`)
 #' @inheritParams common_params
-#' @return An mlx array with the computed values
+#' @return An mlx array with the computed values.
 #' @export
 #' @examples
 #' x <- as_mlx(seq(0.1, 3, by = 0.2))
@@ -958,7 +946,7 @@ mlx_qlnorm <- function(p, meanlog = 0, sdlog = 1, device = mlx_default_device())
 #' @param location,scale Location and scale parameters (default: 0, 1)
 #' @param log If `TRUE`, return log density for `mlx_dlogis` (default: `FALSE`)
 #' @inheritParams common_params
-#' @return An mlx array with the computed values
+#' @return An mlx array with the computed values.
 #' @export
 #' @examples
 #' x <- as_mlx(seq(-3, 3, by = 0.5))
@@ -1190,7 +1178,6 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
 
 #' @rdname mlx_quantile
 #' @export
-#' @method quantile mlx
 #' @importFrom stats quantile
 quantile.mlx <- function(x, probs, ...) {
   mlx_quantile(x, probs = probs, axis = NULL, device = x$device)

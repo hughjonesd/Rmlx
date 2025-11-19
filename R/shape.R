@@ -509,7 +509,6 @@ mlx_moveaxis <- function(x, source, destination) {
 
 #' @rdname mlx_moveaxis
 #' @export
-#' @method aperm mlx
 aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
   x <- as_mlx(a)
   if (!isTRUE(resize)) {

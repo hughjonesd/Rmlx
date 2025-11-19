@@ -10,7 +10,7 @@ is.mlx(x)
 \item{x}{Object to test}
 }
 \value{
-Logical
+Logical scalar.
 }
 \description{
 Test if object is an MLX array

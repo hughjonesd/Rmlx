@@ -29,7 +29,6 @@
 #' @seealso [mlx.core.take](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.take)
 #' @name mlx_subset
 #' @export
-#' @method [ mlx
 #' @examples
 #' x <- as_mlx(matrix(1:9, 3, 3))
 #' x[1, ]
@@ -88,7 +87,6 @@
 }
 
 #' @rdname mlx_subset
-#' @method [<- mlx
 #' @export
 `[<-.mlx` <- function(x, ..., value) {
   stopifnot(is.mlx(x))

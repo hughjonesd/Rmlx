@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{print.mlx}
 \alias{print.mlx}
-\title{Common parameters for MLX array creation}
+\title{Print MLX array}
 \usage{
 \method{print}{mlx}(x, ...)
 }
@@ -11,8 +11,12 @@
 
 \item{...}{Additional arguments (ignored)}
 }
+\value{
+\code{x}, invisibly.
+}
 \description{
-Print MLX array
+Printing an array only evaluates it if it is of small size (less than
+100 elements and 2 dimensions)
 }
 \examples{
 x <- as_mlx(matrix(1:4, 2, 2))

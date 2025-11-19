@@ -11,6 +11,9 @@ svd(x, ...)
 
 \item{...}{Additional arguments.}
 }
+\value{
+A list with components \code{d}, \code{u}, and \code{v}.
+}
 \description{
 Generic function for SVD computation.
 }

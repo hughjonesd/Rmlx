@@ -12,6 +12,9 @@ mlx_synchronize(device = mlx_default_device())
 \code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
 array typically reuse that array's device or stream).}
 }
+\value{
+Returns \code{NULL} invisibly.
+}
 \description{
 Waits for outstanding operations on the specified device or stream to complete.
 }

@@ -10,7 +10,7 @@
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
-Total number of elements
+Total number of elements.
 }
 \description{
 Get length of MLX array

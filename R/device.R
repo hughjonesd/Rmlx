@@ -1,7 +1,7 @@
 #' Get or set default MLX device
 #'
 #' @param value New default device ("gpu" or "cpu"). If missing, returns current default.
-#' @return Current default device (character)
+#' @return Current default device (character).
 #' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 #' @export
 #' @examples
@@ -23,6 +23,7 @@ mlx_default_device <- function(value) {
 #' Waits for outstanding operations on the specified device or stream to complete.
 #'
 #' @inheritParams common_params
+#' @return Returns `NULL` invisibly.
 #' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 #' @export
 #' @examples

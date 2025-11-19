@@ -40,31 +40,16 @@
 #'   If not specified, defaults to `"float32"` for numeric, `"bool"` for logical,
 #'   and `"complex64"` for complex inputs.
 #' @return An object of class `mlx`
-#' @details
-#' ## Default type behavior
-#'
-#' When `dtype` is not specified:
-#' - Numeric vectors/arrays (including R integers from `1:10`) → `float32`
-#' - Logical vectors/arrays → `bool`
-#' - Complex vectors/arrays → `complex64`
 #'
 #' ## Integer types require explicit dtype
 #'
-#' **Important**: R integer vectors (like `1:10`) convert to `float32` by default.
+#' R integer vectors (like `1:10`) convert to `float32` by default.
 #' To create integer MLX arrays, you must explicitly specify `dtype`:
 #'
 #' ```r
 #' x <- as_mlx(1:10, dtype = "int32")  # Creates int32 array
 #' x <- as_mlx(1:10)                    # Creates float32 array
 #' ```
-#'
-#' This design avoids unintentional integer promotion, since R creates integers
-#' in many contexts where floating-point is intended.
-#'
-#' ## Supported integer types
-#'
-#' - **Signed**: `int8` (-128 to 127), `int16`, `int32`, `int64`
-#' - **Unsigned**: `uint8` (0 to 255), `uint16`, `uint32`, `uint64`
 #'
 #' ## Type precision notes
 #'
@@ -76,7 +61,7 @@
 #'
 #' MLX does not have an `NA` sentinel. When you pass numeric `NA` values from R,
 #' they are stored as `NaN` inside MLX and returned to R as `NaN`.
-#' Use [is.nan()] on MLX arrays (method provided) if you need to detect them.
+#' Use [is.nan()] on MLX arrays if you need to detect them.
 #'
 #' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array)
 #' @seealso [mlx-methods]
@@ -149,15 +134,18 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
   new_mlx(ptr, handle$device)
 }
 
-#' Force evaluation of lazy MLX operations
+#' Force evaluation of an MLX operations
 #'
+#' By default MLX computations are lazy. `mlx_eval(x)` forces the computations
+#' behind `x` to run. You can do the same by calling (e.g.)
+#' [as.matrix(x)][as.matrix.mlx()].
 #' @inheritParams mlx_array_required
-#' @return The input object (invisibly)
+#' @return The input object, invisibly.
 #' @seealso [mlx.core.eval](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eval)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
-#' mlx_eval(x)
+#' system.time(x <- mlx_rand_normal(1e7))
+#' system.time(mlx_eval(x))
 mlx_eval <- function(x) {
   stopifnot(is.mlx(x))
   cpp_mlx_eval(x$ptr)
@@ -170,9 +158,8 @@ mlx_eval <- function(x) {
 #'
 #' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
-#' @return A vector, matrix or array (numeric or logical depending on dtype)
+#' @return A vector, matrix or array (numeric or logical depending on dtype).
 #' @export
-#' @method as.matrix mlx
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' as.matrix(x)
@@ -198,7 +185,7 @@ as.matrix.mlx <- function(x, ...) {
 #'
 #' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
-#' @return A numeric array
+#' @return A numeric array.
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:8, 2, 4))
@@ -214,7 +201,7 @@ as.array.mlx <- function(x, ...) {
 #'
 #' @inheritParams mlx_array_required
 #' @param mode Character string specifying the type of vector to return (passed to [base::as.vector()])
-#' @return A vector of the specified mode
+#' @return A vector of the specified mode.
 #' @export
 #' @examples
 #' x <- as_mlx(1:5)
@@ -266,7 +253,7 @@ as.numeric.mlx <- as.double.mlx
 #' Test if object is an MLX array
 #'
 #' @param x Object to test
-#' @return Logical
+#' @return Logical scalar.
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))

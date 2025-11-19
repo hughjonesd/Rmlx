@@ -34,7 +34,7 @@ array typically reuse that array's device or stream).}
 \item{p}{Vector of probabilities (mlx array or coercible to mlx)}
 }
 \value{
-An mlx array with the computed values
+An mlx array with the computed values.
 }
 \description{
 Compute density (\code{mlx_dlnorm}), cumulative distribution (\code{mlx_plnorm}),

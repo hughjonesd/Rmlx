@@ -2,11 +2,10 @@
 #'
 #' @param e1 First operand (mlx or numeric)
 #' @param e2 Second operand (mlx or numeric)
-#' @return An mlx object
+#' @return An mlx object.
 #' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html)
 #' @aliases +.mlx -.mlx *.mlx /.mlx ^.mlx ==.mlx !=.mlx <.mlx >.mlx <=.mlx >=.mlx !.mlx &.mlx |.mlx %/%.mlx %%.mlx
 #' @export
-#' @method Ops mlx
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' y <- as_mlx(matrix(5:8, 2, 2))
@@ -59,10 +58,9 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' Matrix multiplication for MLX arrays
 #'
 #' @inheritParams base::`%*%`
-#' @return An mlx object
+#' @return An mlx object.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
-#' @method %*% mlx
 #' @examples
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' y <- as_mlx(matrix(1:6, 3, 2))
@@ -289,7 +287,7 @@ mlx_maximum <- function(x, y) {
 #'
 #' @param x,y mlx arrays or coercible to mlx
 #' @param cpp_fn C++ function to call (takes x$ptr, y$ptr, device)
-#' @return mlx array
+#' @return mlx array.
 #' @noRd
 .mlx_binary_result <- function(x, y, cpp_fn) {
   x <- as_mlx(x)

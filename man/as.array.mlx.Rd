@@ -12,7 +12,7 @@
 \item{...}{Additional arguments (ignored)}
 }
 \value{
-A numeric array
+A numeric array.
 }
 \description{
 Convert MLX array to R array

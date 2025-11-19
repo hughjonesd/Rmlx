@@ -11,6 +11,9 @@
 
 \item{...}{Additional arguments (ignored)}
 }
+\value{
+\code{NULL} invisibly.
+}
 \description{
 Object structure for MLX array
 }

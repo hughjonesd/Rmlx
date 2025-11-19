@@ -12,7 +12,7 @@
 \item{...}{Additional arguments (ignored)}
 }
 \value{
-An mlx scalar
+An mlx scalar.
 }
 \description{
 Mean of MLX array elements

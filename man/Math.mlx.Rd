@@ -45,7 +45,7 @@
 \item{...}{Additional arguments (ignored)}
 }
 \value{
-An mlx object with the result
+An mlx object with the result.
 }
 \description{
 Math operations for MLX arrays

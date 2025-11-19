@@ -2,11 +2,10 @@
 #'
 #' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
-#' @return An mlx object with the result
+#' @return An mlx object with the result.
 #' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html)
 #' @aliases abs.mlx sign.mlx sqrt.mlx floor.mlx ceiling.mlx trunc.mlx round.mlx signif.mlx exp.mlx log.mlx log10.mlx log2.mlx log1p.mlx expm1.mlx cos.mlx sin.mlx tan.mlx acos.mlx asin.mlx atan.mlx cosh.mlx sinh.mlx tanh.mlx acosh.mlx asinh.mlx atanh.mlx cospi.mlx sinpi.mlx tanpi.mlx cumsum.mlx cumprod.mlx cummax.mlx cummin.mlx
 #' @export
-#' @method Math mlx
 #' @examples
 #' x <- as_mlx(matrix(c(-1, 0, 1), 3, 1))
 #' sin(x)
@@ -365,11 +364,10 @@ Conj.mlx <- function(z) {
 #' - rtol = tolerance
 #' - atol = tolerance
 #'
-#' @return Either `TRUE` or a character vector describing differences
+#' @return Either `TRUE` or a character vector describing differences.
 #'
 #' @seealso [mlx_allclose()], [mlx_isclose()]
 #' @export
-#' @method all.equal mlx
 #' @examples
 #' a <- as_mlx(c(1.0, 2.0, 3.0))
 #' b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-6))

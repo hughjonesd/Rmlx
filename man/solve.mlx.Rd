@@ -15,7 +15,7 @@ computes the matrix inverse.}
 \item{...}{Additional arguments (for compatibility with base::solve)}
 }
 \value{
-An mlx object containing the solution
+An mlx object containing the solution.
 }
 \description{
 Solve a system of linear equations

@@ -2,7 +2,7 @@
 % Please edit documentation in R/class.R
 \name{mlx_eval}
 \alias{mlx_eval}
-\title{Force evaluation of lazy MLX operations}
+\title{Force evaluation of an MLX operations}
 \usage{
 mlx_eval(x)
 }
@@ -10,14 +10,16 @@ mlx_eval(x)
 \item{x}{An mlx array.}
 }
 \value{
-The input object (invisibly)
+The input object, invisibly.
 }
 \description{
-Force evaluation of lazy MLX operations
+By default MLX computations are lazy. \code{mlx_eval(x)} forces the computations
+behind \code{x} to run. You can do the same by calling (e.g.)
+\link[=as.matrix.mlx]{as.matrix(x)}.
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
-mlx_eval(x)
+system.time(x <- mlx_rand_normal(1e7))
+system.time(mlx_eval(x))
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.eval}{mlx.core.eval}

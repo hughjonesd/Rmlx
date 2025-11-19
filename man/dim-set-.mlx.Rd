@@ -12,7 +12,7 @@
 \item{value}{Integer vector of new dimensions}
 }
 \value{
-Reshaped mlx object
+Reshaped mlx object.
 }
 \description{
 Reshapes the MLX array to the specified dimensions. The total number of
@@ -22,4 +22,7 @@ elements must remain the same.
 x <- as_mlx(1:12)
 dim(x) <- c(3, 4)
 dim(x)
+}
+\seealso{
+\code{\link[=mlx_reshape]{mlx_reshape()}}
 }

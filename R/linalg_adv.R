@@ -9,7 +9,6 @@
 #' @return Upper-triangular Cholesky factor as an mlx matrix.
 #' @seealso [mlx.linalg.cholesky](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky)
 #' @export
-#' @method chol mlx
 #' @examples
 #' x <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
 #' chol(x)
@@ -67,7 +66,6 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
 #' @return A list with components `Q` and `R`, each an mlx matrix.
 #' @seealso [mlx.linalg.qr](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.qr)
 #' @export
-#' @method qr mlx
 #' @examples
 #' x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 3, 2))
 #' qr(x)
@@ -97,6 +95,7 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
 #' Generic function for SVD computation.
 #' @param x An object.
 #' @param ... Additional arguments.
+#' @return A list with components `d`, `u`, and `v`.
 #' @export
 svd <- function(x, ...) {
   UseMethod("svd")
@@ -117,7 +116,6 @@ svd.default <- function(x, ...) base::svd(x, ...)
 #' @return A list with components `d`, `u`, and `v`.
 #' @seealso [mlx.linalg.svd](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.svd)
 #' @export
-#' @method svd mlx
 #' @examples
 #' x <- as_mlx(matrix(c(1, 0, 0, 2), 2, 2))
 #' svd(x)
@@ -181,7 +179,7 @@ pinv <- function(x) {
 #'
 #' @param z Input to transform. May be a numeric, complex, or mlx object.
 #' @param inverse Logical flag; if `TRUE` compute the inverse transform.
-#' @inheritParams common
+#' @inheritParams common_params
 #' @param ... Passed through to the default method.
 #' @return For mlx inputs, an mlx object containing complex frequency
 #'   coefficients; otherwise the base R result.
@@ -196,11 +194,13 @@ fft <- function(z, inverse = FALSE, ...) {
 }
 
 #' @export
+#' @rdname fft
 fft.default <- function(z, inverse = FALSE, ...) {
   stats::fft(z, inverse = inverse, ...)
 }
 
 #' @export
+#' @rdname fft
 fft.mlx <- function(z, inverse = FALSE, axis, ...) {
   mlx_fft(z, axis = axis, inverse = inverse)
 }

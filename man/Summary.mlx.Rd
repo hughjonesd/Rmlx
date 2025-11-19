@@ -20,7 +20,7 @@
 \item{na.rm}{Logical; currently ignored for mlx arrays (generates warning if TRUE)}
 }
 \value{
-An mlx array with the summary result
+An mlx array with the summary result.
 }
 \description{
 S3 group generic for summary functions including \code{sum()}, \code{prod()}, \code{min()}, \code{max()}, \code{all()}, and \code{any()}.

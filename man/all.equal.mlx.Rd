@@ -4,7 +4,7 @@
 \alias{all.equal.mlx}
 \title{Test if two MLX arrays are (nearly) equal}
 \usage{
-\method{all.equal}{mlx}(target, current, tolerance = sqrt(.Machine$double.eps), ...)
+\method{all}{equal.mlx}(target, current, tolerance = sqrt(.Machine$double.eps), ...)
 }
 \arguments{
 \item{target, current}{MLX arrays to compare}
@@ -14,7 +14,7 @@
 \item{...}{Additional arguments (currently ignored)}
 }
 \value{
-Either \code{TRUE} or a character vector describing differences
+Either \code{TRUE} or a character vector describing differences.
 }
 \description{
 S3 method for \code{all.equal} following R semantics. Returns \code{TRUE} if arrays

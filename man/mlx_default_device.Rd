@@ -10,7 +10,7 @@ mlx_default_device(value)
 \item{value}{New default device ("gpu" or "cpu"). If missing, returns current default.}
 }
 \value{
-Current default device (character)
+Current default device (character).
 }
 \description{
 Get or set default MLX device

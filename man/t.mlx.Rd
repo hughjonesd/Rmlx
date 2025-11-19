@@ -10,7 +10,7 @@
 \item{x}{An mlx matrix (2-dimensional array).}
 }
 \value{
-Transposed mlx matrix
+The transposed MLX matrix.
 }
 \description{
 Transpose of MLX matrix

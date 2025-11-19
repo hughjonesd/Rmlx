@@ -12,7 +12,7 @@
 \item{mode}{Character string specifying the type of vector to return (passed to \code{\link[base:vector]{base::as.vector()}})}
 }
 \value{
-A vector of the specified mode
+A vector of the specified mode.
 }
 \description{
 Converts an MLX array to an R vector. For multi-dimensional arrays (2+ dimensions),

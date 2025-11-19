@@ -35,25 +35,27 @@
   fn(handle$device)
 }
 
-#' Common parameters for MLX array creation
-#'
+
 #' Print MLX array
+#'
+#' Printing an array only evaluates it if it is of small size (less than
+#' 100 elements and 2 dimensions)
 #'
 #' @inheritParams common_params
 #' @param ... Additional arguments (ignored)
+#' @return `x`, invisibly.
 #' @export
-#' @method print mlx
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' print(x)
 print.mlx <- function(x, ...) {
-  cat(sprintf("mlx array [%s]\n", paste(dim(x), collapse = " x ")))
+  cat(sprintf("mlx array [%s]\n", paste(mlx_shape(x), collapse = " x ")))
   cat(sprintf("  dtype: %s\n", mlx_dtype(x)))
   cat(sprintf("  device: %s\n", x$device))
 
   # Show preview for small arrays
   total_size <- length(x)
-  if (total_size <= 100 && length(dim(x)) <= 2) {
+  if (total_size <= 100 && length(mlx_shape(x)) <= 2) {
     cat("  values:\n")
     mat <- as.matrix(x)
     print(mat)
@@ -68,6 +70,7 @@ print.mlx <- function(x, ...) {
 #'
 #' @param object An mlx object
 #' @param ... Additional arguments (ignored)
+#' @return `NULL` invisibly.
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
@@ -75,7 +78,7 @@ print.mlx <- function(x, ...) {
 str.mlx <- function(object, ...) {
   cat(sprintf(
     "mlx [%s] %s on %s\n",
-    paste(dim(object), collapse = " x "),
+    paste(mlx_shape(object), collapse = " x "),
     mlx_dtype(object),
     object$device
   ))
@@ -93,7 +96,6 @@ str.mlx <- function(object, ...) {
 #' @return For `dim()`, an integer vector of dimensions or `NULL` for vectors/
 #'   scalars. For `mlx_shape()`, an integer vector (length zero for scalars).
 #' @export
-#' @method dim mlx
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
 #' dim(x)
@@ -123,9 +125,9 @@ mlx_shape <- function(x) {
 #'
 #' @inheritParams common_params
 #' @param value Integer vector of new dimensions
-#' @return Reshaped mlx object
+#' @return Reshaped mlx object.
 #' @export
-#' @method dim<- mlx
+#' @seealso [mlx_reshape()]
 #' @examples
 #' x <- as_mlx(1:12)
 #' dim(x) <- c(3, 4)
@@ -202,24 +204,23 @@ mlx_reshape <- function(x, newshape) {
 #' Get length of MLX array
 #'
 #' @inheritParams common_params
-#' @return Total number of elements
+#' @return Total number of elements.
 #' @export
-#' @method length mlx
 #' @examples
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' length(x)
 length.mlx <- function(x) {
-  shape <- cpp_mlx_shape(x$ptr)
+  shape <- mlx_shape(x)
   if (length(shape) == 0L) {
     return(1L)
   }
   prod(shape)
 }
 
-#' Get data type helper
+#' Get the data type of an MLX array
 #'
 #' @inheritParams common_params
-#' @return Data type string
+#' @return A data type string (see [as_mlx()] for possibilities).
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:6, 2, 3))
