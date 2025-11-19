@@ -13,7 +13,7 @@ BUILD_DIR="build"
 MLX_SOURCE_DIR="${BUILD_DIR}/mlx-src"
 MLX_BUILD_DIR="${BUILD_DIR}/mlx-build"
 MLX_INSTALL_DIR="${BUILD_DIR}/mlx-install"
-MLX_TARBALL_PATH="${ROOT_DIR}/vendor/mlx-${MLX_VERSION}.tar.gz"
+MLX_TARBALL_PATH="${ROOT_DIR}/src/vendor/mlx-${MLX_VERSION}.tar.gz"
 MLX_VERSION_STAMP="${MLX_SOURCE_DIR}/.rmlx-source-version"
 
 if [ -z "${R_HOME:-}" ]; then
