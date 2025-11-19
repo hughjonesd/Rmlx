@@ -89,7 +89,7 @@ elements <code>value</code> (the function output as mlx) and <code>grads</code>.
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Keep the differentiated closure inside MLX operations. Coercing arrays back
-to base R objects (such as <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix()</a></code>, <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code>, or <code>[[</code> extraction)
+to base R objects (e.g. via <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix()</a></code> or <code>[[</code> extraction)
 breaks the gradient tape and results in an error.</p>
     </div>
     <div class="section level2">

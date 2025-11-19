@@ -49,7 +49,7 @@ Convert R objects to MLX arrays using
 # From a vector
 v <- as_mlx(1:10)
 print(v)
-#> mlx array []
+#> mlx array [10]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
@@ -265,13 +265,13 @@ mean(x)
 
 # Column and row means
 colMeans(x)
-#> mlx array []
+#> mlx array [10]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #>  [1]  5.5 15.5 25.5 35.5 45.5 55.5 65.5 75.5 85.5 95.5
 rowMeans(x)
-#> mlx array []
+#> mlx array [10]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
@@ -279,7 +279,18 @@ rowMeans(x)
 
 # Convert to R to see values
 as.matrix(colMeans(x))
-#>  [1]  5.5 15.5 25.5 35.5 45.5 55.5 65.5 75.5 85.5 95.5
+#> Warning in as.matrix.mlx(colMeans(x)): Converting array to 1-column matrix
+#>       [,1]
+#>  [1,]  5.5
+#>  [2,] 15.5
+#>  [3,] 25.5
+#>  [4,] 35.5
+#>  [5,] 45.5
+#>  [6,] 55.5
+#>  [7,] 65.5
+#>  [8,] 75.5
+#>  [9,] 85.5
+#> [10,] 95.5
 
 # Cumulative operations flatten the array in column-major order
 as.vector(cumsum(x))
@@ -358,7 +369,7 @@ t2 <- system.time({
 })
 
 cat("Base R:", t1["elapsed"], "seconds\n")
-#> Base R: 0.029 seconds
+#> Base R: 0.021 seconds
 cat("MLX:", t2["elapsed"], "seconds\n")
 #> MLX: 0.025 seconds
 ```

@@ -1,6 +1,7 @@
-# Common parameters for MLX array creation
+# Print MLX array
 
-Print MLX array
+Printing an array only evaluates it if it is of small size (less than
+100 elements and 2 dimensions)
 
 ## Usage
 
@@ -19,6 +20,10 @@ print(x, ...)
 - ...:
 
   Additional arguments (ignored)
+
+## Value
+
+`x`, invisibly.
 
 ## Examples
 

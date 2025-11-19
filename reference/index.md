@@ -4,7 +4,7 @@
 
 - [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md) :
   Create MLX array from R object
-- [`is.mlx()`](https://hughjonesd.github.io/Rmlx/reference/is.mlx.md) :
+- [`is_mlx()`](https://hughjonesd.github.io/Rmlx/reference/is_mlx.md) :
   Test if object is an MLX array
 - [`Rmlx-package`](https://hughjonesd.github.io/Rmlx/reference/Rmlx-package.md)
   [`Rmlx`](https://hughjonesd.github.io/Rmlx/reference/Rmlx-package.md)
@@ -12,9 +12,9 @@
 - [`mlx-methods`](https://hughjonesd.github.io/Rmlx/reference/mlx-methods.md)
   : Base R generics with mlx methods
 - [`mlx_dtype()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dtype.md)
-  : Get data type helper
+  : Get the data type of an MLX array
 - [`mlx_eval()`](https://hughjonesd.github.io/Rmlx/reference/mlx_eval.md)
-  : Force evaluation of lazy MLX operations
+  : Force evaluation of an MLX operations
 - [`` `[`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx_subset.md)
   [`` `[<-`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx_subset.md)
   : Subset MLX array
@@ -26,22 +26,21 @@
 - [`length(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/length.mlx.md)
   : Get length of MLX array
 - [`print(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/print.mlx.md)
-  : Common parameters for MLX array creation
+  : Print MLX array
 - [`str(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/str.mlx.md)
   : Object structure for MLX array
 - [`t(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/t.mlx.md)
   : Transpose of MLX matrix
 - [`as.matrix(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx.md)
-  : Convert MLX array to R matrix/array
+  : Convert MLX array to R matrix
 - [`as.array(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.array.mlx.md)
-  : Convert MLX array to R array
+  : Convert MLX array to R matrix/array
 - [`as.vector(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.md)
+  [`as.logical(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.md)
+  [`as.double(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.md)
+  [`as.numeric(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.md)
+  [`as.integer(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.md)
   : Convert MLX array to R vector
-- [`as.logical(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.logical.mlx.md)
-  : Convert MLX array to logical vector
-- [`as.double(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.double.mlx.md)
-  [`as.numeric(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.double.mlx.md)
-  : Convert MLX array to numeric vector
 
 ## Device & Execution
 
@@ -72,6 +71,10 @@
 - [`mlx_disable_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile_control.md)
   [`mlx_enable_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile_control.md)
   : Control Global Compilation Behavior
+- [`format(`*`<mlx_stream>`*`)`](https://hughjonesd.github.io/Rmlx/reference/format.mlx_stream.md)
+  : Format method for mlx_stream
+- [`print(`*`<mlx_stream>`*`)`](https://hughjonesd.github.io/Rmlx/reference/print.mlx_stream.md)
+  : Print method for mlx_stream
 
 ## Creation & Randomness
 
@@ -261,7 +264,7 @@
   : Element-wise approximate equality
 - [`mlx_allclose()`](https://hughjonesd.github.io/Rmlx/reference/mlx_allclose.md)
   : Test if all elements of two arrays are close
-- [`all.equal(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/all.equal.mlx.md)
+- [`all(`*`<equal.mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/all.equal.mlx.md)
   : Test if two MLX arrays are (nearly) equal
 - [`colSums()`](https://hughjonesd.github.io/Rmlx/reference/colSums.md)
   : Column sums for mlx arrays
@@ -323,6 +326,7 @@
   : Inverse from Cholesky decomposition
 - [`kronecker()`](https://hughjonesd.github.io/Rmlx/reference/kronecker.md)
   [`kronecker.default()`](https://hughjonesd.github.io/Rmlx/reference/kronecker.md)
+  [`kronecker.mlx()`](https://hughjonesd.github.io/Rmlx/reference/kronecker.md)
   : Kronecker product dispatcher
 - [`qr(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/qr.mlx.md)
   : QR decomposition for mlx arrays

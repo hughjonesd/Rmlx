@@ -1,6 +1,7 @@
-# Convert MLX array to R matrix/array
+# Convert MLX array to R matrix
 
-MLX arrays without dimension are returned as R vectors.
+MLX arrays with other than 2 dimensions are converted to a 1 column
+matrix, with a warning.
 
 ## Usage
 
@@ -21,7 +22,7 @@ as.matrix(x, ...)
 
 ## Value
 
-A vector, matrix or array (numeric or logical depending on dtype)
+A vector, matrix or array (numeric or logical depending on dtype).
 
 ## Examples
 

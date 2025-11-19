@@ -1,6 +1,6 @@
-# Convert MLX array to R array
+# Convert MLX array to R matrix/array
 
-Convert MLX array to R array
+MLX vectors or scalars are returned as R vectors.
 
 ## Usage
 
@@ -21,14 +21,8 @@ as.array(x, ...)
 
 ## Value
 
-A numeric array
+A vector, matrix or array.
+
+A numeric array.
 
 ## Examples
-
-``` r
-x <- as_mlx(matrix(1:8, 2, 4))
-as.array(x)
-#>      [,1] [,2] [,3] [,4]
-#> [1,]    1    3    5    7
-#> [2,]    2    4    6    8
-```

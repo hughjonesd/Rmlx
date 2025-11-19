@@ -32,7 +32,7 @@ Summary(x, ..., na.rm = FALSE)
 
 ## Value
 
-An mlx array with the summary result
+An mlx array with the summary result.
 
 ## See also
 

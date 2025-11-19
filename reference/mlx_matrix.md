@@ -58,8 +58,11 @@ An `mlx` matrix with `dim = c(nrow, ncol)`.
 ## Examples
 
 ``` r
-mx <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
-as.matrix(mx)
+mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
+#> mlx array [2 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1    2    3
 #> [2,]    4    5    6

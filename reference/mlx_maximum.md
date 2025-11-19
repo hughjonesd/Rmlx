@@ -27,7 +27,7 @@ An mlx array containing the elementwise maximum.
 
 ``` r
 mlx_maximum(1:3, c(3, 2, 1))
-#> mlx array []
+#> mlx array [3]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

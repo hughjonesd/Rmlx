@@ -41,6 +41,10 @@ An mlx array with non-finite values replaced.
 
 ``` r
 x <- as_mlx(c(-Inf, -1, NaN, 3, Inf))
-as.matrix(mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10))
+mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10)
+#> mlx array [5]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] -10  -1   0   3  10
 ```

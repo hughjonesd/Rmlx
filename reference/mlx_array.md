@@ -58,9 +58,12 @@ An `mlx` array with the requested shape.
 
 ``` r
 payload <- runif(6)
-arr <- mlx_array(payload, dim = c(2, 3))
-as.matrix(arr)
-#>           [,1]      [,2]       [,3]
-#> [1,] 0.7182697 0.5470434 0.02795603
-#> [2,] 0.2413140 0.8348018 0.46938431
+mlx_array(payload, dim = c(2, 3))
+#> mlx array [2 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>            [,1]      [,2]      [,3]
+#> [1,] 0.67176682 0.9970691 0.5185567
+#> [2,] 0.05861411 0.1490355 0.8461201
 ```

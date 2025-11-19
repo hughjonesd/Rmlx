@@ -33,9 +33,16 @@ An mlx array with transformed angular units.
 
 ``` r
 x <- as_mlx(pi / 2)
-as.matrix(mlx_degrees(x))  # 90
+mlx_degrees(x)  # 90
+#> mlx array []
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] 90
-angles <- mlx_radians(as_mlx(c(0, 90, 180)))
-as.matrix(angles)
+mlx_radians(mlx_vector(c(0, 90, 180)))
+#> mlx array [3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] 0.000000 1.570796 3.141593
 ```

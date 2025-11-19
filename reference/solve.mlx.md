@@ -26,7 +26,7 @@ solve(a, b = NULL, ...)
 
 ## Value
 
-An mlx object containing the solution
+An mlx object containing the solution.
 
 ## See also
 
@@ -38,7 +38,7 @@ An mlx object containing the solution
 a <- as_mlx(matrix(c(3, 1, 1, 2), 2, 2))
 b <- as_mlx(c(9, 8))
 solve(a, b)
-#> mlx array []
+#> mlx array [2]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

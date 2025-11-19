@@ -17,3 +17,7 @@ svd(x, ...)
 - ...:
 
   Additional arguments.
+
+## Value
+
+A list with components `d`, `u`, and `v`.

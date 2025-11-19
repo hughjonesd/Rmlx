@@ -23,7 +23,11 @@ dim(x) <- value
 
 ## Value
 
-Reshaped mlx object
+Reshaped mlx object.
+
+## See also
+
+[`mlx_reshape()`](https://hughjonesd.github.io/Rmlx/reference/mlx_reshape.md)
 
 ## Examples
 

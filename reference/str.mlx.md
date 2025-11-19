@@ -19,6 +19,10 @@ str(object, ...)
 
   Additional arguments (ignored)
 
+## Value
+
+`NULL` invisibly.
+
 ## Examples
 
 ``` r

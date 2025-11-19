@@ -57,7 +57,7 @@
 
         <dt>
 
-          <code><a href="is.mlx.html">is.mlx()</a></code>
+          <code><a href="is_mlx.html">is_mlx()</a></code>
 
         </dt>
         <dd>Test if object is an MLX array</dd>
@@ -81,14 +81,14 @@
           <code><a href="mlx_dtype.html">mlx_dtype()</a></code>
 
         </dt>
-        <dd>Get data type helper</dd>
+        <dd>Get the data type of an MLX array</dd>
 
         <dt>
 
           <code><a href="mlx_eval.html">mlx_eval()</a></code>
 
         </dt>
-        <dd>Force evaluation of lazy MLX operations</dd>
+        <dd>Force evaluation of an MLX operations</dd>
 
         <dt>
 
@@ -123,7 +123,7 @@
           <code><a href="print.mlx.html">print(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
-        <dd>Common parameters for MLX array creation</dd>
+        <dd>Print MLX array</dd>
 
         <dt>
 
@@ -144,35 +144,21 @@
           <code><a href="as.matrix.mlx.html">as.matrix(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
-        <dd>Convert MLX array to R matrix/array</dd>
+        <dd>Convert MLX array to R matrix</dd>
 
         <dt>
 
           <code><a href="as.array.mlx.html">as.array(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
-        <dd>Convert MLX array to R array</dd>
+        <dd>Convert MLX array to R matrix/array</dd>
 
         <dt>
 
-          <code><a href="as.vector.mlx.html">as.vector(<i>&lt;mlx&gt;</i>)</a></code>
+          <code><a href="as.vector.mlx.html">as.vector(<i>&lt;mlx&gt;</i>)</a></code> <code><a href="as.vector.mlx.html">as.logical(<i>&lt;mlx&gt;</i>)</a></code> <code><a href="as.vector.mlx.html">as.double(<i>&lt;mlx&gt;</i>)</a></code> <code><a href="as.vector.mlx.html">as.numeric(<i>&lt;mlx&gt;</i>)</a></code> <code><a href="as.vector.mlx.html">as.integer(<i>&lt;mlx&gt;</i>)</a></code>
 
         </dt>
         <dd>Convert MLX array to R vector</dd>
-
-        <dt>
-
-          <code><a href="as.logical.mlx.html">as.logical(<i>&lt;mlx&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Convert MLX array to logical vector</dd>
-
-        <dt>
-
-          <code><a href="as.double.mlx.html">as.double(<i>&lt;mlx&gt;</i>)</a></code> <code><a href="as.double.mlx.html">as.numeric(<i>&lt;mlx&gt;</i>)</a></code>
-
-        </dt>
-        <dd>Convert MLX array to numeric vector</dd>
       </dl></div><div class="section level2">
       <h2 id="device-execution">Device &amp; Execution<a class="anchor" aria-label="anchor" href="#device-execution"></a></h2>
 
@@ -266,6 +252,20 @@
 
         </dt>
         <dd>Control Global Compilation Behavior</dd>
+
+        <dt>
+
+          <code><a href="format.mlx_stream.html">format(<i>&lt;mlx_stream&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Format method for mlx_stream</dd>
+
+        <dt>
+
+          <code><a href="print.mlx_stream.html">print(<i>&lt;mlx_stream&gt;</i>)</a></code>
+
+        </dt>
+        <dd>Print method for mlx_stream</dd>
       </dl></div><div class="section level2">
       <h2 id="creation-randomness">Creation &amp; Randomness<a class="anchor" aria-label="anchor" href="#creation-randomness"></a></h2>
 
@@ -837,7 +837,7 @@
 
         <dt>
 
-          <code><a href="all.equal.mlx.html">all.equal(<i>&lt;mlx&gt;</i>)</a></code>
+          <code><a href="all.equal.mlx.html">all(<i>&lt;equal.mlx&gt;</i>)</a></code>
 
         </dt>
         <dd>Test if two MLX arrays are (nearly) equal</dd>
@@ -1002,7 +1002,7 @@
 
         <dt>
 
-          <code><a href="kronecker.html">kronecker()</a></code> <code><a href="kronecker.html">kronecker.default()</a></code>
+          <code><a href="kronecker.html">kronecker()</a></code> <code><a href="kronecker.html">kronecker.default()</a></code> <code><a href="kronecker.html">kronecker.mlx()</a></code>
 
         </dt>
         <dd>Kronecker product dispatcher</dd>

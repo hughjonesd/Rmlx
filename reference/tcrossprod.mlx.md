@@ -25,7 +25,7 @@ tcrossprod(x, y = NULL, ...)
 
 ## Value
 
-`x %*% t(y)` as an mlx object
+`x %*% t(y)` as an mlx object.
 
 ## See also
 

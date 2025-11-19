@@ -44,5 +44,13 @@ A <- t(A) %*% A
 # Compute Cholesky factor
 L <- chol(A, pivot = FALSE, upper = FALSE)
 # Get inverse from Cholesky factor
-A_inv <- mlx_cholesky_inv(as_mlx(L))
+mlx_cholesky_inv(as_mlx(L))
+#> mlx array [3 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>           [,1]     [,2]      [,3]
+#> [1,] 0.6387763 0.000000 0.0000000
+#> [2,] 0.0000000 2.690906 0.0000000
+#> [3,] 0.0000000 0.000000 0.3176438
 ```

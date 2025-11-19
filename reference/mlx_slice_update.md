@@ -45,7 +45,11 @@ An `mlx` array with the specified slice replaced.
 x <- as_mlx(matrix(1:9, 3, 3))
 replacement <- as_mlx(matrix(100:103, nrow = 2))
 updated <- mlx_slice_update(x, replacement, start = c(1L, 2L), stop = c(2L, 3L))
-as.matrix(updated)
+updated
+#> mlx array [3 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1  100  102
 #> [2,]    2  101  103

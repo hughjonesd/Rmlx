@@ -35,7 +35,7 @@ colSums(x, na.rm = FALSE, dims = 1, ...)
 
 ## Value
 
-An mlx array if `x` is mlx, otherwise a numeric vector.
+An mlx array if `x` is_mlx, otherwise a numeric vector.
 
 ## See also
 
@@ -46,7 +46,7 @@ An mlx array if `x` is mlx, otherwise a numeric vector.
 ``` r
 x <- as_mlx(matrix(1:6, 3, 2))
 colSums(x)
-#> mlx array []
+#> mlx array [2]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

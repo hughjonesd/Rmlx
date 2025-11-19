@@ -43,8 +43,11 @@ An mlx array of zeros matching `x`.
 
 ``` r
 base <- mlx_ones(c(2, 2))
-zeros <- mlx_zeros_like(base)
-as.matrix(zeros)
+mlx_zeros_like(base)
+#> mlx array [2 x 2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>      [,1] [,2]
 #> [1,]    0    0
 #> [2,]    0    0

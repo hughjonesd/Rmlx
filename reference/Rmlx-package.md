@@ -23,8 +23,8 @@ not executed until:
 - You call
   [`mlx_eval()`](https://hughjonesd.github.io/Rmlx/reference/mlx_eval.md)
 
-- You convert to R with
-  [`as.matrix()`](https://rdrr.io/r/base/matrix.html) or
+- You convert to R with e.g.
+  [`as.array()`](https://rdrr.io/r/base/array.html) or
   [`as.vector()`](https://rdrr.io/r/base/vector.html)
 
 - The result is needed for another computation

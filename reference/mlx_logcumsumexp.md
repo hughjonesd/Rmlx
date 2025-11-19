@@ -39,10 +39,18 @@ An mlx array.
 
 ``` r
 x <- as_mlx(1:4)
-as.vector(mlx_logcumsumexp(x))
+mlx_logcumsumexp(x)
+#> mlx array [4]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] 1.000000 2.313262 3.407606 4.440190
-m <- as_mlx(matrix(1:6, 2, 3))
-as.matrix(mlx_logcumsumexp(m, axis = 2))
+m <- mlx_matrix(1:6, 2, 3)
+mlx_logcumsumexp(m, axis = 2)
+#> mlx array [2 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>      [,1]     [,2]     [,3]
 #> [1,]    1 3.126928 5.142931
 #> [2,]    2 4.126928 6.142931

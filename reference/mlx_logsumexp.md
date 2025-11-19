@@ -37,9 +37,17 @@ An mlx array containing log-sum-exp results.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:6, 2, 3))
-as.matrix(mlx_logsumexp(x))
+x <- mlx_matrix(1:6, 2, 3)
+mlx_logsumexp(x)
+#> mlx array []
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] 6.456193
-as.matrix(mlx_logsumexp(x, axes = 2))
+mlx_logsumexp(x, axes = 2)
+#> mlx array [2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] 5.142931 6.142931
 ```

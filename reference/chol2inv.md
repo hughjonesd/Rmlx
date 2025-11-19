@@ -47,7 +47,11 @@ A <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
 U <- chol(A)
 A_inv <- chol2inv(U)
 # Verify: A %*% A_inv should be identity
-as.matrix(A %*% A_inv)
+A %*% A_inv
+#> mlx array [2 x 2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>      [,1] [,2]
 #> [1,]    1    0
 #> [2,]    0    1

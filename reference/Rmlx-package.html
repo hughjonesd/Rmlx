@@ -63,7 +63,7 @@ Apple Silicon.</p>
     <h2 id="lazy-evaluation">Lazy Evaluation<a class="anchor" aria-label="anchor" href="#lazy-evaluation"></a></h2>
     <p>MLX arrays use lazy evaluation by default. Operations are recorded but not
 executed until:</p><ul><li><p>You call <code><a href="mlx_eval.html">mlx_eval()</a></code></p></li>
-<li><p>You convert to R with <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix()</a></code> or <code><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector()</a></code></p></li>
+<li><p>You convert to R with e.g. <code><a href="https://rdrr.io/r/base/array.html" class="external-link">as.array()</a></code> or <code><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector()</a></code></p></li>
 <li><p>The result is needed for another computation</p></li>
 </ul><p>The package implements most of the C++ API via calls with the <code>mlx_</code> prefix,
 but it also ships <a href="mlx-methods.html">S3 methods for many base generics</a>,

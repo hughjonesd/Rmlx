@@ -17,7 +17,7 @@ t(x)
 
 ## Value
 
-Transposed mlx matrix
+The transposed MLX matrix.
 
 ## See also
 

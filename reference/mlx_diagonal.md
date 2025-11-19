@@ -54,7 +54,7 @@ An mlx array.
 # Extract diagonal
 x <- as_mlx(matrix(1:9, 3, 3))
 mlx_diagonal(x)
-#> mlx array []
+#> mlx array [3]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

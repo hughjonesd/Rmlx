@@ -44,10 +44,9 @@ with elements `value` (the function output as mlx) and `grads`.
 ## Details
 
 Keep the differentiated closure inside MLX operations. Coercing arrays
-back to base R objects (such as
-[`as.matrix()`](https://rdrr.io/r/base/matrix.html),
-[`as.numeric()`](https://rdrr.io/r/base/numeric.html), or `[[`
-extraction) breaks the gradient tape and results in an error.
+back to base R objects (e.g. via
+[`as.matrix()`](https://rdrr.io/r/base/matrix.html) or `[[` extraction)
+breaks the gradient tape and results in an error.
 
 ## See also
 

@@ -21,7 +21,7 @@ mean(x, ...)
 
 ## Value
 
-An mlx scalar
+An mlx scalar.
 
 ## See also
 

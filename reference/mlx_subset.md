@@ -32,12 +32,11 @@ x[...] <- value
 
 - value:
 
-  Replacement value(s) for `\code{[<-}` (scalar, vector, matrix, or
-  array) recycled to match the selection.
+  Replacement values, recycled to match the selection.
 
 ## Value
 
-Subsetted mlx object
+The subsetted MLX object.
 
 ## Details
 

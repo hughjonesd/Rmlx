@@ -48,35 +48,13 @@ as_mlx(
 
 An object of class `mlx`
 
-## Details
-
-### Default type behavior
-
-When `dtype` is not specified:
-
-- Numeric vectors/arrays (including R integers from `1:10`) → `float32`
-
-- Logical vectors/arrays → `bool`
-
-- Complex vectors/arrays → `complex64`
-
 ### Integer types require explicit dtype
 
-**Important**: R integer vectors (like `1:10`) convert to `float32` by
-default. To create integer MLX arrays, you must explicitly specify
-`dtype`:
+R integer vectors (like `1:10`) convert to `float32` by default. To
+create integer MLX arrays, you must explicitly specify `dtype`:
 
     x <- as_mlx(1:10, dtype = "int32")  # Creates int32 array
     x <- as_mlx(1:10)                    # Creates float32 array
-
-This design avoids unintentional integer promotion, since R creates
-integers in many contexts where floating-point is intended.
-
-### Supported integer types
-
-- **Signed**: `int8` (-128 to 127), `int16`, `int32`, `int64`
-
-- **Unsigned**: `uint8` (0 to 255), `uint16`, `uint32`, `uint64`
 
 ### Type precision notes
 
@@ -91,8 +69,8 @@ integers in many contexts where floating-point is intended.
 
 MLX does not have an `NA` sentinel. When you pass numeric `NA` values
 from R, they are stored as `NaN` inside MLX and returned to R as `NaN`.
-Use [`is.nan()`](https://rdrr.io/r/base/is.finite.html) on MLX arrays
-(method provided) if you need to detect them.
+Use [`is.nan()`](https://rdrr.io/r/base/is.finite.html) on MLX arrays if
+you need to detect them.
 
 ## See also
 

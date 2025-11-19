@@ -20,8 +20,6 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/abind.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/all.equal.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.array.mlx.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/as.double.mlx.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/as.logical.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/as_mlx.html</loc></url>
@@ -39,9 +37,10 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/dim.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/drop.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/fft.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/format.mlx_stream.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/grapes-times-grapes-.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/index.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/is.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/is_mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/kronecker.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/length.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mean.mlx.html</loc></url>
@@ -194,6 +193,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/outer.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/pinv.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/print.mlx.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/print.mlx_stream.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/qr.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/rbind.mlx.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/row.html</loc></url>

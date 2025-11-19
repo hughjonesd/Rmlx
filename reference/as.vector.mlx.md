@@ -1,13 +1,25 @@
 # Convert MLX array to R vector
 
-Converts an MLX array to an R vector. For multi-dimensional arrays (2+
-dimensions), the array is flattened in column-major order (R's default).
+Converts an MLX array to an R vector. Multi-dimensional arrays are
+flattened in column-major order (R's default).
 
 ## Usage
 
 ``` r
 # S3 method for class 'mlx'
 as.vector(x, mode = "any")
+
+# S3 method for class 'mlx'
+as.logical(x, ...)
+
+# S3 method for class 'mlx'
+as.double(x, ...)
+
+# S3 method for class 'mlx'
+as.numeric(x, ...)
+
+# S3 method for class 'mlx'
+as.integer(x, ...)
 ```
 
 ## Arguments
@@ -23,16 +35,21 @@ as.vector(x, mode = "any")
 
 ## Value
 
-A vector of the specified mode
+A vector of the specified mode.
 
 ## Examples
 
 ``` r
-x <- as_mlx(1:5)
+x <- as_mlx(-1:1)
 as.vector(x)
-#> [1] 1 2 3 4 5
+#> [1] -1  0  1
+as.logical(x)
+#> [1]  TRUE FALSE  TRUE
+as.numeric(x)
+#> [1] -1  0  1
 
 # Multi-dimensional arrays are flattened
 m <- as_mlx(matrix(1:6, 2, 3))
-v <- as.vector(m)  # Flattened in column-major order
+as.vector(m)  # Flattened in column-major order
+#> [1] 1 2 3 4 5 6
 ```

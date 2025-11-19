@@ -17,7 +17,7 @@ mlx_default_device(value)
 
 ## Value
 
-Current default device (character)
+Current default device (character).
 
 ## See also
 

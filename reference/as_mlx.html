@@ -80,38 +80,15 @@ array typically reuse that array's device or stream).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code>mlx</code></p>
-    </div>
-    <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-
-<div class="section">
-<h3 id="default-type-behavior">Default type behavior<a class="anchor" aria-label="anchor" href="#default-type-behavior"></a></h3>
-
-
-<p>When <code>dtype</code> is not specified:</p><ul><li><p>Numeric vectors/arrays (including R integers from <code>1:10</code>) → <code>float32</code></p></li>
-<li><p>Logical vectors/arrays → <code>bool</code></p></li>
-<li><p>Complex vectors/arrays → <code>complex64</code></p></li>
-</ul></div>
-
-<div class="section">
+    <p>An object of class <code>mlx</code></p><div class="section">
 <h3 id="integer-types-require-explicit-dtype">Integer types require explicit dtype<a class="anchor" aria-label="anchor" href="#integer-types-require-explicit-dtype"></a></h3>
 
 
-<p><strong>Important</strong>: R integer vectors (like <code>1:10</code>) convert to <code>float32</code> by default.
+<p>R integer vectors (like <code>1:10</code>) convert to <code>float32</code> by default.
 To create integer MLX arrays, you must explicitly specify <code>dtype</code>:</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, dtype <span class="op">=</span> <span class="st">"int32"</span><span class="op">)</span>  <span class="co"># Creates int32 array</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>                    <span class="co"># Creates float32 array</span></span></code></pre><p></p></div>
-<p>This design avoids unintentional integer promotion, since R creates integers
-in many contexts where floating-point is intended.</p>
 </div>
-
-<div class="section">
-<h3 id="supported-integer-types">Supported integer types<a class="anchor" aria-label="anchor" href="#supported-integer-types"></a></h3>
-
-<ul><li><p><strong>Signed</strong>: <code>int8</code> (-128 to 127), <code>int16</code>, <code>int32</code>, <code>int64</code></p></li>
-<li><p><strong>Unsigned</strong>: <code>uint8</code> (0 to 255), <code>uint16</code>, <code>uint32</code>, <code>uint64</code></p></li>
-</ul></div>
 
 <div class="section">
 <h3 id="type-precision-notes">Type precision notes<a class="anchor" aria-label="anchor" href="#type-precision-notes"></a></h3>
@@ -127,7 +104,7 @@ in many contexts where floating-point is intended.</p>
 
 <p>MLX does not have an <code>NA</code> sentinel. When you pass numeric <code>NA</code> values from R,
 they are stored as <code>NaN</code> inside MLX and returned to R as <code>NaN</code>.
-Use <code><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.nan()</a></code> on MLX arrays (method provided) if you need to detect them.</p>
+Use <code><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.nan()</a></code> on MLX arrays if you need to detect them.</p>
 </div>
 
     </div>

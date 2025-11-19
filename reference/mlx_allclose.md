@@ -67,6 +67,10 @@ NumPy-style broadcasting.
 ``` r
 a <- as_mlx(c(1.0, 2.0, 3.0))
 b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-6))
-as.logical(as.matrix(mlx_allclose(a, b)))  # TRUE
+mlx_allclose(a, b)  # TRUE
+#> mlx array []
+#>   dtype: bool
+#>   device: gpu
+#>   values:
 #> [1] TRUE
 ```

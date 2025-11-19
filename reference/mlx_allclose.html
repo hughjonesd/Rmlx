@@ -107,7 +107,11 @@ Supports NumPy-style broadcasting.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">3.0</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.0</span> <span class="op">+</span> <span class="fl">1e-6</span>, <span class="fl">2.0</span> <span class="op">+</span> <span class="fl">1e-6</span>, <span class="fl">3.0</span> <span class="op">+</span> <span class="fl">1e-6</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">as.logical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu">mlx_allclose</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>  <span class="co"># TRUE</span></span></span>
+<span class="r-in"><span><span class="fu">mlx_allclose</span><span class="op">(</span><span class="va">a</span>, <span class="va">b</span><span class="op">)</span>  <span class="co"># TRUE</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array []</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: bool</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 </code></pre></div>
     </div>

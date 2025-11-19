@@ -57,7 +57,7 @@ A 1D mlx array.
 
 ``` r
 mlx_linspace(0, 1, num = 5)
-#> mlx array []
+#> mlx array [5]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

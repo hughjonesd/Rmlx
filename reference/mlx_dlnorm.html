@@ -92,23 +92,35 @@ array typically reuse that array's device or stream).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An mlx array with the computed values</p>
+    <p>An mlx array with the computed values.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">3</span>, by <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu">mlx_dlnorm</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mlx_dlnorm</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [15]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.28159016 0.64420331 0.62749606 0.53479487 0.44081569 0.36103126</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 0.29649639 0.24497366 0.20385425 0.17088225 0.14426388 0.12261371</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [13] 0.10487107 0.09022354 0.07804624</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu">mlx_plnorm</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mlx_plnorm</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [15]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.01065108 0.11430004 0.24410859 0.36066759 0.45804486 0.53796577</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] 0.60347968 0.65743220 0.70216179 0.73951596 0.77093732 0.79755199</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [13] 0.82024282 0.83970642 0.85649657</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.5</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu">mlx_qlnorm</span><span class="op">(</span><span class="va">p</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mlx_qlnorm</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [3]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.5094163 1.0000000 1.9630311</span>
 </code></pre></div>
     </div>

@@ -56,6 +56,22 @@ An mlx matrix with ones on the selected diagonal and zeros elsewhere.
 ## Examples
 
 ``` r
-eye <- mlx_eye(3)
-upper_eye <- mlx_eye(3, k = 1)
+mlx_eye(3)
+#> mlx array [3 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2] [,3]
+#> [1,]    1    0    0
+#> [2,]    0    1    0
+#> [3,]    0    0    1
+mlx_eye(3, k = 1)
+#> mlx array [3 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2] [,3]
+#> [1,]    0    1    0
+#> [2,]    0    0    1
+#> [3,]    0    0    0
 ```

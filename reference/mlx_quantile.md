@@ -89,14 +89,22 @@ This matches the default behavior of
 
 ``` r
 x <- as_mlx(1:10)
-as.numeric(mlx_quantile(x, 0.5))  # median
+mlx_quantile(x, 0.5)  # median
+#> mlx array [1]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] 5.5
-as.numeric(mlx_quantile(x, c(0.25, 0.5, 0.75)))  # quartiles
+mlx_quantile(x, c(0.25, 0.5, 0.75))  # quartiles
+#> mlx array [3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] 3.25 5.50 7.75
 
 # S3 method:
 quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
-#> mlx array []
+#> mlx array [5]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

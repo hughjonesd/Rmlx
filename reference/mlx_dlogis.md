@@ -50,22 +50,34 @@ mlx_qlogis(p, location = 0, scale = 1, device = mlx_default_device())
 
 ## Value
 
-An mlx array with the computed values
+An mlx array with the computed values.
 
 ## Examples
 
 ``` r
 x <- as_mlx(seq(-3, 3, by = 0.5))
-as.matrix(mlx_dlogis(x))
+mlx_dlogis(x)
+#> mlx array [13]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>  [1] 0.04517667 0.07010371 0.10499357 0.14914645 0.19661196 0.23500372
 #>  [7] 0.25000000 0.23500372 0.19661194 0.14914647 0.10499358 0.07010371
 #> [13] 0.04517666
-as.matrix(mlx_plogis(x))
+mlx_plogis(x)
+#> mlx array [13]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>  [1] 0.04742587 0.07585818 0.11920292 0.18242553 0.26894143 0.37754068
 #>  [7] 0.50000000 0.62245935 0.73105860 0.81757450 0.88079703 0.92414182
 #> [13] 0.95257413
 
 p <- as_mlx(c(0.25, 0.5, 0.75))
-as.matrix(mlx_qlogis(p))
+mlx_qlogis(p)
+#> mlx array [3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] -1.098612  0.000000  1.098612
 ```

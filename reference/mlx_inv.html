@@ -71,7 +71,11 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">2</span>, <span class="fl">6</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">A_inv</span> <span class="op">&lt;-</span> <span class="fu">mlx_inv</span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Verify: A %*% A_inv should be identity</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">A</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">A_inv</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">A</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">A_inv</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [2 x 2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              [,1] [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.000000e+00    0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 3.576279e-07    1</span>

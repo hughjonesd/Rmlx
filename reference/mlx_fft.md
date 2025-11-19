@@ -71,13 +71,13 @@ only when coercing non-mlx inputs.
 ``` r
 x <- as_mlx(c(1, 2, 3, 4))
 mlx_fft(x)
-#> mlx array []
+#> mlx array [4]
 #>   dtype: complex64
 #>   device: gpu
 #>   values:
 #> [1] 10+0i -2+2i -2+0i -2-2i
 mlx_fft(x, inverse = TRUE)
-#> mlx array []
+#> mlx array [4]
 #>   dtype: complex64
 #>   device: gpu
 #>   values:

@@ -55,7 +55,7 @@ mlx_norm(x, ord = 2)
 #>   values:
 #> [1] 5.464986
 mlx_norm(x, axes = 2)
-#> mlx array []
+#> mlx array [2]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

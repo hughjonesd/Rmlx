@@ -1,6 +1,8 @@
-# Force evaluation of lazy MLX operations
+# Force evaluation of an MLX operations
 
-Force evaluation of lazy MLX operations
+By default MLX computations are lazy. `mlx_eval(x)` forces the
+computations behind `x` to run. You can do the same by calling (e.g.)
+[as.matrix(x)](https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx.md).
 
 ## Usage
 
@@ -16,7 +18,7 @@ mlx_eval(x)
 
 ## Value
 
-The input object (invisibly)
+The input object, invisibly.
 
 ## See also
 
@@ -25,6 +27,10 @@ The input object (invisibly)
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
-mlx_eval(x)
+system.time(x <- mlx_rand_normal(1e7))
+#>    user  system elapsed 
+#>       0       0       0 
+system.time(mlx_eval(x))
+#>    user  system elapsed 
+#>   0.002   0.003   0.058 
 ```

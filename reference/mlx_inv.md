@@ -28,7 +28,11 @@ The inverse of `x`.
 A <- as_mlx(matrix(c(4, 7, 2, 6), 2, 2))
 A_inv <- mlx_inv(A)
 # Verify: A %*% A_inv should be identity
-as.matrix(A %*% A_inv)
+A %*% A_inv
+#> mlx array [2 x 2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>              [,1] [,2]
 #> [1,] 1.000000e+00    0
 #> [2,] 3.576279e-07    1

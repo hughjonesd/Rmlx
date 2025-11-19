@@ -33,8 +33,16 @@ An mlx boolean array highlighting infinite entries.
 
 ``` r
 vals <- as_mlx(c(-Inf, -1, 0, Inf))
-as.matrix(mlx_isposinf(vals))
+mlx_isposinf(vals)
+#> mlx array [4]
+#>   dtype: bool
+#>   device: gpu
+#>   values:
 #> [1] FALSE FALSE FALSE  TRUE
-as.matrix(mlx_isneginf(vals))
+mlx_isneginf(vals)
+#> mlx array [4]
+#>   dtype: bool
+#>   device: gpu
+#>   values:
 #> [1]  TRUE FALSE FALSE FALSE
 ```

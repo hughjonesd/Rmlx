@@ -53,7 +53,7 @@ and
 ``` r
 x <- as_mlx(c(3, 1, 4, 2))
 mlx_sort(x)
-#> mlx array []
+#> mlx array [4]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
@@ -62,11 +62,13 @@ mlx_sort(x)
 # Returns 1-based indices
 idx <- mlx_argsort(x)
 as.integer(as.matrix(idx))  # [1] 2 4 1 3
+#> Warning: Converting array to 1-column matrix
 #> [1] 2 4 1 3
 
 # Can be used directly with R indexing
 original <- c(3, 1, 4, 2)
 sorted_idx <- as.integer(as.matrix(mlx_argsort(as_mlx(original))))
+#> Warning: Converting array to 1-column matrix
 original[sorted_idx]  # [1] 1 2 3 4
 #> [1] 1 2 3 4
 

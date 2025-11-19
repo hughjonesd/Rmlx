@@ -17,7 +17,7 @@ x %*% y
 
 ## Value
 
-An mlx object
+An mlx object.
 
 ## See also
 

@@ -32,7 +32,7 @@ A list with components `values` and `vectors`.
 x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
 mlx_eigh(x)
 #> $values
-#> mlx array []
+#> mlx array [2]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

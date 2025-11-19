@@ -43,8 +43,11 @@ An mlx array of ones matching `x`.
 
 ``` r
 base <- mlx_full(c(2, 3), 5)
-ones <- mlx_ones_like(base)
-as.matrix(ones)
+mlx_ones_like(base)
+#> mlx array [2 x 3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1    1    1
 #> [2,]    1    1    1

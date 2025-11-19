@@ -18,7 +18,7 @@ length(x)
 
 ## Value
 
-Total number of elements
+Total number of elements.
 
 ## Examples
 

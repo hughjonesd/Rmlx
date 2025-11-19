@@ -110,7 +110,7 @@ when you call functions like <code><a href="https://rdrr.io/r/base/matrix.html" 
 <code class="sourceCode R"><span><span class="co"># From a vector</span></span>
 <span><span class="va">v</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
-<span><span class="co">#&gt; mlx array []</span></span>
+<span><span class="co">#&gt; mlx array [10]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
@@ -327,13 +327,13 @@ computed until needed:</p>
 <span></span>
 <span><span class="co"># Column and row means</span></span>
 <span><span class="fu"><a href="../reference/colMeans.html">colMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; mlx array []</span></span>
+<span><span class="co">#&gt; mlx array [10]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt;  [1]  5.5 15.5 25.5 35.5 45.5 55.5 65.5 75.5 85.5 95.5</span></span>
 <span><span class="fu"><a href="../reference/rowMeans.html">rowMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span><span class="co">#&gt; mlx array []</span></span>
+<span><span class="co">#&gt; mlx array [10]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
 <span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
@@ -341,7 +341,18 @@ computed until needed:</p>
 <span></span>
 <span><span class="co"># Convert to R to see values</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="fu"><a href="../reference/colMeans.html">colMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1]  5.5 15.5 25.5 35.5 45.5 55.5 65.5 75.5 85.5 95.5</span></span>
+<span><span class="co">#&gt; Warning in as.matrix.mlx(colMeans(x)): Converting array to 1-column matrix</span></span>
+<span><span class="co">#&gt;       [,1]</span></span>
+<span><span class="co">#&gt;  [1,]  5.5</span></span>
+<span><span class="co">#&gt;  [2,] 15.5</span></span>
+<span><span class="co">#&gt;  [3,] 25.5</span></span>
+<span><span class="co">#&gt;  [4,] 35.5</span></span>
+<span><span class="co">#&gt;  [5,] 45.5</span></span>
+<span><span class="co">#&gt;  [6,] 55.5</span></span>
+<span><span class="co">#&gt;  [7,] 65.5</span></span>
+<span><span class="co">#&gt;  [8,] 75.5</span></span>
+<span><span class="co">#&gt;  [9,] 85.5</span></span>
+<span><span class="co">#&gt; [10,] 95.5</span></span>
 <span></span>
 <span><span class="co"># Cumulative operations flatten the array in column-major order</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cumsum.html" class="external-link">cumsum</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
@@ -417,7 +428,7 @@ multiplication:</p>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Base R:"</span>, <span class="va">t1</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Base R: 0.029 seconds</span></span>
+<span><span class="co">#&gt; Base R: 0.021 seconds</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"MLX:"</span>, <span class="va">t2</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; MLX: 0.025 seconds</span></span></code></pre></div>
 <p>Note: This is an informal comparison, not a rigorous benchmark.

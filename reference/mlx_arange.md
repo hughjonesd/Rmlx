@@ -58,13 +58,13 @@ A 1D mlx array.
 
 ``` r
 mlx_arange(5)                    # 0, 1, 2, 3, 4
-#> mlx array []
+#> mlx array [5]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 0 1 2 3 4
 mlx_arange(5, start = 1, step = 2) # 1, 3
-#> mlx array []
+#> mlx array [2]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

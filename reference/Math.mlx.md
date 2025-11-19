@@ -21,7 +21,7 @@ Math(x, ...)
 
 ## Value
 
-An mlx object with the result
+An mlx object with the result.
 
 ## See also
 

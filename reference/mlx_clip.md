@@ -32,7 +32,7 @@ An mlx array with values clipped to `[min, max]`.
 ``` r
 x <- as_mlx(rnorm(4))
 mlx_clip(x, min = -1, max = 1)
-#> mlx array []
+#> mlx array [4]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

@@ -24,8 +24,7 @@ kronecker(X, Y, FUN = "*", make.dimnames = FALSE, ...)
 # S4 method for class 'ANY,mlx'
 kronecker(X, Y, FUN = "*", make.dimnames = FALSE, ...)
 
-# S3 method for class 'mlx'
-kronecker(X, Y, FUN = "*", ..., make.dimnames = FALSE)
+kronecker.mlx(X, Y, FUN = "*", ..., make.dimnames = FALSE)
 ```
 
 ## Arguments

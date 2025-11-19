@@ -30,9 +30,17 @@ An mlx array with the result.
 
 ``` r
 x <- as_mlx(c(-1, 0, 1))
-as.matrix(mlx_erf(x))
+mlx_erf(x)
+#> mlx array [3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] -0.8427008  0.0000000  0.8427008
 p <- as_mlx(c(-0.5, 0, 0.5))
-as.matrix(mlx_erfinv(p))
+mlx_erfinv(p)
+#> mlx array [3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] -0.4769363  0.0000000  0.4769363
 ```

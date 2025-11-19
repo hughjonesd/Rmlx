@@ -48,7 +48,7 @@ mlx_qnorm(p, mean = 0, sd = 1, device = mlx_default_device())
 
 ## Value
 
-An mlx array with the computed values
+An mlx array with the computed values.
 
 ## See also
 
@@ -61,16 +61,28 @@ An mlx array with the computed values
 
 ``` r
 x <- as_mlx(seq(-3, 3, by = 0.5))
-as.matrix(mlx_dnorm(x))
+mlx_dnorm(x)
+#> mlx array [13]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>  [1] 0.004431848 0.017528297 0.053990964 0.129517585 0.241970733 0.352065325
 #>  [7] 0.398942292 0.352065325 0.241970733 0.129517585 0.053990964 0.017528297
 #> [13] 0.004431848
-as.matrix(mlx_pnorm(x))
+mlx_pnorm(x)
+#> mlx array [13]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #>  [1] 0.001349896 0.006209671 0.022750139 0.066807210 0.158655256 0.308537543
 #>  [7] 0.500000000 0.691462457 0.841344714 0.933192790 0.977249861 0.993790329
 #> [13] 0.998650074
 
 p <- as_mlx(c(0.025, 0.5, 0.975))
-as.matrix(mlx_qnorm(p))
+mlx_qnorm(p)
+#> mlx array [3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
 #> [1] -1.959964  0.000000  1.959964
 ```

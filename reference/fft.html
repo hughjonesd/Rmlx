@@ -49,7 +49,13 @@ standard R implementation for other inputs.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fft</span><span class="op">(</span><span class="va">z</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fft</span><span class="op">(</span><span class="va">z</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Default S3 method</span></span>
+<span><span class="fu">fft</span><span class="op">(</span><span class="va">z</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for class 'mlx'</span></span>
+<span><span class="fu">fft</span><span class="op">(</span><span class="va">z</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">axis</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,6 +73,12 @@ standard R implementation for other inputs.</p>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Passed through to the default method.</p></dd>
 
+
+<dt id="arg-axis">axis<a class="anchor" aria-label="anchor" href="#arg-axis"></a></dt>
+<dd><p>Single axis (1-indexed). Supply a positive integer between 1 and
+the array rank. Use <code>NULL</code> when the helper interprets it as "all axes" (see
+individual docs).</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -82,13 +94,13 @@ coefficients; otherwise the base R result.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">fft</span><span class="op">(</span><span class="va">z</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array []</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10+0i -2+2i -2+0i -2-2i</span>
 <span class="r-in"><span><span class="fu">fft</span><span class="op">(</span><span class="va">z</span>, inverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array []</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>

@@ -21,7 +21,7 @@ Ops(e1, e2 = NULL)
 
 ## Value
 
-An mlx object
+An mlx object.
 
 ## See also
 

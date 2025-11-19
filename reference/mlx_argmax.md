@@ -55,7 +55,7 @@ mlx_argmax(x)
 #>   values:
 #> [1] 3
 mlx_argmax(x, axis = 1)
-#> mlx array []
+#> mlx array [2]
 #>   dtype: int64
 #>   device: gpu
 #>   values:

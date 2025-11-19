@@ -21,6 +21,10 @@ mlx_synchronize(device = mlx_default_device())
   unless noted otherwise (helpers that act on an existing array
   typically reuse that array's device or stream).
 
+## Value
+
+Returns `NULL` invisibly.
+
 ## See also
 
 [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)

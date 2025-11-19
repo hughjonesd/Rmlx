@@ -1,6 +1,6 @@
-# Get data type helper
+# Get the data type of an MLX array
 
-Get data type helper
+Get the data type of an MLX array
 
 ## Usage
 
@@ -17,7 +17,9 @@ mlx_dtype(x)
 
 ## Value
 
-Data type string
+A data type string (see
+[`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md) for
+possibilities).
 
 ## Examples
 
