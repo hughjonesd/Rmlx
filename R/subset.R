@@ -60,7 +60,7 @@
     if (is.null(sel)) next
 
     # If sel is an mlx array, pass its pointer; otherwise pass the R vector
-    sel_arg <- if (is.mlx(sel)) sel$ptr else sel
+    sel_arg <- if (is_mlx(sel)) sel$ptr else sel
     ptr <- cpp_mlx_take(out$ptr, sel_arg, axis - 1L)
     out <- new_mlx(ptr, out$device)
   }
@@ -89,7 +89,7 @@
 #' @rdname mlx_subset
 #' @export
 `[<-.mlx` <- function(x, ..., value) {
-  stopifnot(is.mlx(x))
+  stopifnot(is_mlx(x))
   shape <- mlx_shape(x)
   ndim <- length(shape)
   if (ndim == 0L) {
@@ -422,7 +422,7 @@
     return(NULL)
   }
 
-  if (is.mlx(idx)) {
+  if (is_mlx(idx)) {
     idx <- as.array(idx)
   }
 
@@ -487,7 +487,7 @@
     return(FALSE)
   }
 
-  if (is.mlx(idx)) {
+  if (is_mlx(idx)) {
     dims <- mlx_shape(idx)
     return(isTRUE(length(dims) >= 2L && dims[length(dims)] == ndim) &&
              !identical(mlx_dtype(idx), "bool"))
@@ -508,7 +508,7 @@
     return(FALSE)
   }
 
-  if (is.mlx(idx)) {
+  if (is_mlx(idx)) {
     return(!identical(mlx_dtype(idx), "bool") && length(dim(idx)) >= 2L)
   }
 
@@ -525,7 +525,7 @@
 .mlx_coerce_index_matrix <- function(idx, dim_sizes, type = c("subset", "assign")) {
   type <- match.arg(type)
 
-  if (is.mlx(idx)) {
+  if (is_mlx(idx)) {
     mat <- as.array(idx)
   } else {
     mat <- idx
@@ -585,7 +585,7 @@
     return(integer(0))
   }
 
-  if (is.mlx(idx)) {
+  if (is_mlx(idx)) {
     idx <- as.array(idx)
   }
 

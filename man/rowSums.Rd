@@ -23,7 +23,7 @@ rowSums(x, ...)
 \code{x} is not an mlx array.}
 }
 \value{
-An mlx array if \code{x} is mlx, otherwise a numeric vector.
+An mlx array if \code{x} is_mlx, otherwise a numeric vector.
 }
 \description{
 Row sums for mlx arrays

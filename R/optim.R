@@ -68,7 +68,7 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
     data_inputs <- args[-seq_len(n_param)]
     mlx_param_set_values(params, param_inputs)
     loss <- do.call(loss_fn, c(list(module), data_inputs))
-    if (!is.mlx(loss)) {
+    if (!is_mlx(loss)) {
       stop("loss_fn must return an mlx array.", call. = FALSE)
     }
     loss
@@ -207,7 +207,7 @@ mlx_coordinate_descent <- function(loss_fn,
   }
   block_size <- min(block_size, n_pred)
 
-  lipschitz_mlx <- if (is.mlx(lipschitz)) {
+  lipschitz_mlx <- if (is_mlx(lipschitz)) {
     arr <- lipschitz
     if (length(cpp_mlx_shape(arr$ptr)) == 1L) {
       mlx_reshape(arr, c(n_pred, 1))
@@ -220,7 +220,7 @@ mlx_coordinate_descent <- function(loss_fn,
   lambda_mlx <- as_mlx(matrix(lambda_numeric, nrow = 1, ncol = 1))
 
   as_column_mlx <- function(val) {
-    if (is.mlx(val)) {
+    if (is_mlx(val)) {
       arr <- val
       if (length(cpp_mlx_shape(arr$ptr)) == 1L) {
         return(mlx_reshape(arr, c(n_pred, 1)))

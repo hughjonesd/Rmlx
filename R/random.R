@@ -142,10 +142,10 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
   dim <- .validate_shape(dim)
 
   # Convert mean and cov to mlx if needed
-  if (!is.mlx(mean)) {
+  if (!is_mlx(mean)) {
     mean <- as_mlx(mean, device = device)
   }
-  if (!is.mlx(cov)) {
+  if (!is_mlx(cov)) {
     cov <- as_mlx(cov, device = device)
   }
 
@@ -347,7 +347,7 @@ mlx_key <- function(seed) {
 #' @return A list of `num` `mlx` key arrays.
 #' @export
 mlx_key_split <- function(key, num = 2L) {
-  if (!is.mlx(key)) {
+  if (!is_mlx(key)) {
     stop("`key` must be an mlx array produced by mlx_key().", call. = FALSE)
   }
   num <- as.integer(num)
@@ -382,7 +382,7 @@ mlx_key_bits <- function(dim, width = 4L, key = NULL, device = mlx_default_devic
   key_ptr <- if (is.null(key)) {
     NULL
   } else {
-    if (!is.mlx(key)) {
+    if (!is_mlx(key)) {
       stop("`key` must be an mlx array produced by mlx_key().", call. = FALSE)
     }
     key$ptr

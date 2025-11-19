@@ -30,7 +30,7 @@ For mlx inputs, a list of mlx arrays; otherwise matches
 }
 \description{
 \code{asplit()} extends base \code{\link[=asplit]{asplit()}} to work with mlx arrays by delegating to
-\code{\link[=mlx_split]{mlx_split()}}. When \code{x} is mlx the result is a list of mlx arrays; otherwise,
+\code{\link[=mlx_split]{mlx_split()}}. When \code{x} is_mlx the result is a list of mlx arrays; otherwise,
 the base implementation is used.
 }
 \details{

@@ -106,7 +106,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
     dtype_val <- "float32"
   }
 
-  if (is.mlx(x)) return(x)
+  if (is_mlx(x)) return(x)
 
   is_supported <- (is.vector(x) && !is.list(x)) || is.matrix(x) || is.array(x)
   if (!is_supported) {
@@ -147,7 +147,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
 #' system.time(x <- mlx_rand_normal(1e7))
 #' system.time(mlx_eval(x))
 mlx_eval <- function(x) {
-  stopifnot(is.mlx(x))
+  stopifnot(is_mlx(x))
   cpp_mlx_eval(x$ptr)
   invisible(x)
 }
@@ -265,8 +265,8 @@ as.integer.mlx <- function(x, ...) {
 #' @export
 #' @examples
 #' x <- as_mlx(matrix(1:4, 2, 2))
-#' is.mlx(x)
-is.mlx <- function(x) {
+#' is_mlx(x)
+is_mlx <- function(x) {
   inherits(x, "mlx")
 }
 

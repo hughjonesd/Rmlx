@@ -1,7 +1,7 @@
 # Internal helper to bind arrays along a given axis ---------------------------
 
 .mlx_bind_along_axis <- function(objs, axis) {
-  if (length(objs) == 1L && is.list(objs[[1L]]) && !is.mlx(objs[[1L]])) {
+  if (length(objs) == 1L && is.list(objs[[1L]]) && !is_mlx(objs[[1L]])) {
     objs <- objs[[1L]]
   }
   if (!length(objs)) {

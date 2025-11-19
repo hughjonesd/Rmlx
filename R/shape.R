@@ -61,7 +61,7 @@
 #' stacked <- mlx_stack(x, y, axis = 1)
 mlx_stack <- function(..., axis = 1L) {
   arrays <- list(...)
-  if (length(arrays) == 1L && is.list(arrays[[1]]) && !is.mlx(arrays[[1]])) {
+  if (length(arrays) == 1L && is.list(arrays[[1]]) && !is_mlx(arrays[[1]])) {
     arrays <- arrays[[1]]
   }
   if (!length(arrays)) {
@@ -359,7 +359,7 @@ mlx_split <- function(x, sections, axis = 1L) {
 #' Split mlx arrays along a margin
 #'
 #' `asplit()` extends base [asplit()] to work with mlx arrays by delegating to
-#' [mlx_split()]. When `x` is mlx the result is a list of mlx arrays; otherwise,
+#' [mlx_split()]. When `x` is_mlx the result is a list of mlx arrays; otherwise,
 #' the base implementation is used.
 #'
 #' Currently only a single `MARGIN` value is supported for mlx arrays.
@@ -669,7 +669,7 @@ mlx_meshgrid <- function(...,
                          indexing = c("xy", "ij"),
                          device = NULL) {
   arrays <- list(...)
-  if (length(arrays) == 1L && is.list(arrays[[1]]) && !is.mlx(arrays[[1]])) {
+  if (length(arrays) == 1L && is.list(arrays[[1]]) && !is_mlx(arrays[[1]])) {
     arrays <- arrays[[1]]
   }
   if (!length(arrays)) {
@@ -731,7 +731,7 @@ mlx_broadcast_to <- function(x, shape, device = NULL) {
 #' lapply(outs, dim)
 mlx_broadcast_arrays <- function(..., device = NULL) {
   arrays <- list(...)
-  if (length(arrays) == 1L && is.list(arrays[[1]]) && !is.mlx(arrays[[1]])) {
+  if (length(arrays) == 1L && is.list(arrays[[1]]) && !is_mlx(arrays[[1]])) {
     arrays <- arrays[[1]]
   }
   if (!length(arrays)) {

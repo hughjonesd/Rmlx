@@ -114,7 +114,7 @@ dim.mlx <- function(x) {
 #' @rdname dim.mlx
 #' @export
 mlx_shape <- function(x) {
-  stopifnot(is.mlx(x))
+  stopifnot(is_mlx(x))
   cpp_mlx_shape(x$ptr)
 }
 
@@ -226,6 +226,6 @@ length.mlx <- function(x) {
 #' x <- as_mlx(matrix(1:6, 2, 3))
 #' mlx_dtype(x)
 mlx_dtype <- function(x) {
-  stopifnot(is.mlx(x))
+  stopifnot(is_mlx(x))
   cpp_mlx_dtype(x$ptr)
 }

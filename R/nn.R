@@ -279,7 +279,7 @@ mlx_param_values <- function(params) {
 mlx_param_set_values <- function(params, values) {
   stopifnot(length(params) == length(values))
   invisible(Map(function(param, value) {
-    stopifnot(inherits(param, "mlx_param"), is.mlx(value))
+    stopifnot(inherits(param, "mlx_param"), is_mlx(value))
     param$env[[param$name]] <- value
     NULL
   }, params, values))

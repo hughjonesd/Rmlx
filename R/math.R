@@ -374,10 +374,10 @@ Conj.mlx <- function(z) {
 #' c <- as_mlx(c(1.0, 2.0, 10.0))
 #' all.equal(a, c)  # Character vector describing difference
 all.equal.mlx <- function(target, current, tolerance = sqrt(.Machine$double.eps), ...) {
-  if (!is.mlx(target)) {
+  if (!is_mlx(target)) {
     return("'target' is not an mlx object")
   }
-  if (!is.mlx(current)) {
+  if (!is_mlx(current)) {
     return("'current' is not an mlx object")
   }
 

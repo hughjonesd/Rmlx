@@ -57,14 +57,14 @@ test_that("complex inputs create complex MLX arrays", {
   expect_equal(as.matrix(m_mlx), m, tolerance = 1e-5)
 })
 
-test_that("is.mlx works", {
+test_that("is_mlx works", {
   m <- matrix(1:12, 3, 4)
   m_mlx <- as_mlx(m)
 
-  expect_true(is.mlx(m_mlx))
-  expect_false(is.mlx(m))
-  expect_false(is.mlx(NULL))
-  expect_false(is.mlx(list()))
+  expect_true(is_mlx(m_mlx))
+  expect_false(is_mlx(m))
+  expect_false(is_mlx(NULL))
+  expect_false(is_mlx(list()))
 })
 
 test_that("mlx_eval runs without error", {
@@ -147,7 +147,7 @@ test_that("asplit() returns mlx slices matching base arrays", {
   base_split <- base::asplit(x, 1)
   mlx_split <- asplit(x_mlx, 1)
 
-  expect_true(all(vapply(mlx_split, is.mlx, logical(1))))
+  expect_true(all(vapply(mlx_split, is_mlx, logical(1))))
   expect_equal(lapply(mlx_split, as.vector), lapply(base_split, as.vector))
 
   mlx_split_drop <- asplit(x_mlx, 1, drop = TRUE)

@@ -21,7 +21,7 @@ solve.mlx <- function(a, b = NULL, ...) {
     new_mlx(ptr, target_device)
   } else {
     # Convert b to mlx if needed
-    if (!is.mlx(b)) {
+    if (!is_mlx(b)) {
       b <- as_mlx(b, dtype = target_dtype, device = target_device)
     }
 
@@ -142,7 +142,7 @@ kronecker.mlx <- function(X, Y, FUN = "*", ..., make.dimnames = FALSE) {
   if (!identical(make.dimnames, FALSE)) {
     warning("make.dimnames is ignored for mlx results.", call. = FALSE)
   }
-  if (!is.mlx(Y)) {
+  if (!is_mlx(Y)) {
     Y <- as_mlx(Y)
   }
   mlx_kron(X, Y)

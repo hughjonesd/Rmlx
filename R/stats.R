@@ -104,7 +104,7 @@ mean.mlx <- function(x, ...) {
 #' Row means for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
-#' @return An mlx array if `x` is mlx, otherwise a numeric vector.
+#' @return An mlx array if `x` is_mlx, otherwise a numeric vector.
 #' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
 #' @examples
@@ -129,7 +129,7 @@ rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' Column means for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
-#' @return An mlx array if `x` is mlx, otherwise a numeric vector.
+#' @return An mlx array if `x` is_mlx, otherwise a numeric vector.
 #' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
 #' @examples
@@ -154,7 +154,7 @@ colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' Row sums for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
-#' @return An mlx array if `x` is mlx, otherwise a numeric vector.
+#' @return An mlx array if `x` is_mlx, otherwise a numeric vector.
 #' @seealso [mlx.core.sum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum)
 #' @export
 #' @examples
@@ -179,7 +179,7 @@ rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' Column sums for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
-#' @return An mlx array if `x` is mlx, otherwise a numeric vector.
+#' @return An mlx array if `x` is_mlx, otherwise a numeric vector.
 #' @seealso [mlx.core.sum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum)
 #' @export
 #' @examples

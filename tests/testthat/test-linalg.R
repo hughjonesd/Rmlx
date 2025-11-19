@@ -50,7 +50,7 @@ test_that("solve works with vector b", {
   expect_equal(as.numeric(x_mlx), x_r, tolerance = 1e-5)
 })
 
-test_that("solve works when A is mlx and b is R matrix", {
+test_that("solve works when A is_mlx and b is R matrix", {
   # Test automatic conversion of b from R to mlx
   set.seed(321)
   A <- matrix(rnorm(9), 3, 3)
@@ -183,7 +183,7 @@ test_that("svd.mlx with nu=0 and nv=0 returns only singular values", {
   svd_mlx <- svd(as_mlx(A), nu = 0, nv = 0)
 
   expect_null(svd_mlx$u)
-  expect_true(is.mlx(svd_mlx$d))
+  expect_true(is_mlx(svd_mlx$d))
   expect_null(svd_mlx$v)
   expect_equal(length(svd_mlx$d), 3)
 })
