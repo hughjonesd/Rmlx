@@ -104,12 +104,12 @@ for (epoch in seq_len(n_epochs)) {
     cat(sprintf("Epoch %d, Loss: %.4f\n", epoch, loss_value))
   }
 }
-#> Epoch 100, Loss: 0.6689
-#> Epoch 200, Loss: 0.6623
-#> Epoch 300, Loss: 0.6543
-#> Epoch 400, Loss: 0.6561
-#> Epoch 500, Loss: 0.6557
-#> Epoch 600, Loss: 0.6557
+#> Epoch 100, Loss: 0.6721
+#> Epoch 200, Loss: 0.6643
+#> Epoch 300, Loss: 0.6607
+#> Epoch 400, Loss: 0.6580
+#> Epoch 500, Loss: 0.6596
+#> Epoch 600, Loss: 0.6544
 
 mlx_set_training(mlp, FALSE)
 ```
@@ -130,13 +130,13 @@ print(confusion)
 #>       Predicted
 #> Actual   0   1
 #>      0 772 228
-#>      1 548 452
+#>      1 537 463
 
 # Calculate accuracy
 accuracy <- sum(diag(confusion)) / sum(confusion)
 cat(sprintf("\nAccuracy: %.2f%%\n", accuracy * 100))
 #> 
-#> Accuracy: 61.20%
+#> Accuracy: 61.75%
 ```
 
 ``` r
