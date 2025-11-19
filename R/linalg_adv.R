@@ -508,6 +508,8 @@ mlx_inv <- function(x) {
 #'
 #' Computes the inverse of a triangular matrix.
 #'
+#' **Note:** MLX may crash if `x` is not triangular.
+#'
 #' @inheritParams mlx_array_required
 #' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
 #' @return The inverse of the triangular matrix `x`.
@@ -515,7 +517,7 @@ mlx_inv <- function(x) {
 #' @export
 #' @examples
 #' # Lower triangular matrix
-#' L <- mlx_matrix(c(1, 2, 0, 3, 0, 0, 4, 5, 6), 3, 3, byrow = TRUE)
+#' L <- mlx_matrix(c(1:3, 0, 4:5, 0, 0, 6), 3, 3)
 #' mlx_tri_inv(L, upper = FALSE)
 mlx_tri_inv <- function(x, upper = FALSE) {
   x <- as_mlx(x)

@@ -17,9 +17,12 @@ The inverse of the triangular matrix \code{x}.
 \description{
 Computes the inverse of a triangular matrix.
 }
+\details{
+\strong{Note:} MLX may crash if \code{x} is not triangular.
+}
 \examples{
 # Lower triangular matrix
-L <- mlx_matrix(c(1, 2, 0, 3, 0, 0, 4, 5, 6), 3, 3, byrow = TRUE)
+L <- mlx_matrix(c(1:3, 0, 4:5, 0, 0, 6), 3, 3)
 mlx_tri_inv(L, upper = FALSE)
 }
 \seealso{
