@@ -321,7 +321,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @return mlx array with reduction result.
 #' @noRd
 .mlx_reduce_dispatch <- function(x, op, axes = NULL, drop = TRUE, ddof = 0L) {
-  x <- if (inherits(x, "mlx")) x else as_mlx(x)
+  x <- as_mlx(x)
   if (is.null(axes)) {
     return(.mlx_reduce(x, op, ddof = ddof))
   }
@@ -395,7 +395,7 @@ Summary.mlx <- function(x, ..., na.rm = FALSE) {
   }
 
   reduce_one <- function(obj) {
-    obj_mlx <- if (inherits(obj, "mlx")) obj else as_mlx(obj)
+    obj_mlx <- as_mlx(obj)
     .mlx_reduce(obj_mlx, switch(op,
       sum = "sum",
       prod = "prod",
