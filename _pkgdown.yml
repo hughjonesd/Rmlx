@@ -15,7 +15,7 @@ reference:
   - title: Core Tensor API
     contents:
       - as_mlx
-      - is.mlx
+      - is_mlx
       - Rmlx-package
       - mlx-methods
       - mlx_dtype
@@ -50,6 +50,8 @@ reference:
       - mlx_compile
       - mlx_disable_compile
       - mlx_enable_compile
+      - format.mlx_stream
+      - print.mlx_stream
   - title: Creation & Randomness
     contents:
       - mlx_array
