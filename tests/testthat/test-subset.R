@@ -109,6 +109,16 @@ test_that("subset assignment with numeric indices matches base R", {
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 
+test_that("vector subset assignment updates the correct element", {
+  base_vec <- 1:5
+  mlx_vec <- mlx_vector(base_vec)
+
+  mlx_vec[1] <- 2
+  base_vec[1] <- 2
+
+  expect_equal(as.vector(mlx_vec), base_vec, tolerance = 1e-6)
+})
+
 test_that("subset assignment with logical masks behaves like base R", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)

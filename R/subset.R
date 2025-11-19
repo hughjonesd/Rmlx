@@ -24,9 +24,8 @@
 #' @param ... Indices for each dimension. Provide one per axis; omitted indices
 #'   select the full extent. Logical indices recycle to the dimension length.
 #' @param drop Should dimensions be dropped? (default: FALSE)
-#' @param value Replacement value(s) for `\code{[<-}` (scalar, vector, matrix,
-#'   or array) recycled to match the selection.
-#' @return Subsetted mlx object
+#' @param value Replacement values, recycled to match the selection.
+#' @return The subsetted MLX object.
 #' @seealso [mlx.core.take](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.take)
 #' @name mlx_subset
 #' @importFrom utils tail
@@ -133,8 +132,7 @@
   x_dtype <- mlx_dtype(x)
   value_mlx_tensor <- as_mlx(value_array, dtype = x_dtype, device = x$device)
 
-  value_matrix <- matrix(value_vec, ncol = 1L)
-  value_mlx_vec <- as_mlx(value_matrix, dtype = x_dtype, device = x$device)
+  value_mlx_vec <- mlx_vector(value_vec, dtype = x_dtype, device = x$device)
 
   slice <- .mlx_slice_parameters(prep$normalized, shape)
   if (slice$can_slice) {
@@ -220,9 +218,16 @@
   }
   val_vec <- rep_len(val_vec, total)
 
-  value_mat <- matrix(val_vec, ncol = 1L)
-  updates_mlx <- as_mlx(value_mat, dtype = x_dtype, device = x$device)
   idx_mlx <- as_mlx(linear_idx, dtype = "int64", device = x$device)
+  idx_rank <- length(mlx_shape(idx_mlx))
+  total_len <- as.integer(total)
+  updates_dim <- c(total_len, rep.int(1L, idx_rank))
+  updates_mlx <- mlx_array(
+    val_vec,
+    dim = updates_dim,
+    dtype = x_dtype,
+    device = x$device
+  )
 
   flat <- mlx_flatten(x)
   flat_updated <- .mlx_scatter_axis(flat, idx_mlx, updates_mlx, axis = 0L)
@@ -374,7 +379,7 @@
     }
     start[axis] <- sel[1L]
     stride[axis] <- stride_val
-    stop[axis] <- utils::tail(sel, 1L) + stride_val
+    stop[axis] <- sel[length(sel)] + stride_val
   }
 
   list(
