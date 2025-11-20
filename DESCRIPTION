@@ -27,7 +27,8 @@ Suggests:
     rmarkdown,
     bench,
     dplyr,
-    ggplot2
+    ggplot2,
+    rprojroot
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 SystemRequirements: C++17, CMake (>= 3.24); macOS on Apple Silicon (M1 or later) for Metal backend; Linux with NVIDIA GPU and CUDA toolkit (>= 12.0) for CUDA backend

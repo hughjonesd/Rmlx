@@ -1,21 +1,12 @@
 #!/usr/bin/env Rscript
 
+library(rprojroot)
 args_full <- commandArgs(trailingOnly = FALSE)
 file_arg <- grep("^--file=", args_full, value = TRUE)
-script_dir <- if (length(file_arg)) {
-  dirname(normalizePath(sub("^--file=", "", file_arg[1])))
-} else {
-  getwd()
-}
-repo_root <- normalizePath(file.path(script_dir, "..", ".."), mustWork = TRUE)
-helpers_candidates <- c(
-  file.path(repo_root, "inst", "benchmarks", "bench_helpers.R"),
-  file.path(repo_root, "dev", "benchmarks", "bench_helpers.R")
-)
-helpers_path <- helpers_candidates[file.exists(helpers_candidates)][1]
-if (is.na(helpers_path)) {
-  stop("Could not locate bench_helpers.R. Ensure inst/benchmarks is available.")
-}
+
+repo_root <- rprojroot::find_root(rprojroot::has_file("DESCRIPTION"))
+
+helpers_path <-   file.path(repo_root, "inst", "benchmarks", "bench_helpers.R")
 suppressPackageStartupMessages(source(helpers_path))
 
 sizes <- c(n1000 = 1000L)
@@ -38,7 +29,7 @@ ops <- list(
 )
 
 min_time <- 0.05
-min_iter <- 2L
+min_iter <- 20L
 
 results <- matrix(
   NA_real_,
