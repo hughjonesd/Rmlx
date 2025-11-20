@@ -31,7 +31,7 @@ Suggests:
     rprojroot
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-SystemRequirements: C++17, CMake (>= 3.24); macOS on Apple Silicon (M1 or later) for Metal backend; Linux with NVIDIA GPU and CUDA toolkit (>= 12.0) for CUDA backend
+SystemRequirements: C++17, CMake (>= 3.24), MLX (>= 0.30.0); macOS on Apple Silicon (M1 or later) for Metal backend; Linux with NVIDIA GPU and CUDA toolkit (>= 12.0) for CUDA backend
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 URL: https://hughjonesd.github.io/Rmlx/, https://github.com/hughjonesd/Rmlx
