@@ -29,7 +29,7 @@ An mlx array if \code{x} is_mlx, otherwise a numeric vector.
 Row means for mlx arrays
 }
 \examples{
-x <- as_mlx(matrix(1:6, 3, 2))
+x <- mlx_matrix(1:6, 3, 2)
 rowMeans(x)
 }
 \seealso{

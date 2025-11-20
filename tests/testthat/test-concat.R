@@ -1,8 +1,8 @@
 skip_on_cran()
 
 test_that("rbind/cbind concatenate MLX tensors", {
-  x <- as_mlx(matrix(1:6, 3, 2))
-  y <- as_mlx(matrix(7:12, 3, 2))
+  x <- mlx_matrix(1:6, 3, 2)
+  y <- mlx_matrix(7:12, 3, 2)
 
   rb <- rbind(x, y)
   cb <- cbind(x, y)
@@ -16,7 +16,7 @@ test_that("rbind/cbind concatenate MLX tensors", {
 })
 
 test_that("rbind/cbind coerce base matrices", {
-  x <- as_mlx(matrix(1:6, 3, 2))
+  x <- mlx_matrix(1:6, 3, 2)
   rb2 <- rbind(x, matrix(13:18, 3, 2))
   cb2 <- cbind(x, matrix(13:18, 3, 2))
   expect_equal(as.matrix(rb2), rbind(matrix(1:6, 3, 2), matrix(13:18, 3, 2)))
@@ -24,8 +24,8 @@ test_that("rbind/cbind coerce base matrices", {
 })
 
 test_that("rbind/cbind work on 3D arrays", {
-  x <- as_mlx(array(1:24, c(2, 3, 4)))
-  y <- as_mlx(array(25:48, c(2, 3, 4)))
+  x <- mlx_array(1:24, c(2, 3, 4))
+  y <- mlx_array(25:48, c(2, 3, 4))
 
   rb <- rbind(x, y)
   cb <- cbind(x, y)
@@ -42,8 +42,8 @@ test_that("rbind/cbind work on 3D arrays", {
 })
 
 test_that("rbind/cbind work on 4D arrays", {
-  x <- as_mlx(array(1:24, c(2, 3, 2, 2)))
-  y <- as_mlx(array(25:48, c(2, 3, 2, 2)))
+  x <- mlx_array(1:24, c(2, 3, 2, 2))
+  y <- mlx_array(25:48, c(2, 3, 2, 2))
 
   rb <- rbind(x, y)
   cb <- cbind(x, y)

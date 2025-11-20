@@ -1,6 +1,6 @@
 test_that("Summary group reductions work", {
-  x <- as_mlx(matrix(1:4, 2, 2))
-  y <- as_mlx(matrix(5:8, 2, 2))
+  x <- mlx_matrix(1:4, 2, 2)
+  y <- mlx_matrix(5:8, 2, 2)
 
   expect_equal(as.vector(sum(x)), sum(1:4), tolerance = 1e-6)
   expect_equal(as.vector(sum(x, y)), sum(c(1:4, 5:8)), tolerance = 1e-6)
@@ -15,7 +15,7 @@ test_that("Summary group reductions work", {
 })
 
 test_that("mlx_sum and friends reduce axes", {
-  x <- as_mlx(array(1:24, dim = c(2, 3, 4)))
+  x <- mlx_array(1:24, dim = c(2, 3, 4))
   x_arr <- array(1:24, dim = c(2, 3, 4))
 
   expect_equal(as.matrix(mlx_sum(x, axes = 2)), apply(x_arr, c(1,3), sum))

@@ -25,8 +25,8 @@ summed across inputs). Base R's \code{rbind()} flattens higher-dimensional array
 to matrices before binding.
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
-y <- as_mlx(matrix(5:8, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
+y <- mlx_matrix(5:8, 2, 2)
 rbind(x, y)
 }
 \seealso{

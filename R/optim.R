@@ -217,7 +217,7 @@ mlx_coordinate_descent <- function(loss_fn,
   } else {
     mlx_reshape(as_mlx(lips_numeric), c(n_pred, 1))
   }
-  lambda_mlx <- as_mlx(matrix(lambda_numeric, nrow = 1, ncol = 1))
+  lambda_mlx <- mlx_matrix(lambda_numeric, nrow = 1, ncol = 1)
 
   as_column_mlx <- function(val) {
     if (is_mlx(val)) {

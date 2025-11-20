@@ -56,8 +56,8 @@
 #' @seealso [mlx.core.stack](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.stack)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
-#' y <- as_mlx(matrix(5:8, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
+#' y <- mlx_matrix(5:8, 2, 2)
 #' stacked <- mlx_stack(x, y, axis = 1)
 mlx_stack <- function(..., axis = 1L) {
   arrays <- list(...)
@@ -116,7 +116,7 @@ drop.mlx <- function(x) {
 #' @seealso [mlx.core.squeeze](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.squeeze)
 #' @export
 #' @examples
-#' x <- as_mlx(array(1:4, dim = c(1, 2, 2, 1)))
+#' x <- mlx_array(1:4, dim = c(1, 2, 2, 1))
 #' mlx_squeeze(x)
 #' mlx_squeeze(x, axes = 1)
 mlx_squeeze <- function(x, axes = NULL) {
@@ -139,7 +139,7 @@ mlx_squeeze <- function(x, axes = NULL) {
 #' @seealso [mlx.core.expand_dims](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.expand_dims)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' mlx_expand_dims(x, axes = 1)
 mlx_expand_dims <- function(x, axes) {
   x <- as_mlx(x)
@@ -158,7 +158,7 @@ mlx_expand_dims <- function(x, axes) {
 #' @seealso [mlx.core.repeat](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.repeat)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' mlx_repeat(x, repeats = 2, axis = 2)
 mlx_repeat <- function(x, repeats, axis = NULL) {
   x <- as_mlx(x)
@@ -184,7 +184,7 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
 #' @seealso [mlx.core.tile](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tile)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' mlx_tile(x, reps = c(1, 2))
 mlx_tile <- function(x, reps) {
   x <- as_mlx(x)
@@ -206,7 +206,7 @@ mlx_tile <- function(x, reps) {
 #' @seealso [mlx.core.roll](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.roll)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' mlx_roll(x, shift = 1, axes = 2)
 mlx_roll <- function(x, shift, axes = NULL) {
   x <- as_mlx(x)
@@ -254,7 +254,7 @@ mlx_roll <- function(x, shift, axes = NULL) {
 #' @seealso [mlx.core.pad](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' padded <- mlx_pad(x, pad_width = 1)
 #' padded_cols <- mlx_pad(x, pad_width = c(0, 1), axes = 2)
 #' parts <- mlx_split(x, sections = 2, axis = 1)
@@ -477,7 +477,7 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
 #' @seealso [mlx.core.moveaxis](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.moveaxis)
 #' @export
 #' @examples
-#' x <- as_mlx(array(1:8, dim = c(2, 2, 2)))
+#' x <- mlx_array(1:8, dim = c(2, 2, 2))
 #' moved <- mlx_moveaxis(x, source = 1, destination = 3)
 #' permuted <- aperm(x, c(2, 1, 3))
 mlx_moveaxis <- function(x, source, destination) {
@@ -560,7 +560,7 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.contiguous>
 #' @export
 #' @examples
-#' x <- mlx_swapaxes(as_mlx(matrix(1:4, 2, 2)), axis1 = 1, axis2 = 2)
+#' x <- mlx_swapaxes(mlx_matrix(1:4, 2, 2), axis1 = 1, axis2 = 2)
 #' y <- mlx_contiguous(x)
 #' identical(as.array(x), as.array(y))
 mlx_contiguous <- function(x, device = NULL) {
@@ -584,7 +584,7 @@ mlx_contiguous <- function(x, device = NULL) {
 #' @seealso [mlx.core.flatten](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.flatten)
 #' @export
 #' @examples
-#' x <- as_mlx(array(1:12, dim = c(2, 3, 2)))
+#' x <- mlx_array(1:12, dim = c(2, 3, 2))
 #' mlx_flatten(x)
 #' mlx_flatten(x, start_axis = 2, end_axis = 3)
 mlx_flatten <- function(x, start_axis = 1L, end_axis = NULL) {
@@ -628,7 +628,7 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = NULL) {
 #' @seealso [mlx.core.swapaxes](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.swapaxes)
 #' @export
 #' @examples
-#' x <- as_mlx(array(1:24, dim = c(2, 3, 4)))
+#' x <- mlx_array(1:24, dim = c(2, 3, 4))
 #' swapped <- mlx_swapaxes(x, axis1 = 1, axis2 = 3)
 #' dim(swapped)
 mlx_swapaxes <- function(x, axis1, axis2) {
@@ -725,8 +725,8 @@ mlx_broadcast_to <- function(x, shape, device = NULL) {
 #' @seealso [mlx.core.broadcast_arrays](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_arrays)
 #' @export
 #' @examples
-#' a <- as_mlx(matrix(1:3, nrow = 1))
-#' b <- as_mlx(matrix(1:3, ncol = 1))
+#' a <- mlx_matrix(1:3, nrow = 1)
+#' b <- mlx_matrix(1:3, ncol = 1)
 #' outs <- mlx_broadcast_arrays(a, b)
 #' lapply(outs, dim)
 mlx_broadcast_arrays <- function(..., device = NULL) {

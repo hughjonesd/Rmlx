@@ -162,8 +162,8 @@ test_that("compiled functions preserve list names", {
     list(sum = sum_result, product = product_result)
   }
 
-  x <- as_mlx(matrix(1:5, ncol = 1))
-  y <- as_mlx(matrix(6:10, ncol = 1))
+  x <- mlx_matrix(1:5, ncol = 1)
+  y <- mlx_matrix(6:10, ncol = 1)
 
   # Uncompiled: should have names
   result_uncompiled <- test_func(x, y)

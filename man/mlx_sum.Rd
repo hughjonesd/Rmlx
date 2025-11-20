@@ -52,7 +52,7 @@ base R reducers \code{\link[=all]{all()}} and \code{\link[=any]{any()}} applied 
 logical scalars.
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mlx_sum(x)
 mlx_sum(x, axes = 1)
 mlx_prod(x, axes = 2, drop = FALSE)

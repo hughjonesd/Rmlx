@@ -89,7 +89,7 @@ test_that("mlx_coordinate_descent with custom gradient", {
 
 test_that("mlx_coordinate_descent validates inputs", {
   loss_fn <- function(beta) sum(beta^2)
-  beta_init <- as_mlx(matrix(0, 10, 1))
+  beta_init <- mlx_matrix(0, 10, 1)
 
   # Should work with valid inputs
   expect_no_error(
@@ -122,7 +122,7 @@ test_that("mlx_coordinate_descent keeps coefficients finite when supplied lipsch
   y_r <- drop(X_r %*% beta_true + rnorm(n))
 
   X <- as_mlx(X_r)
-  y <- as_mlx(matrix(y_r, ncol = 1))
+  y <- mlx_matrix(y_r, ncol = 1)
 
   loss_fn <- function(beta) {
     residual <- y - X %*% beta

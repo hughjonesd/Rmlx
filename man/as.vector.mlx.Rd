@@ -37,6 +37,6 @@ as.logical(x)
 as.numeric(x)
 
 # Multi-dimensional arrays are flattened
-m <- as_mlx(matrix(1:6, 2, 3))
+m <- mlx_matrix(1:6, 2, 3)
 as.vector(m)  # Flattened in column-major order
 }

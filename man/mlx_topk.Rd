@@ -55,7 +55,7 @@ mlx_partition(scores, kth = 1)
 idx <- mlx_argpartition(scores, kth = 1)
 as.integer(as.matrix(idx))  # 1-based indices
 
-mlx_topk(as_mlx(matrix(1:6, 2, 3)), k = 1, axis = 1)
+mlx_topk(mlx_matrix(1:6, 2, 3), k = 1, axis = 1)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.topk}{mlx.core.topk},

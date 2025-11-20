@@ -46,7 +46,7 @@ add_fn <- mlx_import_function(
   system.file("extdata/add_matrix.mlxfn", package = "Rmlx"),
   device = "cpu"
 )
-x <- as_mlx(matrix(1:4, 2, 2))
-y <- as_mlx(matrix(5:8, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
+y <- mlx_matrix(5:8, 2, 2)
 add_fn(x, bias = y)  # positional + keyword argument
 }

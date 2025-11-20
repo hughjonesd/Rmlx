@@ -19,6 +19,6 @@ MLX arrays with other than 2 dimensions are converted to
 a 1 column matrix, with a warning.
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 as.matrix(x)
 }

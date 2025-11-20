@@ -23,7 +23,7 @@ never \code{NULL}). Use \code{mlx_shape()} when you need the underlying MLX dime
 metadata and \code{dim()} when you want R-like behaviour.
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 dim(x)
 
 v <- as_mlx(1:3)

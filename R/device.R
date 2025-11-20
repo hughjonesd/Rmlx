@@ -28,7 +28,7 @@ mlx_default_device <- function(value) {
 #' @seealso [mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' mlx_synchronize("gpu")
 #' stream <- mlx_new_stream()
 #' mlx_synchronize(stream)

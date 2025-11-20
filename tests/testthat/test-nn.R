@@ -50,7 +50,7 @@ test_that("activation functions work correctly", {
 
   # Softmax
   softmax <- mlx_softmax_layer()
-  x_multi <- as_mlx(matrix(1:6, 2, 3))
+  x_multi <- mlx_matrix(1:6, 2, 3)
   result <- mlx_forward(softmax, x_multi)
   expect_s3_class(result, "mlx")
   # Rows should sum to 1
@@ -63,7 +63,7 @@ test_that("dropout layer works correctly", {
 
   set.seed(42)
   dropout <- mlx_dropout(p = 0.5)
-  x <- as_mlx(matrix(1:12, 3, 4))
+  x <- mlx_matrix(1:12, 3, 4)
 
   # In training mode, some values should be zeroed
   result <- mlx_forward(dropout, x)

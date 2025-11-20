@@ -18,7 +18,7 @@ An mlx scalar.
 Mean of MLX array elements
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mean(x)
 }
 \seealso{

@@ -214,7 +214,7 @@ fft.mlx <- function(z, inverse = FALSE, axis, ...) {
 #' @seealso [mlx.linalg.norm](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.norm)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' mlx_norm(x)
 #' mlx_norm(x, ord = 2)
 #' mlx_norm(x, axes = 2)
@@ -406,7 +406,7 @@ mlx_cross <- function(a, b, axis = NULL) {
 #' @seealso [mlx.core.trace](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.trace.html)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:9, 3, 3))
+#' x <- mlx_matrix(1:9, 3, 3)
 #' mlx_trace(x)
 #' mlx_trace(x, offset = 1)
 mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
@@ -427,7 +427,7 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' @export
 #' @examples
 #' # Extract diagonal
-#' x <- as_mlx(matrix(1:9, 3, 3))
+#' x <- mlx_matrix(1:9, 3, 3)
 #' mlx_diagonal(x)
 #' # (Constructing diagonals from 1D inputs is not yet supported.)
 mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
@@ -476,7 +476,7 @@ outer.mlx <- function(X, Y, FUN = "*", ...) {
 #' @export
 #' @examples
 #' # Flatten and unflatten
-#' x <- as_mlx(array(1:24, c(2, 3, 4)))
+#' x <- mlx_array(1:24, c(2, 3, 4))
 #' x_flat <- mlx_reshape(x, c(2, 12))  # flatten last two dims
 #' mlx_unflatten(x_flat, axis = 2, shape = c(3, 4))  # restore original shape
 mlx_unflatten <- function(x, axis, shape) {

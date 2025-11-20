@@ -63,8 +63,8 @@
 #' @seealso [mlx.core.concatenate](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
-#' y <- as_mlx(matrix(5:8, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
+#' y <- mlx_matrix(5:8, 2, 2)
 #' rbind(x, y)
 rbind.mlx <- function(..., deparse.level = 1) {
   .mlx_bind_along_axis(list(...), axis = 1L)
@@ -81,8 +81,8 @@ rbind.mlx <- function(..., deparse.level = 1) {
 #' @seealso [mlx.core.concatenate](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
-#' y <- as_mlx(matrix(5:8, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
+#' y <- mlx_matrix(5:8, 2, 2)
 #' cbind(x, y)
 cbind.mlx <- function(..., deparse.level = 1) {
   .mlx_bind_along_axis(list(...), axis = 2L)
@@ -103,8 +103,8 @@ cbind.mlx <- function(..., deparse.level = 1) {
 #' @seealso [mlx.core.concatenate](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate)
 #' @export
 #' @examples
-#' x <- as_mlx(array(1:12, c(2, 3, 2)))
-#' y <- as_mlx(array(13:24, c(2, 3, 2)))
+#' x <- mlx_array(1:12, c(2, 3, 2)))
+#' y <- mlx_array(13:24, c(2, 3, 2)))
 #' z <- abind(x, y, along = 3)
 #' dim(z)
 abind <- function(..., along = 1L) {

@@ -47,7 +47,7 @@ original <- c(3, 1, 4, 2)
 sorted_idx <- as.integer(as.matrix(mlx_argsort(as_mlx(original))))
 original[sorted_idx]  # [1] 1 2 3 4
 
-mlx_sort(as_mlx(matrix(1:6, 2, 3)), axis = 1)
+mlx_sort(mlx_matrix(1:6, 2, 3), axis = 1)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sort}{mlx.core.sort},

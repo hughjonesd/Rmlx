@@ -19,6 +19,6 @@ Printing an array only evaluates it if it is of small size (less than
 100 elements and 2 dimensions)
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 print(x)
 }

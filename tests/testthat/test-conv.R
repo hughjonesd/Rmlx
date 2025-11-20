@@ -1,7 +1,7 @@
 test_that("mlx_conv1d works", {
   # Simple 1D convolution test
-  input <- as_mlx(array(1:12, dim = c(1, 4, 3)))  # batch=1, length=4, channels=3
-  weight <- as_mlx(array(1:6, dim = c(2, 2, 3)))  # out_channels=2, kernel=2, in_channels=3
+  input <- mlx_array(1:12, dim = c(1, 4, 3))  # batch=1, length=4, channels=3
+  weight <- mlx_array(1:6, dim = c(2, 2, 3))  # out_channels=2, kernel=2, in_channels=3
 
   result <- mlx_conv1d(input, weight)
 
@@ -19,8 +19,8 @@ test_that("mlx_conv1d works", {
 test_that("mlx_conv2d works", {
   set.seed(42)
   # Simple 2D convolution test
-  input <- as_mlx(array(rnorm(1*5*5*3), dim = c(1, 5, 5, 3)))  # batch=1, 5x5, channels=3
-  weight <- as_mlx(array(rnorm(8*3*3*3), dim = c(8, 3, 3, 3)))  # out=8, 3x3 kernel, in=3
+  input <- mlx_array(rnorm(1*5*5*3), dim = c(1, 5, 5, 3))  # batch=1, 5x5, channels=3
+  weight <- mlx_array(rnorm(8*3*3*3), dim = c(8, 3, 3, 3))  # out=8, 3x3 kernel, in=3
 
   result <- mlx_conv2d(input, weight)
 
@@ -46,8 +46,8 @@ test_that("mlx_conv2d works", {
 test_that("mlx_conv3d works", {
   set.seed(42)
   # Simple 3D convolution test
-  input <- as_mlx(array(rnorm(1*3*3*3*2), dim = c(1, 3, 3, 3, 2)))  # batch=1, 3x3x3, channels=2
-  weight <- as_mlx(array(rnorm(4*2*2*2*2), dim = c(4, 2, 2, 2, 2)))  # out=4, 2x2x2 kernel, in=2
+  input <- mlx_array(rnorm(1*3*3*3*2), dim = c(1, 3, 3, 3, 2))  # batch=1, 3x3x3, channels=2
+  weight <- mlx_array(rnorm(4*2*2*2*2), dim = c(4, 2, 2, 2, 2))  # out=4, 2x2x2 kernel, in=2
 
   result <- mlx_conv3d(input, weight)
 

@@ -19,7 +19,7 @@ test_that("drop.mlx is a no-op when no singleton axes exist", {
 })
 
 test_that("drop.mlx preserves scalar payloads, dtype, and device", {
-  scalar <- as_mlx(array(5, dim = c(1, 1, 1)))
+  scalar <- mlx_array(5, dim = c(1, 1, 1))
 
   dropped <- drop(scalar)
 

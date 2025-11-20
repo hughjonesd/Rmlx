@@ -30,7 +30,7 @@
 #' @name mlx_subset
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:9, 3, 3))
+#' x <- mlx_matrix(1:9, 3, 3)
 #' x[1, ]
 `[.mlx` <- function(x, ..., drop = FALSE) {
   shape <- mlx_shape(x)

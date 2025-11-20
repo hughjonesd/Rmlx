@@ -19,7 +19,7 @@ An mlx array with the selected axes removed.
 Remove singleton dimensions
 }
 \examples{
-x <- as_mlx(array(1:4, dim = c(1, 2, 2, 1)))
+x <- mlx_array(1:4, dim = c(1, 2, 2, 1))
 mlx_squeeze(x)
 mlx_squeeze(x, axes = 1)
 }

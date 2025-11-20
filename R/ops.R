@@ -7,8 +7,8 @@
 #' @aliases +.mlx -.mlx *.mlx /.mlx ^.mlx ==.mlx !=.mlx <.mlx >.mlx <=.mlx >=.mlx !.mlx &.mlx |.mlx %/%.mlx %%.mlx
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
-#' y <- as_mlx(matrix(5:8, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
+#' y <- mlx_matrix(5:8, 2, 2)
 #' x + y
 #' x < y
 Ops.mlx <- function(e1, e2 = NULL) {
@@ -62,8 +62,8 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 2, 3))
-#' y <- as_mlx(matrix(1:6, 3, 2))
+#' x <- mlx_matrix(1:6, 2, 3)
+#' y <- mlx_matrix(1:6, 3, 2)
 #' x %*% y
 `%*%.mlx` <- function(x, y) {
   x <- as_mlx(x)
@@ -264,7 +264,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @seealso [mlx.core.minimum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum)
 #' @export
 #' @examples
-#' a <- as_mlx(matrix(1:4, 2, 2))
+#' a <- mlx_matrix(1:4, 2, 2)
 #' b <- as_mlx(matrix(c(4, 3, 2, 1), 2, 2))
 #' mlx_minimum(a, b)
 mlx_minimum <- function(x, y) {

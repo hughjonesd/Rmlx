@@ -22,8 +22,8 @@ A list of broadcast mlx arrays.
 returning a list of inputs expanded to a common shape.
 }
 \examples{
-a <- as_mlx(matrix(1:3, nrow = 1))
-b <- as_mlx(matrix(1:3, ncol = 1))
+a <- mlx_matrix(1:3, nrow = 1)
+b <- mlx_matrix(1:3, ncol = 1)
 outs <- mlx_broadcast_arrays(a, b)
 lapply(outs, dim)
 }

@@ -35,7 +35,7 @@ computing the cumulative result.
 x <- as_mlx(1:5)
 mlx_cumsum(x)  # [1, 3, 6, 10, 15]
 
-mat <- as_mlx(matrix(1:12, 3, 4))
+mat <- mlx_matrix(1:12, 3, 4)
 mlx_cumsum(mat, axis = 1)  # cumsum down rows
 }
 \seealso{

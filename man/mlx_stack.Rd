@@ -19,8 +19,8 @@ An mlx array with one additional dimension.
 Stack mlx arrays along a new axis
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
-y <- as_mlx(matrix(5:8, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
+y <- mlx_matrix(5:8, 2, 2)
 stacked <- mlx_stack(x, y, axis = 1)
 }
 \seealso{

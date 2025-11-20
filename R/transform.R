@@ -101,7 +101,7 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
 #' sorted_idx <- as.integer(as.matrix(mlx_argsort(as_mlx(original))))
 #' original[sorted_idx]  # [1] 1 2 3 4
 #'
-#' mlx_sort(as_mlx(matrix(1:6, 2, 3)), axis = 1)
+#' mlx_sort(mlx_matrix(1:6, 2, 3), axis = 1)
 mlx_sort <- function(x, axis = NULL) {
   x <- as_mlx(x)
   axis_idx <- .mlx_normalize_axis(axis, x)
@@ -156,7 +156,7 @@ mlx_argsort <- function(x, axis = NULL) {
 #' idx <- mlx_argpartition(scores, kth = 1)
 #' as.integer(as.matrix(idx))  # 1-based indices
 #'
-#' mlx_topk(as_mlx(matrix(1:6, 2, 3)), k = 1, axis = 1)
+#' mlx_topk(mlx_matrix(1:6, 2, 3), k = 1, axis = 1)
 mlx_topk <- function(x, k, axis = NULL) {
   x <- as_mlx(x)
   if (length(k) != 1L || !is.finite(k) || k <= 0) {

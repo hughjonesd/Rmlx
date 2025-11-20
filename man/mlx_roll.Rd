@@ -21,7 +21,7 @@ An mlx array with elements circularly shifted.
 Roll array elements
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mlx_roll(x, shift = 1, axes = 2)
 }
 \seealso{

@@ -61,7 +61,7 @@ mlx_module_set_training <- function(module, mode = TRUE) {
 #' @examples
 #' set.seed(1)
 #' layer <- mlx_linear(3, 2)
-#' x <- as_mlx(matrix(1:6, 2, 3))
+#' x <- mlx_matrix(1:6, 2, 3)
 #' mlx_forward(layer, x)
 mlx_linear <- function(in_features,
                        out_features,
@@ -410,7 +410,7 @@ mlx_silu <- function() {
 #' @export
 #' @examples
 #' act <- mlx_softmax_layer()
-#' x <- as_mlx(matrix(1:6, 2, 3))
+#' x <- mlx_matrix(1:6, 2, 3)
 #' mlx_forward(act, x)
 mlx_softmax_layer <- function(axis = NULL) {
   if (!is.null(axis)) {
@@ -442,7 +442,7 @@ mlx_softmax_layer <- function(axis = NULL) {
 #' @examples
 #' set.seed(1)
 #' dropout <- mlx_dropout(p = 0.3)
-#' x <- as_mlx(matrix(1:12, 3, 4))
+#' x <- mlx_matrix(1:12, 3, 4)
 #' mlx_forward(dropout, x)
 mlx_dropout <- function(p = 0.5) {
   stopifnot(p >= 0 && p <= 1)
@@ -716,8 +716,8 @@ mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
 #' @export
 #' @examples
 #' # Create a simple 2D convolution
-#' input <- as_mlx(array(rnorm(1*28*28*3), dim = c(1, 28, 28, 3)))  # Batch of 1 RGB image
-#' weight <- as_mlx(array(rnorm(16*3*3*3), dim = c(16, 3, 3, 3)))  # 16 filters, 3x3 kernel
+#' input <- mlx_array(rnorm(1*28*28*3), dim = c(1, 28, 28, 3)))  # Batch of 1 RGB image
+#' weight <- mlx_array(rnorm(16*3*3*3), dim = c(16, 3, 3, 3)))  # 16 filters, 3x3 kernel
 #' output <- mlx_conv2d(input, weight, stride = c(1, 1), padding = c(1, 1))
 mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
                        dilation = c(1L, 1L), groups = 1L,

@@ -68,7 +68,7 @@ mlx_quantile(x, c(0.25, 0.5, 0.75))  # quartiles
 quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
 
 # With axis parameter, quantile dimension replaces the reduced axis:
-mat <- as_mlx(matrix(1:12, 3, 4))  # shape (3, 4)
+mat <- mlx_matrix(1:12, 3, 4)  # shape (3, 4)
 result <- mlx_quantile(mat, c(0.25, 0.75), axis = 1)  # shape (2, 4)
 result <- mlx_quantile(mat, 0.5, axis = 1)  # shape (1, 4)
 result <- mlx_quantile(mat, 0.5, axis = 1, drop = TRUE)  # shape (4,)

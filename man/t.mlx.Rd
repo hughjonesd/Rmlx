@@ -16,7 +16,7 @@ The transposed MLX matrix.
 Transpose of MLX matrix
 }
 \examples{
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 t(x)
 }
 \seealso{

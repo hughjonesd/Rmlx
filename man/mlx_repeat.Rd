@@ -21,7 +21,7 @@ An mlx array with repeated values.
 Repeat array elements
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mlx_repeat(x, repeats = 2, axis = 2)
 }
 \seealso{

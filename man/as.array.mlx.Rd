@@ -22,6 +22,6 @@ MLX vectors or scalars are returned as R vectors.
 \examples{
 Convert MLX array to R array
 
-x <- as_mlx(matrix(1:8, 2, 4))
+x <- mlx_matrix(1:8, 2, 4)
 as.array(x)
 }

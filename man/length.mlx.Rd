@@ -16,6 +16,6 @@ Total number of elements.
 Get length of MLX array
 }
 \examples{
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 length(x)
 }

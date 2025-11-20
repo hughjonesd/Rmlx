@@ -210,8 +210,8 @@ test_that("mlx_kron matches base kronecker", {
 })
 
 test_that("kronecker methods dispatch for mlx", {
-  A <- as_mlx(matrix(1:4, 2, 2))
-  B <- as_mlx(matrix(5:8, 2, 2))
+  A <- mlx_matrix(1:4, 2, 2)
+  B <- mlx_matrix(5:8, 2, 2)
 
   res <- kronecker(A, B)
   expect_s3_class(res, "mlx")

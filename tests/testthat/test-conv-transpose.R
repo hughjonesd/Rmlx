@@ -1,7 +1,7 @@
 test_that("mlx_conv_transpose1d works", {
   # Simple 1D transposed convolution test
-  input <- as_mlx(array(1:12, dim = c(1, 4, 3)))  # batch=1, length=4, channels=3
-  weight <- as_mlx(array(1:6, dim = c(2, 2, 3)))  # out_channels=2, kernel=2, in_channels=3
+  input <- mlx_array(1:12, dim = c(1, 4, 3))  # batch=1, length=4, channels=3
+  weight <- mlx_array(1:6, dim = c(2, 2, 3))  # out_channels=2, kernel=2, in_channels=3
 
   result <- mlx_conv_transpose1d(input, weight)
 
@@ -22,8 +22,8 @@ test_that("mlx_conv_transpose1d works", {
 test_that("mlx_conv_transpose2d works", {
   set.seed(42)
   # Simple 2D transposed convolution test
-  input <- as_mlx(array(rnorm(1*3*3*4), dim = c(1, 3, 3, 4)))  # batch=1, 3x3, channels=4
-  weight <- as_mlx(array(rnorm(8*3*3*4), dim = c(8, 3, 3, 4)))  # out=8, 3x3 kernel, in=4
+  input <- mlx_array(rnorm(1*3*3*4), dim = c(1, 3, 3, 4))  # batch=1, 3x3, channels=4
+  weight <- mlx_array(rnorm(8*3*3*4), dim = c(8, 3, 3, 4)) # out=8, 3x3 kernel, in=4
 
   result <- mlx_conv_transpose2d(input, weight)
 
@@ -51,8 +51,8 @@ test_that("mlx_conv_transpose2d works", {
 test_that("mlx_conv_transpose3d works", {
   set.seed(42)
   # Simple 3D transposed convolution test
-  input <- as_mlx(array(rnorm(1*2*2*2*3), dim = c(1, 2, 2, 2, 3)))  # batch=1, 2x2x2, channels=3
-  weight <- as_mlx(array(rnorm(4*2*2*2*3), dim = c(4, 2, 2, 2, 3)))  # out=4, 2x2x2 kernel, in=3
+  input <- mlx_array(rnorm(1*2*2*2*3), dim = c(1, 2, 2, 2, 3))  # batch=1, 2x2x2, channels=3
+  weight <- mlx_array(rnorm(4*2*2*2*3), dim = c(4, 2, 2, 2, 3)) # out=4, 2x2x2 kernel, in=3
 
   result <- mlx_conv_transpose3d(input, weight)
 
@@ -79,8 +79,8 @@ test_that("mlx_conv_transpose3d works", {
 test_that("transpose conv upsamples correctly", {
   set.seed(123)
   # Test that transpose conv upsamples as expected
-  input_small <- as_mlx(array(rnorm(1*4*4*8), dim = c(1, 4, 4, 8)))
-  weight <- as_mlx(array(rnorm(16*3*3*8), dim = c(16, 3, 3, 8)))
+  input_small <- mlx_array(rnorm(1*4*4*8), dim = c(1, 4, 4, 8))
+  weight <- mlx_array(rnorm(16*3*3*8), dim = c(16, 3, 3, 8))
 
   # Apply transpose conv with stride 2 (upsamples)
   upsampled <- mlx_conv_transpose2d(input_small, weight, stride = c(2, 2), padding = c(1, 1))

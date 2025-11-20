@@ -17,7 +17,7 @@ Computes the Kronecker (tensor) product between two mlx arrays. Inputs are
 automatically cast to a common dtype and device before evaluation.
 }
 \examples{
-A <- as_mlx(matrix(1:4, 2, 2))
+A <- mlx_matrix(1:4, 2, 2)
 B <- as_mlx(matrix(c(0, 5, 6, 7), 2, 2))
 mlx_kron(A, B)
 }

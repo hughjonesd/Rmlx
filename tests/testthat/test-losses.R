@@ -146,7 +146,7 @@ test_that("loss functions work with gradient computation", {
     mlx_mse_loss(preds, y)
   }
 
-  x <- as_mlx(matrix(1:4, 2, 2))
+  x <- mlx_matrix(1:4, 2, 2)
   y <- as_mlx(matrix(c(1, 2), 2, 1))
   w <- as_mlx(matrix(c(0.5, 0.5), 2, 1))
 

@@ -19,7 +19,7 @@ test_that("dim and nrow for scalar mlx values are NULL", {
 })
 
 test_that("mlx_shape returns dimensions for 2D arrays", {
-  m <- as_mlx(matrix(1:6, nrow = 2))
+  m <- mlx_matrix(1:6, nrow = 2)
   expect_equal(mlx_shape(m), c(2L, 3L))
   expect_equal(dim(m), c(2L, 3L))
 })

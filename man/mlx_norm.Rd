@@ -26,7 +26,7 @@ An mlx array containing the requested norm.
 Matrix and vector norms for mlx arrays
 }
 \examples{
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mlx_norm(x)
 mlx_norm(x, ord = 2)
 mlx_norm(x, axes = 2)

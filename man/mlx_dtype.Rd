@@ -16,6 +16,6 @@ A data type string (see \code{\link[=as_mlx]{as_mlx()}} for possibilities).
 Get the data type of an MLX array
 }
 \examples{
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 mlx_dtype(x)
 }

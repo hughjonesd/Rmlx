@@ -26,7 +26,7 @@ An mlx array with the summary result.
 S3 group generic for summary functions including \code{sum()}, \code{prod()}, \code{min()}, \code{max()}, \code{all()}, and \code{any()}.
 }
 \examples{
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 sum(x)
 any(x > 3)
 all(x > 0)

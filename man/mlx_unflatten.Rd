@@ -21,7 +21,7 @@ The reverse of flattening: expands a single axis into multiple axes with the giv
 }
 \examples{
 # Flatten and unflatten
-x <- as_mlx(array(1:24, c(2, 3, 4)))
+x <- mlx_array(1:24, c(2, 3, 4))
 x_flat <- mlx_reshape(x, c(2, 12))  # flatten last two dims
 mlx_unflatten(x_flat, axis = 2, shape = c(3, 4))  # restore original shape
 }

@@ -18,7 +18,7 @@ Dropout layer
 \examples{
 set.seed(1)
 dropout <- mlx_dropout(p = 0.3)
-x <- as_mlx(matrix(1:12, 3, 4))
+x <- mlx_matrix(1:12, 3, 4)
 mlx_forward(dropout, x)
 }
 \seealso{

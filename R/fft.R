@@ -75,7 +75,7 @@ mlx_fft2 <- function(x,
 #' @rdname mlx_fft
 #' @export
 #' @examples
-#' arr <- as_mlx(array(1:8, dim = c(2, 2, 2)))
+#' arr <- mlx_array(1:8, dim = c(2, 2, 2))
 #' mlx_fftn(arr)
 mlx_fftn <- function(x,
                      axes = NULL,

@@ -46,7 +46,7 @@
 #' @return `x`, invisibly.
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' print(x)
 print.mlx <- function(x, ...) {
   cat(sprintf("mlx array [%s]\n", paste(mlx_shape(x), collapse = " x ")))
@@ -73,7 +73,7 @@ print.mlx <- function(x, ...) {
 #' @return `NULL` invisibly.
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' str(x)
 str.mlx <- function(object, ...) {
   cat(sprintf(
@@ -97,7 +97,7 @@ str.mlx <- function(object, ...) {
 #'   scalars. For `mlx_shape()`, an integer vector (length zero for scalars).
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' dim(x)
 #'
 #' v <- as_mlx(1:3)
@@ -207,7 +207,7 @@ mlx_reshape <- function(x, newshape) {
 #' @return Total number of elements.
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 2, 3))
+#' x <- mlx_matrix(1:6, 2, 3)
 #' length(x)
 length.mlx <- function(x) {
   shape <- mlx_shape(x)
@@ -223,7 +223,7 @@ length.mlx <- function(x) {
 #' @return A data type string (see [as_mlx()] for possibilities).
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 2, 3))
+#' x <- mlx_matrix(1:6, 2, 3)
 #' mlx_dtype(x)
 mlx_dtype <- function(x) {
   stopifnot(is_mlx(x))

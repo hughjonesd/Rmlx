@@ -1,6 +1,6 @@
 test_that("mlx_stack stacks tensors along arbitrary axes", {
-  x <- as_mlx(matrix(1:4, 2, 2))
-  y <- as_mlx(matrix(5:8, 2, 2))
+  x <- mlx_matrix(1:4, 2, 2)
+  y <- mlx_matrix(5:8, 2, 2)
 
   stacked <- mlx_stack(x, y, axis = 1)
   expect_equal(dim(stacked), c(2L, 2L, 2L))
@@ -19,7 +19,7 @@ test_that("mlx_stack stacks tensors along arbitrary axes", {
 })
 
 test_that("mlx_squeeze and mlx_expand_dims adjust shapes", {
-  x <- as_mlx(array(1:4, dim = c(1, 2, 1, 2)))
+  x <- mlx_array(1:4, dim = c(1, 2, 1, 2))
   squeezed_all <- mlx_squeeze(x)
   expect_equal(dim(squeezed_all), c(2L, 2L))
 
@@ -31,7 +31,7 @@ test_that("mlx_squeeze and mlx_expand_dims adjust shapes", {
 })
 
 test_that("mlx_repeat repeats along axes", {
-  x <- as_mlx(matrix(1:4, 2, 2))
+  x <- mlx_matrix(1:4, 2, 2)
   rep_cols <- mlx_repeat(x, repeats = 2, axis = 2)
   mat <- as.matrix(x)
   expected_cols <- matrix(0, nrow = nrow(mat), ncol = ncol(mat) * 2)
@@ -45,14 +45,14 @@ test_that("mlx_repeat repeats along axes", {
 })
 
 test_that("mlx_tile tiles tensors", {
-  x <- as_mlx(matrix(1:4, 2, 2))
+  x <- mlx_matrix(1:4, 2, 2)
   tiled <- mlx_tile(x, reps = c(2, 1))
   expected <- rbind(as.matrix(x), as.matrix(x))
   expect_equal(as.matrix(tiled), expected, tolerance = 1e-6)
 })
 
 test_that("mlx_pad pads tensors with various specifications", {
-  x <- as_mlx(matrix(1:4, 2, 2))
+  x <- mlx_matrix(1:4, 2, 2)
   padded_scalar <- mlx_pad(x, pad_width = 1)
   expected_scalar <- matrix(0, nrow = 4, ncol = 4)
   expected_scalar[2:3, 2:3] <- as.matrix(x)
@@ -73,7 +73,7 @@ test_that("mlx_pad pads tensors with various specifications", {
 })
 
 test_that("mlx_roll shifts elements circularly", {
-  x <- as_mlx(matrix(1:4, 2, 2))
+  x <- mlx_matrix(1:4, 2, 2)
   rolled_cols <- mlx_roll(x, shift = 1, axes = 2)
   expected_cols <- t(apply(as.matrix(x), 1, function(row) c(tail(row, 1), head(row, -1))))
   expect_equal(as.matrix(rolled_cols), expected_cols)
@@ -188,7 +188,7 @@ test_that("mlx_meshgrid creates coordinate tensors", {
 })
 
 test_that("mlx_broadcast_to expands singleton dimensions", {
-  x <- as_mlx(matrix(1:3, nrow = 1))
+  x <- mlx_matrix(1:3, nrow = 1)
   broadcasted <- mlx_broadcast_to(x, c(4, 3))
 
   expect_equal(mlx_shape(broadcasted), c(4L, 3L))
@@ -197,7 +197,7 @@ test_that("mlx_broadcast_to expands singleton dimensions", {
 })
 
 test_that("mlx_broadcast_arrays aligns shapes", {
-  a <- as_mlx(matrix(1:3, nrow = 1))
+  a <- mlx_matrix(1:3, nrow = 1)
   b <- as_mlx(matrix(c(10, 20, 30), ncol = 1))
 
   outs <- mlx_broadcast_arrays(a, b)
@@ -250,8 +250,8 @@ test_that("mlx_split supports custom split points", {
 
 test_that("mlx_where acts like ifelse for tensors", {
   cond <- as_mlx(matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2))
-  a <- as_mlx(matrix(1:4, 2, 2))
-  b <- as_mlx(matrix(5:8, 2, 2))
+  a <- mlx_matrix(1:4, 2, 2)
+  b <- mlx_matrix(5:8, 2, 2)
 
   result <- mlx_where(cond, a, b)
   expect_equal(as.matrix(result), ifelse(as.matrix(cond), as.matrix(a), as.matrix(b)))

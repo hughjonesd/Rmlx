@@ -36,7 +36,7 @@ to \code{perm} via repeated calls to \code{mlx_moveaxis()}.
 }
 }
 \examples{
-x <- as_mlx(array(1:8, dim = c(2, 2, 2)))
+x <- mlx_array(1:8, dim = c(2, 2, 2))
 moved <- mlx_moveaxis(x, source = 1, destination = 3)
 permuted <- aperm(x, c(2, 1, 3))
 }

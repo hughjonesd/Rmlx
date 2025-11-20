@@ -50,7 +50,7 @@ mlx_fft(x)
 mlx_fft(x, inverse = TRUE)
 mat <- matrix(1:9, 3, 3)
 mlx_fft2(as_mlx(mat))
-arr <- as_mlx(array(1:8, dim = c(2, 2, 2)))
+arr <- mlx_array(1:8, dim = c(2, 2, 2))
 mlx_fftn(arr)
 }
 \seealso{

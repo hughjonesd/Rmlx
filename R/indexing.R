@@ -123,8 +123,8 @@ mlx_gather <- function(x, indices, axes = NULL) {
 #' @return An `mlx` array with the specified slice replaced.
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:9, 3, 3))
-#' replacement <- as_mlx(matrix(100:103, nrow = 2))
+#' x <- mlx_matrix(1:9, 3, 3)
+#' replacement <- mlx_matrix(100:103, nrow = 2)
 #' updated <- mlx_slice_update(x, replacement, start = c(1L, 2L), stop = c(2L, 3L))
 #' updated
 mlx_slice_update <- function(x,

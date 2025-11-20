@@ -264,7 +264,7 @@ test_that("mlx_isclose returns element-wise comparison", {
   expect_equal(close_strict, c(FALSE, FALSE, FALSE))
 
   # Broadcasting
-  a_mat <- as_mlx(matrix(1:6, 2, 3))
+  a_mat <- mlx_matrix(1:6, 2, 3)
   b_scalar <- as_mlx(3.0)
   result_bcast <- mlx_isclose(a_mat, b_scalar)
   expect_equal(dim(as.matrix(result_bcast)), c(2L, 3L))

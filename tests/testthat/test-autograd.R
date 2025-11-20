@@ -16,8 +16,8 @@ test_that("mlx_value_grad returns value and gradients", {
     sum((x - y) * (x - y))
   }
 
-  x <- as_mlx(matrix(1:4, 2, 2))
-  y <- as_mlx(matrix(4:1, 2, 2))
+  x <- mlx_matrix(1:4, 2, 2)
+  y <- mlx_matrix(4:1, 2, 2)
 
   res <- mlx_value_grad(f, x, y, argnums = c(1, 2))
 

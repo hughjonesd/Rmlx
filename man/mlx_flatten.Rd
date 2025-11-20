@@ -22,7 +22,7 @@ An mlx array with the selected axes collapsed.
 collapsing a contiguous range of axes into a single dimension.
 }
 \examples{
-x <- as_mlx(array(1:12, dim = c(2, 3, 2)))
+x <- mlx_array(1:12, dim = c(2, 3, 2))
 mlx_flatten(x)
 mlx_flatten(x, start_axis = 2, end_axis = 3)
 }

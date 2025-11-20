@@ -31,7 +31,7 @@ Extract a diagonal from a matrix or construct a diagonal matrix from a vector.
 }
 \examples{
 # Extract diagonal
-x <- as_mlx(matrix(1:9, 3, 3))
+x <- mlx_matrix(1:9, 3, 3)
 mlx_diagonal(x)
 # (Constructing diagonals from 1D inputs is not yet supported.)
 }

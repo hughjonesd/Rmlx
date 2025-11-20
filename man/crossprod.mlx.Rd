@@ -20,7 +20,7 @@
 Cross product
 }
 \examples{
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 crossprod(x)
 }
 \seealso{

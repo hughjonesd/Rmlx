@@ -162,7 +162,7 @@ mlx_eval <- function(x) {
 #' @return A vector, matrix or array (numeric or logical depending on dtype).
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' as.matrix(x)
 as.matrix.mlx <- function(x, ...) {
   x <- as.array.mlx(x, ...)
@@ -190,7 +190,7 @@ as.matrix.mlx <- function(x, ...) {
 #' @return A numeric array.
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:8, 2, 4))
+#' x <- mlx_matrix(1:8, 2, 4)
 #' as.array(x)
 as.array.mlx <- function(x, ...) {
   mlx_eval(x)
@@ -229,7 +229,7 @@ as.array.mlx <- function(x, ...) {
 #' as.numeric(x)
 #'
 #' # Multi-dimensional arrays are flattened
-#' m <- as_mlx(matrix(1:6, 2, 3))
+#' m <- mlx_matrix(1:6, 2, 3)
 #' as.vector(m)  # Flattened in column-major order
 as.vector.mlx <- function(x, mode = "any") {
   as.vector(as.array(x), mode = mode)
@@ -264,7 +264,7 @@ as.integer.mlx <- function(x, ...) {
 #' @return Logical scalar.
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' is_mlx(x)
 is_mlx <- function(x) {
   inherits(x, "mlx")

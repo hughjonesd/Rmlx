@@ -47,7 +47,7 @@ the package's preference for explicit shapes.
 }
 }
 \examples{
-x <- as_mlx(matrix(1:9, 3, 3))
+x <- mlx_matrix(1:9, 3, 3)
 x[1, ]
 }
 \seealso{

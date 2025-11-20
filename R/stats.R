@@ -32,7 +32,7 @@ NULL
 #' base R reducers [all()] and [any()] applied to mlx inputs return plain
 #' logical scalars.
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' mlx_sum(x)
 #' mlx_sum(x, axes = 1)
 #' mlx_prod(x, axes = 2, drop = FALSE)
@@ -95,7 +95,7 @@ mlx_std <- function(x, axes = NULL, drop = TRUE, ddof = 0L) {
 #' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:4, 2, 2))
+#' x <- mlx_matrix(1:4, 2, 2)
 #' mean(x)
 mean.mlx <- function(x, ...) {
   .mlx_reduce(x, "mean")
@@ -108,7 +108,7 @@ mean.mlx <- function(x, ...) {
 #' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 3, 2))
+#' x <- mlx_matrix(1:6, 3, 2)
 #' rowMeans(x)
 rowMeans <- function(x, ...) {
   UseMethod("rowMeans")
@@ -133,7 +133,7 @@ rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 3, 2))
+#' x <- mlx_matrix(1:6, 3, 2)
 #' colMeans(x)
 colMeans <- function(x, ...) {
   UseMethod("colMeans")
@@ -158,7 +158,7 @@ colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @seealso [mlx.core.sum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 3, 2))
+#' x <- mlx_matrix(1:6, 3, 2)
 #' rowSums(x)
 rowSums <- function(x, ...) {
   UseMethod("rowSums")
@@ -183,7 +183,7 @@ rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @seealso [mlx.core.sum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 3, 2))
+#' x <- mlx_matrix(1:6, 3, 2)
 #' colSums(x)
 colSums <- function(x, ...) {
   UseMethod("colSums")
@@ -208,7 +208,7 @@ colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @seealso [mlx.core.transpose](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.transpose)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 2, 3))
+#' x <- mlx_matrix(1:6, 2, 3)
 #' t(x)
 t.mlx <- function(x) {
   # Layout conversion (physical reordering) happens at boundaries during copy
@@ -226,7 +226,7 @@ t.mlx <- function(x) {
 #' @export
 #' @method crossprod mlx
 #' @examples
-#' x <- as_mlx(matrix(1:6, 2, 3))
+#' x <- mlx_matrix(1:6, 2, 3)
 #' crossprod(x)
 crossprod.mlx <- function(x, y = NULL, ...) {
   if (is.null(y)) y <- x
@@ -243,7 +243,7 @@ crossprod.mlx <- function(x, y = NULL, ...) {
 #' @export
 #' @method tcrossprod mlx
 #' @examples
-#' x <- as_mlx(matrix(1:6, 2, 3))
+#' x <- mlx_matrix(1:6, 2, 3)
 #' tcrossprod(x)
 tcrossprod.mlx <- function(x, y = NULL, ...) {
   if (is.null(y)) y <- x
@@ -343,7 +343,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @aliases sum.mlx prod.mlx min.mlx max.mlx all.mlx any.mlx
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(1:6, 2, 3))
+#' x <- mlx_matrix(1:6, 2, 3)
 #' sum(x)
 #' any(x > 3)
 #' all(x > 0)
@@ -598,7 +598,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
 #' x <- as_mlx(1:5)
 #' mlx_cumsum(x)  # [1, 3, 6, 10, 15]
 #'
-#' mat <- as_mlx(matrix(1:12, 3, 4))
+#' mat <- mlx_matrix(1:12, 3, 4)
 #' mlx_cumsum(mat, axis = 1)  # cumsum down rows
 mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   x <- as_mlx(x)
@@ -1067,7 +1067,7 @@ mlx_qlogis <- function(p, location = 0, scale = 1, device = mlx_default_device()
 #' quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
 #'
 #' # With axis parameter, quantile dimension replaces the reduced axis:
-#' mat <- as_mlx(matrix(1:12, 3, 4))  # shape (3, 4)
+#' mat <- mlx_matrix(1:12, 3, 4)  # shape (3, 4)
 #' result <- mlx_quantile(mat, c(0.25, 0.75), axis = 1)  # shape (2, 4)
 #' result <- mlx_quantile(mat, 0.5, axis = 1)  # shape (1, 4)
 #' result <- mlx_quantile(mat, 0.5, axis = 1, drop = TRUE)  # shape (4,)

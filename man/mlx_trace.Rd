@@ -21,7 +21,7 @@ Computes the sum of the diagonal elements of a 2D array, or the sum along
 diagonals of a higher dimensional array.
 }
 \examples{
-x <- as_mlx(matrix(1:9, 3, 3))
+x <- mlx_matrix(1:9, 3, 3)
 mlx_trace(x)
 mlx_trace(x, offset = 1)
 }

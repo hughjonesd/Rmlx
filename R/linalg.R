@@ -62,7 +62,7 @@ kronecker.default <- function(X, Y, FUN = "*", make.dimnames = FALSE, ...) {
 #' @seealso [mlx.core.kron](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.kron)
 #' @export
 #' @examples
-#' A <- as_mlx(matrix(1:4, 2, 2))
+#' A <- mlx_matrix(1:4, 2, 2)
 #' B <- as_mlx(matrix(c(0, 5, 6, 7), 2, 2))
 #' mlx_kron(A, B)
 mlx_kron <- function(a, b) {
