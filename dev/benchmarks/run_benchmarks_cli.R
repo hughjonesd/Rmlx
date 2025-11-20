@@ -18,7 +18,7 @@ if (is.na(helpers_path)) {
 }
 suppressPackageStartupMessages(source(helpers_path))
 
-sizes <- c(n2000 = 2000L)
+sizes <- c(n1000 = 1000L)
 cache_dir <- file.path(repo_root, "dev", "benchmarks", "cache")
 inputs <- build_benchmark_inputs(sizes, cache_dir = cache_dir)
 

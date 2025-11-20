@@ -10,7 +10,7 @@ if [ ! -x "$BENCH_SCRIPT" ]; then
   exit 1
 fi
 
-echo "[pre-commit] Running MLX benchmarks (size 2000 only)..."
+echo "[pre-commit] Running MLX benchmarks..." 
 Rscript "$BENCH_SCRIPT" > "$OUTPUT_FILE"
 echo "[pre-commit] Benchmark TSV updated at $OUTPUT_FILE"
 echo "[pre-commit] Latest benchmark results:" >&2
