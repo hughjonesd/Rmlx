@@ -35,11 +35,11 @@
 
 <div id="vendoring-mlx---experimental-branch" class="section level1">
 
-<p>This branch now vendors MLX on-demand: configure first looks for a system MLX installation and, if missing, downloads MLX v0.29.4 from GitHub, supporting both Metal (macOS) and CUDA (Linux) builds alongside CPU.</p>
+<p>This branch now vendors MLX on-demand: configure first looks for a system MLX installation and, if missing, downloads MLX v0.30.0 from GitHub, supporting both Metal (macOS) and CUDA (Linux) builds alongside CPU.</p>
 <div class="section level2">
 <h2 id="what-was-done">What Was Done<a class="anchor" aria-label="anchor" href="#what-was-done"></a></h2>
 <ol style="list-style-type: decimal"><li>
-<strong>On-demand MLX source</strong>: Download MLX v0.29.4 into <code>build/mlx-src/</code> when needed</li>
+<strong>On-demand MLX source</strong>: Download MLX v0.30.0 into <code>build/mlx-src/</code> when needed</li>
 <li>
 <strong>Added copyright attribution</strong>: Created <code>inst/COPYRIGHTS</code> with MLX’s MIT license</li>
 <li>
@@ -110,7 +110,7 @@
 <div class="section level2">
 <h2 id="files-in-this-branch">Files in This Branch<a class="anchor" aria-label="anchor" href="#files-in-this-branch"></a></h2>
 <ul><li>
-<code>configure</code>: Downloads MLX v0.29.4 on demand and builds it with CMake</li>
+<code>configure</code>: Downloads MLX v0.30.0 on demand and builds it with CMake</li>
 <li>
 <code>cleanup</code>: Removes downloaded source/build artifacts (<code>build/mlx-*</code>)</li>
 <li>

@@ -1,13 +1,13 @@
 # Vendoring MLX - Experimental Branch
 
 This branch now vendors MLX on-demand: configure first looks for a
-system MLX installation and, if missing, downloads MLX v0.29.4 from
+system MLX installation and, if missing, downloads MLX v0.30.0 from
 GitHub, supporting both Metal (macOS) and CUDA (Linux) builds alongside
 CPU.
 
 ## What Was Done
 
-1.  **On-demand MLX source**: Download MLX v0.29.4 into `build/mlx-src/`
+1.  **On-demand MLX source**: Download MLX v0.30.0 into `build/mlx-src/`
     when needed
 2.  **Added copyright attribution**: Created `inst/COPYRIGHTS` with
     MLX’s MIT license
@@ -79,7 +79,7 @@ enables Metal/CUDA features when the tooling is present.
 
 ## Files in This Branch
 
-- `configure`: Downloads MLX v0.29.4 on demand and builds it with CMake
+- `configure`: Downloads MLX v0.30.0 on demand and builds it with CMake
 - `cleanup`: Removes downloaded source/build artifacts (`build/mlx-*`)
 - `inst/COPYRIGHTS`: MLX license attribution
 - `DESCRIPTION`: Credits Apple Inc. for the MLX sources fetched during
