@@ -156,8 +156,9 @@ SEXP cpp_mlx_quantized_matmul(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
     biases = biases_wrapper->get();
   }
 
-  array result = quantized_matmul(x, w, scales, biases, transpose, group_size,
-                                   bits, mode, target_device);
+  array result = quantized_matmul(x, w, scales, biases, transpose,
+                                   std::optional<int>(group_size),
+                                   std::optional<int>(bits), mode, target_device);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -199,7 +200,8 @@ SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
   }
 
   array result = gather_qmm(x, w, scales, biases, lhs_indices, rhs_indices,
-                            transpose, group_size, bits, mode, sorted_indices,
+                            transpose, std::optional<int>(group_size),
+                            std::optional<int>(bits), mode, sorted_indices,
                             target_device);
 
   return make_mlx_xptr(std::move(result));
@@ -212,7 +214,8 @@ List cpp_mlx_quantize(SEXP w_xp_, int group_size, int bits,
   StreamOrDevice target_device = string_to_device(device_str);
 
   array w = w_wrapper->get();
-  std::vector<array> result = quantize(w, group_size, bits, mode, target_device);
+  std::vector<array> result = quantize(w, std::optional<int>(group_size),
+                                       std::optional<int>(bits), mode, target_device);
 
   // quantize returns a vector with 2 or 3 elements: [w_q, scales, biases (optional)]
   List out;
@@ -245,7 +248,8 @@ SEXP cpp_mlx_dequantize(SEXP w_xp_, SEXP scales_xp_, SEXP biases_xp_,
     biases = biases_wrapper->get();
   }
 
-  array result = dequantize(w, scales, biases, group_size, bits, mode, target_device);
+  array result = dequantize(w, scales, biases, std::optional<int>(group_size),
+                           std::optional<int>(bits), mode, std::nullopt, target_device);
 
   return make_mlx_xptr(std::move(result));
 }

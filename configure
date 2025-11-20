@@ -6,7 +6,7 @@ ROOT_DIR=$(pwd)
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-MLX_VERSION="0.29.3"
+MLX_VERSION="0.30.0"
 MLX_TAG="v${MLX_VERSION}"
 MLX_TARBALL_URL="https://github.com/ml-explore/mlx/archive/refs/tags/${MLX_TAG}.tar.gz"
 BUILD_DIR="build"
