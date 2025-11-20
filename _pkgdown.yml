@@ -267,6 +267,13 @@ reference:
       - mlx_coordinate_descent
 
 articles:
+  - title: Getting Started
+    contents:
+      - getting-started
+  - title: Tutorials
+    contents:
+      - linear-regression
+      - neural-networks
   - title: Performance
     contents:
-      - benchmarks
+      - articles/benchmarks
