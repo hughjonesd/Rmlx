@@ -15,7 +15,7 @@ test_that("mlx_import_function accepts named arguments", {
   imported <- mlx_import_function(fn_path, device = "cpu")
 
   a <- mlx_matrix(rep(2, 4), 2, 2, dtype = "float32", device = "cpu")
-  b <- ml_matrix(rep(1, 4), 2, 2, dtype = "float32", device = "cpu")
+  b <- mlx_matrix(rep(1, 4), 2, 2, dtype = "float32", device = "cpu")
 
   result <- imported(b = b, a = a)
   expect_equal(as.matrix(result), as.matrix(a) + as.matrix(b), tolerance = 1e-6)
