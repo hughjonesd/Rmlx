@@ -1,8 +1,8 @@
 ---
-title: "MLX Benchmarks"
+title: "Benchmarks"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{MLX Benchmarks}
+  %\VignetteIndexEntry{Benchmarks}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

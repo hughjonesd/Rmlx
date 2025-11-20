@@ -265,3 +265,8 @@ reference:
       - mlx_optimizer_sgd
       - mlx_train_step
       - mlx_coordinate_descent
+
+articles:
+  - title: Performance
+    contents:
+      - benchmarks
