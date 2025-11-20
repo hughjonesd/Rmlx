@@ -484,3 +484,159 @@ test_that("mlx_lu works with rectangular matrices", {
   expect_true(is.list(lu_wide))
   expect_true(all(c("p", "l", "u") %in% names(lu_wide)))
 })
+
+test_that("diag.mlx extracts diagonal from matrix", {
+  # Test main diagonal extraction
+  x <- matrix(1:9, 3, 3)
+  x_mlx <- as_mlx(x)
+
+  diag_mlx <- diag(x_mlx)
+  diag_r <- diag(x)
+
+  expect_equal(as.vector(diag_mlx), diag_r, tolerance = 1e-6)
+})
+
+test_that("diag.mlx extracts diagonal with offset", {
+  x <- matrix(1:12, 3, 4)
+  x_mlx <- as_mlx(x)
+
+  # Offset 1 (superdiagonal)
+  diag_mlx_1 <- diag(x_mlx, nrow = 1)
+  diag_r_1 <- diag(x[, -1])  # Base R doesn't support offset in diag extraction
+  # Manual extraction for offset 1
+  expected_1 <- c(x[1, 2], x[2, 3], x[3, 4])
+  expect_equal(as.vector(diag_mlx_1), expected_1, tolerance = 1e-6)
+
+  # Offset -1 (subdiagonal)
+  diag_mlx_m1 <- diag(x_mlx, nrow = -1)
+  expected_m1 <- c(x[2, 1], x[3, 2])
+  expect_equal(as.vector(diag_mlx_m1), expected_m1, tolerance = 1e-6)
+})
+
+test_that("diag.mlx works with non-square matrices", {
+  # Tall matrix
+  x_tall <- matrix(1:12, 4, 3)
+  diag_tall <- diag(as_mlx(x_tall))
+  expect_equal(as.vector(diag_tall), diag(x_tall), tolerance = 1e-6)
+
+  # Wide matrix
+  x_wide <- matrix(1:12, 3, 4)
+  diag_wide <- diag(as_mlx(x_wide))
+  expect_equal(as.vector(diag_wide), diag(x_wide), tolerance = 1e-6)
+})
+
+test_that("mlx_diagonal extracts diagonal from matrix", {
+  x <- matrix(1:9, 3, 3)
+  x_mlx <- as_mlx(x)
+
+  diag_mlx <- mlx_diagonal(x_mlx)
+  diag_r <- diag(x)
+
+  expect_equal(as.vector(diag_mlx), diag_r, tolerance = 1e-6)
+})
+
+test_that("mlx_diagonal extracts diagonal with offset", {
+  x <- matrix(1:12, 3, 4)
+  x_mlx <- as_mlx(x)
+
+  # Main diagonal (offset 0)
+  diag_mlx_0 <- mlx_diagonal(x_mlx, offset = 0)
+  expect_equal(as.vector(diag_mlx_0), diag(x), tolerance = 1e-6)
+
+  # Offset 1 (superdiagonal)
+  diag_mlx_1 <- mlx_diagonal(x_mlx, offset = 1)
+  expected_1 <- c(x[1, 2], x[2, 3], x[3, 4])
+  expect_equal(as.vector(diag_mlx_1), expected_1, tolerance = 1e-6)
+
+  # Offset -1 (subdiagonal)
+  diag_mlx_m1 <- mlx_diagonal(x_mlx, offset = -1)
+  expected_m1 <- c(x[2, 1], x[3, 2])
+  expect_equal(as.vector(diag_mlx_m1), expected_m1, tolerance = 1e-6)
+
+  # Offset 2
+  diag_mlx_2 <- mlx_diagonal(x_mlx, offset = 2)
+  expected_2 <- c(x[1, 3], x[2, 4])
+  expect_equal(as.vector(diag_mlx_2), expected_2, tolerance = 1e-6)
+})
+
+test_that("mlx_trace computes trace of matrix", {
+  x <- matrix(1:9, 3, 3)
+  x_mlx <- as_mlx(x)
+
+  trace_mlx <- mlx_trace(x_mlx)
+  trace_r <- sum(diag(x))
+
+  expect_equal(as.numeric(trace_mlx), trace_r, tolerance = 1e-6)
+})
+
+test_that("mlx_trace works with offset", {
+  x <- matrix(1:12, 3, 4)
+  x_mlx <- as_mlx(x)
+
+  # Main diagonal (offset 0)
+  trace_mlx_0 <- mlx_trace(x_mlx, offset = 0)
+  expect_equal(as.numeric(trace_mlx_0), sum(diag(x)), tolerance = 1e-6)
+
+  # Offset 1 (superdiagonal)
+  trace_mlx_1 <- mlx_trace(x_mlx, offset = 1)
+  expected_1 <- sum(c(x[1, 2], x[2, 3], x[3, 4]))
+  expect_equal(as.numeric(trace_mlx_1), expected_1, tolerance = 1e-6)
+
+  # Offset -1 (subdiagonal)
+  trace_mlx_m1 <- mlx_trace(x_mlx, offset = -1)
+  expected_m1 <- sum(c(x[2, 1], x[3, 2]))
+  expect_equal(as.numeric(trace_mlx_m1), expected_m1, tolerance = 1e-6)
+})
+
+test_that("mlx_trace works with square matrix", {
+  set.seed(123)
+  x <- matrix(rnorm(16), 4, 4)
+  x_mlx <- as_mlx(x)
+
+  trace_mlx <- mlx_trace(x_mlx)
+  trace_r <- sum(diag(x))
+
+  expect_equal(as.numeric(trace_mlx), trace_r, tolerance = 1e-6)
+})
+
+test_that("outer.mlx computes outer product", {
+  x <- c(1, 2, 3)
+  y <- c(4, 5)
+
+  x_mlx <- as_mlx(x)
+  y_mlx <- as_mlx(y)
+
+  outer_mlx <- outer(x_mlx, y_mlx)
+  outer_r <- outer(x, y)
+
+  expect_equal(as.matrix(outer_mlx), outer_r, tolerance = 1e-6)
+})
+
+test_that("outer.mlx works with different sized vectors", {
+  x <- 1:4
+  y <- 1:3
+
+  outer_mlx <- outer(as_mlx(x), as_mlx(y))
+  outer_r <- outer(x, y)
+
+  expect_equal(as.matrix(outer_mlx), outer_r, tolerance = 1e-6)
+})
+
+test_that("outer.mlx works with mlx and R input", {
+  x <- c(1, 2, 3)
+  y <- c(4, 5, 6)
+
+  # mlx x, R y (works because dispatch is on first arg)
+  outer_mlx_1 <- outer(as_mlx(x), y)
+  expect_equal(as.matrix(outer_mlx_1), outer(x, y), tolerance = 1e-6)
+})
+
+test_that("outer.mlx returns mlx object", {
+  x <- as_mlx(c(1, 2, 3))
+  y <- as_mlx(c(4, 5))
+
+  result <- outer(x, y)
+
+  expect_s3_class(result, "mlx")
+  expect_equal(mlx_shape(result), c(3L, 2L))
+})
