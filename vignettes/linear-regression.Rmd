@@ -8,15 +8,12 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-library(Rmlx)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-# Detect available device
-device <- mlx_get_device()
 ```
 
 ## Overview
@@ -25,12 +22,15 @@ This vignette demonstrates linear regression using Rmlx, based on the [MLX linea
 
 ## Problem Setup
 
-We'll create synthetic data for linear regression with high dimensionality:
-- A random "true" weight vector `w_star` of dimension 100
-- A random design matrix `X` of 10,000 cases × 100 features
-- Noisy labels `y = X @ w_star + small_noise`
+We'll create:
+
+* A random "true" weight vector `w_star`
+* A random design matrix `X` 
+* Noisy labels `y = X %*% w_star + small_noise`
 
 ```{r}
+library(Rmlx)
+
 # Problem metadata
 num_features <- 100
 num_cases <- 10000
@@ -47,7 +47,7 @@ w_star <- mlx_rand_normal(c(num_features, 1))
 X <- mlx_rand_normal(c(num_cases, num_features))
 
 # Noisy labels
-eps <- 1e-2 * mlx_rand_normal(c(num_cases, 1))
+eps <- mlx_rand_normal(c(num_cases, 1))
 y <- X %*% w_star + eps
 ```
 
@@ -173,8 +173,9 @@ w_base <- matrix(lm.fit(X_r, y_r[, 1])$coefficients, ncol = 1)
 
 # Accuracy comparisons
 to_norm <- function(w_hat) {
-  diff <- w_hat - as.matrix(w_star)
-  sqrt(sum(diff * diff))
+  diff <- w_hat - w_star
+  rss <- sqrt(sum(diff * diff))
+  as.vector(rss)
 }
 
 # Benchmark timings (compiled solution already warm)
@@ -194,7 +195,6 @@ timings <- bench::mark(
   base_R = {
     lm.fit(X_r, y_r[, 1])$coefficients
   },
-  iterations = 3,
   check = FALSE
 ) |>
   as.data.frame()
@@ -203,9 +203,9 @@ results <- data.frame(
   method = c("SGD", "MLX closed form", "MLX closed form (compiled)", "Base R"),
   median_time = timings$median,
   parameter_error = c(
-    to_norm(as.matrix(w_sgd)),
-    to_norm(as.matrix(w_closed)),
-    to_norm(as.matrix(w_compiled)),
+    to_norm(w_sgd),
+    to_norm(w_closed),
+    to_norm(w_compiled),
     to_norm(w_base)
   )
 )
@@ -216,10 +216,11 @@ knitr::kable(results, digits = 4)
 
 By default, computations run on the best available device. Switch to CPU if needed:
 
-```{r}
+```{r, eval = FALSE}
 # Use CPU (useful for debugging)
 mlx_default_device("cpu")
 
-# Or back to best available device
-mlx_default_device(device)
+with_default_device("cpu", {
+  ...
+})
 ```
