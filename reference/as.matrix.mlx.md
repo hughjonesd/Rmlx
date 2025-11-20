@@ -27,7 +27,7 @@ A vector, matrix or array (numeric or logical depending on dtype).
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 as.matrix(x)
 #>      [,1] [,2]
 #> [1,]    1    3

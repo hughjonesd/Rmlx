@@ -12,7 +12,7 @@ mlx_default_device(value)
 
 - value:
 
-  New default device ("gpu" or "cpu"). If missing, returns current
+  New default device ("gpu" or "cpu"). If missing, returns the current
   default.
 
 ## Value

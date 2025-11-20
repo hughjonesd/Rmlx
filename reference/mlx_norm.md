@@ -41,7 +41,7 @@ An mlx array containing the requested norm.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mlx_norm(x)
 #> mlx array []
 #>   dtype: float32

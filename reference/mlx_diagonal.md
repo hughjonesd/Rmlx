@@ -52,7 +52,7 @@ An mlx array.
 
 ``` r
 # Extract diagonal
-x <- as_mlx(matrix(1:9, 3, 3))
+x <- mlx_matrix(1:9, 3, 3)
 mlx_diagonal(x)
 #> mlx array [3]
 #>   dtype: float32

@@ -2,11 +2,11 @@ pandoc: 3.1.11
 pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
-  benchmarks: benchmarks.html
+  articles/benchmarks: benchmarks.html
   getting-started: getting-started.html
   linear-regression: linear-regression.html
   neural-networks: neural-networks.html
-last_built: 2025-11-19T23:32Z
+last_built: 2025-11-20T09:44Z
 urls:
   reference: https://hughjonesd.github.io/Rmlx/reference
   article: https://hughjonesd.github.io/Rmlx/articles

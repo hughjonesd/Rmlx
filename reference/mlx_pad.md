@@ -71,7 +71,7 @@ For `mlx_pad()`, an mlx array; for `mlx_split()`, a list of mlx arrays.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 padded <- mlx_pad(x, pad_width = 1)
 padded_cols <- mlx_pad(x, pad_width = c(0, 1), axes = 2)
 parts <- mlx_split(x, sections = 2, axis = 1)

@@ -36,7 +36,7 @@ An mlx array backed by contiguous storage on the specified device.
 ## Examples
 
 ``` r
-x <- mlx_swapaxes(as_mlx(matrix(1:4, 2, 2)), axis1 = 1, axis2 = 2)
+x <- mlx_swapaxes(mlx_matrix(1:4, 2, 2), axis1 = 1, axis2 = 2)
 y <- mlx_contiguous(x)
 identical(as.array(x), as.array(y))
 #> [1] TRUE

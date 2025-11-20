@@ -88,7 +88,7 @@ as.integer(as.matrix(idx))  # 1-based indices
 #> Warning: Converting array to 1-column matrix
 #> [1] 2 4 1 3
 
-mlx_topk(as_mlx(matrix(1:6, 2, 3)), k = 1, axis = 1)
+mlx_topk(mlx_matrix(1:6, 2, 3), k = 1, axis = 1)
 #> mlx array [1 x 3]
 #>   dtype: float32
 #>   device: gpu

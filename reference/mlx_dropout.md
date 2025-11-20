@@ -27,7 +27,7 @@ An `mlx_module` applying dropout during training.
 ``` r
 set.seed(1)
 dropout <- mlx_dropout(p = 0.3)
-x <- as_mlx(matrix(1:12, 3, 4))
+x <- mlx_matrix(1:12, 3, 4)
 mlx_forward(dropout, x)
 #> mlx array [3 x 4]
 #>   dtype: float32
@@ -35,6 +35,6 @@ mlx_forward(dropout, x)
 #>   values:
 #>          [,1]     [,2]     [,3]     [,4]
 #> [1,] 1.428571 5.714286 10.00000 14.28571
-#> [2,] 2.857143 0.000000 11.42857 15.71429
-#> [3,] 4.285714 8.571428  0.00000 17.14286
+#> [2,] 2.857143 7.142857  0.00000 15.71429
+#> [3,] 4.285714 8.571428 12.85714  0.00000
 ```

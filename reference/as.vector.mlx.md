@@ -49,7 +49,7 @@ as.numeric(x)
 #> [1] -1  0  1
 
 # Multi-dimensional arrays are flattened
-m <- as_mlx(matrix(1:6, 2, 3))
+m <- mlx_matrix(1:6, 2, 3)
 as.vector(m)  # Flattened in column-major order
 #> [1] 1 2 3 4 5 6
 ```

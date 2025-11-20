@@ -69,7 +69,7 @@ The subsetted MLX object.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:9, 3, 3))
+x <- mlx_matrix(1:9, 3, 3)
 x[1, ]
 #> mlx array [1 x 3]
 #>   dtype: float32

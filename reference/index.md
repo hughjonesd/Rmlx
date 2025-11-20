@@ -1,6 +1,6 @@
 # Package index
 
-## Core Tensor API
+## Core API
 
 - [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md) :
   Create MLX array from R object
@@ -42,7 +42,7 @@
   [`as.integer(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.md)
   : Convert MLX array to R vector
 
-## Device & Execution
+## Device and execution
 
 - [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
   : Get or set default MLX device
@@ -53,30 +53,20 @@
   : MLX streams for asynchronous execution
 - [`mlx_set_default_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_set_default_stream.md)
   : Set the default MLX stream
-- [`mlx_get_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_get_device.md)
+- [`mlx_best_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_best_device.md)
   : Get best available device
+- [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  : Get device associated with an MLX object
 - [`mlx_has_gpu()`](https://hughjonesd.github.io/Rmlx/reference/mlx_has_gpu.md)
   : Check if GPU backend is available
 - [`mlx_synchronize()`](https://hughjonesd.github.io/Rmlx/reference/mlx_synchronize.md)
   : Synchronize MLX execution
-- [`mlx_forward()`](https://hughjonesd.github.io/Rmlx/reference/mlx_forward.md)
-  : Forward pass utility
-- [`mlx_grad()`](https://hughjonesd.github.io/Rmlx/reference/mlx_grad.md)
-  [`mlx_value_grad()`](https://hughjonesd.github.io/Rmlx/reference/mlx_grad.md)
-  : Automatic differentiation for MLX functions
-- [`mlx_stop_gradient()`](https://hughjonesd.github.io/Rmlx/reference/mlx_stop_gradient.md)
-  : Stop gradient propagation through an mlx array
-- [`mlx_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile.md)
-  : Compile an MLX Function for Optimized Execution
-- [`mlx_disable_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile_control.md)
-  [`mlx_enable_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile_control.md)
-  : Control Global Compilation Behavior
 - [`format(`*`<mlx_stream>`*`)`](https://hughjonesd.github.io/Rmlx/reference/format.mlx_stream.md)
   : Format method for mlx_stream
 - [`print(`*`<mlx_stream>`*`)`](https://hughjonesd.github.io/Rmlx/reference/print.mlx_stream.md)
   : Print method for mlx_stream
 
-## Creation & Randomness
+## Creation
 
 - [`mlx_array()`](https://hughjonesd.github.io/Rmlx/reference/mlx_array.md)
   : Construct an MLX array from R data
@@ -130,7 +120,24 @@
 - [`mlx_key_bits()`](https://hughjonesd.github.io/Rmlx/reference/mlx_key_bits.md)
   : Generate raw random bits on MLX arrays
 
-## Shape & Indexing
+## Loading and saving
+
+- [`mlx_save()`](https://hughjonesd.github.io/Rmlx/reference/mlx_save.md)
+  : Save an MLX array to disk
+- [`mlx_load()`](https://hughjonesd.github.io/Rmlx/reference/mlx_load.md)
+  : Load an MLX array from disk
+- [`mlx_save_safetensors()`](https://hughjonesd.github.io/Rmlx/reference/mlx_save_safetensors.md)
+  : Save MLX arrays to the safetensors format
+- [`mlx_load_safetensors()`](https://hughjonesd.github.io/Rmlx/reference/mlx_load_safetensors.md)
+  : Load MLX arrays from the safetensors format
+- [`mlx_save_gguf()`](https://hughjonesd.github.io/Rmlx/reference/mlx_save_gguf.md)
+  : Save MLX arrays to the GGUF format
+- [`mlx_load_gguf()`](https://hughjonesd.github.io/Rmlx/reference/mlx_load_gguf.md)
+  : Load MLX tensors from the GGUF format
+- [`mlx_import_function()`](https://hughjonesd.github.io/Rmlx/reference/mlx_import_function.md)
+  : Import an exported MLX function
+
+## Shape and indexing
 
 - [`mlx_reshape()`](https://hughjonesd.github.io/Rmlx/reference/mlx_reshape.md)
   : Reshape an mlx array
@@ -190,7 +197,7 @@
 - [`cbind(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/cbind.mlx.md)
   : Column-bind mlx arrays
 
-## Ordering & Selection
+## Ordering and selection
 
 - [`mlx_sort()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sort.md)
   [`mlx_argsort()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sort.md)
@@ -203,7 +210,7 @@
   [`mlx_argmin()`](https://hughjonesd.github.io/Rmlx/reference/mlx_argmax.md)
   : Argmax and argmin on mlx arrays
 
-## Math & Reductions
+## Math and reductions
 
 - [`Math(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/Math.mlx.md)
   : Math operations for MLX arrays
@@ -283,7 +290,7 @@
   [`mlx_fftn()`](https://hughjonesd.github.io/Rmlx/reference/mlx_fft.md)
   : Fast Fourier transforms for MLX arrays
 
-## Probability Distributions
+## Probability distributions
 
 - [`mlx_dnorm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dnorm.md)
   [`mlx_pnorm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dnorm.md)
@@ -306,7 +313,7 @@
   [`mlx_qlogis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dlogis.md)
   : Logistic distribution functions
 
-## Linear Algebra
+## Linear algebra
 
 - [`` `%*%`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/grapes-times-grapes-.mlx.md)
   : Matrix multiplication for MLX arrays
@@ -369,24 +376,20 @@
 - [`mlx_cross()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cross.md)
   : Vector cross product with mlx arrays
 
-## Input & Output
+## Gradients and compilation
 
-- [`mlx_save()`](https://hughjonesd.github.io/Rmlx/reference/mlx_save.md)
-  : Save an MLX array to disk
-- [`mlx_load()`](https://hughjonesd.github.io/Rmlx/reference/mlx_load.md)
-  : Load an MLX array from disk
-- [`mlx_save_safetensors()`](https://hughjonesd.github.io/Rmlx/reference/mlx_save_safetensors.md)
-  : Save MLX arrays to the safetensors format
-- [`mlx_load_safetensors()`](https://hughjonesd.github.io/Rmlx/reference/mlx_load_safetensors.md)
-  : Load MLX arrays from the safetensors format
-- [`mlx_save_gguf()`](https://hughjonesd.github.io/Rmlx/reference/mlx_save_gguf.md)
-  : Save MLX arrays to the GGUF format
-- [`mlx_load_gguf()`](https://hughjonesd.github.io/Rmlx/reference/mlx_load_gguf.md)
-  : Load MLX tensors from the GGUF format
-- [`mlx_import_function()`](https://hughjonesd.github.io/Rmlx/reference/mlx_import_function.md)
-  : Import an exported MLX function
+- [`mlx_grad()`](https://hughjonesd.github.io/Rmlx/reference/mlx_grad.md)
+  [`mlx_value_grad()`](https://hughjonesd.github.io/Rmlx/reference/mlx_grad.md)
+  : Automatic differentiation for MLX functions
+- [`mlx_stop_gradient()`](https://hughjonesd.github.io/Rmlx/reference/mlx_stop_gradient.md)
+  : Stop gradient propagation through an mlx array
+- [`mlx_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile.md)
+  : Compile an MLX Function for Optimized Execution
+- [`mlx_disable_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile_control.md)
+  [`mlx_enable_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile_control.md)
+  : Control Global Compilation Behavior
 
-## Neural Network Layers
+## Neural networks
 
 - [`mlx_linear()`](https://hughjonesd.github.io/Rmlx/reference/mlx_linear.md)
   : Create a learnable linear transformation
@@ -416,8 +419,10 @@
   : Quantized Matrix Multiplication
 - [`mlx_gather_qmm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_gather_qmm.md)
   : Gather-based Quantized Matrix Multiplication
+- [`mlx_forward()`](https://hughjonesd.github.io/Rmlx/reference/mlx_forward.md)
+  : Forward pass utility
 
-## Activation Functions
+## Activation functions
 
 - [`mlx_relu()`](https://hughjonesd.github.io/Rmlx/reference/mlx_relu.md)
   : Rectified linear activation module
@@ -434,7 +439,7 @@
 - [`mlx_softmax_layer()`](https://hughjonesd.github.io/Rmlx/reference/mlx_softmax_layer.md)
   : Softmax activation
 
-## Regularization & Normalization
+## Regularization and normalization
 
 - [`mlx_dropout()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dropout.md)
   : Dropout layer
@@ -443,7 +448,7 @@
 - [`mlx_batch_norm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_batch_norm.md)
   : Batch normalization
 
-## Loss Functions
+## Loss functions
 
 - [`mlx_mse_loss()`](https://hughjonesd.github.io/Rmlx/reference/mlx_mse_loss.md)
   : Mean squared error loss
@@ -454,7 +459,7 @@
 - [`mlx_cross_entropy()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cross_entropy.md)
   : Cross-entropy loss
 
-## Training Utilities
+## Training utilities
 
 - [`mlx_parameters()`](https://hughjonesd.github.io/Rmlx/reference/mlx_parameters.md)
   : Collect parameters from modules

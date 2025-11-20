@@ -72,7 +72,7 @@ sorted_idx <- as.integer(as.matrix(mlx_argsort(as_mlx(original))))
 original[sorted_idx]  # [1] 1 2 3 4
 #> [1] 1 2 3 4
 
-mlx_sort(as_mlx(matrix(1:6, 2, 3)), axis = 1)
+mlx_sort(mlx_matrix(1:6, 2, 3), axis = 1)
 #> mlx array [2 x 3]
 #>   dtype: float32
 #>   device: gpu

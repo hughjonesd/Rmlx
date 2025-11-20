@@ -70,7 +70,7 @@ plain logical scalars.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mlx_sum(x)
 #> mlx array []
 #>   dtype: float32

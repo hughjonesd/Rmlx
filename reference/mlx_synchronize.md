@@ -32,7 +32,7 @@ Returns `NULL` invisibly.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mlx_synchronize("gpu")
 stream <- mlx_new_stream()
 mlx_synchronize(stream)

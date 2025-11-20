@@ -30,15 +30,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/benchmarks.html">MLX Benchmarks</a></li>
-    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
-    <li><a class="dropdown-item" href="../articles/linear-regression.html">Linear Regression with MLX</a></li>
-    <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
-  </ul>
-</li>
+<li class="active nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
@@ -167,17 +159,17 @@ perceptron (MLP) for binary classification:</p>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 100, Loss: 0.6667</span></span>
+<span><span class="co">#&gt; Epoch 100, Loss: 0.6717</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 200, Loss: 0.6625</span></span>
+<span><span class="co">#&gt; Epoch 200, Loss: 0.6627</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 300, Loss: 0.6569</span></span>
+<span><span class="co">#&gt; Epoch 300, Loss: 0.6625</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
 <span><span class="co">#&gt; Epoch 400, Loss: 0.6568</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 500, Loss: 0.6566</span></span>
+<span><span class="co">#&gt; Epoch 500, Loss: 0.6554</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 600, Loss: 0.6531</span></span>
+<span><span class="co">#&gt; Epoch 600, Loss: 0.6552</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/mlx_set_training.html">mlx_set_training</a></span><span class="op">(</span><span class="va">mlp</span>, <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -196,14 +188,14 @@ perceptron (MLP) for binary classification:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">confusion</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Predicted</span></span>
 <span><span class="co">#&gt; Actual   0   1</span></span>
-<span><span class="co">#&gt;      0 772 228</span></span>
-<span><span class="co">#&gt;      1 543 457</span></span>
+<span><span class="co">#&gt;      0 771 229</span></span>
+<span><span class="co">#&gt;      1 544 456</span></span>
 <span></span>
 <span><span class="co"># Calculate accuracy</span></span>
 <span><span class="va">accuracy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="../reference/diag.html">diag</a></span><span class="op">(</span><span class="va">confusion</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">confusion</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"\nAccuracy: %.2f%%\n"</span>, <span class="va">accuracy</span> <span class="op">*</span> <span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Accuracy: 61.45%</span></span></code></pre></div>
+<span><span class="co">#&gt; Accuracy: 61.35%</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plot predicted classes</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x_train</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">x_train</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>,</span>

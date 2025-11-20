@@ -27,7 +27,7 @@ An `mlx_module` applying softmax activation.
 
 ``` r
 act <- mlx_softmax_layer()
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 mlx_forward(act, x)
 #> mlx array [2 x 3]
 #>   dtype: float32

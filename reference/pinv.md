@@ -25,7 +25,7 @@ An mlx object containing the pseudoinverse.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
+x <- mlx_matrix(c(1, 2, 3, 4), 2, 2)
 pinv(x)
 #> mlx array [2 x 2]
 #>   dtype: float32

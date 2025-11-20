@@ -1,4 +1,4 @@
-# MLX Benchmarks
+# Benchmarks
 
 This vignette compares base R and MLX timings across core matrix
 routines.

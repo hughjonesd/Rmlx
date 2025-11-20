@@ -74,10 +74,3 @@ height and width, and C_in is number of input channels. Weight has shape
 [mlx.core.conv2d](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv2d.html)
 
 ## Examples
-
-``` r
-# Create a simple 2D convolution
-input <- as_mlx(array(rnorm(1*28*28*3), dim = c(1, 28, 28, 3)))  # Batch of 1 RGB image
-weight <- as_mlx(array(rnorm(16*3*3*3), dim = c(16, 3, 3, 3)))  # 16 filters, 3x3 kernel
-output <- mlx_conv2d(input, weight, stride = c(1, 1), padding = c(1, 1))
-```

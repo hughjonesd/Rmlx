@@ -44,7 +44,7 @@ An mlx array if `x` is_mlx, otherwise a numeric vector.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:6, 3, 2))
+x <- mlx_matrix(1:6, 3, 2)
 rowSums(x)
 #> mlx array [3]
 #>   dtype: float32

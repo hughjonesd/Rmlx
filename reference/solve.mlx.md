@@ -35,7 +35,7 @@ An mlx object containing the solution.
 ## Examples
 
 ``` r
-a <- as_mlx(matrix(c(3, 1, 1, 2), 2, 2))
+a <- mlx_matrix(c(3, 1, 1, 2), 2, 2)
 b <- as_mlx(c(9, 8))
 solve(a, b)
 #> mlx array [2]

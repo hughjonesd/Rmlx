@@ -21,7 +21,7 @@ Logical scalar.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 is_mlx(x)
 #> [1] TRUE
 ```

@@ -10,12 +10,24 @@ stochastic gradient descent (SGD) on GPU-accelerated arrays.
 
 ## Problem Setup
 
-We’ll create synthetic data for linear regression with high
-dimensionality: - A random “true” weight vector `w_star` of dimension
-100 - A random design matrix `X` of 10,000 cases × 100 features - Noisy
-labels `y = X @ w_star + small_noise`
+We’ll create:
+
+- A random “true” weight vector `w_star`
+- A random design matrix `X`
+- Noisy labels `y = X %*% w_star + small_noise`
 
 ``` r
+library(Rmlx)
+#> 
+#> Attaching package: 'Rmlx'
+#> The following object is masked from 'package:stats':
+#> 
+#>     fft
+#> The following objects are masked from 'package:base':
+#> 
+#>     asplit, backsolve, chol2inv, col, colMeans, colSums, diag, drop,
+#>     outer, row, rowMeans, rowSums, svd
+
 # Problem metadata
 num_features <- 100
 num_cases <- 10000
@@ -32,7 +44,7 @@ w_star <- mlx_rand_normal(c(num_features, 1))
 X <- mlx_rand_normal(c(num_cases, num_features))
 
 # Noisy labels
-eps <- 1e-2 * mlx_rand_normal(c(num_cases, 1))
+eps <- mlx_rand_normal(c(num_cases, 1))
 y <- X %*% w_star + eps
 ```
 
@@ -92,7 +104,7 @@ each iteration, we:
 
 ``` r
 w_sgd <- train_sgd()
-#> Iteration 1000 - Loss: 4.963381e-05
+#> Iteration 1000 - Loss: 0.4951586
 ```
 
 ## Method 2: Closed-form Regression via Matrix Algebra
@@ -117,7 +129,7 @@ mlx_eval(w_closed)
 closed_error <- w_closed - w_star
 closed_error_norm <- sqrt(sum(closed_error * closed_error))
 cat("Closed-form ||w - w*|| =", as.vector(closed_error_norm), "\n")
-#> Closed-form ||w - w*|| = 0.0009734677
+#> Closed-form ||w - w*|| = 0.1004995
 ```
 
 ## Accelerating the Closed-form Solution with `mlx_compile()`
@@ -141,7 +153,7 @@ mlx_eval(w_compiled)
 compiled_error <- w_compiled - w_star
 compiled_error_norm <- sqrt(sum(compiled_error * compiled_error))
 cat("Compiled closed-form ||w - w*|| =", as.vector(compiled_error_norm), "\n")
-#> Compiled closed-form ||w - w*|| = 0.0009734677
+#> Compiled closed-form ||w - w*|| = 0.1004995
 ```
 
 ## Accuracy and Performance Comparison
@@ -166,8 +178,9 @@ w_base <- matrix(lm.fit(X_r, y_r[, 1])$coefficients, ncol = 1)
 
 # Accuracy comparisons
 to_norm <- function(w_hat) {
-  diff <- w_hat - as.matrix(w_star)
-  sqrt(sum(diff * diff))
+  diff <- w_hat - w_star
+  rss <- sqrt(sum(diff * diff))
+  as.vector(rss)
 }
 
 # Benchmark timings (compiled solution already warm)
@@ -187,7 +200,6 @@ timings <- bench::mark(
   base_R = {
     lm.fit(X_r, y_r[, 1])$coefficients
   },
-  iterations = 3,
   check = FALSE
 ) |>
   as.data.frame()
@@ -198,9 +210,9 @@ results <- data.frame(
   method = c("SGD", "MLX closed form", "MLX closed form (compiled)", "Base R"),
   median_time = timings$median,
   parameter_error = c(
-    to_norm(as.matrix(w_sgd)),
-    to_norm(as.matrix(w_closed)),
-    to_norm(as.matrix(w_compiled)),
+    to_norm(w_sgd),
+    to_norm(w_closed),
+    to_norm(w_compiled),
     to_norm(w_base)
   )
 )
@@ -209,10 +221,10 @@ knitr::kable(results, digits = 4)
 
 | method                     | median_time | parameter_error |
 |:---------------------------|------------:|----------------:|
-| SGD                        |       1.39s |           0.001 |
-| MLX closed form            |      20.9ms |           0.001 |
-| MLX closed form (compiled) |     19.33ms |           0.001 |
-| Base R                     |     28.78ms |           0.001 |
+| SGD                        |       2.23s |          0.1005 |
+| MLX closed form            |     25.73ms |          0.1005 |
+| MLX closed form (compiled) |     25.36ms |          0.1005 |
+| Base R                     |      42.7ms |          0.1005 |
 
 ## Device Selection
 
@@ -222,9 +234,8 @@ if needed:
 ``` r
 # Use CPU (useful for debugging)
 mlx_default_device("cpu")
-#> [1] "cpu"
 
-# Or back to best available device
-mlx_default_device(device)
-#> [1] "gpu"
+with_default_device("cpu", {
+  ...
+})
 ```

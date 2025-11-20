@@ -39,7 +39,7 @@ A list with components `d`, `u`, and `v`.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(c(1, 0, 0, 2), 2, 2))
+x <- mlx_matrix(c(1, 0, 0, 2), 2, 2)
 svd(x)
 #> $d
 #> mlx array [2]

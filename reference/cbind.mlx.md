@@ -40,8 +40,8 @@ higher-dimensional arrays to matrices before binding.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
-y <- as_mlx(matrix(5:8, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
+y <- mlx_matrix(5:8, 2, 2)
 cbind(x, y)
 #> mlx array [2 x 4]
 #>   dtype: float32

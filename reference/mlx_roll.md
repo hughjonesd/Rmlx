@@ -35,7 +35,7 @@ An mlx array with elements circularly shifted.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mlx_roll(x, shift = 1, axes = 2)
 #> mlx array [2 x 2]
 #>   dtype: float32

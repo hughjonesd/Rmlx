@@ -31,7 +31,7 @@ An mlx array with the specified axes exchanged.
 ## Examples
 
 ``` r
-x <- as_mlx(array(1:24, dim = c(2, 3, 4)))
+x <- mlx_array(1:24, dim = c(2, 3, 4))
 swapped <- mlx_swapaxes(x, axis1 = 1, axis2 = 3)
 dim(swapped)
 #> [1] 4 3 2

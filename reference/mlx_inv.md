@@ -25,7 +25,7 @@ The inverse of `x`.
 ## Examples
 
 ``` r
-A <- as_mlx(matrix(c(4, 7, 2, 6), 2, 2))
+A <- mlx_matrix(c(4, 7, 2, 6), 2, 2)
 A_inv <- mlx_inv(A)
 # Verify: A %*% A_inv should be identity
 A %*% A_inv

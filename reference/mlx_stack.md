@@ -30,7 +30,7 @@ An mlx array with one additional dimension.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
-y <- as_mlx(matrix(5:8, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
+y <- mlx_matrix(5:8, 2, 2)
 stacked <- mlx_stack(x, y, axis = 1)
 ```

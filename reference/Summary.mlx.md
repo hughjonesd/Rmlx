@@ -41,7 +41,7 @@ An mlx array with the summary result.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 sum(x)
 #> mlx array []
 #>   dtype: float32

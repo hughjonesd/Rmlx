@@ -35,7 +35,7 @@ An mlx scalar or array containing the trace.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:9, 3, 3))
+x <- mlx_matrix(1:9, 3, 3)
 mlx_trace(x)
 #> mlx array []
 #>   dtype: float32

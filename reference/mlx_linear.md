@@ -50,7 +50,7 @@ An object of class `mlx_module`.
 ``` r
 set.seed(1)
 layer <- mlx_linear(3, 2)
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 mlx_forward(layer, x)
 #> mlx array [2 x 2]
 #>   dtype: float32

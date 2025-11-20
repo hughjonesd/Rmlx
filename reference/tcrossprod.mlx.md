@@ -34,7 +34,7 @@ tcrossprod(x, y = NULL, ...)
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 tcrossprod(x)
 #> mlx array [2 x 2]
 #>   dtype: float32

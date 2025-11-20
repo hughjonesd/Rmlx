@@ -28,7 +28,7 @@ print(x, ...)
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 print(x)
 #> mlx array [2 x 2]
 #>   dtype: float32

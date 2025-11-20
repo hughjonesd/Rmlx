@@ -26,7 +26,7 @@ str(object, ...)
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 str(x)
 #> mlx [2 x 2] float32 on gpu
 ```

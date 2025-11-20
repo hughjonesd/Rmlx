@@ -16,13 +16,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/benchmarks.html">MLX Benchmarks</a></li>
-    <li><a class="dropdown-item" href="../articles/getting-started.html">Getting Started with Rmlx</a></li>
-    <li><a class="dropdown-item" href="../articles/linear-regression.html">Linear Regression with MLX</a></li>
-    <li><a class="dropdown-item" href="../articles/neural-networks.html">Neural Networks with Rmlx</a></li>
-  </ul></li>
+<li class="nav-item"><a class="nav-link" href="../articles/index.html">Articles</a></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -39,7 +33,7 @@
     </div>
 
     <div class="section level2">
-      <h2 id="core-tensor-api">Core Tensor API<a class="anchor" aria-label="anchor" href="#core-tensor-api"></a></h2>
+      <h2 id="core-api">Core API<a class="anchor" aria-label="anchor" href="#core-api"></a></h2>
 
 
 
@@ -160,7 +154,7 @@
         </dt>
         <dd>Convert MLX array to R vector</dd>
       </dl></div><div class="section level2">
-      <h2 id="device-execution">Device &amp; Execution<a class="anchor" aria-label="anchor" href="#device-execution"></a></h2>
+      <h2 id="device-and-execution">Device and execution<a class="anchor" aria-label="anchor" href="#device-and-execution"></a></h2>
 
 
 
@@ -199,10 +193,17 @@
 
         <dt>
 
-          <code><a href="mlx_get_device.html">mlx_get_device()</a></code>
+          <code><a href="mlx_best_device.html">mlx_best_device()</a></code>
 
         </dt>
         <dd>Get best available device</dd>
+
+        <dt>
+
+          <code><a href="mlx_device.html">mlx_device()</a></code>
+
+        </dt>
+        <dd>Get device associated with an MLX object</dd>
 
         <dt>
 
@@ -220,41 +221,6 @@
 
         <dt>
 
-          <code><a href="mlx_forward.html">mlx_forward()</a></code>
-
-        </dt>
-        <dd>Forward pass utility</dd>
-
-        <dt>
-
-          <code><a href="mlx_grad.html">mlx_grad()</a></code> <code><a href="mlx_grad.html">mlx_value_grad()</a></code>
-
-        </dt>
-        <dd>Automatic differentiation for MLX functions</dd>
-
-        <dt>
-
-          <code><a href="mlx_stop_gradient.html">mlx_stop_gradient()</a></code>
-
-        </dt>
-        <dd>Stop gradient propagation through an mlx array</dd>
-
-        <dt>
-
-          <code><a href="mlx_compile.html">mlx_compile()</a></code>
-
-        </dt>
-        <dd>Compile an MLX Function for Optimized Execution</dd>
-
-        <dt>
-
-          <code><a href="mlx_compile_control.html">mlx_disable_compile()</a></code> <code><a href="mlx_compile_control.html">mlx_enable_compile()</a></code>
-
-        </dt>
-        <dd>Control Global Compilation Behavior</dd>
-
-        <dt>
-
           <code><a href="format.mlx_stream.html">format(<i>&lt;mlx_stream&gt;</i>)</a></code>
 
         </dt>
@@ -267,7 +233,7 @@
         </dt>
         <dd>Print method for mlx_stream</dd>
       </dl></div><div class="section level2">
-      <h2 id="creation-randomness">Creation &amp; Randomness<a class="anchor" aria-label="anchor" href="#creation-randomness"></a></h2>
+      <h2 id="creation">Creation<a class="anchor" aria-label="anchor" href="#creation"></a></h2>
 
 
 
@@ -451,7 +417,65 @@
         </dt>
         <dd>Generate raw random bits on MLX arrays</dd>
       </dl></div><div class="section level2">
-      <h2 id="shape-indexing">Shape &amp; Indexing<a class="anchor" aria-label="anchor" href="#shape-indexing"></a></h2>
+      <h2 id="loading-and-saving">Loading and saving<a class="anchor" aria-label="anchor" href="#loading-and-saving"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="mlx_save.html">mlx_save()</a></code>
+
+        </dt>
+        <dd>Save an MLX array to disk</dd>
+
+        <dt>
+
+          <code><a href="mlx_load.html">mlx_load()</a></code>
+
+        </dt>
+        <dd>Load an MLX array from disk</dd>
+
+        <dt>
+
+          <code><a href="mlx_save_safetensors.html">mlx_save_safetensors()</a></code>
+
+        </dt>
+        <dd>Save MLX arrays to the safetensors format</dd>
+
+        <dt>
+
+          <code><a href="mlx_load_safetensors.html">mlx_load_safetensors()</a></code>
+
+        </dt>
+        <dd>Load MLX arrays from the safetensors format</dd>
+
+        <dt>
+
+          <code><a href="mlx_save_gguf.html">mlx_save_gguf()</a></code>
+
+        </dt>
+        <dd>Save MLX arrays to the GGUF format</dd>
+
+        <dt>
+
+          <code><a href="mlx_load_gguf.html">mlx_load_gguf()</a></code>
+
+        </dt>
+        <dd>Load MLX tensors from the GGUF format</dd>
+
+        <dt>
+
+          <code><a href="mlx_import_function.html">mlx_import_function()</a></code>
+
+        </dt>
+        <dd>Import an exported MLX function</dd>
+      </dl></div><div class="section level2">
+      <h2 id="shape-and-indexing">Shape and indexing<a class="anchor" aria-label="anchor" href="#shape-and-indexing"></a></h2>
 
 
 
@@ -642,7 +666,7 @@
         </dt>
         <dd>Column-bind mlx arrays</dd>
       </dl></div><div class="section level2">
-      <h2 id="ordering-selection">Ordering &amp; Selection<a class="anchor" aria-label="anchor" href="#ordering-selection"></a></h2>
+      <h2 id="ordering-and-selection">Ordering and selection<a class="anchor" aria-label="anchor" href="#ordering-and-selection"></a></h2>
 
 
 
@@ -672,7 +696,7 @@
         </dt>
         <dd>Argmax and argmin on mlx arrays</dd>
       </dl></div><div class="section level2">
-      <h2 id="math-reductions">Math &amp; Reductions<a class="anchor" aria-label="anchor" href="#math-reductions"></a></h2>
+      <h2 id="math-and-reductions">Math and reductions<a class="anchor" aria-label="anchor" href="#math-and-reductions"></a></h2>
 
 
 
@@ -891,7 +915,7 @@
         </dt>
         <dd>Fast Fourier transforms for MLX arrays</dd>
       </dl></div><div class="section level2">
-      <h2 id="probability-distributions">Probability Distributions<a class="anchor" aria-label="anchor" href="#probability-distributions"></a></h2>
+      <h2 id="probability-distributions">Probability distributions<a class="anchor" aria-label="anchor" href="#probability-distributions"></a></h2>
 
 
 
@@ -935,7 +959,7 @@
         </dt>
         <dd>Logistic distribution functions</dd>
       </dl></div><div class="section level2">
-      <h2 id="linear-algebra">Linear Algebra<a class="anchor" aria-label="anchor" href="#linear-algebra"></a></h2>
+      <h2 id="linear-algebra">Linear algebra<a class="anchor" aria-label="anchor" href="#linear-algebra"></a></h2>
 
 
 
@@ -1140,7 +1164,7 @@
         </dt>
         <dd>Vector cross product with mlx arrays</dd>
       </dl></div><div class="section level2">
-      <h2 id="input-output">Input &amp; Output<a class="anchor" aria-label="anchor" href="#input-output"></a></h2>
+      <h2 id="gradients-and-compilation">Gradients and compilation<a class="anchor" aria-label="anchor" href="#gradients-and-compilation"></a></h2>
 
 
 
@@ -1151,54 +1175,33 @@
 
       <dl><dt>
 
-          <code><a href="mlx_save.html">mlx_save()</a></code>
+          <code><a href="mlx_grad.html">mlx_grad()</a></code> <code><a href="mlx_grad.html">mlx_value_grad()</a></code>
 
         </dt>
-        <dd>Save an MLX array to disk</dd>
+        <dd>Automatic differentiation for MLX functions</dd>
 
         <dt>
 
-          <code><a href="mlx_load.html">mlx_load()</a></code>
+          <code><a href="mlx_stop_gradient.html">mlx_stop_gradient()</a></code>
 
         </dt>
-        <dd>Load an MLX array from disk</dd>
+        <dd>Stop gradient propagation through an mlx array</dd>
 
         <dt>
 
-          <code><a href="mlx_save_safetensors.html">mlx_save_safetensors()</a></code>
+          <code><a href="mlx_compile.html">mlx_compile()</a></code>
 
         </dt>
-        <dd>Save MLX arrays to the safetensors format</dd>
+        <dd>Compile an MLX Function for Optimized Execution</dd>
 
         <dt>
 
-          <code><a href="mlx_load_safetensors.html">mlx_load_safetensors()</a></code>
+          <code><a href="mlx_compile_control.html">mlx_disable_compile()</a></code> <code><a href="mlx_compile_control.html">mlx_enable_compile()</a></code>
 
         </dt>
-        <dd>Load MLX arrays from the safetensors format</dd>
-
-        <dt>
-
-          <code><a href="mlx_save_gguf.html">mlx_save_gguf()</a></code>
-
-        </dt>
-        <dd>Save MLX arrays to the GGUF format</dd>
-
-        <dt>
-
-          <code><a href="mlx_load_gguf.html">mlx_load_gguf()</a></code>
-
-        </dt>
-        <dd>Load MLX tensors from the GGUF format</dd>
-
-        <dt>
-
-          <code><a href="mlx_import_function.html">mlx_import_function()</a></code>
-
-        </dt>
-        <dd>Import an exported MLX function</dd>
+        <dd>Control Global Compilation Behavior</dd>
       </dl></div><div class="section level2">
-      <h2 id="neural-network-layers">Neural Network Layers<a class="anchor" aria-label="anchor" href="#neural-network-layers"></a></h2>
+      <h2 id="neural-networks">Neural networks<a class="anchor" aria-label="anchor" href="#neural-networks"></a></h2>
 
 
 
@@ -1304,8 +1307,15 @@
 
         </dt>
         <dd>Gather-based Quantized Matrix Multiplication</dd>
+
+        <dt>
+
+          <code><a href="mlx_forward.html">mlx_forward()</a></code>
+
+        </dt>
+        <dd>Forward pass utility</dd>
       </dl></div><div class="section level2">
-      <h2 id="activation-functions">Activation Functions<a class="anchor" aria-label="anchor" href="#activation-functions"></a></h2>
+      <h2 id="activation-functions">Activation functions<a class="anchor" aria-label="anchor" href="#activation-functions"></a></h2>
 
 
 
@@ -1363,7 +1373,7 @@
         </dt>
         <dd>Softmax activation</dd>
       </dl></div><div class="section level2">
-      <h2 id="regularization-normalization">Regularization &amp; Normalization<a class="anchor" aria-label="anchor" href="#regularization-normalization"></a></h2>
+      <h2 id="regularization-and-normalization">Regularization and normalization<a class="anchor" aria-label="anchor" href="#regularization-and-normalization"></a></h2>
 
 
 
@@ -1393,7 +1403,7 @@
         </dt>
         <dd>Batch normalization</dd>
       </dl></div><div class="section level2">
-      <h2 id="loss-functions">Loss Functions<a class="anchor" aria-label="anchor" href="#loss-functions"></a></h2>
+      <h2 id="loss-functions">Loss functions<a class="anchor" aria-label="anchor" href="#loss-functions"></a></h2>
 
 
 
@@ -1430,7 +1440,7 @@
         </dt>
         <dd>Cross-entropy loss</dd>
       </dl></div><div class="section level2">
-      <h2 id="training-utilities">Training Utilities<a class="anchor" aria-label="anchor" href="#training-utilities"></a></h2>
+      <h2 id="training-utilities">Training utilities<a class="anchor" aria-label="anchor" href="#training-utilities"></a></h2>
 
 
 

@@ -24,7 +24,7 @@ possibilities).
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:6, 2, 3))
+x <- mlx_matrix(1:6, 2, 3)
 mlx_dtype(x)
 #> [1] "float32"
 ```

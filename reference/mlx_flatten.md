@@ -36,7 +36,7 @@ An mlx array with the selected axes collapsed.
 ## Examples
 
 ``` r
-x <- as_mlx(array(1:12, dim = c(2, 3, 2)))
+x <- mlx_array(1:12, dim = c(2, 3, 2))
 mlx_flatten(x)
 #> mlx array [12]
 #>   dtype: float32

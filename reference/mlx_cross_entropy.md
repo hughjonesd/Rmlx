@@ -34,12 +34,12 @@ An mlx array containing the loss.
 
 ``` r
 # Logits for 3 samples, 4 classes
-logits <- as_mlx(matrix(rnorm(12), 3, 4))
+logits <- mlx_matrix(rnorm(12), 3, 4)
 targets <- as_mlx(c(1, 3, 2))
 mlx_cross_entropy(logits, targets)
 #> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 1.331489
+#> [1] 2.377907
 ```

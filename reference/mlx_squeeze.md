@@ -30,7 +30,7 @@ An mlx array with the selected axes removed.
 ## Examples
 
 ``` r
-x <- as_mlx(array(1:4, dim = c(1, 2, 2, 1)))
+x <- mlx_array(1:4, dim = c(1, 2, 2, 1))
 mlx_squeeze(x)
 #> mlx array [2 x 2]
 #>   dtype: float32

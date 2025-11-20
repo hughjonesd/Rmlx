@@ -34,7 +34,7 @@ An mlx array with repeated values.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:4, 2, 2))
+x <- mlx_matrix(1:4, 2, 2)
 mlx_repeat(x, repeats = 2, axis = 2)
 #> mlx array [2 x 4]
 #>   dtype: float32

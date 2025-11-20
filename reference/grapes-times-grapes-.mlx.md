@@ -26,8 +26,8 @@ An mlx object.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(1:6, 2, 3))
-y <- as_mlx(matrix(1:6, 3, 2))
+x <- mlx_matrix(1:6, 2, 3)
+y <- mlx_matrix(1:6, 3, 2)
 x %*% y
 #> mlx array [2 x 2]
 #>   dtype: float32

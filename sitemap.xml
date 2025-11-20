@@ -52,6 +52,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_array.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_array_required.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_batch_norm.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_best_device.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_binary_cross_entropy.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_broadcast_arrays.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_broadcast_to.html</loc></url>
@@ -73,6 +74,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_degrees.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dequantize.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_device.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dexp.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_diagonal.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_dlnorm.html</loc></url>
@@ -97,7 +99,6 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gather.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gather_qmm.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_gelu.html</loc></url>
-<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_get_device.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_grad.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_hadamard_transform.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_has_gpu.html</loc></url>

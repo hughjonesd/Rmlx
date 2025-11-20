@@ -38,7 +38,7 @@ A list with components `Q` and `R`, each an mlx matrix.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 3, 2))
+x <- mlx_matrix(c(1, 2, 3, 4, 5, 6), 3, 2)
 qr(x)
 #> $Q
 #> mlx array [3 x 2]

@@ -61,20 +61,15 @@ loss <- function(w, x, y) {
   resids <- preds - y
   sum(resids * resids) / length(y)
 }
-x <- as_mlx(matrix(1:8, 4, 2))
-y <- as_mlx(matrix(c(1, 3, 2, 4), 4, 1))
-w <- as_mlx(matrix(0, 2, 1))
+x <- mlx_matrix(1:8, 4, 2)
+y <- mlx_matrix(c(1, 3, 2, 4), 4, 1)
+w <- mlx_matrix(0, 2, 1)
+#> Error: length(data) must equal nrow * ncol.
 mlx_grad(loss, w, x, y)[[1]]
-#> mlx array [2 x 1]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>       [,1]
-#> [1,] -14.5
-#> [2,] -34.5
+#> Error: object 'w' not found
 loss <- function(w, x) sum((x %*% w) * (x %*% w))
-x <- as_mlx(matrix(1:4, 2, 2))
-w <- as_mlx(matrix(c(1, -1), 2, 1))
+x <- mlx_matrix(1:4, 2, 2)
+w <- mlx_matrix(c(1, -1), 2, 1)
 mlx_value_grad(loss, w, x)
 #> $value
 #> mlx array []

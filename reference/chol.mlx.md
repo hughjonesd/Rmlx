@@ -35,7 +35,7 @@ Upper-triangular Cholesky factor as an mlx matrix.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
+x <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
 chol(x)
 #> mlx array [2 x 2]
 #>   dtype: float32

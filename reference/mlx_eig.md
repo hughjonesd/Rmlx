@@ -25,7 +25,7 @@ A list with components `values` and `vectors`, both mlx arrays.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(c(2, -1, 0, 2), 2, 2))
+x <- mlx_matrix(c(2, -1, 0, 2), 2, 2)
 eig <- mlx_eig(x)
 eig$values
 #> mlx array [2]

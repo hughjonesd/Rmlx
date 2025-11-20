@@ -30,7 +30,7 @@ An mlx object with the result.
 ## Examples
 
 ``` r
-x <- as_mlx(matrix(c(-1, 0, 1), 3, 1))
+x <- mlx_matrix(c(-1, 0, 1), 3, 1)
 sin(x)
 #> mlx array [3 x 1]
 #>   dtype: float32

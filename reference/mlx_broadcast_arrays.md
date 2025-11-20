@@ -38,8 +38,8 @@ A list of broadcast mlx arrays.
 ## Examples
 
 ``` r
-a <- as_mlx(matrix(1:3, nrow = 1))
-b <- as_mlx(matrix(1:3, ncol = 1))
+a <- mlx_matrix(1:3, nrow = 1)
+b <- mlx_matrix(1:3, ncol = 1)
 outs <- mlx_broadcast_arrays(a, b)
 lapply(outs, dim)
 #> [[1]]
