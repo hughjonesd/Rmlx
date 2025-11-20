@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 
 # Detect available device
-device <- mlx_get_device()
+device <- mlx_best_device()
 ```
 
 
