@@ -18,7 +18,7 @@ An mlx array containing eigenvalues.
 Eigenvalues of Hermitian mlx arrays
 }
 \examples{
-x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
+x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)
 mlx_eigvalsh(x)
 }
 \seealso{

@@ -128,7 +128,7 @@ test_that("mlx_rand_laplace works with different parameters", {
 test_that("mlx_rand_categorical generates valid indices", {
   set.seed(123)
   # Simple categorical with 3 classes
-  logits <- as_mlx(matrix(c(0.5, 0.2, 0.3), 1, 3))
+  logits <- mlx_matrix(c(0.5, 0.2, 0.3), 1, 3)
   samples <- mlx_rand_categorical(logits, num_samples = 100)
 
   expect_s3_class(samples, "mlx")
@@ -141,7 +141,7 @@ test_that("mlx_rand_categorical generates valid indices", {
 test_that("mlx_rand_categorical works with multiple rows", {
   set.seed(123)
   # Multiple categorical distributions
-  logits <- as_mlx(matrix(c(1, 2, 3, 3, 2, 1), 2, 3, byrow = TRUE))
+  logits <- mlx_matrix(c(1, 2, 3, 3, 2, 1), 2, 3, byrow = TRUE)
   samples <- mlx_rand_categorical(logits, axis = 2L, num_samples = 10)
 
   expect_s3_class(samples, "mlx")

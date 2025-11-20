@@ -21,7 +21,7 @@ If \code{x} is not symmetric positive semi-definite, "behaviour is undefined"
 according to the MLX documentation.
 }
 \examples{
-x <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
+x <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
 chol(x)
 }
 \seealso{

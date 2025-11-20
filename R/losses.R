@@ -9,8 +9,8 @@
 #' @seealso [mlx.nn.losses.mse_loss](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.mse_loss)
 #' @export
 #' @examples
-#' preds <- as_mlx(matrix(c(1.5, 2.3, 0.8), 3, 1))
-#' targets <- as_mlx(matrix(c(1, 2, 1), 3, 1))
+#' preds <- mlx_matrix(c(1.5, 2.3, 0.8), 3, 1)
+#' targets <- mlx_matrix(c(1, 2, 1), 3, 1)
 #' mlx_mse_loss(preds, targets)
 mlx_mse_loss <- function(predictions, targets, reduction = c("mean", "sum", "none")) {
   reduction <- match.arg(reduction)
@@ -38,8 +38,8 @@ mlx_mse_loss <- function(predictions, targets, reduction = c("mean", "sum", "non
 #' @seealso [mlx.nn.losses.l1_loss](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.l1_loss)
 #' @export
 #' @examples
-#' preds <- as_mlx(matrix(c(1.5, 2.3, 0.8), 3, 1))
-#' targets <- as_mlx(matrix(c(1, 2, 1), 3, 1))
+#' preds <- mlx_matrix(c(1.5, 2.3, 0.8), 3, 1)
+#' targets <- mlx_matrix(c(1, 2, 1), 3, 1)
 #' mlx_l1_loss(preds, targets)
 mlx_l1_loss <- function(predictions, targets, reduction = c("mean", "sum", "none")) {
   reduction <- match.arg(reduction)
@@ -67,8 +67,8 @@ mlx_l1_loss <- function(predictions, targets, reduction = c("mean", "sum", "none
 #' @seealso [mlx.nn.losses.binary_cross_entropy](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.binary_cross_entropy)
 #' @export
 #' @examples
-#' preds <- as_mlx(matrix(c(0.9, 0.2, 0.8), 3, 1))
-#' targets <- as_mlx(matrix(c(1, 0, 1), 3, 1))
+#' preds <- mlx_matrix(c(0.9, 0.2, 0.8), 3, 1)
+#' targets <- mlx_matrix(c(1, 0, 1), 3, 1)
 #' mlx_binary_cross_entropy(preds, targets)
 mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean", "sum", "none")) {
   reduction <- match.arg(reduction)
@@ -102,7 +102,7 @@ mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean",
 #' @export
 #' @examples
 #' # Logits for 3 samples, 4 classes
-#' logits <- as_mlx(matrix(rnorm(12), 3, 4))
+#' logits <- mlx_matrix(rnorm(12), 3, 4)
 #' targets <- as_mlx(c(1, 3, 2))
 #' mlx_cross_entropy(logits, targets)
 mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "none")) {

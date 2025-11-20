@@ -16,7 +16,7 @@ An mlx array containing eigenvalues.
 Eigenvalues of mlx arrays
 }
 \examples{
-x <- as_mlx(matrix(c(3, 1, 0, 2), 2, 2))
+x <- mlx_matrix(c(3, 1, 0, 2), 2, 2)
 mlx_eigvals(x)
 }
 \seealso{

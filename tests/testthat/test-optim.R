@@ -4,9 +4,9 @@ test_that("mlx_coordinate_descent solves lasso regression", {
   p <- 20
 
   # Generate sparse data
-  X <- as_mlx(matrix(rnorm(n * p), n, p))
-  beta_true <- as_mlx(matrix(c(1, -1, 0.5, rep(0, p - 3)), ncol = 1))
-  y <- X %*% beta_true + as_mlx(matrix(rnorm(n, sd = 0.1), ncol = 1))
+  X <- mlx_matrix(rnorm(n * p), n, p)
+  beta_true <- mlx_matrix(c(1, -1, 0.5, rep(0, p - 3)), ncol = 1)
+  y <- X %*% beta_true + mlx_matrix(rnorm(n, sd = 0.1), ncol = 1)
 
   # Define loss function (least squares)
   loss_fn <- function(beta) {
@@ -44,8 +44,8 @@ test_that("mlx_coordinate_descent with custom gradient", {
   n <- 50
   p <- 10
 
-  X <- as_mlx(matrix(rnorm(n * p), n, p))
-  y <- as_mlx(matrix(rnorm(n), ncol = 1))
+  X <- mlx_matrix(rnorm(n * p), n, p)
+  y <- mlx_matrix(rnorm(n), ncol = 1)
 
   # Loss and gradient for least squares
   loss_fn <- function(beta) {

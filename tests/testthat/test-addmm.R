@@ -27,9 +27,9 @@ test_that("mlx_addmm respects alpha and beta scaling", {
 })
 
 test_that("mlx_addmm promotes dtype and device", {
-  mat1 <- as_mlx(matrix(1:4, 2, 2), dtype = "float32", device = "gpu")
-  mat2 <- as_mlx(matrix(5:8, 2, 2), dtype = "float32", device = "gpu")
-  input <- as_mlx(matrix(1, 2, 2), dtype = "float32", device = "gpu")
+  mat1 <- mlx_matrix(1:4, 2, 2, dtype = "float32", device = "gpu")
+  mat2 <- mlx_matrix(5:8, 2, 2, dtype = "float32", device = "gpu")
+  input <- mlx_matrix(rep(1, 4), 2, 2, dtype = "float32", device = "gpu")
 
   res <- mlx_addmm(input, mat1, mat2)
 

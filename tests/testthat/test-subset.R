@@ -323,7 +323,7 @@ test_that("direct gather and slice_update mirror MLX semantics", {
 
   updated <- mlx_slice_update(
     x,
-    as_mlx(matrix(c(100, 200, 300, 400), nrow = 2)),
+    mlx_matrix(c(100, 200, 300, 400), nrow = 2),
     start = c(1L, 2L),
     stop = c(2L, 3L),
     strides = c(1L, 1L)
@@ -360,7 +360,7 @@ test_that("mlx_gather preserves remaining axes and errors on invalid axes", {
   x <- as_mlx(arr)
 
   idx_rows <- matrix(c(1L, 4L, 2L, 3L), nrow = 2, byrow = TRUE)
-  idx_cols <- as_mlx(matrix(c(2L, 1L, 3L, 2L), nrow = 2, byrow = TRUE))
+  idx_cols <- mlx_matrix(c(2L, 1L, 3L, 2L), nrow = 2, byrow = TRUE)
   idx_cols_mat <- as.matrix(idx_cols)
 
   gathered <- mlx_gather(x, list(idx_rows, idx_cols), axes = c(1L, 2L))
@@ -483,11 +483,11 @@ test_that("mlx matrix indexing uses 1-based convention", {
   x <- as_mlx(mat)
 
   # [1, 1] should get first element (1), not [0, 0]
-  idx <- as_mlx(matrix(c(1, 1), nrow = 1))
+  idx <- mlx_matrix(c(1, 1), nrow = 1)
   expect_equal(as.vector(x[idx]), 1)
 
   # [3, 4] should get last element (12)
-  idx <- as_mlx(matrix(c(3, 4), nrow = 1))
+  idx <- mlx_matrix(c(3, 4), nrow = 1)
   expect_equal(as.vector(x[idx]), 12)
 })
 
@@ -495,8 +495,8 @@ test_that("mlx matrix assignment works", {
   mat <- matrix(1:12, 3, 4)
   x <- as_mlx(mat)
 
-  idx <- as_mlx(matrix(c(1, 1,
-                         3, 4), ncol = 2, byrow = TRUE))
+  idx <- mlx_matrix(c(1, 1,
+                         3, 4), ncol = 2, byrow = TRUE)
   vals <- c(500, 600)
 
   x[idx] <- vals
@@ -509,9 +509,9 @@ test_that("mlx matrix assignment with duplicates keeps last value", {
   mat <- matrix(0, 3, 3)
   x <- as_mlx(mat)
 
-  idx <- as_mlx(matrix(c(1, 1,
+  idx <- mlx_matrix(c(1, 1,
                          1, 1,
-                         2, 2), ncol = 2, byrow = TRUE))
+                         2, 2), ncol = 2, byrow = TRUE)
   vals <- c(5, 7, 9)
 
   x[idx] <- vals
@@ -648,6 +648,6 @@ test_that("mlx indexing errors appropriately", {
   expect_error(x[c(1L, 10L), ], "Index out of bounds")
 
   # Matrix with wrong number of columns should error
-  idx_mat_wrong <- as_mlx(matrix(c(1, 1, 1), nrow = 1))  # 3 columns for 2D array
+  idx_mat_wrong <- mlx_matrix(c(1, 1, 1), nrow = 1)  # 3 columns for 2D array
   expect_error(x[idx_mat_wrong], "one column per dimension")
 })

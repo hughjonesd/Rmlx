@@ -20,8 +20,8 @@ An mlx array containing the loss.
 Computes the mean absolute error between predictions and targets.
 }
 \examples{
-preds <- as_mlx(matrix(c(1.5, 2.3, 0.8), 3, 1))
-targets <- as_mlx(matrix(c(1, 2, 1), 3, 1))
+preds <- mlx_matrix(c(1.5, 2.3, 0.8), 3, 1)
+targets <- mlx_matrix(c(1, 2, 1), 3, 1)
 mlx_l1_loss(preds, targets)
 }
 \seealso{

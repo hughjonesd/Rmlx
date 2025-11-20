@@ -198,7 +198,7 @@ test_that("mlx_broadcast_to expands singleton dimensions", {
 
 test_that("mlx_broadcast_arrays aligns shapes", {
   a <- mlx_matrix(1:3, nrow = 1)
-  b <- as_mlx(matrix(c(10, 20, 30), ncol = 1))
+  b <- mlx_matrix(c(10, 20, 30), ncol = 1)
 
   outs <- mlx_broadcast_arrays(a, b)
   expect_length(outs, 2L)
@@ -249,7 +249,7 @@ test_that("mlx_split supports custom split points", {
 })
 
 test_that("mlx_where acts like ifelse for tensors", {
-  cond <- as_mlx(matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2))
+  cond <- mlx_matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2)
   a <- mlx_matrix(1:4, 2, 2)
   b <- mlx_matrix(5:8, 2, 2)
 

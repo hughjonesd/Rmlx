@@ -32,7 +32,7 @@ test_that("mlx_stop_gradient detaches gradients", {
     sum(mlx_stop_gradient(x) * x)
   }
 
-  x <- as_mlx(matrix(runif(4), 2, 2))
+  x <- mlx_matrix(runif(4), 2, 2)
   grad <- mlx_grad(f, x)[[1]]
   expect_equal(as.matrix(grad), as.matrix(x), tolerance = 1e-6)
 })

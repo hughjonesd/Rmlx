@@ -51,7 +51,7 @@ An mlx object with the result.
 Math operations for MLX arrays
 }
 \examples{
-x <- as_mlx(matrix(c(-1, 0, 1), 3, 1))
+x <- mlx_matrix(c(-1, 0, 1), 3, 1)
 sin(x)
 round(x + 0.4)
 }

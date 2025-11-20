@@ -16,7 +16,7 @@ The inverse of \code{x}.
 Computes the inverse of a square matrix.
 }
 \examples{
-A <- as_mlx(matrix(c(4, 7, 2, 6), 2, 2))
+A <- mlx_matrix(c(4, 7, 2, 6), 2, 2)
 A_inv <- mlx_inv(A)
 # Verify: A \%*\% A_inv should be identity
 A \%*\% A_inv

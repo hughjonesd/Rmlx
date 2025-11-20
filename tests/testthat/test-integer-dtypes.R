@@ -132,7 +132,7 @@ test_that("mixed signed/unsigned integer operations work", {
 })
 
 test_that("integer reductions work", {
-  x <- as_mlx(matrix(1:12, 3, 4), dtype = "int32")
+  x <- mlx_matrix(1:12, 3, 4, dtype = "int32")
 
   # Sum
   s <- mlx_sum(x)
@@ -155,8 +155,8 @@ test_that("integer reductions work", {
 
 test_that("integer matrix multiplication limitation", {
   # MLX matmul only supports inexact (floating point) types
-  x <- as_mlx(matrix(1:6, 2, 3), dtype = "int32")
-  y <- as_mlx(matrix(1:6, 3, 2), dtype = "int32")
+  x <- mlx_matrix(1:6, 2, 3, dtype = "int32")
+  y <- mlx_matrix(1:6, 3, 2, dtype = "int32")
 
   # This should error with informative message
   expect_error(
@@ -165,8 +165,8 @@ test_that("integer matrix multiplication limitation", {
   )
 
   # Workaround: convert to float first
-  x_float <- as_mlx(matrix(1:6, 2, 3), dtype = "float32")
-  y_float <- as_mlx(matrix(1:6, 3, 2), dtype = "float32")
+  x_float <- mlx_matrix(1:6, 2, 3, dtype = "float32")
+  y_float <- mlx_matrix(1:6, 3, 2, dtype = "float32")
   z <- x_float %*% y_float
 
   expect_equal(mlx_shape(z), c(2, 2))

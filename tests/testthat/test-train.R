@@ -1,7 +1,7 @@
 test_that("mlx_relu applies ReLU activation", {
   relu <- mlx_relu()
 
-  x <- as_mlx(matrix(c(-2, -1, 0, 1, 2), 5, 1))
+  x <- mlx_matrix(c(-2, -1, 0, 1, 2), 5, 1)
   y <- mlx_forward(relu, x)
 
   expected <- matrix(c(0, 0, 0, 1, 2), 5, 1)
@@ -37,7 +37,7 @@ test_that("mlx_sequential forward pass works", {
 
   net <- mlx_sequential(layer1, relu, layer2)
 
-  x <- as_mlx(matrix(c(1, 2), 1, 2))
+  x <- mlx_matrix(c(1, 2), 1, 2)
   y <- mlx_forward(net, x)
 
   expect_s3_class(y, "mlx")

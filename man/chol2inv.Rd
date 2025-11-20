@@ -28,7 +28,7 @@ Cholesky decomposition. The input \code{x} should be an upper triangular matrix
 from \code{chol()}.
 }
 \examples{
-A <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
+A <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
 U <- chol(A)
 A_inv <- chol2inv(U)
 # Verify: A \%*\% A_inv should be identity

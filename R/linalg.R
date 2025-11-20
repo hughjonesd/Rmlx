@@ -8,7 +8,7 @@
 #' @seealso [mlx.linalg.solve](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve)
 #' @export
 #' @examples
-#' a <- as_mlx(matrix(c(3, 1, 1, 2), 2, 2))
+#' a <- mlx_matrix(c(3, 1, 1, 2), 2, 2)
 #' b <- as_mlx(c(9, 8))
 #' solve(a, b)
 solve.mlx <- function(a, b = NULL, ...) {
@@ -63,7 +63,7 @@ kronecker.default <- function(X, Y, FUN = "*", make.dimnames = FALSE, ...) {
 #' @export
 #' @examples
 #' A <- mlx_matrix(1:4, 2, 2)
-#' B <- as_mlx(matrix(c(0, 5, 6, 7), 2, 2))
+#' B <- mlx_matrix(c(0, 5, 6, 7), 2, 2)
 #' mlx_kron(A, B)
 mlx_kron <- function(a, b) {
   a <- as_mlx(a)

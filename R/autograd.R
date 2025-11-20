@@ -31,7 +31,7 @@
 #'   sum(resids * resids) / length(y)
 #' }
 #' x <- mlx_matrix(1:8, 4, 2)
-#' y <- as_mlx(matrix(c(1, 3, 2, 4), 4, 1))
+#' y <- mlx_matrix(c(1, 3, 2, 4), 4, 1)
 #' w <- mlx_matrix(0, 2, 1)
 #' mlx_grad(loss, w, x, y)[[1]]
 #' @export
@@ -68,7 +68,7 @@ mlx_grad <- function(f, ..., argnums = NULL, value = FALSE) {
 #' @examples
 #' loss <- function(w, x) sum((x %*% w) * (x %*% w))
 #' x <- mlx_matrix(1:4, 2, 2)
-#' w <- as_mlx(matrix(c(1, -1), 2, 1))
+#' w <- mlx_matrix(c(1, -1), 2, 1)
 #' mlx_value_grad(loss, w, x)
 mlx_value_grad <- function(f, ..., argnums = NULL) {
   mlx_grad(f, ..., argnums = argnums, value = TRUE)

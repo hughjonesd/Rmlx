@@ -16,7 +16,7 @@ An mlx object containing the pseudoinverse.
 Moore-Penrose pseudoinverse for MLX arrays
 }
 \examples{
-x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
+x <- mlx_matrix(c(1, 2, 3, 4), 2, 2)
 pinv(x)
 }
 \seealso{

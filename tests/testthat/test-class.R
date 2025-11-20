@@ -3,13 +3,13 @@ test_that("as_mlx converts R objects correctly", {
   v <- 1:10
   v_mlx <- as_mlx(v)
   expect_s3_class(v_mlx, "mlx")
-  expect_null(dim(v_mlx))
+  expect_equal(mlx_shape(v_mlx), 10L)
 
   # Matrix
   m <- matrix(1:12, 3, 4)
   m_mlx <- as_mlx(m)
   expect_s3_class(m_mlx, "mlx")
-  expect_equal(dim(m_mlx), c(3L, 4L))
+  expect_equal(mlx_shape(m_mlx), c(3L, 4L))
   expect_equal(mlx_dtype(m_mlx), "float32")  # Default is float32 for GPU compatibility
 })
 

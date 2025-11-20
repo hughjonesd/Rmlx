@@ -34,7 +34,7 @@ test_that("mlx_save_safetensors round trips arrays and metadata", {
   base_path <- tempfile(fileext = ".safetensors")
 
   arrays <- list(
-    mat = as_mlx(matrix(rnorm(4), 2, 2), device = "cpu"),
+    mat = mlx_matrix(rnorm(4), 2, 2, device = "cpu"),
     vec = as_mlx(1:3, device = "cpu")
   )
   metadata <- c(author = "rmlx", version = "1.0")
@@ -61,7 +61,7 @@ test_that("mlx_save_safetensors round trips arrays and metadata", {
 test_that("mlx_save_gguf handles mixed metadata", {
   base_path <- tempfile(fileext = ".gguf")
 
-  arrays <- list(emb = as_mlx(matrix(1:4, 2, 2), device = "cpu"))
+  arrays <- list(emb = mlx_matrix(1:4, 2, 2, device = "cpu"))
   metadata <- list(
     description = "demo",
     tags = c("a", "b"),

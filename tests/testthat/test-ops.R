@@ -147,7 +147,7 @@ test_that("mlx_minimum and mlx_maximum compute elementwise extrema", {
 })
 
 test_that("mlx_clip clamps values", {
-  x <- as_mlx(matrix(seq(-2, 2, length.out = 4), 2, 2))
+  x <- mlx_matrix(seq(-2, 2, length.out = 4), 2, 2)
 
   clipped <- mlx_clip(x, min = -1, max = 1)
   expect_equal(as.matrix(clipped), pmin(pmax(as.matrix(x), -1), 1), tolerance = 1e-6)
@@ -162,8 +162,8 @@ test_that("mlx_clip clamps values", {
 })
 
 test_that("floor division and modulo work", {
-  x <- as_mlx(matrix(c(5, -5, 10, -10), 2, 2))
-  y <- as_mlx(matrix(c(2, 2, -3, -3), 2, 2))
+  x <- mlx_matrix(c(5, -5, 10, -10), 2, 2)
+  y <- mlx_matrix(c(2, 2, -3, -3), 2, 2)
 
   floor_res <- x %/% y
   mod_res <- x %% y

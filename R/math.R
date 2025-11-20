@@ -7,7 +7,7 @@
 #' @aliases abs.mlx sign.mlx sqrt.mlx floor.mlx ceiling.mlx trunc.mlx round.mlx signif.mlx exp.mlx log.mlx log10.mlx log2.mlx log1p.mlx expm1.mlx cos.mlx sin.mlx tan.mlx acos.mlx asin.mlx atan.mlx cosh.mlx sinh.mlx tanh.mlx acosh.mlx asinh.mlx atanh.mlx cospi.mlx sinpi.mlx tanpi.mlx cumsum.mlx cumprod.mlx cummax.mlx cummin.mlx
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(-1, 0, 1), 3, 1))
+#' x <- mlx_matrix(c(-1, 0, 1), 3, 1)
 #' sin(x)
 #' round(x + 0.4)
 Math.mlx <- function(x, ...) {

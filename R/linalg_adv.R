@@ -10,7 +10,7 @@
 #' @seealso [mlx.linalg.cholesky](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
+#' x <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
 #' chol(x)
 chol.mlx <- function(x, pivot = FALSE, ...) {
   x <- as_mlx(x)
@@ -33,7 +33,7 @@ chol.mlx <- function(x, pivot = FALSE, ...) {
 #' @seealso [chol()], [solve()], [mlx_cholesky_inv()]
 #' @export
 #' @examples
-#' A <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2))
+#' A <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
 #' U <- chol(A)
 #' A_inv <- chol2inv(U)
 #' # Verify: A %*% A_inv should be identity
@@ -67,7 +67,7 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
 #' @seealso [mlx.linalg.qr](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.qr)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(1, 2, 3, 4, 5, 6), 3, 2))
+#' x <- mlx_matrix(c(1, 2, 3, 4, 5, 6), 3, 2)
 #' qr(x)
 qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   x <- as_mlx(x)
@@ -117,7 +117,7 @@ svd.default <- function(x, ...) base::svd(x, ...)
 #' @seealso [mlx.linalg.svd](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.svd)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(1, 0, 0, 2), 2, 2))
+#' x <- mlx_matrix(c(1, 0, 0, 2), 2, 2)
 #' svd(x)
 svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
   x <- as_mlx(x)
@@ -161,7 +161,7 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
 #' @seealso [mlx.linalg.pinv](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(1, 2, 3, 4), 2, 2))
+#' x <- mlx_matrix(c(1, 2, 3, 4), 2, 2)
 #' pinv(x)
 pinv <- function(x) {
   x <- as_mlx(x)
@@ -238,7 +238,7 @@ mlx_norm <- function(x, ord = NULL, axes = NULL, drop = TRUE) {
 #' @seealso [mlx.linalg.eig](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eig)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(2, -1, 0, 2), 2, 2))
+#' x <- mlx_matrix(c(2, -1, 0, 2), 2, 2)
 #' eig <- mlx_eig(x)
 #' eig$values
 #' eig$vectors
@@ -260,7 +260,7 @@ mlx_eig <- function(x) {
 #' @seealso [mlx.linalg.eigvals](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvals)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(3, 1, 0, 2), 2, 2))
+#' x <- mlx_matrix(c(3, 1, 0, 2), 2, 2)
 #' mlx_eigvals(x)
 mlx_eigvals <- function(x) {
   x <- as_mlx(x)
@@ -277,7 +277,7 @@ mlx_eigvals <- function(x) {
 #' @seealso [mlx.linalg.eigvalsh](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvalsh)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
+#' x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)
 #' mlx_eigvalsh(x)
 mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
   x <- as_mlx(x)
@@ -294,7 +294,7 @@ mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
 #' @seealso [mlx.linalg.eigh](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigh)
 #' @export
 #' @examples
-#' x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
+#' x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)
 #' mlx_eigh(x)
 mlx_eigh <- function(x, uplo = c("L", "U")) {
   x <- as_mlx(x)
@@ -317,8 +317,8 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
 #' @seealso [mlx.linalg.solve_triangular](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular)
 #' @export
 #' @examples
-#' a <- as_mlx(matrix(c(2, 1, 0, 3), 2, 2))
-#' b <- as_mlx(matrix(c(1, 5), 2, 1))
+#' a <- mlx_matrix(c(2, 1, 0, 3), 2, 2)
+#' b <- mlx_matrix(c(1, 5), 2, 1)
 #' mlx_solve_triangular(a, b, upper = FALSE)
 mlx_solve_triangular <- function(a, b, upper = FALSE) {
   a <- as_mlx(a)
@@ -494,7 +494,7 @@ mlx_unflatten <- function(x, axis, shape) {
 #' @seealso [mlx.core.linalg.inv](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.inv)
 #' @export
 #' @examples
-#' A <- as_mlx(matrix(c(4, 7, 2, 6), 2, 2))
+#' A <- mlx_matrix(c(4, 7, 2, 6), 2, 2)
 #' A_inv <- mlx_inv(A)
 #' # Verify: A %*% A_inv should be identity
 #' A %*% A_inv
@@ -561,7 +561,7 @@ mlx_cholesky_inv <- function(x, upper = FALSE) {
 #' @seealso [mlx.core.linalg.lu](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.lu)
 #' @export
 #' @examples
-#' A <- as_mlx(matrix(rnorm(16), 4, 4))
+#' A <- mlx_matrix(rnorm(16), 4, 4)
 #' lu_result <- mlx_lu(A)
 #' P <- lu_result$p  # Pivot indices
 #' L <- lu_result$l  # Lower triangular

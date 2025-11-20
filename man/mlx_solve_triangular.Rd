@@ -41,8 +41,8 @@ An mlx array solution.
 Solve triangular systems with mlx arrays
 }
 \examples{
-a <- as_mlx(matrix(c(2, 1, 0, 3), 2, 2))
-b <- as_mlx(matrix(c(1, 5), 2, 1))
+a <- mlx_matrix(c(2, 1, 0, 3), 2, 2)
+b <- mlx_matrix(c(1, 5), 2, 1)
 mlx_solve_triangular(a, b, upper = FALSE)
 }
 \seealso{

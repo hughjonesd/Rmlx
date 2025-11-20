@@ -18,7 +18,7 @@ A list with components \code{values} and \code{vectors}.
 Eigen decomposition of Hermitian mlx arrays
 }
 \examples{
-x <- as_mlx(matrix(c(2, 1, 1, 3), 2, 2))
+x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)
 mlx_eigh(x)
 }
 \seealso{

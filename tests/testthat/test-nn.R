@@ -1,7 +1,7 @@
 test_that("activation functions work correctly", {
   # Tests assume MLX is available
 
-  x <- as_mlx(matrix(c(-2, -1, 0, 1, 2), 5, 1))
+  x <- mlx_matrix(c(-2, -1, 0, 1, 2), 5, 1)
 
   # GELU
   gelu <- mlx_gelu()
@@ -92,7 +92,7 @@ test_that("layer normalization works correctly", {
 
   set.seed(1)
   ln <- mlx_layer_norm(normalized_shape = 4)
-  x <- as_mlx(matrix(rnorm(12), 3, 4))
+  x <- mlx_matrix(rnorm(12), 3, 4)
 
   result <- mlx_forward(ln, x)
   expect_s3_class(result, "mlx")
@@ -116,7 +116,7 @@ test_that("batch normalization works correctly", {
 
   set.seed(1)
   bn <- mlx_batch_norm(num_features = 4)
-  x <- as_mlx(matrix(rnorm(12), 3, 4))
+  x <- mlx_matrix(rnorm(12), 3, 4)
 
   result <- mlx_forward(bn, x)
   expect_s3_class(result, "mlx")
@@ -158,7 +158,7 @@ test_that("embedding layer works correctly", {
   expect_equal(dim(result), c(4L, embed_dim))
 
   # Test 2D input
-  tokens_2d <- as_mlx(matrix(c(1, 5, 10, 3), 2, 2))
+  tokens_2d <- mlx_matrix(c(1, 5, 10, 3), 2, 2)
   result <- mlx_forward(emb, tokens_2d)
   expect_s3_class(result, "mlx")
   expect_equal(dim(result), c(2L, 2L, embed_dim))
@@ -203,7 +203,7 @@ test_that("modules work in sequential", {
     mlx_softmax_layer()
   )
 
-  x <- as_mlx(matrix(rnorm(12), 3, 4))
+  x <- mlx_matrix(rnorm(12), 3, 4)
   result <- mlx_forward(net, x)
 
   expect_s3_class(result, "mlx")

@@ -17,7 +17,7 @@ and \code{u} (upper triangular). The relationship is \code{A = L[P, ] \%*\% U}.
 Computes the LU factorization of a matrix.
 }
 \examples{
-A <- as_mlx(matrix(rnorm(16), 4, 4))
+A <- mlx_matrix(rnorm(16), 4, 4)
 lu_result <- mlx_lu(A)
 P <- lu_result$p  # Pivot indices
 L <- lu_result$l  # Lower triangular

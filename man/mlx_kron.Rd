@@ -18,7 +18,7 @@ automatically cast to a common dtype and device before evaluation.
 }
 \examples{
 A <- mlx_matrix(1:4, 2, 2)
-B <- as_mlx(matrix(c(0, 5, 6, 7), 2, 2))
+B <- mlx_matrix(c(0, 5, 6, 7), 2, 2)
 mlx_kron(A, B)
 }
 \seealso{

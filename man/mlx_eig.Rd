@@ -16,7 +16,7 @@ A list with components \code{values} and \code{vectors}, both mlx arrays.
 Eigen decomposition for mlx arrays
 }
 \examples{
-x <- as_mlx(matrix(c(2, -1, 0, 2), 2, 2))
+x <- mlx_matrix(c(2, -1, 0, 2), 2, 2)
 eig <- mlx_eig(x)
 eig$values
 eig$vectors

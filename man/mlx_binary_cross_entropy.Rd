@@ -24,8 +24,8 @@ An mlx array containing the loss.
 Computes binary cross-entropy loss between predictions and binary targets.
 }
 \examples{
-preds <- as_mlx(matrix(c(0.9, 0.2, 0.8), 3, 1))
-targets <- as_mlx(matrix(c(1, 0, 1), 3, 1))
+preds <- mlx_matrix(c(0.9, 0.2, 0.8), 3, 1)
+targets <- mlx_matrix(c(1, 0, 1), 3, 1)
 mlx_binary_cross_entropy(preds, targets)
 }
 \seealso{

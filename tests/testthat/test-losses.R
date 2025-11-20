@@ -1,8 +1,8 @@
 test_that("MSE loss works correctly", {
   # Tests assume MLX is available
 
-  preds <- as_mlx(matrix(c(1.5, 2.5, 3.5), 3, 1))
-  targets <- as_mlx(matrix(c(1, 2, 3), 3, 1))
+  preds <- mlx_matrix(c(1.5, 2.5, 3.5), 3, 1)
+  targets <- mlx_matrix(c(1, 2, 3), 3, 1)
 
   # Test mean reduction
   loss <- mlx_mse_loss(preds, targets, reduction = "mean")
@@ -29,8 +29,8 @@ test_that("MSE loss works correctly", {
 test_that("L1 loss works correctly", {
   # Tests assume MLX is available
 
-  preds <- as_mlx(matrix(c(1.5, 2.5, 3.5), 3, 1))
-  targets <- as_mlx(matrix(c(1, 2, 3), 3, 1))
+  preds <- mlx_matrix(c(1.5, 2.5, 3.5), 3, 1)
+  targets <- mlx_matrix(c(1, 2, 3), 3, 1)
 
   # Test mean reduction
   loss <- mlx_l1_loss(preds, targets, reduction = "mean")
@@ -54,8 +54,8 @@ test_that("L1 loss works correctly", {
 test_that("binary cross entropy works correctly", {
   # Tests assume MLX is available
 
-  preds <- as_mlx(matrix(c(0.9, 0.2, 0.8, 0.1), 4, 1))
-  targets <- as_mlx(matrix(c(1, 0, 1, 0), 4, 1))
+  preds <- mlx_matrix(c(0.9, 0.2, 0.8, 0.1), 4, 1)
+  targets <- mlx_matrix(c(1, 0, 1, 0), 4, 1)
 
   # Test mean reduction
   loss <- mlx_binary_cross_entropy(preds, targets, reduction = "mean")
@@ -74,12 +74,12 @@ test_that("binary cross entropy works correctly", {
   expect_equal(dim(loss_none), c(4L, 1L))
 
   # Perfect predictions should give very low loss
-  perfect_preds <- as_mlx(matrix(c(0.99, 0.01, 0.99, 0.01), 4, 1))
+  perfect_preds <- mlx_matrix(c(0.99, 0.01, 0.99, 0.01), 4, 1)
   loss_perfect <- mlx_binary_cross_entropy(perfect_preds, targets)
   expect_lt(as.numeric(loss_perfect), 0.1)
 
   # Very wrong predictions should give high loss
-  wrong_preds <- as_mlx(matrix(c(0.01, 0.99, 0.01, 0.99), 4, 1))
+  wrong_preds <- mlx_matrix(c(0.01, 0.99, 0.01, 0.99), 4, 1)
   loss_wrong <- mlx_binary_cross_entropy(wrong_preds, targets)
   expect_gt(as.numeric(loss_wrong), as.numeric(loss))
 })
@@ -87,7 +87,7 @@ test_that("binary cross entropy works correctly", {
 test_that("cross entropy works correctly", {
   # 3 samples, 4 classes
   set.seed(1)
-  logits <- as_mlx(matrix(rnorm(12), 3, 4))
+  logits <- mlx_matrix(rnorm(12), 3, 4)
   targets <- as_mlx(c(1, 3, 2))
 
   # Test mean reduction
@@ -147,8 +147,8 @@ test_that("loss functions work with gradient computation", {
   }
 
   x <- mlx_matrix(1:4, 2, 2)
-  y <- as_mlx(matrix(c(1, 2), 2, 1))
-  w <- as_mlx(matrix(c(0.5, 0.5), 2, 1))
+  y <- mlx_matrix(c(1, 2), 2, 1)
+  w <- mlx_matrix(c(0.5, 0.5), 2, 1)
 
   # Should be able to compute gradients with respect to w
   grads <- mlx_grad(loss_fn, w, x, y, argnums = 1)
