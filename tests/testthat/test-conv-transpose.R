@@ -1,7 +1,7 @@
 test_that("mlx_conv_transpose1d works", {
   # Simple 1D transposed convolution test
   input <- mlx_array(1:12, dim = c(1, 4, 3))  # batch=1, length=4, channels=3
-  weight <- mlx_array(1:6, dim = c(2, 2, 3))  # out_channels=2, kernel=2, in_channels=3
+  weight <- mlx_array(rep(1:6, 2), dim = c(2, 2, 3))  # out_channels=2, kernel=2, in_channels=3
 
   result <- mlx_conv_transpose1d(input, weight)
 

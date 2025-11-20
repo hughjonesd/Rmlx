@@ -67,7 +67,7 @@ test_that("mlx_zeros_like allows overriding dtype and device", {
 })
 
 test_that("mlx_ones_like mirrors shape and supports overrides", {
-  base <- mlx_array(7L, dim = c(3, 1, 2), dtype = "int16", device = "cpu")
+  base <- mlx_array(rep(7L, 6), dim = c(3, 1, 2), dtype = "int16", device = "cpu")
   ones <- mlx_ones_like(base)
 
   expect_equal(mlx_shape(ones), mlx_shape(base))

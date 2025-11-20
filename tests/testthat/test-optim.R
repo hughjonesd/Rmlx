@@ -89,7 +89,7 @@ test_that("mlx_coordinate_descent with custom gradient", {
 
 test_that("mlx_coordinate_descent validates inputs", {
   loss_fn <- function(beta) sum(beta^2)
-  beta_init <- mlx_matrix(0, 10, 1)
+  beta_init <- mlx_matrix(rep(0, 10), 10, 1)
 
   # Should work with valid inputs
   expect_no_error(
