@@ -12,7 +12,7 @@ exclude:
   - "!LICENSE.md"
 
 reference:
-  - title: Core Tensor API
+  - title: Core API
     contents:
       - as_mlx
       - is_mlx
@@ -33,7 +33,7 @@ reference:
       - as.vector.mlx
       - as.logical.mlx
       - as.double.mlx
-  - title: Device & Execution
+  - title: Device and execution
     contents:
       - mlx_default_device
       - with_default_device
@@ -44,16 +44,9 @@ reference:
       - mlx_device
       - mlx_has_gpu
       - mlx_synchronize
-      - mlx_forward
-      - mlx_grad
-      - mlx_stop_gradient
-      - mlx_value_grad
-      - mlx_compile
-      - mlx_disable_compile
-      - mlx_enable_compile
       - format.mlx_stream
       - print.mlx_stream
-  - title: Creation & Randomness
+  - title: Creation
     contents:
       - mlx_array
       - mlx_matrix
@@ -72,7 +65,16 @@ reference:
       - mlx_key
       - mlx_key_split
       - mlx_key_bits
-  - title: Shape & Indexing
+  - title: Loading and saving
+    contents:
+      - mlx_save
+      - mlx_load
+      - mlx_save_safetensors
+      - mlx_load_safetensors
+      - mlx_save_gguf
+      - mlx_load_gguf
+      - mlx_import_function
+  - title: Shape and indexing
     contents:
       - mlx_reshape
       - mlx_stack
@@ -105,7 +107,7 @@ reference:
       - abind
       - rbind.mlx
       - cbind.mlx
-  - title: Ordering & Selection
+  - title: Ordering and selection
     contents:
       - mlx_sort
       - mlx_argsort
@@ -114,7 +116,7 @@ reference:
       - mlx_argmin
       - mlx_partition
       - mlx_argpartition
-  - title: Math & Reductions
+  - title: Math and reductions
     contents:
       - Math.mlx
       - Ops.mlx
@@ -163,7 +165,7 @@ reference:
       - mlx_fft
       - mlx_fft2
       - mlx_fftn
-  - title: Probability Distributions
+  - title: Probability distributions
     contents:
       - mlx_dnorm
       - mlx_pnorm
@@ -180,7 +182,7 @@ reference:
       - mlx_dlogis
       - mlx_plogis
       - mlx_qlogis
-  - title: Linear Algebra
+  - title: Linear algebra
     contents:
       - "%*%.mlx"
       - mlx_addmm
@@ -210,16 +212,15 @@ reference:
       - mlx_eigvals
       - mlx_eigvalsh
       - mlx_cross
-  - title: Input & Output
+  - title: Gradients and compilation
     contents:
-      - mlx_save
-      - mlx_load
-      - mlx_save_safetensors
-      - mlx_load_safetensors
-      - mlx_save_gguf
-      - mlx_load_gguf
-      - mlx_import_function
-  - title: Neural Network Layers
+      - mlx_grad
+      - mlx_stop_gradient
+      - mlx_value_grad
+      - mlx_compile
+      - mlx_disable_compile
+      - mlx_enable_compile
+  - title: Neural networks
     contents:
       - mlx_linear
       - mlx_sequential
@@ -235,7 +236,8 @@ reference:
       - mlx_dequantize
       - mlx_quantized_matmul
       - mlx_gather_qmm
-  - title: Activation Functions
+      - mlx_forward
+  - title: Activation functions
     contents:
       - mlx_relu
       - mlx_gelu
@@ -244,18 +246,18 @@ reference:
       - mlx_silu
       - mlx_leaky_relu
       - mlx_softmax_layer
-  - title: Regularization & Normalization
+  - title: Regularization and normalization
     contents:
       - mlx_dropout
       - mlx_layer_norm
       - mlx_batch_norm
-  - title: Loss Functions
+  - title: Loss functions
     contents:
       - mlx_mse_loss
       - mlx_l1_loss
       - mlx_binary_cross_entropy
       - mlx_cross_entropy
-  - title: Training Utilities
+  - title: Training utilities
     contents:
       - mlx_parameters
       - mlx_param_values
