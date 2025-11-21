@@ -46,6 +46,9 @@ rows_contig_r <- 501:1500
 rows_contig_mlx <- as_mlx(rows_contig_r)
 rows_dense_noncontig_r <- sample(501:1500)
 rows_dense_noncontig_mlx <- as_mlx(rows_dense_noncontig_r)
+# Medium-sparse numeric: 1000 random rows across full range (50% density)
+rows_medium_r <- sort(sample(mat_nrow, 1000))
+rows_medium_mlx <- as_mlx(rows_medium_r)
 
 with_slice_enabled <- function(enabled, expr) {
   ns <- asNamespace("Rmlx")
@@ -199,6 +202,24 @@ cases <- list(
     x <- as_mlx(base_mat)
     x[rows_dense_noncontig_mlx, ] <- 6
     mlx_eval(x)
+  }),
+  matrix_rows_medium_R_no_eval = quote({
+    x <- as_mlx(base_mat)
+    x[rows_medium_r, ] <- 7
+  }),
+  matrix_rows_medium_R_eval = quote({
+    x <- as_mlx(base_mat)
+    x[rows_medium_r, ] <- 7
+    mlx_eval(x)
+  }),
+  matrix_rows_medium_mlx_no_eval = quote({
+    x <- as_mlx(base_mat)
+    x[rows_medium_mlx, ] <- 7
+  }),
+  matrix_rows_medium_mlx_eval = quote({
+    x <- as_mlx(base_mat)
+    x[rows_medium_mlx, ] <- 7
+    mlx_eval(x)
   })
 )
 
@@ -230,8 +251,9 @@ res$domain <- ifelse(grepl("^vector", res$case), "vector",
               ifelse(grepl("^matrix_full", res$case), "matrix-full-mask",
               ifelse(grepl("^matrix_rowcol", res$case), "matrix-rowcol-mask",
               ifelse(grepl("^matrix_rows_dense", res$case), "matrix-rows-dense",
+              ifelse(grepl("^matrix_rows_medium", res$case), "matrix-rows-medium",
               ifelse(grepl("^matrix_rows_noncontig", res$case), "matrix-rows-sparse",
-              ifelse(grepl("^matrix_rows_contig", res$case), "matrix-rows-contig", "other"))))))
+              ifelse(grepl("^matrix_rows_contig", res$case), "matrix-rows-contig", "other")))))))
 
 res$index <- ifelse(grepl("mask_mlx", res$case), "mlx logical",
              ifelse(grepl("mask_R", res$case), "R logical",
