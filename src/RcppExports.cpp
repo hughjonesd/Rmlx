@@ -417,16 +417,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_assign
-SEXP cpp_mlx_assign(SEXP xp_, List normalized_, SEXP updates_flat_xp_, IntegerVector dim_sizes_);
-RcppExport SEXP _Rmlx_cpp_mlx_assign(SEXP xp_SEXP, SEXP normalized_SEXP, SEXP updates_flat_xp_SEXP, SEXP dim_sizes_SEXP) {
+SEXP cpp_mlx_assign(SEXP xp_, List normalized_, SEXP updates_xp_, IntegerVector dim_sizes_);
+RcppExport SEXP _Rmlx_cpp_mlx_assign(SEXP xp_SEXP, SEXP normalized_SEXP, SEXP updates_xp_SEXP, SEXP dim_sizes_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
     Rcpp::traits::input_parameter< List >::type normalized_(normalized_SEXP);
-    Rcpp::traits::input_parameter< SEXP >::type updates_flat_xp_(updates_flat_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type updates_xp_(updates_xp_SEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type dim_sizes_(dim_sizes_SEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_assign(xp_, normalized_, updates_flat_xp_, dim_sizes_));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_assign(xp_, normalized_, updates_xp_, dim_sizes_));
     return rcpp_result_gen;
 END_RCPP
 }

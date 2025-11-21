@@ -201,9 +201,7 @@
     return(new_mlx(ptr, x$device))
   }
 
-  has_dupes <- any(vapply(prep$normalized, function(sel) {
-    !is.null(sel) && length(sel) > 1L && anyDuplicated(sel)
-  }, logical(1)))
+  has_dupes <- any(vapply(prep$normalized, anyDuplicated, numeric(1L)) > 0L)
 
   if (has_dupes) {
     full_indices <- Map(function(sel, dim_len) {

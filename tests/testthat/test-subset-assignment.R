@@ -193,13 +193,13 @@ test_that("boolean mask assignment validates recycling rules", {
   # Invalid: 5 elements, 9 is not a multiple of 5
   expect_error(
     x[mask1, mask2] <- mlx_vector(1:5),
-    "number of items to replace is not a multiple of replacement length"
+    "Number of items to replace is not a multiple of replacement length"
   )
 
   # Invalid: 2 elements, 9 is not a multiple of 2
   expect_error(
     x[mask1, mask2] <- mlx_vector(1:2),
-    "number of items to replace is not a multiple of replacement length"
+    "Number of items to replace is not a multiple of replacement length"
   )
 })
 
