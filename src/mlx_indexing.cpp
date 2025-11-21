@@ -146,10 +146,10 @@ struct AxisSelection {
 // [[Rcpp::export]]
 SEXP cpp_mlx_assign(SEXP xp_,
                     List normalized_,
-                    SEXP updates_flat_xp_,
+                    SEXP updates_xp_,
                     IntegerVector dim_sizes_) {
   MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
-  MlxArrayWrapper* updates_wrapper = get_mlx_wrapper(updates_flat_xp_);
+  MlxArrayWrapper* updates_wrapper = get_mlx_wrapper(updates_xp_);
 
   array src = src_wrapper->get();
   array updates = updates_wrapper->get();
@@ -188,7 +188,17 @@ SEXP cpp_mlx_assign(SEXP xp_,
   }
 
   array flat_src = reshape(src, Shape{static_cast<int>(src.size())});
-  array flat_updates = reshape(updates, Shape{static_cast<int>(total), 1});
+
+  array flat_updates = [&]() {
+    if (updates.ndim() <= 1) {
+      return reshape(updates, Shape{static_cast<int>(total), 1});
+    }
+    // transpose() with no permutation reverses axes; combined with row-major
+    // flatten this matches R's column-major order.
+    array transposed = transpose(updates);
+    transposed = contiguous(transposed);
+    return reshape(transposed, Shape{static_cast<int>(total), 1});
+  }();
 
   std::vector<int64_t> strides(ndim, 1);
   for (int axis = ndim - 2; axis >= 0; --axis) {

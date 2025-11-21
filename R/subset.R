@@ -94,17 +94,20 @@
 #' @return An mlx boolean mask.
 #' @noRd
 .numeric_idx_to_boolean_mask <- function(idx_mlx, dim_size, device) {
+  # idx_mlx is positive 1-based indices at this point
   if (length(idx_mlx) == 0L) {
     return(mlx_zeros(dim_size, dtype = "bool", device = device))
   }
 
-  positions <- mlx_arange(start = 1L, stop = dim_size + 1L, device = device)
-  pos_col <- mlx_reshape(positions, c(dim_size, 1L))
-  idx_row <- mlx_reshape(idx_mlx, c(1L, length(idx_mlx)))
-  # this creates a dim_size x length(idx_mlx) matrix with a TRUE entry
-  # in every row matching idx_row
-  matches <- pos_col == idx_row
-  mlx_any(matches, axes = 2L)
+  idx_mlx <- as_mlx(idx_mlx, dtype = "int64", device = device)
+  idx0 <- .mlx_cast(idx_mlx - 1L, dtype = "int64", device = device)
+
+  mask <- mlx_zeros(dim_size, dtype = "bool", device = device)
+  # scatter expects updates to include index dims; ensure rank > 1 to satisfy shape checks
+  updates <- mlx_full(c(length(idx_mlx), 1L), TRUE, dtype = "bool", device = device)
+
+  # scatter updates and return the resulting mask
+  .mlx_scatter_axis(mask, idx0, updates, axis = 0L)
 }
 
 #' Boolean mask assignment helper using masked_scatter
@@ -152,29 +155,7 @@
   }
 
   x_dtype <- mlx_dtype(x)
-
-  # Convert R value to mlx if needed, ensure correct dtype
-  value <- .mlx_cast(as_mlx(value), dtype = x_dtype, device = x$device)
-
-  # Prepare updates - handle recycling on GPU
-  value_len <- length(value)
-  if (value_len == 0L) {
-    stop("Replacement value must have length >= 1.", call. = FALSE)
-  }
-
-  # Check that n_selected is a multiple of value_len (R's recycling rule)
-  if (value_len != 1L && n_selected %% value_len != 0L) {
-    stop("number of items to replace is not a multiple of replacement length", call. = FALSE)
-  }
-
-  if (value_len == n_selected) {
-    updates <- mlx_flatten(value)
-  } else {
-    # Recycle: tile to exact number of repeats needed
-    n_tiles <- n_selected %/% value_len
-    value_flat <- mlx_flatten(value)
-    updates <- mlx_tile(value_flat, n_tiles)
-  }
+  updates <- .mlx_prepare_updates_flat(value, n_selected, x_dtype, x$device)
 
   # MLX uses row-major, R uses column-major
   # transpose() reverses all axes, converting between the two orderings
@@ -209,18 +190,10 @@
   stopifnot(total_elems >= 0L)
   if (total_elems == 0L) return(x)
 
-  value_vec <- as.vector(value)
-  if (length(value_vec) == 0L) {
-    stop("Replacement value must have length >= 1.", call. = FALSE)
-  }
-  value_vec <- rep_len(value_vec, total_elems)
-
-  # Store values for both slice (array) and scatter (vector) paths
-  value_array <- array(value_vec, dim = dims_sel)
   x_dtype <- mlx_dtype(x)
-  value_mlx_tensor <- as_mlx(value_array, dtype = x_dtype, device = x$device)
-
-  value_mlx_vec <- mlx_vector(value_vec, dtype = x_dtype, device = x$device)
+  target_len <- prod(dims_sel)
+  value_mlx_tensor <- .mlx_prepare_updates_flat(value, target_len, x_dtype, x$device)
+  value_mlx_tensor <- mlx_reshape(value_mlx_tensor, dims_sel)
 
   slice <- .mlx_slice_parameters(prep$normalized, shape)
   if (slice$can_slice) {
@@ -248,6 +221,7 @@
     idx_mat <- coord_mat + 1L
 
     base <- as.array(x)
+    value_vec <- rep_len(as.vector(value), total_elems)
     base[idx_mat] <- value_vec
     return(as_mlx(base, dtype = x_dtype, device = x$device))
   }
@@ -256,8 +230,23 @@
     if (is.null(sel)) NULL else as.integer(sel)
   })
 
-  ptr <- cpp_mlx_assign(x$ptr, normalized_int, value_mlx_vec$ptr, as.integer(shape))
+  ptr <- cpp_mlx_assign(x$ptr, normalized_int, value_mlx_tensor$ptr, as.integer(shape))
   new_mlx(ptr, x$device)
+}
+
+.mlx_prepare_updates_flat <- function(value, target_len, dtype, device) {
+  value_mlx <- .mlx_cast(as_mlx(value), dtype = dtype, device = device)
+  value_len <- length(value_mlx)
+  if (value_len == 0L) {
+    stop("Replacement value must have length >= 1.", call. = FALSE)
+  }
+  if (value_len != 1L && target_len %% value_len != 0L) {
+    stop("Number of items to replace is not a multiple of replacement length", call. = FALSE)
+  }
+
+  flat <- mlx_flatten(value_mlx)
+  tiles <- target_len %/% value_len
+  mlx_tile(flat, tiles)
 }
 
 #' @rdname mlx_subset
@@ -283,13 +272,15 @@
   }
 
   # Check if any indices are boolean/logical (mlx or R)
+  force_bool <- isTRUE(getOption("Rmlx.assign_boolean_masks", FALSE))
+
   has_bool_mask <- any(vapply(idx_list, function(idx) {
     if (is.null(idx)) return(FALSE)
     if (is_mlx(idx)) return(mlx_dtype(idx) == "bool")
     return(is.logical(idx))
   }, logical(1)))
 
-  if (has_bool_mask) {
+  if (force_bool || has_bool_mask) {
     .mlx_assign_boolean_mask(x, idx_list, shape, value)
   } else {
     .mlx_assign_indices(x, idx_list, shape, value)
