@@ -19,7 +19,7 @@ mlx_linspace(
 
 \item{num}{Number of samples to generate.}
 
-\item{dtype}{MLX dtype (\code{"float32"} or \code{"float64"}).}
+\item{dtype}{MLX dtype.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current

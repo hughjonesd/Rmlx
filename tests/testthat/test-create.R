@@ -36,11 +36,16 @@ test_that("identity helpers work", {
 })
 
 test_that("range helpers produce expected sequences", {
-  ar <- mlx_arange(5)
+  ar <- mlx_arange(0, 4)
   expect_equal(as.vector(ar), 0:4, tolerance = 1e-6)
 
-  ar_custom <- mlx_arange(5, start = 1, step = 2)
-  expect_equal(as.vector(ar_custom), c(1, 3), tolerance = 1e-6)
+  # Test reachable endpoint
+  ar_custom <- mlx_arange(1, 5, 2)
+  expect_equal(as.vector(ar_custom), c(1, 3, 5), tolerance = 1e-6)
+
+  # Test non-reachable endpoint (matches seq() behavior)
+  ar_unreachable <- mlx_arange(1, 6, 2)
+  expect_equal(as.vector(ar_unreachable), c(1, 3, 5), tolerance = 1e-6)
 
   lin <- mlx_linspace(0, 1, num = 5)
   expect_equal(as.vector(lin), seq(0, 1, length.out = 5), tolerance = 1e-6)

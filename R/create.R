@@ -506,45 +506,59 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
 
 #' Numerical ranges on MLX devices
 #'
-#' `mlx_arange()` mirrors `base::seq()` with mlx arrays: it creates evenly spaced values
-#' starting at `start` (default `0`), stepping by `step` (default `1`), and stopping before `stop`.
+#' `mlx_arange()` creates evenly spaced values starting at `start`, stepping by `step`,
+#' up to and including `stop` (if exactly reachable). This matches R's [base::seq()] behavior.
 #'
-#' @param stop Exclusive upper bound.
-#' @param start Optional starting value (defaults to 0).
-#' @param step Optional step size (defaults to 1).
-#' @param dtype MLX dtype (`"float32"` or `"float64"`).
+#' @param start Starting value.
+#' @param stop Upper bound (included if exactly reachable by the step sequence).
+#' @param step Step size (defaults to 1).
+#' @param dtype MLX dtype.
 #' @inheritParams mlx_zeros
 #' @return A 1D mlx array.
 #' @seealso [mlx.core.arange](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.arange)
+#'
+#' @section Difference from Python/C++:
+#' Unlike Python's `range()` and `numpy.arange()` which use an exclusive upper bound,
+#' `mlx_arange()` matches R's [base::seq()] by including `stop` only if it's exactly
+#' reachable by the step sequence. This is consistent with [mlx_linspace()] and
+#' [mlx_slice_update()], which also follow R conventions.
+#'
 #' @export
 #' @examples
-#' mlx_arange(5)                    # 0, 1, 2, 3, 4
-#' mlx_arange(5, start = 1, step = 2) # 1, 3
-mlx_arange <- function(stop,
-                       start = NULL,
-                       step = NULL,
+#' mlx_arange(0, 4)        # 0, 1, 2, 3, 4
+#' mlx_arange(1, 5)        # 1, 2, 3, 4, 5
+#' mlx_arange(1, 9, 2)     # 1, 3, 5, 7, 9
+#' mlx_arange(1, 6, 2)     # 1, 3, 5 (6 not reachable)
+mlx_arange <- function(start,
+                       stop,
+                       step = 1,
                        dtype = c("float32", "float64", "int8", "int16", "int32", "int64",
                                 "uint8", "uint16", "uint32", "uint64"),
                        device = mlx_default_device()) {
-  if (!length(stop) || length(stop) != 1L) {
+  if (length(start) != 1L) {
+    stop("start must be a single numeric value.", call. = FALSE)
+  }
+  if (length(stop) != 1L) {
     stop("stop must be a single numeric value.", call. = FALSE)
+  }
+  if (length(step) != 1L) {
+    stop("step must be a single numeric value.", call. = FALSE)
   }
 
   dtype <- match.arg(dtype)
   handle <- .mlx_resolve_device(device, mlx_default_device())
 
-  start_arg <- if (is.null(start)) NULL else as.numeric(start)
-  step_arg <- if (is.null(step)) NULL else as.numeric(step)
-
-  if (!is.null(start_arg) && length(start_arg) != 1L) {
-    stop("start must be NULL or a single numeric value.", call. = FALSE)
-  }
-  if (!is.null(step_arg) && length(step_arg) != 1L) {
-    stop("step must be NULL or a single numeric value.", call. = FALSE)
+  # Convert to exclusive stop for underlying MLX function
+  # Add a tiny epsilon to include stop if exactly reachable (like seq())
+  # but not to include the next step beyond
+  stop_exclusive <- if (step > 0) {
+    stop + 1e-10
+  } else {
+    stop - 1e-10
   }
 
   ptr <- .mlx_eval_with_stream(handle, function(dev) {
-    cpp_mlx_arange(start_arg, as.numeric(stop), step_arg, dtype, dev)
+    cpp_mlx_arange(as.numeric(start), as.numeric(stop_exclusive), as.numeric(step), dtype, dev)
   })
   new_mlx(ptr, handle$device)
 }

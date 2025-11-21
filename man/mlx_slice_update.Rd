@@ -27,6 +27,13 @@ An \code{mlx} array with the specified slice replaced.
 Wrapper around \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.slice_update}{\code{mlx.core.slice_update()}}
 that replaces a contiguous strided region with \code{value}.
 }
+\section{Difference from Python/C++}{
+
+Unlike Python's slice notation \code{array[start:stop]} which uses an exclusive upper bound,
+\code{mlx_slice_update()} uses \strong{inclusive} bounds for both \code{start} and \code{stop} to match
+R conventions and to be consistent with \code{\link[=mlx_arange]{mlx_arange()}} and \code{\link[=mlx_linspace]{mlx_linspace()}}.
+}
+
 \examples{
 x <- mlx_matrix(1:9, 3, 3)
 replacement <- mlx_matrix(100:103, nrow = 2)

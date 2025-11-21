@@ -5,22 +5,22 @@
 \title{Numerical ranges on MLX devices}
 \usage{
 mlx_arange(
+  start,
   stop,
-  start = NULL,
-  step = NULL,
+  step = 1,
   dtype = c("float32", "float64", "int8", "int16", "int32", "int64", "uint8", "uint16",
     "uint32", "uint64"),
   device = mlx_default_device()
 )
 }
 \arguments{
-\item{stop}{Exclusive upper bound.}
+\item{start}{Starting value.}
 
-\item{start}{Optional starting value (defaults to 0).}
+\item{stop}{Upper bound (included if exactly reachable by the step sequence).}
 
-\item{step}{Optional step size (defaults to 1).}
+\item{step}{Step size (defaults to 1).}
 
-\item{dtype}{MLX dtype (\code{"float32"} or \code{"float64"}).}
+\item{dtype}{MLX dtype.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
@@ -31,12 +31,22 @@ array typically reuse that array's device or stream).}
 A 1D mlx array.
 }
 \description{
-\code{mlx_arange()} mirrors \code{base::seq()} with mlx arrays: it creates evenly spaced values
-starting at \code{start} (default \code{0}), stepping by \code{step} (default \code{1}), and stopping before \code{stop}.
+\code{mlx_arange()} creates evenly spaced values starting at \code{start}, stepping by \code{step},
+up to and including \code{stop} (if exactly reachable). This matches R's \code{\link[base:seq]{base::seq()}} behavior.
 }
+\section{Difference from Python/C++}{
+
+Unlike Python's \code{range()} and \code{numpy.arange()} which use an exclusive upper bound,
+\code{mlx_arange()} matches R's \code{\link[base:seq]{base::seq()}} by including \code{stop} only if it's exactly
+reachable by the step sequence. This is consistent with \code{\link[=mlx_linspace]{mlx_linspace()}} and
+\code{\link[=mlx_slice_update]{mlx_slice_update()}}, which also follow R conventions.
+}
+
 \examples{
-mlx_arange(5)                    # 0, 1, 2, 3, 4
-mlx_arange(5, start = 1, step = 2) # 1, 3
+mlx_arange(0, 4)        # 0, 1, 2, 3, 4
+mlx_arange(1, 5)        # 1, 2, 3, 4, 5
+mlx_arange(1, 9, 2)     # 1, 3, 5, 7, 9
+mlx_arange(1, 6, 2)     # 1, 3, 5 (6 not reachable)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.arange}{mlx.core.arange}

@@ -237,13 +237,13 @@ test_that("integer types work with mlx_zeros and mlx_ones", {
 })
 
 test_that("integer types work with mlx_arange", {
-  # Create integer sequence (mlx_arange(stop, start, ...))
-  x <- mlx_arange(10, start = 0, dtype = "int32")
+  # Create integer sequence (stop is inclusive)
+  x <- mlx_arange(0, 9, dtype = "int32")
   expect_equal(mlx_dtype(x), "int32")
   expect_equal(as.vector(x), 0:9)
 
-  # With step
-  x_step <- mlx_arange(20, start = 0, step = 2, dtype = "int32")
+  # With step (stop is inclusive)
+  x_step <- mlx_arange(0, 20, 2, dtype = "int32")
   expect_equal(mlx_dtype(x_step), "int32")
-  expect_equal(as.vector(x_step), seq(0, 18, by = 2))
+  expect_equal(as.vector(x_step), seq(0, 20, by = 2))
 })

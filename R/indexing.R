@@ -121,6 +121,12 @@ mlx_gather <- function(x, indices, axes = NULL) {
 #'   for each axis.
 #' @param strides Optional integer vector of strides (defaults to ones).
 #' @return An `mlx` array with the specified slice replaced.
+#'
+#' @section Difference from Python/C++:
+#' Unlike Python's slice notation `array[start:stop]` which uses an exclusive upper bound,
+#' `mlx_slice_update()` uses **inclusive** bounds for both `start` and `stop` to match
+#' R conventions and to be consistent with [mlx_arange()] and [mlx_linspace()].
+#'
 #' @export
 #' @examples
 #' x <- mlx_matrix(1:9, 3, 3)

@@ -457,8 +457,8 @@ row.mlx <- function(x, as.factor = FALSE) {
     warning("row.mlx() ignores as.factor = TRUE and returns mlx indices.", call. = FALSE)
   }
   rows <- mlx_arange(
-    dims[1] + 1,
-    start = 1,
+    1,
+    dims[1],
     dtype = "int32",
     device = x$device
   )
@@ -490,8 +490,8 @@ col.mlx <- function(x, as.factor = FALSE) {
     warning("col.mlx() ignores as.factor = TRUE and returns mlx indices.", call. = FALSE)
   }
   cols <- mlx_arange(
-    dims[2] + 1,
-    start = 1,
+    1,
+    dims[2],
     dtype = "int32",
     device = x$device
   )
