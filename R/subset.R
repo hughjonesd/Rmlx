@@ -146,13 +146,12 @@
   # Combine with logical AND
   combined_mask <- mlx_stack(broadcasted)
   combined_mask <- mlx_all(combined_mask, axes = 1)
-
-  # Count selected elements and prepare updates
-  n_selected <- as.integer(mlx_sum(combined_mask))
-
   if (! any(combined_mask)) {
     return(x)
   }
+
+  # Count selected elements and prepare updates
+  n_selected <- as.integer(mlx_sum(combined_mask))
 
   x_dtype <- mlx_dtype(x)
   updates <- .mlx_prepare_updates_flat(value, n_selected, x_dtype, x$device)
@@ -177,59 +176,31 @@
 #' @param value Replacement values.
 #' @return An `mlx` array with the assignments applied.
 #' @noRd
-.mlx_assign_indices <- function(x, idx_list, shape, value) {
+.mlx_assign_duplicate_indices <- function(x, idx_list, shape, value) {
   ndim <- length(shape)
 
   prep <- .mlx_prepare_assignment_indices(idx_list, shape)
-  if (prep$empty) {
-    return(x)
-  }
+  if (prep$empty) return(x)
 
-  dims_sel <- prep$dims_sel
-  total_elems <- prod(dims_sel)
-  stopifnot(total_elems >= 0L)
-  if (total_elems == 0L) return(x)
-
-  x_dtype <- mlx_dtype(x)
-  target_len <- prod(dims_sel)
-  value_mlx_tensor <- .mlx_prepare_updates_flat(value, target_len, x_dtype, x$device)
-  value_mlx_tensor <- mlx_reshape(value_mlx_tensor, dims_sel)
-
-  slice <- .mlx_slice_parameters(prep$normalized, shape)
-  if (slice$can_slice) {
-    ptr <- cpp_mlx_slice_update(x$ptr, value_mlx_tensor$ptr, slice$start, slice$stop, slice$stride)
-    return(new_mlx(ptr, x$device))
-  }
-
-  has_dupes <- any(vapply(prep$normalized, anyDuplicated, numeric(1L)) > 0L)
-
-  if (has_dupes) {
-    full_indices <- Map(function(sel, dim_len) {
-      if (is.null(sel)) {
-        if (dim_len == 0L) integer(0) else seq.int(0L, dim_len - 1L)
-      } else {
-        sel
-      }
-    }, prep$normalized, shape)
-    grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
-    coord_mat <- as.matrix(grid)
-    if (!is.matrix(coord_mat)) {
-      coord_mat <- matrix(coord_mat, ncol = ndim)
+  full_indices <- Map(function(sel, dim_len) {
+    if (is.null(sel)) {
+      if (dim_len == 0L) integer(0) else seq.int(0L, dim_len - 1L)
+    } else {
+      sel
     }
-    idx_mat <- coord_mat + 1L
-
-    base <- as.array(x)
-    value_vec <- rep_len(as.vector(value), total_elems)
-    base[idx_mat] <- value_vec
-    return(as_mlx(base, dtype = x_dtype, device = x$device))
+  }, prep$normalized, shape)
+  grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
+  coord_mat <- as.matrix(grid)
+  if (!is.matrix(coord_mat)) {
+    coord_mat <- matrix(coord_mat, ncol = ndim)
   }
+  idx_mat <- coord_mat + 1L
 
-  normalized_int <- lapply(prep$normalized, function(sel) {
-    if (is.null(sel)) NULL else as.integer(sel)
-  })
-
-  ptr <- cpp_mlx_assign(x$ptr, normalized_int, value_mlx_tensor$ptr, as.integer(shape))
-  new_mlx(ptr, x$device)
+  base <- as.array(x)
+  value_vec <- rep_len(as.vector(value), total_elems)
+  base[idx_mat] <- value_vec
+  x_dtype <- mlx_dtype(x)
+  as_mlx(base, dtype = x_dtype, device = x$device)
 }
 
 .mlx_prepare_updates_flat <- function(value, target_len, dtype, device) {
@@ -269,19 +240,15 @@
     }
   }
 
-  # Check if any indices are boolean/logical (mlx or R)
-  force_bool <- isTRUE(getOption("Rmlx.assign_boolean_masks", FALSE))
-
-  has_bool_mask <- any(vapply(idx_list, function(idx) {
-    if (is.null(idx)) return(FALSE)
-    if (is_mlx(idx)) return(mlx_dtype(idx) == "bool")
-    return(is.logical(idx))
+  prep <- .mlx_prepare_assignment_indices(idx_list, shape)
+  has_dupes <- any(vapply(prep$normalized, function(sel) {
+    !is.null(sel) && length(sel) > 1L && anyDuplicated(sel) > 0L
   }, logical(1)))
 
-  if (force_bool || has_bool_mask) {
-    .mlx_assign_boolean_mask(x, idx_list, shape, value)
+  if (has_dupes) {
+    .mlx_assign_duplicate_indices(x, idx_list, shape, value)
   } else {
-    .mlx_assign_indices(x, idx_list, shape, value)
+    .mlx_assign_boolean_mask(x, idx_list, shape, value)
   }
 }
 
@@ -465,44 +432,6 @@
 #' @return List with `can_slice` flag plus integer vectors `start`, `stop`,
 #'   and `stride`.
 #' @noRd
-.mlx_slice_parameters <- function(normalized, dim_sizes) {
-  ndim <- length(dim_sizes)
-  start <- integer(ndim)
-  stop <- integer(ndim)
-  stride <- rep(1L, ndim)
-  can_slice <- TRUE
-
-  for (axis in seq_len(ndim)) {
-    sel <- normalized[[axis]]
-    dim_len <- dim_sizes[axis]
-    if (is.null(sel)) {
-      start[axis] <- 0L
-      stop[axis] <- dim_len
-      stride[axis] <- 1L
-      next
-    }
-
-    diffs <- if (length(sel) <= 1L) integer(0) else diff(sel)
-    if (length(diffs) > 1L && !all(diffs == diffs[1L])) {
-      can_slice <- FALSE
-    }
-    stride_val <- if (length(diffs) == 0L) 1L else diffs[1L]
-    if (stride_val <= 0L) {
-      can_slice <- FALSE
-    }
-    start[axis] <- sel[1L]
-    stride[axis] <- stride_val
-    stop[axis] <- sel[length(sel)] + stride_val
-  }
-
-  list(
-    can_slice = can_slice,
-    start = start,
-    stop = stop,
-    stride = stride
-  )
-}
-
 #' Compute linear indices from multi-axis coordinates.
 #'
 #' @param index_matrix Matrix of zero-based indices (rows = elements).

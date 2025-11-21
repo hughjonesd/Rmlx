@@ -50,24 +50,6 @@ rows_dense_noncontig_mlx <- as_mlx(rows_dense_noncontig_r)
 rows_medium_r <- sort(sample(mat_nrow, 1000))
 rows_medium_mlx <- as_mlx(rows_medium_r)
 
-with_slice_enabled <- function(enabled, expr) {
-  ns <- asNamespace("Rmlx")
-  old_fun <- get(".mlx_slice_parameters", envir = ns)
-  unlockBinding(".mlx_slice_parameters", ns)
-  on.exit({
-    unlockBinding(".mlx_slice_parameters", ns)
-    assign(".mlx_slice_parameters", old_fun, envir = ns)
-    lockBinding(".mlx_slice_parameters", ns)
-  }, add = TRUE)
-  if (enabled) {
-    assign(".mlx_slice_parameters", old_fun, envir = ns)
-  } else {
-    assign(".mlx_slice_parameters", function(...) list(can_slice = FALSE), envir = ns)
-  }
-  lockBinding(".mlx_slice_parameters", ns)
-  force(expr)
-}
-
 cases <- list(
   vector_R_mask_no_eval = quote({
     x <- as_mlx(base_vec)
@@ -159,32 +141,6 @@ cases <- list(
     x[rows_contig_mlx, ] <- 4
     mlx_eval(x)
   }),
-  matrix_rows_contig_R_scatter = quote({
-    with_slice_enabled(FALSE, {
-      x <- as_mlx(base_mat)
-      x[rows_contig_r, ] <- 4
-    })
-  }),
-  matrix_rows_contig_R_scatter_eval = quote({
-    with_slice_enabled(FALSE, {
-      x <- as_mlx(base_mat)
-      x[rows_contig_r, ] <- 4
-      mlx_eval(x)
-    })
-  }),
-  matrix_rows_contig_mlx_scatter = quote({
-    with_slice_enabled(FALSE, {
-      x <- as_mlx(base_mat)
-      x[rows_contig_mlx, ] <- 4
-    })
-  }),
-  matrix_rows_contig_mlx_scatter_eval = quote({
-    with_slice_enabled(FALSE, {
-      x <- as_mlx(base_mat)
-      x[rows_contig_mlx, ] <- 4
-      mlx_eval(x)
-    })
-  }),
   matrix_rows_dense_noncontig_R_no_eval = quote({
     x <- as_mlx(base_mat)
     x[rows_dense_noncontig_r, ] <- 6
@@ -261,9 +217,8 @@ res$index <- ifelse(grepl("mask_mlx", res$case), "mlx logical",
              ifelse(grepl("numeric_R", res$case), "R numeric",
              ifelse(grepl("mask", res$case), "logical", "numeric")))))
 
-res$path <- ifelse(grepl("scatter", res$case), "numeric scatter (slice off)",
-             ifelse(grepl("mask", res$case), "boolean mask",
-             ifelse(grepl("contig", res$case), "numeric slice (fast path)", "numeric")))
+res$path <- ifelse(grepl("mask", res$case), "boolean mask",
+             ifelse(grepl("contig", res$case), "numeric slice (fast path)", "numeric"))
 
 res <- res[order(res$domain, res$path, res$eval, res$median_sec), ]
 rownames(res) <- NULL
