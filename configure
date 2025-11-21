@@ -209,6 +209,39 @@ if [ "$USE_SYSTEM_MLX" = true ]; then
     die "MLX_INCLUDE must point to headers when using system MLX"
   fi
 
+  # Check MLX version
+  log "Checking system MLX version..."
+  VERSION_HEADER=""
+  for vh in "$MLX_INCLUDE_DIR/mlx/version.h" "$MLX_INCLUDE_DIR/version.h"; do
+    if [ -f "$vh" ]; then
+      VERSION_HEADER="$vh"
+      break
+    fi
+  done
+
+  if [ -z "$VERSION_HEADER" ]; then
+    err "Warning: Could not find mlx/version.h, cannot verify MLX version"
+  else
+    MLX_VER_MAJOR=$(grep "define MLX_VERSION_MAJOR" "$VERSION_HEADER" | awk '{print $3}')
+    MLX_VER_MINOR=$(grep "define MLX_VERSION_MINOR" "$VERSION_HEADER" | awk '{print $3}')
+    MLX_VER_PATCH=$(grep "define MLX_VERSION_PATCH" "$VERSION_HEADER" | awk '{print $3}')
+
+    if [ -z "$MLX_VER_MAJOR" ] || [ -z "$MLX_VER_MINOR" ]; then
+      err "Warning: Could not parse MLX version from $VERSION_HEADER"
+    else
+      DETECTED_VERSION="${MLX_VER_MAJOR}.${MLX_VER_MINOR}.${MLX_VER_PATCH}"
+      log "Detected system MLX version: $DETECTED_VERSION"
+
+      # Check if version >= 0.30.0
+      MLX_VER_NUMERIC=$((100000 * MLX_VER_MAJOR + 1000 * MLX_VER_MINOR + MLX_VER_PATCH))
+      REQUIRED_VER_NUMERIC=30000  # 0.30.0
+
+      if [ "$MLX_VER_NUMERIC" -lt "$REQUIRED_VER_NUMERIC" ]; then
+        die "System MLX version $DETECTED_VERSION is too old. Rmlx requires MLX >= 0.30.0. Set MLX_BUILD_FROM_SOURCE=1 to build MLX from source."
+      fi
+    fi
+  fi
+
   if [ -z "$MLX_LIB_DIR" ]; then
     for dir in /opt/homebrew/lib /usr/local/lib /usr/lib /usr/lib64 /usr/lib/x86_64-linux-gnu; do
       if [ -d "$dir" ] && { [ -f "$dir/libmlx.dylib" ] || [ -f "$dir/libmlx.so" ] || [ -f "$dir/libmlx.a" ]; }; then

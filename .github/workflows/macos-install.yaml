@@ -87,11 +87,14 @@ jobs:
 
       - name: Install system dependencies and MLX
         run: |
+          brew update
           brew install cmake mlx
           cmake --version
           # Verify MLX installation
           ls -la /opt/homebrew/include/mlx/
           ls -la /opt/homebrew/lib/libmlx.*
+          # Check MLX version
+          grep "MLX_VERSION" /opt/homebrew/include/mlx/version.h || true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
