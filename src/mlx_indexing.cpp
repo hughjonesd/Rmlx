@@ -225,3 +225,22 @@ SEXP cpp_mlx_assign(SEXP xp_,
   array reshaped = reshape(scattered, src.shape());
   return make_mlx_xptr(std::move(reshaped));
 }
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_masked_scatter(SEXP xp_,
+                            SEXP mask_xp_,
+                            SEXP updates_xp_,
+                            std::string device_str) {
+  MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
+  MlxArrayWrapper* mask_wrapper = get_mlx_wrapper(mask_xp_);
+  MlxArrayWrapper* updates_wrapper = get_mlx_wrapper(updates_xp_);
+
+  StreamOrDevice dev = string_to_device(device_str);
+
+  array src = src_wrapper->get();
+  array mask = astype(mask_wrapper->get(), bool_, dev);
+  array updates = astype(updates_wrapper->get(), src.dtype(), dev);
+
+  array result = masked_scatter(src, mask, updates, dev);
+  return make_mlx_xptr(std::move(result));
+}

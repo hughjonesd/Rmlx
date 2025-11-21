@@ -221,6 +221,73 @@ test_that("subset assignment with mlx indices matches base R", {
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 
+test_that("3D boolean mask assignment preserves column-major ordering", {
+  # Regression test for row-major vs column-major ordering
+  arr <- array(1:24, dim = c(2, 3, 4))
+  x <- as_mlx(arr)
+
+  mask_dim1 <- c(TRUE, FALSE)
+  mask_dim2 <- c(FALSE, TRUE, TRUE)
+  mask_dim3 <- c(TRUE, FALSE, TRUE, FALSE)
+
+  # Use distinct ordered values to detect ordering bugs
+  values <- 101:104
+
+  # Expected R column-major order: (1,2,1), (1,3,1), (1,2,3), (1,3,3)
+  x_mlx <- as_mlx(arr)
+  mask1_mlx <- as_mlx(mask_dim1, dtype = "bool")
+  mask2_mlx <- as_mlx(mask_dim2, dtype = "bool")
+  mask3_mlx <- as_mlx(mask_dim3, dtype = "bool")
+  x_mlx[mask1_mlx, mask2_mlx, mask3_mlx] <- values
+
+  arr_r <- arr
+  arr_r[mask_dim1, mask_dim2, mask_dim3] <- values
+
+  expect_equal(as.array(x_mlx), arr_r, tolerance = 1e-6)
+
+  # Verify specific positions to ensure ordering is correct
+  result <- as.array(x_mlx)
+  expect_equal(result[1, 2, 1], 101)
+  expect_equal(result[1, 3, 1], 102)
+  expect_equal(result[1, 2, 3], 103)
+  expect_equal(result[1, 3, 3], 104)
+})
+
+test_that("boolean mask assignment validates recycling rules", {
+  # R requires n_selected to be a multiple of value length
+  x <- mlx_matrix(rep(0, 16), 4, 4)
+  mask1 <- as_mlx(c(TRUE, TRUE, TRUE, FALSE), dtype = "bool")
+  mask2 <- as_mlx(c(TRUE, TRUE, TRUE, FALSE), dtype = "bool")
+
+  # 9 selected elements
+  # Valid: scalar (always works)
+  x[mask1, mask2] <- 99
+  expect_equal(as.array(x)[1:3, 1:3], matrix(99, 3, 3))
+
+  # Valid: 3 elements, 9 = 3 * 3
+  x[mask1, mask2] <- mlx_vector(1:3)
+  result <- as.array(x)
+  expect_equal(result[1:3, 1:3], matrix(rep(1:3, each = 3), 3, 3, byrow = TRUE))
+
+  # Valid: 9 elements, exact match
+  x[mask1, mask2] <- mlx_vector(101:109)
+  result <- as.array(x)
+  expect_equal(result[1, 1], 101)
+  expect_equal(result[3, 3], 109)
+
+  # Invalid: 5 elements, 9 is not a multiple of 5
+  expect_error(
+    x[mask1, mask2] <- mlx_vector(1:5),
+    "number of items to replace is not a multiple of replacement length"
+  )
+
+  # Invalid: 2 elements, 9 is not a multiple of 2
+  expect_error(
+    x[mask1, mask2] <- mlx_vector(1:2),
+    "number of items to replace is not a multiple of replacement length"
+  )
+})
+
 test_that("subset assignment handles irregular numeric axes", {
   set.seed(20251115)
   arr <- array(runif(4 * 5 * 6), dim = c(4, 5, 6))
