@@ -98,7 +98,7 @@
     return(mlx_zeros(dim_size, dtype = "bool", device = device))
   }
 
-  positions <- mlx_arange(1L, dim_size + 1L, device = device)
+  positions <- mlx_arange(dim_size + 1L, start = 1L, device = device)
   pos_col <- mlx_reshape(positions, c(dim_size, 1L))
   idx_row <- mlx_reshape(idx_mlx, c(1L, length(idx_mlx)))
   matches <- pos_col == idx_row
@@ -125,7 +125,7 @@
     # Already boolean → return as-is
     if (mlx_dtype(idx) == "bool") return(idx)
 
-    idx <- .resolve_to_positive_indices(mlx_reshape(idx, shape[i]), device = x$device)
+    idx <- .resolve_to_positive_indices(idx, shape[i])
     # Convert to boolean mask (handles both positive and negative)
     .numeric_idx_to_boolean_mask(as_mlx(idx), shape[i], x$device)
   })

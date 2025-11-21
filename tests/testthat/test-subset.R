@@ -718,3 +718,158 @@ test_that("mlx indexing errors appropriately", {
   idx_mat_wrong <- mlx_matrix(c(1, 1, 1), nrow = 1)  # 3 columns for 2D array
   expect_error(x[idx_mat_wrong], "one column per dimension")
 })
+test_that("subset assignment: mlx numeric positive indices", {
+  # 1D vector
+  x <- mlx_vector(1:10)
+  idx_mlx <- as_mlx(c(2L, 4L, 6L))
+  x[idx_mlx] <- 99
+  expect_equal(as.vector(x)[c(2, 4, 6)], rep(99, 3))
+
+  # 2D matrix
+  x <- mlx_matrix(1:20, 4, 5)
+  idx_mlx <- as_mlx(c(1L, 3L))
+  x[idx_mlx, ] <- 88
+  result <- as.matrix(x)
+  expect_equal(result[c(1, 3), ], matrix(88, 2, 5))
+
+  # 3D array
+  x <- mlx_array(1:60, c(3, 4, 5))
+  idx_mlx <- as_mlx(c(1L, 3L))
+  x[idx_mlx, , ] <- 77
+  result <- as.array(x)
+  expect_equal(result[c(1, 3), , ], array(77, c(2, 4, 5)))
+})
+
+test_that("subset assignment: mlx numeric negative indices", {
+  # 1D vector
+  x <- mlx_vector(1:10)
+  idx_mlx <- as_mlx(c(-2L, -4L, -6L))
+  x[idx_mlx] <- 99
+  result <- as.vector(x)
+  expect_equal(result[c(-2, -4, -6)], rep(99, 7))
+
+  # 2D matrix
+  x <- mlx_matrix(1:20, 4, 5)
+  idx_mlx <- as_mlx(c(-1L, -3L))
+  x[idx_mlx, ] <- 88
+  result <- as.matrix(x)
+  expect_equal(result[-c(1, 3), ], matrix(88, 2, 5))
+
+  # 3D array
+  x <- mlx_array(1:60, c(3, 4, 5))
+  idx_mlx <- as_mlx(-2L)
+  x[idx_mlx, , ] <- 77
+  result <- as.array(x)
+  expect_equal(result[-2, , ], array(77, c(2, 4, 5)))
+})
+
+test_that("subset assignment: R numeric positive indices", {
+  # 1D vector
+  x <- mlx_vector(1:10)
+  x[c(2, 4, 6)] <- 99
+  expect_equal(as.vector(x)[c(2, 4, 6)], rep(99, 3))
+
+  # 2D matrix
+  x <- mlx_matrix(1:20, 4, 5)
+  x[c(1, 3), ] <- 88
+  result <- as.matrix(x)
+  expect_equal(result[c(1, 3), ], matrix(88, 2, 5))
+
+  # 3D array
+  x <- mlx_array(1:60, c(3, 4, 5))
+  x[c(1, 3), , ] <- 77
+  result <- as.array(x)
+  expect_equal(result[c(1, 3), , ], array(77, c(2, 4, 5)))
+})
+
+test_that("subset assignment: R numeric negative indices", {
+  # 1D vector
+  x <- mlx_vector(1:10)
+  x[c(-2, -4, -6)] <- 99
+  result <- as.vector(x)
+  expect_equal(result[c(-2, -4, -6)], rep(99, 7))
+
+  # 2D matrix
+  x <- mlx_matrix(1:20, 4, 5)
+  x[-c(1, 3), ] <- 88
+  result <- as.matrix(x)
+  expect_equal(result[-c(1, 3), ], matrix(88, 2, 5))
+
+  # 3D array
+  x <- mlx_array(1:60, c(3, 4, 5))
+  x[-2, , ] <- 77
+  result <- as.array(x)
+  expect_equal(result[-2, , ], array(77, c(2, 4, 5)))
+})
+
+test_that("subset assignment: mlx boolean masks", {
+  # 1D vector
+  x <- mlx_vector(1:10)
+  mask <- as_mlx(c(TRUE, FALSE, TRUE, FALSE, TRUE, rep(FALSE, 5)), dtype = "bool")
+  x[mask] <- 99
+  expect_equal(as.vector(x)[c(1, 3, 5)], rep(99, 3))
+
+  # 2D matrix
+  x <- mlx_matrix(1:20, 4, 5)
+  mask <- as_mlx(c(TRUE, FALSE, TRUE, FALSE), dtype = "bool")
+  x[mask, ] <- 88
+  result <- as.matrix(x)
+  expect_equal(result[c(1, 3), ], matrix(88, 2, 5))
+
+  # 3D array
+  x <- mlx_array(1:60, c(3, 4, 5))
+  mask <- as_mlx(c(TRUE, FALSE, TRUE), dtype = "bool")
+  x[mask, , ] <- 77
+  result <- as.array(x)
+  expect_equal(result[c(1, 3), , ], array(77, c(2, 4, 5)))
+})
+
+test_that("subset assignment: R logical masks", {
+  # 1D vector
+  x <- mlx_vector(1:10)
+  x[c(TRUE, FALSE, TRUE, FALSE, TRUE, rep(FALSE, 5))] <- 99
+  expect_equal(as.vector(x)[c(1, 3, 5)], rep(99, 3))
+
+  # 2D matrix
+  x <- mlx_matrix(1:20, 4, 5)
+  x[c(TRUE, FALSE, TRUE, FALSE), ] <- 88
+  result <- as.matrix(x)
+  expect_equal(result[c(1, 3), ], matrix(88, 2, 5))
+
+  # 3D array
+  x <- mlx_array(1:60, c(3, 4, 5))
+  x[c(TRUE, FALSE, TRUE), , ] <- 77
+  result <- as.array(x)
+  expect_equal(result[c(1, 3), , ], array(77, c(2, 4, 5)))
+})
+
+test_that("subset assignment: mixed index types", {
+  # mlx boolean + R numeric
+  x <- mlx_matrix(1:20, 4, 5)
+  mask <- as_mlx(c(TRUE, FALSE, TRUE, FALSE), dtype = "bool")
+  x[mask, c(2, 4)] <- 99
+  result <- as.matrix(x)
+  expect_equal(result[c(1, 3), c(2, 4)], matrix(99, 2, 2))
+
+  # R logical + mlx numeric
+  x <- mlx_matrix(1:20, 4, 5)
+  idx_mlx <- as_mlx(c(2L, 4L))
+  x[c(TRUE, FALSE, TRUE, FALSE), idx_mlx] <- 88
+  result <- as.matrix(x)
+  expect_equal(result[c(1, 3), c(2, 4)], matrix(88, 2, 2))
+
+  # mlx numeric + mlx boolean on 3D
+  x <- mlx_array(1:60, c(3, 4, 5))
+  idx_mlx <- as_mlx(c(1L, 3L))
+  mask <- as_mlx(c(TRUE, FALSE, TRUE, FALSE), dtype = "bool")
+  x[idx_mlx, mask, ] <- 77
+  result <- as.array(x)
+  expect_equal(result[c(1, 3), c(1, 3), ], array(77, c(2, 2, 5)))
+
+  # R numeric negative + mlx boolean
+  x <- mlx_matrix(1:20, 4, 5)
+  mask <- as_mlx(c(TRUE, FALSE, TRUE, FALSE, TRUE), dtype = "bool")
+  x[-c(1, 4), mask] <- 66
+  result <- as.matrix(x)
+  expect_equal(result[c(2, 3), c(1, 3, 5)], matrix(66, 2, 3))
+})
