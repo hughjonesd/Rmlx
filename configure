@@ -292,6 +292,20 @@ else
   fi
   log "Using cmake: $CMAKE"
 
+  # Check cmake version (MLX requires >= 3.25)
+  CMAKE_VERSION=$("$CMAKE" --version | head -1 | awk '{print $3}')
+  if [ -n "$CMAKE_VERSION" ]; then
+    CMAKE_MAJOR=$(echo "$CMAKE_VERSION" | cut -d. -f1)
+    CMAKE_MINOR=$(echo "$CMAKE_VERSION" | cut -d. -f2)
+    CMAKE_VER_NUMERIC=$((1000 * CMAKE_MAJOR + CMAKE_MINOR))
+    REQUIRED_CMAKE_NUMERIC=3025  # 3.25
+
+    if [ "$CMAKE_VER_NUMERIC" -lt "$REQUIRED_CMAKE_NUMERIC" ]; then
+      die "cmake version $CMAKE_VERSION is too old. MLX requires cmake >= 3.25. Install a newer cmake or set CMAKE environment variable."
+    fi
+    log "cmake version: $CMAKE_VERSION"
+  fi
+
   log "Configuring MLX with CMake..."
   CMAKE_EXTRA_FLAGS=""
   if [ "$OS" = "Linux" ]; then
