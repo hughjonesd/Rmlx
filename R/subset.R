@@ -98,9 +98,11 @@
     return(mlx_zeros(dim_size, dtype = "bool", device = device))
   }
 
-  positions <- mlx_arange(dim_size + 1L, start = 1L, device = device)
+  positions <- mlx_arange(start = 1L, stop = dim_size + 1L, device = device)
   pos_col <- mlx_reshape(positions, c(dim_size, 1L))
   idx_row <- mlx_reshape(idx_mlx, c(1L, length(idx_mlx)))
+  # this creates a dim_size x length(idx_mlx) matrix with a TRUE entry
+  # in every row matching idx_row
   matches <- pos_col == idx_row
   mlx_any(matches, axes = 2L)
 }
