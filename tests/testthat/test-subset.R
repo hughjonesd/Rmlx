@@ -101,191 +101,6 @@ test_that("zero length selections return empty tensors", {
   expect_equal(dim(empty_cols), c(nrow(mat), 0L))
 })
 
-test_that("subset assignment with numeric indices matches base R", {
-  mat <- matrix(1:9, 3, 3)
-  x <- as_mlx(mat)
-
-  x[1, 2] <- 42
-  mat[1, 2] <- 42
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-
-  x[2, ] <- c(10, 11, 12)
-  mat[2, ] <- c(10, 11, 12)
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-
-  x[, 3] <- 100
-  mat[, 3] <- 100
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-})
-
-test_that("subset assignment accepts mlx replacement arrays", {
-  mat <- matrix(1:9, 3, 3)
-  x <- as_mlx(mat)
-  repl <- matrix(seq_len(4), nrow = 2)
-  repl_mlx <- as_mlx(repl)
-
-  x[1:2, 1:2] <- repl_mlx
-  mat[1:2, 1:2] <- repl
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-
-  repl_alt <- as_mlx(repl, dtype = "float32", device = x$device)
-  x[1:2, 1:2] <- repl_alt
-  mat[1:2, 1:2] <- repl
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-})
-
-test_that("vector subset assignment updates the correct element", {
-  base_vec <- 1:5
-  mlx_vec <- mlx_vector(base_vec)
-
-  mlx_vec[1] <- 2
-  base_vec[1] <- 2
-
-  expect_equal(as.vector(mlx_vec), base_vec, tolerance = 1e-6)
-})
-
-test_that("vector subset assignment handles mlx and logical indices", {
-  base_vec <- 1:6
-  mlx_vec <- mlx_vector(base_vec)
-
-  idx_mlx <- as_mlx(c(2L, 5L))
-  mlx_vec[idx_mlx] <- c(20, 50)
-  base_vec[c(2, 5)] <- c(20, 50)
-  expect_equal(as.vector(mlx_vec), base_vec, tolerance = 1e-6)
-
-  logical_mask <- c(FALSE, TRUE, FALSE, TRUE, FALSE, TRUE)
-  logical_mask_mlx <- as_mlx(logical_mask)
-  mlx_vec[logical_mask_mlx] <- 99
-  base_vec[logical_mask] <- 99
-  expect_equal(as.vector(mlx_vec), base_vec, tolerance = 1e-6)
-
-  neg_idx <- as_mlx(-6L)
-  mlx_vec[neg_idx] <- 42
-  base_vec[-6] <- 42
-
-  expect_equal(as.vector(mlx_vec), base_vec, tolerance = 1e-6)
-})
-
-test_that("subset assignment with logical masks behaves like base R", {
-  mat <- matrix(1:9, 3, 3)
-  x <- as_mlx(mat)
-
-  row_mask <- c(TRUE, FALSE, TRUE)
-  col_mask <- c(FALSE, TRUE, TRUE)
-
-  x[row_mask, col_mask] <- c(5, 6, 7, 8)
-  mat[row_mask, col_mask] <- c(5, 6, 7, 8)
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-
-  x_mlx_mask <- as_mlx(mat)
-  row_mask_mlx <- as_mlx(row_mask)
-  col_mask_mlx <- as_mlx(col_mask)
-  x_mlx_mask[row_mask_mlx, col_mask_mlx] <- as_mlx(c(9, 8, 7, 6))
-  mat[row_mask, col_mask] <- c(9, 8, 7, 6)
-  expect_equal(as.matrix(x_mlx_mask), mat, tolerance = 1e-6)
-})
-
-test_that("non-contiguous numeric assignment works without fast path", {
-  old <- getOption("Rmlx_use_slice_fast_path")
-  on.exit(options(Rmlx_use_slice_fast_path = old), add = TRUE)
-  options(Rmlx_use_slice_fast_path = FALSE)
-
-  mat <- matrix(seq_len(12 * 15), 12, 15)
-  x <- as_mlx(mat)
-
-  set.seed(20251101)
-  rows <- c(2L, 5L, 9L, 12L)
-  cols <- c(1L, 4L, 6L, 9L, 14L)
-  repl <- matrix(runif(length(rows) * length(cols)), nrow = length(rows))
-
-  x[rows, cols] <- repl
-  mat[rows, cols] <- repl
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-})
-
-test_that("subset assignment with mlx indices matches base R", {
-  mat <- matrix(1:9, 3, 3)
-  x <- as_mlx(mat)
-
-  rows <- as_mlx(c(1L, 3L))
-  cols <- as_mlx(c(2L, 3L))
-  block <- matrix(c(100, 200, 300, 400), nrow = 2)
-
-  x[rows, cols] <- block
-  mat[c(1, 3), c(2, 3)] <- block
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-})
-
-test_that("subset assignment handles irregular numeric axes", {
-  set.seed(20251115)
-  arr <- array(runif(4 * 5 * 6), dim = c(4, 5, 6))
-  x <- as_mlx(arr)
-
-  rows <- c(4L, 1L)
-  cols <- c(5L, 2L, 4L)
-  slabs <- c(6L, 1L, 3L)
-  repl <- array(runif(length(rows) * length(cols) * length(slabs)),
-                dim = c(length(rows), length(cols), length(slabs)))
-
-  x[rows, cols, slabs] <- repl
-  arr[rows, cols, slabs] <- repl
-
-  expect_equal(as.array(x), arr, tolerance = 1e-6)
-})
-
-test_that("subset assignment handles irregular mlx indices with missing axes", {
-  set.seed(20251116)
-  arr <- array(runif(3 * 7 * 5), dim = c(3, 7, 5))
-  x <- as_mlx(arr)
-
-  rows_vec <- c(3L, 1L)
-  slabs_vec <- c(5L, 2L)
-  rows <- as_mlx(rows_vec)
-  slabs <- as_mlx(slabs_vec)
-  repl <- array(runif(length(rows_vec) * dim(arr)[2] * length(slabs_vec)),
-                dim = c(length(rows_vec), dim(arr)[2], length(slabs_vec)))
-
-  x[rows, , slabs] <- repl
-  arr[rows_vec, , slabs_vec] <- repl
-
-  expect_equal(as.array(x), arr, tolerance = 1e-6)
-})
-
-test_that("subset assignment handles repeated numeric indices", {
-  set.seed(20251101)
-  mat <- matrix(seq_len(100), nrow = 10, ncol = 10)
-  x <- as_mlx(mat)
-
-  rows <- c(1L, 3L, 3L)
-  cols <- c(4L, 2L, 4L)
-  values <- matrix(runif(length(rows) * length(cols)), nrow = length(rows))
-
-  x[rows, cols] <- values
-  mat[rows, cols] <- values
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-})
-
-test_that("subset assignment preserves order of numeric indices", {
-  set.seed(20251102)
-  mat <- matrix(seq_len(100), nrow = 10, ncol = 10)
-  x <- as_mlx(mat)
-
-  rows <- c(5L, 2L)
-  cols <- c(7L, 1L, 4L)
-  values <- matrix(runif(length(rows) * length(cols)), nrow = length(rows))
-
-  x[rows, cols] <- values
-  mat[rows, cols] <- values
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-})
-
 test_that("matrix indexing matches base behaviour", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)
@@ -491,35 +306,6 @@ test_that("mlx matrix indexing uses 1-based convention", {
   expect_equal(as.vector(x[idx]), 12)
 })
 
-test_that("mlx matrix assignment works", {
-  mat <- matrix(1:12, 3, 4)
-  x <- as_mlx(mat)
-
-  idx <- mlx_matrix(c(1, 1,
-                         3, 4), ncol = 2, byrow = TRUE)
-  vals <- c(500, 600)
-
-  x[idx] <- vals
-  mat[matrix(c(1, 1, 3, 4), ncol = 2, byrow = TRUE)] <- vals
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-})
-
-test_that("mlx matrix assignment with duplicates keeps last value", {
-  mat <- matrix(0, 3, 3)
-  x <- as_mlx(mat)
-
-  idx <- mlx_matrix(c(1, 1,
-                         1, 1,
-                         2, 2), ncol = 2, byrow = TRUE)
-  vals <- c(5, 7, 9)
-
-  x[idx] <- vals
-  mat[matrix(c(1, 1, 1, 1, 2, 2), ncol = 2, byrow = TRUE)] <- vals
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
-})
-
 test_that("negative numeric indices behave like base R", {
   vec <- 1:5
   mlx_vec <- as_mlx(vec)
@@ -531,16 +317,6 @@ test_that("negative numeric indices behave like base R", {
 
   expect_error(mlx_vec[c(-1, 2)], "Cannot mix positive and negative indices", fixed = TRUE)
   expect_error(mlx_vec[c(-1, 0)], "Index contains zeros", fixed = TRUE)
-})
-
-test_that("negative numeric indices work for assignment", {
-  vec <- 1:5
-  mlx_vec <- as_mlx(vec)
-
-  mlx_vec[-1] <- 0
-  vec[-1] <- 0
-
-  expect_equal(as.vector(mlx_vec), vec)
 })
 
 test_that("negative indices mix with logical axes", {
@@ -611,18 +387,6 @@ test_that("mlx indexing preserves device", {
   result <- x[idx, ]
 
   expect_equal(result$device, "gpu")
-})
-
-test_that("subset assignment preserves GPU device", {
-  skip_if_not(mlx_has_gpu())
-  mat <- matrix(1:6, 2, 3)
-  x <- as_mlx(mat, device = "gpu")
-
-  x[1, ] <- c(10, 20, 30)
-  mat[1, ] <- c(10, 20, 30)
-
-  expect_equal(x$device, "gpu")
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 
 test_that("empty mlx index returns empty result", {

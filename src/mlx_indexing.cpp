@@ -146,10 +146,10 @@ struct AxisSelection {
 // [[Rcpp::export]]
 SEXP cpp_mlx_assign(SEXP xp_,
                     List normalized_,
-                    SEXP updates_flat_xp_,
+                    SEXP updates_xp_,
                     IntegerVector dim_sizes_) {
   MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
-  MlxArrayWrapper* updates_wrapper = get_mlx_wrapper(updates_flat_xp_);
+  MlxArrayWrapper* updates_wrapper = get_mlx_wrapper(updates_xp_);
 
   array src = src_wrapper->get();
   array updates = updates_wrapper->get();
@@ -188,7 +188,17 @@ SEXP cpp_mlx_assign(SEXP xp_,
   }
 
   array flat_src = reshape(src, Shape{static_cast<int>(src.size())});
-  array flat_updates = reshape(updates, Shape{static_cast<int>(total), 1});
+
+  array flat_updates = [&]() {
+    if (updates.ndim() <= 1) {
+      return reshape(updates, Shape{static_cast<int>(total), 1});
+    }
+    // transpose() with no permutation reverses axes; combined with row-major
+    // flatten this matches R's column-major order.
+    array transposed = transpose(updates);
+    transposed = contiguous(transposed);
+    return reshape(transposed, Shape{static_cast<int>(total), 1});
+  }();
 
   std::vector<int64_t> strides(ndim, 1);
   for (int axis = ndim - 2; axis >= 0; --axis) {
@@ -224,4 +234,23 @@ SEXP cpp_mlx_assign(SEXP xp_,
   array scattered = scatter(flat_src, idx_vec, flat_updates, axes_vec);
   array reshaped = reshape(scattered, src.shape());
   return make_mlx_xptr(std::move(reshaped));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_masked_scatter(SEXP xp_,
+                            SEXP mask_xp_,
+                            SEXP updates_xp_,
+                            std::string device_str) {
+  MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
+  MlxArrayWrapper* mask_wrapper = get_mlx_wrapper(mask_xp_);
+  MlxArrayWrapper* updates_wrapper = get_mlx_wrapper(updates_xp_);
+
+  StreamOrDevice dev = string_to_device(device_str);
+
+  array src = src_wrapper->get();
+  array mask = astype(mask_wrapper->get(), bool_, dev);
+  array updates = astype(updates_wrapper->get(), src.dtype(), dev);
+
+  array result = masked_scatter(src, mask, updates, dev);
+  return make_mlx_xptr(std::move(result));
 }
