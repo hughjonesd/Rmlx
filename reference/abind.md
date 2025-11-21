@@ -35,3 +35,11 @@ exist; to create a new axis use
 [mlx.core.concatenate](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.concatenate)
 
 ## Examples
+
+``` r
+x <- mlx_array(1:12, c(2, 3, 2))
+y <- mlx_array(13:24, c(2, 3, 2))
+z <- abind(x, y, along = 3)
+dim(z)
+#> [1] 2 3 4
+```

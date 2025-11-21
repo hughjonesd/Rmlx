@@ -33,6 +33,10 @@ as.integer(x, ...)
   Character string specifying the type of vector to return (passed to
   [`base::as.vector()`](https://rdrr.io/r/base/vector.html))
 
+- ...:
+
+  Additional arguments (ignored)
+
 ## Value
 
 A vector of the specified mode.
