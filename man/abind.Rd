@@ -24,8 +24,8 @@ the same shape on non-bound axes. The \code{along} axis must already exist; to
 create a new axis use \code{\link[=mlx_stack]{mlx_stack()}}.
 }
 \examples{
-x <- mlx_array(1:12, c(2, 3, 2)))
-y <- mlx_array(13:24, c(2, 3, 2)))
+x <- mlx_array(1:12, c(2, 3, 2))
+y <- mlx_array(13:24, c(2, 3, 2))
 z <- abind(x, y, along = 3)
 dim(z)
 }

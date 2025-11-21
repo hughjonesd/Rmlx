@@ -220,6 +220,7 @@ as.array.mlx <- function(x, ...) {
 #'
 #' @inheritParams mlx_array_required
 #' @param mode Character string specifying the type of vector to return (passed to [base::as.vector()])
+#' @param ... Additional arguments (ignored)
 #' @return A vector of the specified mode.
 #' @export
 #' @examples
