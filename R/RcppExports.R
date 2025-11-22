@@ -137,6 +137,10 @@ cpp_mlx_masked_scatter <- function(xp_, mask_xp_, updates_xp_, device_str) {
     .Call(`_Rmlx_cpp_mlx_masked_scatter`, xp_, mask_xp_, updates_xp_, device_str)
 }
 
+cpp_mlx_masked_scatter_colmajor <- function(xp_, mask_xp_, updates_xp_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_masked_scatter_colmajor`, xp_, mask_xp_, updates_xp_, device_str)
+}
+
 cpp_mlx_save <- function(xp_, file) {
     invisible(.Call(`_Rmlx_cpp_mlx_save`, xp_, file))
 }

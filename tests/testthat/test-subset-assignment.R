@@ -36,17 +36,19 @@ test_that("subset assignment with numeric indices matches base R", {
 test_that("subset assignment accepts mlx replacement arrays", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)
-  repl <- matrix(seq_len(4), nrow = 2)
+  repl <- matrix(101:104, nrow = 2)
   repl_mlx <- as_mlx(repl)
 
-  x[1:2, 1:2] <- repl_mlx
-  mat[1:2, 1:2] <- repl
+  rows <- c(3, 1)
+  cols <- c(2, 1)
+  x[rows, cols] <- repl_mlx
+  mat[rows, cols] <- repl
 
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 
   repl_alt <- as_mlx(repl, dtype = "float32", device = x$device)
-  x[1:2, 1:2] <- repl_alt
-  mat[1:2, 1:2] <- repl
+  x[rows, cols] <- repl_alt
+  mat[rows, cols] <- repl
 
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
@@ -65,9 +67,9 @@ test_that("vector subset assignment handles mlx and logical indices", {
   base_vec <- 1:6
   mlx_vec <- mlx_vector(base_vec)
 
-  idx_mlx <- as_mlx(c(2L, 5L))
-  mlx_vec[idx_mlx] <- c(20, 50)
-  base_vec[c(2, 5)] <- c(20, 50)
+  idx_mlx <- as_mlx(c(5L, 2L))
+  mlx_vec[idx_mlx] <- c(50, 20)
+  base_vec[c(5, 2)] <- c(50, 20)
   expect_equal(as.vector(mlx_vec), base_vec, tolerance = 1e-6)
 
   logical_mask <- c(FALSE, TRUE, FALSE, TRUE, FALSE, TRUE)
@@ -112,8 +114,8 @@ test_that("non-contiguous numeric assignment works without fast path", {
   x <- as_mlx(mat)
 
   set.seed(20251101)
-  rows <- c(2L, 5L, 9L, 12L)
-  cols <- c(1L, 4L, 6L, 9L, 14L)
+  rows <- c(9L, 2L, 12L, 5L)
+  cols <- c(9L, 1L, 14L, 4L, 6L)
   repl <- matrix(runif(length(rows) * length(cols)), nrow = length(rows))
 
   x[rows, cols] <- repl
@@ -126,12 +128,12 @@ test_that("subset assignment with mlx indices matches base R", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)
 
-  rows <- as_mlx(c(1L, 3L))
-  cols <- as_mlx(c(2L, 3L))
+  rows <- as_mlx(c(3L, 1L))
+  cols <- as_mlx(c(3L, 2L))
   block <- matrix(c(100, 200, 300, 400), nrow = 2)
 
   x[rows, cols] <- block
-  mat[c(1, 3), c(2, 3)] <- block
+  mat[c(3, 1), c(3, 2)] <- block
 
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
@@ -247,10 +249,10 @@ test_that("subset assignment handles repeated numeric indices", {
   cols <- c(4L, 2L, 4L)
   values <- matrix(runif(length(rows) * length(cols)), nrow = length(rows))
 
-  x[rows, cols] <- values
-  mat[rows, cols] <- values
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
+  expect_error(
+    x[rows, cols] <- values,
+    "Duplicate indices are not allowed"
+  )
 })
 
 test_that("subset assignment preserves order of numeric indices", {
@@ -272,12 +274,12 @@ test_that("mlx matrix assignment works", {
   mat <- matrix(1:12, 3, 4)
   x <- as_mlx(mat)
 
-  idx <- mlx_matrix(c(1, 1,
-                         3, 4), ncol = 2, byrow = TRUE)
+  idx <- mlx_matrix(c(3, 4,
+                         1, 1), ncol = 2, byrow = TRUE)
   vals <- c(500, 600)
 
   x[idx] <- vals
-  mat[matrix(c(1, 1, 3, 4), ncol = 2, byrow = TRUE)] <- vals
+  mat[matrix(c(3, 4, 1, 1), ncol = 2, byrow = TRUE)] <- vals
 
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
@@ -286,13 +288,13 @@ test_that("mlx matrix assignment with duplicates keeps last value", {
   mat <- matrix(0, 3, 3)
   x <- as_mlx(mat)
 
-  idx <- mlx_matrix(c(1, 1,
+  idx <- mlx_matrix(c(2, 2,
                          1, 1,
-                         2, 2), ncol = 2, byrow = TRUE)
+                         1, 1), ncol = 2, byrow = TRUE)
   vals <- c(5, 7, 9)
 
   x[idx] <- vals
-  mat[matrix(c(1, 1, 1, 1, 2, 2), ncol = 2, byrow = TRUE)] <- vals
+  mat[matrix(c(2, 2, 1, 1, 1, 1), ncol = 2, byrow = TRUE)] <- vals
 
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
@@ -312,8 +314,8 @@ test_that("subset assignment preserves GPU device", {
   mat <- matrix(1:6, 2, 3)
   x <- as_mlx(mat, device = "gpu")
 
-  x[1, ] <- c(10, 20, 30)
-  mat[1, ] <- c(10, 20, 30)
+  x[2, ] <- c(30, 10, 20)
+  mat[2, ] <- c(30, 10, 20)
 
   expect_equal(x$device, "gpu")
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
@@ -322,36 +324,36 @@ test_that("subset assignment preserves GPU device", {
 test_that("subset assignment: mlx numeric positive indices", {
   # 1D vector
   x <- mlx_vector(1:10)
-  idx_mlx <- as_mlx(c(2L, 4L, 6L))
+  idx_mlx <- as_mlx(c(6L, 2L, 4L))
   x[idx_mlx] <- 99
   expect_equal(as.vector(x)[c(2, 4, 6)], rep(99, 3))
 
   # 2D matrix
   x <- mlx_matrix(1:20, 4, 5)
-  idx_mlx <- as_mlx(c(1L, 3L))
+  idx_mlx <- as_mlx(c(3L, 1L))
   x[idx_mlx, ] <- 88
   result <- as.matrix(x)
-  expect_equal(result[c(1, 3), ], matrix(88, 2, 5))
+  expect_equal(result[c(3, 1), ], matrix(88, 2, 5))
 
   # 3D array
   x <- mlx_array(1:60, c(3, 4, 5))
-  idx_mlx <- as_mlx(c(1L, 3L))
+  idx_mlx <- as_mlx(c(3L, 1L))
   x[idx_mlx, , ] <- 77
   result <- as.array(x)
-  expect_equal(result[c(1, 3), , ], array(77, c(2, 4, 5)))
+  expect_equal(result[c(3, 1), , ], array(77, c(2, 4, 5)))
 })
 
 test_that("subset assignment: mlx numeric negative indices", {
   # 1D vector
   x <- mlx_vector(1:10)
-  idx_mlx <- as_mlx(c(-2L, -4L, -6L))
+  idx_mlx <- as_mlx(c(-6L, -2L, -4L))
   x[idx_mlx] <- 99
   result <- as.vector(x)
   expect_equal(result[c(-2, -4, -6)], rep(99, 7))
 
   # 2D matrix
   x <- mlx_matrix(1:20, 4, 5)
-  idx_mlx <- as_mlx(c(-1L, -3L))
+  idx_mlx <- as_mlx(c(-3L, -1L))
   x[idx_mlx, ] <- 88
   result <- as.matrix(x)
   expect_equal(result[-c(1, 3), ], matrix(88, 2, 5))
@@ -367,34 +369,34 @@ test_that("subset assignment: mlx numeric negative indices", {
 test_that("subset assignment: R numeric positive indices", {
   # 1D vector
   x <- mlx_vector(1:10)
-  x[c(2, 4, 6)] <- 99
+  x[c(6, 2, 4)] <- 99
   expect_equal(as.vector(x)[c(2, 4, 6)], rep(99, 3))
 
   # 2D matrix
   x <- mlx_matrix(1:20, 4, 5)
-  x[c(1, 3), ] <- 88
+  x[c(3, 1), ] <- 88
   result <- as.matrix(x)
-  expect_equal(result[c(1, 3), ], matrix(88, 2, 5))
+  expect_equal(result[c(3, 1), ], matrix(88, 2, 5))
 
   # 3D array
   x <- mlx_array(1:60, c(3, 4, 5))
-  x[c(1, 3), , ] <- 77
+  x[c(3, 1), , ] <- 77
   result <- as.array(x)
-  expect_equal(result[c(1, 3), , ], array(77, c(2, 4, 5)))
+  expect_equal(result[c(3, 1), , ], array(77, c(2, 4, 5)))
 })
 
 test_that("subset assignment: R numeric negative indices", {
   # 1D vector
   x <- mlx_vector(1:10)
-  x[c(-2, -4, -6)] <- 99
+  x[c(-6, -2, -4)] <- 99
   result <- as.vector(x)
   expect_equal(result[c(-2, -4, -6)], rep(99, 7))
 
   # 2D matrix
   x <- mlx_matrix(1:20, 4, 5)
-  x[-c(1, 3), ] <- 88
+  x[-c(3, 1), ] <- 88
   result <- as.matrix(x)
-  expect_equal(result[-c(1, 3), ], matrix(88, 2, 5))
+  expect_equal(result[-c(3, 1), ], matrix(88, 2, 5))
 
   # 3D array
   x <- mlx_array(1:60, c(3, 4, 5))
@@ -448,29 +450,29 @@ test_that("subset assignment: mixed index types", {
   # mlx boolean + R numeric
   x <- mlx_matrix(1:20, 4, 5)
   mask <- as_mlx(c(TRUE, FALSE, TRUE, FALSE), dtype = "bool")
-  x[mask, c(2, 4)] <- 99
+  x[mask, c(4, 2)] <- 99
   result <- as.matrix(x)
-  expect_equal(result[c(1, 3), c(2, 4)], matrix(99, 2, 2))
+  expect_equal(result[c(1, 3), c(4, 2)], matrix(99, 2, 2))
 
   # R logical + mlx numeric
   x <- mlx_matrix(1:20, 4, 5)
-  idx_mlx <- as_mlx(c(2L, 4L))
+  idx_mlx <- as_mlx(c(4L, 2L))
   x[c(TRUE, FALSE, TRUE, FALSE), idx_mlx] <- 88
   result <- as.matrix(x)
-  expect_equal(result[c(1, 3), c(2, 4)], matrix(88, 2, 2))
+  expect_equal(result[c(1, 3), c(4, 2)], matrix(88, 2, 2))
 
   # mlx numeric + mlx boolean on 3D
   x <- mlx_array(1:60, c(3, 4, 5))
-  idx_mlx <- as_mlx(c(1L, 3L))
+  idx_mlx <- as_mlx(c(3L, 1L))
   mask <- as_mlx(c(TRUE, FALSE, TRUE, FALSE), dtype = "bool")
   x[idx_mlx, mask, ] <- 77
   result <- as.array(x)
-  expect_equal(result[c(1, 3), c(1, 3), ], array(77, c(2, 2, 5)))
+  expect_equal(result[c(3, 1), c(1, 3), ], array(77, c(2, 2, 5)))
 
   # R numeric negative + mlx boolean
   x <- mlx_matrix(1:20, 4, 5)
   mask <- as_mlx(c(TRUE, FALSE, TRUE, FALSE, TRUE), dtype = "bool")
-  x[-c(1, 4), mask] <- 66
+  x[-c(4, 1), mask] <- 66
   result <- as.matrix(x)
   expect_equal(result[c(2, 3), c(1, 3, 5)], matrix(66, 2, 3))
 })

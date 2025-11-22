@@ -106,7 +106,17 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
     dtype_val <- "float32"
   }
 
-  if (is_mlx(x)) return(x)
+  if (is_mlx(x)) {
+    need_device <- !missing(device) && !identical(mlx_device(x), handle$device)
+    need_dtype <- !missing(dtype) && !identical(mlx_dtype(x), dtype_val)
+    if (!need_device && !need_dtype) return(x)
+
+    ptr <- .mlx_eval_with_stream(handle, function(dev) {
+      target_dtype <- if (need_dtype) dtype_val else mlx_dtype(x)
+      cpp_mlx_cast(x$ptr, target_dtype, handle$device)
+    })
+    return(new_mlx(ptr, handle$device))
+  }
 
   is_supported <- (is.vector(x) && !is.list(x)) || is.matrix(x) || is.array(x)
   if (!is_supported) {

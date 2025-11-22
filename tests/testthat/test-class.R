@@ -132,6 +132,15 @@ test_that("as.numeric.mlx drops dimensions", {
   expect_equal(result_3d, as.numeric(as.vector(arr)))
 })
 
+test_that("as_mlx changes device and dtype for existing mlx inputs", {
+  cpu_vec <- mlx_vector(1:10, device = "cpu")
+  gpu_vec <- as_mlx(cpu_vec, dtype = "float32", device = "gpu")
+
+  expect_equal(mlx_device(gpu_vec), "gpu")
+  expect_equal(mlx_dtype(gpu_vec), "float32")
+  expect_equal(as.vector(gpu_vec), as.vector(cpu_vec))
+})
+
 test_that("row()/col() match base results for mlx matrices", {
   mat <- matrix(seq_len(12), 3, 4)
   mat_mlx <- as_mlx(mat)

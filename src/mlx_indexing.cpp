@@ -1,5 +1,6 @@
 // Indexing and slicing operations
 #include "mlx_helpers.hpp"
+#include "colmajor_helpers.hpp"
 #include <algorithm>
 #include <mlx/mlx.h>
 #include <Rcpp.h>
@@ -190,14 +191,8 @@ SEXP cpp_mlx_assign(SEXP xp_,
   array flat_src = reshape(src, Shape{static_cast<int>(src.size())});
 
   array flat_updates = [&]() {
-    if (updates.ndim() <= 1) {
-      return reshape(updates, Shape{static_cast<int>(total), 1});
-    }
-    // transpose() with no permutation reverses axes; combined with row-major
-    // flatten this matches R's column-major order.
-    array transposed = transpose(updates);
-    transposed = contiguous(transposed);
-    return reshape(transposed, Shape{static_cast<int>(total), 1});
+    array flat = flatten_r_order(updates);
+    return reshape(flat, Shape{static_cast<int>(total), 1});
   }();
 
   std::vector<int64_t> strides(ndim, 1);
@@ -252,5 +247,25 @@ SEXP cpp_mlx_masked_scatter(SEXP xp_,
   array updates = astype(updates_wrapper->get(), src.dtype(), dev);
 
   array result = masked_scatter(src, mask, updates, dev);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_masked_scatter_colmajor(SEXP xp_,
+                                     SEXP mask_xp_,
+                                     SEXP updates_xp_,
+                                     std::string device_str) {
+  MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
+  MlxArrayWrapper* mask_wrapper = get_mlx_wrapper(mask_xp_);
+  MlxArrayWrapper* updates_wrapper = get_mlx_wrapper(updates_xp_);
+
+  StreamOrDevice dev = string_to_device(device_str);
+
+  array src = transpose_to_r_order(src_wrapper->get());
+  array mask = transpose_to_r_order(astype(mask_wrapper->get(), bool_, dev));
+  array updates = astype(updates_wrapper->get(), src.dtype(), dev);
+
+  array result = masked_scatter(src, mask, updates, dev);
+  result = transpose_to_r_order(result);
   return make_mlx_xptr(std::move(result));
 }

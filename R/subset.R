@@ -24,7 +24,6 @@
 #' @param ... Indices for each dimension. Provide one per axis; omitted indices
 #'   select the full extent. Logical indices recycle to the dimension length.
 #' @param drop Should dimensions be dropped? (default: FALSE)
-#' @param value Replacement values, recycled to match the selection.
 #' @return The subsetted MLX object.
 #' @seealso [mlx.core.take](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.take)
 #' @name mlx_subset
@@ -86,172 +85,6 @@
   out
 }
 
-#' Convert numeric indices to boolean mask on GPU
-#'
-#' @param idx_mlx mlx array with numeric indices (may be negative).
-#' @param dim_size Size of the dimension being indexed.
-#' @param device MLX device for result.
-#' @return An mlx boolean mask.
-#' @noRd
-.numeric_idx_to_boolean_mask <- function(idx_mlx, dim_size, device) {
-  # idx_mlx is positive 1-based indices at this point
-  if (length(idx_mlx) == 0L) {
-    return(mlx_zeros(dim_size, dtype = "bool", device = device))
-  }
-
-  idx_mlx <- as_mlx(idx_mlx, dtype = "int64", device = device)
-  idx0 <- .mlx_cast(idx_mlx - 1L, dtype = "int64", device = device)
-
-  mask <- mlx_zeros(dim_size, dtype = "bool", device = device)
-  # scatter expects updates to include index dims; ensure rank > 1 to satisfy shape checks
-  updates <- mlx_full(c(length(idx_mlx), 1L), TRUE, dtype = "bool", device = device)
-
-  # scatter updates and return the resulting mask
-  .mlx_scatter_axis(mask, idx0, updates, axis = 0L)
-}
-
-#' Boolean mask assignment helper using masked_scatter
-#'
-#' @param x `mlx` array to modify.
-#' @param idx_list List of per-axis indices.
-#' @param shape Integer vector of dimension sizes.
-#' @param value Replacement values.
-#' @return An `mlx` array with the assignments applied.
-#' @noRd
-.mlx_assign_boolean_mask <- function(x, idx_list, shape, value) {
-  ndim <- length(shape)
-
-  # Convert all indices to boolean masks
-  masks <- lapply(seq_len(ndim), function(i) {
-    idx <- if (i <= length(idx_list)) idx_list[[i]] else NULL
-    # NULL → all TRUE
-    if (is.null(idx)) return(mlx_ones(shape[i], dtype = "bool", device = x$device))
-    idx <- as_mlx(idx)
-    # Already boolean → return as-is
-    if (mlx_dtype(idx) == "bool") return(idx)
-
-    idx <- .resolve_to_positive_indices(idx, shape[i])
-    # Convert to boolean mask (handles both positive and negative)
-    .numeric_idx_to_boolean_mask(as_mlx(idx), shape[i], x$device)
-  })
-
-  # Reshape each mask to have singleton dimensions in all axes except its own
-  reshaped_masks <- lapply(seq_len(ndim), function(i) {
-    new_shape <- rep(1L, ndim)
-    new_shape[i] <- shape[i]
-    mlx_reshape(masks[[i]], new_shape)
-  })
-  # Broadcast all masks to the same shape
-  broadcasted <- mlx_broadcast_arrays(reshaped_masks, device = x$device)
-  # Combine with logical AND
-  combined_mask <- mlx_stack(broadcasted)
-  combined_mask <- mlx_all(combined_mask, axes = 1)
-  if (! any(combined_mask)) {
-    return(x)
-  }
-
-  # Count selected elements and prepare updates
-  n_selected <- as.integer(mlx_sum(combined_mask))
-
-  x_dtype <- mlx_dtype(x)
-  updates <- .mlx_prepare_updates_flat(value, n_selected, x_dtype, x$device)
-
-  # MLX uses row-major, R uses column-major
-  # transpose() reverses all axes, converting between the two orderings
-  x_t <- t(x)
-  mask_t <- t(combined_mask)
-
-  ptr_t <- cpp_mlx_masked_scatter(x_t$ptr, mask_t$ptr, updates$ptr, x$device)
-  result_t <- new_mlx(ptr_t, x$device)
-
-  # Transpose back
-  t(result_t)
-}
-
-#' Integer index assignment helper
-#'
-#' @param x `mlx` array to modify.
-#' @param idx_list List of per-axis indices.
-#' @param shape Integer vector of dimension sizes.
-#' @param value Replacement values.
-#' @return An `mlx` array with the assignments applied.
-#' @noRd
-.mlx_assign_duplicate_indices <- function(x, idx_list, shape, value) {
-  ndim <- length(shape)
-
-  prep <- .mlx_prepare_assignment_indices(idx_list, shape)
-  if (prep$empty) return(x)
-
-  full_indices <- Map(function(sel, dim_len) {
-    if (is.null(sel)) {
-      if (dim_len == 0L) integer(0) else seq.int(0L, dim_len - 1L)
-    } else {
-      sel
-    }
-  }, prep$normalized, shape)
-  grid <- do.call(expand.grid, c(full_indices, KEEP.OUT.ATTRS = FALSE))
-  coord_mat <- as.matrix(grid)
-  if (!is.matrix(coord_mat)) {
-    coord_mat <- matrix(coord_mat, ncol = ndim)
-  }
-  idx_mat <- coord_mat + 1L
-
-  base <- as.array(x)
-  value_vec <- rep_len(as.vector(value), total_elems)
-  base[idx_mat] <- value_vec
-  x_dtype <- mlx_dtype(x)
-  as_mlx(base, dtype = x_dtype, device = x$device)
-}
-
-.mlx_prepare_updates_flat <- function(value, target_len, dtype, device) {
-  value_mlx <- .mlx_cast(as_mlx(value), dtype = dtype, device = device)
-  value_len <- length(value_mlx)
-  if (value_len == 0L) {
-    stop("Replacement value must have length >= 1.", call. = FALSE)
-  }
-  if (value_len != 1L && target_len %% value_len != 0L) {
-    stop("Number of items to replace is not a multiple of replacement length", call. = FALSE)
-  }
-
-  flat <- mlx_flatten(value_mlx)
-  tiles <- target_len %/% value_len
-  mlx_tile(flat, tiles)
-}
-
-#' @rdname mlx_subset
-#' @export
-`[<-.mlx` <- function(x, ..., value) {
-  stopifnot(is_mlx(x))
-  shape <- mlx_shape(x)
-  ndim <- length(shape)
-  if (ndim == 0L) {
-    stop("Cannot assign to a scalar mlx array.", call. = FALSE)
-  }
-
-  # Evaluate index arguments; allow fewer than ndim entries when trailing dimensions are implied
-  dot_expr <- as.list(substitute(alist(...)))[-1]
-  idx_list <- .mlx_collect_indices(dot_expr, ndim, parent.frame())
-
-  # Matrix/array indexing (one coordinate per row) delegates to helper
-  if (length(dot_expr) == 1L) {
-    resolved <- .mlx_resolve_single_index(idx_list[[1]], shape)
-    if (!is.null(resolved)) {
-      return(.mlx_assign_matrix(x, resolved$coord, value))
-    }
-  }
-
-  prep <- .mlx_prepare_assignment_indices(idx_list, shape)
-  has_dupes <- any(vapply(prep$normalized, function(sel) {
-    !is.null(sel) && length(sel) > 1L && anyDuplicated(sel) > 0L
-  }, logical(1)))
-
-  if (has_dupes) {
-    .mlx_assign_duplicate_indices(x, idx_list, shape, value)
-  } else {
-    .mlx_assign_boolean_mask(x, idx_list, shape, value)
-  }
-}
-
 #' Matrix-style subsetting helper.
 #'
 #' @param x `mlx` array to subset.
@@ -290,12 +123,17 @@
   x_dtype <- mlx_dtype(x)
 
   linear_idx <- .mlx_linear_indices(idx_mat, dims)
-  total <- length(linear_idx)
-
   val_vec <- as.vector(value)
   if (!length(val_vec)) {
     stop("Replacement value must have length >= 1.", call. = FALSE)
   }
+
+  if (anyDuplicated(linear_idx)) {
+    last_pos <- rev(!duplicated(rev(linear_idx)))
+    linear_idx <- linear_idx[last_pos]
+    val_vec <- val_vec[last_pos]
+  }
+  total <- length(linear_idx)
   val_vec <- rep_len(val_vec, total)
 
   idx_mlx <- as_mlx(linear_idx, dtype = "int64", device = x$device)
@@ -425,13 +263,6 @@
   list(normalized = normalized, dims_sel = dims_sel, empty = empty)
 }
 
-#' Compute slice parameters for contiguous selections
-#'
-#' @param normalized List of normalised (0-based) indices per axis.
-#' @param dim_sizes Integer vector of dimension sizes.
-#' @return List with `can_slice` flag plus integer vectors `start`, `stop`,
-#'   and `stride`.
-#' @noRd
 #' Compute linear indices from multi-axis coordinates.
 #'
 #' @param index_matrix Matrix of zero-based indices (rows = elements).
