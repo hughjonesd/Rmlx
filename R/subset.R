@@ -107,51 +107,6 @@
   new_mlx(ptr, x$device)
 }
 
-#' Matrix-style assignment helper.
-#'
-#' @param x `mlx` array to modify.
-#' @param idx_mat Integer matrix of 1-based indices.
-#' @param value Replacement values (recycled to match index count).
-#' @return An `mlx` array with the assignments applied.
-#' @noRd
-.mlx_assign_matrix <- function(x, idx_mat, value) {
-  dims <- mlx_shape(x)
-  idx_mat <- .mlx_coerce_index_matrix(idx_mat, dims, type = "assign")
-  if (!nrow(idx_mat)) {
-    return(x)
-  }
-  x_dtype <- mlx_dtype(x)
-
-  linear_idx <- .mlx_linear_indices(idx_mat, dims)
-  val_vec <- as.vector(value)
-  if (!length(val_vec)) {
-    stop("Replacement value must have length >= 1.", call. = FALSE)
-  }
-
-  if (anyDuplicated(linear_idx)) {
-    last_pos <- rev(!duplicated(rev(linear_idx)))
-    linear_idx <- linear_idx[last_pos]
-    val_vec <- val_vec[last_pos]
-  }
-  total <- length(linear_idx)
-  val_vec <- rep_len(val_vec, total)
-
-  idx_mlx <- as_mlx(linear_idx, dtype = "int64", device = x$device)
-  idx_rank <- length(mlx_shape(idx_mlx))
-  total_len <- as.integer(total)
-  updates_dim <- c(total_len, rep.int(1L, idx_rank))
-  updates_mlx <- mlx_array(
-    val_vec,
-    dim = updates_dim,
-    dtype = x_dtype,
-    device = x$device
-  )
-
-  flat <- mlx_flatten(x)
-  flat_updated <- .mlx_scatter_axis(flat, idx_mlx, updates_mlx, axis = 0L)
-  mlx_reshape(flat_updated, dims)
-}
-
 #' Evaluate and align index expressions with dimension count
 #'
 #' @param dot_expr List of unevaluated index expressions from `...`.

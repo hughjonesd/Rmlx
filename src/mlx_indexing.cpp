@@ -119,18 +119,24 @@ SEXP cpp_mlx_gather(SEXP xp_,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_scatter(SEXP xp_,
-                     SEXP indices_xp_,
+                     List indices_,
                      SEXP updates_xp_,
-                     int axis) {
+                     IntegerVector axes_,
+                     std::string device_str) {
   MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
-  MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_xp_);
   MlxArrayWrapper* upd_wrapper = get_mlx_wrapper(updates_xp_);
 
   std::vector<array> indices_vec;
-  indices_vec.push_back(idx_wrapper->get());
-  std::vector<int> axes_vec{axis};
+  indices_vec.reserve(indices_.size());
+  for (int i = 0; i < indices_.size(); ++i) {
+    List obj(indices_[i]);
+    indices_vec.push_back(get_mlx_wrapper(obj["ptr"])->get());
+  }
 
-  array result = scatter(src_wrapper->get(), indices_vec, upd_wrapper->get(), axes_vec);
+  std::vector<int> axes_vec(axes_.begin(), axes_.end());
+  StreamOrDevice dev = string_to_device(device_str);
+
+  array result = scatter(src_wrapper->get(), indices_vec, upd_wrapper->get(), axes_vec, dev);
   return make_mlx_xptr(std::move(result));
 }
 

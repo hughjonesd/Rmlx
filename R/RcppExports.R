@@ -125,8 +125,8 @@ cpp_mlx_gather <- function(xp_, indices_, axes_, device_str) {
     .Call(`_Rmlx_cpp_mlx_gather`, xp_, indices_, axes_, device_str)
 }
 
-cpp_mlx_scatter <- function(xp_, indices_xp_, updates_xp_, axis) {
-    .Call(`_Rmlx_cpp_mlx_scatter`, xp_, indices_xp_, updates_xp_, axis)
+cpp_mlx_scatter <- function(xp_, indices_, updates_xp_, axes_, device_str) {
+    .Call(`_Rmlx_cpp_mlx_scatter`, xp_, indices_, updates_xp_, axes_, device_str)
 }
 
 cpp_mlx_assign <- function(xp_, normalized_, updates_xp_, dim_sizes_) {

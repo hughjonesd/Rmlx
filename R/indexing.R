@@ -175,10 +175,8 @@ mlx_slice_update <- function(x,
 #' @param axis Integer axis (0-indexed) supplied to MLX `scatter`.
 #' @return An `mlx` array with the specified updates applied.
 #' @noRd
-.mlx_scatter_axis <- function(x, indices, updates, axis = 0L) {
-  if (!is_mlx(x) || !is_mlx(indices) || !is_mlx(updates)) {
-    stop("All inputs to .mlx_scatter_axis must be mlx arrays.", call. = FALSE)
-  }
-  ptr <- cpp_mlx_scatter(x$ptr, indices$ptr, updates$ptr, as.integer(axis))
-  new_mlx(ptr, x$device)
+.mlx_scatter_axis <- function(x, indices, updates, axes, device) {
+  idx_list <- if (is.list(indices)) indices else list(indices)
+  ptr <- cpp_mlx_scatter(x$ptr, idx_list, updates$ptr, as.integer(axes), device)
+  new_mlx(ptr, device)
 }

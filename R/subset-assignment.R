@@ -45,6 +45,49 @@
   .mlx_assign_numeric(x, idx_mlx, shape, value)
 }
 
+#' Scatter-style assignment helper
+#'
+#' Performs the equivalent of `x[indices[[1]], indices[[2]], ...] <- value`
+#' using MLX `scatter()`. Indices are numeric vectors (1-based, like R).
+#'
+#' @param x `mlx` array to update.
+#' @param indices List of numeric vectors, one per axis of `x`.
+#' @param value Replacement values (recycled like base R).
+#' @return Updated `mlx` array.
+#' @noRd
+scatter_assign <- function(x, indices, value) {
+  stopifnot(is_mlx(x))
+  shape <- mlx_shape(x)
+  ndim <- length(shape)
+  if (length(indices) != ndim) {
+    stop("length(indices) must match rank of x", call. = FALSE)
+  }
+
+  # Normalize and validate indices (1-based to 0-based)
+  idx_norm <- lapply(seq_len(ndim), function(i) {
+    idx <- as.integer(indices[[i]])
+    if (any(is.na(idx))) stop("indices must be finite integers", call. = FALSE)
+    if (any(idx < 1L) || any(idx > shape[i])) {
+      stop("indices out of bounds for dimension ", i, call. = FALSE)
+    }
+    idx - 1L
+  })
+
+  lens <- vapply(idx_norm, length, integer(1))
+  if (any(lens == 0L)) return(x)
+
+  # Prepare updates in row-major order expected by scatter
+  updates_r <- array(value, dim = c(lens, rep(1L, ndim)))
+  updates <- as_mlx(updates_r, dtype = mlx_dtype(x), device = x$device)
+
+  idx_vecs <- lapply(idx_norm, function(v) as_mlx(v, dtype = "int64", device = x$device))
+  idx_grid <- mlx_meshgrid(idx_vecs, sparse = FALSE, indexing = "ij", device = x$device)
+
+  axes <- seq_len(ndim) - 1L
+  ptr <- cpp_mlx_scatter(x$ptr, idx_grid, updates$ptr, axes, x$device)
+  new_mlx(ptr, x$device)
+}
+
 .mlx_assign_numeric <- function(x, idx_mlx, shape, value) {
   ndim <- length(shape)
   normalized <- vector("list", ndim)
@@ -81,13 +124,8 @@
     return(x)
   }
 
-  target_len <- prod(dims_sel)
-  updates <- .mlx_prepare_updates_for_selection(value, target_len,
-                                                dtype = mlx_dtype(x),
-                                                device = x$device)
-
-  ptr <- cpp_mlx_assign(x$ptr, normalized, updates$ptr, as.integer(shape))
-  new_mlx(ptr, x$device)
+  # Delegate to scatter_assign (expects 1-based indices), re-add 1 to normalized
+  scatter_assign(x, lapply(normalized, `+`, 1L), value)
 }
 
 
@@ -159,27 +197,15 @@
   if (!length(val_vec)) {
     stop("Replacement value must have length >= 1.", call. = FALSE)
   }
-
   if (anyDuplicated(linear_idx)) {
     last_pos <- rev(!duplicated(rev(linear_idx)))
-    linear_idx <- linear_idx[last_pos]
+    idx_mat <- idx_mat[last_pos, , drop = FALSE]
     val_vec <- val_vec[last_pos]
   }
-  total <- length(linear_idx)
-  val_vec <- rep_len(val_vec, total)
+  val_vec <- rep_len(val_vec, length(linear_idx))
 
-  idx_mlx <- as_mlx(linear_idx, dtype = "int64", device = x$device)
-  idx_rank <- length(mlx_shape(idx_mlx))
-  total_len <- as.integer(total)
-  updates_dim <- c(total_len, rep.int(1L, idx_rank))
-  updates_mlx <- mlx_array(
-    val_vec,
-    dim = updates_dim,
-    dtype = x_dtype,
-    device = x$device
-  )
-
+  # Scatter on flattened array using row-major linear indices
   flat <- mlx_flatten(x)
-  flat_updated <- .mlx_scatter_axis(flat, idx_mlx, updates_mlx, axis = 0L)
-  mlx_reshape(flat_updated, dims)
+  updated <- scatter_assign(flat, list(linear_idx + 1L), val_vec)
+  mlx_reshape(updated, dims)
 }
