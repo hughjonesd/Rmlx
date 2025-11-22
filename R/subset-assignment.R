@@ -198,9 +198,7 @@ scatter_assign <- function(x, indices, value) {
     stop("Replacement value must have length >= 1.", call. = FALSE)
   }
   if (anyDuplicated(linear_idx)) {
-    last_pos <- rev(!duplicated(rev(linear_idx)))
-    idx_mat <- idx_mat[last_pos, , drop = FALSE]
-    val_vec <- val_vec[last_pos]
+    stop("Duplicate indices are not allowed in assignment.", call. = FALSE)
   }
   val_vec <- rep_len(val_vec, length(linear_idx))
 

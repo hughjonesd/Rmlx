@@ -168,20 +168,27 @@
   }
 
   if (.mlx_is_numeric_matrix_index(idx, dim_sizes)) {
-    coord_mat <- idx
-  } else {
-    if (.mlx_is_numeric_matrix_shape(idx)) {
-      stop("Matrix index must have one column per dimension.", call. = FALSE)
-    }
+    return(list(coord = idx))
+  }
+
+  if (.mlx_is_numeric_matrix_shape(idx)) {
+    stop("Matrix index must have one column per dimension.", call. = FALSE)
+  }
+
+  # Treat any single logical or numeric index (R or mlx) as a flat selector
+  # over all elements, mirroring base R's behavior for x[vec] and x[mask].
+  is_bool_mlx <- is_mlx(idx) && identical(mlx_dtype(idx), "bool")
+  if (is.logical(idx) || is_bool_mlx || is.numeric(idx) || (is_mlx(idx) && length(mlx_shape(idx)) == 1L)) {
     flat_sel <- .mlx_coerce_flat_index(idx, prod(dim_sizes))
     coord_mat <- if (length(flat_sel)) {
       arrayInd(flat_sel + 1L, .dim = dim_sizes)
     } else {
       matrix(integer(0), nrow = 0, ncol = length(dim_sizes))
     }
+    return(list(coord = coord_mat))
   }
 
-  list(coord = coord_mat)
+  NULL
 }
 
 #' Normalise indices for assignment logic
