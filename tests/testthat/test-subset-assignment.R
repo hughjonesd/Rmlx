@@ -53,6 +53,23 @@ test_that("subset assignment accepts mlx replacement arrays", {
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 
+test_that("subset assignment handles shuffled numeric indices", {
+  seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
+  set.seed(seed)
+  mat <- matrix(sample.int(50, 20, replace = TRUE), nrow = 4)
+  x <- as_mlx(mat)
+
+  rows <- c(4L, 1L, 3L)
+  cols <- c(5L, 2L, 4L)
+  repl <- matrix(runif(length(rows) * length(cols), -5, 5),
+                 nrow = length(rows))
+
+  x[rows, cols] <- repl
+  mat[rows, cols] <- repl
+
+  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
+})
+
 test_that("vector subset assignment updates the correct element", {
   base_vec <- 1:5
   mlx_vec <- mlx_vector(base_vec)
@@ -61,6 +78,18 @@ test_that("vector subset assignment updates the correct element", {
   base_vec[1] <- 2
 
   expect_equal(as.vector(mlx_vec), base_vec, tolerance = 1e-6)
+})
+
+test_that("vector subset assignment rejects unordered repeats", {
+  seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
+  set.seed(seed)
+  base_vec <- sample(-5:5, 6, replace = TRUE)
+  mlx_vec <- mlx_vector(base_vec)
+
+  idx <- c(6L, 2L, 6L, 1L)
+  vals <- c(-10, 20, 30, -40)
+
+  expect_error(mlx_vec[idx] <- vals, "Duplicate indices are not allowed")
 })
 
 test_that("vector subset assignment handles mlx and logical indices", {
@@ -284,7 +313,7 @@ test_that("mlx matrix assignment works", {
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 
-test_that("mlx matrix assignment with duplicates keeps last value", {
+test_that("mlx matrix assignment rejects duplicate coordinates", {
   mat <- matrix(0, 3, 3)
   x <- as_mlx(mat)
 
@@ -293,10 +322,7 @@ test_that("mlx matrix assignment with duplicates keeps last value", {
                          1, 1), ncol = 2, byrow = TRUE)
   vals <- c(5, 7, 9)
 
-  x[idx] <- vals
-  mat[matrix(c(2, 2, 1, 1, 1, 1), ncol = 2, byrow = TRUE)] <- vals
-
-  expect_equal(as.matrix(x), mat, tolerance = 1e-6)
+  expect_error(x[idx] <- vals, "Duplicate indices are not allowed")
 })
 
 test_that("negative numeric indices work for assignment", {

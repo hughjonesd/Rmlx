@@ -79,6 +79,20 @@ test_that("higher dimensional indexing works", {
                arr[, c(TRUE, FALSE, TRUE, FALSE), , drop = FALSE])
 })
 
+test_that("higher dimensional indexing preserves arbitrary order", {
+  seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
+  set.seed(seed)
+  arr <- array(sample.int(60, 24, replace = TRUE), dim = c(3, 4, 2))
+  x <- as_mlx(arr)
+
+  idx1 <- c(3L, 1L)
+  idx2 <- c(4L, 2L)
+  idx3 <- c(2L, 1L)
+
+  expect_equal(as.array(x[idx1, idx2, idx3]),
+               arr[idx1, idx2, idx3, drop = FALSE])
+})
+
 test_that("drop argument matches expectations", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)

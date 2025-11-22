@@ -103,6 +103,24 @@ test_that("binary operations align devices and dtypes", {
   expect_equal(as.matrix(result), matrix(c(6, 8, 10, 12), 2, 2), tolerance = 1e-6)
 })
 
+test_that("arithmetic works on non-contiguous views", {
+  seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
+  set.seed(seed)
+  base <- matrix(sample(-5:5, 12, replace = TRUE), 3, 4)
+  x <- as_mlx(base)
+
+  lhs <- x[c(3L, 1L), c(4L, 2L)]
+  rhs <- x[c(2L, 3L), c(1L, 4L)]
+
+  expect_equal(as.matrix(lhs + rhs),
+               base[c(3, 1), c(4, 2)] + base[c(2, 3), c(1, 4)],
+               tolerance = 1e-6)
+
+  expect_equal(as.matrix(lhs * rhs),
+               base[c(3, 1), c(4, 2)] * base[c(2, 3), c(1, 4)],
+               tolerance = 1e-6)
+})
+
 test_that("logical operators work", {
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device))

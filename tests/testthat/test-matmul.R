@@ -40,6 +40,23 @@ test_that("matrix multiplication dimension checking works", {
   expect_error(a_mlx %*% b_mlx, "Non-conformable")
 })
 
+test_that("matrix multiplication works on permuted slices", {
+  seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
+  set.seed(seed)
+  full_a <- matrix(rnorm(20), 4, 5)
+  full_b <- matrix(rnorm(10), 5, 2)
+
+  a_slice <- full_a[c(4L, 1L, 3L), c(5L, 2L, 4L)]
+  b_slice <- full_b[c(5L, 2L, 4L), ]
+
+  a_mlx <- as_mlx(full_a)[c(4L, 1L, 3L), c(5L, 2L, 4L)]
+  b_mlx <- as_mlx(full_b)[c(5L, 2L, 4L), ]
+
+  expect_equal(as.matrix(a_mlx %*% b_mlx),
+               a_slice %*% b_slice,
+               tolerance = 1e-6)
+})
+
 test_that("transpose works", {
   x <- matrix(1:12, 3, 4)
   x_mlx <- as_mlx(x)
