@@ -10,6 +10,17 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// cpp_mlx_flatten_r_order
+SEXP cpp_mlx_flatten_r_order(SEXP xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_flatten_r_order(SEXP xp_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_flatten_r_order(xp_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_zeros
 SEXP cpp_mlx_zeros(SEXP dim_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_zeros(SEXP dim_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -1921,6 +1932,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_Rmlx_cpp_mlx_flatten_r_order", (DL_FUNC) &_Rmlx_cpp_mlx_flatten_r_order, 1},
     {"_Rmlx_cpp_mlx_zeros", (DL_FUNC) &_Rmlx_cpp_mlx_zeros, 3},
     {"_Rmlx_cpp_mlx_ones", (DL_FUNC) &_Rmlx_cpp_mlx_ones, 3},
     {"_Rmlx_cpp_mlx_zeros_like", (DL_FUNC) &_Rmlx_cpp_mlx_zeros_like, 3},

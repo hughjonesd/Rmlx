@@ -1,5 +1,6 @@
 // Core MLX operations
 #include "mlx_helpers.hpp"
+#include "colmajor_helpers.hpp"
 #include <mlx/mlx.h>
 #include <mlx/fft.h>
 #include <Rcpp.h>
@@ -94,19 +95,7 @@ SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
 
   array arr = wrapper->get();
 
-  array flat = [&]() -> array {
-    if (arr.ndim() <= 1) {
-      return reshape(arr, Shape{static_cast<int>(arr.size())});
-    }
-
-    std::vector<int> perm(arr.ndim());
-    std::iota(perm.begin(), perm.end(), 0);
-    std::reverse(perm.begin(), perm.end());
-
-    array transposed = transpose(arr, perm);
-    transposed = contiguous(transposed);
-    return reshape(transposed, Shape{static_cast<int>(arr.size())});
-  }();
+  array flat = flatten_r_order(arr);
 
   array result = [&]() -> array {
     if (op == "cumsum") {

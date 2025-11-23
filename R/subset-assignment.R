@@ -136,12 +136,9 @@ scatter_assign <- function(x, indices, value) {
 
 # Flatten an mlx array in R's column-major order
 .mlx_flatten_r_order <- function(x) {
-  if (length(mlx_shape(x)) <= 1L) {
-    return(mlx_reshape(x, c(length(x))))
-  }
-  tx <- t(x)
-  tx <- mlx_contiguous(tx)
-  mlx_reshape(tx, c(length(x)))
+  ptr <- cpp_mlx_flatten_r_order(x$ptr)
+  out <- new_mlx(ptr, x$device)
+  mlx_reshape(out, c(length(x)))
 }
 
 # Prepare updates flattened in R (column-major) order for a selection

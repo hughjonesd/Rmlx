@@ -162,11 +162,11 @@ SEXP cpp_mlx_masked_scatter(SEXP xp_,
 
   StreamOrDevice dev = string_to_device(device_str);
 
-  array src = transpose_to_r_order(src_wrapper->get());
-  array mask = transpose_to_r_order(astype(mask_wrapper->get(), bool_, dev));
+  array src = transpose_between_mlx_and_r(src_wrapper->get());
+  array mask = transpose_between_mlx_and_r(astype(mask_wrapper->get(), bool_, dev));
   array updates = astype(updates_wrapper->get(), src.dtype(), dev);
 
   array result = masked_scatter(src, mask, updates, dev);
-  result = transpose_to_r_order(result);
+  result = transpose_between_mlx_and_r(result);
   return make_mlx_xptr(std::move(result));
 }

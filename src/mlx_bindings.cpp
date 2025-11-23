@@ -1,4 +1,5 @@
 #include "mlx_bindings.hpp"
+#include "colmajor_helpers.hpp"
 #include <Rcpp.h>
 #include <mlx/mlx.h>
 #include <string>
@@ -210,62 +211,82 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
     x = NumericVector(x_);
   }
 
-  const bool col_major_fast_path =
-    !use_complex &&
-    TYPEOF(x_) == REALSXP &&
-    ndim >= 1 &&
-    (dt == float32 || dt == float64);
-
-  if (col_major_fast_path) {
+  // Col-major fast path for dtypes we can zero-copy from R buffers.
+  if (!use_complex && ndim >= 1) {
     size_t total = 1;
     for (size_t i = 0; i < ndim; ++i) {
       total *= static_cast<size_t>(shape[i]);
     }
 
-    const Device original_device = default_device();
-    const bool switch_to_cpu = original_device.type != Device::DeviceType::cpu;
-    if (switch_to_cpu) {
-      set_default_device(Device(Device::cpu));
+    Shape target_shape(shape.begin(), shape.end());
+    Strides col_major_strides;
+    col_major_strides.reserve(ndim);
+    int64_t stride = 1;
+    for (size_t i = 0; i < ndim; ++i) {
+      col_major_strides.push_back(stride);
+      stride *= static_cast<int64_t>(shape[i]);
     }
 
-    try {
-      array flat(
-        REAL(x_),
-        Shape{static_cast<int32_t>(total)},
-        float64);
-
-      Shape target_shape(shape.begin(), shape.end());
-      Strides col_major_strides;
-      col_major_strides.reserve(ndim);
-      int64_t stride = 1;
-      for (size_t i = 0; i < ndim; ++i) {
-        col_major_strides.push_back(stride);
-        stride *= static_cast<int64_t>(shape[i]);
-      }
-
-      array view = as_strided(
-        flat,
-        target_shape,
-        col_major_strides,
-        /*offset=*/0);
-
-      array arr = contiguous(view, /*allow_col_major=*/true, Device(Device::cpu));
-      if (arr.dtype() != dt) {
-        arr = astype(arr, dt, Device(Device::cpu));
-      }
+    auto col_major_from_ptr = [&](auto ptr, Dtype ptr_dtype) -> array {
+      const Device original_device = default_device();
+      const bool switch_to_cpu = original_device.type != Device::DeviceType::cpu;
       if (switch_to_cpu) {
-        set_default_device(original_device);
+        set_default_device(Device(Device::cpu));
       }
-      if (device_str != "cpu") {
-        arr = astype(arr, dt, dev);
+      try {
+        array flat(ptr, Shape{static_cast<int32_t>(total)}, ptr_dtype);
+        array view = as_strided(
+          flat,
+          target_shape,
+          col_major_strides,
+          /*offset=*/0);
+        array arr = contiguous(view, /*allow_col_major=*/true, Device(Device::cpu));
+        if (arr.dtype() != dt) {
+          arr = astype(arr, dt, Device(Device::cpu));
+        }
+        if (switch_to_cpu) {
+          set_default_device(original_device);
+        }
+        if (device_str != "cpu") {
+          arr = astype(arr, dt, dev);
+        }
+        return arr;
+      } catch (...) {
+        if (switch_to_cpu) {
+          set_default_device(original_device);
+        }
+        throw;
       }
-      return make_mlx_xptr(std::move(arr));
-    } catch (...) {
-      if (switch_to_cpu) {
-        set_default_device(original_device);
+    };
+
+    bool used_fast_path = false;
+    switch (dt) {
+    case float64:
+      if (TYPEOF(x_) == REALSXP) {
+        array arr = col_major_from_ptr(REAL(x_), float64);
+        used_fast_path = true;
+        return make_mlx_xptr(std::move(arr));
       }
-      throw;
+      break;
+    case int32:
+      if (TYPEOF(x_) == INTSXP) {
+        array arr = col_major_from_ptr(INTEGER(x_), int32);
+        used_fast_path = true;
+        return make_mlx_xptr(std::move(arr));
+      }
+      break;
+    case bool_:
+      if (TYPEOF(x_) == LGLSXP) {
+        array arr = col_major_from_ptr(LOGICAL(x_), bool_);
+        used_fast_path = true;
+        return make_mlx_xptr(std::move(arr));
+      }
+      break;
+    default:
+      break;
     }
+
+    (void)used_fast_path; // silence unused var if compiled with -Wall
   }
 
   // Create array directly from R data (column-major) using reversed shape
@@ -319,11 +340,7 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
 
   // Transpose to correct orientation if multi-dimensional
   if (ndim > 1) {
-    std::vector<int> perm(ndim);
-    for (size_t i = 0; i < ndim; ++i) {
-      perm[i] = static_cast<int>(ndim - 1 - i);
-    }
-    arr_temp = transpose(arr_temp, perm);
+    arr_temp = transpose_between_mlx_and_r(arr_temp);
   }
 
   // Convert to target dtype and device
@@ -346,11 +363,7 @@ SEXP cpp_mlx_to_r(SEXP xp_) {
 
   // Transpose to column-major layout if multi-dimensional
   if (ndim > 1) {
-    std::vector<int> perm(ndim);
-    for (size_t i = 0; i < ndim; ++i) {
-      perm[i] = static_cast<int>(ndim - 1 - i);
-    }
-    arr = transpose(arr, perm);
+    arr = transpose_between_mlx_and_r(arr);
   }
 
   // Make contiguous and evaluate
