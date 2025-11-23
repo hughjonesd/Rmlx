@@ -18,9 +18,6 @@ namespace {
 
 inline int normalize_axis(const array& arr, int axis) {
   int ndim = static_cast<int>(arr.ndim());
-  if (axis < 0) {
-    axis += ndim;
-  }
   if (axis < 0 || axis >= ndim) {
     Rcpp::stop("Axis %d is out of bounds for array with %d dimensions.", axis + 1, ndim);
   }
@@ -51,9 +48,10 @@ inline std::optional<std::vector<int>> optional_axes(
     if (axis == 0) {
       Rcpp::stop("Axis indices are 1-based; axis 0 is invalid.");
     }
-    if (axis > 0) {
-      axis -= 1;
+    if (axis < 0) {
+      Rcpp::stop("Negative axes are not supported; use 1-based axes.");
     }
+    axis -= 1;
   }
   return normalize_axes(arr, raw_axes);
 }
