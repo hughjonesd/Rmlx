@@ -123,8 +123,25 @@ test_that("mixed-device reductions with multiple operands choose GPU", {
 })
 
 test_that("requesting GPU errors when backend is unavailable", {
-  skip_if(mlx_has_gpu())
+  # Simulate a CPU-only build by stubbing mlx_has_gpu() and GPU creators.
+  orig_as_mlx <- getFromNamespace("as_mlx", "Rmlx")
+  orig_mlx_zeros <- getFromNamespace("mlx_zeros", "Rmlx")
 
-  expect_error(mlx_zeros(c(2, 2), device = "gpu"), "gpu")
-  expect_error(as_mlx(1:3, device = "gpu"), "gpu")
+  with_mocked_bindings(
+    mlx_has_gpu = function() FALSE,
+    as_mlx = function(..., device = NULL) {
+      if (identical(device, "gpu")) stop("gpu unavailable", call. = FALSE)
+      orig_as_mlx(..., device = device)
+    },
+    mlx_zeros = function(shape, dtype = NULL, device = mlx_default_device()) {
+      if (identical(device, "gpu")) stop("gpu unavailable", call. = FALSE)
+      orig_mlx_zeros(shape, dtype = dtype, device = device)
+    },
+    {
+      expect_error(mlx_zeros(c(2, 2), device = "gpu"), "gpu unavailable")
+      expect_error(as_mlx(1:3, device = "gpu"), "gpu unavailable")
+      expect_false(mlx_has_gpu())
+      expect_equal(mlx_best_device(), "cpu")
+    }
+  )
 })
