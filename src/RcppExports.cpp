@@ -1560,19 +1560,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_mlx_logsumexp_axis
-SEXP cpp_mlx_logsumexp_axis(SEXP xp_, int axis, bool keepdims);
-RcppExport SEXP _Rmlx_cpp_mlx_logsumexp_axis(SEXP xp_SEXP, SEXP axisSEXP, SEXP keepdimsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
-    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
-    Rcpp::traits::input_parameter< bool >::type keepdims(keepdimsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_logsumexp_axis(xp_, axis, keepdims));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cpp_mlx_logcumsumexp
 SEXP cpp_mlx_logcumsumexp(SEXP xp_, Rcpp::Nullable<int> axis, bool reverse, bool inclusive);
 RcppExport SEXP _Rmlx_cpp_mlx_logcumsumexp(SEXP xp_SEXP, SEXP axisSEXP, SEXP reverseSEXP, SEXP inclusiveSEXP) {
@@ -1597,19 +1584,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type axes(axesSEXP);
     Rcpp::traits::input_parameter< bool >::type precise(preciseSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_mlx_softmax(xp_, axes, precise));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cpp_mlx_softmax_axis
-SEXP cpp_mlx_softmax_axis(SEXP xp_, int axis, bool precise);
-RcppExport SEXP _Rmlx_cpp_mlx_softmax_axis(SEXP xp_SEXP, SEXP axisSEXP, SEXP preciseSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
-    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
-    Rcpp::traits::input_parameter< bool >::type precise(preciseSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_softmax_axis(xp_, axis, precise));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2102,10 +2076,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_argmax", (DL_FUNC) &_Rmlx_cpp_mlx_argmax, 3},
     {"_Rmlx_cpp_mlx_argmin", (DL_FUNC) &_Rmlx_cpp_mlx_argmin, 3},
     {"_Rmlx_cpp_mlx_logsumexp", (DL_FUNC) &_Rmlx_cpp_mlx_logsumexp, 3},
-    {"_Rmlx_cpp_mlx_logsumexp_axis", (DL_FUNC) &_Rmlx_cpp_mlx_logsumexp_axis, 3},
     {"_Rmlx_cpp_mlx_logcumsumexp", (DL_FUNC) &_Rmlx_cpp_mlx_logcumsumexp, 4},
     {"_Rmlx_cpp_mlx_softmax", (DL_FUNC) &_Rmlx_cpp_mlx_softmax, 3},
-    {"_Rmlx_cpp_mlx_softmax_axis", (DL_FUNC) &_Rmlx_cpp_mlx_softmax_axis, 3},
     {"_Rmlx_cpp_mlx_transpose", (DL_FUNC) &_Rmlx_cpp_mlx_transpose, 1},
     {"_Rmlx_cpp_mlx_reshape", (DL_FUNC) &_Rmlx_cpp_mlx_reshape, 2},
     {"_Rmlx_cpp_mlx_concat", (DL_FUNC) &_Rmlx_cpp_mlx_concat, 2},

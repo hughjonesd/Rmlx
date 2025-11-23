@@ -175,15 +175,6 @@ SEXP cpp_mlx_logsumexp(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes,
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_logsumexp_axis(SEXP xp_, int axis, bool keepdims) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
-  int ax = normalize_axis(arr, axis);
-  array result = logsumexp(arr, ax, keepdims);
-  return make_mlx_xptr(std::move(result));
-}
-
-// [[Rcpp::export]]
 SEXP cpp_mlx_logcumsumexp(SEXP xp_, Rcpp::Nullable<int> axis,
                           bool reverse, bool inclusive) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
@@ -213,14 +204,5 @@ SEXP cpp_mlx_softmax(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes,
     }
     return softmax(arr, precise);
   }();
-  return make_mlx_xptr(std::move(result));
-}
-
-// [[Rcpp::export]]
-SEXP cpp_mlx_softmax_axis(SEXP xp_, int axis, bool precise) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
-  int ax = normalize_axis(arr, axis);
-  array result = softmax(arr, ax, precise);
   return make_mlx_xptr(std::move(result));
 }

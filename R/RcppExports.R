@@ -457,20 +457,12 @@ cpp_mlx_logsumexp <- function(xp_, axes, keepdims) {
     .Call(`_Rmlx_cpp_mlx_logsumexp`, xp_, axes, keepdims)
 }
 
-cpp_mlx_logsumexp_axis <- function(xp_, axis, keepdims) {
-    .Call(`_Rmlx_cpp_mlx_logsumexp_axis`, xp_, axis, keepdims)
-}
-
 cpp_mlx_logcumsumexp <- function(xp_, axis, reverse, inclusive) {
     .Call(`_Rmlx_cpp_mlx_logcumsumexp`, xp_, axis, reverse, inclusive)
 }
 
 cpp_mlx_softmax <- function(xp_, axes, precise) {
     .Call(`_Rmlx_cpp_mlx_softmax`, xp_, axes, precise)
-}
-
-cpp_mlx_softmax_axis <- function(xp_, axis, precise) {
-    .Call(`_Rmlx_cpp_mlx_softmax_axis`, xp_, axis, precise)
 }
 
 cpp_mlx_transpose <- function(xp_) {
