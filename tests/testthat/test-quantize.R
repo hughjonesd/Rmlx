@@ -66,3 +66,66 @@ test_that("mxfp4 quantization mode works", {
   expect_s3_class(w_recon, "mlx")
   expect_equal(mlx_shape(w_recon), c(128, 64))
 })
+
+test_that("gather_qmm matches quantized_matmul without gathers", {
+  seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
+  set.seed(seed)
+
+  x <- mlx_matrix(rnorm(64), nrow = 2, ncol = 32, dtype = "float32", device = "cpu")
+  w <- mlx_matrix(rnorm(96), nrow = 3, ncol = 32, dtype = "float32", device = "cpu")
+
+  quant <- mlx_quantize(w, group_size = 32L, bits = 4L, mode = "affine")
+
+  mm_ref <- mlx_quantized_matmul(
+    x, quant$w_q, quant$scales, quant$biases,
+    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, device = "cpu"
+  )
+  mm_gather <- mlx_gather_qmm(
+    x, quant$w_q, quant$scales, quant$biases,
+    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, device = "cpu"
+  )
+
+  expect_equal(as.array(mm_gather), as.array(mm_ref), tolerance = 1e-4)
+})
+
+test_that("gather_qmm applies lhs/rhs indices correctly", {
+  seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
+  set.seed(seed)
+
+  # Batch 3, M=2, K=32
+  x_data <- array(rnorm(3 * 2 * 32), dim = c(3, 2, 32))
+  x <- mlx_array(x_data, dim = c(3, 2, 32), dtype = "float32", device = "cpu")
+
+  # Batch 3, N=5, K=32
+  w_data <- array(rnorm(3 * 5 * 32), dim = c(3, 5, 32))
+  w <- mlx_array(w_data, dim = c(3, 5, 32), dtype = "float32", device = "cpu")
+
+  quant <- mlx_quantize(w, group_size = 32L, bits = 4L, mode = "affine")
+  w_dequant <- mlx_dequantize(quant$w_q, quant$scales, quant$biases,
+                              group_size = 32L, bits = 4L, mode = "affine")
+
+  lhs_idx_r <- c(1L, 3L)   # 1-based for R arrays
+  rhs_idx_r <- c(3L, 2L)
+  lhs_idx <- as_mlx(lhs_idx_r - 1L, dtype = "int32")
+  rhs_idx <- as_mlx(rhs_idx_r - 1L, dtype = "int32")
+
+  res <- mlx_gather_qmm(
+    x, quant$w_q, quant$scales, quant$biases,
+    lhs_indices = lhs_idx, rhs_indices = rhs_idx,
+    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, sorted_indices = FALSE,
+    device = "cpu"
+  )
+
+  x_ref <- x_data[lhs_idx_r, , , drop = FALSE]
+  w_ref <- as.array(w_dequant)[rhs_idx_r, , , drop = FALSE]
+
+  ref_mat <- vapply(
+    seq_along(lhs_idx),
+    function(b) x_ref[b, , ] %*% t(w_ref[b, , ]),
+    FUN.VALUE = matrix(0, nrow = 2, ncol = 5)
+  )
+  dim(ref_mat) <- c(2, 5, length(lhs_idx))
+  ref_mat <- aperm(ref_mat, c(3, 1, 2)) # batch, M, N
+
+  expect_equal(as.array(res), ref_mat, tolerance = 1e-3)
+})
