@@ -184,7 +184,7 @@ scatter_assign <- function(x, indices, value) {
   x_dtype <- mlx_dtype(x)
   updates <- .mlx_prepare_updates_for_selection(value, n_selected, x_dtype, x$device)
 
-  ptr <- cpp_mlx_masked_scatter_colmajor(x$ptr, combined_mask$ptr, updates$ptr, x$device)
+  ptr <- cpp_mlx_masked_scatter(x$ptr, combined_mask$ptr, updates$ptr, x$device)
   new_mlx(ptr, x$device)
 }
 
