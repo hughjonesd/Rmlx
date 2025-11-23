@@ -201,7 +201,7 @@ mlx_tile <- function(x, reps) {
 #' @inheritParams mlx_array_required
 #' @param shift Integer vector giving the number of places by which elements are shifted.
 #' @param axes Optional integer vector (1-indexed) along which elements are shifted.
-#'   When `NULL`, the array is flattened and shifted.
+#'   When `NULL`, the array is flattened and shifted, then the shape is restored.
 #' @return An mlx array with elements circularly shifted.
 #' @seealso [mlx.core.roll](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.roll)
 #' @export

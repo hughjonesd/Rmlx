@@ -12,7 +12,7 @@ mlx_roll(x, shift, axes = NULL)
 \item{shift}{Integer vector giving the number of places by which elements are shifted.}
 
 \item{axes}{Optional integer vector (1-indexed) along which elements are shifted.
-When \code{NULL}, the array is flattened and shifted.}
+When \code{NULL}, the array is flattened and shifted, then the shape is restored.}
 }
 \value{
 An mlx array with elements circularly shifted.
