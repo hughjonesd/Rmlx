@@ -197,23 +197,34 @@ scatter_assign <- function(x, indices, value) {
 .mlx_assign_matrix <- function(x, idx_mat, value) {
   dims <- mlx_shape(x)
   idx_mat <- .mlx_coerce_index_matrix(idx_mat, dims)
-  if (!nrow(idx_mat)) {
+  idx_mat_r <- if (is_mlx(idx_mat)) as.array(idx_mat) else idx_mat
+  if (!nrow(idx_mat_r)) {
     return(x)
   }
   x_dtype <- mlx_dtype(x)
 
-  linear_idx <- .mlx_linear_indices(idx_mat, dims)
   val_vec <- as.vector(value)
   if (!length(val_vec)) {
     stop("Replacement value must have length >= 1.", call. = FALSE)
   }
-  if (anyDuplicated(linear_idx)) {
+  val_vec <- rep_len(val_vec, nrow(idx_mat_r))
+
+  # guard against duplicate coordinate rows
+  if (anyDuplicated(data.frame(idx_mat_r))) {
     stop("Duplicate indices are not allowed in assignment.", call. = FALSE)
   }
-  val_vec <- rep_len(val_vec, length(linear_idx))
 
-  # Scatter on flattened array using row-major linear indices
-  flat <- mlx_flatten(x)
-  updated <- scatter_assign(flat, list(linear_idx + 1L), val_vec)
-  mlx_reshape(updated, dims)
+  # Per-axis indices (0-based) as mlx arrays
+  idx_list <- lapply(seq_len(ncol(idx_mat_r)), function(j) {
+    arr <- as_mlx(idx_mat_r[, j] - 1L, dtype = "int64", device = x$device)
+    arr <- mlx_reshape(arr, c(nrow(idx_mat_r)))
+    arr
+  })
+
+  updates <- as_mlx(val_vec, dtype = x_dtype, device = x$device)
+  updates <- mlx_reshape(updates, c(nrow(idx_mat_r), rep(1L, length(dims))))
+  axes <- seq_len(length(dims)) - 1L
+
+  ptr <- cpp_mlx_scatter(x$ptr, idx_list, updates$ptr, axes, x$device)
+  new_mlx(ptr, x$device)
 }
