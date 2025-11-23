@@ -66,6 +66,14 @@ test_that("mlx logical masks work like R logical masks", {
   expect_equal(as.matrix(x[mask_false, ]), mat[c(FALSE, FALSE, FALSE), , drop = FALSE])
 })
 
+test_that("NA indices should be rejected for subsetting", {
+  mat <- matrix(1:4, 2, 2)
+  x <- as_mlx(mat)
+
+  expect_error(x[NA], "Index contains NA")
+  expect_error(x[1, NA], "Index contains NA")
+})
+
 test_that("higher dimensional indexing works", {
   arr <- array(seq_len(24), dim = c(3, 4, 2))
   x <- as_mlx(arr)

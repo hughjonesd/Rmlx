@@ -57,6 +57,9 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
 #' Matrix multiplication for MLX arrays
 #'
+#' Both operands must be 2D matrices; vectors are not auto-promoted (unlike
+#' base R).
+#'
 #' @inheritParams base::`%*%`
 #' @return An mlx object.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
@@ -69,15 +72,17 @@ Ops.mlx <- function(e1, e2 = NULL) {
   x <- as_mlx(x)
   y <- as_mlx(y)
 
-  # Validate dimensions
-  if (length(dim(x)) != 2 || length(dim(y)) != 2) {
-    stop("Matrix multiplication requires 2D arrays")
+  if (length(mlx_shape(x)) != 2L || length(mlx_shape(y)) != 2L) {
+    stop("Matrix multiplication requires 2D matrices; vectors are not auto-promoted")
   }
 
-  if (dim(x)[2] != dim(y)[1]) {
+  shape_x <- mlx_shape(x)
+  shape_y <- mlx_shape(y)
+
+  if (shape_x[2] != shape_y[1]) {
     stop(sprintf(
       "Non-conformable arrays: %d x %d and %d x %d",
-      dim(x)[1], dim(x)[2], dim(y)[1], dim(y)[2]
+      shape_x[1], shape_x[2], shape_y[1], shape_y[2]
     ))
   }
 

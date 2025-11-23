@@ -12,6 +12,11 @@
   dot_expr <- as.list(substitute(alist(...)))[-1]
   idx_list <- .mlx_collect_indices(dot_expr, ndim, parent.frame())
 
+  # Reject NA indices early to match documented behavior
+  if (any(vapply(idx_list, function(i) any(is.na(i)), logical(1)))) {
+    stop("Index contains NA values.", call. = FALSE)
+  }
+
   # Matrix/array indexing (one coordinate per row) delegates to helper
   if (length(dot_expr) == 1L) {
     resolved <- .mlx_resolve_single_index(idx_list[[1]], shape)

@@ -202,6 +202,18 @@ test_that("fft matches base R", {
   expect_equal(as.vector(ifft_mlx), ifft_r, tolerance = 1e-4)
 })
 
+test_that("NaN propagates through basic arithmetic", {
+  x <- mlx_vector(c(NaN, 1))
+  y <- mlx_vector(c(2, 3))
+
+  sum_res <- as.vector(x + y)
+  prod_res <- as.vector(x * y)
+
+  expect_true(is.nan(sum_res[1]))
+  expect_true(is.nan(prod_res[1]))
+  expect_equal(sum_res[2], 4, tolerance = 1e-6)
+})
+
 test_that("unsupported Math functions fall back to R", {
   x <- matrix(seq(-2.7, 2.7, length.out = 12), 3, 4)
   x_mlx <- as_mlx(x)

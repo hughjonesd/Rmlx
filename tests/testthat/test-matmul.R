@@ -11,6 +11,13 @@ test_that("matrix multiplication works", {
   expect_equal(c, a %*% b, tolerance = 1e-6)
 })
 
+test_that("matrix multiplication requires matrices (no vector auto-promotion)", {
+  a <- as_mlx(1:6)
+  b <- as_mlx(matrix(1:6, 2, 3))
+  expect_error(a %*% b, "requires 2D matrices")
+  expect_error(b %*% a, "requires 2D matrices")
+})
+
 test_that("matrix multiplication aligns devices and dtypes", {
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device))

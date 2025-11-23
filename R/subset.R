@@ -9,6 +9,7 @@
 #'   Mixing signs is an error and `0` is not allowed.
 #' * **Logical indices**: recycled to the target dimension length. Logical masks
 #'   may be mixed with numeric indices across dimensions.
+#' * **NA values**: indices containing `NA` are rejected with an error.
 #' * **Matrices/arrays**: numeric matrices (or higher dimensional arrays) select
 #'   individual elements, one coordinate per row. The trailing dimension must
 #'   match the array rank and entries must be positive; negative matrices are
@@ -41,6 +42,11 @@
   # Evaluate and collect index arguments supplied through ...
   dot_expr <- as.list(substitute(alist(...)))[-1]
   idx_list <- .mlx_collect_indices(dot_expr, ndim, parent.frame())
+
+  # Reject NA indices early to match documented behavior
+  if (any(vapply(idx_list, function(i) any(is.na(i)), logical(1)))) {
+    stop("Index contains NA values.", call. = FALSE)
+  }
 
   # Handle matrix-style coordinates or flattened vector indices via dedicated helper
   if (length(dot_expr) == 1L) {

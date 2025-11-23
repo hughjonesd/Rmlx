@@ -16,6 +16,14 @@ test_that("single logical index flattens like base R", {
   expect_equal(as.matrix(x_mlx_mask), expected)
 })
 
+test_that("assignment should reject NA indices", {
+  mat <- matrix(1:4, 2, 2)
+  x <- as_mlx(mat)
+
+  expect_error(x[NA] <- 0, "Index contains NA")
+  expect_error(x[c(1, NA)] <- 0, "Index contains NA")
+})
+
 test_that("subset assignment with numeric indices matches base R", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)
@@ -232,6 +240,19 @@ test_that("boolean mask assignment validates recycling rules", {
     x[mask1, mask2] <- mlx_vector(1:2),
     "Number of items to replace is not a multiple of replacement length"
   )
+})
+
+test_that("zero-length replacement is rejected", {
+  x <- mlx_vector(1:3)
+  expect_error(x[1] <- numeric(0), "length >= 1")
+})
+
+test_that("negative row index with logical columns matches base R", {
+  mat <- mlx_matrix(1:6, 2, 3)
+  base_mat <- matrix(1:6, 2, 3)
+  res_mlx <- mat[-1, c(TRUE, FALSE, TRUE)]
+  res_r <- base_mat[-1, c(TRUE, FALSE, TRUE), drop = FALSE]
+  expect_equal(as.matrix(res_mlx), res_r)
 })
 
 test_that("subset assignment handles irregular numeric axes", {
