@@ -99,7 +99,7 @@
 #' @noRd
 .mlx_matrix_subset <- function(x, idx_mat) {
   dims <- mlx_shape(x)
-  idx_mat <- .mlx_coerce_index_matrix(idx_mat, dims, type = "subset")
+  idx_mat <- .mlx_coerce_index_matrix(idx_mat, dims)
   if (!nrow(idx_mat)) {
     flat <- mlx_flatten(x)
     res <- new_mlx(cpp_mlx_take(flat$ptr, integer(0), 0L), x$device)
@@ -233,11 +233,12 @@
 
 #' Compute linear indices from multi-axis coordinates.
 #'
-#' @param index_matrix Matrix of zero-based indices (rows = elements).
+#' @param index_matrix Matrix of 1-based indices (rows = elements).
 #' @param dim_sizes Integer vector of dimension sizes.
 #' @return Integer vector of flattened indices.
 #' @noRd
 .mlx_linear_indices <- function(index_matrix, dim_sizes) {
+  index_matrix <- index_matrix - 1L
   if (length(dim_sizes) == 0L) {
     return(integer(0))
   }
@@ -382,34 +383,15 @@
 #'
 #' @param idx Numeric matrix/array or `mlx` array containing coordinates.
 #' @param dim_sizes Integer vector of dimension sizes.
-#' @param type Operation context (subset vs assign) used for error messages.
 #' @return Integer matrix with one column per dimension, entries zero-based.
 #' @noRd
-.mlx_coerce_index_matrix <- function(idx, dim_sizes, type = c("subset", "assign")) {
-  type <- match.arg(type)
-
-  if (is_mlx(idx)) {
-    mat <- as.array(idx)
-  } else {
-    mat <- idx
-  }
-
-  if (!is.numeric(mat)) {
-    stop("Matrix index must be numeric.", call. = FALSE)
-  }
-
-  dims <- dim(mat)
-  if (length(dims) < 2L) {
-    stop("Matrix index must have at least two dimensions.", call. = FALSE)
-  }
+.mlx_coerce_index_matrix <- function(idx_mat, dim_sizes) {
+  dims <- dim(idx_mat)
   if (dims[length(dims)] != length(dim_sizes)) {
     stop("Matrix index must have one column per dimension.", call. = FALSE)
   }
 
   n_points <- prod(dims[-length(dims)])
-  dim(mat) <- c(n_points, length(dim_sizes))
-  idx_mat <- mat
-
   if (n_points == 0L) {
     return(matrix(integer(0), nrow = 0, ncol = length(dim_sizes)))
   }
@@ -424,16 +406,13 @@
     stop("Matrix indices must be whole numbers.", call. = FALSE)
   }
 
-  dim_sizes <- as.integer(dim_sizes)
-  for (axis in seq_len(length(dim_sizes))) {
+  for (axis in seq_along(dim_sizes)) {
     col <- idx_mat[, axis]
     if (any(col > dim_sizes[axis])) {
       stop("Index out of bounds.", call. = FALSE)
     }
-    idx_mat[, axis] <- as.integer(col - 1L)
   }
 
-  storage.mode(idx_mat) <- "integer"
   idx_mat
 }
 

@@ -127,7 +127,7 @@ test_that("matrix indexing matches base behaviour", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)
 
-  idx <- cbind(c(1, 3), c(2, 3))
+  idx <- cbind(c(2, 3), c(1, 3))
   expect_equal(as.vector(x[idx]), mat[idx], tolerance = 1e-6)
 })
 

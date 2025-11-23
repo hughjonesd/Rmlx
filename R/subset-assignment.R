@@ -68,25 +68,33 @@ scatter_assign <- function(x, indices, value) {
     stop("length(indices) must match rank of x", call. = FALSE)
   }
 
-  # Normalize and validate indices (1-based to 0-based)
-  idx_norm <- lapply(seq_len(ndim), function(i) {
-    idx <- as.integer(indices[[i]])
-    if (any(is.na(idx))) stop("indices must be finite integers", call. = FALSE)
-    if (any(idx < 1L) || any(idx > shape[i])) {
-      stop("indices out of bounds for dimension ", i, call. = FALSE)
-    }
-    idx - 1L
+  # Caller (.mlx_assign_numeric) already validated bounds/duplicates.
+  # Convert 1-based indices to 0-based, staying in MLX when possible.
+  idx_norm <- lapply(indices, function(idx) {
+    as_mlx(idx - 1L, dtype = "int64", device = x$device)
   })
 
   lens <- vapply(idx_norm, length, integer(1))
   if (any(lens == 0L)) return(x)
 
-  # Prepare updates in row-major order expected by scatter
-  updates_r <- array(value, dim = c(lens, rep(1L, ndim)))
-  updates <- as_mlx(updates_r, dtype = mlx_dtype(x), device = x$device)
+  # Prepare updates using existing tiling helper to avoid R materialisation
+  target_len <- prod(lens)
+  value_mlx <- as_mlx(value, dtype = mlx_dtype(x), device = x$device)
+  val_len <- length(value_mlx)
+  if (val_len == 0L) {
+    stop("Replacement value must have length >= 1.", call. = FALSE)
+  }
+  if (val_len != 1L && target_len %% val_len != 0L) {
+    stop("Number of items to replace is not a multiple of replacement length", call. = FALSE)
+  }
+  tiles <- target_len %/% val_len
+  flat <- .mlx_flatten_r_order(value_mlx)
+  updates_flat <- if (tiles == 1L) flat else mlx_tile(flat, tiles)
+  rev_shape <- rev(c(lens, rep(1L, ndim)))
+  updates_rev <- mlx_reshape(updates_flat, rev_shape)
+  updates <- new_mlx(cpp_mlx_transpose(updates_rev$ptr), x$device)
 
-  idx_vecs <- lapply(idx_norm, function(v) as_mlx(v, dtype = "int64", device = x$device))
-  idx_grid <- mlx_meshgrid(idx_vecs, sparse = FALSE, indexing = "ij", device = x$device)
+  idx_grid <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = x$device)
 
   axes <- seq_len(ndim) - 1L
   ptr <- cpp_mlx_scatter(x$ptr, idx_grid, updates$ptr, axes, x$device)
@@ -188,7 +196,7 @@ scatter_assign <- function(x, indices, value) {
 # Matrix-style assignment helper.
 .mlx_assign_matrix <- function(x, idx_mat, value) {
   dims <- mlx_shape(x)
-  idx_mat <- .mlx_coerce_index_matrix(idx_mat, dims, type = "assign")
+  idx_mat <- .mlx_coerce_index_matrix(idx_mat, dims)
   if (!nrow(idx_mat)) {
     return(x)
   }

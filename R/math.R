@@ -319,6 +319,11 @@ is.nan.mlx <- function(x) {
 }
 
 #' @export
+is.na.mlx <- function(x) {
+  mlx_isnan(x)
+}
+
+#' @export
 is.infinite.mlx <- function(x) {
   mlx_isinf(x)
 }
