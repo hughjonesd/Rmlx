@@ -31,6 +31,11 @@ NULL
 #' `mlx_all()` and `mlx_any()` return mlx boolean scalars, while the
 #' base R reducers [all()] and [any()] applied to mlx inputs return plain
 #' logical scalars.
+#'
+#' The `axes` argument is the inverse of `MARGIN` in base R
+#' [apply()]. `axes` gives the axes which will be reduced; `MARGIN`
+#' gives the axes which an operation will be applied over. See the example.
+#'
 #' @examples
 #' x <- mlx_matrix(1:4, 2, 2)
 #' mlx_sum(x)
@@ -41,6 +46,12 @@ NULL
 #' mlx_mean(x, axes = 1)
 #' mlx_var(x, axes = 2)
 #' mlx_std(x, ddof = 1)
+#'
+#' a <- array(1:6, dim = 1:3)
+#' ax <- as_mlx(a)
+#' # These are equivalent:
+#' apply(a, 1:2, sum) # leaves dimensions 1-2 intact, sums over dimension 3
+#' mlx_sum(a, 3)      # the same
 #' @aliases mlx_sum mlx_prod mlx_all mlx_any mlx_mean mlx_var mlx_std
 #' @name mlx_sum
 NULL

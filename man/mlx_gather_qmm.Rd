@@ -28,9 +28,11 @@ mlx_gather_qmm(
 
 \item{biases}{An optional mlx array (biases to add). Default: NULL}
 
-\item{lhs_indices}{An optional mlx array (indices for gathering from x). Default: NULL}
+\item{lhs_indices}{An optional integer vector/array (1-indexed) or \code{mlx} tensor
+of indices for gathering from \code{x}'s leading (batch) dimension. Default: NULL}
 
-\item{rhs_indices}{An optional mlx array (indices for gathering from w). Default: NULL}
+\item{rhs_indices}{An optional integer vector/array (1-indexed) or \code{mlx} tensor
+of indices for gathering from \code{w}'s leading (batch) dimension. Default: NULL}
 
 \item{transpose}{Whether to transpose the weight matrix. Default: TRUE}
 

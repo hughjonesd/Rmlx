@@ -32,6 +32,7 @@ supported. Negative indices drop the listed elements, just as in base R.
 Mixing signs is an error and \code{0} is not allowed.
 \item \strong{Logical indices}: recycled to the target dimension length. Logical masks
 may be mixed with numeric indices across dimensions.
+\item \strong{NA values}: indices containing \code{NA} are rejected with an error.
 \item \strong{Matrices/arrays}: numeric matrices (or higher dimensional arrays) select
 individual elements, one coordinate per row. The trailing dimension must
 match the array rank and entries must be positive; negative matrices are

@@ -13,7 +13,8 @@
 An mlx object.
 }
 \description{
-Matrix multiplication for MLX arrays
+Both operands must be 2D matrices; vectors are not auto-promoted (unlike
+base R).
 }
 \examples{
 x <- mlx_matrix(1:6, 2, 3)

@@ -50,6 +50,10 @@ more axes. Use \code{drop = FALSE} to retain reduced axes with length one
 \code{mlx_all()} and \code{mlx_any()} return mlx boolean scalars, while the
 base R reducers \code{\link[=all]{all()}} and \code{\link[=any]{any()}} applied to mlx inputs return plain
 logical scalars.
+
+The \code{axes} argument is the inverse of \code{MARGIN} in base R
+\code{\link[=apply]{apply()}}. \code{axes} gives the axes which will be reduced; \code{MARGIN}
+gives the axes which an operation will be applied over. See the example.
 }
 \examples{
 x <- mlx_matrix(1:4, 2, 2)
@@ -61,6 +65,12 @@ mlx_any(x > 3)
 mlx_mean(x, axes = 1)
 mlx_var(x, axes = 2)
 mlx_std(x, ddof = 1)
+
+a <- array(1:6, dim = 1:3)
+ax <- as_mlx(a)
+# These are equivalent:
+apply(a, 1:2, sum) # leaves dimensions 1-2 intact, sums over dimension 3
+mlx_sum(a, 3)      # the same
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum}{mlx.core.sum},
