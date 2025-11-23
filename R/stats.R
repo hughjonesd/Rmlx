@@ -2,8 +2,7 @@
 #'
 #' @param x An array or mlx array.
 #' @param na.rm Logical; currently ignored for mlx arrays.
-#' @param dims Dimensions passed through to the base implementation when
-#'   `x` is not an mlx array.
+#' @param dims Leading dimensions treated as rows/cols (see [base::rowSums()]).
 #' @param ... Additional arguments forwarded to the base implementation.
 #' @keywords internal
 #' @name mlx_reduction_base
@@ -134,7 +133,9 @@ rowMeans.default <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @rdname rowMeans
 #' @export
 rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
-  .mlx_reduce_axis(x, "mean", axis = 2L, drop = TRUE)
+  d <- length(dim(x))
+  axes <- seq.int(dims + 1L, d)
+  .mlx_reduce_axes(x, "mean", axes = axes, drop = TRUE)
 }
 
 #' Column means for mlx arrays
@@ -159,7 +160,8 @@ colMeans.default <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @rdname colMeans
 #' @export
 colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
-  .mlx_reduce_axis(x, "mean", axis = 1L, drop = TRUE)
+  axes <- seq_len(dims)
+  .mlx_reduce_axes(x, "mean", axes = axes, drop = TRUE)
 }
 
 #' Row sums for mlx arrays
@@ -184,7 +186,9 @@ rowSums.default <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @rdname rowSums
 #' @export
 rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
-  .mlx_reduce_axis(x, "sum", axis = 2L, drop = TRUE)
+  d <- length(dim(x))
+  axes <- seq.int(dims + 1L, d)
+  .mlx_reduce_axes(x, "sum", axes = axes, drop = TRUE)
 }
 
 #' Column sums for mlx arrays
@@ -209,7 +213,8 @@ colSums.default <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' @rdname colSums
 #' @export
 colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
-  .mlx_reduce_axis(x, "sum", axis = 1L, drop = TRUE)
+  axes <- seq_len(dims)
+  .mlx_reduce_axes(x, "sum", axes = axes, drop = TRUE)
 }
 
 #' Transpose of MLX matrix
