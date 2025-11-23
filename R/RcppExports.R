@@ -53,10 +53,6 @@ cpp_mlx_from_r <- function(x_, dim_, dtype_, device_) {
     .Call(`_Rmlx_cpp_mlx_from_r`, x_, dim_, dtype_, device_)
 }
 
-cpp_mlx_empty <- function(dim_, dtype_, device_) {
-    .Call(`_Rmlx_cpp_mlx_empty`, dim_, dtype_, device_)
-}
-
 cpp_mlx_to_r <- function(xp_) {
     .Call(`_Rmlx_cpp_mlx_to_r`, xp_)
 }
@@ -127,10 +123,6 @@ cpp_mlx_gather <- function(xp_, indices_, axes_, device_str) {
 
 cpp_mlx_scatter <- function(xp_, indices_, updates_xp_, axes_, device_str) {
     .Call(`_Rmlx_cpp_mlx_scatter`, xp_, indices_, updates_xp_, axes_, device_str)
-}
-
-cpp_mlx_assign <- function(xp_, normalized_, updates_xp_, dim_sizes_) {
-    .Call(`_Rmlx_cpp_mlx_assign`, xp_, normalized_, updates_xp_, dim_sizes_)
 }
 
 cpp_mlx_masked_scatter <- function(xp_, mask_xp_, updates_xp_, device_str) {

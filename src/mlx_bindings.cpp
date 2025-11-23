@@ -333,21 +333,6 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_empty(SEXP dim_, SEXP dtype_, SEXP device_) {
-  IntegerVector dim(dim_);
-  std::string dtype_str = as<std::string>(dtype_);
-  std::string device_str = as<std::string>(device_);
-
-  Shape shape(dim.begin(), dim.end());
-  Dtype dt = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
-
-  array arr = zeros(shape, dt, dev);
-
-  return make_mlx_xptr(std::move(arr));
-}
-
-// [[Rcpp::export]]
 SEXP cpp_mlx_to_r(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();

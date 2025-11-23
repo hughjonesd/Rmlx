@@ -188,19 +188,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// cpp_mlx_empty
-SEXP cpp_mlx_empty(SEXP dim_, SEXP dtype_, SEXP device_);
-RcppExport SEXP _Rmlx_cpp_mlx_empty(SEXP dim_SEXP, SEXP dtype_SEXP, SEXP device_SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type dim_(dim_SEXP);
-    Rcpp::traits::input_parameter< SEXP >::type dtype_(dtype_SEXP);
-    Rcpp::traits::input_parameter< SEXP >::type device_(device_SEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_empty(dim_, dtype_, device_));
-    return rcpp_result_gen;
-END_RCPP
-}
 // cpp_mlx_to_r
 SEXP cpp_mlx_to_r(SEXP xp_);
 RcppExport SEXP _Rmlx_cpp_mlx_to_r(SEXP xp_SEXP) {
@@ -414,20 +401,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< IntegerVector >::type axes_(axes_SEXP);
     Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
     rcpp_result_gen = Rcpp::wrap(cpp_mlx_scatter(xp_, indices_, updates_xp_, axes_, device_str));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cpp_mlx_assign
-SEXP cpp_mlx_assign(SEXP xp_, List normalized_, SEXP updates_xp_, IntegerVector dim_sizes_);
-RcppExport SEXP _Rmlx_cpp_mlx_assign(SEXP xp_SEXP, SEXP normalized_SEXP, SEXP updates_xp_SEXP, SEXP dim_sizes_SEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
-    Rcpp::traits::input_parameter< List >::type normalized_(normalized_SEXP);
-    Rcpp::traits::input_parameter< SEXP >::type updates_xp_(updates_xp_SEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type dim_sizes_(dim_sizes_SEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_assign(xp_, normalized_, updates_xp_, dim_sizes_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1975,7 +1948,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_value_grad", (DL_FUNC) &_Rmlx_cpp_mlx_value_grad, 4},
     {"_Rmlx_cpp_mlx_stop_gradient", (DL_FUNC) &_Rmlx_cpp_mlx_stop_gradient, 1},
     {"_Rmlx_cpp_mlx_from_r", (DL_FUNC) &_Rmlx_cpp_mlx_from_r, 4},
-    {"_Rmlx_cpp_mlx_empty", (DL_FUNC) &_Rmlx_cpp_mlx_empty, 3},
     {"_Rmlx_cpp_mlx_to_r", (DL_FUNC) &_Rmlx_cpp_mlx_to_r, 1},
     {"_Rmlx_cpp_mlx_eval", (DL_FUNC) &_Rmlx_cpp_mlx_eval, 1},
     {"_Rmlx_cpp_mlx_shape", (DL_FUNC) &_Rmlx_cpp_mlx_shape, 1},
@@ -1994,7 +1966,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_slice_update", (DL_FUNC) &_Rmlx_cpp_mlx_slice_update, 5},
     {"_Rmlx_cpp_mlx_gather", (DL_FUNC) &_Rmlx_cpp_mlx_gather, 4},
     {"_Rmlx_cpp_mlx_scatter", (DL_FUNC) &_Rmlx_cpp_mlx_scatter, 5},
-    {"_Rmlx_cpp_mlx_assign", (DL_FUNC) &_Rmlx_cpp_mlx_assign, 4},
     {"_Rmlx_cpp_mlx_masked_scatter", (DL_FUNC) &_Rmlx_cpp_mlx_masked_scatter, 4},
     {"_Rmlx_cpp_mlx_masked_scatter_colmajor", (DL_FUNC) &_Rmlx_cpp_mlx_masked_scatter_colmajor, 4},
     {"_Rmlx_cpp_mlx_save", (DL_FUNC) &_Rmlx_cpp_mlx_save, 2},
