@@ -2,7 +2,8 @@
 
 # Rmlx 0.1.0.9000 (development)
 
-* **Breaking change**: `mlx_arange(start, stop, step)` now matches `seq()`
+* `as_mlx(x)` no longer returns scalars if `x` is a length-one vector.
+* `mlx_arange(start, stop, step)` now matches `seq()`
   behavior (stop included if reachable).
 * New `mlx_device()` to return device associated with `x`.
 * Renamed `mlx_get_device()` to `mlx_best_device()`.

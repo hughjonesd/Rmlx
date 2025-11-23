@@ -51,7 +51,7 @@
 #' x <- as_mlx(1:10)                    # Creates float32 array
 #' ```
 #'
-#' ## Type precision notes
+#' ## Type precision
 #'
 #' - `float64` is supported but emits a warning and downcasts to `float32`
 #' - Integer arithmetic may promote types (e.g., int32 + int32 might → int64)
@@ -61,7 +61,15 @@
 #'
 #' MLX does not have an `NA` sentinel. When you pass numeric `NA` values from R,
 #' they are stored as `NaN` inside MLX and returned to R as `NaN`.
-#' Use [is.nan()] on MLX arrays if you need to detect them.
+#' Use [is.nan()] on MLX arrays if you need to detect them. [is.na()] on mlx
+#' objects calls [is.nan()].
+#'
+#' ## Scalars
+#'
+#' MLX allows scalar values, with a zero-length dimension (`integer(0)`). These
+#' are not usually what R users want. `as_mlx()` never returns a scalar; call
+#' `[mlx_reshape(x, integer(0))][mlx_reshape()]` to create one explicitly, or
+#' use `[mlx_array(..., allow_scalar = TRUE)][mlx_array()]`.
 #'
 #' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.array)
 #' @seealso [mlx-methods]
@@ -127,8 +135,6 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
     dims <- dim(x)
     if (!is.null(dims)) {
       as.integer(dims)
-    } else if (length(x) == 1L) {
-      integer(0)
     } else {
       as.integer(length(x))
     }

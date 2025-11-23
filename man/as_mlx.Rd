@@ -42,7 +42,7 @@ x <- as_mlx(1:10)                    # Creates float32 array
 }\if{html}{\out{</div>}}
 }
 
-\subsection{Type precision notes}{
+\subsection{Type precision}{
 \itemize{
 \item \code{float64} is supported but emits a warning and downcasts to \code{float32}
 \item Integer arithmetic may promote types (e.g., int32 + int32 might → int64)
@@ -54,7 +54,16 @@ x <- as_mlx(1:10)                    # Creates float32 array
 
 MLX does not have an \code{NA} sentinel. When you pass numeric \code{NA} values from R,
 they are stored as \code{NaN} inside MLX and returned to R as \code{NaN}.
-Use \code{\link[=is.nan]{is.nan()}} on MLX arrays if you need to detect them.
+Use \code{\link[=is.nan]{is.nan()}} on MLX arrays if you need to detect them. \code{\link[=is.na]{is.na()}} on mlx
+objects calls \code{\link[=is.nan]{is.nan()}}.
+}
+
+\subsection{Scalars}{
+
+MLX allows scalar values, with a zero-length dimension (\code{integer(0)}). These
+are not usually what R users want. \code{as_mlx()} never returns a scalar; call
+\verb{[mlx_reshape(x, integer(0))][mlx_reshape()]} to create one explicitly, or
+use \verb{[mlx_array(..., allow_scalar = TRUE)][mlx_array()]}.
 }
 }
 \description{

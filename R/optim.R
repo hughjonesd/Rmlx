@@ -71,7 +71,7 @@ mlx_train_step <- function(module, loss_fn, optimizer, ...) {
     if (!is_mlx(loss)) {
       stop("loss_fn must return an mlx array.", call. = FALSE)
     }
-    loss
+    mlx_reshape(loss, integer(0))
   }
 
   grad_inputs <- c(param_values, data_args)
@@ -172,9 +172,15 @@ mlx_coordinate_descent <- function(loss_fn,
   beta <- as_mlx(beta_init)
   n_pred <- nrow(beta)
 
-  # Gradient computation function
+  # Gradient computation function (ensure scalar loss)
   compute_grad <- if (is.null(grad_fn)) {
-    function(beta) mlx_grad(loss_fn, beta)[[1]]
+    function(beta) {
+      g <- mlx_grad(function(b) {
+        l <- loss_fn(b)
+        mlx_reshape(l, integer(0))
+      }, beta)
+      g[[1]]
+    }
   } else {
     grad_fn
   }
