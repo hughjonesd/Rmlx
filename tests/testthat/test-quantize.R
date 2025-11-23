@@ -106,12 +106,10 @@ test_that("gather_qmm applies lhs/rhs indices correctly", {
 
   lhs_idx_r <- c(1L, 3L)   # 1-based for R arrays
   rhs_idx_r <- c(3L, 2L)
-  lhs_idx <- as_mlx(lhs_idx_r - 1L, dtype = "int32")
-  rhs_idx <- as_mlx(rhs_idx_r - 1L, dtype = "int32")
 
   res <- mlx_gather_qmm(
     x, quant$w_q, quant$scales, quant$biases,
-    lhs_indices = lhs_idx, rhs_indices = rhs_idx,
+    lhs_indices = lhs_idx_r, rhs_indices = rhs_idx_r,
     group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, sorted_indices = FALSE,
     device = "cpu"
   )
@@ -120,11 +118,11 @@ test_that("gather_qmm applies lhs/rhs indices correctly", {
   w_ref <- as.array(w_dequant)[rhs_idx_r, , , drop = FALSE]
 
   ref_mat <- vapply(
-    seq_along(lhs_idx),
+    seq_along(lhs_idx_r),
     function(b) x_ref[b, , ] %*% t(w_ref[b, , ]),
     FUN.VALUE = matrix(0, nrow = 2, ncol = 5)
   )
-  dim(ref_mat) <- c(2, 5, length(lhs_idx))
+  dim(ref_mat) <- c(2, 5, length(lhs_idx_r))
   ref_mat <- aperm(ref_mat, c(3, 1, 2)) # batch, M, N
 
   expect_equal(as.array(res), ref_mat, tolerance = 1e-3)

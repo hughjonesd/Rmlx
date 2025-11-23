@@ -1052,8 +1052,10 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
 #' @param w An mlx array (the quantized weight matrix)
 #' @param scales An mlx array (the quantization scales)
 #' @param biases An optional mlx array (biases to add). Default: NULL
-#' @param lhs_indices An optional mlx array (indices for gathering from x). Default: NULL
-#' @param rhs_indices An optional mlx array (indices for gathering from w). Default: NULL
+#' @param lhs_indices An optional integer vector/array (1-indexed) or `mlx` tensor
+#'   of indices for gathering from `x`'s leading (batch) dimension. Default: NULL
+#' @param rhs_indices An optional integer vector/array (1-indexed) or `mlx` tensor
+#'   of indices for gathering from `w`'s leading (batch) dimension. Default: NULL
 #' @param transpose Whether to transpose the weight matrix. Default: TRUE
 #' @param group_size The group size for quantization. Default: 64
 #' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
@@ -1089,15 +1091,23 @@ mlx_gather_qmm <- function(x, w, scales, biases = NULL, lhs_indices = NULL,
     biases_ptr <- biases$ptr
   }
 
+  normalize_batch_indices <- function(idx, dim_size) {
+    norm <- .normalize_index_vector(idx, dim_size)
+    if (is.null(norm)) {
+      stop("Indices cannot be NULL.", call. = FALSE)
+    }
+    as_mlx(norm, dtype = "int64", device = device)
+  }
+
   lhs_indices_ptr <- NULL
   if (!is.null(lhs_indices)) {
-    lhs_indices <- as_mlx(lhs_indices)
+    lhs_indices <- normalize_batch_indices(lhs_indices, mlx_shape(x)[1])
     lhs_indices_ptr <- lhs_indices$ptr
   }
 
   rhs_indices_ptr <- NULL
   if (!is.null(rhs_indices)) {
-    rhs_indices <- as_mlx(rhs_indices)
+    rhs_indices <- normalize_batch_indices(rhs_indices, mlx_shape(w)[1])
     rhs_indices_ptr <- rhs_indices$ptr
   }
 
