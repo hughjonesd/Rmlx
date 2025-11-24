@@ -339,8 +339,8 @@ test_that("mlx matrix assignment rejects duplicate coordinates", {
   x <- as_mlx(mat)
 
   idx <- mlx_matrix(c(2, 2,
-                         1, 1,
-                         1, 1), ncol = 2, byrow = TRUE)
+                      1, 1,
+                      1, 1), ncol = 2, byrow = TRUE)
   vals <- c(5, 7, 9)
 
   expect_error(x[idx] <- vals, "Duplicate indices are not allowed")

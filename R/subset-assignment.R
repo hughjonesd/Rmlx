@@ -18,7 +18,7 @@
   }
 
   # Matrix/array indexing (one coordinate per row) delegates to helper
-  if (length(dot_expr) == 1L) {
+  if (length(dot_expr) == 1L && ndim > 1L) {
     resolved <- .mlx_resolve_single_index(idx_list[[1]], shape)
     if (!is.null(resolved)) {
       return(.mlx_assign_matrix(x, resolved$coord, value))
@@ -196,35 +196,31 @@ scatter_assign <- function(x, indices, value) {
 # Matrix-style assignment helper.
 .mlx_assign_matrix <- function(x, idx_mat, value) {
   dims <- mlx_shape(x)
-  idx_mat <- .mlx_coerce_index_matrix(idx_mat, dims)
-  idx_mat_r <- if (is_mlx(idx_mat)) as.array(idx_mat) else idx_mat
-  if (!nrow(idx_mat_r)) {
+  idx_mat <- .mlx_check_index_matrix(idx_mat, dims)
+  idx_mat <- idx_mat - 1L
+  idx_mat <- as_mlx(idx_mat, dtype = "int64", device = mlx_device(x))
+  if (!nrow(idx_mat)) {
     return(x)
   }
   x_dtype <- mlx_dtype(x)
 
-  val_vec <- as.vector(value)
-  if (!length(val_vec)) {
+  if (!length(value)) {
     stop("Replacement value must have length >= 1.", call. = FALSE)
   }
-  val_vec <- rep_len(val_vec, nrow(idx_mat_r))
+  value <- mlx_repeat(value, nrow(idx_mat) %/% length(value))
 
   # guard against duplicate coordinate rows
-  if (anyDuplicated(data.frame(idx_mat_r))) {
+  if (.duplicated_rows_lex(idx_mat)) {
     stop("Duplicate indices are not allowed in assignment.", call. = FALSE)
   }
 
   # Per-axis indices (0-based) as mlx arrays
-  idx_list <- lapply(seq_len(ncol(idx_mat_r)), function(j) {
-    arr <- as_mlx(idx_mat_r[, j] - 1L, dtype = "int64", device = x$device)
-    arr <- mlx_reshape(arr, c(nrow(idx_mat_r)))
-    arr
-  })
-
-  updates <- as_mlx(val_vec, dtype = x_dtype, device = x$device)
-  updates <- mlx_reshape(updates, c(nrow(idx_mat_r), rep(1L, length(dims))))
+  idx_list <- mlx_split(idx_mat, sections = ncol(idx_mat), axis = 2L)
+  idx_list <- lapply(idx_list, drop)
+  value <- .mlx_cast(value, dtype = x_dtype, device = mlx_device(x))
+  value <- mlx_reshape(value, c(nrow(idx_mat), rep(1L, length(dims))))
   axes <- seq_len(length(dims)) - 1L
 
-  ptr <- cpp_mlx_scatter(x$ptr, idx_list, updates$ptr, axes, x$device)
-  new_mlx(ptr, x$device)
+  ptr <- cpp_mlx_scatter(x$ptr, idx_list, value$ptr, axes, mlx_device(x))
+  new_mlx(ptr, mlx_device(x))
 }

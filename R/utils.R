@@ -35,6 +35,78 @@
   fn(handle$device)
 }
 
+#' Check for duplicated rows in an mlx matrix
+#'
+#' NB: this will run slow, or out of memory, for more than about 1e4 rows.
+#' @param x a mlx matrix (only!)
+#' @returns TRUE or FALSE
+#' @noRd
+.duplicated_rows <- function(x) {
+  shape <- mlx_shape(x)
+  x_rows <- mlx_reshape(x, c(1L, shape))
+  x_cols <- mlx_reshape(x, c(shape[1L], 1L, shape[2L]))
+  # comp[i, j, k] says whether row i == row j on column k
+  comp <- x_rows == x_cols
+  # collapse the columns: is i == j on all columns?
+  eq <- mlx_all(comp, axes = 3)
+  # remove diagonal and below-diagonal rows
+  upper <- mlx_triu(eq, k = 1L)
+  any(upper) # if you wanted a list of duplicate rows, add axis = 1
+}
+
+#' Check for duplicated rows
+#'
+#' @param x An mlx matrix
+#' @returns TRUE/FALSE
+#' @noRd
+.duplicated_rows_lex <- function(x) {
+  shape <- mlx_shape(x)
+  stopifnot(length(shape) == 2L)
+  n  <- shape[1]
+
+  # 2. Apply that order to X to get lex-sorted rows
+  x_sorted <- .lex_sort(x)
+
+  # 3. Compare each row in sorted order to its predecessor
+  # same_as_prev[i] = TRUE iff XS[i, ] == XS[i-1, ]
+  same_as_prev <- mlx_zeros(n, dtype = "bool")
+  if (n > 1L) {
+    same_as_prev[2:n] <- mlx_all(
+      x_sorted[2:n, , drop = FALSE] == x_sorted[1:(n - 1L), , drop = FALSE],
+      axes = 2L
+    )
+  }
+  any(same_as_prev)
+  # If we wanted to find the duplicates:
+  # 4. Map back from sorted order to original row order
+  # dup <- mlx_zeros(n, dtype = "bool")
+  # dup[order] <- same_as_prev
+  # dup
+}
+
+#' Lexicographically sort rows of x
+#'
+#' @param x An mlx matrix (only!)
+#' @returns row-sorted x
+#' @noRd
+.lex_sort <- function (x) {
+  shape <- mlx_shape(x)
+  stopifnot(length(shape) == 2L)
+  n  <- shape[1]
+  d  <- shape[2]
+  order <- mlx_arange(1L, n)
+
+  # Loop columns from last to first:
+  # refine `order` using argsort on each column.
+  for (j in seq.int(d, 1L)) {
+    col  <- x[order, j, drop = FALSE]    # column j in the current order
+    idx  <- mlx_argsort(col)             # permutation of 0..(n-1) for this column
+    order <- order[idx]                  # refine the lexicographic order
+  }
+
+  # 2. Apply that order to X to get lex-sorted rows
+  x[order, , drop = FALSE]
+}
 
 #' Print MLX array
 #'

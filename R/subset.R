@@ -99,7 +99,7 @@
 #' @noRd
 .mlx_matrix_subset <- function(x, idx_mat) {
   dims <- mlx_shape(x)
-  idx_mat <- .mlx_coerce_index_matrix(idx_mat, dims)
+  idx_mat <- .mlx_check_index_matrix(idx_mat, dims)
   if (!nrow(idx_mat)) {
     flat <- mlx_flatten(x)
     res <- new_mlx(cpp_mlx_take(flat$ptr, integer(0), 0L), x$device)
@@ -383,9 +383,9 @@
 #'
 #' @param idx Numeric matrix/array or `mlx` array containing coordinates.
 #' @param dim_sizes Integer vector of dimension sizes.
-#' @return Integer matrix with one column per dimension, entries zero-based.
+#' @return The matrix, or error if it's the wrong shape or out of bounds
 #' @noRd
-.mlx_coerce_index_matrix <- function(idx_mat, dim_sizes) {
+.mlx_check_index_matrix <- function(idx_mat, dim_sizes) {
   dims <- dim(idx_mat)
   if (dims[length(dims)] != length(dim_sizes)) {
     stop("Matrix index must have one column per dimension.", call. = FALSE)

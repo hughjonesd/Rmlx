@@ -2,6 +2,9 @@
 
 # Rmlx 0.1.0.9000 (development)
 
+* Speeded up subset assignment. We also now fail on duplicate indices in 
+  subset assignment, and on NAs in indices.
+* `%*%` now requires both its arguments to be matrices (unlike base R).
 * `as_mlx(x)` no longer returns scalars if `x` is a length-one vector.
 * `mlx_arange(start, stop, step)` now matches `seq()`
   behavior (stop included if reachable).
@@ -12,8 +15,8 @@
 * Added `mlx_shape()` to expose MLX-native shapes (never `NULL`) and aligned
   `dim.mlx()` with base R semantics (returns `NULL` for 1-D vectors/scalars).
 * `mlx_rand_categorical()`, `mlx_rand_permutation()`, `mlx_cross_entropy()`,
-  and `mlx_embedding()` now accept 1-based indices for inputs/outputs, keeping
-  all exported APIs consistent with R conventions.
+  `mlx_gather_qmm()`, and `mlx_embedding()` now accept 1-based indices for 
+  inputs/outputs, consistently with R.
 * Added negative numeric indexing support for `[`/`[<-` on `mlx` arrays and
   documented subsetting semantics.
 * Added `mlx_import_function()` to import MLX functions from (e.g.) Python.
