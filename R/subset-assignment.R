@@ -180,8 +180,8 @@ scatter_assign <- function(x, indices, value) {
   value <- .mlx_cast(as_mlx(value), dtype = mlx_dtype(x), device = mlx_device(x))
   value_len <- length(value)
   .check_value_fits(value_len, n_selected)
-  tiles <- n_selected %/% value_len
   value <- .mlx_flatten_r_order(value)
+  tiles <- n_selected %/% value_len
   value <- mlx_tile(value, tiles)
 
   ptr <- cpp_mlx_masked_scatter(x$ptr, combined_mask$ptr, value$ptr, x$device)

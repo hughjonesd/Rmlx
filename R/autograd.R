@@ -6,7 +6,8 @@
 #' (e.g., via `as_mlx()` and MLX operators) and return an mlx object.
 #'
 #' @param f An R function. Its arguments should be mlx objects, and its return
-#'   value must be an mlx array (typically a scalar loss).
+#'   value must be an mlx array (typically a scalar loss; a length-one vector is
+#'   also OK).
 #' @param ... Arguments to pass to `f`. They will be coerced to mlx if needed.
 #' @param argnums Indices (1-based) identifying which arguments to
 #'   differentiate with respect to. Defaults to all arguments.

@@ -85,7 +85,14 @@ SEXP cpp_mlx_value_grad(SEXP fun_sexp,
     List res_obj(result);
     SEXP res_ptr = res_obj["ptr"];
     MlxArrayWrapper* res_wrap = get_mlx_wrapper(res_ptr);
-    return res_wrap->get();
+    array out = res_wrap->get();
+
+    // Allow callers to return length-1 vectors; reshape to a true scalar.
+    if (out.size() == 1 && out.ndim() > 0) {
+      out = reshape(out, {});
+    }
+
+    return out;
   };
 
   SimpleValueAndGradFn vg_fn =

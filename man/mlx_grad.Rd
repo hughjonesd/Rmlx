@@ -11,7 +11,8 @@ mlx_value_grad(f, ..., argnums = NULL)
 }
 \arguments{
 \item{f}{An R function. Its arguments should be mlx objects, and its return
-value must be an mlx array (typically a scalar loss).}
+value must be an mlx array (typically a scalar loss; a length-one vector is
+also OK).}
 
 \item{...}{Arguments to pass to \code{f}. They will be coerced to mlx if needed.}
 
