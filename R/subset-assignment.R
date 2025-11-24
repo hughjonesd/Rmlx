@@ -81,12 +81,7 @@ scatter_assign <- function(x, indices, value) {
   target_len <- prod(lens)
   value_mlx <- as_mlx(value, dtype = mlx_dtype(x), device = x$device)
   val_len <- length(value_mlx)
-  if (val_len == 0L) {
-    stop("Replacement value must have length >= 1.", call. = FALSE)
-  }
-  if (val_len != 1L && target_len %% val_len != 0L) {
-    stop("Number of items to replace is not a multiple of replacement length", call. = FALSE)
-  }
+  .check_value_fits(val_len, target_len)
   tiles <- target_len %/% val_len
   flat <- .mlx_flatten_r_order(value_mlx)
   updates_flat <- if (tiles == 1L) flat else mlx_tile(flat, tiles)
@@ -99,6 +94,15 @@ scatter_assign <- function(x, indices, value) {
   axes <- seq_len(ndim) - 1L
   ptr <- cpp_mlx_scatter(x$ptr, idx_grid, updates$ptr, axes, x$device)
   new_mlx(ptr, x$device)
+}
+
+.check_value_fits <- function(val_len, target_len) {
+  if (val_len == 0L) {
+    stop("Replacement value must have length >= 1.", call. = FALSE)
+  }
+  if (target_len %% val_len != 0L) {
+    stop("Number of items to replace is not a multiple of replacement length", call. = FALSE)
+  }
 }
 
 .mlx_assign_numeric <- function(x, idx_mlx, shape, value) {
@@ -149,20 +153,6 @@ scatter_assign <- function(x, indices, value) {
   mlx_reshape(out, c(length(x)))
 }
 
-# Prepare updates flattened in R (column-major) order for a selection
-.mlx_prepare_updates_for_selection <- function(value, target_len, dtype, device) {
-  value_mlx <- .mlx_cast(as_mlx(value), dtype = dtype, device = device)
-  value_len <- length(value_mlx)
-  if (value_len == 0L) {
-    stop("Replacement value must have length >= 1.", call. = FALSE)
-  }
-  if (value_len != 1L && target_len %% value_len != 0L) {
-    stop("Number of items to replace is not a multiple of replacement length", call. = FALSE)
-  }
-  tiles <- target_len %/% value_len
-  flat <- .mlx_flatten_r_order(value_mlx)
-  mlx_tile(flat, tiles)
-}
 
 # Boolean mask assignment helper using masked_scatter
 .mlx_assign_boolean_mask <- function(x, idx_list, shape, value) {
@@ -181,15 +171,20 @@ scatter_assign <- function(x, indices, value) {
   combined_mask <- mlx_stack(broadcasted)
   combined_mask <- mlx_all(combined_mask, axes = 1)
   if (! any(combined_mask)) {
+    # nothing to replace
     return(x)
   }
 
   # Count selected elements and prepare updates in R (column-major) order
   n_selected <- as.integer(mlx_sum(combined_mask))
-  x_dtype <- mlx_dtype(x)
-  updates <- .mlx_prepare_updates_for_selection(value, n_selected, x_dtype, x$device)
+  value <- .mlx_cast(as_mlx(value), dtype = mlx_dtype(x), device = mlx_device(x))
+  value_len <- length(value)
+  .check_value_fits(value_len, n_selected)
+  tiles <- n_selected %/% value_len
+  value <- .mlx_flatten_r_order(value)
+  value <- mlx_tile(value, tiles)
 
-  ptr <- cpp_mlx_masked_scatter(x$ptr, combined_mask$ptr, updates$ptr, x$device)
+  ptr <- cpp_mlx_masked_scatter(x$ptr, combined_mask$ptr, value$ptr, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -204,15 +199,12 @@ scatter_assign <- function(x, indices, value) {
   }
   x_dtype <- mlx_dtype(x)
 
-  if (!length(value)) {
-    stop("Replacement value must have length >= 1.", call. = FALSE)
-  }
-  value <- mlx_repeat(value, nrow(idx_mat) %/% length(value))
-
-  # guard against duplicate coordinate rows
+  .check_value_fits(length(value), nrow(idx_mat))
   if (.duplicated_rows_lex(idx_mat)) {
     stop("Duplicate indices are not allowed in assignment.", call. = FALSE)
   }
+
+  value <- mlx_repeat(value, nrow(idx_mat) %/% length(value))
 
   # Per-axis indices (0-based) as mlx arrays
   idx_list <- mlx_split(idx_mat, sections = ncol(idx_mat), axis = 2L)
