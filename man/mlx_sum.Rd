@@ -8,6 +8,7 @@
 \alias{mlx_mean}
 \alias{mlx_var}
 \alias{mlx_std}
+\alias{mlx_sd}
 \title{Reduce mlx arrays}
 \usage{
 mlx_sum(x, axes = NULL, drop = TRUE)
@@ -23,6 +24,8 @@ mlx_mean(x, axes = NULL, drop = TRUE)
 mlx_var(x, axes = NULL, drop = TRUE, ddof = 0L)
 
 mlx_std(x, axes = NULL, drop = TRUE, ddof = 0L)
+
+mlx_sd(x, axes = NULL, drop = TRUE)
 }
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
@@ -54,6 +57,9 @@ logical scalars.
 The \code{axes} argument is the inverse of \code{MARGIN} in base R
 \code{\link[=apply]{apply()}}. \code{axes} gives the axes which will be reduced; \code{MARGIN}
 gives the axes which an operation will be applied over. See the example.
+
+\code{mlx_sd()} is a convenience wrapper that matches the default behaviour
+of \code{\link[stats:sd]{stats::sd()}}, computing a sample standard deviation with \code{ddof = 1}.
 }
 \examples{
 x <- mlx_matrix(1:4, 2, 2)
@@ -64,7 +70,10 @@ mlx_all(x > 0)
 mlx_any(x > 3)
 mlx_mean(x, axes = 1)
 mlx_var(x, axes = 2)
-mlx_std(x, ddof = 1)
+mlx_std(x)
+mlx_sd(x)
+# for comparison:
+stats::sd(as.matrix(x))
 
 a <- array(1:6, dim = 1:3)
 ax <- as_mlx(a)

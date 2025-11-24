@@ -44,11 +44,17 @@ test_that("mlx_mean/var/std support axes and ddof", {
   var1_expected <- apply(arr, c(1,2), stats::var)
   expect_equal(as.matrix(mlx_var(x, axes = 3, ddof = 1)), var1_expected, tolerance = 1e-6)
 
+  sd1_expected <- apply(arr, c(1,2), stats::sd)
+  expect_equal(as.matrix(mlx_sd(x, axes = 3)), sd1_expected, tolerance = 1e-6)
+
   std_expected <- sqrt(var0_expected)
   expect_equal(as.matrix(mlx_std(x, axes = 3)), std_expected, tolerance = 1e-6)
 
   overall_std <- as.vector(mlx_std(x, ddof = 1))
   expect_equal(overall_std, stats::sd(as.vector(arr)), tolerance = 1e-6)
+
+  overall_sd <- as.vector(mlx_sd(x))
+  expect_equal(overall_sd, stats::sd(as.vector(arr)), tolerance = 1e-6)
 })
 
 test_that("mlx_cumsum computes cumulative sum", {

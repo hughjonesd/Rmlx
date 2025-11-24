@@ -44,14 +44,17 @@ NULL
 #' mlx_any(x > 3)
 #' mlx_mean(x, axes = 1)
 #' mlx_var(x, axes = 2)
-#' mlx_std(x, ddof = 1)
+#' mlx_std(x)
+#' mlx_sd(x)
+#' # for comparison:
+#' stats::sd(as.matrix(x))
 #'
 #' a <- array(1:6, dim = 1:3)
 #' ax <- as_mlx(a)
 #' # These are equivalent:
 #' apply(a, 1:2, sum) # leaves dimensions 1-2 intact, sums over dimension 3
 #' mlx_sum(a, 3)      # the same
-#' @aliases mlx_sum mlx_prod mlx_all mlx_any mlx_mean mlx_var mlx_std
+#' @aliases mlx_sum mlx_prod mlx_all mlx_any mlx_mean mlx_var mlx_std mlx_sd
 #' @name mlx_sum
 NULL
 
@@ -95,6 +98,17 @@ mlx_var <- function(x, axes = NULL, drop = TRUE, ddof = 0L) {
 #' @export
 mlx_std <- function(x, axes = NULL, drop = TRUE, ddof = 0L) {
   .mlx_reduce_dispatch(x, "std", axes = axes, drop = drop, ddof = ddof)
+}
+
+
+#' @details
+#' `mlx_sd()` is a convenience wrapper that matches the default behaviour
+#' of [stats::sd()], computing a sample standard deviation with `ddof = 1`.
+#'
+#' @rdname mlx_sum
+#' @export
+mlx_sd <- function(x, axes = NULL, drop = TRUE) {
+  mlx_std(x, axes = axes, drop = drop, ddof = 1L)
 }
 
 #' Mean of MLX array elements
