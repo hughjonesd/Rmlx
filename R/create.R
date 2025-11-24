@@ -199,9 +199,10 @@ mlx_eye <- function(n,
 #' and it pipes the data straight into MLX.
 #'
 #' @inheritParams common_params
-#' @param data Numeric, logical, or complex vector supplying the payload.
-#'   Any dimension attributes are ignored; pass `dim` explicitly.
-#' @param dim Integer vector of array dimensions (product must equal `length(data)`).
+#' @param data Numeric, logical, or complex vector. `data` is recycled to
+#'   match dimensions according to R rules (but with an error if it doesn't
+#'   tile into the dimensions exactly).
+#' @param dim Integer vector of array dimensions.
 #' @param dtype Optional MLX dtype. Defaults to `"float32"` for numeric input,
 #'   `"bool"` for logical, and `"complex64"` for complex.
 #' @param allow_scalar Logical; set `TRUE` to permit `dim = integer(0)` so
@@ -225,13 +226,23 @@ mlx_array <- function(data,
   total <- prod(dim)
   data_vec <- as.vector(data)
 
-  if (!allow_scalar && length(data_vec) != total) {
-    stop(
-      "length(data) (", length(data_vec),
-      ") must match prod(dim) (", total, ").",
-      call. = FALSE
-    )
-  } else if (allow_scalar && length(data_vec) != max(1L, total)) {
+  if (!allow_scalar) {
+    data_len <- length(data_vec)
+    if (data_len == 0L) {
+      stop("length(data) must be positive.", call. = FALSE)
+    }
+
+    if (data_len > total || total %% data_len != 0L) {
+      stop(
+        "length(data) (", data_len, ") must divide prod(dim) (", total, ").",
+        call. = FALSE
+      )
+    }
+
+    if (data_len < total) {
+      data_vec <- rep_len(data_vec, total)
+    }
+  } else if (length(data_vec) != max(1L, total)) {
     stop(
       "Scalar data must be length 1.",
       call. = FALSE
@@ -309,12 +320,6 @@ mlx_matrix <- function(data,
       stop("length(data) must be divisible by nrow.", call. = FALSE)
     }
     ncol <- total %/% nrow
-  } else {
-    nrow <- as_dim(nrow, "nrow")
-    ncol <- as_dim(ncol, "ncol")
-    if (nrow * ncol != total) {
-      stop("length(data) must equal nrow * ncol.", call. = FALSE)
-    }
   }
 
   if (isTRUE(byrow)) {

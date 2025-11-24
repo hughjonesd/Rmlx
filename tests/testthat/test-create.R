@@ -96,6 +96,16 @@ test_that("mlx_array constructs arrays without extra copies", {
   bool_arr <- mlx_array(c(TRUE, FALSE), dim = 2, dtype = "bool", device = "cpu")
   expect_equal(mlx_dtype(bool_arr), "bool")
   expect_equal(as.vector(bool_arr), c(TRUE, FALSE))
+
+  recycled <- mlx_array(1:2, dim = c(2, 3), device = "cpu")
+  expect_equal(mlx_shape(recycled), c(2L, 3L))
+  expect_equal(as.matrix(recycled), matrix(rep_len(1:2, 6), nrow = 2, ncol = 3))
+
+  expect_error(
+    mlx_array(1:5, dim = c(2, 3), device = "cpu"),
+    "must divide prod\\(dim\\)",
+    fixed = FALSE
+  )
 })
 
 test_that("mlx_matrix respects dimensions and byrow flag", {
@@ -114,6 +124,16 @@ test_that("mlx_matrix respects dimensions and byrow flag", {
 
   expect_error(mlx_matrix(1:5, ncol = 4, device = "cpu"), "length(data) must be divisible by ncol", fixed = TRUE)
   expect_error(mlx_matrix(integer(0)), "Provide either nrow or ncol", fixed = TRUE)
+
+  recycled_matrix <- mlx_matrix(1:2, nrow = 2, ncol = 4, device = "cpu")
+  expect_equal(as.matrix(recycled_matrix), matrix(rep_len(1:2, 8), nrow = 2, ncol = 4))
+
+  recycled_byrow <- mlx_matrix(1:2, nrow = 2, ncol = 4, byrow = TRUE, device = "cpu")
+  expect_equal(as.matrix(recycled_byrow), matrix(rep_len(1:2, 8), nrow = 2, ncol = 4, byrow = TRUE))
+
+  expect_error(
+    mlx_matrix(1:5, nrow = 2, ncol = 3, device = "cpu")
+  )
 })
 
 test_that("mlx_vector creates 1D arrays", {

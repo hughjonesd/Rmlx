@@ -13,10 +13,11 @@ mlx_array(
 )
 }
 \arguments{
-\item{data}{Numeric, logical, or complex vector supplying the payload.
-Any dimension attributes are ignored; pass \code{dim} explicitly.}
+\item{data}{Numeric, logical, or complex vector. \code{data} is recycled to
+match dimensions according to R rules (but with an error if it doesn't
+tile into the dimensions exactly).}
 
-\item{dim}{Integer vector of array dimensions (product must equal \code{length(data)}).}
+\item{dim}{Integer vector of array dimensions.}
 
 \item{dtype}{Optional MLX dtype. Defaults to \code{"float32"} for numeric input,
 \code{"bool"} for logical, and \code{"complex64"} for complex.}

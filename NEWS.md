@@ -22,6 +22,7 @@
 * Added `mlx_import_function()` to import MLX functions from (e.g.) Python.
 * Added `mlx_array()`, `mlx_matrix()`, `mlx_vector()`, and `mlx_scalar()` for
   fast construction of MLX objects when data and dimensions are already known.
+* `mlx_array()`/`mlx_matrix()` now recycle shorter payloads when they evenly divide the target shape.
 * Added `mlx_fft()`, `mlx_fft2()`, and `mlx_fftn()` wrappers around MLX FFT 
   kernels.
 * Added distribution functions `mlx_d/p/qnorm()`, `mlx_d/p/qunif()` etc.
