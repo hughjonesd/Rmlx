@@ -202,12 +202,10 @@ mlx_eye <- function(n,
 #' @param data Numeric, logical, or complex vector. `data` is recycled to
 #'   match dimensions according to R rules (but with an error if it doesn't
 #'   tile into the dimensions exactly).
-#' @param dim Integer vector of array dimensions.
+#' @param dim Integer vector of array dimensions. Set `dim = integer(0)` for
+#'   a scalar, in which case `data` must be length 1.
 #' @param dtype Optional MLX dtype. Defaults to `"float32"` for numeric input,
 #'   `"bool"` for logical, and `"complex64"` for complex.
-#' @param allow_scalar Logical; set `TRUE` to permit `dim = integer(0)` so
-#'   scalar payloads can be represented. When enabled, `data` must be length 1
-#'   and the resulting array is dimensionless.
 #' @return An `mlx` array with the requested shape.
 #' @export
 #' @examples
@@ -216,38 +214,32 @@ mlx_eye <- function(n,
 mlx_array <- function(data,
                       dim,
                       dtype = NULL,
-                      device = mlx_default_device(),
-                      allow_scalar = FALSE) {
+                      device = mlx_default_device()) {
   if (!is.atomic(data) || is.list(data)) {
     stop("data must be an atomic vector.", call. = FALSE)
   }
 
-  dim <- .validate_shape(dim, allow_scalar = allow_scalar)
+  dim <- .validate_shape(dim)
   total <- prod(dim)
   data_vec <- as.vector(data)
 
-  if (!allow_scalar) {
-    data_len <- length(data_vec)
-    if (data_len == 0L) {
-      stop("length(data) must be positive.", call. = FALSE)
-    }
-
-    if (data_len > total || total %% data_len != 0L) {
-      stop(
-        "length(data) (", data_len, ") must divide prod(dim) (", total, ").",
-        call. = FALSE
-      )
-    }
-
-    if (data_len < total) {
-      data_vec <- rep_len(data_vec, total)
-    }
-  } else if (length(data_vec) != max(1L, total)) {
+  data_len <- length(data_vec)
+  if (data_len == 0L) {
+    stop("length(data) must be positive.", call. = FALSE)
+  }
+  if (length(dim) == 0L) { # scalar
+    if (data_len != 1L) stop("data must be length 1 for an MLX scalar.")
+  } else if (data_len > total || total %% data_len != 0L) {
     stop(
-      "Scalar data must be length 1.",
+      "length(data) (", data_len, ") must divide prod(dim) (", total, ").",
       call. = FALSE
     )
   }
+
+  if (data_len < total) {
+    data_vec <- rep_len(data_vec, total)
+  }
+
 
   dtype_val <- if (is.null(dtype)) {
     if (is.logical(data_vec)) {
@@ -369,8 +361,7 @@ mlx_scalar <- function(value,
     value,
     dim = integer(0),
     dtype = dtype,
-    device = device,
-    allow_scalar = TRUE
+    device = device
   )
 }
 
@@ -613,15 +604,12 @@ mlx_linspace <- function(start,
 #' @param dim Integer or numeric vector of dimension sizes.
 #' @return Integer vector of positive dimensions.
 #' @noRd
-.validate_shape <- function(dim, allow_scalar = FALSE) {
+.validate_shape <- function(dim) {
   if (length(dim) == 0L) {
-    if (allow_scalar && identical(dim, integer(0))) {
-      return(integer(0))
-    }
-    stop("dim must contain at least one element.", call. = FALSE)
+    return(integer(0))
   }
   dim <- as.integer(dim)
-  if (any(is.na(dim)) || any(dim <= 0)) {
+  if (any(is.na(dim) | dim <= 0)) {
     stop("dim must contain positive integers.", call. = FALSE)
   }
   dim

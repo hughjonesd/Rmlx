@@ -155,5 +155,5 @@ test_that("mlx_scalar creates dimensionless arrays", {
   expect_equal(as.vector(logical_scalar), TRUE)
 
   expect_error(mlx_scalar(1:2), "length 1")
-  expect_error(mlx_array(1:2, dim = integer(0)), "at least one element")
+  expect_error(mlx_array(1:2, dim = integer(0)))
 })

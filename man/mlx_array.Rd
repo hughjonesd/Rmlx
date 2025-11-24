@@ -4,20 +4,15 @@
 \alias{mlx_array}
 \title{Construct an MLX array from R data}
 \usage{
-mlx_array(
-  data,
-  dim,
-  dtype = NULL,
-  device = mlx_default_device(),
-  allow_scalar = FALSE
-)
+mlx_array(data, dim, dtype = NULL, device = mlx_default_device())
 }
 \arguments{
 \item{data}{Numeric, logical, or complex vector. \code{data} is recycled to
 match dimensions according to R rules (but with an error if it doesn't
 tile into the dimensions exactly).}
 
-\item{dim}{Integer vector of array dimensions.}
+\item{dim}{Integer vector of array dimensions. Set \code{dim = integer(0)} for
+a scalar, in which case \code{data} must be length 1.}
 
 \item{dtype}{Optional MLX dtype. Defaults to \code{"float32"} for numeric input,
 \code{"bool"} for logical, and \code{"complex64"} for complex.}
@@ -26,10 +21,6 @@ tile into the dimensions exactly).}
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
 \code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
 array typically reuse that array's device or stream).}
-
-\item{allow_scalar}{Logical; set \code{TRUE} to permit \code{dim = integer(0)} so
-scalar payloads can be represented. When enabled, \code{data} must be length 1
-and the resulting array is dimensionless.}
 }
 \value{
 An \code{mlx} array with the requested shape.

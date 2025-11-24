@@ -9,7 +9,7 @@ test_that("dim and nrow for 1D mlx vectors follow base semantics", {
 })
 
 test_that("dim and nrow for scalar mlx values are NULL", {
-  s <- mlx_array(1L, dim = integer(0), allow_scalar = TRUE)
+  s <- mlx_array(1L, dim = integer(0))
 
   expect_null(dim(s))
   expect_equal(mlx_shape(s), integer(0L))
