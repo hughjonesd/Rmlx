@@ -30,8 +30,8 @@ colSums(x, na.rm = FALSE, dims = 1, ...)
 
 - dims:
 
-  Dimensions passed through to the base implementation when `x` is not
-  an mlx array.
+  Leading dimensions treated as rows/cols (see
+  [`base::rowSums()`](https://rdrr.io/r/base/colSums.html)).
 
 ## Value
 

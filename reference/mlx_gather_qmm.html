@@ -83,11 +83,13 @@ a common pattern in transformer models.</p>
 
 
 <dt id="arg-lhs-indices">lhs_indices<a class="anchor" aria-label="anchor" href="#arg-lhs-indices"></a></dt>
-<dd><p>An optional mlx array (indices for gathering from x). Default: NULL</p></dd>
+<dd><p>An optional integer vector/array (1-indexed) or <code>mlx</code> tensor
+of indices for gathering from <code>x</code>'s leading (batch) dimension. Default: NULL</p></dd>
 
 
 <dt id="arg-rhs-indices">rhs_indices<a class="anchor" aria-label="anchor" href="#arg-rhs-indices"></a></dt>
-<dd><p>An optional mlx array (indices for gathering from w). Default: NULL</p></dd>
+<dd><p>An optional integer vector/array (1-indexed) or <code>mlx</code> tensor
+of indices for gathering from <code>w</code>'s leading (batch) dimension. Default: NULL</p></dd>
 
 
 <dt id="arg-transpose">transpose<a class="anchor" aria-label="anchor" href="#arg-transpose"></a></dt>

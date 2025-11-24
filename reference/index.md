@@ -15,8 +15,8 @@
   : Get the data type of an MLX array
 - [`mlx_eval()`](https://hughjonesd.github.io/Rmlx/reference/mlx_eval.md)
   : Force evaluation of an MLX operations
-- [`` `[`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx_subset.md)
-  [`` `[<-`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx_subset.md)
+- [`` `[<-`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx_subset.md)
+  [`` `[`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx_subset.md)
   : Subset MLX array
 - [`dim(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/dim.mlx.md)
   [`mlx_shape()`](https://hughjonesd.github.io/Rmlx/reference/dim.mlx.md)
@@ -225,7 +225,8 @@
   [`mlx_mean()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sum.md)
   [`mlx_var()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sum.md)
   [`mlx_std()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sum.md)
-  : Reduce mlx arrays
+  [`mlx_sd()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sum.md) :
+  Reduce mlx arrays
 - [`mean(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mean.mlx.md)
   : Mean of MLX array elements
 - [`mlx_cumsum()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cumsum.md)

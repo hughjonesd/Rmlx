@@ -22,7 +22,8 @@ mlx_roll(x, shift, axes = NULL)
 - axes:
 
   Optional integer vector (1-indexed) along which elements are shifted.
-  When `NULL`, the array is flattened and shifted.
+  When `NULL`, the array is flattened and shifted, then the shape is
+  restored.
 
 ## Value
 

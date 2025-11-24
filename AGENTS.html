@@ -71,6 +71,7 @@
 <ul><li>Write tests with testthat in <code>tests/testthat</code>; mirror existing structure and keep scenario-focused blocks within a <code>test_that</code>.</li>
 <li>Use CPU-friendly fixtures (small matrices) so GPU and CPU paths run quickly.</li>
 <li>Run <code>R -q -e 'devtools::test()'</code> locally; no conditional skips—tests are allowed to fail if MLX is absent.</li>
+<li>Start by writing a failing test that captures the bug or new feature, then implement the change and ensure the test now passes.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="issue-tracking">Issue Tracking<a class="anchor" aria-label="anchor" href="#issue-tracking"></a></h2>

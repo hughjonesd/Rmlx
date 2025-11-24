@@ -2,6 +2,13 @@
 
 ## Rmlx 0.1.0.9000 (development)
 
+- Speeded up subset assignment. We also now fail on duplicate indices in
+  subset assignment, and on NAs in indices.
+- `%*%` now requires both its arguments to be matrices (unlike base R).
+- `as_mlx(x)` no longer returns scalars if `x` is a length-one vector.
+- `mlx_arange(start, stop, step)` now matches
+  [`seq()`](https://rdrr.io/r/base/seq.html) behavior (stop included if
+  reachable).
 - New
   [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
   to return device associated with `x`.
@@ -18,10 +25,10 @@
 - [`mlx_rand_categorical()`](https://hughjonesd.github.io/Rmlx/reference/mlx_rand_categorical.md),
   [`mlx_rand_permutation()`](https://hughjonesd.github.io/Rmlx/reference/mlx_rand_permutation.md),
   [`mlx_cross_entropy()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cross_entropy.md),
+  [`mlx_gather_qmm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_gather_qmm.md),
   and
   [`mlx_embedding()`](https://hughjonesd.github.io/Rmlx/reference/mlx_embedding.md)
-  now accept 1-based indices for inputs/outputs, keeping all exported
-  APIs consistent with R conventions.
+  now accept 1-based indices for inputs/outputs, consistently with R.
 - Added negative numeric indexing support for `[`/`[<-` on `mlx` arrays
   and documented subsetting semantics.
 - Added
@@ -35,6 +42,8 @@
   [`mlx_scalar()`](https://hughjonesd.github.io/Rmlx/reference/mlx_scalar.md)
   for fast construction of MLX objects when data and dimensions are
   already known.
+- [`mlx_array()`](https://hughjonesd.github.io/Rmlx/reference/mlx_array.md)/[`mlx_matrix()`](https://hughjonesd.github.io/Rmlx/reference/mlx_matrix.md)
+  now recycle shorter payloads when they evenly divide the target shape.
 - Added
   [`mlx_fft()`](https://hughjonesd.github.io/Rmlx/reference/mlx_fft.md),
   [`mlx_fft2()`](https://hughjonesd.github.io/Rmlx/reference/mlx_fft.md),

@@ -33,7 +33,7 @@ mlx_linspace(
 
 - dtype:
 
-  MLX dtype (`"float32"` or `"float64"`).
+  MLX dtype.
 
 - device:
 

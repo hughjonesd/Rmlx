@@ -33,9 +33,10 @@ An `mlx` array containing the gathered elements.
 
 ## Element-wise indexing
 
-The output has the same shape as the indices. Each element of the output
-is `x[index_1, index_2, ...]` from the corresponding position of each
-index. See the examples below.
+The output has the same shape as the indices (after broadcasting). Each
+element `[i, j, ...]`of the output is
+`x[index_1[i, j, ...], index_2[i, j, ...], ...]` from the corresponding
+position of each index. See the examples below.
 
 ## Examples
 
@@ -43,7 +44,7 @@ index. See the examples below.
 x <- mlx_matrix(1:9, 3, 3)
 
 # Simple cartesian gather:
-mlx_gather(x, list(1:2, 1:2), axes = 1:2)
+mlx_gather(x, list(1:2, 1:2))
 #> mlx array [2]
 #>   dtype: float32
 #>   device: gpu
@@ -55,7 +56,9 @@ row_idx <- matrix(c(1, 1,
                     2, 3), nrow = 2, byrow = TRUE)
 col_idx <- matrix(c(1, 3,
                     2, 2), nrow = 2, byrow = TRUE)
-mlx_gather(x, list(row_idx, col_idx), axes = c(1L, 2L))
+
+# A 2x2 matrix where (e.g.) the bottom right element is x[3, 2]
+mlx_gather(x, list(row_idx, col_idx))
 #> mlx array [2 x 2]
 #>   dtype: float32
 #>   device: gpu

@@ -24,8 +24,9 @@ mlx_matrix(
 
 - data:
 
-  Numeric, logical, or complex vector supplying the payload. Any
-  dimension attributes are ignored; pass `dim` explicitly.
+  Numeric, logical, or complex vector. `data` is recycled to match
+  dimensions according to R rules (but with an error if it doesn't tile
+  into the dimensions exactly).
 
 - nrow, ncol:
 

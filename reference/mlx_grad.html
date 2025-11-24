@@ -57,7 +57,8 @@ arrays. The function must keep all differentiable computations in MLX
 
 <dl><dt id="arg-f">f<a class="anchor" aria-label="anchor" href="#arg-f"></a></dt>
 <dd><p>An R function. Its arguments should be mlx objects, and its return
-value must be an mlx array (typically a scalar loss).</p></dd>
+value must be an mlx array (typically a scalar loss; a length-one vector is
+also OK).</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -102,9 +103,14 @@ breaks the gradient tape and results in an error.</p>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span>, <span class="fl">4</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">2</span>, <span class="fl">4</span><span class="op">)</span>, <span class="fl">4</span>, <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> length(data) must equal nrow * ncol.</span>
 <span class="r-in"><span><span class="fu">mlx_grad</span><span class="op">(</span><span class="va">loss</span>, <span class="va">w</span>, <span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'w' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [2 x 1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -14.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] -34.5</span>
 <span class="r-in"><span><span class="va">loss</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">w</span>, <span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">x</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">w</span><span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="va">x</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">w</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">1</span><span class="op">)</span></span></span>

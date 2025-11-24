@@ -8,26 +8,21 @@ plus an explicit shape and it pipes the data straight into MLX.
 ## Usage
 
 ``` r
-mlx_array(
-  data,
-  dim,
-  dtype = NULL,
-  device = mlx_default_device(),
-  allow_scalar = FALSE
-)
+mlx_array(data, dim, dtype = NULL, device = mlx_default_device())
 ```
 
 ## Arguments
 
 - data:
 
-  Numeric, logical, or complex vector supplying the payload. Any
-  dimension attributes are ignored; pass `dim` explicitly.
+  Numeric, logical, or complex vector. `data` is recycled to match
+  dimensions according to R rules (but with an error if it doesn't tile
+  into the dimensions exactly).
 
 - dim:
 
-  Integer vector of array dimensions (product must equal
-  `length(data)`).
+  Integer vector of array dimensions. Set `dim = integer(0)` for a
+  scalar, in which case `data` must be length 1.
 
 - dtype:
 
@@ -43,12 +38,6 @@ mlx_array(
   [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
   unless noted otherwise (helpers that act on an existing array
   typically reuse that array's device or stream).
-
-- allow_scalar:
-
-  Logical; set `TRUE` to permit `dim = integer(0)` so scalar payloads
-  can be represented. When enabled, `data` must be length 1 and the
-  resulting array is dimensionless.
 
 ## Value
 

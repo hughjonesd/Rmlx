@@ -34,7 +34,7 @@ An mlx array with transformed angular units.
 ``` r
 x <- as_mlx(pi / 2)
 mlx_degrees(x)  # 90
-#> mlx array []
+#> mlx array [1]
 #>   dtype: float32
 #>   device: gpu
 #>   values:

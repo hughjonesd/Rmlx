@@ -77,6 +77,14 @@ for each axis.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An <code>mlx</code> array with the specified slice replaced.</p>
     </div>
+    <div class="section level2">
+    <h2 id="difference-from-python-c-">Difference from Python/C++<a class="anchor" aria-label="anchor" href="#difference-from-python-c-"></a></h2>
+
+
+<p>Unlike Python's slice notation <code>array[start:stop]</code> which uses an exclusive upper bound,
+<code>mlx_slice_update()</code> uses <strong>inclusive</strong> bounds for both <code>start</code> and <code>stop</code> to match
+R conventions and to be consistent with <code><a href="mlx_arange.html">mlx_arange()</a></code> and <code><a href="mlx_linspace.html">mlx_linspace()</a></code>.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

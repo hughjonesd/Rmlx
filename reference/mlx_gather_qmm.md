@@ -43,11 +43,15 @@ mlx_gather_qmm(
 
 - lhs_indices:
 
-  An optional mlx array (indices for gathering from x). Default: NULL
+  An optional integer vector/array (1-indexed) or `mlx` tensor of
+  indices for gathering from `x`'s leading (batch) dimension. Default:
+  NULL
 
 - rhs_indices:
 
-  An optional mlx array (indices for gathering from w). Default: NULL
+  An optional integer vector/array (1-indexed) or `mlx` tensor of
+  indices for gathering from `w`'s leading (batch) dimension. Default:
+  NULL
 
 - transpose:
 

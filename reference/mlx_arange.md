@@ -1,17 +1,17 @@
 # Numerical ranges on MLX devices
 
-`mlx_arange()` mirrors [`base::seq()`](https://rdrr.io/r/base/seq.html)
-with mlx arrays: it creates evenly spaced values starting at `start`
-(default `0`), stepping by `step` (default `1`), and stopping before
-`stop`.
+`mlx_arange()` creates evenly spaced values starting at `start`,
+stepping by `step`, up to and including `stop` (if exactly reachable).
+This matches R's [`base::seq()`](https://rdrr.io/r/base/seq.html)
+behavior.
 
 ## Usage
 
 ``` r
 mlx_arange(
+  start,
   stop,
-  start = NULL,
-  step = NULL,
+  step = 1,
   dtype = c("float32", "float64", "int8", "int16", "int32", "int64", "uint8", "uint16",
     "uint32", "uint64"),
   device = mlx_default_device()
@@ -20,21 +20,21 @@ mlx_arange(
 
 ## Arguments
 
-- stop:
-
-  Exclusive upper bound.
-
 - start:
 
-  Optional starting value (defaults to 0).
+  Starting value.
+
+- stop:
+
+  Upper bound (included if exactly reachable by the step sequence).
 
 - step:
 
-  Optional step size (defaults to 1).
+  Step size (defaults to 1).
 
 - dtype:
 
-  MLX dtype (`"float32"` or `"float64"`).
+  MLX dtype.
 
 - device:
 
@@ -50,6 +50,18 @@ mlx_arange(
 
 A 1D mlx array.
 
+## Difference from Python/C++
+
+Unlike Python's [`range()`](https://rdrr.io/r/base/range.html) and
+`numpy.arange()` which use an exclusive upper bound, `mlx_arange()`
+matches R's [`base::seq()`](https://rdrr.io/r/base/seq.html) by
+including `stop` only if it's exactly reachable by the step sequence.
+This is consistent with
+[`mlx_linspace()`](https://hughjonesd.github.io/Rmlx/reference/mlx_linspace.md)
+and
+[`mlx_slice_update()`](https://hughjonesd.github.io/Rmlx/reference/mlx_slice_update.md),
+which also follow R conventions.
+
 ## See also
 
 [mlx.core.arange](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.arange)
@@ -57,16 +69,28 @@ A 1D mlx array.
 ## Examples
 
 ``` r
-mlx_arange(5)                    # 0, 1, 2, 3, 4
+mlx_arange(0, 4)        # 0, 1, 2, 3, 4
 #> mlx array [5]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 0 1 2 3 4
-mlx_arange(5, start = 1, step = 2) # 1, 3
-#> mlx array [2]
+mlx_arange(1, 5)        # 1, 2, 3, 4, 5
+#> mlx array [5]
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 1 3
+#> [1] 1 2 3 4 5
+mlx_arange(1, 9, 2)     # 1, 3, 5, 7, 9
+#> mlx array [5]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 1 3 5 7 9
+mlx_arange(1, 6, 2)     # 1, 3, 5 (6 not reachable)
+#> mlx array [3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 1 3 5
 ```

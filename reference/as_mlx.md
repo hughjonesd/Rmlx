@@ -56,7 +56,7 @@ create integer MLX arrays, you must explicitly specify `dtype`:
     x <- as_mlx(1:10, dtype = "int32")  # Creates int32 array
     x <- as_mlx(1:10)                    # Creates float32 array
 
-### Type precision notes
+### Type precision
 
 - `float64` is supported but emits a warning and downcasts to `float32`
 
@@ -70,7 +70,15 @@ create integer MLX arrays, you must explicitly specify `dtype`:
 MLX does not have an `NA` sentinel. When you pass numeric `NA` values
 from R, they are stored as `NaN` inside MLX and returned to R as `NaN`.
 Use [`is.nan()`](https://rdrr.io/r/base/is.finite.html) on MLX arrays if
-you need to detect them.
+you need to detect them. [`is.na()`](https://rdrr.io/r/base/NA.html) on
+mlx objects calls [`is.nan()`](https://rdrr.io/r/base/is.finite.html).
+
+### Scalars
+
+MLX allows scalar values, with a zero-length dimension (`integer(0)`).
+These are not usually what R users want. `as_mlx()` never returns a
+scalar; call `[mlx_reshape(x, integer(0))][mlx_reshape()]` to create one
+explicitly, or use `[mlx_array(..., allow_scalar = TRUE)][mlx_array()]`.
 
 ## See also
 

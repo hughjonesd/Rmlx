@@ -1,6 +1,7 @@
 # Matrix multiplication for MLX arrays
 
-Matrix multiplication for MLX arrays
+Both operands must be 2D matrices; vectors are not auto-promoted (unlike
+base R).
 
 ## Usage
 

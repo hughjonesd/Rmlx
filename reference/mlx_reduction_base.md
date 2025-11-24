@@ -14,8 +14,8 @@ Shared arguments for MLX/base reduction helpers.
 
 - dims:
 
-  Dimensions passed through to the base implementation when `x` is not
-  an mlx array.
+  Leading dimensions treated as rows/cols (see
+  [`base::rowSums()`](https://rdrr.io/r/base/colSums.html)).
 
 - ...:
 

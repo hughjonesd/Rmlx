@@ -19,7 +19,8 @@ mlx_value_grad(f, ..., argnums = NULL)
 - f:
 
   An R function. Its arguments should be mlx objects, and its return
-  value must be an mlx array (typically a scalar loss).
+  value must be an mlx array (typically a scalar loss; a length-one
+  vector is also OK).
 
 - ...:
 
@@ -64,9 +65,14 @@ loss <- function(w, x, y) {
 x <- mlx_matrix(1:8, 4, 2)
 y <- mlx_matrix(c(1, 3, 2, 4), 4, 1)
 w <- mlx_matrix(0, 2, 1)
-#> Error: length(data) must equal nrow * ncol.
 mlx_grad(loss, w, x, y)[[1]]
-#> Error: object 'w' not found
+#> mlx array [2 x 1]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>       [,1]
+#> [1,] -14.5
+#> [2,] -34.5
 loss <- function(w, x) sum((x %*% w) * (x %*% w))
 x <- mlx_matrix(1:4, 2, 2)
 w <- mlx_matrix(c(1, -1), 2, 1)

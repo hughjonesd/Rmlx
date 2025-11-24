@@ -33,9 +33,5 @@ An mlx array of cross products.
 u <- as_mlx(c(1, 0, 0))
 v <- as_mlx(c(0, 1, 0))
 mlx_cross(u, v)
-#> mlx array [3]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#> [1] 0 0 1
+#> Error: Axis 0 is out of bounds for array with 1 dimensions.
 ```

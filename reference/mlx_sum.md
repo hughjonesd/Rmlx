@@ -20,6 +20,8 @@ mlx_mean(x, axes = NULL, drop = TRUE)
 mlx_var(x, axes = NULL, drop = TRUE, ddof = 0L)
 
 mlx_std(x, axes = NULL, drop = TRUE, ddof = 0L)
+
+mlx_sd(x, axes = NULL, drop = TRUE)
 ```
 
 ## Arguments
@@ -56,6 +58,15 @@ An mlx array containing the reduction result.
 reducers [`all()`](https://rdrr.io/r/base/all.html) and
 [`any()`](https://rdrr.io/r/base/any.html) applied to mlx inputs return
 plain logical scalars.
+
+The `axes` argument is the inverse of `MARGIN` in base R
+[`apply()`](https://rdrr.io/r/base/apply.html). `axes` gives the axes
+which will be reduced; `MARGIN` gives the axes which an operation will
+be applied over. See the example.
+
+`mlx_sd()` is a convenience wrapper that matches the default behaviour
+of [`stats::sd()`](https://rdrr.io/r/stats/sd.html), computing a sample
+standard deviation with `ddof = 1`.
 
 ## See also
 
@@ -115,10 +126,33 @@ mlx_var(x, axes = 2)
 #>   device: gpu
 #>   values:
 #> [1] 1 1
-mlx_std(x, ddof = 1)
+mlx_std(x)
+#> mlx array []
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 1.118034
+mlx_sd(x)
 #> mlx array []
 #>   dtype: float32
 #>   device: gpu
 #>   values:
 #> [1] 1.290994
+# for comparison:
+stats::sd(as.matrix(x))
+#> [1] 1.290994
+
+a <- array(1:6, dim = 1:3)
+ax <- as_mlx(a)
+# These are equivalent:
+apply(a, 1:2, sum) # leaves dimensions 1-2 intact, sums over dimension 3
+#>      [,1] [,2]
+#> [1,]    9   12
+mlx_sum(a, 3)      # the same
+#> mlx array [1 x 2]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#>      [,1] [,2]
+#> [1,]    9   12
 ```

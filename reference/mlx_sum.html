@@ -58,7 +58,9 @@ more axes. Use <code>drop = FALSE</code> to retain reduced axes with length one
 <span></span>
 <span><span class="fu">mlx_var</span><span class="op">(</span><span class="va">x</span>, axes <span class="op">=</span> <span class="cn">NULL</span>, drop <span class="op">=</span> <span class="cn">TRUE</span>, ddof <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mlx_std</span><span class="op">(</span><span class="va">x</span>, axes <span class="op">=</span> <span class="cn">NULL</span>, drop <span class="op">=</span> <span class="cn">TRUE</span>, ddof <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mlx_std</span><span class="op">(</span><span class="va">x</span>, axes <span class="op">=</span> <span class="cn">NULL</span>, drop <span class="op">=</span> <span class="cn">TRUE</span>, ddof <span class="op">=</span> <span class="fl">0L</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">mlx_sd</span><span class="op">(</span><span class="va">x</span>, axes <span class="op">=</span> <span class="cn">NULL</span>, drop <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -95,6 +97,11 @@ standard deviation reductions.</p></dd>
     <p><code>mlx_all()</code> and <code>mlx_any()</code> return mlx boolean scalars, while the
 base R reducers <code><a href="https://rdrr.io/r/base/all.html" class="external-link">all()</a></code> and <code><a href="https://rdrr.io/r/base/any.html" class="external-link">any()</a></code> applied to mlx inputs return plain
 logical scalars.</p>
+<p>The <code>axes</code> argument is the inverse of <code>MARGIN</code> in base R
+<code><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply()</a></code>. <code>axes</code> gives the axes which will be reduced; <code>MARGIN</code>
+gives the axes which an operation will be applied over. See the example.</p>
+<p><code>mlx_sd()</code> is a convenience wrapper that matches the default behaviour
+of <code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">stats::sd()</a></code>, computing a sample standard deviation with <code>ddof = 1</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -154,12 +161,35 @@ logical scalars.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1 1</span>
-<span class="r-in"><span><span class="fu">mlx_std</span><span class="op">(</span><span class="va">x</span>, ddof <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mlx_std</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array []</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.118034</span>
+<span class="r-in"><span><span class="fu">mlx_sd</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array []</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.290994</span>
+<span class="r-in"><span><span class="co"># for comparison:</span></span></span>
+<span class="r-in"><span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/sd.html" class="external-link">sd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.290994</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html" class="external-link">array</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, dim <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ax</span> <span class="op">&lt;-</span> <span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">a</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># These are equivalent:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">a</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="va">sum</span><span class="op">)</span> <span class="co"># leaves dimensions 1-2 intact, sums over dimension 3</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    9   12</span>
+<span class="r-in"><span><span class="fu">mlx_sum</span><span class="op">(</span><span class="va">a</span>, <span class="fl">3</span><span class="op">)</span>      <span class="co"># the same</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [1 x 2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    9   12</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

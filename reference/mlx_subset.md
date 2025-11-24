@@ -7,10 +7,10 @@ of the language's historical footguns:
 
 ``` r
 # S3 method for class 'mlx'
-x[..., drop = FALSE]
+x[...] <- value
 
 # S3 method for class 'mlx'
-x[...] <- value
+x[..., drop = FALSE]
 ```
 
 ## Arguments
@@ -30,10 +30,6 @@ x[...] <- value
 
   Should dimensions be dropped? (default: FALSE)
 
-- value:
-
-  Replacement values, recycled to match the selection.
-
 ## Value
 
 The subsetted MLX object.
@@ -46,6 +42,8 @@ The subsetted MLX object.
 
 - **Logical indices**: recycled to the target dimension length. Logical
   masks may be mixed with numeric indices across dimensions.
+
+- **NA values**: indices containing `NA` are rejected with an error.
 
 - **Matrices/arrays**: numeric matrices (or higher dimensional arrays)
   select individual elements, one coordinate per row. The trailing

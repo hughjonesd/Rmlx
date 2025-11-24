@@ -85,7 +85,7 @@ To create integer MLX arrays, you must explicitly specify <code>dtype</code>:</p
 </div>
 
 <div class="section">
-<h3 id="type-precision-notes">Type precision notes<a class="anchor" aria-label="anchor" href="#type-precision-notes"></a></h3>
+<h3 id="type-precision">Type precision<a class="anchor" aria-label="anchor" href="#type-precision"></a></h3>
 
 <ul><li><p><code>float64</code> is supported but emits a warning and downcasts to <code>float32</code></p></li>
 <li><p>Integer arithmetic may promote types (e.g., int32 + int32 might → int64)</p></li>
@@ -98,7 +98,18 @@ To create integer MLX arrays, you must explicitly specify <code>dtype</code>:</p
 
 <p>MLX does not have an <code>NA</code> sentinel. When you pass numeric <code>NA</code> values from R,
 they are stored as <code>NaN</code> inside MLX and returned to R as <code>NaN</code>.
-Use <code><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.nan()</a></code> on MLX arrays if you need to detect them.</p>
+Use <code><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.nan()</a></code> on MLX arrays if you need to detect them. <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> on mlx
+objects calls <code><a href="https://rdrr.io/r/base/is.finite.html" class="external-link">is.nan()</a></code>.</p>
+</div>
+
+<div class="section">
+<h3 id="scalars">Scalars<a class="anchor" aria-label="anchor" href="#scalars"></a></h3>
+
+
+<p>MLX allows scalar values, with a zero-length dimension (<code>integer(0)</code>). These
+are not usually what R users want. <code>as_mlx()</code> never returns a scalar; call
+<code>[mlx_reshape(x, integer(0))][mlx_reshape()]</code> to create one explicitly, or
+use <code>[mlx_array(..., allow_scalar = TRUE)][mlx_array()]</code>.</p>
 </div>
 
     </div>

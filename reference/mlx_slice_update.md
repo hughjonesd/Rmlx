@@ -39,6 +39,16 @@ mlx_slice_update(x, value, start, stop, strides = NULL)
 
 An `mlx` array with the specified slice replaced.
 
+## Difference from Python/C++
+
+Unlike Python's slice notation `array[start:stop]` which uses an
+exclusive upper bound, `mlx_slice_update()` uses **inclusive** bounds
+for both `start` and `stop` to match R conventions and to be consistent
+with
+[`mlx_arange()`](https://hughjonesd.github.io/Rmlx/reference/mlx_arange.md)
+and
+[`mlx_linspace()`](https://hughjonesd.github.io/Rmlx/reference/mlx_linspace.md).
+
 ## Examples
 
 ``` r

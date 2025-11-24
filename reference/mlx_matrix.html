@@ -61,8 +61,9 @@ Supply <code>nrow</code> or <code>ncol</code> (the other may be inferred from <c
 
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>Numeric, logical, or complex vector supplying the payload.
-Any dimension attributes are ignored; pass <code>dim</code> explicitly.</p></dd>
+<dd><p>Numeric, logical, or complex vector. <code>data</code> is recycled to
+match dimensions according to R rules (but with an error if it doesn't
+tile into the dimensions exactly).</p></dd>
 
 
 <dt id="arg-nrow-ncol">nrow, ncol<a class="anchor" aria-label="anchor" href="#arg-nrow-ncol"></a></dt>
