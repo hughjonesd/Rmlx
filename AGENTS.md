@@ -23,6 +23,7 @@
 - Write tests with testthat in `tests/testthat`; mirror existing structure and keep scenario-focused blocks within a `test_that`.
 - Use CPU-friendly fixtures (small matrices) so GPU and CPU paths run quickly.
 - Run `R -q -e 'devtools::test()'` locally; no conditional skips—tests are allowed to fail if MLX is absent.
+- Start by writing a failing test that captures the bug or new feature, then implement the change and ensure the test now passes.
 
 ## Issue Tracking
 - File tasks straight to GitHub via `gh issue create` rather than maintaining
