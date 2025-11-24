@@ -10,7 +10,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/hughjonesd/Rmlx/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/hughjonesd/Rmlx/blob/v0.2.0/DESCRIPTION)
 
 Hugh-Jones D (2025). *Rmlx: R Interface to MLX Arrays (GPU-Accelerated
 with Metal or CUDA)*. R package version 0.1.0.9000,
