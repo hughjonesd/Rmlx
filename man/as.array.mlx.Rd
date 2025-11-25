@@ -2,7 +2,7 @@
 % Please edit documentation in R/class.R
 \name{as.array.mlx}
 \alias{as.array.mlx}
-\title{Convert MLX array to R matrix/array}
+\title{Convert MLX array to R array}
 \usage{
 \method{as.array}{mlx}(x, ...)
 }
@@ -12,16 +12,12 @@
 \item{...}{Additional arguments (ignored)}
 }
 \value{
-A vector, matrix or array.
-
 A numeric array.
 }
 \description{
-MLX vectors or scalars are returned as R vectors.
+Convert MLX array to R array
 }
 \examples{
-Convert MLX array to R array
-
 x <- mlx_matrix(1:8, 2, 4)
 as.array(x)
 }

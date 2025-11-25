@@ -2,8 +2,7 @@
 % Please edit documentation in R/shape.R
 \name{mlx_pad}
 \alias{mlx_pad}
-\alias{mlx_split}
-\title{Pad or split mlx arrays}
+\title{Pad mlx arrays}
 \usage{
 mlx_pad(
   x,
@@ -12,8 +11,6 @@ mlx_pad(
   mode = c("constant", "edge", "reflect", "symmetric"),
   axes = NULL
 )
-
-mlx_split(x, sections, axis = 1L)
 }
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
@@ -29,35 +26,21 @@ axis.}
 
 \item{axes}{Optional integer vector of axes (1-indexed) to which \code{pad_width}
 applies. Unlisted axes receive zero padding.}
-
-\item{sections}{Either a single integer (number of equal parts) or an integer
-vector of 1-based split points along \code{axis}.}
-
-\item{axis}{Axis (1-indexed) to operate on.}
 }
 \value{
-For \code{mlx_pad()}, an mlx array; for \code{mlx_split()}, a list of mlx
-arrays.
+An mlx array with the requested padding applied.
 }
 \description{
-\itemize{
-\item \code{mlx_pad()} mirrors the MLX padding primitive, enlarging each axis according
+\code{mlx_pad()} mirrors the MLX padding primitive, enlarging each axis according
 to \code{pad_width}. Values are added symmetrically (\code{pad_width[i, 1]} before,
 \code{pad_width[i, 2]} after) using the specified \code{mode}.
-\item \code{mlx_split()} divides an array along an axis either into equal sections
-(\code{sections} scalar) or at explicit 1-based split points (\code{sections} vector),
-returning a list of mlx arrays.
-}
 }
 \examples{
 x <- mlx_matrix(1:4, 2, 2)
 padded <- mlx_pad(x, pad_width = 1)
 padded_cols <- mlx_pad(x, pad_width = c(0, 1), axes = 2)
-parts <- mlx_split(x, sections = 2, axis = 1)
-custom_parts <- mlx_split(x, sections = c(1), axis = 2)
 }
 \seealso{
-\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad}{mlx.core.pad}
-
-\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split}{mlx.core.split}
+\href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad}{mlx.core.pad},
+\code{\link[=mlx_split]{mlx_split()}}
 }

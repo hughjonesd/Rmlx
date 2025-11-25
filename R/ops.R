@@ -234,15 +234,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with floor-divided values.
 #' @noRd
 .mlx_floor_divide <- function(x, y) {
-  result_device <- .common_device(x$device, y$device)
-  result_dtype <- .promote_dtype(mlx_dtype(x), mlx_dtype(y))
-
-  if (identical(result_dtype, "bool")) {
-    result_dtype <- "float32"
-  }
-
-  ptr <- cpp_mlx_floor_divide(x$ptr, y$ptr, result_device)
-  new_mlx(ptr, result_device)
+  .mlx_binary_result(x, y, cpp_mlx_floor_divide)
 }
 
 #' Remainder operation for mlx arrays
@@ -251,15 +243,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with remainder values.
 #' @noRd
 .mlx_remainder <- function(x, y) {
-  result_device <- .common_device(x$device, y$device)
-  result_dtype <- .promote_dtype(mlx_dtype(x), mlx_dtype(y))
-
-  if (identical(result_dtype, "bool")) {
-    result_dtype <- "float32"
-  }
-
-  ptr <- cpp_mlx_remainder(x$ptr, y$ptr, result_device)
-  new_mlx(ptr, result_device)
+  .mlx_binary_result(x, y, cpp_mlx_remainder)
 }
 
 #' Elementwise minimum of two mlx arrays

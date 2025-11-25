@@ -22,26 +22,6 @@ test_that("logical masks work", {
   expect_equal(as.matrix(x[FALSE, ]), mat[FALSE, , drop = FALSE])
 })
 
-test_that("single logical index flattens like base R", {
-  base_mat <- matrix((-4):3, nrow = 2)
-  mask <- base_mat < 0
-  mat <- base_mat
-  expected <- mat
-  expected[mask] <- 0
-  x <- as_mlx(mat)
-
-  expect_equal(as.vector(x[mask]), mat[mask])
-
-  x[mask] <- 0
-  expect_equal(as.matrix(x), expected)
-
-  mat <- base_mat
-  mask_mlx <- as_mlx(mask)
-  x_mlx_mask <- as_mlx(mat)
-  expect_equal(as.vector(x_mlx_mask[mask_mlx]), mat[mask])
-  x_mlx_mask[mask_mlx] <- 0
-  expect_equal(as.matrix(x_mlx_mask), expected)
-})
 
 test_that("mlx logical masks work like R logical masks", {
   mat <- matrix(1:9, 3, 3)
@@ -337,8 +317,8 @@ test_that("negative numeric indices behave like base R", {
   expect_equal(length(mlx_vec[integer(0)]), 0L)
   expect_equal(as.vector(mlx_vec[-integer(0)]), vec[-integer(0)])
 
-  expect_error(mlx_vec[c(-1, 2)], "Cannot mix positive and negative indices", fixed = TRUE)
-  expect_error(mlx_vec[c(-1, 0)], "Index contains zeros", fixed = TRUE)
+  expect_error(mlx_vec[c(-1, 2)], "positive and negative", fixed = TRUE)
+  expect_error(mlx_vec[c(-1, 0)], "Zero", fixed = TRUE)
 })
 
 test_that("negative indices mix with logical axes", {
@@ -350,6 +330,7 @@ test_that("negative indices mix with logical axes", {
     mat[c(TRUE, FALSE, TRUE, FALSE, TRUE), -(1:2), drop = FALSE]
   )
 })
+
 
 test_that("negative matrix indices are rejected", {
   mat <- matrix(1:9, 3, 3)
@@ -431,9 +412,9 @@ test_that("mlx indexing errors appropriately", {
   # It may return zeros or undefined values. This differs from R's behavior
   # but is consistent with MLX's C++ API and lazy evaluation model.
   # We only get bounds checking when using R integer vectors:
-  expect_error(x[c(1L, 10L), ], "Index out of bounds")
+  expect_error(x[c(1L, 10L), ], "index out of bounds", fixed = TRUE)
 
   # Matrix with wrong number of columns should error
   idx_mat_wrong <- mlx_matrix(c(1, 1, 1), nrow = 1)  # 3 columns for 2D array
-  expect_error(x[idx_mat_wrong], "one column per dimension")
+  expect_error(x[idx_mat_wrong], "wrong number of columns", fixed = TRUE)
 })

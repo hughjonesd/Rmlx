@@ -190,15 +190,6 @@ as.matrix.mlx <- function(x, ...) {
   x
 }
 
-#' Convert MLX array to R matrix/array
-#'
-#' MLX vectors or scalars are returned as R vectors.
-#'
-#' @inheritParams mlx_array_required
-#' @param ... Additional arguments (ignored)
-#' @return A vector, matrix or array.
-#' @export
-#' @examples
 #' Convert MLX array to R array
 #'
 #' @inheritParams mlx_array_required
@@ -252,7 +243,6 @@ as.vector.mlx <- function(x, mode = "any") {
   as.vector(as.array(x), mode = mode)
 }
 
-
 #' @export
 #' @rdname as.vector.mlx
 as.logical.mlx <- function(x, ...) {
@@ -274,6 +264,7 @@ as.numeric.mlx <- as.double.mlx
 as.integer.mlx <- function(x, ...) {
   as.integer(as.vector(x))
 }
+
 
 #' Test if object is an MLX array
 #'

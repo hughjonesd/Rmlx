@@ -227,15 +227,11 @@ mlx_roll <- function(x, shift, axes = NULL) {
   new_mlx(ptr, x$device)
 }
 
-#' Pad or split mlx arrays
+#' Pad mlx arrays
 #'
-#' @description
-#' * `mlx_pad()` mirrors the MLX padding primitive, enlarging each axis according
-#'   to `pad_width`. Values are added symmetrically (`pad_width[i, 1]` before,
-#'   `pad_width[i, 2]` after) using the specified `mode`.
-#' * `mlx_split()` divides an array along an axis either into equal sections
-#'   (`sections` scalar) or at explicit 1-based split points (`sections` vector),
-#'   returning a list of mlx arrays.
+#' `mlx_pad()` mirrors the MLX padding primitive, enlarging each axis according
+#' to `pad_width`. Values are added symmetrically (`pad_width[i, 1]` before,
+#' `pad_width[i, 2]` after) using the specified `mode`.
 #'
 #' @inheritParams common_params
 #' @param pad_width Padding extents. Supply a single integer, a length-two
@@ -246,19 +242,14 @@ mlx_roll <- function(x, shift, axes = NULL) {
 #'   `"reflect"`).
 #' @param axes Optional integer vector of axes (1-indexed) to which `pad_width`
 #'   applies. Unlisted axes receive zero padding.
-#' @param sections Either a single integer (number of equal parts) or an integer
-#'   vector of 1-based split points along `axis`.
-#' @param axis Axis (1-indexed) to operate on.
-#' @return For `mlx_pad()`, an mlx array; for `mlx_split()`, a list of mlx
-#'   arrays.
-#' @seealso [mlx.core.pad](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad)
+#' @return An mlx array with the requested padding applied.
+#' @seealso [mlx.core.pad](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad),
+#'   [mlx_split()]
 #' @export
 #' @examples
 #' x <- mlx_matrix(1:4, 2, 2)
 #' padded <- mlx_pad(x, pad_width = 1)
 #' padded_cols <- mlx_pad(x, pad_width = c(0, 1), axes = 2)
-#' parts <- mlx_split(x, sections = 2, axis = 1)
-#' custom_parts <- mlx_split(x, sections = c(1), axis = 2)
 mlx_pad <- function(x,
                     pad_width,
                     value = 0,
@@ -304,9 +295,24 @@ mlx_pad <- function(x,
   new_mlx(ptr, x$device)
 }
 
-#' @rdname mlx_pad
-#' @seealso [mlx.core.split](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split)
+#' Split mlx arrays
+#'
+#' `mlx_split()` divides an array along an axis either into equal sections
+#' (`sections` scalar) or at explicit 1-based split points (`sections` vector),
+#' returning a list of mlx arrays.
+#'
+#' @inheritParams common_params
+#' @param sections Either a single integer (number of equal parts) or an integer
+#'   vector of 1-based split points along `axis`.
+#' @param axis Axis (1-indexed) to operate on.
+#' @return A list of mlx arrays split along the chosen axis.
+#' @seealso [mlx.core.split](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split),
+#'   [mlx_pad()]
 #' @export
+#' @examples
+#' x <- mlx_matrix(1:4, 2, 2)
+#' parts <- mlx_split(x, sections = 2, axis = 1)
+#' custom_parts <- mlx_split(x, sections = c(1), axis = 2)
 mlx_split <- function(x, sections, axis = 1L) {
   x <- as_mlx(x)
   x_dtype <- mlx_dtype(x)

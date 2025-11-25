@@ -35,7 +35,7 @@
 mlx_gather <- function(x, indices, axes = NULL) {
   x <- as_mlx(x)
 
-  if (!length(indices)) {
+  if (! length(indices)) {
     stop("`indices` must contain at least one tensor.", call. = FALSE)
   }
 
@@ -69,11 +69,8 @@ mlx_gather <- function(x, indices, axes = NULL) {
   axes0 <- axes - 1L
   idx_dims <- lapply(idx_list, dim)
   normalized <- Map(function(idx, axis_len) {
-    norm <- .normalize_index_vector(idx, axis_len)
-    if (is.null(norm)) {
-      stop("`indices` entries cannot be NULL.", call. = FALSE)
-    }
-    norm
+    norm <- .normalize_index(idx, axis_len, assign = FALSE, allow_dims = TRUE)
+    norm - 1L
   }, idx_list, shape[axes])
 
   use_take <- length(axes0) == 1L && length(idx_dims) == 1L &&
@@ -83,13 +80,13 @@ mlx_gather <- function(x, indices, axes = NULL) {
     return(new_mlx(ptr, x$device))
   }
 
-  # Convert normalized vectors into mlx int64 arrays, reapplying the user
+  # Convert normalized vectors into mlx int32 arrays, reapplying the user
   # supplied shape when it still matches the number of elements.
   idx_mlx <- Map(function(vals, d) {
-    if (!is.null(d) && length(d) && prod(d) == length(vals)) {
+    if (!is.null(d) && length(d) > 0L && prod(d) == length(vals)) {
       dim(vals) <- d
     }
-    as_mlx(vals, dtype = "int64", device = x$device)
+    as_mlx(vals, dtype = "int32", device = x$device)
   }, normalized, idx_dims)
 
   ptr <- cpp_mlx_gather(x$ptr, idx_mlx, axes0, x$device)
