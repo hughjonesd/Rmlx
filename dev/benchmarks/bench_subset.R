@@ -73,7 +73,7 @@ run_benchmarks <- function(iterations = 3L, seed = 42L) {
       mlx_synchronize(vec_device)
       invisible(tmp)
     },
-    vector_bool_r <- function() {
+    vector_bool_r = function() {
       tmp <- vec
       tmp[vec_bool] <- vec_val_noncontig
       mlx_synchronize(vec_device)
@@ -91,7 +91,7 @@ run_benchmarks <- function(iterations = 3L, seed = 42L) {
       mlx_synchronize(vec_device)
       invisible(tmp)
     },
-    vector_bool_mlx <- function() {
+    vector_bool_mlx = function() {
       tmp <- vec
       tmp[vec_bool_mlx] <- vec_val_noncontig
       mlx_synchronize(vec_device)
@@ -145,7 +145,7 @@ run_benchmarks <- function(iterations = 3L, seed = 42L) {
       mlx_synchronize(vec_device)
       invisible(tmp)
     },
-    subset_vector_bool_r <- function() {
+    subset_vector_bool_r = function() {
       tmp <- vec
       new <- tmp[vec_bool]
       mlx_synchronize(vec_device)
