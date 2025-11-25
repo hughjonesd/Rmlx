@@ -1,13 +1,9 @@
-# Pad or split mlx arrays
+# Pad mlx arrays
 
-- `mlx_pad()` mirrors the MLX padding primitive, enlarging each axis
-  according to `pad_width`. Values are added symmetrically
-  (`pad_width[i, 1]` before, `pad_width[i, 2]` after) using the
-  specified `mode`.
-
-- `mlx_split()` divides an array along an axis either into equal
-  sections (`sections` scalar) or at explicit 1-based split points
-  (`sections` vector), returning a list of mlx arrays.
+`mlx_pad()` mirrors the MLX padding primitive, enlarging each axis
+according to `pad_width`. Values are added symmetrically
+(`pad_width[i, 1]` before, `pad_width[i, 2]` after) using the specified
+`mode`.
 
 ## Usage
 
@@ -19,8 +15,6 @@ mlx_pad(
   mode = c("constant", "edge", "reflect", "symmetric"),
   axes = NULL
 )
-
-mlx_split(x, sections, axis = 1L)
 ```
 
 ## Arguments
@@ -49,24 +43,14 @@ mlx_split(x, sections, axis = 1L)
   Optional integer vector of axes (1-indexed) to which `pad_width`
   applies. Unlisted axes receive zero padding.
 
-- sections:
-
-  Either a single integer (number of equal parts) or an integer vector
-  of 1-based split points along `axis`.
-
-- axis:
-
-  Axis (1-indexed) to operate on.
-
 ## Value
 
-For `mlx_pad()`, an mlx array; for `mlx_split()`, a list of mlx arrays.
+An mlx array with the requested padding applied.
 
 ## See also
 
-[mlx.core.pad](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad)
-
-[mlx.core.split](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split)
+[mlx.core.pad](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad),
+[`mlx_split()`](https://hughjonesd.github.io/Rmlx/reference/mlx_split.md)
 
 ## Examples
 
@@ -74,6 +58,4 @@ For `mlx_pad()`, an mlx array; for `mlx_split()`, a list of mlx arrays.
 x <- mlx_matrix(1:4, 2, 2)
 padded <- mlx_pad(x, pad_width = 1)
 padded_cols <- mlx_pad(x, pad_width = c(0, 1), axes = 2)
-parts <- mlx_split(x, sections = 2, axis = 1)
-custom_parts <- mlx_split(x, sections = c(1), axis = 2)
 ```

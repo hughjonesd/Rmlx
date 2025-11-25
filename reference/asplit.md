@@ -2,7 +2,7 @@
 
 `asplit()` extends base `asplit()` to work with mlx arrays by delegating
 to
-[`mlx_split()`](https://hughjonesd.github.io/Rmlx/reference/mlx_pad.md).
+[`mlx_split()`](https://hughjonesd.github.io/Rmlx/reference/mlx_split.md).
 When `x` is_mlx the result is a list of mlx arrays; otherwise, the base
 implementation is used.
 

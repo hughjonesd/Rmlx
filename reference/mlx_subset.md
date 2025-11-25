@@ -26,6 +26,10 @@ x[..., drop = FALSE]
   select the full extent. Logical indices recycle to the dimension
   length.
 
+- value:
+
+  Value to assign, typically an mlx or R array
+
 - drop:
 
   Should dimensions be dropped? (default: FALSE)
@@ -36,26 +40,33 @@ The subsetted MLX object.
 
 ## Details
 
+- **`drop`**: dimensions are preserved by default (`drop = FALSE`).
+
 - **Numeric indices**: positive (1-based) and purely negative vectors
   are supported. Negative indices drop the listed elements, just as in
   base R. Mixing signs is an error and `0` is not allowed.
 
 - **Logical indices**: recycled to the target dimension length. Logical
-  masks may be mixed with numeric indices across dimensions.
+  indices may be mixed with numeric indices across dimensions.
+
+- **Flattening indices**: single indices on a 2D or higher array are
+  only allowed for assignment. For example, if `x` is a matrix,
+  `x[x < 0] <- 0` is fine but `subset <- x[x < 0]` is not. Use
+  [`mlx_flatten()`](https://hughjonesd.github.io/Rmlx/reference/mlx_flatten.md)
+  explicitly for subsetting.
 
 - **NA values**: indices containing `NA` are rejected with an error.
 
-- **Matrices/arrays**: numeric matrices (or higher dimensional arrays)
-  select individual elements, one coordinate per row. The trailing
-  dimension must match the array rank and entries must be positive;
-  negative matrices are rejected to avoid ambiguous complements.
+- **Matrix indices**: a single numeric matrix index selects individual
+  elements. The number of columns must match the rank of `x`; each row
+  gives coordinates for one element.
 
 - **`mlx` indices**: `mlx` vectors, logical masks, and matrices behave
   the same as their R equivalents. One-dimensional MLX arrays are
   treated as vectors rather than 1-column matrices.
 
-- **`drop`**: dimensions are preserved by default (`drop = FALSE`),
-  matching the package's preference for explicit shapes.
+- **Duplicates**: duplicate assignments like `x[c(1,1)] <- 2:3` give an
+  error.
 
 - **Unsupported**: character indices and named lookups are not
   implemented.

@@ -485,7 +485,7 @@ as_mlx(matrix(1:12, 3, 4), dtype = "float64")
 - [`as.matrix(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx.md)
   : Convert MLX array to R matrix
 - [`as.array(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.array.mlx.md)
-  : Convert MLX array to R matrix/array
+  : Convert MLX array to R array
 - [`as.vector(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.md)
   [`as.logical(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.md)
   [`as.double(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx.md)
@@ -603,8 +603,7 @@ as_mlx(matrix(1:12, 3, 4), dtype = "float64")
 - [`mlx_tile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_tile.md)
   : Tile an array
 - [`mlx_pad()`](https://hughjonesd.github.io/Rmlx/reference/mlx_pad.md)
-  [`mlx_split()`](https://hughjonesd.github.io/Rmlx/reference/mlx_pad.md)
-  : Pad or split mlx arrays
+  : Pad mlx arrays
 - [`mlx_roll()`](https://hughjonesd.github.io/Rmlx/reference/mlx_roll.md)
   : Roll array elements
 - [`mlx_moveaxis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_moveaxis.md)
@@ -621,6 +620,8 @@ as_mlx(matrix(1:12, 3, 4), dtype = "float64")
 - [`row()`](https://hughjonesd.github.io/Rmlx/reference/row.md)
   [`col()`](https://hughjonesd.github.io/Rmlx/reference/row.md) : Row
   and column indices for mlx arrays
+- [`mlx_split()`](https://hughjonesd.github.io/Rmlx/reference/mlx_split.md)
+  : Split mlx arrays
 - [`asplit()`](https://hughjonesd.github.io/Rmlx/reference/asplit.md) :
   Split mlx arrays along a margin
 - [`mlx_unflatten()`](https://hughjonesd.github.io/Rmlx/reference/mlx_unflatten.md)

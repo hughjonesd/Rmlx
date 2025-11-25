@@ -32,7 +32,7 @@ the language's historical footguns:"></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Subset MLX array</h1>
-      <small class="dont-index">Source: <a href="https://github.com/hughjonesd/Rmlx/blob/v0.2.0/R/subset-assignment.R" class="external-link"><code>R/subset-assignment.R</code></a>, <a href="https://github.com/hughjonesd/Rmlx/blob/v0.2.0/R/subset.R" class="external-link"><code>R/subset.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/hughjonesd/Rmlx/blob/master/R/subset-assignment.R" class="external-link"><code>R/subset-assignment.R</code></a>, <a href="https://github.com/hughjonesd/Rmlx/blob/master/R/subset.R" class="external-link"><code>R/subset.R</code></a></small>
       <div class="d-none name"><code>mlx_subset.Rd</code></div>
     </div>
 
@@ -63,6 +63,10 @@ the language's historical footguns:</p>
 select the full extent. Logical indices recycle to the dimension length.</p></dd>
 
 
+<dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
+<dd><p>Value to assign, typically an mlx or R array</p></dd>
+
+
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
 <dd><p>Should dimensions be dropped? (default: FALSE)</p></dd>
 
@@ -74,21 +78,24 @@ select the full extent. Logical indices recycle to the dimension length.</p></dd
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
 
-<ul><li><p><strong>Numeric indices</strong>: positive (1-based) and purely negative vectors are
+<ul><li><p><strong><code>drop</code></strong>: dimensions are preserved by default (<code>drop = FALSE</code>).</p></li>
+<li><p><strong>Numeric indices</strong>: positive (1-based) and purely negative vectors are
 supported. Negative indices drop the listed elements, just as in base R.
 Mixing signs is an error and <code>0</code> is not allowed.</p></li>
-<li><p><strong>Logical indices</strong>: recycled to the target dimension length. Logical masks
+<li><p><strong>Logical indices</strong>: recycled to the target dimension length. Logical indices
 may be mixed with numeric indices across dimensions.</p></li>
+<li><p><strong>Flattening indices</strong>: single indices on a 2D or higher array are only
+allowed for assignment. For example, if <code>x</code> is a matrix, <code>x[x &lt; 0] &lt;- 0</code> is
+fine but <code>subset &lt;- x[x &lt; 0]</code> is not. Use <code><a href="mlx_flatten.html">mlx_flatten()</a></code> explicitly for
+subsetting.</p></li>
 <li><p><strong>NA values</strong>: indices containing <code>NA</code> are rejected with an error.</p></li>
-<li><p><strong>Matrices/arrays</strong>: numeric matrices (or higher dimensional arrays) select
-individual elements, one coordinate per row. The trailing dimension must
-match the array rank and entries must be positive; negative matrices are
-rejected to avoid ambiguous complements.</p></li>
+<li><p><strong>Matrix indices</strong>: a single numeric matrix index selects
+individual elements. The number of columns must match the rank of <code>x</code>;
+each row gives coordinates for one element.</p></li>
 <li><p><strong><code>mlx</code> indices</strong>: <code>mlx</code> vectors, logical masks, and matrices behave the
 same as their R equivalents. One-dimensional MLX arrays are treated as
 vectors rather than 1-column matrices.</p></li>
-<li><p><strong><code>drop</code></strong>: dimensions are preserved by default (<code>drop = FALSE</code>), matching
-the package's preference for explicit shapes.</p></li>
+<li><p><strong>Duplicates</strong>: duplicate assignments like <code>x[c(1,1)] &lt;- 2:3</code> give an error.</p></li>
 <li><p><strong>Unsupported</strong>: character indices and named lookups are not implemented.</p></li>
 </ul></div>
     <div class="section level2">
