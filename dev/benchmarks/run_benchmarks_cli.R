@@ -6,6 +6,8 @@ file_arg <- grep("^--file=", args_full, value = TRUE)
 
 repo_root <- rprojroot::find_root(rprojroot::has_file("DESCRIPTION"))
 
+suppressPackageStartupMessages(devtools::load_all(repo_root, quiet = TRUE))
+
 helpers_path <-   file.path(repo_root, "inst", "benchmarks", "bench_helpers.R")
 suppressPackageStartupMessages(source(helpers_path))
 
