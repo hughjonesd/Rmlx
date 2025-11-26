@@ -1,6 +1,7 @@
 # Solve a system of linear equations
 
-Solve a system of linear equations
+Note that as of MLX 0.30.0,
+[`solve()`](https://rdrr.io/r/base/solve.html) runs on the CPU.
 
 ## Usage
 

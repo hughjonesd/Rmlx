@@ -1,6 +1,7 @@
 # Compute matrix inverse
 
-Computes the inverse of a square matrix.
+Computes the inverse of a square matrix. Note that as of MLX 0.30.0,
+this runs on the CPU.
 
 ## Usage
 
