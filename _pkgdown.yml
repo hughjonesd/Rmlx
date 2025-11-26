@@ -19,6 +19,7 @@ reference:
       - Rmlx-package
       - mlx-methods
       - mlx_dtype
+      - mlx_cast
       - mlx_eval
       - "[.mlx"
       - dim.mlx

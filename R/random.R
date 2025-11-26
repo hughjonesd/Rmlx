@@ -228,7 +228,7 @@ mlx_rand_categorical <- function(logits, axis = NULL, num_samples = 1L) {
 
   ptr <- cpp_mlx_random_categorical(logits, axis0, num_samples)
   samples <- new_mlx(ptr, logits$device)
-  samples <- .mlx_cast(samples, dtype = "int32", device = logits$device)
+  samples <- mlx_cast(samples, dtype = "int32", device = logits$device)
   samples + as_mlx(1L, dtype = mlx_dtype(samples), device = samples$device)
 }
 
@@ -309,7 +309,7 @@ mlx_rand_permutation <- function(x, axis = 1L, device = mlx_default_device()) {
     handle <- .mlx_resolve_device(device, mlx_default_device())
     ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_random_permutation_n(n, dev))
     perm <- new_mlx(ptr, handle$device)
-    perm <- .mlx_cast(perm, dtype = "int32", device = handle$device)
+    perm <- mlx_cast(perm, dtype = "int32", device = handle$device)
     return(perm + as_mlx(1L, dtype = mlx_dtype(perm), device = perm$device))
   } else {
     # Permute array along axis

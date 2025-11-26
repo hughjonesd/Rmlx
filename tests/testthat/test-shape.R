@@ -18,6 +18,18 @@ test_that("mlx_stack stacks tensors along arbitrary axes", {
   expect_equal(as.array(stacked_last), expected_last, tolerance = 1e-6)
 })
 
+test_that("mlx_cast converts dtype and device", {
+  x <- as_mlx(1:3, dtype = "int32")
+
+  cast_dtype <- mlx_cast(x, dtype = "float32")
+  expect_s3_class(cast_dtype, "mlx")
+  expect_equal(mlx_dtype(cast_dtype), "float32")
+  expect_equal(as.numeric(cast_dtype), as.numeric(1:3), tolerance = 1e-6)
+
+  cast_device <- mlx_cast(x, device = "cpu")
+  expect_equal(mlx_device(cast_device), "cpu")
+})
+
 test_that("mlx_squeeze and mlx_expand_dims adjust shapes", {
   x <- mlx_array(1:4, dim = c(1, 2, 1, 2))
   squeezed_all <- mlx_squeeze(x)

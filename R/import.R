@@ -63,7 +63,7 @@ mlx_import_function <- function(path, device = mlx_default_device()) {
         if (obj$device == dev) {
           return(obj)
         }
-        .mlx_cast(obj, device = dev)
+        mlx_cast(obj, device = dev)
       }
 
       positional_mlx <- lapply(positional, cast_to_device)

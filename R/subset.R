@@ -123,7 +123,7 @@
   idx_norm <- lapply(idx_list, function (x) x - 1L)
 
   idx_grids <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = x$device)
-  idx_grids <- lapply(idx_grids, .mlx_cast, dtype = "int32")
+  idx_grids <- lapply(idx_grids, mlx_cast, dtype = "int32")
 
   .gather_for_subset(x, idx_grids)
 }

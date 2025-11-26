@@ -90,7 +90,7 @@
   value_mlx <- aperm(value_mlx)
 
   idx_grid <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = x$device)
-  idx_grid <- lapply(idx_grid, .mlx_cast, dtype = "int32")
+  idx_grid <- lapply(idx_grid, mlx_cast, dtype = "int32")
   axes <- seq_len(ndim) - 1L
   ptr <- cpp_mlx_scatter(x$ptr, idx_grid, value_mlx$ptr, axes, x$device)
   new_mlx(ptr, mlx_device(x))
@@ -145,7 +145,7 @@
   #   stop("Duplicate indices in subset assignment.")
   # }
 
-  idx <- .mlx_cast(idx, dtype = "int32")
+  idx <- mlx_cast(idx, dtype = "int32")
   idx
 }
 

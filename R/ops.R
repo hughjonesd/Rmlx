@@ -162,9 +162,9 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   )
   result_device <- Reduce(.common_device, list(input$device, mat1$device, mat2$device))
 
-  input <- .mlx_cast(input, dtype = result_dtype, device = result_device)
-  mat1 <- .mlx_cast(mat1, dtype = result_dtype, device = result_device)
-  mat2 <- .mlx_cast(mat2, dtype = result_dtype, device = result_device)
+  input <- mlx_cast(input, dtype = result_dtype, device = result_device)
+  mat1 <- mlx_cast(mat1, dtype = result_dtype, device = result_device)
+  mat2 <- mlx_cast(mat2, dtype = result_dtype, device = result_device)
 
   ptr <- cpp_mlx_addmm(input$ptr, mat1$ptr, mat2$ptr, alpha, beta, result_dtype, result_device)
   new_mlx(ptr, result_device)

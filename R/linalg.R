@@ -72,8 +72,8 @@ mlx_kron <- function(a, b) {
   result_dtype <- .promote_dtype(mlx_dtype(a), mlx_dtype(b))
   result_device <- .common_device(a$device, b$device)
 
-  a <- .mlx_cast(a, dtype = result_dtype, device = result_device)
-  b <- .mlx_cast(b, dtype = result_dtype, device = result_device)
+  a <- mlx_cast(a, dtype = result_dtype, device = result_device)
+  b <- mlx_cast(b, dtype = result_dtype, device = result_device)
 
   ptr <- cpp_mlx_kron(a$ptr, b$ptr, result_device)
   new_mlx(ptr, result_device)

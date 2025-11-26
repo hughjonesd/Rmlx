@@ -2,8 +2,9 @@
 
 # Rmlx 0.1.0.9000 (development)
 
-* Speeded up subset assignment. We also now fail on duplicate indices in 
-  subset assignment, and on NAs in indices.
+* Speeded up subset assignment. We also now fail on NAs in indices.
+* Exposed `mlx_cast()` for casting arrays between dtypes/devices (previously
+  internal `.mlx_cast`).
 * `%*%` now requires both its arguments to be matrices (unlike base R).
 * `as_mlx(x)` no longer returns scalars if `x` is a length-one vector.
 * `mlx_arange(start, stop, step)` now matches `seq()`

@@ -1,13 +1,20 @@
-# Internal casting helper ----------------------------------------------------
+# Casting --------------------------------------------------------------------
 
-#' Cast an mlx array to a different dtype or device
+#' Cast an mlx array
 #'
-#' @param x mlx array to cast.
+#' `mlx_cast()` converts an mlx array to a different dtype and/or device without
+#' changing its shape.
+#'
+#' @inheritParams mlx_array_required
 #' @param dtype Target dtype string. Defaults to the array's current dtype.
 #' @param device Target device string. Defaults to the array's current device.
 #' @return An mlx array with the requested dtype and device.
-#' @noRd
-.mlx_cast <- function(x, dtype = NULL, device = x$device) {
+#' @seealso [mlx_dtype()], [mlx_device()]
+#' @export
+#' @examples
+#' x <- mlx_array(1:3, dtype = "int32")
+#' mlx_cast(x, dtype = "float32")
+mlx_cast <- function(x, dtype = NULL, device = x$device) {
   if (!inherits(x, "mlx")) {
     stop("Expected an mlx array.", call. = FALSE)
   }
@@ -71,7 +78,7 @@ mlx_stack <- function(..., axis = 1L) {
   dtypes <- lapply(arrays, mlx_dtype)
   dtype <- Reduce(.promote_dtype, dtypes)
   device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
-  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = device)
+  arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = device)
 
   axis_vec <- .mlx_normalize_new_axes(axis, dim(arrays[[1]]))
   if (length(axis_vec) != 1L) {
@@ -688,7 +695,7 @@ mlx_meshgrid <- function(...,
   default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
   target <- if (is.null(device)) default_device else device
   handle <- .mlx_resolve_device(target, default_device)
-  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = handle$device)
+  arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
 
   indexing <- match.arg(indexing)
   ptrs <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_meshgrid(arrays, sparse, indexing, dev))
@@ -750,7 +757,7 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
   default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
   target <- if (is.null(device)) default_device else device
   handle <- .mlx_resolve_device(target, default_device)
-  arrays <- lapply(arrays, .mlx_cast, dtype = dtype, device = handle$device)
+  arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
 
   ptrs <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_broadcast_arrays(arrays, dev))
   lapply(ptrs, function(ptr) new_mlx(ptr, handle$device))
@@ -780,9 +787,9 @@ mlx_where <- function(condition, x, y) {
   result_dtype <- .promote_dtype(x_dtype, y_dtype)
   result_device <- .common_device(x$device, y$device)
 
-  condition <- .mlx_cast(condition, dtype = "bool", device = result_device)
-  x <- .mlx_cast(x, dtype = result_dtype, device = result_device)
-  y <- .mlx_cast(y, dtype = result_dtype, device = result_device)
+  condition <- mlx_cast(condition, dtype = "bool", device = result_device)
+  x <- mlx_cast(x, dtype = result_dtype, device = result_device)
+  y <- mlx_cast(y, dtype = result_dtype, device = result_device)
 
   ptr <- cpp_mlx_where(condition$ptr, x$ptr, y$ptr, result_dtype, result_device)
   new_mlx(ptr, result_device)

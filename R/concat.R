@@ -42,7 +42,7 @@
     device <- mlx_objs[[1L]]$device
   }
 
-  aligned <- lapply(mlx_objs, .mlx_cast, dtype = dtype, device = device)
+  aligned <- lapply(mlx_objs, mlx_cast, dtype = dtype, device = device)
   ptr <- cpp_mlx_concat(aligned, axis - 1L)
   axis_lengths <- vapply(aligned, function(x) dim(x)[axis], integer(1))
   new_dim <- dim(aligned[[1L]])
