@@ -464,6 +464,8 @@ as_mlx(matrix(1:12, 3, 4), dtype = "float64")
   : Base R generics with mlx methods
 - [`mlx_dtype()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dtype.md)
   : Get the data type of an MLX array
+- [`mlx_cast()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cast.md)
+  : Cast an mlx array
 - [`mlx_eval()`](https://hughjonesd.github.io/Rmlx/reference/mlx_eval.md)
   : Force evaluation of an MLX operations
 - [`` `[<-`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx_subset.md)
@@ -482,6 +484,8 @@ as_mlx(matrix(1:12, 3, 4), dtype = "float64")
   : Object structure for MLX array
 - [`t(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/t.mlx.md)
   : Transpose of MLX matrix
+- [`as_r()`](https://hughjonesd.github.io/Rmlx/reference/as_r.md) :
+  Convert MLX array to base R objects
 - [`as.matrix(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx.md)
   : Convert MLX array to R matrix
 - [`as.array(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/as.array.mlx.md)

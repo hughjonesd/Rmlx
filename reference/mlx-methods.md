@@ -28,7 +28,8 @@ main entry points are:
   [[`dim()`](https://rdrr.io/r/base/dim.html)](https://hughjonesd.github.io/Rmlx/reference/dim.mlx)
   and [`dim<-`](NA)
 
-- [[`as.matrix()`](https://rdrr.io/r/base/matrix.html)](https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx),
+- [[`as_r()`](https://hughjonesd.github.io/Rmlx/reference/as_r.md)](https://hughjonesd.github.io/Rmlx/reference/as_r),
+  [[`as.matrix()`](https://rdrr.io/r/base/matrix.html)](https://hughjonesd.github.io/Rmlx/reference/as.matrix.mlx),
   [[`as.array()`](https://rdrr.io/r/base/array.html)](https://hughjonesd.github.io/Rmlx/reference/as.array.mlx),
   and
   [[`as.vector()`](https://rdrr.io/r/base/vector.html)](https://hughjonesd.github.io/Rmlx/reference/as.vector.mlx)
