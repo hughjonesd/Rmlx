@@ -43,7 +43,7 @@ mlx_synchronize <- function(device = mlx_default_device()) {
   invisible(NULL)
 }
 
-#' Temporarily set the default MLX device
+#' Temporarily set the default MLX device or stream
 #'
 #' @param device `"gpu"`, `"cpu"`, or an `mlx_stream` created via [mlx_new_stream()].
 #' @param code Expression to evaluate while `device` is active.
@@ -54,11 +54,74 @@ mlx_synchronize <- function(device = mlx_default_device()) {
 #' with_default_device("cpu", x <- mlx_vector(1:10))
 #'
 with_default_device <- function(device, code) {
-  device <- match.arg(device, c("gpu", "cpu"))
+  if (.mlx_is_stream(device)) {
+    stream <- .mlx_validate_stream(device)
+    target_device <- stream$device
+    old_device <- mlx_default_device()
+    old_stream <- mlx_default_stream(target_device)
+    on.exit({
+      mlx_set_default_stream(old_stream)
+      mlx_default_device(old_device)
+    }, add = TRUE)
+    mlx_default_device(target_device)
+    mlx_set_default_stream(stream)
+    return(eval.parent(substitute(code)))
+  }
+
+  device_chr <- match.arg(device, c("gpu", "cpu"))
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device), add = TRUE)
-  mlx_default_device(device)
+  mlx_default_device(device_chr)
   eval.parent(substitute(code))
+}
+
+#' Set the default MLX device for the current scope
+#'
+#' Use `local_default_device()` to temporarily switch devices within the current
+#' evaluation environment, restoring the previous default when the environment
+#' exits (similar to [withr::local_options()]).
+#'
+#' @param .local_envir Environment to bind the restoration to. Defaults to the
+#'   calling environment.
+#' @return Invisibly returns the previous default device.
+#' @export
+#' @rdname with_default_device
+#' @examples
+#' local_default_device("cpu")
+#' # code here runs on CPU, then the previous default is restored
+local_default_device <- function(device, .local_envir = parent.frame()) {
+  if (.mlx_is_stream(device)) {
+    stream <- .mlx_validate_stream(device)
+    target_device <- stream$device
+    old_device <- mlx_default_device()
+    old_stream <- mlx_default_stream(target_device)
+    do.call(
+      on.exit,
+      list(substitute({
+        mlx_set_default_stream(old_stream_val)
+        mlx_default_device(old_device_val)
+      }, list(
+        old_stream_val = old_stream,
+        old_device_val = old_device
+      )), add = TRUE),
+      envir = .local_envir
+    )
+    mlx_default_device(target_device)
+    mlx_set_default_stream(stream)
+    return(invisible(old_device))
+  }
+
+  device_chr <- match.arg(device, c("gpu", "cpu"))
+  old_device <- mlx_default_device()
+  do.call(
+    on.exit,
+    list(substitute(mlx_default_device(old_device_val),
+      list(old_device_val = old_device)
+    ), add = TRUE),
+    envir = .local_envir
+  )
+  mlx_default_device(device_chr)
+  invisible(old_device)
 }
 
 #' Check if GPU backend is available

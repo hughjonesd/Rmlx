@@ -40,6 +40,56 @@ test_that("with_default_device temporarily overrides device", {
   expect_equal(mlx_default_device(), original)
 })
 
+test_that("with_default_device accepts streams", {
+  stream <- mlx_new_stream("cpu")
+  original_device <- mlx_default_device()
+  original_stream <- mlx_default_stream("cpu")
+  on.exit({
+    mlx_set_default_stream(original_stream)
+    mlx_default_device(original_device)
+  }, add = TRUE)
+
+  result <- with_default_device(stream, {
+    expect_equal(mlx_default_device(), stream$device)
+    current <- mlx_default_stream(stream$device)
+    expect_equal(current$index, stream$index)
+    "ok"
+  })
+
+  expect_equal(result, "ok")
+  expect_equal(mlx_default_device(), original_device)
+  restored <- mlx_default_stream(stream$device)
+  expect_equal(restored$index, original_stream$index)
+})
+
+test_that("local_default_device restores device", {
+  original <- mlx_default_device()
+  fn <- function() {
+    local_default_device("cpu")
+    expect_equal(mlx_default_device(), "cpu")
+  }
+  fn()
+  expect_equal(mlx_default_device(), original)
+})
+
+test_that("local_default_device accepts streams", {
+  stream <- mlx_new_stream("cpu")
+  original_device <- mlx_default_device()
+  original_stream <- mlx_default_stream(stream$device)
+
+  fn <- function() {
+    local_default_device(stream)
+    expect_equal(mlx_default_device(), stream$device)
+    current <- mlx_default_stream(stream$device)
+    expect_equal(current$index, stream$index)
+  }
+
+  fn()
+  expect_equal(mlx_default_device(), original_device)
+  restored <- mlx_default_stream(stream$device)
+  expect_equal(restored$index, original_stream$index)
+})
+
 test_that("mlx_best_device returns a valid device", {
   device <- mlx_best_device()
   expect_type(device, "character")

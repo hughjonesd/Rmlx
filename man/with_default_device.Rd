@@ -2,24 +2,36 @@
 % Please edit documentation in R/device.R
 \name{with_default_device}
 \alias{with_default_device}
-\title{Temporarily set the default MLX device}
+\alias{local_default_device}
+\title{Temporarily set the default MLX device or stream}
 \usage{
 with_default_device(device, code)
+
+local_default_device(device, .local_envir = parent.frame())
 }
 \arguments{
 \item{device}{\code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}.}
 
 \item{code}{Expression to evaluate while \code{device} is active.}
+
+\item{.local_envir}{Environment to bind the restoration to. Defaults to the
+calling environment.}
 }
 \value{
 The result of evaluating \code{code}.
+
+Invisibly returns the previous default device.
 }
 \description{
-Temporarily set the default MLX device
+Use \code{local_default_device()} to temporarily switch devices within the current
+evaluation environment, restoring the previous default when the environment
+exits (similar to \code{\link[withr:with_options]{withr::local_options()}}).
 }
 \examples{
 with_default_device("cpu", x <- mlx_vector(1:10))
 
+local_default_device("cpu")
+# code here runs on CPU, then the previous default is restored
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/metal.html}{mlx.core.default_device}
