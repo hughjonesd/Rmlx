@@ -12,12 +12,19 @@
 \item{...}{Additional arguments (ignored)}
 }
 \value{
-A numeric array.
+An R array with the same shape as the MLX input.
 }
 \description{
-Convert MLX array to R array
+Always returns an R array using the MLX shape. One-dimensional MLX inputs
+become 1-D arrays (with \code{dim} set to their length) instead of plain vectors.
 }
 \examples{
 x <- mlx_matrix(1:8, 2, 4)
 as.array(x)
+
+v <- as_mlx(1:3)
+as.array(v)  # 1-D array with dim 3
+}
+\seealso{
+\code{\link[=as_r]{as_r()}}, \code{\link[=as.vector.mlx]{as.vector.mlx()}}, \code{\link[=as.matrix.mlx]{as.matrix.mlx()}}
 }

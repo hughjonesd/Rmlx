@@ -29,6 +29,7 @@ reference:
       - print.mlx
       - str.mlx
       - t.mlx
+      - as_r
       - as.matrix.mlx
       - as.array.mlx
       - as.vector.mlx

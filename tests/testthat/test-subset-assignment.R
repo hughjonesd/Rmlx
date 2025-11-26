@@ -215,16 +215,16 @@ test_that("boolean mask assignment validates recycling rules", {
   # 9 selected elements
   # Valid: scalar (always works)
   x[mask1, mask2] <- 99
-  expect_equal(as.array(x)[1:3, 1:3], matrix(99, 3, 3))
+  expect_equal(as.matrix(x)[1:3, 1:3], matrix(99, 3, 3))
 
   # Valid: 3 elements, 9 = 3 * 3
   x[mask1, mask2] <- mlx_vector(1:3)
-  result <- as.array(x)
+  result <- as.matrix(x)
   expect_equal(result[1:3, 1:3], matrix(rep(1:3, each = 3), 3, 3, byrow = TRUE))
 
   # Valid: 9 elements, exact match
   x[mask1, mask2] <- mlx_vector(101:109)
-  result <- as.array(x)
+  result <- as.matrix(x)
   expect_equal(result[1, 1], 101)
   expect_equal(result[3, 3], 109)
 

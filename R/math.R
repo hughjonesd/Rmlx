@@ -31,7 +31,7 @@ Math.mlx <- function(x, ...) {
 
   # Additional arguments change semantics for some Math generics (e.g., log base, round digits)
   if (length(dots) > 0 && op %in% c("log", "round", "signif")) {
-    x_r <- as.array(x)
+    x_r <- as_r(x)
     result_r <- do.call(get(op, mode = "function"), c(list(x_r), dots))
     return(as_mlx(result_r, dtype = x_dtype, device = x$device))
   }
@@ -50,7 +50,7 @@ Math.mlx <- function(x, ...) {
       warning("MLX does not support '", .Generic, "', falling back to R implementation",
               call. = FALSE)
       # Convert to R matrix, apply operation, convert back
-      x_r <- as.array(x)
+      x_r <- as_r(x)
       result_r <- get(.Generic, mode = "function")(x_r, ...)
       as_mlx(result_r, dtype = x_dtype, device = x$device)
     } else {

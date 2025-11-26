@@ -16,7 +16,7 @@ entry points are:
 \item \href{Summary.mlx}{\code{Summary}} for reductions such as \code{sum()} and \code{max()};
 also \href{mean.mlx}{\code{mean()}}, \href{length.mlx}{\code{length()}} and \href{all.equal.mlx}{\code{all.equal()}}.
 \item \href{diag.mlx}{\code{diag()}}, \href{dim.mlx}{\code{dim()}} and \href{dim<-.mlx}{\verb{dim<-}}
-\item \href{as.matrix.mlx}{\code{as.matrix()}}, \href{as.array.mlx}{\code{as.array()}}, and \href{as.vector.mlx}{\code{as.vector()}} for conversion back to base R
+\item \href{as_r}{\code{as_r()}}, \href{as.matrix.mlx}{\code{as.matrix()}}, \href{as.array.mlx}{\code{as.array()}}, and \href{as.vector.mlx}{\code{as.vector()}} for conversion back to base R
 \item \href{row}{\code{row()}} and \href{col}{\code{col()}} for index helpers that play nicely with mlx arrays
 \item \href{cbind.mlx}{\code{cbind()}} and \href{rbind.mlx}{\code{rbind()}} for binding arrays along rows or columns;
 there is also an \code{\link[=abind]{abind()}} function modelled on \code{abind::abind()}.

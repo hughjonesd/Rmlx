@@ -105,7 +105,7 @@ test_that("mixed-device arithmetic stages to GPU and preserves inputs", {
   res <- cpu_mat + gpu_mat
 
   expect_equal(res$device, "gpu")
-  expect_equal(as.array(res), as.array(cpu_mat) + as.array(gpu_mat))
+  expect_equal(as.matrix(res), as.matrix(cpu_mat) + as.matrix(gpu_mat))
   expect_equal(cpu_mat$device, "cpu")
   expect_equal(gpu_mat$device, "gpu")
 })
@@ -119,7 +119,7 @@ test_that("mixed-device reductions with multiple operands choose GPU", {
   res <- sum(cpu_mat, gpu_mat)
 
   expect_equal(res$device, "gpu")
-  expect_equal(as.array(res), sum(as.array(cpu_mat)) + sum(as.array(gpu_mat)))
+  expect_equal(as_r(res), sum(as_r(cpu_mat)) + sum(as_r(gpu_mat)))
 })
 
 test_that("requesting GPU errors when backend is unavailable", {

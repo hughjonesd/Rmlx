@@ -190,16 +190,22 @@ as.matrix.mlx <- function(x, ...) {
   x
 }
 
-#' Convert MLX array to R array
+#' Convert MLX array to base R objects
+#'
+#' `as_r()` mirrors base R coercion rules: MLX objects with `dim()` equal to
+#' `NULL` return a plain vector, while higher-dimensional inputs return matrices
+#' or arrays.
 #'
 #' @inheritParams mlx_array_required
 #' @param ... Additional arguments (ignored)
-#' @return A numeric array.
+#' @return A vector, matrix, or array depending on the dimensions of `x`.
 #' @export
+#' @seealso [as.array.mlx()], [as.vector.mlx()], [as.matrix.mlx()]
 #' @examples
-#' x <- mlx_matrix(1:8, 2, 4)
-#' as.array(x)
-as.array.mlx <- function(x, ...) {
+#' v <- as_mlx(1:3)
+#' as_r(v)      # numeric vector
+as_r <- function(x, ...) {
+  stopifnot(is_mlx(x))
   mlx_eval(x)
   out <- cpp_mlx_to_r(x$ptr)
   if (length(dim(x)) == 0L) {
@@ -209,6 +215,44 @@ as.array.mlx <- function(x, ...) {
   # Be careful before changing the below; dim(), attributes() and
   # class can interact surprisingly.
   dim(out) <- dim(x)
+  attrs <- attributes(x)
+  attrs$names <- NULL
+  attrs$class <- NULL
+  if (length(attrs)) {
+    for (nm in names(attrs)) {
+      attr(out, nm) <- attrs[[nm]]
+    }
+  }
+  out
+}
+
+#' Convert MLX array to R array
+#'
+#' Always returns an R array using the MLX shape. One-dimensional MLX inputs
+#' become 1-D arrays (with `dim` set to their length) instead of plain vectors.
+#'
+#' @inheritParams mlx_array_required
+#' @param ... Additional arguments (ignored)
+#' @return An R array with the same shape as the MLX input.
+#' @export
+#' @seealso [as_r()], [as.vector.mlx()], [as.matrix.mlx()]
+#' @examples
+#' x <- mlx_matrix(1:8, 2, 4)
+#' as.array(x)
+#'
+#' v <- as_mlx(1:3)
+#' as.array(v)  # 1-D array with dim 3
+as.array.mlx <- function(x, ...) {
+  stopifnot(is_mlx(x))
+  mlx_eval(x)
+  out <- cpp_mlx_to_r(x$ptr)
+
+  shape <- mlx_shape(x)
+  if (length(shape) == 0L) {
+    shape <- length(out)
+  }
+
+  dim(out) <- shape
   attrs <- attributes(x)
   attrs$names <- NULL
   attrs$class <- NULL

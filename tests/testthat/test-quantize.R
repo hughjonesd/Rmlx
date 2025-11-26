@@ -85,7 +85,7 @@ test_that("gather_qmm matches quantized_matmul without gathers", {
     group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, device = "cpu"
   )
 
-  expect_equal(as.array(mm_gather), as.array(mm_ref), tolerance = 1e-4)
+  expect_equal(as_r(mm_gather), as_r(mm_ref), tolerance = 1e-4)
 })
 
 test_that("gather_qmm applies lhs/rhs indices correctly", {

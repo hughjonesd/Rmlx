@@ -169,7 +169,7 @@ test_that("mlx_gather supports multi-axis tensors", {
   gathered <- mlx_gather(x, list(idx_rows, idx_cols), axes = c(1L, 2L))
   expected <- array(mat[cbind(as.vector(idx_rows), as.vector(idx_cols))], dim(idx_rows))
 
-  expect_equal(as.array(gathered), expected, tolerance = 1e-6)
+  expect_equal(as.matrix(gathered), expected, tolerance = 1e-6)
 })
 
 test_that("mlx_gather preserves remaining axes and errors on invalid axes", {

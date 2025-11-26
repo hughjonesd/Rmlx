@@ -93,7 +93,7 @@
 }
 
 .matrix_subset <- function(x, idx_mat) {
-  idx_mat <- as.array(idx_mat)
+  idx_mat <- as.matrix(idx_mat)
   shape <- mlx_shape(x)
   ndims <- length(shape)
 

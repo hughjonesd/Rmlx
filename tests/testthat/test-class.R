@@ -82,6 +82,25 @@ test_that("as.vector.mlx works for 1D arrays", {
   expect_equal(v_back, as.numeric(v))
 })
 
+test_that("as.array.mlx returns arrays for 1D inputs", {
+  v <- as_mlx(1:4)
+
+  arr <- as.array(v)
+
+  expect_true(is.array(arr))
+  expect_equal(dim(arr), 4L)
+  expect_equal(as.vector(arr), 1:4)
+})
+
+test_that("as_r mirrors base vector coercion for 1D inputs", {
+  v <- as_mlx(1:5)
+
+  r_obj <- as_r(v)
+
+  expect_null(dim(r_obj))
+  expect_equal(r_obj, as.numeric(1:5))
+})
+
 test_that("as.vector.mlx flattens multi-dimensional arrays", {
   m <- matrix(1:12, 3, 4)
   m_mlx <- as_mlx(m)

@@ -33,7 +33,7 @@
 }
 
 .matrix_assign <- function (x, idx_mat, value) {
-  idx_mat <- as.array(idx_mat)
+  idx_mat <- as_r(idx_mat)
   shape <- mlx_shape(x)
   ndims <- length(shape)
   .check_matrix_index(idx_mat, shape, assign = TRUE)

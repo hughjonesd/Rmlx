@@ -10,7 +10,7 @@
 #' - [`Summary`](Summary.mlx) for reductions such as `sum()` and `max()`;
 #'   also [`mean()`](mean.mlx), [`length()`](length.mlx) and [`all.equal()`](all.equal.mlx).
 #' - [`diag()`](diag.mlx), [`dim()`](dim.mlx) and [`dim<-`](dim<-.mlx)
-#' - [`as.matrix()`](as.matrix.mlx), [`as.array()`](as.array.mlx), and [`as.vector()`](as.vector.mlx) for conversion back to base R
+#' - [`as_r()`](as_r), [`as.matrix()`](as.matrix.mlx), [`as.array()`](as.array.mlx), and [`as.vector()`](as.vector.mlx) for conversion back to base R
 #' - [`row()`](row) and [`col()`](col) for index helpers that play nicely with mlx arrays
 #' - [`cbind()`](cbind.mlx) and [`rbind()`](rbind.mlx) for binding arrays along rows or columns;
 #'   there is also an [abind()] function modelled on `abind::abind()`.

@@ -240,12 +240,12 @@ test_that("mlx_argmax and mlx_argmin work with 3D arrays", {
   arr_mlx <- as_mlx(arr)
 
   # argmax along axis 1
-  argmax_axis1 <- as.array(mlx_argmax(arr_mlx, axis = 1))
+  argmax_axis1 <- as.matrix(mlx_argmax(arr_mlx, axis = 1))
   expect_equal(dim(argmax_axis1), c(2, 2))
   expect_equal(argmax_axis1[1, 1], which.max(arr[, 1, 1]))
 
   # argmin along axis 3
-  argmin_axis3 <- as.array(mlx_argmin(arr_mlx, axis = 3))
+  argmin_axis3 <- as.matrix(mlx_argmin(arr_mlx, axis = 3))
   expect_equal(dim(argmin_axis3), c(2, 2))
   expect_equal(argmin_axis3[1, 1], which.min(arr[1, 1, ]))
 })
@@ -271,7 +271,7 @@ test_that("mlx_logsumexp works with 3D arrays", {
   arr_mlx <- as_mlx(arr)
 
   # logsumexp along axis 3
-  lse_axis3 <- as.array(mlx_logsumexp(arr_mlx, axes = 3))
+  lse_axis3 <- as.matrix(mlx_logsumexp(arr_mlx, axes = 3))
   expect_equal(dim(lse_axis3), c(2, 2))
   expected <- log(sum(exp(arr[1, 1, ])))
   expect_equal(lse_axis3[1, 1], expected, tolerance = 1e-6)
