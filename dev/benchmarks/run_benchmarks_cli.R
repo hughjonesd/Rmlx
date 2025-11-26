@@ -27,6 +27,13 @@ ops <- list(
   list(
     label = "as_mlx",
     fn = function(input) force_mlx(as_mlx(input$base$a, dtype = "float32"))
+  ),
+  list(
+    label = "subset_logical",
+    fn = function(input) {
+      # logical mask sized for rows; subset rows directly
+      force_mlx(input$mlx$a[input$mlx$mask_logical, ])
+    }
   )
 )
 

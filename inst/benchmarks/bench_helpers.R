@@ -69,7 +69,9 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
       idx_vec = base_data$idx_vec,
       idx_mat = base_data$idx_mat,
       vec = as_mlx(base_data$vec, dtype = "float32"),
-      prob = as_mlx(base_data$prob, dtype = "float32")
+      prob = as_mlx(base_data$prob, dtype = "float32"),
+      mask_logical = as_mlx(base_data$mask_logical, dtype = "bool"),
+      mask_indices = as_mlx(base_data$mask_indices, dtype = "int64")
     )
     force_mlx(mlx_data)
     list(base = base_data, mlx = mlx_data)
@@ -90,6 +92,8 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
     )
     vec <- rnorm(n)
     prob <- runif(n)
+    mask_logical <- runif(n) < 0.5
+    mask_indices <- which(mask_logical)
 
     base_data <- list(
       a = a,
@@ -100,7 +104,9 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
       idx_vec = idx_vec,
       idx_mat = idx_mat,
       vec = vec,
-      prob = prob
+      prob = prob,
+      mask_logical = mask_logical,
+      mask_indices = mask_indices
     )
     if (!is.null(cache_path)) {
       cache_obj <- list(
@@ -110,7 +116,9 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
         idx_vec = idx_vec,
         idx_mat = idx_mat,
         vec = vec,
-        prob = prob
+        prob = prob,
+        mask_logical = mask_logical,
+        mask_indices = mask_indices
       )
       saveRDS(cache_obj, cache_path, compress = "xz")
     }
@@ -136,6 +144,15 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
       prob <- cache_obj$prob
     }
 
+    if (is.null(cache_obj$mask_logical) || is.null(cache_obj$mask_indices)) {
+      set.seed(20251031L + n + 2000L)
+      mask_logical <- runif(n) < 0.5
+      mask_indices <- which(mask_logical)
+    } else {
+      mask_logical <- cache_obj$mask_logical
+      mask_indices <- cache_obj$mask_indices
+    }
+
     base_data <- list(
       a = a,
       b = b,
@@ -145,7 +162,9 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
       idx_vec = cache_obj$idx_vec,
       idx_mat = cache_obj$idx_mat,
       vec = vec,
-      prob = prob
+      prob = prob,
+      mask_logical = mask_logical,
+      mask_indices = mask_indices
     )
     make_payload(base_data)
   }
