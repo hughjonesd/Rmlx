@@ -1,7 +1,6 @@
 # Subset MLX array
 
-MLX subsetting mirrors base R for the common cases while avoiding a few
-of the language's historical footguns:
+MLX subsetting is like base R with a few differences:
 
 ## Usage
 
@@ -40,36 +39,28 @@ The subsetted MLX object.
 
 ## Details
 
-- **`drop`**: dimensions are preserved by default (`drop = FALSE`).
+- `drop = FALSE` by default.
 
-- **Numeric indices**: positive (1-based) and purely negative vectors
-  are supported. Negative indices drop the listed elements, just as in
-  base R. Mixing signs is an error and `0` is not allowed.
+- Indices containing `NA` give an error.
 
-- **Logical indices**: recycled to the target dimension length. Logical
-  indices may be mixed with numeric indices across dimensions.
-
-- **Flattening indices**: single indices on a 2D or higher array are
-  only allowed for assignment. For example, if `x` is a matrix,
-  `x[x < 0] <- 0` is fine but `subset <- x[x < 0]` is not. Use
+- Single indices on a 2D or higher array are only allowed for
+  assignment. For example, if `x` is a matrix, `x[x < 0] <- 0` is OK but
+  `subset <- x[x < 0]` is not. Use
   [`mlx_flatten()`](https://hughjonesd.github.io/Rmlx/reference/mlx_flatten.md)
   explicitly for subsetting.
 
-- **NA values**: indices containing `NA` are rejected with an error.
+- There is one exception: as in R, a single numeric matrix index selects
+  individual elements. The number of columns must match the rank of `x`;
+  each row gives coordinates for one element. The return value from
+  subsetting is a flat mlx vector.
 
-- **Matrix indices**: a single numeric matrix index selects individual
-  elements. The number of columns must match the rank of `x`; each row
-  gives coordinates for one element.
+- `mlx` vectors, logical masks, and matrices behave the same as their R
+  equivalents.
 
-- **`mlx` indices**: `mlx` vectors, logical masks, and matrices behave
-  the same as their R equivalents. One-dimensional MLX arrays are
-  treated as vectors rather than 1-column matrices.
+- Duplicate assignments like `x[c(1,1)] <- 2:3` are undefined behaviour.
 
-- **Duplicates**: duplicate assignments like `x[c(1,1)] <- 2:3` give an
-  error.
-
-- **Unsupported**: character indices and named lookups are not
-  implemented.
+- Character indices are not supported as MLX has no concept of dimension
+  names.
 
 ## See also
 
