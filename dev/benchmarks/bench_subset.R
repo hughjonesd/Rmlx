@@ -64,73 +64,73 @@ run_benchmarks <- function(iterations = 3L, seed = 42L) {
     assign_vector_contig_r = function() {
       tmp <- vec
       tmp[vec_idx_contig] <- vec_val_contig
-      mlx_synchronize(vec_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_vector_noncontig_r = function() {
       tmp <- vec
       tmp[vec_idx_noncontig] <- vec_val_noncontig
-      mlx_synchronize(vec_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_vector_bool_r = function() {
       tmp <- vec
       tmp[vec_bool] <- vec_val_noncontig
-      mlx_synchronize(vec_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_vector_contig_mlx = function() {
       tmp <- vec
       tmp[vec_idx_contig_mlx] <- vec_val_contig
-      mlx_synchronize(vec_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_vector_noncontig_mlx = function() {
       tmp <- vec
       tmp[vec_idx_noncontig_mlx] <- vec_val_noncontig
-      mlx_synchronize(vec_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_vector_bool_mlx = function() {
       tmp <- vec
       tmp[vec_bool_mlx] <- vec_val_noncontig
-      mlx_synchronize(vec_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_matrix_contig_r = function() {
       tmp <- mat
       tmp[row_idx_contig, col_idx_contig] <- mat_val_contig
-      mlx_synchronize(mat_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_matrix_noncontig_r = function() {
       tmp <- mat
       tmp[row_idx_noncontig, col_idx_noncontig] <- mat_val_noncontig
-      mlx_synchronize(mat_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_matrix_bool_r = function() {
       tmp <- mat
       tmp[row_bool, col_bool] <- mat_val_noncontig
-      mlx_synchronize(mat_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_matrix_contig_mlx = function() {
       tmp <- mat
       tmp[row_idx_contig_mlx, col_idx_contig_mlx] <- mat_val_contig
-      mlx_synchronize(mat_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_matrix_noncontig_mlx = function() {
       tmp <- mat
       tmp[row_idx_noncontig_mlx, col_idx_noncontig_mlx] <- mat_val_noncontig
-      mlx_synchronize(mat_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     assign_matrix_bool_mlx = function() {
       tmp <- mat
       tmp[row_bool_mlx, col_bool_mlx] <- mat_val_noncontig
-      mlx_synchronize(mat_device)
+      mlx_eval(tmp)
       invisible(tmp)
     },
     subset_vector_contig_r = function() {
@@ -217,7 +217,7 @@ run_benchmarks <- function(iterations = 3L, seed = 42L) {
 args <- commandArgs(trailingOnly = TRUE)
 output_path <- if (length(args)) args[[1]] else ""
 
-bench <- run_benchmarks()
+bench <- run_benchmarks(iterations = 10)
 print(bench)
 
 if (nzchar(output_path)) {

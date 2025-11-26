@@ -1094,9 +1094,9 @@ mlx_gather_qmm <- function(x, w, scales, biases = NULL, lhs_indices = NULL,
   normalize_batch_indices <- function(idx, dim_size) {
     norm <- .normalize_index(idx, dim_size, assign = FALSE)
     if (is.null(norm)) {
-      stop("Indices cannot be NULL.", call. = FALSE)
+      stop("Indices cannot be NULL or zero-length.", call. = FALSE)
     }
-    as_mlx(norm - 1L, dtype = "int64", device = device)
+    norm - mlx_vector(1, dtype = "int32")
   }
 
   lhs_indices_ptr <- NULL

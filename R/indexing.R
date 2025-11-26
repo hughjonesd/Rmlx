@@ -76,7 +76,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
   use_take <- length(axes0) == 1L && length(idx_dims) == 1L &&
     (is.null(idx_dims[[1]]) || !length(idx_dims[[1]]))
   if (use_take) {
-    ptr <- cpp_mlx_take(x$ptr, normalized[[1]], axes0[[1]])
+    ptr <- cpp_mlx_take(x$ptr, as.vector(normalized[[1]]), axes0[[1]])
     return(new_mlx(ptr, x$device))
   }
 

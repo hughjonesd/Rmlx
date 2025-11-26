@@ -24,30 +24,24 @@ select the full extent. Logical indices recycle to the dimension length.}
 The subsetted MLX object.
 }
 \description{
-MLX subsetting mirrors base R for the common cases while avoiding a few of
-the language's historical footguns:
+MLX subsetting is like base R with a few differences:
 }
 \details{
 \itemize{
-\item \strong{\code{drop}}: dimensions are preserved by default (\code{drop = FALSE}).
-\item \strong{Numeric indices}: positive (1-based) and purely negative vectors are
-supported. Negative indices drop the listed elements, just as in base R.
-Mixing signs is an error and \code{0} is not allowed.
-\item \strong{Logical indices}: recycled to the target dimension length. Logical indices
-may be mixed with numeric indices across dimensions.
-\item \strong{Flattening indices}: single indices on a 2D or higher array are only
-allowed for assignment. For example, if \code{x} is a matrix, \code{x[x < 0] <- 0} is
-fine but \code{subset <- x[x < 0]} is not. Use \code{\link[=mlx_flatten]{mlx_flatten()}} explicitly for
+\item \code{drop = FALSE} by default.
+\item Indices containing \code{NA} give an error.
+\item Single indices on a 2D or higher array are only allowed for assignment.
+For example, if \code{x} is a matrix, \code{x[x < 0] <- 0} is
+OK but \code{subset <- x[x < 0]} is not. Use \code{\link[=mlx_flatten]{mlx_flatten()}} explicitly for
 subsetting.
-\item \strong{NA values}: indices containing \code{NA} are rejected with an error.
-\item \strong{Matrix indices}: a single numeric matrix index selects
+\item There is one exception: as in R, a single numeric matrix index selects
 individual elements. The number of columns must match the rank of \code{x};
-each row gives coordinates for one element.
-\item \strong{\code{mlx} indices}: \code{mlx} vectors, logical masks, and matrices behave the
-same as their R equivalents. One-dimensional MLX arrays are treated as
-vectors rather than 1-column matrices.
-\item \strong{Duplicates}: duplicate assignments like \code{x[c(1,1)] <- 2:3} give an error.
-\item \strong{Unsupported}: character indices and named lookups are not implemented.
+each row gives coordinates for one element. The return value from
+subsetting is a flat mlx vector.
+\item \code{mlx} vectors, logical masks, and matrices behave the same as their R equivalents.
+\item Duplicate assignments like \code{x[c(1,1)] <- 2:3} are undefined behaviour.
+\item Character indices are not supported as MLX has no concept
+of dimension names.
 }
 }
 \examples{

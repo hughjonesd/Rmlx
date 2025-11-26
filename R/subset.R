@@ -1,28 +1,22 @@
 
 #' Subset MLX array
 #'
-#' MLX subsetting mirrors base R for the common cases while avoiding a few of
-#' the language's historical footguns:
+#' MLX subsetting is like base R with a few differences:
 #'
-#' * **`drop`**: dimensions are preserved by default (`drop = FALSE`).
-#' * **Numeric indices**: positive (1-based) and purely negative vectors are
-#'   supported. Negative indices drop the listed elements, just as in base R.
-#'   Mixing signs is an error and `0` is not allowed.
-#' * **Logical indices**: recycled to the target dimension length. Logical indices
-#'   may be mixed with numeric indices across dimensions.
-#' * **Flattening indices**: single indices on a 2D or higher array are only
-#'   allowed for assignment. For example, if `x` is a matrix, `x[x < 0] <- 0` is
-#'   fine but `subset <- x[x < 0]` is not. Use [mlx_flatten()] explicitly for
+#' * `drop = FALSE` by default.
+#' * Indices containing `NA` give an error.
+#' * Single indices on a 2D or higher array are only allowed for assignment.
+#'   For example, if `x` is a matrix, `x[x < 0] <- 0` is
+#'   OK but `subset <- x[x < 0]` is not. Use [mlx_flatten()] explicitly for
 #'   subsetting.
-#' * **NA values**: indices containing `NA` are rejected with an error.
-#' * **Matrix indices**: a single numeric matrix index selects
+#' * There is one exception: as in R, a single numeric matrix index selects
 #'   individual elements. The number of columns must match the rank of `x`;
-#'   each row gives coordinates for one element.
-#' * **`mlx` indices**: `mlx` vectors, logical masks, and matrices behave the
-#'   same as their R equivalents. One-dimensional MLX arrays are treated as
-#'   vectors rather than 1-column matrices.
-#' * **Duplicates**: duplicate assignments like `x[c(1,1)] <- 2:3` give an error.
-#' * **Unsupported**: character indices and named lookups are not implemented.
+#'   each row gives coordinates for one element. The return value from
+#'   subsetting is a flat mlx vector.
+#' * `mlx` vectors, logical masks, and matrices behave the same as their R equivalents.
+#' * Duplicate assignments like `x[c(1,1)] <- 2:3` are undefined behaviour.
+#' * Character indices are not supported as MLX has no concept
+#'   of dimension names.
 #'
 #' @inheritParams common_params
 #' @param ... Indices for each dimension. Provide one per axis; omitted indices
@@ -98,7 +92,6 @@
   idx_list
 }
 
-
 .matrix_subset <- function(x, idx_mat) {
   idx_mat <- as.array(idx_mat)
   shape <- mlx_shape(x)
@@ -121,14 +114,13 @@
 
 .vectors_subset <- function(x, idx_list) {
   shape <- mlx_shape(x)
-  idx_list <- mapply(.normalize_index, idx_list, shape, SIMPLIFY = FALSE,
-                     MoreArgs = list(assign = FALSE))
   if (length(idx_list) != length(shape)) {
     stop("Wrong number of indices in subset.\n",
          "To use a single logical index, flatten first.")
   }
-
-  idx_norm <- lapply(idx_list, function (x) as_mlx(x) - 1L)
+  idx_list <- mapply(.normalize_index, idx_list, shape, SIMPLIFY = FALSE,
+                     MoreArgs = list(assign = FALSE))
+  idx_norm <- lapply(idx_list, function (x) x - 1L)
 
   idx_grids <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = x$device)
   idx_grids <- lapply(idx_grids, .mlx_cast, dtype = "int32")
@@ -156,7 +148,6 @@
     stop("Matrix index contains duplicate rows in assignment")
   }
 }
-
 
 .gather_for_subset <- function(x, idx_list) {
   ndim <- length(mlx_shape(x))

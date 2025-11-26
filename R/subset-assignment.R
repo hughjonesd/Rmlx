@@ -69,7 +69,10 @@
   idx_list <- mapply(.normalize_index, idx_list, shape, SIMPLIFY = FALSE,
                      MoreArgs = list(assign = TRUE))
 
-  idx_norm <- lapply(idx_list, function(idx) as_mlx(idx - 1L))
+  if (any(vapply(idx_list, is.null, integer(1)))) {
+    return(x)
+  }
+  idx_norm <- lapply(idx_list, function(idx) idx - 1L)
   lens <- vapply(idx_norm, length, integer(1))
 
   target_len <- prod(lens)
@@ -101,19 +104,24 @@
 #' @param assign Called from subset assignment? If so duplicates throw an error.
 #' @param allow_dims Allow matrix/array indices?
 #'
-#' @returns A positive numeric vector of index positions
+#' @returns A positive mlx vector of index positions, or NULL for none.
 #' @noRd
 .normalize_index <- function(idx, len, assign, allow_dims = FALSE) {
-  if (is_mlx(idx)) idx <- as.array(idx)
-
   if (is.null(idx)) {
     return(seq_len(len))
+  }
+  if (length(idx) == 0L) {
+    return(NULL)
   }
   if (any(is.na(idx))) {
     stop("Index contains NA values.")
   }
-  if (is.logical(idx)) {
-    idx <- which(idx)
+
+  idx <- as_mlx(idx)
+  if (identical(mlx_dtype(idx), "bool")) {
+    idx <- which(as.logical(idx))
+    if (length(idx) == 0L) return(NULL)
+    idx <- mlx_vector(idx)
   }
   if (! allow_dims && ! is.null(dim(idx))) {
     stop("Matrix/array subset argument. Use undimensioned vectors only.")
@@ -130,13 +138,14 @@
       stop("Mixing positive and negative subset indices is not allowed.")
     }
     idx <- setdiff(seq_len(len), abs(idx))
+    idx <- as_mlx(idx)
   }
 
-  if (assign && anyDuplicated(idx) > 0L) {
-    stop("Duplicate indices in subset assignment.")
-  }
+  # if (assign && anyDuplicated(idx) > 0L) {
+  #   stop("Duplicate indices in subset assignment.")
+  # }
 
-  storage.mode(idx) <- "integer"
+  idx <- .mlx_cast(idx, dtype = "int32")
   idx
 }
 
