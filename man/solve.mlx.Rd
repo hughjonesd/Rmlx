@@ -18,7 +18,7 @@ computes the matrix inverse.}
 An mlx object containing the solution.
 }
 \description{
-Solve a system of linear equations
+Note that as of MLX 0.30.0, \code{solve()} runs on the CPU.
 }
 \examples{
 a <- mlx_matrix(c(3, 1, 1, 2), 2, 2)

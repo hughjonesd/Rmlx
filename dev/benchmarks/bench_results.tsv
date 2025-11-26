@@ -1,6 +1,6 @@
 Median milliseconds per operation
              op  n1000
-         matmul 1.3256
-          solve 7.9437
-         as_mlx 6.3321
- subset_logical 2.2217
+         matmul 1.9958
+          solve 7.9291
+         as_mlx 0.6820
+ subset_logical 2.1560

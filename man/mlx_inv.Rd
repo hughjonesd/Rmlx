@@ -13,7 +13,8 @@ mlx_inv(x)
 The inverse of \code{x}.
 }
 \description{
-Computes the inverse of a square matrix.
+Computes the inverse of a square matrix. Note that as of MLX 0.30.0, this
+runs on the CPU.
 }
 \examples{
 A <- mlx_matrix(c(4, 7, 2, 6), 2, 2)

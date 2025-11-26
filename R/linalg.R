@@ -1,5 +1,7 @@
 #' Solve a system of linear equations
 #'
+#' Note that as of MLX 0.30.0, `solve()` runs on the CPU.
+#'
 #' @param a An mlx matrix (the coefficient matrix)
 #' @param b An mlx vector or matrix (the right-hand side). If omitted,
 #'   computes the matrix inverse.

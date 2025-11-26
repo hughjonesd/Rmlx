@@ -487,7 +487,8 @@ mlx_unflatten <- function(x, axis, shape) {
 
 #' Compute matrix inverse
 #'
-#' Computes the inverse of a square matrix.
+#' Computes the inverse of a square matrix. Note that as of MLX 0.30.0, this
+#' runs on the CPU.
 #'
 #' @inheritParams mlx_array_required
 #' @return The inverse of `x`.
