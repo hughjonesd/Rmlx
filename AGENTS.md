@@ -28,6 +28,8 @@
 ## Issue Tracking
 - File tasks straight to GitHub via `gh issue create` rather than maintaining
   local scratchpads. Reference the issue numbers in downstream docs/PRs.
+- The GitHub CLI (`gh`) is already installed in this environment; use it for issues and PR chores
+  (`gh issue create`, `gh issue view`, `gh pr create`).
 
 ## Commit & Pull Request Guidelines
 - Follow the repository's imperative, capitalized commit style (e.g., `Add rowSums helper`); keep subject lines near 70 characters.
