@@ -51,7 +51,8 @@
 - [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
   : Get or set default MLX device
 - [`with_default_device()`](https://hughjonesd.github.io/Rmlx/reference/with_default_device.md)
-  : Temporarily set the default MLX device
+  [`local_default_device()`](https://hughjonesd.github.io/Rmlx/reference/with_default_device.md)
+  : Temporarily set the default MLX device or stream
 - [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md)
   [`mlx_default_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md)
   : MLX streams for asynchronous execution

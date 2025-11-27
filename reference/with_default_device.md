@@ -1,11 +1,16 @@
-# Temporarily set the default MLX device
+# Temporarily set the default MLX device or stream
 
-Temporarily set the default MLX device
+Use `local_default_device()` to temporarily switch devices within the
+current evaluation environment, restoring the previous default when the
+environment exits (similar to
+[`withr::local_options()`](https://withr.r-lib.org/reference/with_options.html)).
 
 ## Usage
 
 ``` r
 with_default_device(device, code)
+
+local_default_device(device, .local_envir = parent.frame())
 ```
 
 ## Arguments
@@ -19,9 +24,16 @@ with_default_device(device, code)
 
   Expression to evaluate while `device` is active.
 
+- .local_envir:
+
+  Environment to bind the restoration to. Defaults to the calling
+  environment.
+
 ## Value
 
 The result of evaluating `code`.
+
+Invisibly returns the previous default device.
 
 ## See also
 
@@ -31,4 +43,7 @@ The result of evaluating `code`.
 
 ``` r
 with_default_device("cpu", x <- mlx_vector(1:10))
+
+local_default_device("cpu")
+# code here runs on CPU, then the previous default is restored
 ```
