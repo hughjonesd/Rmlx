@@ -9,8 +9,10 @@ mlx_split(x, sections, axis = 1L)
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{sections}{Either a single integer (number of equal parts) or an integer
-vector of 1-based split points along \code{axis}.}
+\item{sections}{Either a single integer (number of equal parts) or a \emph{list}
+of 1-based split points along \code{axis}. Use a list to disambiguate split
+points from the equal-sections case; numeric vectors longer than length 1
+are rejected.}
 
 \item{axis}{Axis (1-indexed) to operate on.}
 }
@@ -19,13 +21,13 @@ A list of mlx arrays split along the chosen axis.
 }
 \description{
 \code{mlx_split()} divides an array along an axis either into equal sections
-(\code{sections} scalar) or at explicit 1-based split points (\code{sections} vector),
+(\code{sections} scalar) or at explicit 1-based split points (\code{sections} list),
 returning a list of mlx arrays.
 }
 \examples{
 x <- mlx_matrix(1:4, 2, 2)
 parts <- mlx_split(x, sections = 2, axis = 1)
-custom_parts <- mlx_split(x, sections = c(1), axis = 2)
+custom_parts <- mlx_split(x, sections = list(1), axis = 2)
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.split}{mlx.core.split},

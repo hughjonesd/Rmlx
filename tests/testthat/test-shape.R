@@ -250,7 +250,7 @@ test_that("mlx_split supports custom split points", {
   arr <- array(1:12, dim = c(3, 4))
   x <- as_mlx(arr)
 
-  parts <- mlx_split(x, sections = c(1, 3), axis = 2)
+  parts <- mlx_split(x, sections = list(1, 3), axis = 2)
   expect_equal(length(parts), 3L)
   expect_equal(dim(parts[[1]]), c(3L, 1L))
   expect_equal(dim(parts[[2]]), c(3L, 2L))
@@ -258,6 +258,15 @@ test_that("mlx_split supports custom split points", {
 
   reconstructed <- do.call(cbind, lapply(parts, as.matrix))
   expect_equal(reconstructed, as.matrix(x), tolerance = 1e-6)
+})
+
+test_that("mlx_split rejects vector split points to match API", {
+  arr <- array(1:12, dim = c(3, 4))
+  x <- as_mlx(arr)
+  expect_error(
+    mlx_split(x, sections = c(1, 3), axis = 2),
+    "Numeric vectors must be length 1"
+  )
 })
 
 test_that("mlx_where acts like ifelse for tensors", {
