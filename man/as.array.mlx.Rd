@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{An mlx array.}
 
-\item{...}{Additional arguments (ignored)}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 An R array with the same shape as the MLX input.

@@ -19,25 +19,24 @@ mlx_quantized_matmul(
 \arguments{
 \item{x}{An mlx array.}
 
-\item{w}{An mlx array. Either:
-\itemize{
-\item A quantized weight matrix (uint32) from \code{\link[=mlx_quantize]{mlx_quantize()}}, or
-\item An unquantized weight matrix that will be quantized automatically
-}}
+\item{w}{An mlx array representing the weight matrix. Accepts either an
+unquantized matrix (which may be quantized automatically) or a pre-quantized
+uint32 matrix produced by \code{\link[=mlx_quantize]{mlx_quantize()}}.}
 
-\item{scales}{An optional mlx array (the quantization scales). If NULL and w is
-unquantized, w will be quantized automatically. Default: NULL}
+\item{scales}{An optional mlx array of quantization scales. Required when \code{w}
+is already quantized.}
 
-\item{biases}{An optional mlx array (biases to add). For affine quantization, this
-should be the quantization biases if w is pre-quantized. Default: NULL}
+\item{biases}{An optional mlx array of quantization biases (affine mode); use
+\code{NULL} for symmetric quantization.}
 
-\item{transpose}{Whether to transpose the weight matrix. Default: TRUE}
+\item{transpose}{Whether to transpose the weight matrix before multiplication.}
 
-\item{group_size}{The group size for quantization. Default: 64}
+\item{group_size}{The group size for quantization. Smaller groups improve
+accuracy at the cost of slightly higher memory. Default: 64.}
 
-\item{bits}{The number of bits for quantization (typically 4 or 8). Default: 4}
+\item{bits}{Number of bits for quantization (typically 4 or 8). Default: 4.}
 
-\item{mode}{The quantization mode, either "affine" or "mxfp4". Default: "affine"}
+\item{mode}{Quantization mode, either \code{"affine"} or \code{"mxfp4"}.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current

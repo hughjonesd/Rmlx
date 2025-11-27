@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{An mlx_stream object.}
 
-\item{...}{Additional arguments (ignored).}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 A character string.

@@ -48,6 +48,26 @@ mlx_module_set_training <- function(module, mode = TRUE) {
   invisible(module)
 }
 
+#' @param w An mlx array representing the weight matrix. Accepts either an
+#'   unquantized matrix (which may be quantized automatically) or a pre-quantized
+#'   uint32 matrix produced by [mlx_quantize()].
+#' @param scales An optional mlx array of quantization scales. Required when `w`
+#'   is already quantized.
+#' @param biases An optional mlx array of quantization biases (affine mode); use
+#'   `NULL` for symmetric quantization.
+#' @param group_size The group size for quantization. Smaller groups improve
+#'   accuracy at the cost of slightly higher memory. Default: 64.
+#' @param bits Number of bits for quantization (typically 4 or 8). Default: 4.
+#' @param mode Quantization mode, either `"affine"` or `"mxfp4"`.
+#' @param transpose Whether to transpose the weight matrix before multiplication.
+#' @param sorted_indices Whether supplied indices are sorted (enables
+#'   optimizations in gather-based kernels).
+#'
+#' @name quant_params
+#' @keywords internal
+NULL
+
+
 #' Create a learnable linear transformation
 #'
 #' @param in_features Number of input features.
@@ -874,12 +894,7 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
 #' Quantizes a weight matrix to low-precision representation (typically 4-bit or 8-bit).
 #' This reduces memory usage and enables faster computation during inference.
 #'
-#' @param w An mlx array (the weight matrix to quantize)
-#' @param group_size The group size for quantization. Smaller groups provide better
-#'   accuracy but slightly higher memory. Default: 64
-#' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
-#' @param mode The quantization mode: "affine" (with scales and biases) or "mxfp4"
-#'   (4-bit floating point with group_size=32). Default: "affine"
+#' @inheritParams quant_params
 #' @inheritParams common_params
 #'
 #' @return A list containing:
@@ -924,12 +939,7 @@ mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
 #' Reconstructs an approximate floating-point matrix from a quantized representation
 #' produced by [mlx_quantize()].
 #'
-#' @param w An mlx array (the quantized weight matrix)
-#' @param scales An mlx array (the quantization scales)
-#' @param biases An optional mlx array (the quantization biases for affine mode). Default: NULL
-#' @param group_size The group size used during quantization. Default: 64
-#' @param bits The number of bits used during quantization. Default: 4
-#' @param mode The quantization mode used: "affine" or "mxfp4". Default: "affine"
+#' @inheritParams quant_params
 #' @inheritParams common_params
 #'
 #' @return An mlx array with the dequantized (approximate) floating-point weights
@@ -969,19 +979,7 @@ mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L
 #' memory usage and computation time while maintaining reasonable accuracy.
 #'
 #' @inheritParams mlx_array_required
-#' @param w An mlx array. Either:
-#'   \itemize{
-#'     \item A quantized weight matrix (uint32) from [mlx_quantize()], or
-#'     \item An unquantized weight matrix that will be quantized automatically
-#'   }
-#' @param scales An optional mlx array (the quantization scales). If NULL and w is
-#'   unquantized, w will be quantized automatically. Default: NULL
-#' @param biases An optional mlx array (biases to add). For affine quantization, this
-#'   should be the quantization biases if w is pre-quantized. Default: NULL
-#' @param transpose Whether to transpose the weight matrix. Default: TRUE
-#' @param group_size The group size for quantization. Default: 64
-#' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
-#' @param mode The quantization mode, either "affine" or "mxfp4". Default: "affine"
+#' @inheritParams quant_params
 #' @inheritParams common_params
 #'
 #' @return An mlx array with the result of the quantized matrix multiplication
@@ -1049,18 +1047,11 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
 #' a common pattern in transformer models.
 #'
 #' @inheritParams mlx_array_required
-#' @param w An mlx array (the quantized weight matrix)
-#' @param scales An mlx array (the quantization scales)
-#' @param biases An optional mlx array (biases to add). Default: NULL
 #' @param lhs_indices An optional integer vector/array (1-indexed) or `mlx` tensor
 #'   of indices for gathering from `x`'s leading (batch) dimension. Default: NULL
 #' @param rhs_indices An optional integer vector/array (1-indexed) or `mlx` tensor
 #'   of indices for gathering from `w`'s leading (batch) dimension. Default: NULL
-#' @param transpose Whether to transpose the weight matrix. Default: TRUE
-#' @param group_size The group size for quantization. Default: 64
-#' @param bits The number of bits for quantization (typically 4 or 8). Default: 4
-#' @param mode The quantization mode, either "affine" or "mxfp4". Default: "affine"
-#' @param sorted_indices Whether the indices are sorted (enables optimizations). Default: FALSE
+#' @inheritParams quant_params
 #' @inheritParams common_params
 #'
 #' @return An mlx array with the result of the gather-based quantized matrix multiplication

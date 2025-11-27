@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{...}{Additional arguments (ignored)}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 \code{x}, invisibly.

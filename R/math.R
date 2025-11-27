@@ -1,7 +1,7 @@
 #' Math operations for MLX arrays
 #'
 #' @inheritParams mlx_array_required
-#' @param ... Additional arguments (ignored)
+#' @inheritParams ellipsis_ignored
 #' @return An mlx object with the result.
 #' @seealso [mlx.core.array](https://ml-explore.github.io/mlx/build/html/python/array.html)
 #' @aliases abs.mlx sign.mlx sqrt.mlx floor.mlx ceiling.mlx trunc.mlx round.mlx signif.mlx exp.mlx log.mlx log10.mlx log2.mlx log1p.mlx expm1.mlx cos.mlx sin.mlx tan.mlx acos.mlx asin.mlx atan.mlx cosh.mlx sinh.mlx tanh.mlx acosh.mlx asinh.mlx atanh.mlx cospi.mlx sinpi.mlx tanpi.mlx cumsum.mlx cumprod.mlx cummax.mlx cummin.mlx
@@ -355,7 +355,7 @@ Conj.mlx <- function(z) {
 #'
 #' @param target,current MLX arrays to compare
 #' @param tolerance Numeric tolerance for comparison (default: sqrt(.Machine$double.eps))
-#' @param ... Additional arguments (currently ignored)
+#' @inheritParams ellipsis_ignored
 #'
 #' @details
 #' This method follows R's `all.equal()` semantics:

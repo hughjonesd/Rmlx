@@ -11,7 +11,7 @@
 
 \item{y}{An mlx matrix (default: NULL, uses x)}
 
-\item{...}{Additional arguments passed to base::crossprod.}
+\item{...}{Additional arguments forwarded to the corresponding base R implementation for signature compatibility.}
 }
 \value{
 \code{t(x) \%*\% y} as an mlx object.

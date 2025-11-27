@@ -13,7 +13,7 @@
 
 \item{LAPACK}{Ignored; set to \code{FALSE}.}
 
-\item{...}{Additional arguments (unused).}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 A list with components \code{Q} and \code{R}, each an mlx matrix.

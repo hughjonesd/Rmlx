@@ -15,7 +15,7 @@ rowSums(x, ...)
 \arguments{
 \item{x}{An array or mlx array.}
 
-\item{...}{Additional arguments forwarded to the base implementation.}
+\item{...}{Additional arguments forwarded to the corresponding base R implementation for signature compatibility.}
 
 \item{na.rm}{Logical; currently ignored for mlx arrays.}
 

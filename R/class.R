@@ -174,7 +174,7 @@ mlx_eval <- function(x) {
 #' a 1 column matrix, with a warning.
 #'
 #' @inheritParams mlx_array_required
-#' @param ... Additional arguments (ignored)
+#' @inheritParams ellipsis_ignored
 #' @return A vector, matrix or array (numeric or logical depending on dtype).
 #' @export
 #' @examples
@@ -197,7 +197,7 @@ as.matrix.mlx <- function(x, ...) {
 #' or arrays.
 #'
 #' @inheritParams mlx_array_required
-#' @param ... Additional arguments (ignored)
+#' @inheritParams ellipsis_ignored
 #' @return A vector, matrix, or array depending on the dimensions of `x`.
 #' @export
 #' @seealso [as.array.mlx()], [as.vector.mlx()], [as.matrix.mlx()]
@@ -232,7 +232,7 @@ as_r <- function(x, ...) {
 #' become 1-D arrays (with `dim` set to their length) instead of plain vectors.
 #'
 #' @inheritParams mlx_array_required
-#' @param ... Additional arguments (ignored)
+#' @inheritParams ellipsis_ignored
 #' @return An R array with the same shape as the MLX input.
 #' @export
 #' @seealso [as_r()], [as.vector.mlx()], [as.matrix.mlx()]
@@ -271,7 +271,7 @@ as.array.mlx <- function(x, ...) {
 #'
 #' @inheritParams mlx_array_required
 #' @param mode Character string specifying the type of vector to return (passed to [base::as.vector()])
-#' @param ... Additional arguments (ignored)
+#' @inheritParams ellipsis_ignored
 #' @return A vector of the specified mode.
 #' @export
 #' @examples

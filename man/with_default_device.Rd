@@ -24,8 +24,7 @@ Invisibly returns the previous default device.
 }
 \description{
 Use \code{local_default_device()} to temporarily switch devices within the current
-evaluation environment, restoring the previous default when the environment
-exits (similar to \code{\link[withr:with_options]{withr::local_options()}}).
+function.
 }
 \examples{
 with_default_device("cpu", x <- mlx_vector(1:10))

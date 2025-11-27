@@ -23,7 +23,7 @@ the semantics of \code{\link[base:aperm]{base::aperm()}}.}
 \item{resize}{Logical flag from \code{\link[base:aperm]{base::aperm()}}. Only \code{TRUE} is currently
 supported for mlx arrays.}
 
-\item{...}{Additional arguments accepted for compatibility; ignored.}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 An mlx array with axes permuted.

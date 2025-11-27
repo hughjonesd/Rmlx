@@ -13,7 +13,7 @@
 
 \item{nv}{Number of right singular vectors to return (0 or \code{min(dim(x))}).}
 
-\item{...}{Additional arguments (unused).}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 A list with components \code{d}, \code{u}, and \code{v}.

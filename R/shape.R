@@ -492,7 +492,7 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
 #'   the semantics of [base::aperm()].
 #' @param resize Logical flag from [base::aperm()]. Only `TRUE` is currently
 #'   supported for mlx arrays.
-#' @param ... Additional arguments accepted for compatibility; ignored.
+#' @inheritParams ellipsis_ignored
 #' @return An mlx array with axes permuted.
 #' @seealso [mlx.core.moveaxis](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.moveaxis)
 #' @export

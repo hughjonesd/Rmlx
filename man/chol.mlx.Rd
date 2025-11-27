@@ -11,7 +11,7 @@
 
 \item{pivot}{Ignored; pivoted decomposition is not supported.}
 
-\item{...}{Additional arguments (unused).}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 Upper-triangular Cholesky factor as an mlx matrix.

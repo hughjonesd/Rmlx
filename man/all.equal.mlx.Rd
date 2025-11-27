@@ -11,7 +11,7 @@
 
 \item{tolerance}{Numeric tolerance for comparison (default: sqrt(.Machine$double.eps))}
 
-\item{...}{Additional arguments (currently ignored)}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 Either \code{TRUE} or a character vector describing differences.

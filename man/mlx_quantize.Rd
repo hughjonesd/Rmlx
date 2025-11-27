@@ -13,15 +13,16 @@ mlx_quantize(
 )
 }
 \arguments{
-\item{w}{An mlx array (the weight matrix to quantize)}
+\item{w}{An mlx array representing the weight matrix. Accepts either an
+unquantized matrix (which may be quantized automatically) or a pre-quantized
+uint32 matrix produced by \code{\link[=mlx_quantize]{mlx_quantize()}}.}
 
-\item{group_size}{The group size for quantization. Smaller groups provide better
-accuracy but slightly higher memory. Default: 64}
+\item{group_size}{The group size for quantization. Smaller groups improve
+accuracy at the cost of slightly higher memory. Default: 64.}
 
-\item{bits}{The number of bits for quantization (typically 4 or 8). Default: 4}
+\item{bits}{Number of bits for quantization (typically 4 or 8). Default: 4.}
 
-\item{mode}{The quantization mode: "affine" (with scales and biases) or "mxfp4"
-(4-bit floating point with group_size=32). Default: "affine"}
+\item{mode}{Quantization mode, either \code{"affine"} or \code{"mxfp4"}.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current

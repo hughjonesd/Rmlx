@@ -9,7 +9,14 @@ mlx_ones_like(x, dtype = NULL, device = NULL)
 \arguments{
 \item{x}{An mlx array.}
 
-\item{dtype}{Optional MLX dtype override. Defaults to the source array's dtype.}
+\item{dtype}{Data type string. Supported types include:
+\itemize{
+\item Floating point: \code{"float32"}, \code{"float64"}
+\item Integer: \code{"int8"}, \code{"int16"}, \code{"int32"}, \code{"int64"}, \code{"uint8"}, \code{"uint16"}, \code{"uint32"}, \code{"uint64"}
+\item Other: \code{"bool"}, \code{"complex64"}
+}
+
+Not all functions support all types. See individual function documentation.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current

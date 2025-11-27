@@ -11,9 +11,14 @@ mlx_full(dim, value, dtype = NULL, device = mlx_default_device())
 
 \item{value}{Scalar value used to fill the array. Numeric, logical, or complex.}
 
-\item{dtype}{MLX dtype (\code{"float32"}, \code{"float64"}, \code{"bool"}, or \code{"complex64"}).
-If omitted, defaults to \code{"complex64"} for complex scalars, \code{"bool"} for logical scalars,
-and \code{"float32"} otherwise.}
+\item{dtype}{Data type string. Supported types include:
+\itemize{
+\item Floating point: \code{"float32"}, \code{"float64"}
+\item Integer: \code{"int8"}, \code{"int16"}, \code{"int32"}, \code{"int64"}, \code{"uint8"}, \code{"uint16"}, \code{"uint32"}, \code{"uint64"}
+\item Other: \code{"bool"}, \code{"complex64"}
+}
+
+Not all functions support all types. See individual function documentation.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current

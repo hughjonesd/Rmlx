@@ -5,7 +5,7 @@
 #'
 #' @inheritParams mlx_matrix_required
 #' @param pivot Ignored; pivoted decomposition is not supported.
-#' @param ... Additional arguments (unused).
+#' @inheritParams ellipsis_ignored
 #' @return Upper-triangular Cholesky factor as an mlx matrix.
 #' @seealso [mlx.linalg.cholesky](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky)
 #' @export
@@ -28,7 +28,7 @@ chol.mlx <- function(x, pivot = FALSE, ...) {
 #'
 #' @inheritParams mlx_matrix_required
 #' @param size Ignored; included for compatibility with base R.
-#' @param ... Additional arguments (unused).
+#' @inheritParams ellipsis_ignored
 #' @return The inverse of the original matrix (before Cholesky decomposition).
 #' @seealso [chol()], [solve()], [mlx_cholesky_inv()]
 #' @export
@@ -62,7 +62,7 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
 #' @inheritParams mlx_matrix_required
 #' @param tol Ignored; custom tolerances are not supported.
 #' @param LAPACK Ignored; set to `FALSE`.
-#' @param ... Additional arguments (unused).
+#' @inheritParams ellipsis_ignored
 #' @return A list with components `Q` and `R`, each an mlx matrix.
 #' @seealso [mlx.linalg.qr](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.qr)
 #' @export
@@ -94,7 +94,7 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
 #'
 #' Generic function for SVD computation.
 #' @param x An object.
-#' @param ... Additional arguments.
+#' @inheritParams ellipsis_base
 #' @return A list with components `d`, `u`, and `v`.
 #' @export
 svd <- function(x, ...) {
@@ -112,7 +112,7 @@ svd.default <- function(x, ...) base::svd(x, ...)
 #' @inheritParams mlx_matrix_required
 #' @param nu Number of left singular vectors to return (0 or `min(dim(x))`).
 #' @param nv Number of right singular vectors to return (0 or `min(dim(x))`).
-#' @param ... Additional arguments (unused).
+#' @inheritParams ellipsis_ignored
 #' @return A list with components `d`, `u`, and `v`.
 #' @seealso [mlx.linalg.svd](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.svd)
 #' @export
@@ -180,7 +180,7 @@ pinv <- function(x) {
 #' @param z Input to transform. May be a numeric, complex, or mlx object.
 #' @param inverse Logical flag; if `TRUE` compute the inverse transform.
 #' @inheritParams common_params
-#' @param ... Passed through to the default method.
+#' @inheritParams ellipsis_base
 #' @return For mlx inputs, an mlx object containing complex frequency
 #'   coefficients; otherwise the base R result.
 #' @seealso [stats::fft()], [mlx_fft()], [mlx_fft2()], [mlx_fftn()], [mlx.core.fft.fft](https://ml-explore.github.io/mlx/build/html/python/fft.html#mlx.core.fft.fft)
@@ -312,7 +312,7 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
 #' @param a An mlx triangular matrix.
 #' @param b Right-hand side matrix or vector.
 #' @param upper Logical; if `TRUE`, `a` is upper triangular, otherwise lower.
-#' @param ... Additional arguments forwarded to [base::backsolve()].
+#' @inheritParams ellipsis_base
 #' @return An mlx array solution.
 #' @seealso [mlx.linalg.solve_triangular](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular)
 #' @export
@@ -440,7 +440,7 @@ mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #'
 #' @param X,Y Numeric vectors or mlx arrays.
 #' @param FUN Function to apply (for default method).
-#' @param ... Additional arguments passed to methods.
+#' @inheritParams ellipsis_base
 #' @return For mlx inputs, an mlx matrix. Otherwise delegates to `base::outer`.
 #' @seealso [mlx.core.outer](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.outer.html)
 #' @export

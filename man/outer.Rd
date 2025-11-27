@@ -14,7 +14,7 @@ outer(X, Y, FUN = "*", ...)
 
 \item{FUN}{Function to apply (for default method).}
 
-\item{...}{Additional arguments passed to methods.}
+\item{...}{Additional arguments forwarded to the corresponding base R implementation for signature compatibility.}
 }
 \value{
 For mlx inputs, an mlx matrix. Otherwise delegates to \code{base::outer}.

@@ -23,7 +23,7 @@
 
 \item{mode}{Character string specifying the type of vector to return (passed to \code{\link[base:vector]{base::as.vector()}})}
 
-\item{...}{Additional arguments (ignored)}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 A vector of the specified mode.

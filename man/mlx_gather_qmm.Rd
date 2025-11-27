@@ -22,11 +22,15 @@ mlx_gather_qmm(
 \arguments{
 \item{x}{An mlx array.}
 
-\item{w}{An mlx array (the quantized weight matrix)}
+\item{w}{An mlx array representing the weight matrix. Accepts either an
+unquantized matrix (which may be quantized automatically) or a pre-quantized
+uint32 matrix produced by \code{\link[=mlx_quantize]{mlx_quantize()}}.}
 
-\item{scales}{An mlx array (the quantization scales)}
+\item{scales}{An optional mlx array of quantization scales. Required when \code{w}
+is already quantized.}
 
-\item{biases}{An optional mlx array (biases to add). Default: NULL}
+\item{biases}{An optional mlx array of quantization biases (affine mode); use
+\code{NULL} for symmetric quantization.}
 
 \item{lhs_indices}{An optional integer vector/array (1-indexed) or \code{mlx} tensor
 of indices for gathering from \code{x}'s leading (batch) dimension. Default: NULL}
@@ -34,15 +38,17 @@ of indices for gathering from \code{x}'s leading (batch) dimension. Default: NUL
 \item{rhs_indices}{An optional integer vector/array (1-indexed) or \code{mlx} tensor
 of indices for gathering from \code{w}'s leading (batch) dimension. Default: NULL}
 
-\item{transpose}{Whether to transpose the weight matrix. Default: TRUE}
+\item{transpose}{Whether to transpose the weight matrix before multiplication.}
 
-\item{group_size}{The group size for quantization. Default: 64}
+\item{group_size}{The group size for quantization. Smaller groups improve
+accuracy at the cost of slightly higher memory. Default: 64.}
 
-\item{bits}{The number of bits for quantization (typically 4 or 8). Default: 4}
+\item{bits}{Number of bits for quantization (typically 4 or 8). Default: 4.}
 
-\item{mode}{The quantization mode, either "affine" or "mxfp4". Default: "affine"}
+\item{mode}{Quantization mode, either \code{"affine"} or \code{"mxfp4"}.}
 
-\item{sorted_indices}{Whether the indices are sorted (enables optimizations). Default: FALSE}
+\item{sorted_indices}{Whether supplied indices are sorted (enables
+optimizations in gather-based kernels).}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current

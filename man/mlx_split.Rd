@@ -10,9 +10,7 @@ mlx_split(x, sections, axis = 1L)
 \item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{sections}{Either a single integer (number of equal parts) or a \emph{list}
-of 1-based split points along \code{axis}. Use a list to disambiguate split
-points from the equal-sections case; numeric vectors longer than length 1
-are rejected.}
+of 1-based split points along \code{axis}.}
 
 \item{axis}{Axis (1-indexed) to operate on.}
 }

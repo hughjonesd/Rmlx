@@ -33,7 +33,7 @@ single probability, removes the quantile dimension of length 1. Defaults to
 \code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
 array typically reuse that array's device or stream).}
 
-\item{...}{Additional arguments (currently ignored by \code{quantile.mlx()}).}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 An mlx array containing the requested quantiles. The shape depends on

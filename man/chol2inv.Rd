@@ -17,7 +17,7 @@ chol2inv(x, size = NCOL(x), ...)
 
 \item{size}{Ignored; included for compatibility with base R.}
 
-\item{...}{Additional arguments (unused).}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 The inverse of the original matrix (before Cholesky decomposition).

@@ -32,7 +32,7 @@ backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 
 \item{transpose}{Logical; if \code{TRUE}, solve \code{t(r) \%*\% x = b}.}
 
-\item{...}{Additional arguments forwarded to \code{\link[base:backsolve]{base::backsolve()}}.}
+\item{...}{Additional arguments forwarded to the corresponding base R implementation for signature compatibility.}
 }
 \value{
 An mlx array solution.

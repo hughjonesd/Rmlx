@@ -43,7 +43,7 @@ mlx_set_default_stream <- function(stream) {
 
 #' Print method for mlx_stream
 #' @param x An mlx_stream object.
-#' @param ... Additional arguments (ignored).
+#' @inheritParams ellipsis_ignored
 #' @return Returns `x` invisibly.
 #' @export
 print.mlx_stream <- function(x, ...) {
@@ -53,7 +53,7 @@ print.mlx_stream <- function(x, ...) {
 
 #' Format method for mlx_stream
 #' @param x An mlx_stream object.
-#' @param ... Additional arguments (ignored).
+#' @inheritParams ellipsis_ignored
 #' @return A character string.
 #' @export
 format.mlx_stream <- function(x, ...) {

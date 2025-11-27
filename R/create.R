@@ -1,9 +1,6 @@
 #' Create arrays of zeros on MLX devices
 #'
 #' @inheritParams common_params
-#' @param dtype MLX dtype to use. One of `"float32"`, `"float64"`, `"int8"`,
-#'   `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`, `"uint32"`,
-#'   `"uint64"`, `"bool"`, or `"complex64"`.
 #' @return An mlx array filled with zeros.
 #' @seealso [mlx.core.zeros](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros)
 #' @export
@@ -48,7 +45,6 @@ mlx_ones <- function(dim,
 #' or device.
 #'
 #' @inheritParams mlx_array_required
-#' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
 #' @inheritParams common_params
 #' @return An mlx array of zeros matching `x`.
 #' @seealso [mlx.core.zeros_like](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like)
@@ -83,7 +79,6 @@ mlx_zeros_like <- function(x,
 #' creating an array of ones with the same shape. Optionally override dtype or device.
 #'
 #' @inheritParams mlx_array_required
-#' @param dtype Optional MLX dtype override. Defaults to the source array's dtype.
 #' @inheritParams common_params
 #' @return An mlx array of ones matching `x`.
 #' @seealso [mlx.core.ones_like](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like)
@@ -116,9 +111,6 @@ mlx_ones_like <- function(x,
 #'
 #' @param value Scalar value used to fill the array. Numeric, logical, or complex.
 #' @inheritParams mlx_zeros
-#' @param dtype MLX dtype (`"float32"`, `"float64"`, `"bool"`, or `"complex64"`).
-#'   If omitted, defaults to `"complex64"` for complex scalars, `"bool"` for logical scalars,
-#'   and `"float32"` otherwise.
 #' @return An mlx array filled with the supplied value.
 #' @seealso [mlx.core.full](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.full)
 #' @export
@@ -204,8 +196,6 @@ mlx_eye <- function(n,
 #'   tile into the dimensions exactly).
 #' @param dim Integer vector of array dimensions. Set `dim = integer(0)` for
 #'   a scalar, in which case `data` must be length 1.
-#' @param dtype Optional MLX dtype. Defaults to `"float32"` for numeric input,
-#'   `"bool"` for logical, and `"complex64"` for complex.
 #' @return An `mlx` array with the requested shape.
 #' @export
 #' @examples
@@ -398,7 +388,6 @@ mlx_identity <- function(n,
 #' @param m Optional number of columns (defaults to `n` for square output).
 #' @param k Diagonal offset: `0` selects the main diagonal, positive values move
 #'   to the upper diagonals, negative values to the lower diagonals.
-#' @param dtype MLX dtype to use (`"float32"` or `"float64"`).
 #' @param x Object coercible to `mlx`.
 #' @return An `mlx` array.
 #' @seealso [mlx.core.tri](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tri)
@@ -508,7 +497,6 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
 #' @param start Starting value.
 #' @param stop Upper bound (included if exactly reachable by the step sequence).
 #' @param step Step size (defaults to 1).
-#' @param dtype MLX dtype.
 #' @inheritParams mlx_zeros
 #' @return A 1D mlx array.
 #' @seealso [mlx.core.arange](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.arange)

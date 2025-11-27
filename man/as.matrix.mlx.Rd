@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{An mlx array.}
 
-\item{...}{Additional arguments (ignored)}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 A vector, matrix or array (numeric or logical depending on dtype).

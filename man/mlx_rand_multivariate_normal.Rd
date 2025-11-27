@@ -19,7 +19,14 @@ mlx_rand_multivariate_normal(
 
 \item{cov}{An mlx array or matrix for the covariance.}
 
-\item{dtype}{Desired MLX dtype ("float32" or "float64").}
+\item{dtype}{Data type string. Supported types include:
+\itemize{
+\item Floating point: \code{"float32"}, \code{"float64"}
+\item Integer: \code{"int8"}, \code{"int16"}, \code{"int32"}, \code{"int64"}, \code{"uint8"}, \code{"uint16"}, \code{"uint32"}, \code{"uint64"}
+\item Other: \code{"bool"}, \code{"complex64"}
+}
+
+Not all functions support all types. See individual function documentation.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current

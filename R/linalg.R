@@ -5,7 +5,7 @@
 #' @param a An mlx matrix (the coefficient matrix)
 #' @param b An mlx vector or matrix (the right-hand side). If omitted,
 #'   computes the matrix inverse.
-#' @param ... Additional arguments (for compatibility with base::solve)
+#' @inheritParams ellipsis_base
 #' @return An mlx object containing the solution.
 #' @seealso [mlx.linalg.solve](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve)
 #' @export
@@ -133,7 +133,7 @@ setMethod(
 #'
 #' @inheritParams mlx_kron
 #' @param FUN Must be `'*'` (other functions are unsupported for MLX tensors).
-#' @param ... Passed to maintain signature compatibility with base `kronecker()`.
+#' @inheritParams ellipsis_base
 #' @return An `mlx` array.
 #' @rdname kronecker
 #' @export

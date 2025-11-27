@@ -78,8 +78,7 @@ with_default_device <- function(device, code) {
 #' Set the default MLX device for the current scope
 #'
 #' Use `local_default_device()` to temporarily switch devices within the current
-#' evaluation environment, restoring the previous default when the environment
-#' exits (similar to [withr::local_options()]).
+#' function.
 #'
 #' @param .local_envir Environment to bind the restoration to. Defaults to the
 #'   calling environment.

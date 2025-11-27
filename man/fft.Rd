@@ -17,7 +17,7 @@ fft(z, inverse = FALSE, ...)
 
 \item{inverse}{Logical flag; if \code{TRUE} compute the inverse transform.}
 
-\item{...}{Passed through to the default method.}
+\item{...}{Additional arguments forwarded to the corresponding base R implementation for signature compatibility.}
 
 \item{axis}{Single axis (1-indexed). Supply a positive integer between 1 and
 the array rank. Use \code{NULL} when the helper interprets it as "all axes" (see

@@ -9,7 +9,7 @@
 \arguments{
 \item{object}{An mlx object}
 
-\item{...}{Additional arguments (ignored)}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 \code{NULL} invisibly.

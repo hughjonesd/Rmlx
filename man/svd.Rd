@@ -9,7 +9,7 @@ svd(x, ...)
 \arguments{
 \item{x}{An object.}
 
-\item{...}{Additional arguments.}
+\item{...}{Additional arguments forwarded to the corresponding base R implementation for signature compatibility.}
 }
 \value{
 A list with components \code{d}, \code{u}, and \code{v}.

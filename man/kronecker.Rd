@@ -32,7 +32,7 @@ kronecker.mlx(X, Y, FUN = "*", ..., make.dimnames = FALSE)
 \item{make.dimnames}{logical: provide dimnames that are the product of the
    dimnames of \code{X} and \code{Y}.}
 
-\item{...}{Passed to maintain signature compatibility with base \code{kronecker()}.}
+\item{...}{optional arguments to be passed to \code{FUN}.}
 }
 \value{
 An \code{mlx} array.

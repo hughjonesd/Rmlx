@@ -114,7 +114,7 @@
 #' 100 elements and 2 dimensions)
 #'
 #' @inheritParams common_params
-#' @param ... Additional arguments (ignored)
+#' @inheritParams ellipsis_ignored
 #' @return `x`, invisibly.
 #' @export
 #' @examples
@@ -141,7 +141,7 @@ print.mlx <- function(x, ...) {
 #' Object structure for MLX array
 #'
 #' @param object An mlx object
-#' @param ... Additional arguments (ignored)
+#' @inheritParams ellipsis_ignored
 #' @return `NULL` invisibly.
 #' @export
 #' @examples

@@ -1,5 +1,4 @@
-#' Common Parameter Documentation
-#'
+
 #' @param device Execution target: supply `"gpu"`, `"cpu"`, or an
 #'   `mlx_stream` created via [mlx_new_stream()]. Defaults to the current
 #'   [mlx_default_device()] unless noted otherwise (helpers that act on an existing
@@ -26,27 +25,18 @@
 #' @keywords internal
 NULL
 
-
-#' Parameters for Functions Requiring MLX Arrays
-#'
 #' @param x An mlx array.
 #'
 #' @name mlx_array_required
 #' @keywords internal
 NULL
 
-
-#' Parameters for Functions Requiring MLX Matrices
-#'
 #' @param x An mlx matrix (2-dimensional array).
 #'
 #' @name mlx_matrix_required
 #' @keywords internal
 NULL
 
-
-#' Common Convolution Parameters
-#'
 #' @param input Input mlx array. Shape depends on dimensionality (see individual functions).
 #' @param weight Weight array. Shape depends on dimensionality (see individual functions).
 #' @param stride Stride of the convolution. Can be a scalar or vector (length depends
@@ -59,4 +49,14 @@ NULL
 #'
 #' @name conv_params
 #' @keywords internal
+NULL
+
+#' @name ellipsis_ignored
+#' @keywords internal
+#' @param ... Additional arguments; ignored.
+NULL
+
+#' @name ellipsis_base
+#' @keywords internal
+#' @param ... Additional arguments forwarded to the corresponding base R implementation for signature compatibility.
 NULL

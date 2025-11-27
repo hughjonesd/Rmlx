@@ -42,7 +42,7 @@
 \arguments{
 \item{x}{An mlx array.}
 
-\item{...}{Additional arguments (ignored)}
+\item{...}{Additional arguments; ignored.}
 }
 \value{
 An mlx object with the result.

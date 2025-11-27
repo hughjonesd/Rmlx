@@ -15,17 +15,22 @@ mlx_dequantize(
 )
 }
 \arguments{
-\item{w}{An mlx array (the quantized weight matrix)}
+\item{w}{An mlx array representing the weight matrix. Accepts either an
+unquantized matrix (which may be quantized automatically) or a pre-quantized
+uint32 matrix produced by \code{\link[=mlx_quantize]{mlx_quantize()}}.}
 
-\item{scales}{An mlx array (the quantization scales)}
+\item{scales}{An optional mlx array of quantization scales. Required when \code{w}
+is already quantized.}
 
-\item{biases}{An optional mlx array (the quantization biases for affine mode). Default: NULL}
+\item{biases}{An optional mlx array of quantization biases (affine mode); use
+\code{NULL} for symmetric quantization.}
 
-\item{group_size}{The group size used during quantization. Default: 64}
+\item{group_size}{The group size for quantization. Smaller groups improve
+accuracy at the cost of slightly higher memory. Default: 64.}
 
-\item{bits}{The number of bits used during quantization. Default: 4}
+\item{bits}{Number of bits for quantization (typically 4 or 8). Default: 4.}
 
-\item{mode}{The quantization mode used: "affine" or "mxfp4". Default: "affine"}
+\item{mode}{Quantization mode, either \code{"affine"} or \code{"mxfp4"}.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
 \code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current

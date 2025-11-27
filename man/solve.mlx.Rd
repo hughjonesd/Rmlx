@@ -12,7 +12,7 @@
 \item{b}{An mlx vector or matrix (the right-hand side). If omitted,
 computes the matrix inverse.}
 
-\item{...}{Additional arguments (for compatibility with base::solve)}
+\item{...}{Additional arguments forwarded to the corresponding base R implementation for signature compatibility.}
 }
 \value{
 An mlx object containing the solution.

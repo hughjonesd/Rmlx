@@ -1,9 +1,7 @@
-#' Shared arguments for MLX/base reduction helpers.
-#'
+
 #' @param x An array or mlx array.
 #' @param na.rm Logical; currently ignored for mlx arrays.
 #' @param dims Leading dimensions treated as rows/cols (see [base::rowSums()]).
-#' @param ... Additional arguments forwarded to the base implementation.
 #' @keywords internal
 #' @name mlx_reduction_base
 NULL
@@ -114,7 +112,7 @@ mlx_sd <- function(x, axes = NULL, drop = TRUE) {
 #' Mean of MLX array elements
 #'
 #' @inheritParams mlx_array_required
-#' @param ... Additional arguments (ignored)
+#' @inheritParams ellipsis_ignored
 #' @return An mlx scalar.
 #' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
@@ -128,6 +126,7 @@ mean.mlx <- function(x, ...) {
 #' Row means for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
+#' @inheritParams ellipsis_base
 #' @return An mlx array if `x` is_mlx, otherwise a numeric vector.
 #' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
@@ -155,6 +154,7 @@ rowMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' Column means for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
+#' @inheritParams ellipsis_base
 #' @return An mlx array if `x` is_mlx, otherwise a numeric vector.
 #' @seealso [mlx.core.mean](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.mean)
 #' @export
@@ -181,6 +181,7 @@ colMeans.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' Row sums for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
+#' @inheritParams ellipsis_base
 #' @return An mlx array if `x` is_mlx, otherwise a numeric vector.
 #' @seealso [mlx.core.sum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum)
 #' @export
@@ -208,6 +209,7 @@ rowSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' Column sums for mlx arrays
 #'
 #' @inheritParams mlx_reduction_base
+#' @inheritParams ellipsis_base
 #' @return An mlx array if `x` is_mlx, otherwise a numeric vector.
 #' @seealso [mlx.core.sum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.sum)
 #' @export
@@ -251,7 +253,7 @@ t.mlx <- function(x) {
 #' @inheritParams mlx_matrix_required
 #' @param y An mlx matrix (default: NULL, uses x)
 #' @return `t(x) %*% y` as an mlx object.
-#' @param ... Additional arguments passed to base::crossprod.
+#' @inheritParams ellipsis_base
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
 #' @method crossprod mlx
@@ -268,7 +270,7 @@ crossprod.mlx <- function(x, y = NULL, ...) {
 #' @inheritParams mlx_matrix_required
 #' @param y An mlx matrix (default: NULL, uses x)
 #' @return `x %*% t(y)` as an mlx object.
-#' @param ... Additional arguments passed to base::tcrossprod.
+#' @inheritParams ellipsis_base
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
 #' @method tcrossprod mlx
@@ -1068,7 +1070,7 @@ mlx_qlogis <- function(p, location = 0, scale = 1, device = mlx_default_device()
 #' @param drop Logical; when `TRUE` and computing quantiles along an axis with a
 #'   single probability, removes the quantile dimension of length 1. Defaults to
 #'   `FALSE` to match the behavior of other reduction functions.
-#' @param ... Additional arguments (currently ignored by `quantile.mlx()`).
+#' @inheritParams ellipsis_ignored
 #' @return An mlx array containing the requested quantiles. The shape depends on
 #'   `probs`, `axis`, and `drop`: when `axis = NULL`, returns a scalar for a
 #'   single probability or a vector for multiple probabilities. When `axis` is
@@ -1207,6 +1209,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
 }
 
 #' @rdname mlx_quantile
+#' @inheritParams ellipsis_ignored
 #' @export
 #' @importFrom stats quantile
 quantile.mlx <- function(x, probs, ...) {
