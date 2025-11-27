@@ -28,7 +28,7 @@ chol2inv(x, size = NCOL(x), ...)
 
 - ...:
 
-  Additional arguments (unused).
+  Additional arguments; ignored.
 
 ## Value
 

@@ -22,7 +22,8 @@ rowSums(x, na.rm = FALSE, dims = 1, ...)
 
 - ...:
 
-  Additional arguments forwarded to the base implementation.
+  Additional arguments forwarded to the corresponding base R
+  implementation for signature compatibility.
 
 - na.rm:
 

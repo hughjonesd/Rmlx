@@ -37,7 +37,17 @@ mlx_triu(x, k = 0L)
 
 - dtype:
 
-  MLX dtype to use (`"float32"` or `"float64"`).
+  Data type string. Supported types include:
+
+  - Floating point: `"float32"`, `"float64"`
+
+  - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`,
+    `"uint16"`, `"uint32"`, `"uint64"`
+
+  - Other: `"bool"`, `"complex64"`
+
+  Not all functions support all types. See individual function
+  documentation.
 
 - device:
 

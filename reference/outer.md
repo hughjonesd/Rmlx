@@ -23,7 +23,8 @@ outer(X, Y, FUN = "*", ...)
 
 - ...:
 
-  Additional arguments passed to methods.
+  Additional arguments forwarded to the corresponding base R
+  implementation for signature compatibility.
 
 ## Value
 

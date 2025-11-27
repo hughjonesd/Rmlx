@@ -19,7 +19,7 @@ as.array(x, ...)
 
 - ...:
 
-  Additional arguments (ignored)
+  Additional arguments; ignored.
 
 ## Value
 

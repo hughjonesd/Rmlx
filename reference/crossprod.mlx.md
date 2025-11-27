@@ -21,7 +21,8 @@ crossprod(x, y = NULL, ...)
 
 - ...:
 
-  Additional arguments passed to base::crossprod.
+  Additional arguments forwarded to the corresponding base R
+  implementation for signature compatibility.
 
 ## Value
 

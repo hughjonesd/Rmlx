@@ -17,7 +17,7 @@ mean(x, ...)
 
 - ...:
 
-  Additional arguments (ignored)
+  Additional arguments; ignored.
 
 ## Value
 

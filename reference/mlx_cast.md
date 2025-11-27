@@ -35,8 +35,11 @@ An mlx array with the requested dtype and device.
 ## Examples
 
 ``` r
-x <- mlx_array(1:3, dtype = "int32")
-#> Error in mlx_array(1:3, dtype = "int32"): argument "dim" is missing, with no default
+x <- mlx_vector(1:3, dtype = "int32")
 mlx_cast(x, dtype = "float32")
-#> Error: object 'x' not found
+#> mlx array [3]
+#>   dtype: float32
+#>   device: gpu
+#>   values:
+#> [1] 1 2 3
 ```

@@ -23,7 +23,8 @@ solve(a, b = NULL, ...)
 
 - ...:
 
-  Additional arguments (for compatibility with base::solve)
+  Additional arguments forwarded to the corresponding base R
+  implementation for signature compatibility.
 
 ## Value
 

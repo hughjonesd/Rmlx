@@ -1,9 +1,7 @@
 # Temporarily set the default MLX device or stream
 
 Use `local_default_device()` to temporarily switch devices within the
-current evaluation environment, restoring the previous default when the
-environment exits (similar to
-[`withr::local_options()`](https://withr.r-lib.org/reference/with_options.html)).
+current function.
 
 ## Usage
 

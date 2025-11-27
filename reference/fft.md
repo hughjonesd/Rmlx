@@ -28,7 +28,8 @@ fft(z, inverse = FALSE, axis, ...)
 
 - ...:
 
-  Passed through to the default method.
+  Additional arguments forwarded to the corresponding base R
+  implementation for signature compatibility.
 
 - axis:
 

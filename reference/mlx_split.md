@@ -20,9 +20,7 @@ mlx_split(x, sections, axis = 1L)
 - sections:
 
   Either a single integer (number of equal parts) or a *list* of 1-based
-  split points along `axis`. Use a list to disambiguate split points
-  from the equal-sections case; numeric vectors longer than length 1 are
-  rejected.
+  split points along `axis`.
 
 - axis:
 

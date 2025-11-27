@@ -57,7 +57,7 @@ quantile(x, probs, ...)
 
 - ...:
 
-  Additional arguments (currently ignored by `quantile.mlx()`).
+  Additional arguments; ignored.
 
 ## Value
 

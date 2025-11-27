@@ -41,5 +41,5 @@ mlx_cross_entropy(logits, targets)
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 1.594168
+#> [1] 1.474555
 ```

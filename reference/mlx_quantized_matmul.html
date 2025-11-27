@@ -68,35 +68,36 @@ memory usage and computation time while maintaining reasonable accuracy.</p>
 
 
 <dt id="arg-w">w<a class="anchor" aria-label="anchor" href="#arg-w"></a></dt>
-<dd><p>An mlx array. Either:</p><ul><li><p>A quantized weight matrix (uint32) from <code><a href="mlx_quantize.html">mlx_quantize()</a></code>, or</p></li>
-<li><p>An unquantized weight matrix that will be quantized automatically</p></li>
-</ul></dd>
+<dd><p>An mlx array representing the weight matrix. Accepts either an
+unquantized matrix (which may be quantized automatically) or a pre-quantized
+uint32 matrix produced by <code><a href="mlx_quantize.html">mlx_quantize()</a></code>.</p></dd>
 
 
 <dt id="arg-scales">scales<a class="anchor" aria-label="anchor" href="#arg-scales"></a></dt>
-<dd><p>An optional mlx array (the quantization scales). If NULL and w is
-unquantized, w will be quantized automatically. Default: NULL</p></dd>
+<dd><p>An optional mlx array of quantization scales. Required when <code>w</code>
+is already quantized.</p></dd>
 
 
 <dt id="arg-biases">biases<a class="anchor" aria-label="anchor" href="#arg-biases"></a></dt>
-<dd><p>An optional mlx array (biases to add). For affine quantization, this
-should be the quantization biases if w is pre-quantized. Default: NULL</p></dd>
+<dd><p>An optional mlx array of quantization biases (affine mode); use
+<code>NULL</code> for symmetric quantization.</p></dd>
 
 
 <dt id="arg-transpose">transpose<a class="anchor" aria-label="anchor" href="#arg-transpose"></a></dt>
-<dd><p>Whether to transpose the weight matrix. Default: TRUE</p></dd>
+<dd><p>Whether to transpose the weight matrix before multiplication.</p></dd>
 
 
 <dt id="arg-group-size">group_size<a class="anchor" aria-label="anchor" href="#arg-group-size"></a></dt>
-<dd><p>The group size for quantization. Default: 64</p></dd>
+<dd><p>The group size for quantization. Smaller groups improve
+accuracy at the cost of slightly higher memory. Default: 64.</p></dd>
 
 
 <dt id="arg-bits">bits<a class="anchor" aria-label="anchor" href="#arg-bits"></a></dt>
-<dd><p>The number of bits for quantization (typically 4 or 8). Default: 4</p></dd>
+<dd><p>Number of bits for quantization (typically 4 or 8). Default: 4.</p></dd>
 
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
-<dd><p>The quantization mode, either "affine" or "mxfp4". Default: "affine"</p></dd>
+<dd><p>Quantization mode, either <code>"affine"</code> or <code>"mxfp4"</code>.</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>

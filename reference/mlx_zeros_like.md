@@ -19,7 +19,17 @@ mlx_zeros_like(x, dtype = NULL, device = NULL)
 
 - dtype:
 
-  Optional MLX dtype override. Defaults to the source array's dtype.
+  Data type string. Supported types include:
+
+  - Floating point: `"float32"`, `"float64"`
+
+  - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`,
+    `"uint16"`, `"uint32"`, `"uint64"`
+
+  - Other: `"bool"`, `"complex64"`
+
+  Not all functions support all types. See individual function
+  documentation.
 
 - device:
 

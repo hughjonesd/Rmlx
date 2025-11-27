@@ -23,7 +23,7 @@ all(target, current, tolerance = sqrt(.Machine$double.eps), ...)
 
 - ...:
 
-  Additional arguments (currently ignored)
+  Additional arguments; ignored.
 
 ## Value
 

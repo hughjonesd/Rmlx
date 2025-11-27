@@ -43,7 +43,7 @@ aperm(a, perm = NULL, resize = TRUE, ...)
 
 - ...:
 
-  Additional arguments accepted for compatibility; ignored.
+  Additional arguments; ignored.
 
 ## Value
 

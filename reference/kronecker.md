@@ -48,7 +48,7 @@ kronecker.mlx(X, Y, FUN = "*", ..., make.dimnames = FALSE)
 
 - ...:
 
-  Passed to maintain signature compatibility with base `kronecker()`.
+  optional arguments to be passed to `FUN`.
 
 ## Value
 

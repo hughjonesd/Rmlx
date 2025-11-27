@@ -58,7 +58,10 @@ or device.</p>
 
 
 <dt id="arg-dtype">dtype<a class="anchor" aria-label="anchor" href="#arg-dtype"></a></dt>
-<dd><p>Optional MLX dtype override. Defaults to the source array's dtype.</p></dd>
+<dd><p>Data type string. Supported types include:</p><ul><li><p>Floating point: <code>"float32"</code>, <code>"float64"</code></p></li>
+<li><p>Integer: <code>"int8"</code>, <code>"int16"</code>, <code>"int32"</code>, <code>"int64"</code>, <code>"uint8"</code>, <code>"uint16"</code>, <code>"uint32"</code>, <code>"uint64"</code></p></li>
+<li><p>Other: <code>"bool"</code>, <code>"complex64"</code></p></li>
+</ul><p>Not all functions support all types. See individual function documentation.</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>

@@ -26,7 +26,7 @@ svd(x, nu = min(n, p), nv = min(n, p), ...)
 
 - ...:
 
-  Additional arguments (unused).
+  Additional arguments; ignored.
 
 ## Value
 

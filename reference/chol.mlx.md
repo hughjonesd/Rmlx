@@ -22,7 +22,7 @@ chol(x, pivot = FALSE, ...)
 
 - ...:
 
-  Additional arguments (unused).
+  Additional arguments; ignored.
 
 ## Value
 

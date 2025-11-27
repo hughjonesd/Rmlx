@@ -29,39 +29,37 @@ mlx_quantized_matmul(
 
 - w:
 
-  An mlx array. Either:
-
-  - A quantized weight matrix (uint32) from
-    [`mlx_quantize()`](https://hughjonesd.github.io/Rmlx/reference/mlx_quantize.md),
-    or
-
-  - An unquantized weight matrix that will be quantized automatically
+  An mlx array representing the weight matrix. Accepts either an
+  unquantized matrix (which may be quantized automatically) or a
+  pre-quantized uint32 matrix produced by
+  [`mlx_quantize()`](https://hughjonesd.github.io/Rmlx/reference/mlx_quantize.md).
 
 - scales:
 
-  An optional mlx array (the quantization scales). If NULL and w is
-  unquantized, w will be quantized automatically. Default: NULL
+  An optional mlx array of quantization scales. Required when `w` is
+  already quantized.
 
 - biases:
 
-  An optional mlx array (biases to add). For affine quantization, this
-  should be the quantization biases if w is pre-quantized. Default: NULL
+  An optional mlx array of quantization biases (affine mode); use `NULL`
+  for symmetric quantization.
 
 - transpose:
 
-  Whether to transpose the weight matrix. Default: TRUE
+  Whether to transpose the weight matrix before multiplication.
 
 - group_size:
 
-  The group size for quantization. Default: 64
+  The group size for quantization. Smaller groups improve accuracy at
+  the cost of slightly higher memory. Default: 64.
 
 - bits:
 
-  The number of bits for quantization (typically 4 or 8). Default: 4
+  Number of bits for quantization (typically 4 or 8). Default: 4.
 
 - mode:
 
-  The quantization mode, either "affine" or "mxfp4". Default: "affine"
+  Quantization mode, either `"affine"` or `"mxfp4"`.
 
 - device:
 

@@ -52,8 +52,8 @@ backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 
 - ...:
 
-  Additional arguments forwarded to
-  [`base::backsolve()`](https://rdrr.io/r/base/backsolve.html).
+  Additional arguments forwarded to the corresponding base R
+  implementation for signature compatibility.
 
 ## Value
 

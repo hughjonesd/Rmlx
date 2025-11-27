@@ -17,7 +17,7 @@ str(object, ...)
 
 - ...:
 
-  Additional arguments (ignored)
+  Additional arguments; ignored.
 
 ## Value
 

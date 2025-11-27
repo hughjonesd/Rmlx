@@ -16,9 +16,17 @@ mlx_identity(n, dtype = c("float32", "float64"), device = mlx_default_device())
 
 - dtype:
 
-  MLX dtype to use. One of `"float32"`, `"float64"`, `"int8"`,
-  `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`, `"uint32"`,
-  `"uint64"`, `"bool"`, or `"complex64"`.
+  Data type string. Supported types include:
+
+  - Floating point: `"float32"`, `"float64"`
+
+  - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`,
+    `"uint16"`, `"uint32"`, `"uint64"`
+
+  - Other: `"bool"`, `"complex64"`
+
+  Not all functions support all types. See individual function
+  documentation.
 
 - device:
 

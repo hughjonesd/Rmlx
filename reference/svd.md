@@ -16,7 +16,8 @@ svd(x, ...)
 
 - ...:
 
-  Additional arguments.
+  Additional arguments forwarded to the corresponding base R
+  implementation for signature compatibility.
 
 ## Value
 

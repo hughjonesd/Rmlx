@@ -18,7 +18,7 @@ as_r(x, ...)
 
 - ...:
 
-  Additional arguments (ignored)
+  Additional arguments; ignored.
 
 ## Value
 

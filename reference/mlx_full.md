@@ -20,9 +20,17 @@ mlx_full(dim, value, dtype = NULL, device = mlx_default_device())
 
 - dtype:
 
-  MLX dtype (`"float32"`, `"float64"`, `"bool"`, or `"complex64"`). If
-  omitted, defaults to `"complex64"` for complex scalars, `"bool"` for
-  logical scalars, and `"float32"` otherwise.
+  Data type string. Supported types include:
+
+  - Floating point: `"float32"`, `"float64"`
+
+  - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`,
+    `"uint16"`, `"uint32"`, `"uint64"`
+
+  - Other: `"bool"`, `"complex64"`
+
+  Not all functions support all types. See individual function
+  documentation.
 
 - device:
 
