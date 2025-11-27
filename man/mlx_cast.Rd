@@ -21,7 +21,7 @@ An mlx array with the requested dtype and device.
 changing its shape.
 }
 \examples{
-x <- mlx_array(1:3, dtype = "int32")
+x <- mlx_vector(1:3, dtype = "int32")
 mlx_cast(x, dtype = "float32")
 }
 \seealso{

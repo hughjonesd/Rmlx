@@ -12,7 +12,7 @@
 #' @seealso [mlx_dtype()], [mlx_device()]
 #' @export
 #' @examples
-#' x <- mlx_array(1:3, dtype = "int32")
+#' x <- mlx_vector(1:3, dtype = "int32")
 #' mlx_cast(x, dtype = "float32")
 mlx_cast <- function(x, dtype = NULL, device = x$device) {
   if (!inherits(x, "mlx")) {

@@ -736,8 +736,8 @@ mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
 #' @export
 #' @examples
 #' # Create a simple 2D convolution
-#' input <- mlx_array(rnorm(1*28*28*3), dim = c(1, 28, 28, 3)))  # Batch of 1 RGB image
-#' weight <- mlx_array(rnorm(16*3*3*3), dim = c(16, 3, 3, 3)))  # 16 filters, 3x3 kernel
+#' input <- mlx_array(rnorm(1*28*28*3), dim = c(1, 28, 28, 3))  # Batch of 1 RGB image
+#' weight <- mlx_array(rnorm(16*3*3*3), dim = c(16, 3, 3, 3))  # 16 filters, 3x3 kernel
 #' output <- mlx_conv2d(input, weight, stride = c(1, 1), padding = c(1, 1))
 mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
                        dilation = c(1L, 1L), groups = 1L,

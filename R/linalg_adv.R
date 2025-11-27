@@ -386,8 +386,14 @@ backsolve.mlx <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, .
 mlx_cross <- function(a, b, axis = NULL) {
   a <- as_mlx(a)
   b <- as_mlx(b)
-  axis_val <- if (missing(axis) || is.null(axis)) length(dim(a)) else axis
-  if (length(axis_val) != 1L || is.na(axis_val)) {
+  shape_len <- length(mlx_shape(a))
+  axis_val <- if (missing(axis) || is.null(axis)) {
+    if (shape_len == 0L) {
+      stop("`axis` must be supplied for scalar inputs.", call. = FALSE)
+    }
+    shape_len
+  } else axis
+  if (length(axis_val) != 1L || is.na(axis_val) || axis_val < 1L) {
     stop("`axis` must be NULL or a single positive integer.", call. = FALSE)
   }
   ptr <- cpp_mlx_cross(a$ptr, b$ptr, as.integer(axis_val), a$device)
