@@ -13,6 +13,17 @@
 - `configure`, `DESCRIPTION`, and `NAMESPACE` manage build-time
   detection and package metadata; the configure step runs automatically
   during install.
+- Apple Silicon + MLX runtime required for GPU paths; works on CPU when
+  MLX present but Metal initialisation needs `danger-full-access`.
+
+## System Requirements & MLX Detection
+
+- MLX headers/libraries auto-detected by `configure` (writes
+  `src/Makevars`) and cleaned by `cleanup`; expected paths include
+  `/opt/homebrew/include/mlx/c/mlx.h` and
+  `/opt/homebrew/lib/libmlx.dylib`, with `/usr/local` fallbacks.
+- Override detection with `MLX_INCLUDE`, `MLX_LIB_DIR`, and `MLX_LIBS`
+  env vars when installing/building.
 
 ## Build, Test, and Development Commands
 
@@ -49,9 +60,6 @@
 
 ## Issue Tracking
 
-- File tasks straight to GitHub via `gh issue create` rather than
-  maintaining local scratchpads. Reference the issue numbers in
-  downstream docs/PRs.
 - The GitHub CLI (`gh`) is already installed in this environment; use it
   for issues and PR chores (`gh issue create`, `gh issue view`,
   `gh pr create`).
@@ -98,6 +106,10 @@
 - R arrays are column-major while MLX tensors are row-major. If
   reduction tests misbehave, double-check axis ordering (swapping axis
   0/1 often fixes it).
+- MLX array type lacks a default constructor—always supply shape/dtype
+  in C++.
+- C API names can differ across MLX versions; verify against
+  `<mlx/c/mlx.h>` before wiring wrappers.
 
 ### Testing Notes
 
@@ -166,3 +178,8 @@
   with mlx arrays: `result <- (1 - weight) * lower + weight * upper`
   where all values are mlx arrays. This leverages lazy evaluation to
   build the computation graph efficiently.
+- **Lazy evaluation**: computations build a graph; force with
+  [`mlx_eval()`](https://hughjonesd.github.io/Rmlx/reference/mlx_eval.md)
+  or [`as.matrix()`](https://rdrr.io/r/base/matrix.html). GPU is default
+  device; switch via
+  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md).

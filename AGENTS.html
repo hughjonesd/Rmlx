@@ -47,6 +47,12 @@
 <code>vignettes/getting-started.Rmd</code> introduces workflows; update when adding user-facing features.</li>
 <li>
 <code>configure</code>, <code>DESCRIPTION</code>, and <code>NAMESPACE</code> manage build-time detection and package metadata; the configure step runs automatically during install.</li>
+<li>Apple Silicon + MLX runtime required for GPU paths; works on CPU when MLX present but Metal initialisation needs <code>danger-full-access</code>.</li>
+</ul></div>
+<div class="section level2">
+<h2 id="system-requirements--mlx-detection">System Requirements &amp; MLX Detection<a class="anchor" aria-label="anchor" href="#system-requirements--mlx-detection"></a></h2>
+<ul><li>MLX headers/libraries auto-detected by <code>configure</code> (writes <code>src/Makevars</code>) and cleaned by <code>cleanup</code>; expected paths include <code>/opt/homebrew/include/mlx/c/mlx.h</code> and <code>/opt/homebrew/lib/libmlx.dylib</code>, with <code>/usr/local</code> fallbacks.</li>
+<li>Override detection with <code>MLX_INCLUDE</code>, <code>MLX_LIB_DIR</code>, and <code>MLX_LIBS</code> env vars when installing/building.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="build-test-and-development-commands">Build, Test, and Development Commands<a class="anchor" aria-label="anchor" href="#build-test-and-development-commands"></a></h2>
@@ -75,8 +81,7 @@
 </ul></div>
 <div class="section level2">
 <h2 id="issue-tracking">Issue Tracking<a class="anchor" aria-label="anchor" href="#issue-tracking"></a></h2>
-<ul><li>File tasks straight to GitHub via <code>gh issue create</code> rather than maintaining local scratchpads. Reference the issue numbers in downstream docs/PRs.</li>
-<li>The GitHub CLI (<code>gh</code>) is already installed in this environment; use it for issues and PR chores (<code>gh issue create</code>, <code>gh issue view</code>, <code>gh pr create</code>).</li>
+<ul><li>The GitHub CLI (<code>gh</code>) is already installed in this environment; use it for issues and PR chores (<code>gh issue create</code>, <code>gh issue view</code>, <code>gh pr create</code>).</li>
 </ul></div>
 <div class="section level2">
 <h2 id="commit--pull-request-guidelines">Commit &amp; Pull Request Guidelines<a class="anchor" aria-label="anchor" href="#commit--pull-request-guidelines"></a></h2>
@@ -98,6 +103,8 @@
 <h3 id="mlx-integration-reminders">MLX Integration Reminders<a class="anchor" aria-label="anchor" href="#mlx-integration-reminders"></a></h3>
 <ul><li>MLX may rename C API entry points; confirm function names against <code>&lt;mlx/c/mlx.h&gt;</code> before wiring Rcpp wrappers. Update <code>src/mlx_bindings.cpp</code> or <code>src/mlx_ops.cpp</code> whenever upstream changes occur.</li>
 <li>R arrays are column-major while MLX tensors are row-major. If reduction tests misbehave, double-check axis ordering (swapping axis 0/1 often fixes it).</li>
+<li>MLX array type lacks a default constructor—always supply shape/dtype in C++.</li>
+<li>C API names can differ across MLX versions; verify against <code>&lt;mlx/c/mlx.h&gt;</code> before wiring wrappers.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="testing-notes">Testing Notes<a class="anchor" aria-label="anchor" href="#testing-notes"></a></h3>
@@ -135,6 +142,8 @@
 <strong>Sorting</strong>: <code><a href="reference/mlx_sort.html">mlx_sort()</a></code> and <code><a href="reference/mlx_sort.html">mlx_argsort()</a></code> are available. Note that <code><a href="reference/mlx_sort.html">mlx_argsort()</a></code> returns 1-based indices following R conventions.</li>
 <li>
 <strong>Arithmetic interpolation</strong>: Linear interpolation is straightforward with mlx arrays: <code>result &lt;- (1 - weight) * lower + weight * upper</code> where all values are mlx arrays. This leverages lazy evaluation to build the computation graph efficiently.</li>
+<li>
+<strong>Lazy evaluation</strong>: computations build a graph; force with <code><a href="reference/mlx_eval.html">mlx_eval()</a></code> or <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix()</a></code>. GPU is default device; switch via <code><a href="reference/mlx_default_device.html">mlx_default_device()</a></code>.</li>
 </ul></div>
 </div>
 </div>
