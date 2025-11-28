@@ -635,7 +635,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
 mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   x <- as_mlx(x)
 
-  axis_mlx <- .mlx_normalize_axis(axis, x)
+  axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumsum(x$ptr, axis_mlx, reverse, inclusive)
   new_mlx(ptr, x$device)
@@ -646,7 +646,7 @@ mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
 mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   x <- as_mlx(x)
 
-  axis_mlx <- .mlx_normalize_axis(axis, x)
+  axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive)
   new_mlx(ptr, x$device)
@@ -1119,7 +1119,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
     if (length(axis) == 1) {
       # Single axis case
       axis <- as.integer(axis)
-      axis_idx <- .mlx_normalize_axis_single(axis, x)
+      axis_idx <- normalize_axis_single(axis, x)
       sorted_x <- mlx_sort(x, axis = axis)  # mlx_sort uses 1-indexed already
       shape <- cpp_mlx_shape(x$ptr)
       n <- shape[axis]

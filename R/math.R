@@ -42,8 +42,7 @@ Math.mlx <- function(x, ...) {
 
   # Try MLX operation first
   result <- tryCatch({
-    ptr <- cpp_mlx_unary(x$ptr, op)
-    new_mlx(ptr, x$device)
+    .mlx_from_call(cpp_mlx_unary, x, op = op)
   }, error = function(e) {
     # If MLX doesn't support this operation, fall back to base R
     if (grepl("Unsupported unary operation", e$message)) {
@@ -151,24 +150,21 @@ mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #' Im(z)
 mlx_real <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "real")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "real")
 }
 
 #' @rdname mlx_real
 #' @export
 mlx_imag <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "imag")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "imag")
 }
 
 #' @rdname mlx_real
 #' @export
 mlx_conjugate <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "conj")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "conj")
 }
 
 #' Convert between radians and degrees
@@ -188,8 +184,7 @@ mlx_conjugate <- function(x) {
 #' mlx_degrees(x)  # 90
 mlx_degrees <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "degrees")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "degrees")
 }
 
 #' @rdname mlx_degrees
@@ -198,8 +193,7 @@ mlx_degrees <- function(x) {
 #' mlx_radians(mlx_vector(c(0, 90, 180)))
 mlx_radians <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "radians")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "radians")
 }
 
 #' Detect signed infinities in mlx arrays
@@ -220,16 +214,14 @@ mlx_radians <- function(x) {
 #' mlx_isneginf(vals)
 mlx_isposinf <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "isposinf")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "isposinf")
 }
 
 #' @rdname mlx_isposinf
 #' @export
 mlx_isneginf <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "isneginf")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "isneginf")
 }
 
 #' Elementwise NaN and infinity predicates
@@ -249,24 +241,21 @@ NULL
 #' @export
 mlx_isnan <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "isnan")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "isnan")
 }
 
 #' @rdname mlx_isnan
 #' @export
 mlx_isinf <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "isinf")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "isinf")
 }
 
 #' @rdname mlx_isnan
 #' @export
 mlx_isfinite <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "isfinite")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "isfinite")
 }
 
 #' Replace NaN and infinite values with finite numbers
@@ -309,8 +298,8 @@ mlx_nan_to_num <- function(x, nan = 0, posinf = NULL, neginf = NULL) {
     neginf <- as.numeric(neginf)
   }
 
-  ptr <- cpp_mlx_nan_to_num(x$ptr, nan, posinf, neginf)
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_nan_to_num, x,
+                 nan = nan, posinf = posinf, neginf = neginf)
 }
 
 #' @export
@@ -426,8 +415,7 @@ all.equal.mlx <- function(target, current, tolerance = sqrt(.Machine$double.eps)
 #' mlx_erf(x)
 mlx_erf <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "erf")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "erf")
 }
 
 #' @rdname mlx_erf
@@ -437,6 +425,5 @@ mlx_erf <- function(x) {
 #' mlx_erfinv(p)
 mlx_erfinv <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unary(x$ptr, "erfinv")
-  new_mlx(ptr, x$device)
+  .mlx_from_call(cpp_mlx_unary, x, op = "erfinv")
 }

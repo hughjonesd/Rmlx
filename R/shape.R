@@ -35,7 +35,7 @@ mlx_cast <- function(x, dtype = NULL, device = x$device) {
 #' @param dims Integer vector of the current dimensions.
 #' @return Integer vector of 0-indexed axes suitable for MLX.
 #' @noRd
-.mlx_normalize_new_axes <- function(axes, dims) {
+normalize_new_axes <- function(axes, dims) {
   if (length(axes) == 0L) {
     stop("axes must contain at least one element.", call. = FALSE)
   }
@@ -76,11 +76,11 @@ mlx_stack <- function(..., axis = 1L) {
   }
   arrays <- lapply(arrays, as_mlx)
   dtypes <- lapply(arrays, mlx_dtype)
-  dtype <- Reduce(.promote_dtype, dtypes)
-  device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
+  dtype <- Reduce(promote_dtype, dtypes)
+  device <- Reduce(common_device, lapply(arrays, `[[`, "device"))
   arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = device)
 
-  axis_vec <- .mlx_normalize_new_axes(axis, dim(arrays[[1]]))
+  axis_vec <- normalize_new_axes(axis, dim(arrays[[1]]))
   if (length(axis_vec) != 1L) {
     stop("`axis` must be a single insertion position.", call. = FALSE)
   }
@@ -131,7 +131,7 @@ mlx_squeeze <- function(x, axes = NULL) {
   if (is.null(axes)) {
     ptr <- cpp_mlx_squeeze(x$ptr, NULL)
   } else {
-    axes_idx <- .mlx_normalize_axes(axes, x)
+    axes_idx <- normalize_axes(axes, x)
     ptr <- cpp_mlx_squeeze(x$ptr, axes_idx)
   }
   new_mlx(ptr, x$device)
@@ -150,7 +150,7 @@ mlx_squeeze <- function(x, axes = NULL) {
 #' mlx_expand_dims(x, axes = 1)
 mlx_expand_dims <- function(x, axes) {
   x <- as_mlx(x)
-  axes0 <- .mlx_normalize_new_axes(axes, dim(x))
+  axes0 <- normalize_new_axes(axes, dim(x))
   ptr <- cpp_mlx_expand_dims(x$ptr, axes0)
   new_mlx(ptr, x$device)
 }
@@ -177,7 +177,7 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
   if (is.null(axis)) {
     ptr <- cpp_mlx_repeat(x$ptr, repeats, NULL)
   } else {
-    axis0 <- .mlx_normalize_axis(axis, x)
+    axis0 <- normalize_axis(axis, x)
     ptr <- cpp_mlx_repeat(x$ptr, repeats, axis0)
   }
   new_mlx(ptr, x$device)
@@ -225,7 +225,7 @@ mlx_roll <- function(x, shift, axes = NULL) {
   if (is.null(axes)) {
     ptr <- cpp_mlx_roll(x$ptr, shift, NULL)
   } else {
-    axes0 <- .mlx_normalize_axes(axes, x)
+    axes0 <- normalize_axes(axes, x)
     if (length(shift) != length(axes0)) {
       stop("shift and axes must have the same length.", call. = FALSE)
     }
@@ -281,11 +281,11 @@ mlx_pad <- function(x,
     if (!length(axes)) {
       stop("axes must contain at least one axis.", call. = FALSE)
     }
-    vapply(axes, function(ax) .mlx_normalize_axis_single(ax, x) + 1L, integer(1))
+    vapply(axes, function(ax) normalize_axis_single(ax, x) + 1L, integer(1))
   }
 
   pad_matrix <- matrix(0L, nrow = ndim, ncol = 2)
-  pad_pairs <- .parse_pad_width(pad_width, length(target_axes))
+  pad_pairs <- parse_pad_width(pad_width, length(target_axes))
   if (any(pad_pairs < 0L)) {
     stop("pad_width values must be non-negative.", call. = FALSE)
   }
@@ -326,7 +326,7 @@ mlx_split <- function(x, sections, axis = 1L) {
   if (missing(sections)) {
     stop("sections must be supplied.", call. = FALSE)
   }
-  axis_idx <- .mlx_normalize_axis(axis, x)
+  axis_idx <- normalize_axis(axis, x)
   dim_len <- dim(x)[axis_idx + 1L]
 
   as_num_sections <- !is.list(sections)
@@ -405,7 +405,7 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
   if (length(MARGIN) != 1L) {
     stop("asplit() for mlx arrays currently supports a single margin.", call. = FALSE)
   }
-  axis_idx <- .mlx_normalize_axis(MARGIN, x)
+  axis_idx <- normalize_axis(MARGIN, x)
   dim_len <- dim(x)[axis_idx + 1L]
   splits <- mlx_split(x, sections = dim_len, axis = MARGIN)
 
@@ -427,7 +427,7 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
 #' @param n_axes Integer number of axes being padded.
 #' @return Integer matrix with n_axes rows and 2 columns (before, after).
 #' @noRd
-.parse_pad_width <- function(pad_width, n_axes) {
+parse_pad_width <- function(pad_width, n_axes) {
   if (n_axes <= 0L) {
     stop("n_axes must be positive.", call. = FALSE)
   }
@@ -512,8 +512,8 @@ mlx_moveaxis <- function(x, source, destination) {
     stop("source must contain at least one axis.", call. = FALSE)
   }
 
-  source_idx <- .mlx_normalize_axes(source, x)
-  dest_idx <- .mlx_normalize_axes(destination, x)
+  source_idx <- normalize_axes(source, x)
+  dest_idx <- normalize_axes(destination, x)
   source_idx <- as.integer(source_idx)
   dest_idx <- as.integer(dest_idx)
   if (anyDuplicated(source_idx)) {
@@ -586,8 +586,8 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
 mlx_contiguous <- function(x, device = NULL) {
   x <- as_mlx(x)
   target <- if (is.null(device)) x$device else device
-  handle <- .mlx_resolve_device(target, x$device)
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_contiguous(x$ptr, dev))
+  handle <- resolve_device(target, x$device)
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_contiguous(x$ptr, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -626,8 +626,8 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = NULL) {
     stop("end_axis must be NULL or a single positive integer.", call. = FALSE)
   }
 
-  start_idx <- .mlx_normalize_axis_single(start_axis, x)
-  end_idx <- .mlx_normalize_axis_single(end_axis, x)
+  start_idx <- normalize_axis_single(start_axis, x)
+  end_idx <- normalize_axis_single(end_axis, x)
 
   if (start_idx > end_idx) {
     stop("start_axis must be less than or equal to end_axis.", call. = FALSE)
@@ -661,8 +661,8 @@ mlx_swapaxes <- function(x, axis1, axis2) {
   axis1 <- as.integer(axis1)
   axis2 <- as.integer(axis2)
 
-  axis1_idx <- .mlx_normalize_axis_single(axis1, x)
-  axis2_idx <- .mlx_normalize_axis_single(axis2, x)
+  axis1_idx <- normalize_axis_single(axis1, x)
+  axis2_idx <- normalize_axis_single(axis2, x)
 
   ptr <- cpp_mlx_swapaxes(x$ptr, axis1_idx, axis2_idx)
   new_mlx(ptr, x$device)
@@ -698,14 +698,14 @@ mlx_meshgrid <- function(...,
   arrays <- lapply(arrays, as_mlx)
 
   dtypes <- lapply(arrays, mlx_dtype)
-  dtype <- Reduce(.promote_dtype, dtypes)
-  default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
+  dtype <- Reduce(promote_dtype, dtypes)
+  default_device <- Reduce(common_device, lapply(arrays, `[[`, "device"))
   target <- if (is.null(device)) default_device else device
-  handle <- .mlx_resolve_device(target, default_device)
+  handle <- resolve_device(target, default_device)
   arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
 
   indexing <- match.arg(indexing)
-  ptrs <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_meshgrid(arrays, sparse, indexing, dev))
+  ptrs <- eval_with_stream(handle, function(dev) cpp_mlx_meshgrid(arrays, sparse, indexing, dev))
   lapply(ptrs, function(ptr) new_mlx(ptr, handle$device))
 }
 
@@ -726,11 +726,11 @@ mlx_meshgrid <- function(...,
 #' dim(broadcast)
 mlx_broadcast_to <- function(x, shape, device = NULL) {
   x <- as_mlx(x)
-  shape <- .validate_shape(shape)
+  shape <- validate_shape(shape)
   target <- if (is.null(device)) x$device else device
-  handle <- .mlx_resolve_device(target, x$device)
+  handle <- resolve_device(target, x$device)
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_broadcast_to(x$ptr, shape, dev))
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_broadcast_to(x$ptr, shape, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -760,13 +760,13 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
   arrays <- lapply(arrays, as_mlx)
 
   dtypes <- lapply(arrays, mlx_dtype)
-  dtype <- Reduce(.promote_dtype, dtypes)
-  default_device <- Reduce(.common_device, lapply(arrays, `[[`, "device"))
+  dtype <- Reduce(promote_dtype, dtypes)
+  default_device <- Reduce(common_device, lapply(arrays, `[[`, "device"))
   target <- if (is.null(device)) default_device else device
-  handle <- .mlx_resolve_device(target, default_device)
+  handle <- resolve_device(target, default_device)
   arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
 
-  ptrs <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_broadcast_arrays(arrays, dev))
+  ptrs <- eval_with_stream(handle, function(dev) cpp_mlx_broadcast_arrays(arrays, dev))
   lapply(ptrs, function(ptr) new_mlx(ptr, handle$device))
 }
 
@@ -791,8 +791,8 @@ mlx_where <- function(condition, x, y) {
 
   x_dtype <- mlx_dtype(x)
   y_dtype <- mlx_dtype(y)
-  result_dtype <- .promote_dtype(x_dtype, y_dtype)
-  result_device <- .common_device(x$device, y$device)
+  result_dtype <- promote_dtype(x_dtype, y_dtype)
+  result_device <- common_device(x$device, y$device)
 
   condition <- mlx_cast(condition, dtype = "bool", device = result_device)
   x <- mlx_cast(x, dtype = result_dtype, device = result_device)

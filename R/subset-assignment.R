@@ -6,11 +6,11 @@
   stopifnot(is_mlx(x))
   shape <- mlx_shape(x)
   dot_expr <- as.list(substitute(alist(...)))[-1]
-  idx_list <- .mlx_collect_indices(dot_expr, length(shape), parent.frame())
+  idx_list <- collect_indices(dot_expr, length(shape), parent.frame())
 
   n_indices <- nargs() - 2L
-  if (n_indices == 1L && .is_matrix_index(idx_list[[1]])) {
-    .matrix_assign(x, idx_list[[1]], value)
+  if (n_indices == 1L && is_matrix_index(idx_list[[1]])) {
+    matrix_assign(x, idx_list[[1]], value)
   } else {
     ndim <- length(mlx_shape(x))
     if (n_indices == 1L && ndim > 1L) {
@@ -21,22 +21,22 @@
       x_flat[idx] <- value
       return(mlx_reshape(x_flat, shape))
     }
-    .vectors_assign(x, idx_list, value)
+    vectors_assign(x, idx_list, value)
   }
 }
 
-.is_matrix_index <- function(i1, shape) {
+is_matrix_index <- function(i1, shape) {
   i1_numeric <- if (is_mlx(i1)) mlx_dtype(i1) != "bool" else is.numeric(i1)
   # using dim() works for both matrix and mlx_matrix objects
   ! is.null(dim(i1)) &&
   i1_numeric
 }
 
-.matrix_assign <- function (x, idx_mat, value) {
+matrix_assign <- function (x, idx_mat, value) {
   idx_mat <- as_r(idx_mat)
   shape <- mlx_shape(x)
   ndims <- length(shape)
-  .check_matrix_index(idx_mat, shape, assign = TRUE)
+  check_matrix_index(idx_mat, shape, assign = TRUE)
 
   if (!nrow(idx_mat)) {
     return(x)
@@ -49,8 +49,8 @@
   coord_list <- mlx_split(idx_mat, sections = ncol(idx_mat), axis = 2L)
   coord_list <- lapply(coord_list, drop)
 
-  .check_value_fits(length(value), nrow(idx_mat))
-  # if (.duplicated_rows_lex(idx_mat)) {
+  check_value_fits(length(value), nrow(idx_mat))
+  # if (duplicated_rows_lex(idx_mat)) {
   #   stop("Duplicate indices are not allowed in assignment.", call. = FALSE)
   # }
   value <- as_mlx(value, dtype = mlx_dtype(x), device = mlx_device(x))
@@ -63,10 +63,10 @@
 }
 
 
-.vectors_assign <- function(x, idx_list, value) {
+vectors_assign <- function(x, idx_list, value) {
   shape <- mlx_shape(x)
   ndim <- length(shape)
-  idx_list <- mapply(.normalize_index, idx_list, shape, SIMPLIFY = FALSE,
+  idx_list <- mapply(normalize_index, idx_list, shape, SIMPLIFY = FALSE,
                      MoreArgs = list(assign = TRUE))
 
   if (any(vapply(idx_list, is.null, integer(1)))) {
@@ -78,7 +78,7 @@
   target_len <- prod(lens)
   value_mlx <- as_mlx(value, dtype = mlx_dtype(x), device = mlx_device(x))
   val_len <- length(value_mlx)
-  .check_value_fits(val_len, target_len)
+  check_value_fits(val_len, target_len)
 
   tiles <- target_len %/% val_len
   value_mlx <- .mlx_flatten_r_order(value_mlx)
@@ -106,7 +106,7 @@
 #'
 #' @returns A positive mlx vector of index positions, or NULL for none.
 #' @noRd
-.normalize_index <- function(idx, len, assign, allow_dims = FALSE) {
+normalize_index <- function(idx, len, assign, allow_dims = FALSE) {
   if (is.null(idx)) {
     return(seq_len(len))
   }
@@ -149,7 +149,7 @@
   idx
 }
 
-.check_value_fits <- function(val_len, target_len) {
+check_value_fits <- function(val_len, target_len) {
   if (val_len == 0L) {
     stop("Replacement value must have length >= 1.", call. = FALSE)
   }

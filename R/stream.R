@@ -70,7 +70,7 @@ format.mlx_stream <- function(x, ...) {
 }
 
 .mlx_validate_stream <- function(stream) {
-  if (.mlx_is_stream(stream)) {
+  if (is_mlx_stream(stream)) {
     return(stream)
   }
   stop("Expected an mlx_stream", call. = FALSE)

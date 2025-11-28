@@ -1,6 +1,6 @@
 # Internal helper to bind arrays along a given axis ---------------------------
 
-.mlx_bind_along_axis <- function(objs, axis) {
+bind_along_axis <- function(objs, axis) {
   if (length(objs) == 1L && is.list(objs[[1L]]) && !is_mlx(objs[[1L]])) {
     objs <- objs[[1L]]
   }
@@ -35,8 +35,8 @@
 
   if (length(mlx_objs) > 1L) {
     dtypes <- lapply(mlx_objs, mlx_dtype)
-    dtype <- Reduce(.promote_dtype, dtypes)
-    device <- Reduce(.common_device, lapply(mlx_objs, `[[`, "device"))
+    dtype <- Reduce(promote_dtype, dtypes)
+    device <- Reduce(common_device, lapply(mlx_objs, `[[`, "device"))
   } else {
     dtype <- mlx_dtype(mlx_objs[[1L]])
     device <- mlx_objs[[1L]]$device
@@ -67,7 +67,7 @@
 #' y <- mlx_matrix(5:8, 2, 2)
 #' rbind(x, y)
 rbind.mlx <- function(..., deparse.level = 1) {
-  .mlx_bind_along_axis(list(...), axis = 1L)
+  bind_along_axis(list(...), axis = 1L)
 }
 
 #' Column-bind mlx arrays
@@ -85,7 +85,7 @@ rbind.mlx <- function(..., deparse.level = 1) {
 #' y <- mlx_matrix(5:8, 2, 2)
 #' cbind(x, y)
 cbind.mlx <- function(..., deparse.level = 1) {
-  .mlx_bind_along_axis(list(...), axis = 2L)
+  bind_along_axis(list(...), axis = 2L)
 }
 
 #' Bind mlx arrays along an axis
@@ -108,5 +108,5 @@ cbind.mlx <- function(..., deparse.level = 1) {
 #' z <- abind(x, y, along = 3)
 #' dim(z)
 abind <- function(..., along = 1L) {
-  .mlx_bind_along_axis(list(...), axis = along)
+  bind_along_axis(list(...), axis = along)
 }

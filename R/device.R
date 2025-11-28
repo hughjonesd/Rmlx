@@ -33,7 +33,7 @@ mlx_default_device <- function(value) {
 #' stream <- mlx_new_stream()
 #' mlx_synchronize(stream)
 mlx_synchronize <- function(device = mlx_default_device()) {
-  if (.mlx_is_stream(device)) {
+  if (is_mlx_stream(device)) {
     cpp_mlx_synchronize_stream(device$ptr)
     return(invisible(NULL))
   }
@@ -54,7 +54,7 @@ mlx_synchronize <- function(device = mlx_default_device()) {
 #' with_default_device("cpu", x <- mlx_vector(1:10))
 #'
 with_default_device <- function(device, code) {
-  if (.mlx_is_stream(device)) {
+  if (is_mlx_stream(device)) {
     stream <- .mlx_validate_stream(device)
     target_device <- stream$device
     old_device <- mlx_default_device()
@@ -89,7 +89,7 @@ with_default_device <- function(device, code) {
 #' local_default_device("cpu")
 #' # code here runs on CPU, then the previous default is restored
 local_default_device <- function(device, .local_envir = parent.frame()) {
-  if (.mlx_is_stream(device)) {
+  if (is_mlx_stream(device)) {
     stream <- .mlx_validate_stream(device)
     target_device <- stream$device
     old_device <- mlx_default_device()

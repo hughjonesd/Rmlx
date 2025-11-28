@@ -15,8 +15,8 @@
 #' restored <- mlx_load(path, device = "cpu")
 mlx_save <- function(x, file) {
   x <- as_mlx(x)
-  file <- .ensure_extension(path.expand(.validate_path(file)), ".npy")
-  .ensure_parent_dir(file)
+  file <- ensure_extension(path.expand(validate_path(file)), ".npy")
+  ensure_parent_dir(file)
 
   cpp_mlx_save(x$ptr, file)
   invisible(file)
@@ -37,13 +37,13 @@ mlx_save <- function(x, file) {
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.load>
 #' @export
 mlx_load <- function(file, device = mlx_default_device()) {
-  file <- .ensure_extension(path.expand(.validate_path(file)), ".npy")
+  file <- ensure_extension(path.expand(validate_path(file)), ".npy")
   if (!file.exists(file)) {
     stop("File '", file, "' does not exist.", call. = FALSE)
   }
 
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_load(file, dev))
+  handle <- resolve_device(device, mlx_default_device())
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_load(file, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -56,7 +56,7 @@ mlx_load <- function(file, device = mlx_default_device()) {
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.save_safetensors>
 #' @export
 mlx_save_safetensors <- function(file, arrays, metadata = character()) {
-  arrays <- .normalize_array_list(arrays)
+  arrays <- normalize_array_list(arrays)
 
   if (!is.null(metadata) && length(metadata)) {
     metadata_names <- names(metadata)
@@ -68,8 +68,8 @@ mlx_save_safetensors <- function(file, arrays, metadata = character()) {
     metadata <- character()
   }
 
-  file <- .ensure_extension(path.expand(.validate_path(file)), ".safetensors")
-  .ensure_parent_dir(file)
+  file <- ensure_extension(path.expand(validate_path(file)), ".safetensors")
+  ensure_parent_dir(file)
 
   array_ptrs <- lapply(arrays, `[[`, "ptr")
   array_names <- names(arrays)
@@ -94,13 +94,13 @@ mlx_save_safetensors <- function(file, arrays, metadata = character()) {
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.load_safetensors>
 #' @export
 mlx_load_safetensors <- function(file, device = mlx_default_device()) {
-  file <- .ensure_extension(path.expand(.validate_path(file)), ".safetensors")
+  file <- ensure_extension(path.expand(validate_path(file)), ".safetensors")
   if (!file.exists(file)) {
     stop("File '", file, "' does not exist.", call. = FALSE)
   }
 
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  .mlx_eval_with_stream(handle, function(dev) cpp_mlx_load_safetensors(file, dev))
+  handle <- resolve_device(device, mlx_default_device())
+  eval_with_stream(handle, function(dev) cpp_mlx_load_safetensors(file, dev))
 }
 
 #' Save MLX arrays to the GGUF format
@@ -112,11 +112,11 @@ mlx_load_safetensors <- function(file, device = mlx_default_device()) {
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.save_gguf>
 #' @export
 mlx_save_gguf <- function(file, arrays, metadata = list()) {
-  arrays <- .normalize_array_list(arrays)
-  metadata_payload <- .normalize_gguf_metadata(metadata)
+  arrays <- normalize_array_list(arrays)
+  metadata_payload <- normalize_gguf_metadata(metadata)
 
-  file <- .ensure_extension(path.expand(.validate_path(file)), ".gguf")
-  .ensure_parent_dir(file)
+  file <- ensure_extension(path.expand(validate_path(file)), ".gguf")
+  ensure_parent_dir(file)
 
   array_ptrs <- lapply(arrays, `[[`, "ptr")
   array_names <- names(arrays)
@@ -141,16 +141,16 @@ mlx_save_gguf <- function(file, arrays, metadata = list()) {
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.load_gguf>
 #' @export
 mlx_load_gguf <- function(file, device = mlx_default_device()) {
-  file <- .ensure_extension(path.expand(.validate_path(file)), ".gguf")
+  file <- ensure_extension(path.expand(validate_path(file)), ".gguf")
   if (!file.exists(file)) {
     stop("File '", file, "' does not exist.", call. = FALSE)
   }
 
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  .mlx_eval_with_stream(handle, function(dev) cpp_mlx_load_gguf(file, dev))
+  handle <- resolve_device(device, mlx_default_device())
+  eval_with_stream(handle, function(dev) cpp_mlx_load_gguf(file, dev))
 }
 
-.normalize_array_list <- function(arrays) {
+normalize_array_list <- function(arrays) {
   arrays <- as.list(arrays)
   if (!length(arrays)) {
     stop("`arrays` must contain at least one element.", call. = FALSE)
@@ -161,7 +161,7 @@ mlx_load_gguf <- function(file, device = mlx_default_device()) {
   lapply(arrays, as_mlx)
 }
 
-.normalize_gguf_metadata <- function(metadata) {
+normalize_gguf_metadata <- function(metadata) {
   metadata <- as.list(metadata)
   if (!length(metadata)) {
     return(stats::setNames(list(), character()))
@@ -203,7 +203,7 @@ mlx_load_gguf <- function(file, device = mlx_default_device()) {
   out
 }
 
-.ensure_extension <- function(path, ext) {
+ensure_extension <- function(path, ext) {
   has_ext <- nchar(path) >= nchar(ext) && {
     suffix <- substr(path, nchar(path) - nchar(ext) + 1L, nchar(path))
     tolower(suffix) == tolower(ext)
@@ -211,7 +211,7 @@ mlx_load_gguf <- function(file, device = mlx_default_device()) {
   if (has_ext) path else paste0(path, ext)
 }
 
-.ensure_parent_dir <- function(path) {
+ensure_parent_dir <- function(path) {
   dir_path <- dirname(path)
   if (!dir.exists(dir_path)) {
     stop("Directory '", dir_path, "' does not exist.", call. = FALSE)
@@ -219,7 +219,7 @@ mlx_load_gguf <- function(file, device = mlx_default_device()) {
   invisible(NULL)
 }
 
-.validate_path <- function(path) {
+validate_path <- function(path) {
   if (!is.character(path) || length(path) != 1L || is.na(path)) {
     stop("`file` must be a single, non-missing character string.", call. = FALSE)
   }

@@ -35,7 +35,7 @@
 mlx_import_function <- function(path, device = mlx_default_device()) {
   stopifnot(is.character(path), length(path) == 1L)
   normalized <- normalizePath(path, mustWork = TRUE)
-  default_handle <- .mlx_resolve_device(device, mlx_default_device())
+  default_handle <- resolve_device(device, mlx_default_device())
   ptr <- cpp_mlx_import_function(normalized)
 
   format_outputs <- function(result) {
@@ -56,8 +56,8 @@ mlx_import_function <- function(path, device = mlx_default_device()) {
     positional <- if (length(dots)) dots[!is_named] else list()
     kwargs <- if (length(dots)) dots[is_named] else list()
 
-    handle <- .mlx_resolve_device(.device, default_handle$device)
-    .mlx_eval_with_stream(handle, function(dev) {
+    handle <- resolve_device(.device, default_handle$device)
+    eval_with_stream(handle, function(dev) {
       cast_to_device <- function(arg) {
         obj <- as_mlx(arg)
         if (obj$device == dev) {

@@ -23,6 +23,8 @@
 - Prefer snake_case for R helpers (`as_mlx`), and S3 methods as `Generic.class` (`Math.mlx`).
 - C++ helpers follow descriptive snake_case and RAII patterns; include `<mlx/mlx.h>` via `mlx_bindings.hpp`.
 - Document R functions with roxygen `#'` blocks; let `@export` drive NAMESPACE entries.
+- Exported functions start with `mlx_` except when they are methods for base R generics (e.g., `Ops.mlx`, `mean.mlx`).
+- Unexported helpers avoid the `mlx_` prefix; only low-level helpers that mirror MLX API calls should use a `.mlx_` prefix.
 
 ## Testing Guidelines
 - Write tests with testthat in `tests/testthat`; mirror existing structure and keep scenario-focused blocks within a `test_that`.

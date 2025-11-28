@@ -33,16 +33,16 @@
   stopifnot(is_mlx(x))
   shape <- mlx_shape(x)
   dot_expr <- as.list(substitute(alist(...)))[-1]
-  idx_list <- .mlx_collect_indices(dot_expr, length(shape), parent.frame())
+  idx_list <- collect_indices(dot_expr, length(shape), parent.frame())
 
   n_indices <- nargs() - 1L
   if (! missing(drop)) n_indices <- n_indices - 1L
 
-  result <- if (n_indices == 1L && .is_matrix_index(idx_list[[1]])) {
-              .matrix_subset(x, idx_list[[1]])
+  result <- if (n_indices == 1L && is_matrix_index(idx_list[[1]])) {
+              matrix_subset(x, idx_list[[1]])
             } else {
               # here, unlike with assign, we reject 1D vectors
-              .vectors_subset(x, idx_list)
+              vectors_subset(x, idx_list)
             }
 
   if (drop) result <- drop(result)
@@ -57,7 +57,7 @@
 #' @return List of length `ndim` containing evaluated indices (with `NULL`
 #'   placeholders for omitted axes).
 #' @noRd
-.mlx_collect_indices <- function(dot_expr, ndim, env) {
+collect_indices <- function(dot_expr, ndim, env) {
   if (!length(dot_expr)) {
     return(vector("list", ndim))
   }
@@ -92,12 +92,12 @@
   idx_list
 }
 
-.matrix_subset <- function(x, idx_mat) {
+matrix_subset <- function(x, idx_mat) {
   idx_mat <- as.matrix(idx_mat)
   shape <- mlx_shape(x)
   ndims <- length(shape)
 
-  .check_matrix_index(idx_mat, shape, assign = FALSE)
+  check_matrix_index(idx_mat, shape, assign = FALSE)
 
   # Convert to mlx-style zero-based indices
   idx_mat <- as_mlx(idx_mat - 1L, dtype = "int32", device = mlx_device(x))
@@ -105,30 +105,30 @@
   # Per-axis indices (0-based) as mlx arrays
   coord_list <- mlx_split(idx_mat, sections = ncol(idx_mat), axis = 2L)
 
-  # if (.duplicated_rows_lex(idx_mat)) {
+  # if (duplicated_rows_lex(idx_mat)) {
   #   stop("Duplicate indices are not allowed in assignment.", call. = FALSE)
   # }
-  res <- .gather_for_subset(x, coord_list)
+  res <- gather_for_subset(x, coord_list)
   mlx_reshape(res, length(res))
 }
 
-.vectors_subset <- function(x, idx_list) {
+vectors_subset <- function(x, idx_list) {
   shape <- mlx_shape(x)
   if (length(idx_list) != length(shape)) {
     stop("Wrong number of indices in subset.\n",
          "To use a single logical index, flatten first.")
   }
-  idx_list <- mapply(.normalize_index, idx_list, shape, SIMPLIFY = FALSE,
+  idx_list <- mapply(normalize_index, idx_list, shape, SIMPLIFY = FALSE,
                      MoreArgs = list(assign = FALSE))
   idx_norm <- lapply(idx_list, function (x) x - 1L)
 
   idx_grids <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = x$device)
   idx_grids <- lapply(idx_grids, mlx_cast, dtype = "int32")
 
-  .gather_for_subset(x, idx_grids)
+  gather_for_subset(x, idx_grids)
 }
 
-.check_matrix_index <- function(idx_mat, shape, assign) {
+check_matrix_index <- function(idx_mat, shape, assign) {
   if (! is.matrix(idx_mat)) {
     stop("Non-matrix array index. Use a numeric matrix.")
   }
@@ -149,7 +149,7 @@
   }
 }
 
-.gather_for_subset <- function(x, idx_list) {
+gather_for_subset <- function(x, idx_list) {
   ndim <- length(mlx_shape(x))
   axes <- seq_len(ndim) - 1L
   ptr <- cpp_mlx_gather(x$ptr, idx_list, axes, mlx_device(x))

@@ -88,8 +88,8 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
   x_dtype <- mlx_dtype(x)
   y_dtype <- mlx_dtype(y)
-  result_dtype <- .promote_dtype(x_dtype, y_dtype)
-  result_device <- .common_device(x$device, y$device)
+  result_dtype <- promote_dtype(x_dtype, y_dtype)
+  result_device <- common_device(x$device, y$device)
 
   ptr <- cpp_mlx_matmul(x$ptr, y$ptr, result_dtype, result_device)
   new_mlx(ptr, result_device)
@@ -157,10 +157,10 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   }
 
   result_dtype <- Reduce(
-    .promote_dtype,
+    promote_dtype,
     list(mlx_dtype(input), mlx_dtype(mat1), mlx_dtype(mat2))
   )
-  result_device <- Reduce(.common_device, list(input$device, mat1$device, mat2$device))
+  result_device <- Reduce(common_device, list(input$device, mat1$device, mat2$device))
 
   input <- mlx_cast(input, dtype = result_dtype, device = result_device)
   mat1 <- mlx_cast(mat1, dtype = result_dtype, device = result_device)
@@ -190,8 +190,8 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 .mlx_binary <- function(x, y, op) {
   x_dtype <- mlx_dtype(x)
   y_dtype <- mlx_dtype(y)
-  input_dtype <- .promote_dtype(x_dtype, y_dtype)
-  result_device <- .common_device(x$device, y$device)
+  input_dtype <- promote_dtype(x_dtype, y_dtype)
+  result_device <- common_device(x$device, y$device)
 
   is_comparison <- op %in% c("==", "!=", "<", "<=", ">", ">=")
 
@@ -212,7 +212,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with dtype "bool".
 #' @noRd
 .mlx_logical <- function(x, y, op) {
-  result_device <- .common_device(x$device, y$device)
+  result_device <- common_device(x$device, y$device)
 
   ptr <- cpp_mlx_logical(x$ptr, y$ptr, op, result_device)
   new_mlx(ptr, result_device)
@@ -282,8 +282,8 @@ mlx_maximum <- function(x, y) {
   x <- as_mlx(x)
   y <- as_mlx(y)
 
-  result_device <- .common_device(x$device, y$device)
-  result_dtype <- .promote_dtype(mlx_dtype(x), mlx_dtype(y))
+  result_device <- common_device(x$device, y$device)
+  result_dtype <- promote_dtype(mlx_dtype(x), mlx_dtype(y))
 
   if (identical(result_dtype, "bool")) {
     result_dtype <- "float32"
@@ -325,7 +325,7 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
 #' @param dtype1,dtype2 Character strings naming dtypes.
 #' @return Character string of promoted dtype.
 #' @noRd
-.promote_dtype <- function(dtype1, dtype2) {
+promote_dtype <- function(dtype1, dtype2) {
   if (dtype1 == dtype2) return(dtype1)
 
   dtypes <- c(dtype1, dtype2)
@@ -379,7 +379,7 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
 #' @param device1,device2 Character strings ("gpu" or "cpu").
 #' @return Character string ("gpu" or "cpu").
 #' @noRd
-.common_device <- function(device1, device2) {
+common_device <- function(device1, device2) {
   if (device1 == device2) return(device1)
   # Prefer GPU if devices differ
   if (device1 == "gpu" || device2 == "gpu") return("gpu")

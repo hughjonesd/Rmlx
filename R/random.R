@@ -12,11 +12,11 @@
 mlx_rand_uniform <- function(dim, min = 0, max = 1,
                              dtype = c("float32", "float64"),
                              device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_uniform(dim, min, max, dtype, dev)
   })
   new_mlx(ptr, handle$device)
@@ -35,11 +35,11 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
 mlx_rand_normal <- function(dim, mean = 0, sd = 1,
                             dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_normal(dim, mean, sd, dtype, dev)
   })
   new_mlx(ptr, handle$device)
@@ -55,13 +55,13 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
 #' @examples
 #' mask <- mlx_rand_bernoulli(c(4, 4), prob = 0.3)
 mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   if (prob < 0 || prob > 1) {
     stop("prob must be between 0 and 1.", call. = FALSE)
   }
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_bernoulli(dim, prob, dev)
   })
   new_mlx(ptr, handle$device)
@@ -77,11 +77,11 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
 #' samples <- mlx_rand_gumbel(c(2, 3))
 mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_gumbel(dim, dtype, dev)
   })
   new_mlx(ptr, handle$device)
@@ -100,7 +100,7 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
 mlx_rand_truncated_normal <- function(lower, upper, dim,
                                       dtype = c("float32", "float64"),
                                       device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   if (!is.numeric(lower) || length(lower) != 1) {
     stop("lower must be a single numeric value.", call. = FALSE)
   }
@@ -108,9 +108,9 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
     stop("upper must be a single numeric value.", call. = FALSE)
   }
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_truncated_normal(lower, upper, dim, dtype, dev)
   })
   new_mlx(ptr, handle$device)
@@ -134,7 +134,7 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
 mlx_rand_multivariate_normal <- function(dim, mean, cov,
                                          dtype = c("float32", "float64"),
                                          device = "cpu") {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
 
   # Convert mean and cov to mlx if needed
   if (!is_mlx(mean)) {
@@ -145,9 +145,9 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
   }
 
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, "cpu")
+  handle <- resolve_device(device, "cpu")
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_multivariate_normal(mean, cov, dim, dtype, dev)
   })
   new_mlx(ptr, handle$device)
@@ -166,7 +166,7 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
 mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
                              dtype = c("float32", "float64"),
                              device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   if (!is.numeric(loc) || length(loc) != 1) {
     stop("loc must be a single numeric value.", call. = FALSE)
   }
@@ -174,9 +174,9 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
     stop("scale must be a single positive numeric value.", call. = FALSE)
   }
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_laplace(dim, loc, scale, dtype, dev)
   })
   new_mlx(ptr, handle$device)
@@ -218,7 +218,7 @@ mlx_rand_categorical <- function(logits, axis = NULL, num_samples = 1L) {
   if (length(axis_val) != 1L || is.na(axis_val)) {
     stop("`axis` must be NULL or a single positive integer.", call. = FALSE)
   }
-  axis0 <- .mlx_normalize_axis_single(as.integer(axis_val), logits)
+  axis0 <- normalize_axis_single(as.integer(axis_val), logits)
 
   ptr <- cpp_mlx_random_categorical(logits, axis0, num_samples)
   samples <- new_mlx(ptr, logits$device)
@@ -245,7 +245,7 @@ mlx_rand_categorical <- function(logits, axis = NULL, num_samples = 1L) {
 mlx_rand_randint <- function(dim, low, high,
                              dtype = c("int32", "int64", "uint32", "uint64"),
                              device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   if (!is.numeric(low) || length(low) != 1) {
     stop("low must be a single numeric value.", call. = FALSE)
   }
@@ -258,9 +258,9 @@ mlx_rand_randint <- function(dim, low, high,
   low <- as.integer(low)
   high <- as.integer(high)
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_randint(dim, low, high, dtype, dev)
   })
   new_mlx(ptr, handle$device)
@@ -299,15 +299,15 @@ mlx_rand_permutation <- function(x, axis = 1L, device = mlx_default_device()) {
     if (n < 1) {
       stop("n must be at least 1.", call. = FALSE)
     }
-    handle <- .mlx_resolve_device(device, mlx_default_device())
-    ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_random_permutation_n(n, dev))
+    handle <- resolve_device(device, mlx_default_device())
+    ptr <- eval_with_stream(handle, function(dev) cpp_mlx_random_permutation_n(n, dev))
     perm <- new_mlx(ptr, handle$device)
     perm <- mlx_cast(perm, dtype = "int32", device = handle$device)
     return(perm + as_mlx(1L, dtype = mlx_dtype(perm), device = perm$device))
   } else {
     # Permute array along axis
     x <- as_mlx(x)
-    axis0 <- .mlx_normalize_axis_single(as.integer(axis), x)
+    axis0 <- normalize_axis_single(as.integer(axis), x)
     ptr <- cpp_mlx_random_permutation(x, axis0)
     new_mlx(ptr, x$device)
   }
@@ -365,12 +365,12 @@ mlx_key_split <- function(key, num = 2L) {
 #' k <- mlx_key(12)
 #' raw_bits <- mlx_key_bits(c(4, 4), key = k)
 mlx_key_bits <- function(dim, width = 4L, key = NULL, device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   width <- as.integer(width)
   if (length(width) != 1L || is.na(width) || width <= 0L) {
     stop("`width` must be a positive integer.", call. = FALSE)
   }
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
   key_ptr <- if (is.null(key)) {
     NULL
@@ -381,7 +381,7 @@ mlx_key_bits <- function(dim, width = 4L, key = NULL, device = mlx_default_devic
     key$ptr
   }
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_bits(dim, width, key_ptr, dev)
   })
   new_mlx(ptr, handle$device)

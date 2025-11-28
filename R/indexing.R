@@ -69,7 +69,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
   axes0 <- axes - 1L
   idx_dims <- lapply(idx_list, dim)
   normalized <- Map(function(idx, axis_len) {
-    norm <- .normalize_index(idx, axis_len, assign = FALSE, allow_dims = TRUE)
+    norm <- normalize_index(idx, axis_len, assign = FALSE, allow_dims = TRUE)
     norm - 1L
   }, idx_list, shape[axes])
 

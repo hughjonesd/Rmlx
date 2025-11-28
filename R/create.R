@@ -11,10 +11,10 @@ mlx_zeros <- function(dim,
                       dtype = c("float32", "float64", "int8", "int16", "int32", "int64",
                                "uint8", "uint16", "uint32", "uint64", "bool", "complex64"),
                       device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_zeros(dim, dtype, dev))
+  handle <- resolve_device(device, mlx_default_device())
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_zeros(dim, dtype, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -31,10 +31,10 @@ mlx_ones <- function(dim,
                      dtype = c("float32", "float64", "int8", "int16", "int32", "int64",
                               "uint8", "uint16", "uint32", "uint64", "bool", "complex64"),
                      device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_ones(dim, dtype, dev))
+  handle <- resolve_device(device, mlx_default_device())
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_ones(dim, dtype, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -68,8 +68,8 @@ mlx_zeros_like <- function(x,
   }
 
   target_device <- if (is.null(device)) x$device else device
-  handle <- .mlx_resolve_device(target_device, x$device)
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_zeros_like(x$ptr, dtype, dev))
+  handle <- resolve_device(target_device, x$device)
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_zeros_like(x$ptr, dtype, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -102,8 +102,8 @@ mlx_ones_like <- function(x,
   }
 
   target_device <- if (is.null(device)) x$device else device
-  handle <- .mlx_resolve_device(target_device, x$device)
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_ones_like(x$ptr, dtype, dev))
+  handle <- resolve_device(target_device, x$device)
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_ones_like(x$ptr, dtype, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -121,7 +121,7 @@ mlx_full <- function(dim,
                      value,
                      dtype = NULL,
                      device = mlx_default_device()) {
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   if (length(value) != 1) {
     stop("value must be a scalar.", call. = FALSE)
   }
@@ -144,8 +144,8 @@ mlx_full <- function(dim,
     stop("Unsupported dtype: ", dtype, call. = FALSE)
   }
 
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_full(dim, value, dtype, dev))
+  handle <- resolve_device(device, mlx_default_device())
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_full(dim, value, dtype, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -179,8 +179,8 @@ mlx_eye <- function(n,
   }
 
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_eye(n, m, k, dtype, dev))
+  handle <- resolve_device(device, mlx_default_device())
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_eye(n, m, k, dtype, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -209,7 +209,7 @@ mlx_array <- function(data,
     stop("data must be an atomic vector.", call. = FALSE)
   }
 
-  dim <- .validate_shape(dim)
+  dim <- validate_shape(dim)
   total <- prod(dim)
   data_vec <- as.vector(data)
 
@@ -248,9 +248,9 @@ mlx_array <- function(data,
               ))
   }
 
-  payload <- .mlx_coerce_payload(data_vec, dtype_val)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  payload <- coerce_payload(data_vec, dtype_val)
+  handle <- resolve_device(device, mlx_default_device())
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_from_r(payload, as.integer(dim), dtype_val, dev)
   })
   new_mlx(ptr, handle$device)
@@ -373,8 +373,8 @@ mlx_identity <- function(n,
   }
 
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_identity(n, dtype, dev))
+  handle <- resolve_device(device, mlx_default_device())
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_identity(n, dtype, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -420,8 +420,8 @@ mlx_tri <- function(n,
   }
 
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
-  ptr <- .mlx_eval_with_stream(handle, function(dev) cpp_mlx_tri(n, m_arg, k, dtype, dev))
+  handle <- resolve_device(device, mlx_default_device())
+  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_tri(n, m_arg, k, dtype, dev))
   new_mlx(ptr, handle$device)
 }
 
@@ -530,7 +530,7 @@ mlx_arange <- function(start,
   }
 
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
   # Convert to exclusive stop for underlying MLX function
   # Add a tiny epsilon to include stop if exactly reachable (like seq())
@@ -541,7 +541,7 @@ mlx_arange <- function(start,
     stop - 1e-10
   }
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_arange(as.numeric(start), as.numeric(stop_exclusive), as.numeric(step), dtype, dev)
   })
   new_mlx(ptr, handle$device)
@@ -571,9 +571,9 @@ mlx_linspace <- function(start,
   }
 
   dtype <- match.arg(dtype)
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
 
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_linspace(
       as.numeric(start),
       as.numeric(stop),
@@ -592,7 +592,7 @@ mlx_linspace <- function(start,
 #' @param dim Integer or numeric vector of dimension sizes.
 #' @return Integer vector of positive dimensions.
 #' @noRd
-.validate_shape <- function(dim) {
+validate_shape <- function(dim) {
   if (length(dim) == 0L) {
     return(integer(0))
   }

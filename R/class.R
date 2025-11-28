@@ -5,7 +5,7 @@
 #' @return Vector of numeric or complex values (or the original numeric input when
 #'   it is already a double vector/matrix headed for float32/float64).
 #' @noRd
-.mlx_coerce_payload <- function(x, dtype) {
+coerce_payload <- function(x, dtype) {
   if (dtype %in% c("float32", "float64") &&
       is.double(x) &&
       is.atomic(x) &&
@@ -96,7 +96,7 @@
 as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
                                  "int8", "int16", "int32", "int64",
                                  "uint8", "uint16", "uint32", "uint64"), device = mlx_default_device()) {
-  handle <- .mlx_resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device, mlx_default_device())
   dtype_val <- if (missing(dtype)) {
     if (is.logical(x)) {
       "bool"
@@ -119,7 +119,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
     need_dtype <- !missing(dtype) && !identical(mlx_dtype(x), dtype_val)
     if (!need_device && !need_dtype) return(x)
 
-    ptr <- .mlx_eval_with_stream(handle, function(dev) {
+    ptr <- eval_with_stream(handle, function(dev) {
       target_dtype <- if (need_dtype) dtype_val else mlx_dtype(x)
       cpp_mlx_cast(x$ptr, target_dtype, handle$device)
     })
@@ -139,10 +139,10 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
       as.integer(length(x))
     }
   }
-  x_payload <- .mlx_coerce_payload(x, dtype_val)
+  x_payload <- coerce_payload(x, dtype_val)
 
   # Create MLX array via C++
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val, dev)
   })
 
@@ -320,6 +320,22 @@ as.integer.mlx <- function(x, ...) {
 #' is_mlx(x)
 is_mlx <- function(x) {
   inherits(x, "mlx")
+}
+
+#' Internal helper to wrap pointer-returning C++ calls
+#'
+#' @param fn Function that takes `x$ptr` as its first argument and returns an
+#'   external pointer.
+#' @param x An mlx object providing the pointer and default device.
+#' @param device Device to attach to the returned mlx object. Defaults to
+#'   `mlx_device(x)`.
+#' @param ... Additional arguments forwarded to `fn` after `x$ptr`.
+#' @return An mlx object wrapping the pointer returned by `fn`.
+#' @noRd
+.mlx_from_call <- function(fn, x, device = mlx_device(x), ...) {
+  stopifnot(is_mlx(x))
+  ptr <- fn(x$ptr, ...)
+  new_mlx(ptr, device)
 }
 
 #' Internal constructor for mlx objects

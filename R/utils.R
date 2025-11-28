@@ -5,14 +5,14 @@
 #' @param device Device string associated with the array.
 #' @return An mlx array.
 #' @noRd
-.mlx_is_stream <- function(x) inherits(x, "mlx_stream")
+is_mlx_stream <- function(x) inherits(x, "mlx_stream")
 
-.mlx_resolve_device <- function(device, default = mlx_default_device()) {
+resolve_device <- function(device, default = mlx_default_device()) {
   if (missing(device) || is.null(device)) {
     device <- default
   }
 
-  if (.mlx_is_stream(device)) {
+  if (is_mlx_stream(device)) {
     return(list(device = device$device, stream_ptr = device$ptr))
   }
 
@@ -24,7 +24,7 @@
   list(device = device_chr, stream_ptr = NULL)
 }
 
-.mlx_eval_with_stream <- function(handle, fn) {
+eval_with_stream <- function(handle, fn) {
   if (is.null(handle$stream_ptr)) {
     return(fn(handle$device))
   }
@@ -41,7 +41,7 @@
 #' @param x a mlx matrix (only!)
 #' @returns TRUE or FALSE
 #' @noRd
-.duplicated_rows <- function(x) {
+duplicated_rows <- function(x) {
   shape <- mlx_shape(x)
   x_rows <- mlx_reshape(x, c(1L, shape))
   x_cols <- mlx_reshape(x, c(shape[1L], 1L, shape[2L]))
@@ -59,13 +59,13 @@
 #' @param x An mlx matrix
 #' @returns TRUE/FALSE
 #' @noRd
-.duplicated_rows_lex <- function(x) {
+duplicated_rows_lex <- function(x) {
   shape <- mlx_shape(x)
   stopifnot(length(shape) == 2L)
   n  <- shape[1]
 
   # 2. Apply that order to X to get lex-sorted rows
-  x_sorted <- .lex_sort(x)
+  x_sorted <- lex_sort(x)
 
   # 3. Compare each row in sorted order to its predecessor
   # same_as_prev[i] = TRUE iff XS[i, ] == XS[i-1, ]
@@ -89,7 +89,7 @@
 #' @param x An mlx matrix (only!)
 #' @returns row-sorted x
 #' @noRd
-.lex_sort <- function (x) {
+lex_sort <- function (x) {
   shape <- mlx_shape(x)
   stopifnot(length(shape) == 2L)
   n  <- shape[1]

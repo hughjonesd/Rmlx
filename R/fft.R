@@ -104,7 +104,7 @@ mlx_fftn <- function(x,
   ndim <- length(shape)
 
   axes_zero <- if (!is.null(axes)) {
-    .mlx_normalize_axes(axes, mlx_x)
+    normalize_axes(axes, mlx_x)
   } else {
     switch(
       default_axes,
@@ -131,8 +131,8 @@ mlx_fftn <- function(x,
     )
   }
 
-  handle <- .mlx_resolve_device(device, mlx_x$device)
-  ptr <- .mlx_eval_with_stream(handle, function(dev) {
+  handle <- resolve_device(device, mlx_x$device)
+  ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_fft(mlx_x$ptr, axes_zero, isTRUE(inverse), dev)
   })
   result <- new_mlx(ptr, handle$device)
