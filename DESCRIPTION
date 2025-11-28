@@ -31,7 +31,8 @@ Suggests:
     rprojroot
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-SystemRequirements: MLX (>= 0.30.0)
+SystemRequirements: MLX (>= 0.30.0); C++17; CMake; BLAS/LAPACK development
+    headers (e.g., Debian/Ubuntu: liblapacke-dev or libopenblas-dev)
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 URL: https://hughjonesd.github.io/Rmlx/, https://github.com/hughjonesd/Rmlx
