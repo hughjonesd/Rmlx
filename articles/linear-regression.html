@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -166,7 +166,7 @@ unbounded</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">w_sgd</span> <span class="op">&lt;-</span> <span class="fu">train_sgd</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Iteration 1000 - Loss: 0.4949019</span></span></code></pre></div>
+<span><span class="co">#&gt; Iteration 1000 - Loss: 0.4924958</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-2-closed-form-regression-via-matrix-algebra">Method 2: Closed-form Regression via Matrix Algebra<a class="anchor" aria-label="anchor" href="#method-2-closed-form-regression-via-matrix-algebra"></a>
@@ -196,7 +196,7 @@ and solve the triangular system
 <span><span class="va">closed_error</span> <span class="op">&lt;-</span> <span class="va">w_closed</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">closed_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">closed_error</span> <span class="op">*</span> <span class="va">closed_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">closed_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.1150735</span></span></code></pre></div>
+<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.1041469</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accelerating-the-closed-form-solution-with-mlx_compile">Accelerating the Closed-form Solution with
@@ -219,7 +219,7 @@ graph.</p>
 <span><span class="va">compiled_error</span> <span class="op">&lt;-</span> <span class="va">w_compiled</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">compiled_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">compiled_error</span> <span class="op">*</span> <span class="va">compiled_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Compiled closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">compiled_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.1150735</span></span></code></pre></div>
+<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.1041469</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accuracy-and-performance-comparison">Accuracy and Performance Comparison<a class="anchor" aria-label="anchor" href="#accuracy-and-performance-comparison"></a>
@@ -291,23 +291,23 @@ as a reference.</p>
 <tbody>
 <tr class="odd">
 <td align="left">SGD</td>
-<td align="right">1.58s</td>
-<td align="right">0.1151</td>
+<td align="right">2.2s</td>
+<td align="right">0.1041</td>
 </tr>
 <tr class="even">
 <td align="left">MLX closed form</td>
-<td align="right">18.79ms</td>
-<td align="right">0.1151</td>
+<td align="right">20.8ms</td>
+<td align="right">0.1041</td>
 </tr>
 <tr class="odd">
 <td align="left">MLX closed form (compiled)</td>
-<td align="right">16.9ms</td>
-<td align="right">0.1151</td>
+<td align="right">19.5ms</td>
+<td align="right">0.1041</td>
 </tr>
 <tr class="even">
 <td align="left">Base R</td>
-<td align="right">38.48ms</td>
-<td align="right">0.1151</td>
+<td align="right">29.3ms</td>
+<td align="right">0.1041</td>
 </tr>
 </tbody>
 </table>

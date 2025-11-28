@@ -1,5 +1,9 @@
 # Changelog
 
+## Rmlx 0.2.1
+
+## Rmlx 0.2.0
+
 ## Rmlx 0.1.0.9000 (development)
 
 - Speeded up subset assignment. We also now fail on NAs in indices.
