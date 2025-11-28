@@ -71,6 +71,8 @@
 <li>Prefer snake_case for R helpers (<code>as_mlx</code>), and S3 methods as <code>Generic.class</code> (<code>Math.mlx</code>).</li>
 <li>C++ helpers follow descriptive snake_case and RAII patterns; include <code>&lt;mlx/mlx.h&gt;</code> via <code>mlx_bindings.hpp</code>.</li>
 <li>Document R functions with roxygen <code>#'</code> blocks; let <code>@export</code> drive NAMESPACE entries.</li>
+<li>Exported functions start with <code>mlx_</code> except when they are methods for base R generics (e.g., <code>Ops.mlx</code>, <code>mean.mlx</code>).</li>
+<li>Unexported helpers avoid the <code>mlx_</code> prefix; only low-level helpers that mirror MLX API calls should use a <code>.mlx_</code> prefix.</li>
 </ul></div>
 <div class="section level2">
 <h2 id="testing-guidelines">Testing Guidelines<a class="anchor" aria-label="anchor" href="#testing-guidelines"></a></h2>

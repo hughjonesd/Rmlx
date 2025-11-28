@@ -46,6 +46,10 @@
   `<mlx/mlx.h>` via `mlx_bindings.hpp`.
 - Document R functions with roxygen `#'` blocks; let `@export` drive
   NAMESPACE entries.
+- Exported functions start with `mlx_` except when they are methods for
+  base R generics (e.g., `Ops.mlx`, `mean.mlx`).
+- Unexported helpers avoid the `mlx_` prefix; only low-level helpers
+  that mirror MLX API calls should use a `.mlx_` prefix.
 
 ## Testing Guidelines
 
