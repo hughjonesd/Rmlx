@@ -20,6 +20,15 @@ if [ -z "${R_HOME:-}" ]; then
   R_HOME=$(R RHOME)
 fi
 
+# Ensure R's own headers and BLAS/LAPACK flags are available to downstream builds
+R_INCLUDE_DIR="${R_HOME}/include"
+CPPFLAGS="${CPPFLAGS} -I${R_INCLUDE_DIR}"
+export CPPFLAGS
+
+BLAS_LIBS=$("${R_HOME}/bin/R" CMD config BLAS_LIBS)
+LIBS="${LIBS} ${BLAS_LIBS}"
+export LIBS
+
 CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX17 2>/dev/null || "${R_HOME}/bin/R" CMD config CXX 2>/dev/null || true)
 if [ -z "$CXX_FULL" ]; then
   die "Unable to determine C++ compiler from R CMD config"
