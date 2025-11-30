@@ -40,7 +40,7 @@ normalize_new_axes <- function(axes, dims) {
     stop("axes must contain at least one element.", call. = FALSE)
   }
   axes <- as.integer(axes)
-  if (any(is.na(axes))) {
+  if (anyNA(axes)) {
     stop("axes cannot contain NA values.", call. = FALSE)
   }
   result_ndim <- length(dims) + 1L
@@ -196,7 +196,7 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
 mlx_tile <- function(x, reps) {
   x <- as_mlx(x)
   reps <- as.integer(reps)
-  if (length(reps) == 0L || any(is.na(reps)) || any(reps <= 0L)) {
+  if (length(reps) == 0L || anyNA(reps) || any(reps <= 0L)) {
     stop("reps must be positive integers.", call. = FALSE)
   }
   ptr <- cpp_mlx_tile(x$ptr, reps)
@@ -218,7 +218,7 @@ mlx_tile <- function(x, reps) {
 mlx_roll <- function(x, shift, axes = NULL) {
   x <- as_mlx(x)
   shift <- as.integer(shift)
-  if (length(shift) == 0L || any(is.na(shift))) {
+  if (length(shift) == 0L || anyNA(shift)) {
     stop("shift must contain integer values.", call. = FALSE)
   }
 
@@ -460,7 +460,7 @@ parse_pad_width <- function(pad_width, n_axes) {
     if (length(pad_width) != n_axes) {
       stop("pad_width list must have one element per axis.", call. = FALSE)
     }
-    if (any(!vapply(pad_width, is.numeric, logical(1)))) {
+    if (!all(vapply(pad_width, is.numeric, logical(1)))) {
       stop("Each pad_width list element must be a length-two numeric vector.", call. = FALSE)
     }
     if (any(lengths(pad_width) != 2L)) {

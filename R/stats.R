@@ -323,7 +323,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @noRd
 .mlx_reduce_axes <- function(x, op, axes, drop, ddof = 0L) {
   axes <- as.integer(axes)
-  if (any(is.na(axes))) {
+  if (anyNA(axes)) {
     stop("axis must be a vector of integers", call. = FALSE)
   }
   ndim <- length(dim(x))
@@ -1107,7 +1107,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
   x <- as_mlx(x, device = device)
 
   # Validate probs
-  if (!is.numeric(probs) || any(is.na(probs))) {
+  if (!is.numeric(probs) || anyNA(probs)) {
     stop("probs must be numeric without NA values", call. = FALSE)
   }
   if (any(probs < 0) || any(probs > 1)) {

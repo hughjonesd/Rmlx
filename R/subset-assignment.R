@@ -73,7 +73,7 @@ vectors_assign <- function(x, idx_list, value) {
     return(x)
   }
   idx_norm <- lapply(idx_list, function(idx) idx - 1L)
-  lens <- vapply(idx_norm, length, integer(1))
+  lens <- lengths(idx_norm)
 
   target_len <- prod(lens)
   value_mlx <- as_mlx(value, dtype = mlx_dtype(x), device = mlx_device(x))
@@ -113,7 +113,7 @@ normalize_index <- function(idx, len, assign, allow_dims = FALSE) {
   if (length(idx) == 0L) {
     return(NULL)
   }
-  if (any(is.na(idx))) {
+  if (anyNA(idx)) {
     stop("Index contains NA values.")
   }
 

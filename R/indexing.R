@@ -52,7 +52,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
   if (length(axes) != length(idx_list)) {
     stop("`axes` must have the same length as `indices`.", call. = FALSE)
   }
-  if (any(is.na(axes))) {
+  if (anyNA(axes)) {
     stop("`axes` must be numeric.", call. = FALSE)
   }
   if (anyDuplicated(axes)) {

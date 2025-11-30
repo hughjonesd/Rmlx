@@ -138,7 +138,7 @@ check_matrix_index <- function(idx_mat, shape, assign) {
   if (! is.numeric(idx_mat)) {
     stop("Non-numeric matrix index.")
   }
-  if (any(is.na(idx_mat))) {
+  if (anyNA(idx_mat)) {
     stop("Matrix index contains NA values.")
   }
   if (any(idx_mat <= 0L)) {

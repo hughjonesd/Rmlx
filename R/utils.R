@@ -205,7 +205,7 @@ mlx_shape <- function(x) {
 #' dim(x) <- c(3, 4)
 #' dim(x)
 `dim<-.mlx` <- function(x, value) {
-  if (!is.numeric(value) || any(is.na(value))) {
+  if (!is.numeric(value) || anyNA(value)) {
     stop("dims must be a numeric vector without NAs", call. = FALSE)
   }
 
@@ -249,7 +249,7 @@ mlx_shape <- function(x) {
 mlx_reshape <- function(x, newshape) {
   x <- as_mlx(x)
 
-  if (!is.numeric(newshape) || any(is.na(newshape))) {
+  if (!is.numeric(newshape) || anyNA(newshape)) {
     stop("newshape must be a numeric vector without NAs", call. = FALSE)
   }
 

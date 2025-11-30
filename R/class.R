@@ -17,7 +17,7 @@ coerce_payload <- function(x, dtype) {
     dtype,
     "bool" = {
       x_logical <- as.logical(x)
-      if (any(is.na(x_logical))) {
+      if (anyNA(x_logical)) {
         stop("Logical NA values are not supported for MLX boolean arrays.", call. = FALSE)
       }
       as.numeric(x_logical)
