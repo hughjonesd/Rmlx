@@ -105,17 +105,17 @@ for (epoch in seq_len(n_epochs)) {
   }
 }
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 100, Loss: 0.6678
+#> Epoch 100, Loss: 0.6727
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 200, Loss: 0.6655
+#> Epoch 200, Loss: 0.6620
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 300, Loss: 0.6632
+#> Epoch 300, Loss: 0.6641
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 400, Loss: 0.6596
+#> Epoch 400, Loss: 0.6576
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 500, Loss: 0.6587
+#> Epoch 500, Loss: 0.6514
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 600, Loss: 0.6618
+#> Epoch 600, Loss: 0.6574
 
 mlx_set_training(mlp, FALSE)
 ```
@@ -136,13 +136,13 @@ print(confusion)
 #>       Predicted
 #> Actual   0   1
 #>      0 772 228
-#>      1 542 458
+#>      1 545 455
 
 # Calculate accuracy
 accuracy <- sum(diag(confusion)) / sum(confusion)
 cat(sprintf("\nAccuracy: %.2f%%\n", accuracy * 100))
 #> 
-#> Accuracy: 61.50%
+#> Accuracy: 61.35%
 ```
 
 ``` r
