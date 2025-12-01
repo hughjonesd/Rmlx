@@ -21,7 +21,7 @@ R interface to Apple's MLX (Machine Learning eXchange) library.
 
 Rmlx provides an R interface to Apple's [MLX framework](https://ml-explore.github.io/mlx/), enabling high-performance GPU computing on Apple Silicon.  
 
-This package was vibe-coded with Claude/OpenAI Codex in a week.
+This package was vibe-coded with Claude/OpenAI Codex.
 Use at your own risk! Much of the C++ API has been implemented, but not
 python-only features such as large neural network layers.
 
