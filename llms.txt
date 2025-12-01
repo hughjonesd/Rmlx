@@ -8,9 +8,9 @@ Rmlx provides an R interface to Apple’s [MLX
 framework](https://ml-explore.github.io/mlx/), enabling high-performance
 GPU computing on Apple Silicon.
 
-This package was vibe-coded with Claude/OpenAI Codex in a week. Use at
-your own risk! Much of the C++ API has been implemented, but not
-python-only features such as large neural network layers.
+This package was vibe-coded with Claude/OpenAI Codex. Use at your own
+risk! Much of the C++ API has been implemented, but not python-only
+features such as large neural network layers.
 
 ## Requirements
 
@@ -116,15 +116,16 @@ library(Rmlx)
 #>     fft
 #> The following objects are masked from 'package:base':
 #> 
-#>     chol2inv, colMeans, colSums, diag, outer, rowMeans, rowSums, svd
+#>     asplit, backsolve, chol2inv, col, colMeans, colSums, diag, drop,
+#>     outer, row, rowMeans, rowSums, svd
 
 A <- matrix(rnorm(1e6), 1e3, 1e3)
 system.time(solve(A))
 #>    user  system elapsed 
-#>   0.371   0.002   0.374
+#>   0.358   0.003   0.388
 system.time(solve(as_mlx(A)))
 #>    user  system elapsed 
-#>   0.038   0.050   0.090
+#>   0.038   0.055   0.101
 ```
 
 ### Lazy Evaluation
@@ -363,10 +364,10 @@ mlx_topk(scores, 2)
 #> [1] 0.7 0.9
 mlx_argmax(scores)
 #> mlx array []
-#>   dtype: uint32
+#>   dtype: int64
 #>   device: gpu
 #>   values:
-#> [1] 3
+#> [1] 4
 ```
 
 ### Automatic Differentiation
@@ -386,11 +387,11 @@ grads <- mlx_grad(loss, w, x, y)
 
 # Inspect gradient
 as.matrix(grads[[1]])
-#>            [,1]
-#> [1,]  2.0031688
-#> [2,]  0.5444943
-#> [3,] -1.3796213
-#> [4,]  0.2550257
+#>              [,1]
+#> [1,] -0.008887649
+#> [2,] -0.026833162
+#> [3,]  0.404870898
+#> [4,]  0.239271998
 
 # Simple SGD loop
 model <- mlx_linear(4, 1, bias = FALSE)
@@ -411,7 +412,7 @@ mean((final_loss - y) * (final_loss - y))
 #>   dtype: float32
 #>   device: gpu
 #>   values:
-#> [1] 0.1707606
+#> [1] 0.5488068
 ```
 
 ## Data Types
