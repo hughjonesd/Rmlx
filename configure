@@ -391,6 +391,15 @@ EOF_LAPACKE
 #endif /* MLX_LAPACK_BRIDGE */
 EOF_LAPACK
 
+    # Mirror R's LAPACK/BLAS headers into the shim so <R_ext/...> resolves even if include paths are stripped
+    mkdir -p "${SHIM_DIR}/R_ext"
+    if [ -f "${R_INCLUDE_DIR}/R_ext/Lapack.h" ]; then
+      cp "${R_INCLUDE_DIR}/R_ext/Lapack.h" "${SHIM_DIR}/R_ext/"
+    fi
+    if [ -f "${R_INCLUDE_DIR}/R_ext/BLAS.h" ]; then
+      cp "${R_INCLUDE_DIR}/R_ext/BLAS.h" "${SHIM_DIR}/R_ext/"
+    fi
+
     LAPACK_LIBRARIES=$("${R_HOME}/bin/R" CMD config LAPACK_LIBS)
     BLAS_LIBRARIES=$("${R_HOME}/bin/R" CMD config BLAS_LIBS)
     LAPACK_INCLUDE_DIRS="${SHIM_DIR};${R_INCLUDE_DIR}"
