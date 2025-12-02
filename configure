@@ -395,6 +395,10 @@ EOF_LAPACK
     BLAS_LIBRARIES=$("${R_HOME}/bin/R" CMD config BLAS_LIBS)
     LAPACK_INCLUDE_DIRS="${SHIM_DIR};${R_INCLUDE_DIR}"
     CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DLAPACK_INCLUDE_DIRS=\"${LAPACK_INCLUDE_DIRS}\" -DLAPACK_LIBRARIES=\"${LAPACK_LIBRARIES}\" -DBLAS_LIBRARIES=\"${BLAS_LIBRARIES}\""
+
+    # Force R headers onto the compiler command line for the MLX build
+    CFLAGS="${CFLAGS} -I${R_INCLUDE_DIR}"
+    CXXFLAGS="${CXXFLAGS} -I${R_INCLUDE_DIR}"
   fi
 
   # Make shim headers visible from the MLX source tree itself (CMake already adds source dir to includes)
