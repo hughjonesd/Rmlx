@@ -325,6 +325,10 @@ else
     # Ensure shim headers are visible to CMake and the compiler
     CPPFLAGS="${CPPFLAGS} -I${SHIM_DIR}"
     export CPPFLAGS
+    CFLAGS="${CFLAGS} ${CPPFLAGS}"
+    export CFLAGS
+    CXXFLAGS="${CXXFLAGS} ${CPPFLAGS}"
+    export CXXFLAGS
     CMAKE_INCLUDE_PATH="${SHIM_DIR}:${CMAKE_INCLUDE_PATH:-}"
     export CMAKE_INCLUDE_PATH
 
@@ -415,6 +419,7 @@ EOF_LAPACK
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_COMPILER="$CXX" \
     -DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+    -DCMAKE_C_FLAGS="$CFLAGS" \
     -DCMAKE_INSTALL_PREFIX="$ROOT_DIR/$MLX_INSTALL_DIR" \
     -DBUILD_SHARED_LIBS=OFF \
     -DMLX_BUILD_TESTS=OFF \
