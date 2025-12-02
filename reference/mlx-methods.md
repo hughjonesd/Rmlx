@@ -9,8 +9,7 @@ main entry points are:
 
 - [`%*%`](NA) for matrix multiplication
 
-- [`[`](https://hughjonesd.github.io/Rmlx/reference/%5B.mlx) and
-  [`[<-`](NA) for extraction and assignment
+- [`[`](NA) and [`[<-`](NA) for extraction and assignment
 
 - [`Ops`](https://hughjonesd.github.io/Rmlx/reference/Ops.mlx) and
   [`Math`](https://hughjonesd.github.io/Rmlx/reference/Math.mlx) for
