@@ -392,6 +392,13 @@ EOF_LAPACK
     LAPACK_INCLUDE_DIRS="${SHIM_DIR};${R_INCLUDE_DIR}"
     CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DLAPACK_INCLUDE_DIRS=\"${LAPACK_INCLUDE_DIRS}\" -DLAPACK_LIBRARIES=\"${LAPACK_LIBRARIES}\" -DBLAS_LIBRARIES=\"${BLAS_LIBRARIES}\""
   fi
+
+  # Make shim headers visible from the MLX source tree itself (CMake already adds source dir to includes)
+  if [ "$USE_SYSTEM_MLX" = false ] && [ "$OS" = "Linux" ]; then
+    cp "${SHIM_DIR}/lapack.h" "${MLX_SOURCE_DIR}/lapack.h"
+    cp "${SHIM_DIR}/lapacke.h" "${MLX_SOURCE_DIR}/lapacke.h"
+  fi
+
   "$CMAKE" -S "$MLX_SOURCE_DIR" -B "$MLX_BUILD_DIR" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CXX_COMPILER="$CXX" \
