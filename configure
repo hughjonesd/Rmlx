@@ -329,7 +329,7 @@ else
     export CFLAGS
     CXXFLAGS="${CXXFLAGS} ${CPPFLAGS}"
     export CXXFLAGS
-    CMAKE_INCLUDE_PATH="${SHIM_DIR}:${CMAKE_INCLUDE_PATH:-}"
+    CMAKE_INCLUDE_PATH="${SHIM_DIR};${CMAKE_INCLUDE_PATH:-}"
     export CMAKE_INCLUDE_PATH
 
     # Provide stub lapacke.h for CMake detection (MLX never uses LAPACKE API)
