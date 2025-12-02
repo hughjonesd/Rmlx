@@ -399,6 +399,9 @@ EOF_LAPACK
     # Force R headers onto the compiler command line for the MLX build
     CFLAGS="${CFLAGS} -I${R_INCLUDE_DIR}"
     CXXFLAGS="${CXXFLAGS} -I${R_INCLUDE_DIR}"
+
+    # Also set standard include directories for CMake targets
+    CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DCMAKE_C_STANDARD_INCLUDE_DIRECTORIES=\"${R_INCLUDE_DIR};${SHIM_DIR}\" -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=\"${R_INCLUDE_DIR};${SHIM_DIR}\""
   fi
 
   # Make shim headers visible from the MLX source tree itself (CMake already adds source dir to includes)
