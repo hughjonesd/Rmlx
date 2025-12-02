@@ -322,6 +322,12 @@ else
     SHIM_DIR="${BUILD_DIR}/r-shim"
     mkdir -p "$SHIM_DIR"
 
+    # Ensure shim headers are visible to CMake and the compiler
+    CPPFLAGS="${CPPFLAGS} -I${SHIM_DIR}"
+    export CPPFLAGS
+    CMAKE_INCLUDE_PATH="${SHIM_DIR}:${CMAKE_INCLUDE_PATH:-}"
+    export CMAKE_INCLUDE_PATH
+
     # Provide stub lapacke.h for CMake detection (MLX never uses LAPACKE API)
     cat > "${SHIM_DIR}/lapacke.h" <<'EOF_LAPACKE'
 #pragma once
