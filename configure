@@ -331,6 +331,10 @@ else
     export CXXFLAGS
     CMAKE_INCLUDE_PATH="${SHIM_DIR};${CMAKE_INCLUDE_PATH:-}"
     export CMAKE_INCLUDE_PATH
+    CPATH="${R_INCLUDE_DIR}:${SHIM_DIR}:${CPATH:-}"
+    export CPATH
+    CPLUS_INCLUDE_PATH="${R_INCLUDE_DIR}:${SHIM_DIR}:${CPLUS_INCLUDE_PATH:-}"
+    export CPLUS_INCLUDE_PATH
 
     # Provide stub lapacke.h for CMake detection (MLX never uses LAPACKE API)
     cat > "${SHIM_DIR}/lapacke.h" <<'EOF_LAPACKE'
