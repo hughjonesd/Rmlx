@@ -347,10 +347,15 @@ EOF_LAPACKE
     cat > "${SHIM_DIR}/lapack.h" <<'EOF_LAPACK'
 #pragma once
 
+#ifdef __cplusplus
 #include <complex>
-
 typedef std::complex<float>  lapack_complex_float;
 typedef std::complex<double> lapack_complex_double;
+#else
+#include <complex.h>
+typedef float _Complex  lapack_complex_float;
+typedef double _Complex lapack_complex_double;
+#endif
 
 extern "C" {
 
