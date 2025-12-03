@@ -324,13 +324,7 @@ else
     SHIM_DIR="${BUILD_DIR}/r-shim"
     mkdir -p "$SHIM_DIR"
 
-    # Ensure shim headers are visible to CMake and the compiler
-    CPPFLAGS="${CPPFLAGS} -I${SHIM_DIR} -I${R_INCLUDE_DIR}"
-    export CPPFLAGS
-    CFLAGS="${CFLAGS} ${CPPFLAGS}"
-    export CFLAGS
-    CXXFLAGS="${CXXFLAGS} ${CPPFLAGS}"
-    export CXXFLAGS
+    SHIM_ABS="${ROOT_DIR}/${SHIM_DIR}"
 
     # Provide stub lapacke.h for CMake detection (MLX never uses LAPACKE API)
     cat > "${SHIM_DIR}/lapacke.h" <<'EOF_LAPACKE'
@@ -409,14 +403,13 @@ void zheevd_(const char *jobz, const char *uplo, const int *n, lapack_complex_do
 
 EOF_LAPACK
 
-    LAPACK_LIBRARIES=$("${R_HOME}/bin/R" CMD config LAPACK_LIBS)
-    BLAS_LIBRARIES=$("${R_HOME}/bin/R" CMD config BLAS_LIBS)
-    LAPACK_INCLUDE_DIRS="${SHIM_DIR};${R_INCLUDE_DIR}"
+   LAPACK_LIBRARIES=$("${R_HOME}/bin/R" CMD config LAPACK_LIBS)
+   BLAS_LIBRARIES=$("${R_HOME}/bin/R" CMD config BLAS_LIBS)
+    LAPACK_INCLUDE_DIRS="${SHIM_ABS};${R_INCLUDE_DIR}"
     CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DLAPACK_INCLUDE_DIRS=\"${LAPACK_INCLUDE_DIRS}\" -DLAPACK_LIBRARIES=\"${LAPACK_LIBRARIES}\" -DBLAS_LIBRARIES=\"${BLAS_LIBRARIES}\""
 
-    # Force R headers onto the compiler command line for the MLX build
-    CFLAGS="${CFLAGS} -I${R_INCLUDE_DIR}"
-    CXXFLAGS="${CXXFLAGS} -I${R_INCLUDE_DIR}"
+    # Also set standard include directories for CMake targets (no embedded -I)
+    CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DCMAKE_C_STANDARD_INCLUDE_DIRECTORIES=\"${R_INCLUDE_DIR};${SHIM_ABS}\" -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=\"${R_INCLUDE_DIR};${SHIM_ABS}\""
 
     # Enable verbose makefiles to surface compile commands in CI logs
     CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DCMAKE_VERBOSE_MAKEFILE=ON"
