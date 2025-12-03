@@ -323,18 +323,12 @@ else
     mkdir -p "$SHIM_DIR"
 
     # Ensure shim headers are visible to CMake and the compiler
-    CPPFLAGS="${CPPFLAGS} -I${SHIM_DIR}"
+    CPPFLAGS="${CPPFLAGS} -I${SHIM_DIR} -I${R_INCLUDE_DIR}"
     export CPPFLAGS
     CFLAGS="${CFLAGS} ${CPPFLAGS}"
     export CFLAGS
     CXXFLAGS="${CXXFLAGS} ${CPPFLAGS}"
     export CXXFLAGS
-    CMAKE_INCLUDE_PATH="${SHIM_DIR};${CMAKE_INCLUDE_PATH:-}"
-    export CMAKE_INCLUDE_PATH
-    CPATH="${R_INCLUDE_DIR}:${SHIM_DIR}:${CPATH:-}"
-    export CPATH
-    CPLUS_INCLUDE_PATH="${R_INCLUDE_DIR}:${SHIM_DIR}:${CPLUS_INCLUDE_PATH:-}"
-    export CPLUS_INCLUDE_PATH
 
     # Provide stub lapacke.h for CMake detection (MLX never uses LAPACKE API)
     cat > "${SHIM_DIR}/lapacke.h" <<'EOF_LAPACKE'
@@ -421,9 +415,6 @@ EOF_LAPACK
     # Force R headers onto the compiler command line for the MLX build
     CFLAGS="${CFLAGS} -I${R_INCLUDE_DIR}"
     CXXFLAGS="${CXXFLAGS} -I${R_INCLUDE_DIR}"
-
-    # Also set standard include directories for CMake targets
-    CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DCMAKE_C_STANDARD_INCLUDE_DIRECTORIES=\"${R_INCLUDE_DIR};${SHIM_DIR}\" -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=\"${R_INCLUDE_DIR};${SHIM_DIR}\""
 
     # Enable verbose makefiles to surface compile commands in CI logs
     CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DCMAKE_VERBOSE_MAKEFILE=ON"
