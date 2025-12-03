@@ -332,8 +332,10 @@ else
 extern "C" {
 #endif
 
-typedef struct { float  r; float  i; } lapack_complex_float;
-typedef struct { double r; double i; } lapack_complex_double;
+typedef struct { float  r; float  i; } mlx_lapack_complex_float;
+typedef struct { double r; double i; } mlx_lapack_complex_double;
+#define lapack_complex_float mlx_lapack_complex_float
+#define lapack_complex_double mlx_lapack_complex_double
 
 void sgeqrf_(const int *m, const int *n, float *a, const int *lda, float *tau,
              float *work, const int *lwork, int *info);
