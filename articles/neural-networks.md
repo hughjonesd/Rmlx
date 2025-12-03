@@ -105,17 +105,17 @@ for (epoch in seq_len(n_epochs)) {
   }
 }
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 100, Loss: 0.6730
+#> Epoch 100, Loss: 0.6688
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 200, Loss: 0.6620
+#> Epoch 200, Loss: 0.6625
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 300, Loss: 0.6595
+#> Epoch 300, Loss: 0.6603
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 400, Loss: 0.6595
+#> Epoch 400, Loss: 0.6540
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 500, Loss: 0.6564
+#> Epoch 500, Loss: 0.6567
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 600, Loss: 0.6525
+#> Epoch 600, Loss: 0.6567
 
 mlx_set_training(mlp, FALSE)
 ```
