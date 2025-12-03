@@ -337,8 +337,13 @@ EOF_LAPACKE
 #pragma once
 
 #include <complex>
+#ifdef __cplusplus
 typedef std::complex<float>  lapack_complex_float;
 typedef std::complex<double> lapack_complex_double;
+#else
+typedef _Complex float  lapack_complex_float;
+typedef _Complex double lapack_complex_double;
+#endif
 
 extern "C" {
 
