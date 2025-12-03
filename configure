@@ -319,6 +319,20 @@ else
   CMAKE_EXTRA_FLAGS=""
   if [ "$OS" = "Linux" ]; then
     export CMAKE_PREFIX_PATH="/usr/lib/x86_64-linux-gnu:/usr/lib64:/usr/local/lib:${CMAKE_PREFIX_PATH:-}"
+
+    SHIM_DIR="${BUILD_DIR}/r-shim"
+    SHIM_ABS="${ROOT_DIR}/${SHIM_DIR}"
+    if [ ! -f "${SHIM_ABS}/lapack.h" ] || [ ! -f "${SHIM_ABS}/cblas.h" ]; then
+      die "Missing shim headers in ${SHIM_ABS}; expected lapack.h and cblas.h"
+    fi
+
+    # Clean MLX build dir to avoid stale caches
+    rm -rf "$MLX_BUILD_DIR"
+    mkdir -p "$MLX_BUILD_DIR"
+
+    # Provide shim headers directly into the MLX source tree so include paths are simple
+    cp "${SHIM_ABS}/lapack.h" "${MLX_SOURCE_DIR}/lapack.h"
+    cp "${SHIM_ABS}/cblas.h"  "${MLX_SOURCE_DIR}/cblas.h"
   fi
   "$CMAKE" -S "$MLX_SOURCE_DIR" -B "$MLX_BUILD_DIR" \
     -DCMAKE_BUILD_TYPE=Release \
@@ -333,6 +347,8 @@ else
     -DMLX_BUILD_METAL=$MLX_BUILD_METAL \
     -DMLX_BUILD_CPU=$MLX_BUILD_CPU \
     -DMLX_BUILD_CUDA=$MLX_BUILD_CUDA \
+    -DCMAKE_C_STANDARD_INCLUDE_DIRECTORIES="${R_INCLUDE_DIR}" \
+    -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES="${R_INCLUDE_DIR};${SHIM_ABS}" \
     $CMAKE_EXTRA_FLAGS
 
   log "Compiling MLX (this may take a while)..."
