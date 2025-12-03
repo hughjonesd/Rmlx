@@ -322,9 +322,117 @@ else
 
     SHIM_DIR="${BUILD_DIR}/r-shim"
     SHIM_ABS="${ROOT_DIR}/${SHIM_DIR}"
-    if [ ! -f "${SHIM_ABS}/lapack.h" ] || [ ! -f "${SHIM_ABS}/cblas.h" ]; then
-      die "Missing shim headers in ${SHIM_ABS}; expected lapack.h and cblas.h"
-    fi
+    mkdir -p "$SHIM_ABS"
+
+    # Generate shim lapack.h
+    cat > "${SHIM_ABS}/lapack.h" <<'EOF_LAPACK_SHIM'
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+typedef struct { float  r; float  i; } lapack_complex_float;
+typedef struct { double r; double i; } lapack_complex_double;
+
+void sgeqrf_(const int *m, const int *n, float *a, const int *lda, float *tau,
+             float *work, const int *lwork, int *info);
+void dgeqrf_(const int *m, const int *n, double *a, const int *lda, double *tau,
+             double *work, const int *lwork, int *info);
+
+void sorgqr_(const int *m, const int *n, const int *k, float *a, const int *lda,
+             const float *tau, float *work, const int *lwork, int *info);
+void dorgqr_(const int *m, const int *n, const int *k, double *a, const int *lda,
+             const double *tau, double *work, const int *lwork, int *info);
+
+void ssyevd_(const char *jobz, const char *uplo, const int *n, float *a, const int *lda,
+             float *w, float *work, const int *lwork, int *iwork, const int *liwork, int *info);
+void dsyevd_(const char *jobz, const char *uplo, const int *n, double *a, const int *lda,
+             double *w, double *work, const int *lwork, int *iwork, const int *liwork, int *info);
+
+void sgeev_(const char *jobvl, const char *jobvr, const int *n, float *a, const int *lda,
+            float *wr, float *wi, float *vl, const int *ldvl, float *vr, const int *ldvr,
+            float *work, const int *lwork, int *info);
+void dgeev_(const char *jobvl, const char *jobvr, const int *n, double *a, const int *lda,
+            double *wr, double *wi, double *vl, const int *ldvl, double *vr, const int *ldvr,
+            double *work, const int *lwork, int *info);
+
+void spotrf_(const char *uplo, const int *n, float *a, const int *lda, int *info);
+void dpotrf_(const char *uplo, const int *n, double *a, const int *lda, int *info);
+
+void sgesdd_(const char *jobz, const int *m, const int *n, float *a, const int *lda,
+             float *s, float *u, const int *ldu, float *vt, const int *ldvt,
+             float *work, const int *lwork, int *iwork, int *info);
+void dgesdd_(const char *jobz, const int *m, const int *n, double *a, const int *lda,
+             double *s, double *u, const int *ldu, double *vt, const int *ldvt,
+             double *work, const int *lwork, int *iwork, int *info);
+
+void sgetrf_(const int *m, const int *n, float *a, const int *lda, int *ipiv, int *info);
+void dgetrf_(const int *m, const int *n, double *a, const int *lda, int *ipiv, int *info);
+
+void sgetri_(const int *n, float *a, const int *lda, const int *ipiv,
+             float *work, const int *lwork, int *info);
+void dgetri_(const int *n, double *a, const int *lda, const int *ipiv,
+             double *work, const int *lwork, int *info);
+
+void strtri_(const char *uplo, const char *diag, const int *n, float *a, const int *lda, int *info);
+void dtrtri_(const char *uplo, const char *diag, const int *n, double *a, const int *lda, int *info);
+
+void cheevd_(const char *jobz, const char *uplo, const int *n, lapack_complex_float *a, const int *lda,
+             float *w, lapack_complex_float *work, const int *lwork,
+             float *rwork, const int *lrwork, int *iwork, const int *liwork, int *info);
+void zheevd_(const char *jobz, const char *uplo, const int *n, lapack_complex_double *a, const int *lda,
+             double *w, lapack_complex_double *work, const int *lwork,
+             double *rwork, const int *lrwork, int *iwork, const int *liwork, int *info);
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
+EOF_LAPACK_SHIM
+
+    # Generate minimal CBLAS shim (gemm)
+    cat > "${SHIM_ABS}/cblas.h" <<'EOF_CBLAS_SHIM'
+#pragma once
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+enum CBLAS_ORDER { CblasRowMajor = 101, CblasColMajor = 102 };
+enum CBLAS_TRANSPOSE { CblasNoTrans = 111, CblasTrans = 112, CblasConjTrans = 113 };
+
+void cblas_sgemm(const enum CBLAS_ORDER Order,
+                 const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_TRANSPOSE TransB,
+                 const int M, const int N, const int K,
+                 const float alpha, const float *A, const int lda,
+                 const float *B, const int ldb,
+                 const float beta, float *C, const int ldc);
+
+void cblas_dgemm(const enum CBLAS_ORDER Order,
+                 const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_TRANSPOSE TransB,
+                 const int M, const int N, const int K,
+                 const double alpha, const double *A, const int lda,
+                 const double *B, const int ldb,
+                 const double beta, double *C, const int ldc);
+
+void cblas_cgemm(const enum CBLAS_ORDER Order,
+                 const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_TRANSPOSE TransB,
+                 const int M, const int N, const int K,
+                 const void *alpha, const void *A, const int lda,
+                 const void *B, const int ldb,
+                 const void *beta, void *C, const int ldc);
+
+void cblas_zgemm(const enum CBLAS_ORDER Order,
+                 const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_TRANSPOSE TransB,
+                 const int M, const int N, const int K,
+                 const void *alpha, const void *A, const int lda,
+                 const void *B, const int ldb,
+                 const void *beta, void *C, const int ldc);
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
+EOF_CBLAS_SHIM
 
     # Clean MLX build dir to avoid stale caches
     rm -rf "$MLX_BUILD_DIR"
