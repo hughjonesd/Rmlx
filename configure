@@ -336,14 +336,10 @@ EOF_LAPACKE
     cat > "${SHIM_DIR}/lapack.h" <<'EOF_LAPACK'
 #pragma once
 
-#include <complex>
-#ifdef __cplusplus
-typedef std::complex<float>  lapack_complex_float;
-typedef std::complex<double> lapack_complex_double;
-#else
-typedef _Complex float  lapack_complex_float;
-typedef _Complex double lapack_complex_double;
-#endif
+/* Simple POD complex types compatible with C and C++. Matches Fortran
+ * complex layout (real, imag). Avoids reliance on std::complex or _Complex. */
+typedef struct { float  r; float  i; } lapack_complex_float;
+typedef struct { double r; double i; } lapack_complex_double;
 
 extern "C" {
 
