@@ -287,6 +287,8 @@ else
     rm -rf "$MLX_BUILD_DIR" "$MLX_INSTALL_DIR"
   fi
 
+  # Start from a clean build dir to avoid stale CMake cache/flags between installs
+  rm -rf "$MLX_BUILD_DIR"
   mkdir -p "$MLX_BUILD_DIR"
 
   # Find cmake (handle macOS-specific paths)
