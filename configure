@@ -342,63 +342,71 @@ else
 /* Stub LAPACKE header for Rmlx: MLX uses Fortran LAPACK entry points, not LAPACKE. */
 EOF_LAPACKE
 
-    # Provide lapack.h that defers to R's LAPACK prototypes and maps MLX symbol names.
+    # Provide lapack.h with the LAPACK Fortran prototypes MLX calls, using plain
+    # underscore names and no hidden length arguments (matches OpenBLAS / Netlib C headers).
     cat > "${SHIM_DIR}/lapack.h" <<'EOF_LAPACK'
 #pragma once
 
-/* R ships LAPACK prototypes in R_ext/Lapack.h using F77_NAME/F77_CALL.
- * MLX includes <lapack.h> and calls symbols like dgeqrf_ directly.
- * This shim bridges the two by including R's header and mapping the
- * expected symbol names to R's F77_NAME equivalents.
- */
+#include <complex>
 
-#include <R_ext/Lapack.h>
+typedef std::complex<float>  lapack_complex_float;
+typedef std::complex<double> lapack_complex_double;
 
-/* Map the symbols MLX calls (dgeqrf_, etc.) to R's F77 exports. */
-#ifndef MLX_LAPACK_BRIDGE
-#define MLX_LAPACK_BRIDGE
+extern "C" {
 
-#define sgeqrf_ F77_NAME(sgeqrf)
-#define dgeqrf_ F77_NAME(dgeqrf)
+void sgeqrf_(const int *m, const int *n, float *a, const int *lda, float *tau,
+             float *work, const int *lwork, int *info);
+void dgeqrf_(const int *m, const int *n, double *a, const int *lda, double *tau,
+             double *work, const int *lwork, int *info);
 
-#define sorgqr_ F77_NAME(sorgqr)
-#define dorgqr_ F77_NAME(dorgqr)
+void sorgqr_(const int *m, const int *n, const int *k, float *a, const int *lda,
+             const float *tau, float *work, const int *lwork, int *info);
+void dorgqr_(const int *m, const int *n, const int *k, double *a, const int *lda,
+             const double *tau, double *work, const int *lwork, int *info);
 
-#define ssyevd_ F77_NAME(ssyevd)
-#define dsyevd_ F77_NAME(dsyevd)
+void ssyevd_(const char *jobz, const char *uplo, const int *n, float *a, const int *lda,
+             float *w, float *work, const int *lwork, int *iwork, const int *liwork, int *info);
+void dsyevd_(const char *jobz, const char *uplo, const int *n, double *a, const int *lda,
+             double *w, double *work, const int *lwork, int *iwork, const int *liwork, int *info);
 
-#define sgeev_  F77_NAME(sgeev)
-#define dgeev_  F77_NAME(dgeev)
+void sgeev_(const char *jobvl, const char *jobvr, const int *n, float *a, const int *lda,
+            float *wr, float *wi, float *vl, const int *ldvl, float *vr, const int *ldvr,
+            float *work, const int *lwork, int *info);
+void dgeev_(const char *jobvl, const char *jobvr, const int *n, double *a, const int *lda,
+            double *wr, double *wi, double *vl, const int *ldvl, double *vr, const int *ldvr,
+            double *work, const int *lwork, int *info);
 
-#define spotrf_ F77_NAME(spotrf)
-#define dpotrf_ F77_NAME(dpotrf)
+void spotrf_(const char *uplo, const int *n, float *a, const int *lda, int *info);
+void dpotrf_(const char *uplo, const int *n, double *a, const int *lda, int *info);
 
-#define sgesdd_ F77_NAME(sgesdd)
-#define dgesdd_ F77_NAME(dgesdd)
+void sgesdd_(const char *jobz, const int *m, const int *n, float *a, const int *lda,
+             float *s, float *u, const int *ldu, float *vt, const int *ldvt,
+             float *work, const int *lwork, int *iwork, int *info);
+void dgesdd_(const char *jobz, const int *m, const int *n, double *a, const int *lda,
+             double *s, double *u, const int *ldu, double *vt, const int *ldvt,
+             double *work, const int *lwork, int *iwork, int *info);
 
-#define sgetrf_ F77_NAME(sgetrf)
-#define dgetrf_ F77_NAME(dgetrf)
+void sgetrf_(const int *m, const int *n, float *a, const int *lda, int *ipiv, int *info);
+void dgetrf_(const int *m, const int *n, double *a, const int *lda, int *ipiv, int *info);
 
-#define sgetri_ F77_NAME(sgetri)
-#define dgetri_ F77_NAME(dgetri)
+void sgetri_(const int *n, float *a, const int *lda, const int *ipiv,
+             float *work, const int *lwork, int *info);
+void dgetri_(const int *n, double *a, const int *lda, const int *ipiv,
+             double *work, const int *lwork, int *info);
 
-#define strtri_ F77_NAME(strtri)
-#define dtrtri_ F77_NAME(dtrtri)
+void strtri_(const char *uplo, const char *diag, const int *n, float *a, const int *lda, int *info);
+void dtrtri_(const char *uplo, const char *diag, const int *n, double *a, const int *lda, int *info);
 
-#define cheevd_ F77_NAME(cheevd)
-#define zheevd_ F77_NAME(zheevd)
+void cheevd_(const char *jobz, const char *uplo, const int *n, lapack_complex_float *a, const int *lda,
+             float *w, lapack_complex_float *work, const int *lwork,
+             float *rwork, const int *lrwork, int *iwork, const int *liwork, int *info);
+void zheevd_(const char *jobz, const char *uplo, const int *n, lapack_complex_double *a, const int *lda,
+             double *w, lapack_complex_double *work, const int *lwork,
+             double *rwork, const int *lrwork, int *iwork, const int *liwork, int *info);
 
-#endif /* MLX_LAPACK_BRIDGE */
+}  // extern "C"
+
 EOF_LAPACK
-
-    # Mirror R's LAPACK/BLAS headers into the shim so <R_ext/...> resolves even if include paths are stripped
-    mkdir -p "${SHIM_DIR}/R_ext"
-    if [ -f "${R_INCLUDE_DIR}/R_ext/Lapack.h" ]; then
-      cp "${R_INCLUDE_DIR}/R_ext/Lapack.h" "${SHIM_DIR}/R_ext/"
-    fi
-    if [ -f "${R_INCLUDE_DIR}/R_ext/BLAS.h" ]; then
-      cp "${R_INCLUDE_DIR}/R_ext/BLAS.h" "${SHIM_DIR}/R_ext/"
-    fi
 
     LAPACK_LIBRARIES=$("${R_HOME}/bin/R" CMD config LAPACK_LIBS)
     BLAS_LIBRARIES=$("${R_HOME}/bin/R" CMD config BLAS_LIBS)
