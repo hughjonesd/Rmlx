@@ -26,8 +26,9 @@ CPPFLAGS="${CPPFLAGS} -I${R_INCLUDE_DIR}"
 export CPPFLAGS
 
 BLAS_LIBS=$("${R_HOME}/bin/R" CMD config BLAS_LIBS)
-LIBS="${LIBS} ${BLAS_LIBS}"
-export LIBS
+LAPACK_LIBS=$("${R_HOME}/bin/R" CMD config LAPACK_LIBS)
+LIBS="${LIBS} ${BLAS_LIBS} ${LAPACK_LIBS}"
+export BLAS_LIBS LAPACK_LIBS LIBS
 
 CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX17 2>/dev/null || "${R_HOME}/bin/R" CMD config CXX 2>/dev/null || true)
 if [ -z "$CXX_FULL" ]; then
@@ -321,27 +322,25 @@ else
   CMAKE_EXTRA_FLAGS=""
   if [ "$OS" = "Linux" ]; then
     export CMAKE_PREFIX_PATH="/usr/lib/x86_64-linux-gnu:/usr/lib64:/usr/local/lib:${CMAKE_PREFIX_PATH:-}"
+
     SHIM_DIR="${BUILD_DIR}/r-shim"
-    mkdir -p "$SHIM_DIR"
     SHIM_ABS="${ROOT_DIR}/${SHIM_DIR}"
+    mkdir -p "$SHIM_ABS"
 
-    # Provide stub lapacke.h for CMake detection (MLX never uses LAPACKE API)
-    cat > "${SHIM_DIR}/lapacke.h" <<'EOF_LAPACKE'
-#pragma once
-/* Stub LAPACKE header for Rmlx: MLX uses Fortran LAPACK entry points, not LAPACKE. */
-EOF_LAPACKE
-
-    # Provide lapack.h with the LAPACK Fortran prototypes MLX calls, using plain
-    # underscore names and no hidden length arguments (matches OpenBLAS / Netlib C headers).
-    cat > "${SHIM_DIR}/lapack.h" <<'EOF_LAPACK'
+    # Generate shim lapack.h
+    cat > "${SHIM_ABS}/lapack.h" <<'EOF_LAPACK_SHIM'
 #pragma once
 
-/* Simple POD complex types compatible with C and C++. Matches Fortran
- * complex layout (real, imag). Avoids reliance on std::complex or _Complex. */
+#ifndef lapack_complex_float
 typedef struct { float  r; float  i; } lapack_complex_float;
+#endif
+#ifndef lapack_complex_double
 typedef struct { double r; double i; } lapack_complex_double;
+#endif
 
+#ifdef __cplusplus
 extern "C" {
+#endif
 
 void sgeqrf_(const int *m, const int *n, float *a, const int *lda, float *tau,
              float *work, const int *lwork, int *info);
@@ -393,26 +392,62 @@ void zheevd_(const char *jobz, const char *uplo, const int *n, lapack_complex_do
              double *w, lapack_complex_double *work, const int *lwork,
              double *rwork, const int *lrwork, int *iwork, const int *liwork, int *info);
 
+#ifdef __cplusplus
 }  // extern "C"
+#endif
+EOF_LAPACK_SHIM
 
-EOF_LAPACK
+    # Generate minimal CBLAS shim (gemm)
+    cat > "${SHIM_ABS}/cblas.h" <<'EOF_CBLAS_SHIM'
+#pragma once
 
-    LAPACK_LIBRARIES=$("${R_HOME}/bin/R" CMD config LAPACK_LIBS)
-    BLAS_LIBRARIES=$("${R_HOME}/bin/R" CMD config BLAS_LIBS)
-    LAPACK_INCLUDE_DIRS="${SHIM_ABS};${R_INCLUDE_DIR}"
-    CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DLAPACK_INCLUDE_DIRS=${LAPACK_INCLUDE_DIRS} -DLAPACK_LIBRARIES=\"${LAPACK_LIBRARIES}\" -DBLAS_LIBRARIES=\"${BLAS_LIBRARIES}\""
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    # Also set standard include directories for CMake targets (unquoted list)
-    CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DCMAKE_C_STANDARD_INCLUDE_DIRECTORIES=${R_INCLUDE_DIR};${SHIM_ABS} -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES=${R_INCLUDE_DIR};${SHIM_ABS}"
+enum CBLAS_ORDER { CblasRowMajor = 101, CblasColMajor = 102 };
+enum CBLAS_TRANSPOSE { CblasNoTrans = 111, CblasTrans = 112, CblasConjTrans = 113 };
 
-    # Enable verbose makefiles to surface compile commands in CI logs
-    CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DCMAKE_VERBOSE_MAKEFILE=ON"
-  fi
+void cblas_sgemm(const enum CBLAS_ORDER Order,
+                 const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_TRANSPOSE TransB,
+                 const int M, const int N, const int K,
+                 const float alpha, const float *A, const int lda,
+                 const float *B, const int ldb,
+                 const float beta, float *C, const int ldc);
 
-  # Make shim headers visible from the MLX source tree itself (CMake already adds source dir to includes)
-  if [ "$USE_SYSTEM_MLX" = false ] && [ "$OS" = "Linux" ]; then
-    cp "${SHIM_DIR}/lapack.h" "${MLX_SOURCE_DIR}/lapack.h"
-    cp "${SHIM_DIR}/lapacke.h" "${MLX_SOURCE_DIR}/lapacke.h"
+void cblas_dgemm(const enum CBLAS_ORDER Order,
+                 const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_TRANSPOSE TransB,
+                 const int M, const int N, const int K,
+                 const double alpha, const double *A, const int lda,
+                 const double *B, const int ldb,
+                 const double beta, double *C, const int ldc);
+
+void cblas_cgemm(const enum CBLAS_ORDER Order,
+                 const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_TRANSPOSE TransB,
+                 const int M, const int N, const int K,
+                 const void *alpha, const void *A, const int lda,
+                 const void *B, const int ldb,
+                 const void *beta, void *C, const int ldc);
+
+void cblas_zgemm(const enum CBLAS_ORDER Order,
+                 const enum CBLAS_TRANSPOSE TransA, const enum CBLAS_TRANSPOSE TransB,
+                 const int M, const int N, const int K,
+                 const void *alpha, const void *A, const int lda,
+                 const void *B, const int ldb,
+                 const void *beta, void *C, const int ldc);
+
+#ifdef __cplusplus
+}  // extern "C"
+#endif
+EOF_CBLAS_SHIM
+
+    # Clean MLX build dir to avoid stale caches
+    rm -rf "$MLX_BUILD_DIR"
+    mkdir -p "$MLX_BUILD_DIR"
+
+    # Provide shim headers directly into the MLX source tree so include paths are simple
+    cp "${SHIM_ABS}/lapack.h" "${MLX_SOURCE_DIR}/lapack.h"
+    cp "${SHIM_ABS}/cblas.h"  "${MLX_SOURCE_DIR}/cblas.h"
   fi
 
   "$CMAKE" -S "$MLX_SOURCE_DIR" -B "$MLX_BUILD_DIR" \
@@ -429,6 +464,8 @@ EOF_LAPACK
     -DMLX_BUILD_METAL=$MLX_BUILD_METAL \
     -DMLX_BUILD_CPU=$MLX_BUILD_CPU \
     -DMLX_BUILD_CUDA=$MLX_BUILD_CUDA \
+    -DCMAKE_C_STANDARD_INCLUDE_DIRECTORIES="${R_INCLUDE_DIR}" \
+    -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES="${R_INCLUDE_DIR};${SHIM_ABS}" \
     $CMAKE_EXTRA_FLAGS
 
   # Dump key cache entries for debugging include paths
@@ -484,6 +521,9 @@ if [ "$MLX_BUILD_CUDA" = "ON" ]; then
   fi
   PKG_LIBS="$PKG_LIBS -L${CUDA_LIB_DIR} -lcudart -lcublas -lcublasLt"
 fi
+
+# Always link against the same BLAS/LAPACK that R uses
+PKG_LIBS="$PKG_LIBS ${BLAS_LIBS} ${LAPACK_LIBS}"
 
 cat > src/Makevars <<EOF_MAKEVARS
 # Generated by configure - do not edit by hand
