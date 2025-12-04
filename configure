@@ -328,10 +328,6 @@ else
     cat > "${SHIM_ABS}/lapack.h" <<'EOF_LAPACK_SHIM'
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #ifndef lapack_complex_float
 typedef struct { float  r; float  i; } lapack_complex_float;
 #endif
@@ -388,10 +384,6 @@ void cheevd_(const char *jobz, const char *uplo, const int *n, lapack_complex_fl
 void zheevd_(const char *jobz, const char *uplo, const int *n, lapack_complex_double *a, const int *lda,
              double *w, lapack_complex_double *work, const int *lwork,
              double *rwork, const int *lrwork, int *iwork, const int *liwork, int *info);
-
-#ifdef __cplusplus
-}  // extern "C"
-#endif
 EOF_LAPACK_SHIM
 
     # Generate minimal CBLAS shim (gemm)
