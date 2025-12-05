@@ -32,7 +32,8 @@ mlx_default_device <- function(value) {
 #' @export
 #' @examples
 #' x <- mlx_matrix(1:4, 2, 2)
-#' mlx_synchronize("gpu")
+#' mlx_synchronize("cpu")
+#' if (mlx_has_gpu()) mlx_synchronize("gpu")
 #' stream <- mlx_new_stream()
 #' mlx_synchronize(stream)
 mlx_synchronize <- function(device = mlx_default_device()) {
@@ -139,19 +140,7 @@ local_default_device <- function(device, .local_envir = parent.frame()) {
 #'   mlx_synchronize("cpu")
 #' }
 mlx_has_gpu <- function() {
-  # Try to synchronize on GPU - if it fails, GPU is not available
-  tryCatch({
-    mlx_synchronize("gpu")
-    TRUE
-  }, error = function(e) {
-    # Check if the error is about missing GPU backend
-    if (grepl("gpu", e$message, ignore.case = TRUE)) {
-      FALSE
-    } else {
-      # Some other error, re-throw it
-      stop(e)
-    }
-  })
+  cpp_mlx_has_gpu()
 }
 
 #' Get best available device
