@@ -69,7 +69,7 @@ A 1D mlx array.
 mlx_linspace(0, 1, num = 5)
 #> mlx array [5]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 0.00 0.25 0.50 0.75 1.00
 ```

@@ -36,5 +36,5 @@ An object of class `mlx_stream`.
 ``` r
 stream <- mlx_new_stream()
 stream
-#> mlx stream [gpu] index=2
+#> mlx stream [cpu] index=2
 ```

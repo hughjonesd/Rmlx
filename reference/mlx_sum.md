@@ -85,19 +85,19 @@ x <- mlx_matrix(1:4, 2, 2)
 mlx_sum(x)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 10
 mlx_sum(x, axes = 1)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 3 7
 mlx_prod(x, axes = 2, drop = FALSE)
 #> mlx array [2 x 1]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1]
 #> [1,]    3
@@ -105,37 +105,37 @@ mlx_prod(x, axes = 2, drop = FALSE)
 mlx_all(x > 0)
 #> mlx array []
 #>   dtype: bool
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] TRUE
 mlx_any(x > 3)
 #> mlx array []
 #>   dtype: bool
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] TRUE
 mlx_mean(x, axes = 1)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 1.5 3.5
 mlx_var(x, axes = 2)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 1 1
 mlx_std(x)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 1.118034
 mlx_sd(x)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 1.290994
 # for comparison:
@@ -151,7 +151,7 @@ apply(a, 1:2, sum) # leaves dimensions 1-2 intact, sums over dimension 3
 mlx_sum(a, 3)      # the same
 #> mlx array [1 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    9   12

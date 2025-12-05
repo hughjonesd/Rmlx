@@ -56,7 +56,7 @@ x <- mlx_matrix(1:9, 3, 3)
 mlx_diagonal(x)
 #> mlx array [3]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 1 5 9
 # (Constructing diagonals from 1D inputs is not yet supported.)

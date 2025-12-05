@@ -34,7 +34,7 @@ x <- mlx_array(1:4, dim = c(1, 2, 2, 1))
 mlx_squeeze(x)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    1    3
@@ -42,6 +42,6 @@ mlx_squeeze(x)
 mlx_squeeze(x, axes = 1)
 #> mlx array [2 x 2 x 1]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   (4 elements, not shown)
 ```

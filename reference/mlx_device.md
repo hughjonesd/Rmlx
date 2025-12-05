@@ -24,5 +24,5 @@ mlx_device(x)
 ``` r
 x <- as_mlx(1:10)
 mlx_device(x)
-#> [1] "gpu"
+#> [1] "cpu"
 ```

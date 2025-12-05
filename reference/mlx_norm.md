@@ -45,19 +45,19 @@ x <- mlx_matrix(1:4, 2, 2)
 mlx_norm(x)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 5.477226
 mlx_norm(x, ord = 2)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 5.464986
 mlx_norm(x, axes = 2)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 3.162278 4.472136
 ```

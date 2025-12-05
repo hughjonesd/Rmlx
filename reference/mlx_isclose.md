@@ -70,7 +70,7 @@ b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-3))
 mlx_isclose(a, b)  # First two TRUE, last FALSE
 #> mlx array [3]
 #>   dtype: bool
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1]  TRUE  TRUE FALSE
 ```

@@ -56,7 +56,7 @@ base <- mlx_ones(c(2, 2))
 mlx_zeros_like(base)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    0    0

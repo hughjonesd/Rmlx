@@ -46,6 +46,6 @@ tokens <- as_mlx(matrix(c(5, 10, 3, 7), 2, 2))
 mlx_forward(emb, tokens)
 #> mlx array [2 x 2 x 16]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   (64 elements, not shown)
 ```

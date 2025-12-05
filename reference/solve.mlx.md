@@ -42,7 +42,7 @@ b <- as_mlx(c(9, 8))
 solve(a, b)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 2 3
 ```

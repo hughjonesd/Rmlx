@@ -30,13 +30,13 @@ eig <- mlx_eig(x)
 eig$values
 #> mlx array [2]
 #>   dtype: complex64
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 2+0i 2+0i
 eig$vectors
 #> mlx array [2 x 2]
 #>   dtype: complex64
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>                 [,1] [,2]
 #> [1,] 2.384186e-07+0i 0+0i

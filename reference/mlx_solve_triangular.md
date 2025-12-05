@@ -71,7 +71,7 @@ b <- mlx_matrix(c(1, 5), 2, 1)
 mlx_solve_triangular(a, b, upper = FALSE)
 #> mlx array [2 x 1]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1]
 #> [1,]  0.5

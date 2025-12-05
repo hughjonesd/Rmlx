@@ -29,7 +29,7 @@ x <- mlx_matrix(c(3, 1, 0, 2), 2, 2)
 mlx_eigvals(x)
 #> mlx array [2]
 #>   dtype: complex64
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 3+0i 2+0i
 ```

@@ -106,20 +106,20 @@ falling back to <code><a href="mlx_default_device.html">mlx_default_device()</a>
 <span class="r-in"><span><span class="fu">mlx_fft</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10+0i -2+2i -2+0i -2-2i</span>
 <span class="r-in"><span><span class="fu">mlx_fft</span><span class="op">(</span><span class="va">x</span>, inverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10+0i -2-2i -2+0i -2+2i</span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">mlx_fft2</span><span class="op">(</span><span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [3 x 3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                [,1]            [,2]            [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 45.0+0.000000i -13.5+7.794229i -13.5-7.794229i</span>
@@ -129,7 +129,7 @@ falling back to <code><a href="mlx_default_device.html">mlx_default_device()</a>
 <span class="r-in"><span><span class="fu">mlx_fftn</span><span class="op">(</span><span class="va">arr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [2 x 2 x 2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (8 elements, not shown)</span>
 </code></pre></div>
     </div>

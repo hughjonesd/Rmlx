@@ -159,17 +159,17 @@ perceptron (MLP) for binary classification:</p>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 100, Loss: 0.6696</span></span>
+<span><span class="co">#&gt; Epoch 100, Loss: 0.6723</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 200, Loss: 0.6640</span></span>
+<span><span class="co">#&gt; Epoch 200, Loss: 0.6668</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 300, Loss: 0.6596</span></span>
+<span><span class="co">#&gt; Epoch 300, Loss: 0.6591</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 400, Loss: 0.6621</span></span>
+<span><span class="co">#&gt; Epoch 400, Loss: 0.6580</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 500, Loss: 0.6557</span></span>
+<span><span class="co">#&gt; Epoch 500, Loss: 0.6581</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 600, Loss: 0.6558</span></span>
+<span><span class="co">#&gt; Epoch 600, Loss: 0.6493</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/mlx_set_training.html">mlx_set_training</a></span><span class="op">(</span><span class="va">mlp</span>, <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -188,8 +188,8 @@ perceptron (MLP) for binary classification:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">confusion</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Predicted</span></span>
 <span><span class="co">#&gt; Actual   0   1</span></span>
-<span><span class="co">#&gt;      0 772 228</span></span>
-<span><span class="co">#&gt;      1 543 457</span></span>
+<span><span class="co">#&gt;      0 771 229</span></span>
+<span><span class="co">#&gt;      1 542 458</span></span>
 <span></span>
 <span><span class="co"># Calculate accuracy</span></span>
 <span><span class="va">accuracy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="../reference/diag.html">diag</a></span><span class="op">(</span><span class="va">confusion</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">confusion</span><span class="op">)</span></span>

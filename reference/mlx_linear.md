@@ -54,9 +54,9 @@ x <- mlx_matrix(1:6, 2, 3)
 mlx_forward(layer, x)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>           [,1]       [,2]
 #> [1,] -3.473105 -1.2398810
-#> [2,] -4.516946 -0.3382074
+#> [2,] -4.516946 -0.3382072
 ```

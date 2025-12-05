@@ -67,7 +67,7 @@ An mlx matrix with ones on the selected diagonal and zeros elsewhere.
 mlx_eye(3)
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1    0    0
@@ -76,7 +76,7 @@ mlx_eye(3)
 mlx_eye(3, k = 1)
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    0    1    0

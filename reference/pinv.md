@@ -29,7 +29,7 @@ x <- mlx_matrix(c(1, 2, 3, 4), 2, 2)
 pinv(x)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1]       [,2]
 #> [1,]   -2  1.5000004

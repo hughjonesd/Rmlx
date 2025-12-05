@@ -30,8 +30,11 @@ mlx_default_device()  # Get current default
 #> [1] "gpu"
 mlx_default_device("cpu")  # Set to CPU
 #> [1] "cpu"
-mlx_default_device("gpu")  # Set back to GPU
+if (mlx_has_gpu()) {
+  mlx_default_device("gpu")  # Set back to GPU
+  mlx_default_device()
+}
 #> [1] "gpu"
-mlx_default_device()
-#> [1] "gpu"
+mlx_default_device("cpu")
+#> [1] "cpu"
 ```

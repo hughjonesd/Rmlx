@@ -32,7 +32,7 @@ x <- mlx_matrix(1:4, 2, 2)
 print(x)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    1    3

@@ -44,14 +44,14 @@ svd(x)
 #> $d
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 2 1
 #> 
 #> $u
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    0    1
@@ -60,7 +60,7 @@ svd(x)
 #> $v
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    0    1

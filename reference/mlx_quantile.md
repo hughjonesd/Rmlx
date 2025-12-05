@@ -92,13 +92,13 @@ x <- as_mlx(1:10)
 mlx_quantile(x, 0.5)  # median
 #> mlx array [1]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 5.5
 mlx_quantile(x, c(0.25, 0.5, 0.75))  # quartiles
 #> mlx array [3]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 3.25 5.50 7.75
 
@@ -106,7 +106,7 @@ mlx_quantile(x, c(0.25, 0.5, 0.75))  # quartiles
 quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
 #> mlx array [5]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1]  1.00  3.25  5.50  7.75 10.00
 

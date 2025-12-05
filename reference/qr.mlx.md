@@ -43,7 +43,7 @@ qr(x)
 #> $Q
 #> mlx array [3 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>            [,1]       [,2]
 #> [1,] -0.2672611  0.8728715
@@ -53,7 +53,7 @@ qr(x)
 #> $R
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>           [,1]      [,2]
 #> [1,] -3.741657 -8.552359

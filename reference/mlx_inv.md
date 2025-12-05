@@ -32,9 +32,9 @@ A_inv <- mlx_inv(A)
 A %*% A_inv
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>              [,1] [,2]
 #> [1,] 1.000000e+00    0
-#> [2,] 3.576279e-07    1
+#> [2,] 4.768372e-07    1
 ```

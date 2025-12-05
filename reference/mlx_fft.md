@@ -73,20 +73,20 @@ x <- as_mlx(c(1, 2, 3, 4))
 mlx_fft(x)
 #> mlx array [4]
 #>   dtype: complex64
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 10+0i -2+2i -2+0i -2-2i
 mlx_fft(x, inverse = TRUE)
 #> mlx array [4]
 #>   dtype: complex64
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 10+0i -2-2i -2+0i -2+2i
 mat <- matrix(1:9, 3, 3)
 mlx_fft2(as_mlx(mat))
 #> mlx array [3 x 3]
 #>   dtype: complex64
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>                [,1]            [,2]            [,3]
 #> [1,] 45.0+0.000000i -13.5+7.794229i -13.5-7.794229i
@@ -96,6 +96,6 @@ arr <- mlx_array(1:8, dim = c(2, 2, 2))
 mlx_fftn(arr)
 #> mlx array [2 x 2 x 2]
 #>   dtype: complex64
-#>   device: gpu
+#>   device: cpu
 #>   (8 elements, not shown)
 ```

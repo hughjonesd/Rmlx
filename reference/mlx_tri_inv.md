@@ -39,7 +39,7 @@ L <- mlx_matrix(c(1:3, 0, 4:5, 0, 0, 6), 3, 3)
 mlx_tri_inv(L, upper = FALSE)
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>             [,1]       [,2]      [,3]
 #> [1,]  1.00000000  0.0000000 0.0000000

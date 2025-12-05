@@ -58,7 +58,7 @@ updated <- mlx_slice_update(x, replacement, start = c(1L, 2L), stop = c(2L, 3L))
 updated
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1  100  102

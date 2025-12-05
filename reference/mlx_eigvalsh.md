@@ -33,7 +33,7 @@ x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)
 mlx_eigvalsh(x)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 1.381966 3.618034
 ```

@@ -33,7 +33,7 @@ x <- as_mlx(1:12)
 mlx_reshape(x, c(3, 4))
 #> mlx array [3 x 4]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3] [,4]
 #> [1,]    1    2    3    4
@@ -42,7 +42,7 @@ mlx_reshape(x, c(3, 4))
 mlx_reshape(x, c(2, 6))
 #> mlx array [2 x 6]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3] [,4] [,5] [,6]
 #> [1,]    1    2    3    4    5    6

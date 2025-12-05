@@ -34,14 +34,14 @@ mlx_eigh(x)
 #> $values
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #> [1] 1.381966 3.618034
 #> 
 #> $vectors
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>            [,1]      [,2]
 #> [1,] -0.8506508 0.5257311

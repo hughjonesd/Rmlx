@@ -38,7 +38,7 @@ targets <- mlx_matrix(c(1, 2, 1), 3, 1)
 mlx_mse_loss(preds, targets)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
-#> [1] 0.1266666
+#> [1] 0.1266667
 ```

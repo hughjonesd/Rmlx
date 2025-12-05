@@ -30,7 +30,7 @@ x <- mlx_matrix(1:4, 2, 2)
 mlx_stop_gradient(x)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    1    3

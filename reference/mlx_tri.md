@@ -77,7 +77,7 @@ An `mlx` array.
 mlx_tri(3)          # 3x3 lower-triangular mask
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1    0    0
@@ -86,7 +86,7 @@ mlx_tri(3)          # 3x3 lower-triangular mask
 mlx_tril(diag(3) + 2)  # keep lower part of a matrix
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    3    0    0

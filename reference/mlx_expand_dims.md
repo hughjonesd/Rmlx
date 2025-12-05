@@ -34,6 +34,6 @@ x <- mlx_matrix(1:4, 2, 2)
 mlx_expand_dims(x, axes = 1)
 #> mlx array [1 x 2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   (4 elements, not shown)
 ```

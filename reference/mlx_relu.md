@@ -24,7 +24,7 @@ x <- as_mlx(matrix(c(-1, 0, 2), 3, 1))
 mlx_forward(act, x)
 #> mlx array [3 x 1]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1]
 #> [1,]    0

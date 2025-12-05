@@ -108,7 +108,7 @@ array typically reuse that array's device or stream).</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">mlx_tri</span><span class="op">(</span><span class="fl">3</span><span class="op">)</span>          <span class="co"># 3x3 lower-triangular mask</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [3 x 3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    1    0    0</span>
@@ -117,7 +117,7 @@ array typically reuse that array's device or stream).</p></dd>
 <span class="r-in"><span><span class="fu">mlx_tril</span><span class="op">(</span><span class="fu"><a href="diag.html">diag</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="fl">2</span><span class="op">)</span>  <span class="co"># keep lower part of a matrix</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [3 x 3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    3    0    0</span>
