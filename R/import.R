@@ -25,6 +25,10 @@
 #'   function has a single output, or a list of `mlx` arrays otherwise.
 #' @export
 #' @examples
+#' old_dev <- mlx_default_device()
+#' on.exit(mlx_default_device(old_dev), add = TRUE)
+#' if (!mlx_has_gpu()) mlx_default_device("cpu")
+#'
 #' add_fn <- mlx_import_function(
 #'   system.file("extdata/add_matrix.mlxfn", package = "Rmlx"),
 #'   device = "cpu"
