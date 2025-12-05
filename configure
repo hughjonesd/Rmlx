@@ -441,6 +441,10 @@ void cblas_zgemm(const enum CBLAS_ORDER Order,
 #endif
 EOF_CBLAS_SHIM
 
+    # Pass shim + R include dirs and BLAS/LAPACK libs explicitly to CMake's FindLAPACK/BLAS
+    LAPACK_INCLUDE_DIRS="${SHIM_ABS};${R_INCLUDE_DIR}"
+    CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DLAPACK_INCLUDE_DIRS=${LAPACK_INCLUDE_DIRS} -DLAPACK_LIBRARIES=\"${LAPACK_LIBS}\" -DBLAS_LIBRARIES=\"${BLAS_LIBS}\""
+
     # Clean MLX build dir to avoid stale caches
     rm -rf "$MLX_BUILD_DIR"
     mkdir -p "$MLX_BUILD_DIR"
