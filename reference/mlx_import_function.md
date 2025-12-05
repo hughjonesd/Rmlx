@@ -59,14 +59,14 @@ shapes and keyword names you provide.
 ``` r
 add_fn <- mlx_import_function(
   system.file("extdata/add_matrix.mlxfn", package = "Rmlx"),
-  device = "cpu"
+  device = "gpu"
 )
-x <- mlx_matrix(1:4, 2, 2)
-y <- mlx_matrix(5:8, 2, 2)
+x <- mlx_matrix(1:4, 2, 2, device = "gpu")
+y <- mlx_matrix(5:8, 2, 2, device = "gpu")
 add_fn(x, bias = y)  # positional + keyword argument
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: cpu
+#>   device: gpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    6   10
