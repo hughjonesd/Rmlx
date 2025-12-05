@@ -42,11 +42,13 @@ signature. MLX selects the appropriate trace at runtime based on the shapes
 and keyword names you provide.
 }
 \examples{
+\dontshow{if (mlx_has_gpu()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 add_fn <- mlx_import_function(
   system.file("extdata/add_matrix.mlxfn", package = "Rmlx"),
-  device = "cpu"
+  device = "gpu"
 )
-x <- mlx_matrix(1:4, 2, 2)
-y <- mlx_matrix(5:8, 2, 2)
+x <- mlx_matrix(1:4, 2, 2, device = "gpu")
+y <- mlx_matrix(5:8, 2, 2, device = "gpu")
 add_fn(x, bias = y)  # positional + keyword argument
+\dontshow{\}) # examplesIf}
 }

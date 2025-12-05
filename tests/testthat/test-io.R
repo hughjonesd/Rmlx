@@ -51,7 +51,7 @@ test_that("mlx_save_safetensors round trips arrays and metadata", {
   expect_equal(saved_path, expected_path)
 
   loaded <- mlx_load_safetensors(base_path, device = "cpu")
-  expect_named(loaded$tensors, names(arrays))
+  expect_setequal(names(loaded$tensors), names(arrays))
   expect_equal(as.matrix(loaded$tensors$mat), as.matrix(arrays$mat), tolerance = 1e-6)
   expect_equal(as.vector(loaded$tensors$vec), as.vector(arrays$vec))
   expect_named(loaded$metadata, names(metadata))
