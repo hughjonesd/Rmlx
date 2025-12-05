@@ -127,6 +127,7 @@ test_that("chol.mlx reconstruction works", {
 })
 
 test_that("chol.mlx preserves device and dtype", {
+  skip_if_not(mlx_has_gpu())
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device))
 
