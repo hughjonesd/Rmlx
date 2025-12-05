@@ -97,6 +97,10 @@ cpp_mlx_set_default_device <- function(device_str) {
     invisible(.Call(`_Rmlx_cpp_mlx_set_default_device`, device_str))
 }
 
+cpp_mlx_has_gpu <- function() {
+    .Call(`_Rmlx_cpp_mlx_has_gpu`)
+}
+
 cpp_mlx_import_function <- function(path) {
     .Call(`_Rmlx_cpp_mlx_import_function`, path)
 }

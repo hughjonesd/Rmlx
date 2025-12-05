@@ -1,4 +1,5 @@
 #include "mlx_bindings.hpp"
+#include <mlx/backend/gpu/available.h>
 #include <Rcpp.h>
 
 using namespace Rcpp;
@@ -16,3 +17,7 @@ void cpp_mlx_set_default_device(std::string device_str) {
   set_default_device(dev);
 }
 
+// [[Rcpp::export]]
+bool cpp_mlx_has_gpu() {
+  return mlx::core::gpu::is_available();
+}

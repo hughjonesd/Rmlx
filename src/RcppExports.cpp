@@ -304,6 +304,16 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// cpp_mlx_has_gpu
+bool cpp_mlx_has_gpu();
+RcppExport SEXP _Rmlx_cpp_mlx_has_gpu() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_has_gpu());
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_import_function
 SEXP cpp_mlx_import_function(const std::string& path);
 RcppExport SEXP _Rmlx_cpp_mlx_import_function(SEXP pathSEXP) {
@@ -1956,6 +1966,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_enable_compile", (DL_FUNC) &_Rmlx_cpp_mlx_enable_compile, 0},
     {"_Rmlx_cpp_mlx_default_device", (DL_FUNC) &_Rmlx_cpp_mlx_default_device, 0},
     {"_Rmlx_cpp_mlx_set_default_device", (DL_FUNC) &_Rmlx_cpp_mlx_set_default_device, 1},
+    {"_Rmlx_cpp_mlx_has_gpu", (DL_FUNC) &_Rmlx_cpp_mlx_has_gpu, 0},
     {"_Rmlx_cpp_mlx_import_function", (DL_FUNC) &_Rmlx_cpp_mlx_import_function, 1},
     {"_Rmlx_cpp_mlx_call_imported", (DL_FUNC) &_Rmlx_cpp_mlx_call_imported, 4},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
