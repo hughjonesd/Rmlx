@@ -80,7 +80,7 @@ plot(x_train[, 1], x_train[, 2],
 
 Define a loss function and train using gradient descent:
 
-```{r training}
+```{r training, eval = mlx_has_gpu()}
 # Loss function operating on the module
 loss_fn <- function(module, x, y) {
   preds <- mlx_forward(module, x)
@@ -111,7 +111,7 @@ mlx_set_training(mlp, FALSE)
 
 Let's evaluate the model's predictions:
 
-```{r evaluation}
+```{r evaluation, eval = mlx_has_gpu()}
 # Make predictions on all training points
 predictions <- mlx_forward(mlp, x_mlx)
 pred_probs <- as.matrix(predictions)
@@ -126,7 +126,7 @@ accuracy <- sum(diag(confusion)) / sum(confusion)
 cat(sprintf("\nAccuracy: %.2f%%\n", accuracy * 100))
 ```
 
-```{r plot_predictions, fig.width=7, fig.height=5}
+```{r plot_predictions, fig.width=7, fig.height=5, eval = mlx_has_gpu()}
 # Plot predicted classes
 plot(x_train[, 1], x_train[, 2],
      col = ifelse(pred_classes == 0, "blue", "red"),

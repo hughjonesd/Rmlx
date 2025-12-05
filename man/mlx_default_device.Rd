@@ -19,8 +19,11 @@ Get or set default MLX device
 \examples{
 mlx_default_device()  # Get current default
 mlx_default_device("cpu")  # Set to CPU
-mlx_default_device("gpu")  # Set back to GPU
-mlx_default_device()
+if (mlx_has_gpu()) {
+  mlx_default_device("gpu")  # Set back to GPU
+  mlx_default_device()
+}
+mlx_default_device("cpu")
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/metal.html}{mlx.core.default_device}
