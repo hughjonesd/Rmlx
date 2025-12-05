@@ -383,6 +383,7 @@ test_that("mlx indexing works with higher dimensional arrays", {
 })
 
 test_that("mlx indexing preserves device", {
+  skip_if_not(mlx_has_gpu())
   mat <- matrix(1:12, 3, 4)
   x <- as_mlx(mat, device = "gpu")
 

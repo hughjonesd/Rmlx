@@ -118,6 +118,7 @@ test_that("mlx_best_device is consistent with mlx_has_gpu", {
 })
 
 test_that("mlx_device returns device of mlx object", {
+  skip_if_not(mlx_has_gpu())
   # Create object on GPU
   x_gpu <- as_mlx(1:10, device = "gpu")
   expect_equal(mlx_device(x_gpu), "gpu")
@@ -128,6 +129,7 @@ test_that("mlx_device returns device of mlx object", {
 })
 
 test_that("mlx_device works with different object types", {
+  skip_if_not(mlx_has_gpu())
   # Vector
   vec <- as_mlx(1:5, device = "cpu")
   expect_equal(mlx_device(vec), "cpu")

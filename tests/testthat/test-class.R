@@ -152,6 +152,7 @@ test_that("as.numeric.mlx drops dimensions", {
 })
 
 test_that("as_mlx changes device and dtype for existing mlx inputs", {
+  skip_if_not(mlx_has_gpu())
   cpu_vec <- mlx_vector(1:10, device = "cpu")
   gpu_vec <- as_mlx(cpu_vec, dtype = "float32", device = "gpu")
 

@@ -8,8 +8,11 @@
 #' @examples
 #' mlx_default_device()  # Get current default
 #' mlx_default_device("cpu")  # Set to CPU
-#' mlx_default_device("gpu")  # Set back to GPU
-#' mlx_default_device()
+#' if (mlx_has_gpu()) {
+#'   mlx_default_device("gpu")  # Set back to GPU
+#'   mlx_default_device()
+#' }
+#' mlx_default_device("cpu")
 mlx_default_device <- function(value) {
   if (missing(value)) {
     return(cpp_mlx_default_device())

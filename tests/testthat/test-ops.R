@@ -88,6 +88,7 @@ test_that("boolean operands coerce for arithmetic", {
 })
 
 test_that("binary operations align devices and dtypes", {
+  skip_if_not(mlx_has_gpu())
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device))
 
@@ -122,6 +123,7 @@ test_that("arithmetic works on non-contiguous views", {
 })
 
 test_that("logical operators work", {
+  skip_if_not(mlx_has_gpu())
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device))
   mlx_default_device("gpu")

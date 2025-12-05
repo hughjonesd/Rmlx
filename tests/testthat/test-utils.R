@@ -59,6 +59,7 @@ test_that("dim<-.mlx works for 3D arrays", {
 })
 
 test_that("dim<-.mlx preserves device and dtype", {
+  skip_if_not(mlx_has_gpu())
   x <- as_mlx(1:12, device = "gpu", dtype = "float32")
   dim(x) <- c(3, 4)
 

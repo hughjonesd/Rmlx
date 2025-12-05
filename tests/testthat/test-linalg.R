@@ -66,6 +66,7 @@ test_that("solve works when A is_mlx and b is R matrix", {
 })
 
 test_that("solve stages to cpu and restores gpu device", {
+  skip_if_not(mlx_has_gpu())
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device))
 
@@ -274,6 +275,7 @@ test_that("svd.mlx U and V are orthogonal", {
 })
 
 test_that("svd.mlx preserves device and dtype", {
+  skip_if_not(mlx_has_gpu())
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device))
 

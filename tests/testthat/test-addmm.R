@@ -27,6 +27,7 @@ test_that("mlx_addmm respects alpha and beta scaling", {
 })
 
 test_that("mlx_addmm promotes dtype and device", {
+  skip_if_not(mlx_has_gpu())
   mat1 <- mlx_matrix(1:4, 2, 2, dtype = "float32", device = "gpu")
   mat2 <- mlx_matrix(5:8, 2, 2, dtype = "float32", device = "gpu")
   input <- mlx_matrix(rep(1, 4), 2, 2, dtype = "float32", device = "gpu")

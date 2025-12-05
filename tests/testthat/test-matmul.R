@@ -19,6 +19,7 @@ test_that("matrix multiplication requires matrices (no vector auto-promotion)", 
 })
 
 test_that("matrix multiplication aligns devices and dtypes", {
+  skip_if_not(mlx_has_gpu())
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device))
 
