@@ -369,9 +369,9 @@ t2 <- system.time({
 })
 
 cat("Base R:", t1["elapsed"], "seconds\n")
-#> Base R: 0.022 seconds
+#> Base R: 0.024 seconds
 cat("MLX:", t2["elapsed"], "seconds\n")
-#> MLX: 0.048 seconds
+#> MLX: 0.014 seconds
 ```
 
 Note: This is an informal comparison, not a rigorous benchmark.
