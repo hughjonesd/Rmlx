@@ -20,7 +20,8 @@ Waits for outstanding operations on the specified device or stream to complete.
 }
 \examples{
 x <- mlx_matrix(1:4, 2, 2)
-mlx_synchronize("gpu")
+mlx_synchronize("cpu")
+if (mlx_has_gpu()) mlx_synchronize("gpu")
 stream <- mlx_new_stream()
 mlx_synchronize(stream)
 }
