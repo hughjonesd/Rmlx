@@ -5,6 +5,7 @@ test_that("mlx_default_device getter works", {
 })
 
 test_that("mlx_default_device setter works", {
+  skip_if_not(mlx_has_gpu())
   old_device <- mlx_default_device()
 
   mlx_default_device("cpu")
@@ -18,6 +19,7 @@ test_that("mlx_default_device setter works", {
 })
 
 test_that("device argument is respected", {
+  skip_if_not(mlx_has_gpu())
   x <- matrix(1:12, 3, 4)
 
   x_gpu <- as_mlx(x, device = "gpu")

@@ -1,4 +1,5 @@
 test_that("mlx_import_function loads and runs positional args", {
+  skip_if_not(mlx_has_gpu())
   fn_path <- system.file("extdata", "add_matrix.mlxfn", package = "Rmlx")
   imported <- mlx_import_function(fn_path, device = "cpu")
 
@@ -11,6 +12,7 @@ test_that("mlx_import_function loads and runs positional args", {
 })
 
 test_that("mlx_import_function accepts named arguments", {
+  skip_if_not(mlx_has_gpu())
   fn_path <- system.file("extdata", "add_matrix.mlxfn", package = "Rmlx")
   imported <- mlx_import_function(fn_path, device = "cpu")
 
