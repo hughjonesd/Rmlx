@@ -15,6 +15,7 @@ MLX_BUILD_DIR="${BUILD_DIR}/mlx-build"
 MLX_INSTALL_DIR="${BUILD_DIR}/mlx-install"
 MLX_TARBALL_PATH="${ROOT_DIR}/src/vendor/mlx-${MLX_VERSION}.tar.gz"
 MLX_VERSION_STAMP="${MLX_SOURCE_DIR}/.rmlx-source-version"
+SHIM_ABS=""
 
 if [ -z "${R_HOME:-}" ]; then
   R_HOME=$(R RHOME)
@@ -445,13 +446,15 @@ EOF_CBLAS_SHIM
     LAPACK_INCLUDE_DIRS="${SHIM_ABS};${R_INCLUDE_DIR}"
     CMAKE_EXTRA_FLAGS="$CMAKE_EXTRA_FLAGS -DLAPACK_INCLUDE_DIRS=${LAPACK_INCLUDE_DIRS} -DLAPACK_LIBRARIES=\"${LAPACK_LIBS}\" -DBLAS_LIBRARIES=\"${BLAS_LIBS}\""
 
-    # Clean MLX build dir to avoid stale caches
-    rm -rf "$MLX_BUILD_DIR"
-    mkdir -p "$MLX_BUILD_DIR"
-
     # Provide shim headers directly into the MLX source tree so include paths are simple
     cp "${SHIM_ABS}/lapack.h" "${MLX_SOURCE_DIR}/lapack.h"
     cp "${SHIM_ABS}/cblas.h"  "${MLX_SOURCE_DIR}/cblas.h"
+  fi
+
+  # Standard include dirs for C++: always R headers, plus shim path on Linux
+  CXX_STD_INCLUDES="${R_INCLUDE_DIR}"
+  if [ -n "$SHIM_ABS" ]; then
+    CXX_STD_INCLUDES="${CXX_STD_INCLUDES};${SHIM_ABS}"
   fi
 
   "$CMAKE" -S "$MLX_SOURCE_DIR" -B "$MLX_BUILD_DIR" \
@@ -469,7 +472,7 @@ EOF_CBLAS_SHIM
     -DMLX_BUILD_CPU=$MLX_BUILD_CPU \
     -DMLX_BUILD_CUDA=$MLX_BUILD_CUDA \
     -DCMAKE_C_STANDARD_INCLUDE_DIRECTORIES="${R_INCLUDE_DIR}" \
-    -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES="${R_INCLUDE_DIR};${SHIM_ABS}" \
+    -DCMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES="${CXX_STD_INCLUDES}" \
     $CMAKE_EXTRA_FLAGS
 
   # Dump key cache entries for debugging include paths
