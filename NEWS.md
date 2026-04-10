@@ -1,5 +1,7 @@
 # Rmlx 0.2.3
 
+* Speeded up single-axis `[` subsetting by routing it through MLX `take()`
+  instead of the generic meshgrid gather path.
 * Fixed compatibility with MLX 0.31.1.
 * Force clean recompilation when the detected MLX install or build flags change,
   avoiding stale object files after MLX upgrades.
