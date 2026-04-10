@@ -4,6 +4,10 @@
 
 # Remove generated Makevars
 rm -f src/Makevars
+rm -f src/.rmlx-build-config
+
+# Remove compiled package artifacts
+rm -f src/*.o src/*.so src/*.dll
 
 # Clean up MLX build artifacts
 if [ -d "build/mlx-build" ] || [ -d "build/mlx-src" ] || [ -d "build/mlx-install" ]; then

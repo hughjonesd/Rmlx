@@ -215,7 +215,8 @@ List cpp_mlx_quantize(SEXP w_xp_, int group_size, int bits,
 
   array w = w_wrapper->get();
   std::vector<array> result = quantize(w, std::optional<int>(group_size),
-                                       std::optional<int>(bits), mode, target_device);
+                                       std::optional<int>(bits), mode,
+                                       std::nullopt, target_device);
 
   // quantize returns a vector with 2 or 3 elements: [w_q, scales, biases (optional)]
   List out;
@@ -249,7 +250,8 @@ SEXP cpp_mlx_dequantize(SEXP w_xp_, SEXP scales_xp_, SEXP biases_xp_,
   }
 
   array result = dequantize(w, scales, biases, std::optional<int>(group_size),
-                           std::optional<int>(bits), mode, std::nullopt, target_device);
+                            std::optional<int>(bits), mode, std::nullopt,
+                            std::nullopt, target_device);
 
   return make_mlx_xptr(std::move(result));
 }
