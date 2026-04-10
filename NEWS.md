@@ -1,3 +1,11 @@
+# Rmlx 0.2.3
+
+* Fixed compatibility with MLX 0.31.1.
+* Force clean recompilation when the detected MLX install or build flags change,
+  avoiding stale object files after MLX upgrades.
+
+# Rmlx 0.2.2
+
 # Rmlx 0.2.1
 
 # Rmlx 0.2.0
