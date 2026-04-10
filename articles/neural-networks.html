@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@
       <h1>Neural Networks with Rmlx</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/hughjonesd/Rmlx/blob/v0.2.2/vignettes/neural-networks.Rmd" class="external-link"><code>vignettes/neural-networks.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/hughjonesd/Rmlx/blob/master/vignettes/neural-networks.Rmd" class="external-link"><code>vignettes/neural-networks.Rmd</code></a></small>
       <div class="d-none name"><code>neural-networks.Rmd</code></div>
     </div>
 
@@ -129,7 +129,7 @@ perceptron (MLP) for binary classification:</p>
 <span>     pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>     main <span class="op">=</span> <span class="st">"Training Data"</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">"Feature 1"</span>, ylab <span class="op">=</span> <span class="st">"Feature 2"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="neural-networks_files/figure-html/plot_data-1.png" class="r-plt" width="672"></p>
+<p><img src="neural-networks_files/figure-html/plot_data-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="training-loop">Training Loop<a class="anchor" aria-label="anchor" href="#training-loop"></a>
@@ -159,17 +159,17 @@ perceptron (MLP) for binary classification:</p>
 <span>  <span class="op">}</span></span>
 <span><span class="op">}</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 100, Loss: 0.6733</span></span>
+<span><span class="co">#&gt; Epoch 100, Loss: 0.6681</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 200, Loss: 0.6628</span></span>
+<span><span class="co">#&gt; Epoch 200, Loss: 0.6654</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 300, Loss: 0.6632</span></span>
+<span><span class="co">#&gt; Epoch 300, Loss: 0.6602</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 400, Loss: 0.6567</span></span>
+<span><span class="co">#&gt; Epoch 400, Loss: 0.6610</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 500, Loss: 0.6550</span></span>
+<span><span class="co">#&gt; Epoch 500, Loss: 0.6584</span></span>
 <span><span class="co">#&gt; Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix</span></span>
-<span><span class="co">#&gt; Epoch 600, Loss: 0.6579</span></span>
+<span><span class="co">#&gt; Epoch 600, Loss: 0.6533</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/mlx_set_training.html">mlx_set_training</a></span><span class="op">(</span><span class="va">mlp</span>, <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -188,8 +188,8 @@ perceptron (MLP) for binary classification:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">confusion</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       Predicted</span></span>
 <span><span class="co">#&gt; Actual   0   1</span></span>
-<span><span class="co">#&gt;      0 772 228</span></span>
-<span><span class="co">#&gt;      1 545 455</span></span>
+<span><span class="co">#&gt;      0 771 229</span></span>
+<span><span class="co">#&gt;      1 544 456</span></span>
 <span></span>
 <span><span class="co"># Calculate accuracy</span></span>
 <span><span class="va">accuracy</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="../reference/diag.html">diag</a></span><span class="op">(</span><span class="va">confusion</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">confusion</span><span class="op">)</span></span>
@@ -203,7 +203,7 @@ perceptron (MLP) for binary classification:</p>
 <span>     pch <span class="op">=</span> <span class="fl">19</span>, cex <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>     main <span class="op">=</span> <span class="st">"Predicted Classes"</span>,</span>
 <span>     xlab <span class="op">=</span> <span class="st">"Feature 1"</span>, ylab <span class="op">=</span> <span class="st">"Feature 2"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="neural-networks_files/figure-html/plot_predictions-1.png" class="r-plt" width="672"></p>
+<p><img src="neural-networks_files/figure-html/plot_predictions-1.png" class="r-plt" alt="" width="672"></p>
 </div>
 <div class="section level2">
 <h2 id="using-different-architectures">Using Different Architectures<a class="anchor" aria-label="anchor" href="#using-different-architectures"></a>

@@ -32,5 +32,5 @@ system.time(x <- mlx_rand_normal(1e7))
 #>       0       0       0 
 system.time(mlx_eval(x))
 #>    user  system elapsed 
-#>   0.134   0.004   0.138 
+#>   0.189   0.010   0.211 
 ```
