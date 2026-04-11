@@ -365,6 +365,18 @@ void sgeev_(const char *jobvl, const char *jobvr, const int *n, float *a, const 
 void dgeev_(const char *jobvl, const char *jobvr, const int *n, double *a, const int *lda,
             double *wr, double *wi, double *vl, const int *ldvl, double *vr, const int *ldvr,
             double *work, const int *lwork, int *info);
+void cgeev_(const char *jobvl, const char *jobvr, const int *n,
+            lapack_complex_float *a, const int *lda,
+            lapack_complex_float *w, lapack_complex_float *vl,
+            const int *ldvl, lapack_complex_float *vr, const int *ldvr,
+            lapack_complex_float *work, const int *lwork, float *rwork,
+            int *info);
+void zgeev_(const char *jobvl, const char *jobvr, const int *n,
+            lapack_complex_double *a, const int *lda,
+            lapack_complex_double *w, lapack_complex_double *vl,
+            const int *ldvl, lapack_complex_double *vr, const int *ldvr,
+            lapack_complex_double *work, const int *lwork, double *rwork,
+            int *info);
 
 void spotrf_(const char *uplo, const int *n, float *a, const int *lda, int *info);
 void dpotrf_(const char *uplo, const int *n, double *a, const int *lda, int *info);
@@ -375,6 +387,18 @@ void sgesdd_(const char *jobz, const int *m, const int *n, float *a, const int *
 void dgesdd_(const char *jobz, const int *m, const int *n, double *a, const int *lda,
              double *s, double *u, const int *ldu, double *vt, const int *ldvt,
              double *work, const int *lwork, int *iwork, int *info);
+void cgesdd_(const char *jobz, const int *m, const int *n,
+             lapack_complex_float *a, const int *lda, float *s,
+             lapack_complex_float *u, const int *ldu,
+             lapack_complex_float *vt, const int *ldvt,
+             lapack_complex_float *work, const int *lwork, float *rwork,
+             int *iwork, int *info);
+void zgesdd_(const char *jobz, const int *m, const int *n,
+             lapack_complex_double *a, const int *lda, double *s,
+             lapack_complex_double *u, const int *ldu,
+             lapack_complex_double *vt, const int *ldvt,
+             lapack_complex_double *work, const int *lwork, double *rwork,
+             int *iwork, int *info);
 
 void sgetrf_(const int *m, const int *n, float *a, const int *lda, int *ipiv, int *info);
 void dgetrf_(const int *m, const int *n, double *a, const int *lda, int *ipiv, int *info);
