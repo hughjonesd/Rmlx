@@ -196,6 +196,12 @@
   : Update a slice of an mlx array
 - [`mlx_gather()`](https://hughjonesd.github.io/Rmlx/reference/mlx_gather.md)
   : Gather elements from an mlx array
+- [`mlx_take_along_axis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_take_along_axis.md)
+  : Take values using per-position axis indices
+- [`mlx_put_along_axis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_put_along_axis.md)
+  : Write values using per-position axis indices
+- [`mlx_scatter_add_axis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_scatter_add_axis.md)
+  : Add values using per-position axis indices
 - [`abind()`](https://hughjonesd.github.io/Rmlx/reference/abind.md) :
   Bind mlx arrays along an axis
 - [`rbind(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/rbind.mlx.md)
@@ -390,6 +396,8 @@
   : Automatic differentiation for MLX functions
 - [`mlx_stop_gradient()`](https://hughjonesd.github.io/Rmlx/reference/mlx_stop_gradient.md)
   : Stop gradient propagation through an mlx array
+- [`mlx_metal_kernel()`](https://hughjonesd.github.io/Rmlx/reference/mlx_metal_kernel.md)
+  : Create a JIT-compiled custom Metal kernel
 - [`mlx_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile.md)
   : Compile an MLX Function for Optimized Execution
 - [`mlx_disable_compile()`](https://hughjonesd.github.io/Rmlx/reference/mlx_compile_control.md)

@@ -2,6 +2,18 @@
 
 ## Rmlx 0.2.3
 
+- Speeded up single-axis `[` subsetting by routing it through MLX
+  `take()` instead of the generic meshgrid gather path.
+- Added
+  [`mlx_take_along_axis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_take_along_axis.md),
+  [`mlx_put_along_axis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_put_along_axis.md),
+  and
+  [`mlx_scatter_add_axis()`](https://hughjonesd.github.io/Rmlx/reference/mlx_scatter_add_axis.md)
+  wrappers for MLX’s axis-aligned indexed update ops.
+- Added
+  [`mlx_metal_kernel()`](https://hughjonesd.github.io/Rmlx/reference/mlx_metal_kernel.md)
+  to build custom Metal kernels from R and keep inputs and outputs as
+  MLX arrays.
 - Fixed compatibility with MLX 0.31.1.
 - Force clean recompilation when the detected MLX install or build flags
   change, avoiding stale object files after MLX upgrades.

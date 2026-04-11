@@ -123,6 +123,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_matrix.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_maximum.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_meshgrid.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_metal_kernel.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_minimum.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_moveaxis.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_mse_loss.html</loc></url>
@@ -136,6 +137,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_set_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_param_values.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_parameters.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_put_along_axis.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_quantile.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_quantize.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_quantized_matmul.html</loc></url>
@@ -158,6 +160,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_save_gguf.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_save_safetensors.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_scalar.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_scatter_add_axis.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sequential.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_set_default_stream.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_set_training.html</loc></url>
@@ -176,6 +179,7 @@
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_sum.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_swapaxes.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_synchronize.html</loc></url>
+<url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_take_along_axis.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_tanh.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_tile.html</loc></url>
 <url><loc>https://hughjonesd.github.io/Rmlx/reference/mlx_topk.html</loc></url>
