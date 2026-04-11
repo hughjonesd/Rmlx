@@ -143,6 +143,12 @@ mlx_gather <- function(x, indices, axes = NULL) {
 #' @param axis Axis to index (1-based).
 #' @return An `mlx` array.
 #' @export
+#' @examples
+#' x <- mlx_matrix(1:12, nrow = 3, ncol = 4)
+#' idx <- matrix(c(1L, 4L,
+#'                 2L, 3L,
+#'                 4L, 1L), nrow = 3, byrow = TRUE)
+#' mlx_take_along_axis(x, idx, axis = 2L)
 mlx_take_along_axis <- function(x, indices, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)
@@ -160,6 +166,15 @@ mlx_take_along_axis <- function(x, indices, axis) {
 #' @param values Replacement values.
 #' @return An updated `mlx` array.
 #' @export
+#' @examples
+#' x <- mlx_matrix(1:12, nrow = 3, ncol = 4)
+#' idx <- matrix(c(1L, 4L,
+#'                 2L, 3L,
+#'                 4L, 1L), nrow = 3, byrow = TRUE)
+#' values <- matrix(c(100, 200,
+#'                    300, 400,
+#'                    500, 600), nrow = 3, byrow = TRUE)
+#' mlx_put_along_axis(x, idx, values, axis = 2L)
 mlx_put_along_axis <- function(x, indices, values, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)
@@ -177,6 +192,15 @@ mlx_put_along_axis <- function(x, indices, values, axis) {
 #' @inheritParams mlx_put_along_axis
 #' @return An updated `mlx` array after additive scatter.
 #' @export
+#' @examples
+#' x <- mlx_matrix(1:12, nrow = 3, ncol = 4)
+#' idx <- matrix(c(1L, 1L,
+#'                 2L, 3L,
+#'                 4L, 4L), nrow = 3, byrow = TRUE)
+#' values <- matrix(c(10, 20,
+#'                    30, 40,
+#'                    50, 60), nrow = 3, byrow = TRUE)
+#' mlx_scatter_add_axis(x, idx, values, axis = 2L)
 mlx_scatter_add_axis <- function(x, indices, values, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)

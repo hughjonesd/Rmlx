@@ -21,3 +21,10 @@ An \code{mlx} array.
 Mirrors \href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.take_along_axis.html}{\code{mlx.core.take_along_axis()}}
 while accepting 1-based R indices.
 }
+\examples{
+x <- mlx_matrix(1:12, nrow = 3, ncol = 4)
+idx <- matrix(c(1L, 4L,
+                2L, 3L,
+                4L, 1L), nrow = 3, byrow = TRUE)
+mlx_take_along_axis(x, idx, axis = 2L)
+}
