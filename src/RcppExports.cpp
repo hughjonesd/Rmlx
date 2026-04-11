@@ -367,6 +367,47 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_take_along_axis
+SEXP cpp_mlx_take_along_axis(SEXP xp_, SEXP indices_xp_, int axis);
+RcppExport SEXP _Rmlx_cpp_mlx_take_along_axis(SEXP xp_SEXP, SEXP indices_xp_SEXP, SEXP axisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type indices_xp_(indices_xp_SEXP);
+    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_take_along_axis(xp_, indices_xp_, axis));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_put_along_axis
+SEXP cpp_mlx_put_along_axis(SEXP xp_, SEXP indices_xp_, SEXP values_xp_, int axis);
+RcppExport SEXP _Rmlx_cpp_mlx_put_along_axis(SEXP xp_SEXP, SEXP indices_xp_SEXP, SEXP values_xp_SEXP, SEXP axisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type indices_xp_(indices_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type values_xp_(values_xp_SEXP);
+    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_put_along_axis(xp_, indices_xp_, values_xp_, axis));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_scatter_add_axis
+SEXP cpp_mlx_scatter_add_axis(SEXP xp_, SEXP indices_xp_, SEXP values_xp_, int axis);
+RcppExport SEXP _Rmlx_cpp_mlx_scatter_add_axis(SEXP xp_SEXP, SEXP indices_xp_SEXP, SEXP values_xp_SEXP, SEXP axisSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type indices_xp_(indices_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type values_xp_(values_xp_SEXP);
+    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_scatter_add_axis(xp_, indices_xp_, values_xp_, axis));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_slice
 SEXP cpp_mlx_slice(SEXP xp_, SEXP starts_, SEXP stops_, SEXP strides_);
 RcppExport SEXP _Rmlx_cpp_mlx_slice(SEXP xp_SEXP, SEXP starts_SEXP, SEXP stops_SEXP, SEXP strides_SEXP) {
@@ -1971,6 +2012,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_call_imported", (DL_FUNC) &_Rmlx_cpp_mlx_call_imported, 4},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
+    {"_Rmlx_cpp_mlx_take_along_axis", (DL_FUNC) &_Rmlx_cpp_mlx_take_along_axis, 3},
+    {"_Rmlx_cpp_mlx_put_along_axis", (DL_FUNC) &_Rmlx_cpp_mlx_put_along_axis, 4},
+    {"_Rmlx_cpp_mlx_scatter_add_axis", (DL_FUNC) &_Rmlx_cpp_mlx_scatter_add_axis, 4},
     {"_Rmlx_cpp_mlx_slice", (DL_FUNC) &_Rmlx_cpp_mlx_slice, 4},
     {"_Rmlx_cpp_mlx_slice_update", (DL_FUNC) &_Rmlx_cpp_mlx_slice_update, 5},
     {"_Rmlx_cpp_mlx_gather", (DL_FUNC) &_Rmlx_cpp_mlx_gather, 4},

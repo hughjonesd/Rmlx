@@ -117,6 +117,18 @@ cpp_mlx_take <- function(xp_, indices_, axis) {
     .Call(`_Rmlx_cpp_mlx_take`, xp_, indices_, axis)
 }
 
+cpp_mlx_take_along_axis <- function(xp_, indices_xp_, axis) {
+    .Call(`_Rmlx_cpp_mlx_take_along_axis`, xp_, indices_xp_, axis)
+}
+
+cpp_mlx_put_along_axis <- function(xp_, indices_xp_, values_xp_, axis) {
+    .Call(`_Rmlx_cpp_mlx_put_along_axis`, xp_, indices_xp_, values_xp_, axis)
+}
+
+cpp_mlx_scatter_add_axis <- function(xp_, indices_xp_, values_xp_, axis) {
+    .Call(`_Rmlx_cpp_mlx_scatter_add_axis`, xp_, indices_xp_, values_xp_, axis)
+}
+
 cpp_mlx_slice <- function(xp_, starts_, stops_, strides_) {
     .Call(`_Rmlx_cpp_mlx_slice`, xp_, starts_, stops_, strides_)
 }

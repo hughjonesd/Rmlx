@@ -107,6 +107,85 @@ mlx_gather <- function(x, indices, axes = NULL) {
   res
 }
 
+.mlx_index_array <- function(indices, axis_len, device) {
+  if (!is.numeric(indices) && !is_mlx(indices)) {
+    stop("indices must be numeric or an mlx array.", call. = FALSE)
+  }
+  if (!is_mlx(indices) && anyNA(indices)) {
+    stop("indices cannot contain NA values.", call. = FALSE)
+  }
+
+  idx_mlx <- as_mlx(indices, device = device)
+  if (identical(mlx_dtype(idx_mlx), "bool")) {
+    stop("indices must be integer positions, not booleans.", call. = FALSE)
+  }
+  if (any(idx_mlx != floor(idx_mlx))) {
+    stop("indices must be whole numbers.", call. = FALSE)
+  }
+  if (any(idx_mlx <= 0)) {
+    stop("indices must be positive and 1-based.", call. = FALSE)
+  }
+  if (any(idx_mlx > axis_len)) {
+    stop("indices are out of bounds for the selected axis.", call. = FALSE)
+  }
+
+  mlx_cast(idx_mlx - 1L, dtype = "int32")
+}
+
+#' Take values using per-position axis indices
+#'
+#' Mirrors [`mlx.core.take_along_axis()`](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.take_along_axis.html)
+#' while accepting 1-based R indices.
+#'
+#' @inheritParams mlx_array_required
+#' @param indices Integer positions along `axis`. Must be broadcast-compatible
+#'   with `x` except at the selected axis.
+#' @param axis Axis to index (1-based).
+#' @return An `mlx` array.
+#' @export
+mlx_take_along_axis <- function(x, indices, axis) {
+  x <- as_mlx(x)
+  axis_idx <- normalize_axis_single(as.integer(axis), x)
+  idx_mlx <- .mlx_index_array(indices, dim(x)[axis], x$device)
+  ptr <- cpp_mlx_take_along_axis(x$ptr, idx_mlx$ptr, axis_idx)
+  new_mlx(ptr, x$device)
+}
+
+#' Write values using per-position axis indices
+#'
+#' Mirrors [`mlx.core.put_along_axis()`](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.put_along_axis.html)
+#' while accepting 1-based R indices.
+#'
+#' @inheritParams mlx_take_along_axis
+#' @param values Replacement values.
+#' @return An updated `mlx` array.
+#' @export
+mlx_put_along_axis <- function(x, indices, values, axis) {
+  x <- as_mlx(x)
+  axis_idx <- normalize_axis_single(as.integer(axis), x)
+  idx_mlx <- .mlx_index_array(indices, dim(x)[axis], x$device)
+  values_mlx <- as_mlx(values, dtype = mlx_dtype(x), device = x$device)
+  ptr <- cpp_mlx_put_along_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
+  new_mlx(ptr, x$device)
+}
+
+#' Add values using per-position axis indices
+#'
+#' Mirrors [`mlx.core.scatter_add_axis()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.scatter_add_axis)
+#' while accepting 1-based R indices.
+#'
+#' @inheritParams mlx_put_along_axis
+#' @return An updated `mlx` array after additive scatter.
+#' @export
+mlx_scatter_add_axis <- function(x, indices, values, axis) {
+  x <- as_mlx(x)
+  axis_idx <- normalize_axis_single(as.integer(axis), x)
+  idx_mlx <- .mlx_index_array(indices, dim(x)[axis], x$device)
+  values_mlx <- as_mlx(values, dtype = mlx_dtype(x), device = x$device)
+  ptr <- cpp_mlx_scatter_add_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
+  new_mlx(ptr, x$device)
+}
+
 #' Update a slice of an mlx array
 #'
 #' Wrapper around [`mlx.core.slice_update()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.slice_update)

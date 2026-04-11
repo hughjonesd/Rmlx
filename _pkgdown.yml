@@ -106,6 +106,9 @@ reference:
       - mlx_triu
       - mlx_slice_update
       - mlx_gather
+      - mlx_take_along_axis
+      - mlx_put_along_axis
+      - mlx_scatter_add_axis
       - abind
       - rbind.mlx
       - cbind.mlx

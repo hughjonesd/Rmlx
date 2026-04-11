@@ -57,6 +57,42 @@ SEXP cpp_mlx_take(SEXP xp_, SEXP indices_, int axis) {
 }
 
 // [[Rcpp::export]]
+SEXP cpp_mlx_take_along_axis(SEXP xp_, SEXP indices_xp_, int axis) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_xp_);
+  array result = take_along_axis(wrapper->get(), idx_wrapper->get(), axis);
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_put_along_axis(SEXP xp_, SEXP indices_xp_, SEXP values_xp_, int axis) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_xp_);
+  MlxArrayWrapper* values_wrapper = get_mlx_wrapper(values_xp_);
+  array result = put_along_axis(
+    wrapper->get(),
+    idx_wrapper->get(),
+    values_wrapper->get(),
+    axis
+  );
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_scatter_add_axis(SEXP xp_, SEXP indices_xp_, SEXP values_xp_, int axis) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_xp_);
+  MlxArrayWrapper* values_wrapper = get_mlx_wrapper(values_xp_);
+  array result = scatter_add_axis(
+    wrapper->get(),
+    idx_wrapper->get(),
+    values_wrapper->get(),
+    axis
+  );
+  return make_mlx_xptr(std::move(result));
+}
+
+// [[Rcpp::export]]
 SEXP cpp_mlx_slice(SEXP xp_, SEXP starts_, SEXP stops_, SEXP strides_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   IntegerVector starts(starts_);

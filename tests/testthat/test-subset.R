@@ -172,6 +172,55 @@ test_that("mlx_gather supports multi-axis tensors", {
   expect_equal(as.matrix(gathered), expected, tolerance = 1e-6)
 })
 
+test_that("axis-aligned indexed ops mirror base R loops", {
+  x_base <- matrix(1:12, nrow = 3, ncol = 4)
+  idx <- matrix(c(1L, 4L,
+                  2L, 3L,
+                  4L, 1L), nrow = 3, byrow = TRUE)
+  x <- as_mlx(x_base)
+
+  taken <- mlx_take_along_axis(x, idx, axis = 2L)
+  expected_take <- matrix(0, nrow = nrow(idx), ncol = ncol(idx))
+  for (i in seq_len(nrow(idx))) {
+    for (j in seq_len(ncol(idx))) {
+      expected_take[i, j] <- x_base[i, idx[i, j]]
+    }
+  }
+  expect_equal(as.matrix(taken), expected_take, tolerance = 1e-6)
+
+  put_values <- matrix(c(100, 200, 300, 400, 500, 600), nrow = 3, byrow = TRUE)
+  put_expected <- x_base
+  for (i in seq_len(nrow(idx))) {
+    for (j in seq_len(ncol(idx))) {
+      put_expected[i, idx[i, j]] <- put_values[i, j]
+    }
+  }
+  put_result <- mlx_put_along_axis(x, idx, put_values, axis = 2L)
+  expect_equal(as.matrix(put_result), put_expected, tolerance = 1e-6)
+
+  scatter_idx <- matrix(c(1L, 1L,
+                          2L, 3L,
+                          4L, 4L), nrow = 3, byrow = TRUE)
+  scatter_values <- matrix(c(10, 20, 30, 40, 50, 60), nrow = 3, byrow = TRUE)
+  scatter_expected <- x_base
+  for (i in seq_len(nrow(scatter_idx))) {
+    for (j in seq_len(ncol(scatter_idx))) {
+      scatter_expected[i, scatter_idx[i, j]] <-
+        scatter_expected[i, scatter_idx[i, j]] + scatter_values[i, j]
+    }
+  }
+  scatter_result <- mlx_scatter_add_axis(x, scatter_idx, scatter_values, axis = 2L)
+  expect_equal(as.matrix(scatter_result), scatter_expected, tolerance = 1e-6)
+})
+
+test_that("axis-aligned indexed ops validate indices", {
+  x <- as_mlx(matrix(1:6, nrow = 2))
+  expect_error(mlx_take_along_axis(x, matrix(c(0L, 1L), nrow = 1), axis = 2L), "positive")
+  expect_error(mlx_take_along_axis(x, matrix(c(1.5, 2), nrow = 1), axis = 2L), "whole")
+  expect_error(mlx_put_along_axis(x, matrix(c(1L, NA), nrow = 1), 1, axis = 2L), "NA")
+  expect_error(mlx_scatter_add_axis(x, matrix(c(1L, 4L), nrow = 1), 1, axis = 2L), "out of bounds")
+})
+
 test_that("mlx_gather preserves remaining axes and errors on invalid axes", {
   arr <- array(seq_len(24), dim = c(4, 3, 2))
   x <- as_mlx(arr)
