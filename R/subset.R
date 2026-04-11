@@ -118,6 +118,21 @@ vectors_subset <- function(x, idx_list) {
     stop("Wrong number of indices in subset.\n",
          "To use a single logical index, flatten first.")
   }
+
+  active_axes <- which(!vapply(idx_list, is.null, logical(1)))
+  if (length(active_axes) == 1L) {
+    axis <- active_axes[[1L]]
+    idx <- normalize_index(idx_list[[axis]], shape[[axis]], assign = FALSE)
+    idx0 <- if (is.null(idx)) {
+      integer(0)
+    } else {
+      mlx_cast(idx - 1L, dtype = "int32")
+    }
+    idx_arg <- if (is_mlx(idx0)) idx0$ptr else as.integer(idx0)
+    ptr <- cpp_mlx_take(x$ptr, idx_arg, axis - 1L)
+    return(new_mlx(ptr, x$device))
+  }
+
   idx_list <- mapply(normalize_index, idx_list, shape, SIMPLIFY = FALSE,
                      MoreArgs = list(assign = FALSE))
   idx_norm <- lapply(idx_list, function (x) x - 1L)

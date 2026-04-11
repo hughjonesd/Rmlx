@@ -109,12 +109,32 @@ cpp_mlx_call_imported <- function(fn_xp, args_ptrs, kwargs_ptrs, device_str) {
     .Call(`_Rmlx_cpp_mlx_call_imported`, fn_xp, args_ptrs, kwargs_ptrs, device_str)
 }
 
+cpp_mlx_metal_kernel_create <- function(name, input_names, output_names, source, header, ensure_row_contiguous, atomic_outputs) {
+    .Call(`_Rmlx_cpp_mlx_metal_kernel_create`, name, input_names, output_names, source, header, ensure_row_contiguous, atomic_outputs)
+}
+
+cpp_mlx_metal_kernel_call <- function(kernel_xp, mlx_args, output_shapes, output_dtypes, grid, threadgroup, template_args, init_value_, verbose, device_str) {
+    .Call(`_Rmlx_cpp_mlx_metal_kernel_call`, kernel_xp, mlx_args, output_shapes, output_dtypes, grid, threadgroup, template_args, init_value_, verbose, device_str)
+}
+
 cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str, device_str) {
     .Call(`_Rmlx_cpp_mlx_where`, cond_xp_, xp_true_, xp_false_, dtype_str, device_str)
 }
 
 cpp_mlx_take <- function(xp_, indices_, axis) {
     .Call(`_Rmlx_cpp_mlx_take`, xp_, indices_, axis)
+}
+
+cpp_mlx_take_along_axis <- function(xp_, indices_xp_, axis) {
+    .Call(`_Rmlx_cpp_mlx_take_along_axis`, xp_, indices_xp_, axis)
+}
+
+cpp_mlx_put_along_axis <- function(xp_, indices_xp_, values_xp_, axis) {
+    .Call(`_Rmlx_cpp_mlx_put_along_axis`, xp_, indices_xp_, values_xp_, axis)
+}
+
+cpp_mlx_scatter_add_axis <- function(xp_, indices_xp_, values_xp_, axis) {
+    .Call(`_Rmlx_cpp_mlx_scatter_add_axis`, xp_, indices_xp_, values_xp_, axis)
 }
 
 cpp_mlx_slice <- function(xp_, starts_, stops_, strides_) {
