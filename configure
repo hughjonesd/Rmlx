@@ -6,7 +6,7 @@ ROOT_DIR=$(pwd)
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-MLX_VERSION="0.30.0"
+MLX_VERSION="0.31.1"
 MLX_TAG="v${MLX_VERSION}"
 MLX_TARBALL_URL="https://github.com/ml-explore/mlx/archive/refs/tags/${MLX_TAG}.tar.gz"
 BUILD_DIR="build"
@@ -244,12 +244,12 @@ if [ "$USE_SYSTEM_MLX" = true ]; then
       DETECTED_VERSION="${MLX_VER_MAJOR}.${MLX_VER_MINOR}.${MLX_VER_PATCH}"
       log "Detected system MLX version: $DETECTED_VERSION"
 
-      # Check if version >= 0.30.0
+      # Check if version >= 0.31.1
       MLX_VER_NUMERIC=$((100000 * MLX_VER_MAJOR + 1000 * MLX_VER_MINOR + MLX_VER_PATCH))
-      REQUIRED_VER_NUMERIC=30000  # 0.30.0
+      REQUIRED_VER_NUMERIC=31001  # 0.31.1
 
       if [ "$MLX_VER_NUMERIC" -lt "$REQUIRED_VER_NUMERIC" ]; then
-        die "System MLX version $DETECTED_VERSION is too old. Rmlx requires MLX >= 0.30.0. Set MLX_BUILD_FROM_SOURCE=1 to build MLX from source."
+        die "System MLX version $DETECTED_VERSION is too old. Rmlx requires MLX >= 0.31.1. Set MLX_BUILD_FROM_SOURCE=1 to build MLX from source."
       fi
     fi
   fi

@@ -1,4 +1,6 @@
 test_that("mlx_metal_kernel runs a simple elementwise kernel", {
+  skip_if_not(mlx_has_gpu())
+
   add_one <- mlx_metal_kernel(
     name = "add_one_test",
     input_names = "inp",
@@ -23,6 +25,8 @@ test_that("mlx_metal_kernel runs a simple elementwise kernel", {
 })
 
 test_that("mlx_metal_kernel validates launch parameters", {
+  skip_if_not(mlx_has_gpu())
+
   add_one <- mlx_metal_kernel(
     name = "add_one_validate",
     input_names = "inp",

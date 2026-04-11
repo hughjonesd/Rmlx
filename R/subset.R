@@ -120,7 +120,7 @@ vectors_subset <- function(x, idx_list) {
   }
 
   active_axes <- which(!vapply(idx_list, is.null, logical(1)))
-  if (length(active_axes) == 1L) {
+  if (length(active_axes) == 1L && length(shape) <= 2L) {
     axis <- active_axes[[1L]]
     idx <- normalize_index(idx_list[[axis]], shape[[axis]], assign = FALSE)
     idx0 <- if (is.null(idx)) {
