@@ -4,6 +4,8 @@
   instead of the generic meshgrid gather path.
 * Added `mlx_take_along_axis()`, `mlx_put_along_axis()`, and
   `mlx_scatter_add_axis()` wrappers for MLX's axis-aligned indexed update ops.
+* Added `mlx_metal_kernel()` to build custom Metal kernels from R and keep
+  inputs and outputs as MLX arrays.
 * Fixed compatibility with MLX 0.31.1.
 * Force clean recompilation when the detected MLX install or build flags change,
   avoiding stale object files after MLX upgrades.

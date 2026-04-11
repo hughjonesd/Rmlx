@@ -339,6 +339,43 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_metal_kernel_create
+SEXP cpp_mlx_metal_kernel_create(std::string name, CharacterVector input_names, CharacterVector output_names, std::string source, std::string header, bool ensure_row_contiguous, bool atomic_outputs);
+RcppExport SEXP _Rmlx_cpp_mlx_metal_kernel_create(SEXP nameSEXP, SEXP input_namesSEXP, SEXP output_namesSEXP, SEXP sourceSEXP, SEXP headerSEXP, SEXP ensure_row_contiguousSEXP, SEXP atomic_outputsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type name(nameSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type input_names(input_namesSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type output_names(output_namesSEXP);
+    Rcpp::traits::input_parameter< std::string >::type source(sourceSEXP);
+    Rcpp::traits::input_parameter< std::string >::type header(headerSEXP);
+    Rcpp::traits::input_parameter< bool >::type ensure_row_contiguous(ensure_row_contiguousSEXP);
+    Rcpp::traits::input_parameter< bool >::type atomic_outputs(atomic_outputsSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_metal_kernel_create(name, input_names, output_names, source, header, ensure_row_contiguous, atomic_outputs));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_metal_kernel_call
+List cpp_mlx_metal_kernel_call(SEXP kernel_xp, List mlx_args, List output_shapes, CharacterVector output_dtypes, IntegerVector grid, IntegerVector threadgroup, List template_args, SEXP init_value_, bool verbose, std::string device_str);
+RcppExport SEXP _Rmlx_cpp_mlx_metal_kernel_call(SEXP kernel_xpSEXP, SEXP mlx_argsSEXP, SEXP output_shapesSEXP, SEXP output_dtypesSEXP, SEXP gridSEXP, SEXP threadgroupSEXP, SEXP template_argsSEXP, SEXP init_value_SEXP, SEXP verboseSEXP, SEXP device_strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type kernel_xp(kernel_xpSEXP);
+    Rcpp::traits::input_parameter< List >::type mlx_args(mlx_argsSEXP);
+    Rcpp::traits::input_parameter< List >::type output_shapes(output_shapesSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type output_dtypes(output_dtypesSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type grid(gridSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type threadgroup(threadgroupSEXP);
+    Rcpp::traits::input_parameter< List >::type template_args(template_argsSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type init_value_(init_value_SEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_metal_kernel_call(kernel_xp, mlx_args, output_shapes, output_dtypes, grid, threadgroup, template_args, init_value_, verbose, device_str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_where
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_, std::string dtype_str, std::string device_str);
 RcppExport SEXP _Rmlx_cpp_mlx_where(SEXP cond_xp_SEXP, SEXP xp_true_SEXP, SEXP xp_false_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
@@ -2010,6 +2047,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_has_gpu", (DL_FUNC) &_Rmlx_cpp_mlx_has_gpu, 0},
     {"_Rmlx_cpp_mlx_import_function", (DL_FUNC) &_Rmlx_cpp_mlx_import_function, 1},
     {"_Rmlx_cpp_mlx_call_imported", (DL_FUNC) &_Rmlx_cpp_mlx_call_imported, 4},
+    {"_Rmlx_cpp_mlx_metal_kernel_create", (DL_FUNC) &_Rmlx_cpp_mlx_metal_kernel_create, 7},
+    {"_Rmlx_cpp_mlx_metal_kernel_call", (DL_FUNC) &_Rmlx_cpp_mlx_metal_kernel_call, 10},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_take_along_axis", (DL_FUNC) &_Rmlx_cpp_mlx_take_along_axis, 3},
