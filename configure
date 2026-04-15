@@ -6,7 +6,7 @@ ROOT_DIR=$(pwd)
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-MLX_VERSION="0.30.0"
+MLX_VERSION="0.31.1"
 MLX_TAG="v${MLX_VERSION}"
 MLX_TARBALL_URL="https://github.com/ml-explore/mlx/archive/refs/tags/${MLX_TAG}.tar.gz"
 BUILD_DIR="build"
@@ -244,12 +244,12 @@ if [ "$USE_SYSTEM_MLX" = true ]; then
       DETECTED_VERSION="${MLX_VER_MAJOR}.${MLX_VER_MINOR}.${MLX_VER_PATCH}"
       log "Detected system MLX version: $DETECTED_VERSION"
 
-      # Check if version >= 0.30.0
+      # Check if version >= 0.31.1
       MLX_VER_NUMERIC=$((100000 * MLX_VER_MAJOR + 1000 * MLX_VER_MINOR + MLX_VER_PATCH))
-      REQUIRED_VER_NUMERIC=30000  # 0.30.0
+      REQUIRED_VER_NUMERIC=31001  # 0.31.1
 
       if [ "$MLX_VER_NUMERIC" -lt "$REQUIRED_VER_NUMERIC" ]; then
-        die "System MLX version $DETECTED_VERSION is too old. Rmlx requires MLX >= 0.30.0. Set MLX_BUILD_FROM_SOURCE=1 to build MLX from source."
+        die "System MLX version $DETECTED_VERSION is too old. Rmlx requires MLX >= 0.31.1. Set MLX_BUILD_FROM_SOURCE=1 to build MLX from source."
       fi
     fi
   fi
@@ -365,6 +365,18 @@ void sgeev_(const char *jobvl, const char *jobvr, const int *n, float *a, const 
 void dgeev_(const char *jobvl, const char *jobvr, const int *n, double *a, const int *lda,
             double *wr, double *wi, double *vl, const int *ldvl, double *vr, const int *ldvr,
             double *work, const int *lwork, int *info);
+void cgeev_(const char *jobvl, const char *jobvr, const int *n,
+            lapack_complex_float *a, const int *lda,
+            lapack_complex_float *w, lapack_complex_float *vl,
+            const int *ldvl, lapack_complex_float *vr, const int *ldvr,
+            lapack_complex_float *work, const int *lwork, float *rwork,
+            int *info);
+void zgeev_(const char *jobvl, const char *jobvr, const int *n,
+            lapack_complex_double *a, const int *lda,
+            lapack_complex_double *w, lapack_complex_double *vl,
+            const int *ldvl, lapack_complex_double *vr, const int *ldvr,
+            lapack_complex_double *work, const int *lwork, double *rwork,
+            int *info);
 
 void spotrf_(const char *uplo, const int *n, float *a, const int *lda, int *info);
 void dpotrf_(const char *uplo, const int *n, double *a, const int *lda, int *info);
@@ -375,6 +387,18 @@ void sgesdd_(const char *jobz, const int *m, const int *n, float *a, const int *
 void dgesdd_(const char *jobz, const int *m, const int *n, double *a, const int *lda,
              double *s, double *u, const int *ldu, double *vt, const int *ldvt,
              double *work, const int *lwork, int *iwork, int *info);
+void cgesdd_(const char *jobz, const int *m, const int *n,
+             lapack_complex_float *a, const int *lda, float *s,
+             lapack_complex_float *u, const int *ldu,
+             lapack_complex_float *vt, const int *ldvt,
+             lapack_complex_float *work, const int *lwork, float *rwork,
+             int *iwork, int *info);
+void zgesdd_(const char *jobz, const int *m, const int *n,
+             lapack_complex_double *a, const int *lda, double *s,
+             lapack_complex_double *u, const int *ldu,
+             lapack_complex_double *vt, const int *ldvt,
+             lapack_complex_double *work, const int *lwork, double *rwork,
+             int *iwork, int *info);
 
 void sgetrf_(const int *m, const int *n, float *a, const int *lda, int *ipiv, int *info);
 void dgetrf_(const int *m, const int *n, double *a, const int *lda, int *ipiv, int *info);
