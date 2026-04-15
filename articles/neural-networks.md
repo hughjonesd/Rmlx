@@ -22,6 +22,9 @@ library(Rmlx)
 #>     asplit, backsolve, chol2inv, col, colMeans, colSums, diag, drop,
 #>     outer, row, rowMeans, rowSums, svd
 
+mlx_default_device(mlx_best_device())
+#> [1] "gpu"
+
 # Create a 3-layer MLP
 mlp <- mlx_sequential(
   mlx_linear(2, 32),    # Input: 2 features
@@ -105,17 +108,17 @@ for (epoch in seq_len(n_epochs)) {
   }
 }
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 100, Loss: 0.6692
+#> Epoch 100, Loss: 0.6706
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 200, Loss: 0.6635
+#> Epoch 200, Loss: 0.6665
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 300, Loss: 0.6645
+#> Epoch 300, Loss: 0.6629
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 400, Loss: 0.6542
+#> Epoch 400, Loss: 0.6556
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 500, Loss: 0.6565
+#> Epoch 500, Loss: 0.6556
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 600, Loss: 0.6528
+#> Epoch 600, Loss: 0.6568
 
 mlx_set_training(mlp, FALSE)
 ```
@@ -135,14 +138,14 @@ confusion <- table(Actual = y_train, Predicted = pred_classes)
 print(confusion)
 #>       Predicted
 #> Actual   0   1
-#>      0 772 228
-#>      1 544 456
+#>      0 770 230
+#>      1 538 462
 
 # Calculate accuracy
 accuracy <- sum(diag(confusion)) / sum(confusion)
 cat(sprintf("\nAccuracy: %.2f%%\n", accuracy * 100))
 #> 
-#> Accuracy: 61.40%
+#> Accuracy: 61.60%
 ```
 
 ``` r
