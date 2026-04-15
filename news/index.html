@@ -38,6 +38,8 @@
 <ul><li>Speeded up single-axis <code>[</code> subsetting by routing it through MLX <code>take()</code> instead of the generic meshgrid gather path.</li>
 <li>Added <code><a href="../reference/mlx_take_along_axis.html">mlx_take_along_axis()</a></code>, <code><a href="../reference/mlx_put_along_axis.html">mlx_put_along_axis()</a></code>, and <code><a href="../reference/mlx_scatter_add_axis.html">mlx_scatter_add_axis()</a></code> wrappers for MLX’s axis-aligned indexed update ops.</li>
 <li>Added <code><a href="../reference/mlx_metal_kernel.html">mlx_metal_kernel()</a></code> to build custom Metal kernels from R and keep inputs and outputs as MLX arrays.</li>
+<li>Updated the bundled MLX source tarball and minimum supported MLX version to 0.31.1.</li>
+<li>Fixed the Linux bundled-build LAPACK shim for complex eigendecomposition and SVD entry points used by MLX 0.31.1.</li>
 <li>Fixed compatibility with MLX 0.31.1.</li>
 <li>Force clean recompilation when the detected MLX install or build flags change, avoiding stale object files after MLX upgrades.</li>
 </ul></div>
