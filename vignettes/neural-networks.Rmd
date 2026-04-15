@@ -23,6 +23,8 @@ Rmlx provides modular neural network components that can be combined using `mlx_
 ```{r setup}
 library(Rmlx)
 
+mlx_default_device(mlx_best_device())
+
 # Create a 3-layer MLP
 mlp <- mlx_sequential(
   mlx_linear(2, 32),    # Input: 2 features
@@ -80,7 +82,7 @@ plot(x_train[, 1], x_train[, 2],
 
 Define a loss function and train using gradient descent:
 
-```{r training, eval = mlx_has_gpu()}
+```{r training}
 # Loss function operating on the module
 loss_fn <- function(module, x, y) {
   preds <- mlx_forward(module, x)
@@ -111,7 +113,7 @@ mlx_set_training(mlp, FALSE)
 
 Let's evaluate the model's predictions:
 
-```{r evaluation, eval = mlx_has_gpu()}
+```{r evaluation}
 # Make predictions on all training points
 predictions <- mlx_forward(mlp, x_mlx)
 pred_probs <- as.matrix(predictions)
@@ -126,7 +128,7 @@ accuracy <- sum(diag(confusion)) / sum(confusion)
 cat(sprintf("\nAccuracy: %.2f%%\n", accuracy * 100))
 ```
 
-```{r plot_predictions, fig.width=7, fig.height=5, eval = mlx_has_gpu()}
+```{r plot_predictions, fig.width=7, fig.height=5}
 # Plot predicted classes
 plot(x_train[, 1], x_train[, 2],
      col = ifelse(pred_classes == 0, "blue", "red"),
