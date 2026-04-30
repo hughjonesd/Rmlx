@@ -4,6 +4,7 @@ This vignette compares base R and MLX timings across core matrix
 routines.
 
 ``` r
+
 library(Rmlx)
 #> 
 #> Attaching package: 'Rmlx'
@@ -32,6 +33,7 @@ source(helpers_path)
 ```
 
 ``` r
+
 sizes <- c(small = 500L, medium = 1000L, large = 2000L)
 inputs <- build_benchmark_inputs(sizes)
 operations <- benchmark_operations()
@@ -55,6 +57,7 @@ bench_results$operation <- factor(
 ```
 
 ``` r
+
 ggplot(
   bench_results,
   aes(x = size, y = median_seconds, colour = implementation, group = implementation)
@@ -82,6 +85,7 @@ Distribution functions operate on vectors rather than matrices, so we
 benchmark them at larger sizes: 1,000, 100,000, and 10,000,000 elements.
 
 ``` r
+
 dist_sizes <- c(small = 1000L, medium = 100000L, large = 10000000L)
 dist_inputs <- build_distribution_inputs(dist_sizes)
 dist_operations <- distribution_operations()
@@ -105,6 +109,7 @@ dist_results$operation <- factor(
 ```
 
 ``` r
+
 ggplot(
   dist_results,
   aes(x = size, y = median_seconds, colour = implementation, group = implementation)

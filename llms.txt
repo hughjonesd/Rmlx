@@ -30,6 +30,7 @@ found, configure downloads MLX v0.29.4 from GitHub and builds it locally
 Install from GitHub:
 
 ``` r
+
 # Using remotes
 remotes::install_github("hughjonesd/Rmlx")
 
@@ -52,6 +53,7 @@ backend
 Control which backends to build using `configure.args`:
 
 ``` r
+
 # CPU-only build (no GPU acceleration)
 remotes::install_github("hughjonesd/Rmlx",
                         configure.args = "--cpu-only")
@@ -68,6 +70,7 @@ remotes::install_github("hughjonesd/Rmlx",
 Or use environment variables:
 
 ``` r
+
 Sys.setenv(MLX_BUILD_CPU = "ON", MLX_BUILD_CUDA = "OFF")
 remotes::install_github("hughjonesd/Rmlx")
 ```
@@ -84,6 +87,7 @@ The configure script will auto-detect it. If it doesn’t, specify paths
 explicitly:
 
 ``` r
+
 Sys.setenv(MLX_INCLUDE = "/opt/homebrew/include")
 Sys.setenv(MLX_LIB_DIR = "/opt/homebrew/lib")
 remotes::install_github("hughjonesd/Rmlx")
@@ -95,6 +99,7 @@ To force downloading MLX v0.29.4 and building it even if system MLX is
 available:
 
 ``` r
+
 Sys.setenv(MLX_BUILD_FROM_SOURCE = "1")
 remotes::install_github("hughjonesd/Rmlx")
 ```
@@ -107,6 +112,7 @@ detailed platform-specific instructions and troubleshooting.
 ### Fast GPU Operations
 
 ``` r
+
 
 library(Rmlx)
 #> 
@@ -134,6 +140,7 @@ Operations are recorded but not executed until explicitly evaluated:
 
 ``` r
 
+
 x <- as_mlx(matrix(1:25, 5, 5))
 y <- as_mlx(matrix(101:125, 5, 5))
 
@@ -159,6 +166,7 @@ M series chips have shared memory between the CPU and GPU, so switching
 between devices is costless.
 
 ``` r
+
 # Check/set default device
 dev <- mlx_default_device()           
 mlx_default_device("cpu")    # Switch to CPU
@@ -174,6 +182,7 @@ x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 Subsetting works like base R:
 
 ``` r
+
 x <- as_mlx(matrix(1:100, 10, 10))
 x[1:5, 1:5]
 #> mlx array [5 x 5]
@@ -213,6 +222,7 @@ x[logical_mask, ]
 ### Arithmetic
 
 ``` r
+
 x <- as_mlx(matrix(1:12, 3, 4))
 y <- as_mlx(matrix(13:24, 3, 4))
 
@@ -245,6 +255,7 @@ as.matrix(lt)
 Many base R matrix functions have mlx-specific methods:
 
 ``` r
+
 a <- as_mlx(matrix(1:6, 2, 3))
 b <- as_mlx(matrix(1:6, 3, 2))
 
@@ -339,6 +350,7 @@ chol_res
 ### Random Sampling
 
 ``` r
+
 mlx_rand_uniform(c(512, 512), min = -1, max = 1)
 #> mlx array [512 x 512]
 #>   dtype: float32
@@ -349,6 +361,7 @@ mlx_rand_uniform(c(512, 512), min = -1, max = 1)
 ### Data Transformations
 
 ``` r
+
 scores <- as_mlx(c(0.1, 0.7, 0.4, 0.9))
 mlx_sort(scores)
 #> mlx array [4]
@@ -373,6 +386,7 @@ mlx_argmax(scores)
 ### Automatic Differentiation
 
 ``` r
+
 loss <- function(w, x, y) {
   preds <- x %*% w
   resids <- preds - y
@@ -426,6 +440,7 @@ Supported data types:
 - `complex64`
 
 ``` r
+
 
 x_f32 <- as_mlx(matrix(1:12, 3, 4), dtype = "float32")
 logical_mat <- as_mlx(matrix(c(TRUE, FALSE, TRUE, TRUE), 2, 2))

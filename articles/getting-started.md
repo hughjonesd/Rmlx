@@ -46,6 +46,7 @@ Convert R objects to MLX arrays using
 [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md):
 
 ``` r
+
 # From a vector
 v <- as_mlx(1:10)
 print(v)
@@ -85,6 +86,7 @@ MLX arrays use lazy evaluation - operations are recorded but not
 computed until needed:
 
 ``` r
+
 # These operations are not computed immediately
 x <- as_mlx(matrix(1:100, 10, 10))
 y <- as_mlx(matrix(101:200, 10, 10))
@@ -116,6 +118,7 @@ mlx_synchronize(device)
 Rmlx supports standard arithmetic operators:
 
 ``` r
+
 x <- as_mlx(matrix(1:12, 3, 4))
 y <- as_mlx(matrix(13:24, 3, 4))
 
@@ -139,6 +142,7 @@ as.matrix(sum_xy)
 ### Matrix Multiplication
 
 ``` r
+
 a <- as_mlx(matrix(1:6, 2, 3))
 b <- as_mlx(matrix(1:6, 3, 2))
 
@@ -153,6 +157,7 @@ as.matrix(c)
 ### Transpose
 
 ``` r
+
 x <- as_mlx(matrix(1:12, 3, 4))
 x_t <- t(x)
 print(x_t)
@@ -170,6 +175,7 @@ print(x_t)
 ### Cross Products
 
 ``` r
+
 x <- as_mlx(matrix(rnorm(20), 5, 4))
 true_w <- as_mlx(matrix(c(2, -1, 0.5, 0.25), 4, 1))
 y <- x %*% true_w
@@ -247,6 +253,7 @@ as.matrix(true_w)
 Compute summaries across arrays:
 
 ``` r
+
 x <- as_mlx(matrix(1:100, 10, 10))
 
 # Overall reductions
@@ -308,6 +315,7 @@ as.vector(cumsum(x))
 Subset MLX arrays similar to R:
 
 ``` r
+
 x <- as_mlx(matrix(1:100, 10, 10))
 
 # Select rows and columns
@@ -325,6 +333,7 @@ col_1 <- x[, 1]
 Control whether computations run on GPU or CPU:
 
 ``` r
+
 # Check default device
 mlx_default_device()
 #> [1] "gpu"
@@ -350,6 +359,7 @@ without a GPU.
 Here’s a simple timing comparison for large matrix multiplication:
 
 ``` r
+
 n <- 1000
 
 # R base
@@ -369,9 +379,9 @@ t2 <- system.time({
 })
 
 cat("Base R:", t1["elapsed"], "seconds\n")
-#> Base R: 0.331 seconds
+#> Base R: 0.341 seconds
 cat("MLX:", t2["elapsed"], "seconds\n")
-#> MLX: 0.012 seconds
+#> MLX: 0.023 seconds
 ```
 
 Note: This is an informal comparison, not a rigorous benchmark.

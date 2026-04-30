@@ -11,6 +11,7 @@ using
 Here’s a simple multi-layer perceptron (MLP) for binary classification:
 
 ``` r
+
 library(Rmlx)
 #> 
 #> Attaching package: 'Rmlx'
@@ -42,6 +43,7 @@ mlp <- mlx_sequential(
 Let’s create a simple binary classification dataset:
 
 ``` r
+
 set.seed(42)
 
 # Generate spiral dataset
@@ -70,6 +72,7 @@ y_mlx <- as_mlx(matrix(y_train, ncol = 1))
 ```
 
 ``` r
+
 # Visualize the training data
 plot(x_train[, 1], x_train[, 2],
      col = ifelse(y_train == 0, "blue", "red"),
@@ -85,6 +88,7 @@ plot(x_train[, 1], x_train[, 2],
 Define a loss function and train using gradient descent:
 
 ``` r
+
 # Loss function operating on the module
 loss_fn <- function(module, x, y) {
   preds <- mlx_forward(module, x)
@@ -108,17 +112,17 @@ for (epoch in seq_len(n_epochs)) {
   }
 }
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 100, Loss: 0.6706
+#> Epoch 100, Loss: 0.6646
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 200, Loss: 0.6665
+#> Epoch 200, Loss: 0.6628
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 300, Loss: 0.6629
+#> Epoch 300, Loss: 0.6608
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 400, Loss: 0.6556
+#> Epoch 400, Loss: 0.6551
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 500, Loss: 0.6556
+#> Epoch 500, Loss: 0.6584
 #> Warning in as.matrix.mlx(step$loss): Converting array to 1-column matrix
-#> Epoch 600, Loss: 0.6568
+#> Epoch 600, Loss: 0.6517
 
 mlx_set_training(mlp, FALSE)
 ```
@@ -128,6 +132,7 @@ mlx_set_training(mlp, FALSE)
 Let’s evaluate the model’s predictions:
 
 ``` r
+
 # Make predictions on all training points
 predictions <- mlx_forward(mlp, x_mlx)
 pred_probs <- as.matrix(predictions)
@@ -138,17 +143,18 @@ confusion <- table(Actual = y_train, Predicted = pred_classes)
 print(confusion)
 #>       Predicted
 #> Actual   0   1
-#>      0 770 230
-#>      1 538 462
+#>      0 771 229
+#>      1 540 460
 
 # Calculate accuracy
 accuracy <- sum(diag(confusion)) / sum(confusion)
 cat(sprintf("\nAccuracy: %.2f%%\n", accuracy * 100))
 #> 
-#> Accuracy: 61.60%
+#> Accuracy: 61.55%
 ```
 
 ``` r
+
 # Plot predicted classes
 plot(x_train[, 1], x_train[, 2],
      col = ifelse(pred_classes == 0, "blue", "red"),
@@ -169,6 +175,7 @@ While full convolution layers require C++ implementation, you can
 combine linear layers with reshape operations:
 
 ``` r
+
 # Classifier with normalization
 classifier <- mlx_sequential(
   mlx_linear(10, 64),
@@ -190,6 +197,7 @@ Use
 for categorical inputs:
 
 ``` r
+
 # Text/token embeddings
 vocab_size <- 10000
 embed_dim <- 128
@@ -250,6 +258,7 @@ Each supports `reduction = "mean"`, `"sum"`, or `"none"`.
 Remember to set training mode appropriately:
 
 ``` r
+
 model <- mlx_sequential(
   mlx_linear(2, 4),
   mlx_dropout(0.5)

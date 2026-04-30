@@ -17,6 +17,7 @@ We’ll create:
 - Noisy labels `y = X %*% w_star + small_noise`
 
 ``` r
+
 library(Rmlx)
 #> 
 #> Attaching package: 'Rmlx'
@@ -53,6 +54,7 @@ y <- X %*% w_star + eps
 The mean squared error loss is a standard choice for regression:
 
 ``` r
+
 # Define loss function
 loss_fn <- function(w) {
   preds <- X %*% w
@@ -72,6 +74,7 @@ to compute gradients via automatic differentiation. This computes the
 gradient of the loss with respect to our parameters:
 
 ``` r
+
 # Get the gradient function
 grad_fn <- function(w) {
   mlx_grad(loss_fn, w)[[1]]
@@ -103,18 +106,20 @@ each iteration, we:
 4.  Monitor progress by printing loss every 1000 iterations
 
 ``` r
+
 w_sgd <- train_sgd()
-#> Iteration 1000 - Loss: 0.4771383
+#> Iteration 1000 - Loss: 0.4961242
 ```
 
 ## Method 2: Closed-form Regression via Matrix Algebra
 
 Gradient descent is flexible, but linear regression also has a
 closed-form solution that can be obtained via the QR decomposition.
-Rather than forming $X^{\top}X$ explicitly, we factor $X = QR$ with
-$Q^{\top}Q = I$ and solve the triangular system $Rw = Q^{\top}y$:
+Rather than forming $`X^\top X`$ explicitly, we factor $`X = QR`$ with
+$`Q^\top Q = I`$ and solve the triangular system $`Rw = Q^\top y`$:
 
 ``` r
+
 mlx_normal_eq <- function(X, y) {
   qr_res <- qr(X)
   q <- qr_res$Q
@@ -129,7 +134,7 @@ mlx_eval(w_closed)
 closed_error <- w_closed - w_star
 closed_error_norm <- sqrt(sum(closed_error * closed_error))
 cat("Closed-form ||w - w*|| =", as.vector(closed_error_norm), "\n")
-#> Closed-form ||w - w*|| = 0.1020027
+#> Closed-form ||w - w*|| = 0.1064692
 ```
 
 ## Accelerating the Closed-form Solution with `mlx_compile()`
@@ -141,6 +146,7 @@ The first call incurs the tracing cost; subsequent calls reuse the
 compiled graph.
 
 ``` r
+
 compiled_normal_eq <- mlx_compile(mlx_normal_eq)
 
 # Warm-up call performs tracing and compilation
@@ -153,7 +159,7 @@ mlx_eval(w_compiled)
 compiled_error <- w_compiled - w_star
 compiled_error_norm <- sqrt(sum(compiled_error * compiled_error))
 cat("Compiled closed-form ||w - w*|| =", as.vector(compiled_error_norm), "\n")
-#> Compiled closed-form ||w - w*|| = 0.1020027
+#> Compiled closed-form ||w - w*|| = 0.1064692
 ```
 
 ## Accuracy and Performance Comparison
@@ -164,6 +170,7 @@ coefficients. We also add base R’s normal-equation implementation as a
 reference.
 
 ``` r
+
 library(bench)
 
 # Fit models once for accuracy measurements
@@ -221,10 +228,10 @@ knitr::kable(results, digits = 4)
 
 | method                     | median_time | parameter_error |
 |:---------------------------|------------:|----------------:|
-| SGD                        |          2s |           0.102 |
-| MLX closed form            |      21.1ms |           0.102 |
-| MLX closed form (compiled) |      19.6ms |           0.102 |
-| Base R                     |        81ms |           0.102 |
+| SGD                        |       1.73s |          0.1065 |
+| MLX closed form            |     21.83ms |          0.1065 |
+| MLX closed form (compiled) |     18.75ms |          0.1065 |
+| Base R                     |     91.71ms |          0.1065 |
 
 ## Device Selection
 
@@ -232,6 +239,7 @@ By default, computations run on the best available device. Switch to CPU
 if needed:
 
 ``` r
+
 # Use CPU (useful for debugging)
 mlx_default_device("cpu")
 
