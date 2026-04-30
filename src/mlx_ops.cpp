@@ -128,12 +128,24 @@ SEXP cpp_mlx_fft(SEXP xp_,
 
   array result_cpu = [&]() -> array {
     if (axes_.isNull()) {
+#if MLX_VERSION_NUMERIC >= 31002
+      return inverse
+        ? mlx::core::fft::ifftn(input_cpu, mlx::core::fft::FFTNorm::Backward, cpu_stream)
+        : mlx::core::fft::fftn(input_cpu, mlx::core::fft::FFTNorm::Backward, cpu_stream);
+#else
       return inverse ? mlx::core::fft::ifftn(input_cpu, cpu_stream)
                      : mlx::core::fft::fftn(input_cpu, cpu_stream);
+#endif
     }
     std::vector<int> axes = Rcpp::as<std::vector<int>>(axes_.get());
+#if MLX_VERSION_NUMERIC >= 31002
+    return inverse
+      ? mlx::core::fft::ifftn(input_cpu, axes, mlx::core::fft::FFTNorm::Backward, cpu_stream)
+      : mlx::core::fft::fftn(input_cpu, axes, mlx::core::fft::FFTNorm::Backward, cpu_stream);
+#else
     return inverse ? mlx::core::fft::ifftn(input_cpu, axes, cpu_stream)
                    : mlx::core::fft::fftn(input_cpu, axes, cpu_stream);
+#endif
   }();
 
   array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
