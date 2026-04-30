@@ -8,10 +8,13 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+  schedule:
+    - cron: "0 6 * * *"
   workflow_dispatch:
 
 jobs:
   macos-bundled:
+    if: github.event_name != 'schedule'
     runs-on: macos-14
 
     name: macOS Bundled MLX
