@@ -25,3 +25,5 @@
 ^bench_results_.*\.txt$
 ^profile_.*$
 ^build$
+^\.positai$
+^\.claude$

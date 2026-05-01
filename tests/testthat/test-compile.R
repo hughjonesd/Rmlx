@@ -35,6 +35,19 @@ test_that("compiled functions can be called multiple times", {
   expect_false(isTRUE(all.equal(r1, r2)))
 })
 
+test_that("compiled functions keep the R callback alive", {
+  compiled_fn <- local({
+    hidden_offset <- 1
+    mlx_compile(function(x) x + hidden_offset)
+  })
+
+  invisible(replicate(5, gc()))
+
+  result <- compiled_fn(mlx_scalar(1))
+
+  expect_equal(as.numeric(result), 2)
+})
+
 test_that("compiled functions handle multiple returns", {
   forward_and_norm <- function(x, w) {
     y <- x %*% w

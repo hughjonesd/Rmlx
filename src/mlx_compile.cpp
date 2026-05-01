@@ -60,11 +60,10 @@ std::vector<array> extract_arrays_from_result(SEXP result) {
 
 // Wrapper to store compiled function
 struct CompiledFunctionWrapper {
-  Function r_fun;
   std::function<std::vector<array>(const std::vector<array>&)> compiled_fn;
   std::shared_ptr<std::vector<std::string>> result_names;
 
-  CompiledFunctionWrapper(Function f, bool shapeless) : r_fun(f) {
+  CompiledFunctionWrapper(Function f, bool shapeless) {
     // Create shared storage for result names (captured by lambda)
     result_names = std::make_shared<std::vector<std::string>>();
 
@@ -159,8 +158,10 @@ SEXP cpp_mlx_compile_create(SEXP fun_sexp, bool shapeless) {
     Rcpp::stop("Failed to create compiled function wrapper: %s", e.what());
   }
 
-  // Store in external pointer
-  SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, R_NilValue);
+  // Store the R function in the protected slot. The compiled C++ callback
+  // calls back into this closure after cpp_mlx_compile_create() returns, so it
+  // must remain a GC root for as long as the external pointer is alive.
+  SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, fun_sexp);
   R_RegisterCFinalizerEx(xp, compiled_fn_finalizer, TRUE);
   return xp;
 }

@@ -102,7 +102,7 @@ inline std::vector<int> normalize_new_axes(const array& arr, const std::vector<i
 
 inline List wrap_array_as_mlx(const array& arr, const std::string& device_hint) {
   array copy = arr;
-  SEXP ptr = make_mlx_xptr(std::move(copy));
+  Shield<SEXP> ptr(make_mlx_xptr(std::move(copy)));
 
   const Shape& shape = arr.shape();
   IntegerVector dim(shape.size());
@@ -113,7 +113,7 @@ inline List wrap_array_as_mlx(const array& arr, const std::string& device_hint) 
   std::string dtype = dtype_to_string(arr.dtype());
 
   List obj = List::create(
-      Named("ptr") = ptr,
+      Named("ptr") = static_cast<SEXP>(ptr),
       Named("dim") = dim,
       Named("dtype") = dtype,
       Named("device") = device_hint);
