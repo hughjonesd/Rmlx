@@ -1,5 +1,13 @@
 # Changelog
 
+## Rmlx (development version)
+
+- [`rbind()`](https://rdrr.io/r/base/cbind.html) and
+  [`cbind()`](https://rdrr.io/r/base/cbind.html) now accept 1D vectors.
+- Bugfix:
+  [`mlx_expand_dims()`](https://hughjonesd.github.io/Rmlx/reference/mlx_expand_dims.md)
+  works with 1D vectors.
+
 ## Rmlx 0.2.3
 
 - Speeded up single-axis `[` subsetting by routing it through MLX
