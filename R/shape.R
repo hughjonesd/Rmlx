@@ -150,7 +150,7 @@ mlx_squeeze <- function(x, axes = NULL) {
 #' mlx_expand_dims(x, axes = 1)
 mlx_expand_dims <- function(x, axes) {
   x <- as_mlx(x)
-  axes0 <- normalize_new_axes(axes, dim(x))
+  axes0 <- normalize_new_axes(axes, mlx_shape(x))
   ptr <- cpp_mlx_expand_dims(x$ptr, axes0)
   new_mlx(ptr, x$device)
 }

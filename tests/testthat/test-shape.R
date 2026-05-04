@@ -40,6 +40,12 @@ test_that("mlx_squeeze and mlx_expand_dims adjust shapes", {
 
   expanded <- mlx_expand_dims(squeezed_axis, axes = c(1, 3))
   expect_equal(dim(expanded), c(1L, 2L, 1L, 2L))
+
+  xvec <- mlx_vector(1:3)
+  expanded <- mlx_expand_dims(xvec, 1)
+  expect_equal(dim(expanded), c(1, 3))
+  expanded <- mlx_expand_dims(xvec, 2)
+  expect_equal(dim(expanded), c(3, 1))
 })
 
 test_that("mlx_repeat repeats along axes", {
