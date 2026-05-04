@@ -23,6 +23,17 @@ test_that("rbind/cbind coerce base matrices", {
   expect_equal(as.matrix(cb2), cbind(matrix(1:6, 3, 2), matrix(13:18, 3, 2)))
 })
 
+test_that("rbind/cbind accept 1D vectors", {
+  x <- mlx_matrix(1:6, 3, 2)
+  mv1 <- mlx_vector(10:11)
+  mv2 <- mlx_vector(10:12)
+  expect_no_error(rbound <- rbind(x, mv1))
+  expect_equal(as.matrix(rbound), rbind(as.matrix(x), as.vector(mv1)))
+
+  expect_no_error(cbound <- cbind(x, mv2))
+  expect_equal(as.matrix(cbound), cbind(as.matrix(x), as.vector(mv2)))
+})
+
 test_that("rbind/cbind work on 3D arrays", {
   x <- mlx_array(1:24, c(2, 3, 4))
   y <- mlx_array(25:48, c(2, 3, 4))

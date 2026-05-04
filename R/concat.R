@@ -15,7 +15,7 @@ bind_along_axis <- function(objs, axis) {
 
   mlx_objs <- lapply(objs, as_mlx)
   ref <- mlx_objs[[1L]]
-  ref_dim <- dim(ref)
+  ref_dim <- mlx_shape(ref)
   ndim <- length(ref_dim)
   if (!ndim) {
     stop("Cannot bind scalar mlx arrays.", call. = FALSE)
@@ -24,11 +24,21 @@ bind_along_axis <- function(objs, axis) {
     stop("Axis ", axis, " is out of bounds for arrays with ", ndim, " dimensions.", call. = FALSE)
   }
 
-  for (obj in mlx_objs) {
-    if (length(dim(obj)) != ndim) {
-      stop("All inputs must have the same number of dimensions.", call. = FALSE)
+  for (idx in seq_along(mlx_objs)) {
+    obj <- mlx_objs[[idx]]
+    if (length(mlx_shape(obj)) != ndim) {
+      if (length(mlx_shape(obj)) == 1L) {
+         # for cbind, we want a 1-column matrix, i.e. dimension 2 is 1
+         # for rbind, we want a 1-row matrix, i.e. dimension 1 is 1
+         # the logic extends to whichever dimension we're binding along
+         # and (I trust?) to arrays with ndim > 3
+         # could it also extend to multidimensional objects?
+         mlx_objs[[idx]] <- obj <- mlx_expand_dims(obj, axis)
+      } else {
+        stop("All inputs must either be vectors, or have the same number of dimensions.", call. = FALSE)
+      }
     }
-    if (!identical(dim(obj)[-axis], ref_dim[-axis])) {
+    if (!identical(mlx_shape(obj)[-axis], ref_dim[-axis])) {
       stop("Non-bound dimensions must match across all inputs.", call. = FALSE)
     }
   }
