@@ -115,40 +115,37 @@ SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
 
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
-
-  lhs = astype(lhs, target_dtype);
-  rhs = astype(rhs, target_dtype);
 
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
 
   array result = [&]() -> array {
     if (op == "+") {
-      return add(lhs, rhs);
+      return add(lhs, rhs, target_device);
     } else if (op == "-") {
-      return subtract(lhs, rhs);
+      return subtract(lhs, rhs, target_device);
     } else if (op == "*") {
-      return multiply(lhs, rhs);
+      return multiply(lhs, rhs, target_device);
     } else if (op == "/") {
-      return divide(lhs, rhs);
+      return divide(lhs, rhs, target_device);
     } else if (op == "^") {
-      return power(lhs, rhs);
+      return power(lhs, rhs, target_device);
     } else if (op == "==") {
-      return equal(lhs, rhs);
+      return equal(lhs, rhs, target_device);
     } else if (op == "!=") {
-      return not_equal(lhs, rhs);
+      return not_equal(lhs, rhs, target_device);
     } else if (op == "<") {
-      return less(lhs, rhs);
+      return less(lhs, rhs, target_device);
     } else if (op == "<=") {
-      return less_equal(lhs, rhs);
+      return less_equal(lhs, rhs, target_device);
     } else if (op == ">") {
-      return greater(lhs, rhs);
+      return greater(lhs, rhs, target_device);
     } else if (op == ">=") {
-      return greater_equal(lhs, rhs);
+      return greater_equal(lhs, rhs, target_device);
     } else {
       Rcpp::stop("Unsupported binary operation: " + op);
     }
@@ -165,8 +162,6 @@ SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_, std::string device_str) {
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   Dtype target_dtype = lhs.dtype();
   if (target_dtype == bool_) {
     target_dtype = float32;
@@ -176,6 +171,7 @@ SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_, std::string device_str) {
   } else if (rhs.dtype() == float32 || target_dtype == float32) {
     target_dtype = float32;
   }
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
 
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
@@ -192,8 +188,6 @@ SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_, std::string device_str) {
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   Dtype target_dtype = lhs.dtype();
   if (target_dtype == bool_) {
     target_dtype = float32;
@@ -203,6 +197,7 @@ SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_, std::string device_str) {
   } else if (rhs.dtype() == float32 || target_dtype == float32) {
     target_dtype = float32;
   }
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
 
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
@@ -216,8 +211,8 @@ SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_, std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice target_device = string_to_device(device_str);
   Dtype original_dtype = arr.dtype();
+  StreamOrDevice target_device = typed_device(original_dtype, device_str);
 
   if (!(original_dtype == float32 || original_dtype == float64)) {
     original_dtype = float32;
@@ -253,8 +248,8 @@ SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_, std::string device_str) {
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
 
-  StreamOrDevice target_device = string_to_device(device_str);
   Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
 
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
@@ -271,8 +266,8 @@ SEXP cpp_mlx_remainder(SEXP xp1_, SEXP xp2_, std::string device_str) {
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
 
-  StreamOrDevice target_device = string_to_device(device_str);
   Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
 
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);

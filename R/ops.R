@@ -25,9 +25,11 @@ Ops.mlx <- function(e1, e2 = NULL) {
     stop(sprintf("Unary operator '%s' not supported for mlx", op))
   }
 
-  # Binary operators - coerce arguments to mlx
-  e1 <- as_mlx(e1)
-  e2 <- as_mlx(e2)
+  # Binary operators - coerce plain R operands to the existing mlx operand's
+  # dtype/device so scalar arithmetic preserves CPU float64 arrays.
+  operands <- coerce_binary_operands(e1, e2)
+  e1 <- operands[[1L]]
+  e2 <- operands[[2L]]
 
   # Arithmetic operators
   if (op %in% c("+", "-", "*", "/", "^")) {
@@ -69,8 +71,9 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' y <- mlx_matrix(1:6, 3, 2)
 #' x %*% y
 `%*%.mlx` <- function(x, y) {
-  x <- as_mlx(x)
-  y <- as_mlx(y)
+  operands <- coerce_binary_operands(x, y)
+  x <- operands[[1L]]
+  y <- operands[[2L]]
 
   if (length(mlx_shape(x)) != 2L || length(mlx_shape(y)) != 2L) {
     stop("Matrix multiplication requires 2D matrices; vectors are not auto-promoted")
@@ -88,8 +91,12 @@ Ops.mlx <- function(e1, e2 = NULL) {
 
   x_dtype <- mlx_dtype(x)
   y_dtype <- mlx_dtype(y)
-  result_dtype <- promote_dtype(x_dtype, y_dtype)
-  result_device <- common_device(x$device, y$device)
+  target <- resolve_common_dtype_device(
+    list(x_dtype, y_dtype),
+    list(x$device, y$device)
+  )
+  result_dtype <- target$dtype
+  result_device <- target$device
 
   ptr <- cpp_mlx_matmul(x$ptr, y$ptr, result_dtype, result_device)
   new_mlx(ptr, result_device)
@@ -156,11 +163,12 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
     stop("beta must be a single finite numeric value.", call. = FALSE)
   }
 
-  result_dtype <- Reduce(
-    promote_dtype,
-    list(mlx_dtype(input), mlx_dtype(mat1), mlx_dtype(mat2))
+  target <- resolve_common_dtype_device(
+    list(mlx_dtype(input), mlx_dtype(mat1), mlx_dtype(mat2)),
+    list(input$device, mat1$device, mat2$device)
   )
-  result_device <- Reduce(common_device, list(input$device, mat1$device, mat2$device))
+  result_dtype <- target$dtype
+  result_device <- target$device
 
   input <- mlx_cast(input, dtype = result_dtype, device = result_device)
   mat1 <- mlx_cast(mat1, dtype = result_dtype, device = result_device)
@@ -190,8 +198,12 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 .mlx_binary <- function(x, y, op) {
   x_dtype <- mlx_dtype(x)
   y_dtype <- mlx_dtype(y)
-  input_dtype <- promote_dtype(x_dtype, y_dtype)
-  result_device <- common_device(x$device, y$device)
+  target <- resolve_common_dtype_device(
+    list(x_dtype, y_dtype),
+    list(x$device, y$device)
+  )
+  input_dtype <- target$dtype
+  result_device <- target$device
 
   is_comparison <- op %in% c("==", "!=", "<", "<=", ">", ">=")
 
@@ -212,7 +224,10 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with dtype "bool".
 #' @noRd
 .mlx_logical <- function(x, y, op) {
-  result_device <- common_device(x$device, y$device)
+  result_device <- resolve_common_dtype_device(
+    list(mlx_dtype(x), mlx_dtype(y)),
+    list(x$device, y$device)
+  )$device
 
   ptr <- cpp_mlx_logical(x$ptr, y$ptr, op, result_device)
   new_mlx(ptr, result_device)
@@ -279,11 +294,16 @@ mlx_maximum <- function(x, y) {
 #' @return mlx array.
 #' @noRd
 .mlx_binary_result <- function(x, y, cpp_fn) {
-  x <- as_mlx(x)
-  y <- as_mlx(y)
+  operands <- coerce_binary_operands(x, y)
+  x <- operands[[1L]]
+  y <- operands[[2L]]
 
-  result_device <- common_device(x$device, y$device)
-  result_dtype <- promote_dtype(mlx_dtype(x), mlx_dtype(y))
+  target <- resolve_common_dtype_device(
+    list(mlx_dtype(x), mlx_dtype(y)),
+    list(x$device, y$device)
+  )
+  result_device <- target$device
+  result_dtype <- target$dtype
 
   if (identical(result_dtype, "bool")) {
     result_dtype <- "float32"
@@ -333,8 +353,9 @@ promote_dtype <- function(dtype1, dtype2) {
   # Complex beats everything
   if ("complex64" %in% dtypes) return("complex64")
 
-  # Float beats integer and bool
-  if ("float64" %in% dtypes || "float32" %in% dtypes) return("float32")
+  # Float beats integer and bool; preserve float64 when any real operand uses it.
+  if ("float64" %in% dtypes) return("float64")
+  if ("float32" %in% dtypes) return("float32")
 
   # Bool promotes to int32
   if ("bool" %in% dtypes) {
@@ -384,4 +405,23 @@ common_device <- function(device1, device2) {
   # Prefer GPU if devices differ
   if (device1 == "gpu" || device2 == "gpu") return("gpu")
   return("cpu")
+}
+
+coerce_binary_operands <- function(x, y) {
+  if (is_mlx(x) && !is_mlx(y)) {
+    y <- as_mlx(y, dtype = mlx_dtype(x), device = x$device)
+  } else if (!is_mlx(x) && is_mlx(y)) {
+    x <- as_mlx(x, dtype = mlx_dtype(y), device = y$device)
+  } else {
+    x <- as_mlx(x)
+    y <- as_mlx(y)
+  }
+  list(x, y)
+}
+
+resolve_common_dtype_device <- function(dtypes, devices) {
+  dtype <- Reduce(promote_dtype, dtypes)
+  device <- Reduce(common_device, devices)
+  validate_float64_device(dtype, device)
+  list(dtype = dtype, device = device)
 }

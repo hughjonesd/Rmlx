@@ -8,6 +8,8 @@
 #'   - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`, `"uint16"`, `"uint32"`, `"uint64"`
 #'   - Other: `"bool"`, `"complex64"`
 #'
+#'   `float64` arrays are CPU-only. Use `device = "cpu"` when creating or
+#'   casting to `float64`, and cast back to `float32` before using the GPU.
 #'   Not all functions support all types. See individual function documentation.
 #' @param axis Single axis (1-indexed). Supply a positive integer between 1 and
 #'   the array rank. Use `NULL` when the helper interprets it as "all axes" (see

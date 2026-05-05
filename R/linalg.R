@@ -15,7 +15,11 @@
 #' solve(a, b)
 solve.mlx <- function(a, b = NULL, ...) {
   target_device <- a$device
-  target_dtype <- "float32"
+  target_dtype <- mlx_dtype(a)
+  if (!(target_dtype %in% c("float32", "float64", "complex64"))) {
+    target_dtype <- "float32"
+  }
+  validate_float64_device(target_dtype, target_device)
 
   if (is.null(b)) {
     # No b: compute matrix inverse
@@ -25,6 +29,15 @@ solve.mlx <- function(a, b = NULL, ...) {
     # Convert b to mlx if needed
     if (!is_mlx(b)) {
       b <- as_mlx(b, dtype = target_dtype, device = target_device)
+    } else {
+      target <- resolve_common_dtype_device(
+        list(target_dtype, mlx_dtype(b)),
+        list(target_device, b$device)
+      )
+      target_dtype <- target$dtype
+      target_device <- target$device
+      a <- mlx_cast(a, dtype = target_dtype, device = target_device)
+      b <- mlx_cast(b, dtype = target_dtype, device = target_device)
     }
 
     # Solve Ax = b
@@ -68,11 +81,16 @@ kronecker.default <- function(X, Y, FUN = "*", make.dimnames = FALSE, ...) {
 #' B <- mlx_matrix(c(0, 5, 6, 7), 2, 2)
 #' mlx_kron(A, B)
 mlx_kron <- function(a, b) {
-  a <- as_mlx(a)
-  b <- as_mlx(b)
+  operands <- coerce_binary_operands(a, b)
+  a <- operands[[1L]]
+  b <- operands[[2L]]
 
-  result_dtype <- promote_dtype(mlx_dtype(a), mlx_dtype(b))
-  result_device <- common_device(a$device, b$device)
+  target <- resolve_common_dtype_device(
+    list(mlx_dtype(a), mlx_dtype(b)),
+    list(a$device, b$device)
+  )
+  result_dtype <- target$dtype
+  result_device <- target$device
 
   a <- mlx_cast(a, dtype = result_dtype, device = result_device)
   b <- mlx_cast(b, dtype = result_dtype, device = result_device)

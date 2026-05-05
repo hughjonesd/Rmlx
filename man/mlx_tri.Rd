@@ -33,6 +33,8 @@ to the upper diagonals, negative values to the lower diagonals.}
 \item Other: \code{"bool"}, \code{"complex64"}
 }
 
+\code{float64} arrays are CPU-only. Use \code{device = "cpu"} when creating or
+casting to \code{float64}, and cast back to \code{float32} before using the GPU.
 Not all functions support all types. See individual function documentation.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an

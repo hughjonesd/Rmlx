@@ -24,6 +24,25 @@ resolve_device <- function(device, default = mlx_default_device()) {
   list(device = device_chr, stream_ptr = NULL)
 }
 
+validate_float64_device <- function(dtype, device) {
+  if (identical(dtype, "float64") && identical(device, "gpu")) {
+    stop(
+      paste(
+        "float64 arrays are CPU-only; use device = \"cpu\" or cast to float32",
+        "before using the GPU."
+      ),
+      call. = FALSE
+    )
+  }
+  invisible(NULL)
+}
+
+resolve_typed_device <- function(dtype, device, default = mlx_default_device()) {
+  handle <- resolve_device(device, default)
+  validate_float64_device(dtype, handle$device)
+  handle
+}
+
 eval_with_stream <- function(handle, fn) {
   if (is.null(handle$stream_ptr)) {
     return(fn(handle$device))

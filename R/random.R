@@ -14,7 +14,7 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
                              device = mlx_default_device()) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_typed_device(dtype, device, mlx_default_device())
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_uniform(dim, min, max, dtype, dev)
@@ -37,7 +37,7 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
                             device = mlx_default_device()) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_typed_device(dtype, device, mlx_default_device())
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_normal(dim, mean, sd, dtype, dev)
@@ -59,7 +59,7 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
   if (prob < 0 || prob > 1) {
     stop("prob must be between 0 and 1.", call. = FALSE)
   }
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_typed_device("bool", device, mlx_default_device())
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_bernoulli(dim, prob, dev)
@@ -79,7 +79,7 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_typed_device(dtype, device, mlx_default_device())
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_gumbel(dim, dtype, dev)
@@ -108,7 +108,7 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
     stop("upper must be a single numeric value.", call. = FALSE)
   }
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_typed_device(dtype, device, mlx_default_device())
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_truncated_normal(lower, upper, dim, dtype, dev)
@@ -145,7 +145,7 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, "cpu")
+  handle <- resolve_typed_device(dtype, device, "cpu")
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_multivariate_normal(mean, cov, dim, dtype, dev)
@@ -174,7 +174,7 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
     stop("scale must be a single positive numeric value.", call. = FALSE)
   }
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_typed_device(dtype, device, mlx_default_device())
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_laplace(dim, loc, scale, dtype, dev)

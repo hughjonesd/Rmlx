@@ -16,7 +16,7 @@ SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
 
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
@@ -24,7 +24,7 @@ SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
 
-  array result = matmul(lhs, rhs);
+  array result = matmul(lhs, rhs, target_device);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -42,7 +42,7 @@ SEXP cpp_mlx_addmm(SEXP input_xp_,
   MlxArrayWrapper* mat2_wrapper = get_mlx_wrapper(mat2_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
 
   array input_arr = astype(input_wrapper->get(), target_dtype, target_device);
   array mat1_arr = astype(mat1_wrapper->get(), target_dtype, target_device);
@@ -82,7 +82,7 @@ SEXP cpp_mlx_hadamard_transform(SEXP xp_,
 SEXP cpp_mlx_cast(SEXP xp_, std::string dtype_str, std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array arr = wrapper->get();
   array result = astype(arr, dtype, dev);

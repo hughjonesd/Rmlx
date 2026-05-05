@@ -17,7 +17,7 @@ SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_,
   MlxArrayWrapper* false_wrapper = get_mlx_wrapper(xp_false_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
 
   array cond = astype(cond_wrapper->get(), bool_, target_device);
   array x = astype(true_wrapper->get(), target_dtype, target_device);

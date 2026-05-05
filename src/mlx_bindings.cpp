@@ -181,6 +181,33 @@ std::string device_to_string(const Device& device) {
   Rcpp::stop("Unsupported device type");
 }
 
+void validate_float64_device(Dtype dtype, const std::string& device) {
+  if (dtype == float64 && device == "gpu") {
+    Rcpp::stop(
+      "float64 arrays are CPU-only; use device = \"cpu\" or cast to float32 "
+      "before using the GPU.");
+  }
+}
+
+StreamOrDevice typed_device(Dtype dtype, const std::string& device) {
+  validate_float64_device(dtype, device);
+  return string_to_device(device);
+}
+
+CpuDefaultDeviceGuard::CpuDefaultDeviceGuard(bool active)
+    : original_(default_device()),
+      changed_(active && original_.type != Device::DeviceType::cpu) {
+  if (changed_) {
+    set_default_device(Device(Device::cpu));
+  }
+}
+
+CpuDefaultDeviceGuard::~CpuDefaultDeviceGuard() {
+  if (changed_) {
+    set_default_device(original_);
+  }
+}
+
 } // namespace rmlx
 
 using namespace rmlx;
@@ -194,7 +221,7 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
   // Convert dimensions
   Shape shape(dim.begin(), dim.end());
   Dtype dt = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dt, device_str);
 
   size_t ndim = shape.size();
 
@@ -353,11 +380,10 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
 SEXP cpp_mlx_to_r(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
+  CpuDefaultDeviceGuard cpu_guard;
 
   // Move to CPU if needed
-  if (arr.dtype() == float64) {
-    arr = astype(arr, float64, Device(Device::cpu));
-  }
+  arr = astype(arr, arr.dtype(), Device(Device::cpu));
 
   size_t ndim = arr.ndim();
 
@@ -366,8 +392,9 @@ SEXP cpp_mlx_to_r(SEXP xp_) {
     arr = transpose_between_mlx_and_r(arr);
   }
 
-  // Make contiguous and evaluate
-  arr = contiguous(arr);
+  // Make contiguous and evaluate on CPU so CPU-only float64 arrays never fall
+  // through to the library default device.
+  arr = contiguous(arr, /*allow_col_major=*/false, Device(Device::cpu));
   eval(arr);
 
   // Get total size
