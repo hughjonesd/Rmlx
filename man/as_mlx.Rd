@@ -44,7 +44,8 @@ x <- as_mlx(1:10)                    # Creates float32 array
 
 \subsection{Type precision}{
 \itemize{
-\item \code{float64} is supported but emits a warning and downcasts to \code{float32}
+\item \code{float64} is supported on CPU only; use \code{device = "cpu"} explicitly.
+Cast GPU arrays to \code{float64} with \code{mlx_cast(x, dtype = "float64", device = "cpu")}, and cast back to \code{float32} before returning to GPU.
 \item Integer arithmetic may promote types (e.g., int32 + int32 might → int64)
 \item Mixed integer/float operations promote to float
 }

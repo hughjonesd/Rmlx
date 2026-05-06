@@ -32,9 +32,11 @@ test_that("roundtrip conversion preserves higher-dimensional arrays", {
 test_that("dtype argument works", {
   m <- matrix(1:12, 3, 4)
   m_fp32 <- as_mlx(m, dtype = "float32")
-  expect_warning(as_mlx(m, dtype = "float64"), "stored in float32", fixed = TRUE)
+  m_fp64 <- as_mlx(m, dtype = "float64", device = "cpu")
 
   expect_equal(mlx_dtype(m_fp32), "float32")
+  expect_equal(mlx_dtype(m_fp64), "float64")
+  expect_equal(mlx_device(m_fp64), "cpu")
 })
 
 test_that("logical inputs create boolean MLX arrays", {

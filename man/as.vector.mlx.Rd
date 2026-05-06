@@ -21,7 +21,7 @@
 \arguments{
 \item{x}{An mlx array.}
 
-\item{mode}{Character string specifying the type of vector to return (passed to \code{\link[base:vector]{base::as.vector()}})}
+\item{mode}{Character string specifying the type of vector to return (passed to \code{\link[base:as.vector]{base::as.vector()}})}
 
 \item{...}{Additional arguments; ignored.}
 }

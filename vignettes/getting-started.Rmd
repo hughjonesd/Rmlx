@@ -65,11 +65,13 @@ print(x)
 x_dev <- as_mlx(m, device = device)
 ```
 
-> **Precision note:** Numeric inputs are stored in single precision (`float32`).
-> Requesting `dtype = "float64"` will downcast the input with a warning.
+> **Precision note:** Numeric inputs use single precision (`float32`) by default.
+> `float64` arrays are supported on CPU only; request them with
+> `dtype = "float64", device = "cpu"` or explicitly finish GPU work with
+> `mlx_cast(x, dtype = "float64", device = "cpu")`.
 > Logical inputs are stored as MLX `bool` tensors (logical `NA` values are not
 > supported). Complex inputs are stored as `complex64` (single-precision real
-> and imaginary parts). Use base R arrays if you need double precision arithmetic.
+> and imaginary parts).
 
 ## Lazy Evaluation
 
@@ -240,8 +242,9 @@ x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
 mlx_default_device(device)
 ```
 
-Remember that numeric computations are always performed in `float32`; the CPU
-mode is useful when you need to compare against base R or debug without a GPU.
+Numeric computations default to `float32` for GPU compatibility. Use CPU
+`float64` when you need double precision, and cast back to `float32` before
+moving results to the GPU.
 
 ## Performance Comparison
 

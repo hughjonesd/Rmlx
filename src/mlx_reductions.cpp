@@ -12,6 +12,7 @@ SEXP cpp_mlx_reduce(SEXP xp_, std::string op, int ddof) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   array input = wrapper->get();
+  CpuDefaultDeviceGuard cpu_guard(input.dtype() == float64);
   array result = [&]() -> array {
     if (op == "sum") {
       if (input.dtype() == bool_) {
@@ -66,6 +67,7 @@ SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims, int 
 
   std::vector<int> axes = {axis};
   array input = wrapper->get();
+  CpuDefaultDeviceGuard cpu_guard(input.dtype() == float64);
 
   array result = [&]() -> array {
     if (op == "sum") {

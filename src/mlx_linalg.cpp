@@ -14,7 +14,7 @@ SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
   StreamOrDevice cpu_stream = Device(Device::cpu);
   array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
 
@@ -44,7 +44,7 @@ SEXP cpp_mlx_cholesky(SEXP a_xp_, bool upper,
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
   StreamOrDevice cpu_stream = Device(Device::cpu);
 
   array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
@@ -60,7 +60,7 @@ SEXP cpp_mlx_qr(SEXP a_xp_,
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
   StreamOrDevice cpu_stream = Device(Device::cpu);
 
   array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
@@ -80,7 +80,7 @@ SEXP cpp_mlx_svd(SEXP a_xp_, bool compute_uv,
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
   StreamOrDevice cpu_stream = Device(Device::cpu);
 
   array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
@@ -117,7 +117,7 @@ SEXP cpp_mlx_pinv(SEXP a_xp_,
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = typed_device(target_dtype, device_str);
   StreamOrDevice cpu_stream = Device(Device::cpu);
 
   array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);

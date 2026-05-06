@@ -45,11 +45,16 @@ bind_along_axis <- function(objs, axis) {
 
   if (length(mlx_objs) > 1L) {
     dtypes <- lapply(mlx_objs, mlx_dtype)
-    dtype <- Reduce(promote_dtype, dtypes)
-    device <- Reduce(common_device, lapply(mlx_objs, `[[`, "device"))
+    target <- resolve_common_dtype_device(
+      dtypes,
+      lapply(mlx_objs, `[[`, "device")
+    )
+    dtype <- target$dtype
+    device <- target$device
   } else {
     dtype <- mlx_dtype(mlx_objs[[1L]])
     device <- mlx_objs[[1L]]$device
+    validate_float64_device(dtype, device)
   }
 
   aligned <- lapply(mlx_objs, mlx_cast, dtype = dtype, device = device)
