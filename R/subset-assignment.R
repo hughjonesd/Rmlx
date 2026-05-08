@@ -161,7 +161,7 @@ check_value_fits <- function(val_len, target_len) {
 
 # Flatten an mlx array in R's column-major order
 .mlx_flatten_r_order <- function(x) {
-  ptr <- cpp_mlx_flatten_r_order(x$ptr)
+  ptr <- cpp_mlx_flatten_r_order(x$ptr, x$device)
   out <- new_mlx(ptr, x$device)
   mlx_reshape(out, length(x))
 }

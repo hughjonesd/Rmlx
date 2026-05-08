@@ -8,21 +8,25 @@ namespace rmlx {
 
 // Reverse axes order; applying twice is identity. Used to swap between
 // R's column-major view and MLX's row-major.
-inline mlx::core::array transpose_between_mlx_and_r(const mlx::core::array& arr) {
+inline mlx::core::array transpose_between_mlx_and_r(
+    const mlx::core::array& arr,
+    mlx::core::StreamOrDevice s = {}) {
   using namespace mlx::core;
   // MLX transpose with no axes reverses axis order; scalars/vectors are no-ops.
-  return transpose(arr);
+  return transpose(arr, s);
 }
 
 // Flatten an array in R's column-major order into a contiguous 1D vector.
-inline mlx::core::array flatten_r_order(const mlx::core::array& arr) {
+inline mlx::core::array flatten_r_order(
+    const mlx::core::array& arr,
+    mlx::core::StreamOrDevice s = {}) {
   using namespace mlx::core;
   if (arr.ndim() <= 1) {
-    return reshape(arr, Shape{static_cast<int>(arr.size())});
+    return reshape(arr, Shape{static_cast<int>(arr.size())}, s);
   }
-  array transposed = transpose_between_mlx_and_r(arr);
-  transposed = contiguous(transposed);
-  return reshape(transposed, Shape{static_cast<int>(transposed.size())});
+  array transposed = transpose_between_mlx_and_r(arr, s);
+  transposed = contiguous(transposed, /*allow_col_major=*/false, s);
+  return reshape(transposed, Shape{static_cast<int>(transposed.size())}, s);
 }
 
 } // namespace rmlx

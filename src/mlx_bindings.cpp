@@ -350,7 +350,7 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
 
   // Transpose to correct orientation if multi-dimensional
   if (ndim > 1) {
-    arr_temp = transpose_between_mlx_and_r(arr_temp);
+    arr_temp = transpose_between_mlx_and_r(arr_temp, dev);
   }
 
   // Convert to target dtype and device
@@ -371,7 +371,7 @@ SEXP cpp_mlx_to_r(SEXP xp_) {
 
   // Transpose to column-major layout if multi-dimensional
   if (ndim > 1) {
-    arr = transpose_between_mlx_and_r(arr);
+    arr = transpose_between_mlx_and_r(arr, Device(Device::cpu));
   }
 
   // Make contiguous and evaluate on CPU so CPU-only float64 arrays never fall
