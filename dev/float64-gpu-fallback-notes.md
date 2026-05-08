@@ -21,6 +21,18 @@ Local MLX headers checked:
 
 ## Current branch update
 
+The corrected diagnostic now keeps MLX's global default device on CPU while
+creating GPU-tagged float64 inputs. That distinguishes operations that respect
+the Rmlx object device from operations that merely follow MLX's global default.
+
+The first corrected run found 83 operations that succeeded because wrappers were
+not passing `x$device` to MLX. Those were fixed by passing explicit
+`StreamOrDevice` values through the shared wrapper families for unary math,
+reductions, sorting, shape transforms, indexing/slicing, cumulative operations,
+and column-major boundary helpers. After that change, the only successes are
+identity/no-op style cases for this diagnostic input: `mlx_cast`,
+`mlx_conjugate`, `mlx_imag`, and `mlx_real`.
+
 The explicit CPU staging has now been removed for the operations below. A GPU
 float32 probe on MLX 0.31.1 produced these results:
 
@@ -32,7 +44,7 @@ float32 probe on MLX 0.31.1 produced these results:
   `mlx_eigvalsh`, `mlx_inv`, `mlx_lu`, `mlx_solve_triangular`,
   `mlx_tri_inv`, `pinv`, `qr.mlx`, `solve.mlx`, `svd`, `svd.mlx`.
 - Likely no-op or identity-style cases in the original diagnostic:
-  `mlx_cast`, `mlx_conjugate`, `mlx_real`.
+  `mlx_cast`, `mlx_conjugate`, `mlx_imag`, `mlx_real`.
 
 A later source scan found two more wrappers with the same explicit CPU staging
 pattern. After removing it, `mlx_cross()` runs on GPU and

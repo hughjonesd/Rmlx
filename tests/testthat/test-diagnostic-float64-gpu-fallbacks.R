@@ -3,7 +3,7 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
 
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device), add = TRUE)
-  mlx_default_device("gpu")
+  mlx_default_device("cpu")
 
   force_mlx <- function(x) {
     if (is_mlx(x)) {
@@ -265,6 +265,7 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
     "mlx_eigvals" = "MLX reports GPU unsupported",
     "mlx_eigvalsh" = "MLX reports GPU unsupported",
     "mlx_inv" = "MLX reports GPU unsupported",
+    "mlx_imag" = "real input: likely no-op",
     "mlx_lu" = "MLX reports GPU unsupported",
     "mlx_real" = "real input: likely no-op",
     "mlx_solve_triangular" = "MLX reports GPU unsupported",
@@ -316,7 +317,7 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
   )
   expect_equal(
     successes$name,
-    c("mlx_cast", "mlx_conjugate", "mlx_real"),
+    c("mlx_cast", "mlx_conjugate", "mlx_imag", "mlx_real"),
     info = paste(
       "These GPU-tagged float64 operations did not fail because this diagnostic",
       "uses identity-style calls that do not schedule MLX compute for real input."
