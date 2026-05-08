@@ -52,7 +52,7 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
 mlx_argmax <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
-  ptr <- cpp_mlx_argmax(x$ptr, axis_idx, !isTRUE(drop))
+  ptr <- cpp_mlx_argmax(x$ptr, axis_idx, !isTRUE(drop), x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -61,7 +61,7 @@ mlx_argmax <- function(x, axis = NULL, drop = TRUE) {
 mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
-  ptr <- cpp_mlx_argmin(x$ptr, axis_idx, !isTRUE(drop))
+  ptr <- cpp_mlx_argmin(x$ptr, axis_idx, !isTRUE(drop), x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -105,7 +105,7 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
 mlx_sort <- function(x, axis = NULL) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
-  ptr <- cpp_mlx_sort(x$ptr, axis_idx)
+  ptr <- cpp_mlx_sort(x$ptr, axis_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -114,7 +114,7 @@ mlx_sort <- function(x, axis = NULL) {
 mlx_argsort <- function(x, axis = NULL) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
-  ptr <- cpp_mlx_argsort(x$ptr, axis_idx)
+  ptr <- cpp_mlx_argsort(x$ptr, axis_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -163,7 +163,7 @@ mlx_topk <- function(x, k, axis = NULL) {
     stop("k must be a positive finite scalar.", call. = FALSE)
   }
   axis_idx <- normalize_axis(axis, x)
-  ptr <- cpp_mlx_topk(x$ptr, as.integer(k), axis_idx)
+  ptr <- cpp_mlx_topk(x$ptr, as.integer(k), axis_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -175,7 +175,7 @@ mlx_partition <- function(x, kth, axis = NULL) {
     stop("kth must be a non-negative finite scalar.", call. = FALSE)
   }
   axis_idx <- normalize_axis(axis, x)
-  ptr <- cpp_mlx_partition(x$ptr, as.integer(kth), axis_idx)
+  ptr <- cpp_mlx_partition(x$ptr, as.integer(kth), axis_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -187,7 +187,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
     stop("kth must be a non-negative finite scalar.", call. = FALSE)
   }
   axis_idx <- normalize_axis(axis, x)
-  ptr <- cpp_mlx_argpartition(x$ptr, as.integer(kth), axis_idx)
+  ptr <- cpp_mlx_argpartition(x$ptr, as.integer(kth), axis_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -256,7 +256,7 @@ normalize_axis <- function(axis, x) {
 mlx_logsumexp <- function(x, axes = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axes_idx <- normalize_axes(axes, x)
-  ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, !isTRUE(drop))
+  ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, !isTRUE(drop), x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -277,7 +277,7 @@ mlx_logsumexp <- function(x, axes = NULL, drop = TRUE) {
 mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
-  ptr <- cpp_mlx_logcumsumexp(x$ptr, axis_idx, reverse, inclusive)
+  ptr <- cpp_mlx_logcumsumexp(x$ptr, axis_idx, reverse, inclusive, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -295,6 +295,6 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
 mlx_softmax <- function(x, axes = NULL, precise = FALSE) {
   x <- as_mlx(x)
   axes_idx <- normalize_axes(axes, x)
-  ptr <- cpp_mlx_softmax(x$ptr, axes_idx, precise)
+  ptr <- cpp_mlx_softmax(x$ptr, axes_idx, precise, x$device)
   new_mlx(ptr, x$device)
 }

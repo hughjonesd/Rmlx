@@ -244,7 +244,7 @@ colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 #' t(x)
 t.mlx <- function(x) {
   # Layout conversion (physical reordering) happens at boundaries during copy
-  ptr <- cpp_mlx_transpose(x$ptr)
+  ptr <- cpp_mlx_transpose(x$ptr, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -290,7 +290,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @return An mlx array containing the fully reduced result.
 #' @noRd
 .mlx_reduce <- function(x, op, ddof = 0L) {
-  ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof))
+  ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof), x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -308,7 +308,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   if (axis0 < 0L || axis0 >= length(dim(x))) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
-  ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
+  ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof), x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -637,7 +637,7 @@ mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
 
   axis_mlx <- normalize_axis(axis, x)
 
-  ptr <- cpp_mlx_cumsum(x$ptr, axis_mlx, reverse, inclusive)
+  ptr <- cpp_mlx_cumsum(x$ptr, axis_mlx, reverse, inclusive, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -648,7 +648,7 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
 
   axis_mlx <- normalize_axis(axis, x)
 
-  ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive)
+  ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive, x$device)
   new_mlx(ptr, x$device)
 }
 
