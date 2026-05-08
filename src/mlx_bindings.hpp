@@ -94,19 +94,6 @@ std::string device_to_string(const mlx::core::Device& device);
 void validate_float64_device(mlx::core::Dtype dtype, const std::string& device);
 mlx::core::StreamOrDevice typed_device(mlx::core::Dtype dtype, const std::string& device);
 
-class CpuDefaultDeviceGuard {
-private:
-  mlx::core::Device original_;
-  bool changed_;
-
-public:
-  explicit CpuDefaultDeviceGuard(bool active = true);
-  ~CpuDefaultDeviceGuard();
-
-  CpuDefaultDeviceGuard(const CpuDefaultDeviceGuard&) = delete;
-  CpuDefaultDeviceGuard& operator=(const CpuDefaultDeviceGuard&) = delete;
-};
-
 // Helper: determine if SEXP is stream external pointer
 bool is_mlx_stream(SEXP value);
 

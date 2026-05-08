@@ -191,20 +191,6 @@ StreamOrDevice typed_device(Dtype dtype, const std::string& device) {
   return string_to_device(device);
 }
 
-CpuDefaultDeviceGuard::CpuDefaultDeviceGuard(bool active)
-    : original_(default_device()),
-      changed_(active && original_.type != Device::DeviceType::cpu) {
-  if (changed_) {
-    set_default_device(Device(Device::cpu));
-  }
-}
-
-CpuDefaultDeviceGuard::~CpuDefaultDeviceGuard() {
-  if (changed_) {
-    set_default_device(original_);
-  }
-}
-
 } // namespace rmlx
 
 using namespace rmlx;
@@ -377,7 +363,6 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
 SEXP cpp_mlx_to_r(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  CpuDefaultDeviceGuard cpu_guard;
 
   // Move to CPU if needed
   arr = astype(arr, arr.dtype(), Device(Device::cpu));
