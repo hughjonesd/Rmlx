@@ -182,11 +182,8 @@ std::string device_to_string(const Device& device) {
 }
 
 void validate_float64_device(Dtype dtype, const std::string& device) {
-  if (dtype == float64 && device == "gpu") {
-    Rcpp::stop(
-      "float64 arrays are CPU-only; use device = \"cpu\" or cast to float32 "
-      "before using the GPU.");
-  }
+  // Diagnostic branch: disabled so GPU-tagged float64 arrays can expose which
+  // operations actually schedule work on GPU and which silently fall back to CPU.
 }
 
 StreamOrDevice typed_device(Dtype dtype, const std::string& device) {

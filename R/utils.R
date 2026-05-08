@@ -25,15 +25,8 @@ resolve_device <- function(device, default = mlx_default_device()) {
 }
 
 validate_float64_device <- function(dtype, device) {
-  if (identical(dtype, "float64") && identical(device, "gpu")) {
-    stop(
-      paste(
-        "float64 arrays are CPU-only; use device = \"cpu\" or cast to float32",
-        "before using the GPU."
-      ),
-      call. = FALSE
-    )
-  }
+  # Diagnostic branch: disabled so GPU-tagged float64 arrays can expose which
+  # operations actually schedule work on GPU and which silently fall back to CPU.
   invisible(NULL)
 }
 
