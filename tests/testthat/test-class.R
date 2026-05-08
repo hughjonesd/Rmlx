@@ -194,8 +194,16 @@ test_that("backsolve() delegates to mlx_solve_triangular", {
   expected_mat <- base::backsolve(r, b_mat)
   expected_vec <- base::backsolve(r, b_vec)
 
-  res_mat <- backsolve(as_mlx(r), as_mlx(b_mat), upper.tri = TRUE)
-  res_vec <- backsolve(as_mlx(r), as_mlx(b_vec), upper.tri = TRUE)
+  res_mat <- backsolve(
+    as_mlx(r, device = "cpu"),
+    as_mlx(b_mat, device = "cpu"),
+    upper.tri = TRUE
+  )
+  res_vec <- backsolve(
+    as_mlx(r, device = "cpu"),
+    as_mlx(b_vec, device = "cpu"),
+    upper.tri = TRUE
+  )
 
   expect_s3_class(res_mat, "mlx")
   expect_equal(as.matrix(res_mat), expected_mat, tolerance = 1e-6)

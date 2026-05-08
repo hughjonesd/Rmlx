@@ -28,6 +28,8 @@ chol.mlx <- function(x, pivot = FALSE, ...) {
 #' Cholesky decomposition. The input `x` should be an upper triangular matrix
 #' from `chol()`.
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_matrix_required
 #' @param size Ignored; included for compatibility with base R.
 #' @inheritParams ellipsis_ignored
@@ -35,7 +37,7 @@ chol.mlx <- function(x, pivot = FALSE, ...) {
 #' @seealso [chol()], [solve()], [mlx_cholesky_inv()]
 #' @export
 #' @examples
-#' A <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
+#' A <- mlx_matrix(c(4, 1, 1, 3), 2, 2, device = "cpu")
 #' U <- chol(A)
 #' A_inv <- chol2inv(U)
 #' # Verify: A %*% A_inv should be identity
@@ -61,6 +63,8 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
 
 #' QR decomposition for mlx arrays
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_matrix_required
 #' @param tol Ignored; custom tolerances are not supported.
 #' @param LAPACK Ignored; set to `FALSE`.
@@ -69,7 +73,7 @@ chol2inv.mlx <- function(x, size = NCOL(x), ...) {
 #' @seealso [mlx.linalg.qr](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.qr)
 #' @export
 #' @examples
-#' x <- mlx_matrix(c(1, 2, 3, 4, 5, 6), 3, 2)
+#' x <- mlx_matrix(c(1, 2, 3, 4, 5, 6), 3, 2, device = "cpu")
 #' qr(x)
 qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   x <- as_mlx(x)
@@ -111,6 +115,8 @@ svd.default <- function(x, ...) base::svd(x, ...)
 #' Note that mlx's svd returns "full" SVD, with U and V' both square matrices.
 #' This is different from R's implementation.
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_matrix_required
 #' @param nu Number of left singular vectors to return (0 or `min(dim(x))`).
 #' @param nv Number of right singular vectors to return (0 or `min(dim(x))`).
@@ -119,7 +125,7 @@ svd.default <- function(x, ...) base::svd(x, ...)
 #' @seealso [mlx.linalg.svd](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.svd)
 #' @export
 #' @examples
-#' x <- mlx_matrix(c(1, 0, 0, 2), 2, 2)
+#' x <- mlx_matrix(c(1, 0, 0, 2), 2, 2, device = "cpu")
 #' svd(x)
 svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
   x <- as_mlx(x)
@@ -158,12 +164,14 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
 
 #' Moore-Penrose pseudoinverse for MLX arrays
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @param x An mlx object or coercible matrix.
 #' @return An mlx object containing the pseudoinverse.
 #' @seealso [mlx.linalg.pinv](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv)
 #' @export
 #' @examples
-#' x <- mlx_matrix(c(1, 2, 3, 4), 2, 2)
+#' x <- mlx_matrix(c(1, 2, 3, 4), 2, 2, device = "cpu")
 #' pinv(x)
 pinv <- function(x) {
   x <- as_mlx(x)
@@ -235,12 +243,14 @@ mlx_norm <- function(x, ord = NULL, axes = NULL, drop = TRUE) {
 
 #' Eigen decomposition for mlx arrays
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_matrix_required
 #' @return A list with components `values` and `vectors`, both mlx arrays.
 #' @seealso [mlx.linalg.eig](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eig)
 #' @export
 #' @examples
-#' x <- mlx_matrix(c(2, -1, 0, 2), 2, 2)
+#' x <- mlx_matrix(c(2, -1, 0, 2), 2, 2, device = "cpu")
 #' eig <- mlx_eig(x)
 #' eig$values
 #' eig$vectors
@@ -257,12 +267,14 @@ mlx_eig <- function(x) {
 
 #' Eigenvalues of mlx arrays
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_eig
 #' @return An mlx array containing eigenvalues.
 #' @seealso [mlx.linalg.eigvals](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvals)
 #' @export
 #' @examples
-#' x <- mlx_matrix(c(3, 1, 0, 2), 2, 2)
+#' x <- mlx_matrix(c(3, 1, 0, 2), 2, 2, device = "cpu")
 #' mlx_eigvals(x)
 mlx_eigvals <- function(x) {
   x <- as_mlx(x)
@@ -273,13 +285,15 @@ mlx_eigvals <- function(x) {
 
 #' Eigenvalues of Hermitian mlx arrays
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_eig
 #' @param uplo Character string indicating which triangle to use ("L" or "U").
 #' @return An mlx array containing eigenvalues.
 #' @seealso [mlx.linalg.eigvalsh](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvalsh)
 #' @export
 #' @examples
-#' x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)
+#' x <- mlx_matrix(c(2, 1, 1, 3), 2, 2, device = "cpu")
 #' mlx_eigvalsh(x)
 mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
   x <- as_mlx(x)
@@ -291,12 +305,14 @@ mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
 
 #' Eigen decomposition of Hermitian mlx arrays
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_eigvalsh
 #' @return A list with components `values` and `vectors`.
 #' @seealso [mlx.linalg.eigh](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigh)
 #' @export
 #' @examples
-#' x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)
+#' x <- mlx_matrix(c(2, 1, 1, 3), 2, 2, device = "cpu")
 #' mlx_eigh(x)
 mlx_eigh <- function(x, uplo = c("L", "U")) {
   x <- as_mlx(x)
@@ -311,6 +327,8 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
 
 #' Solve triangular systems with mlx arrays
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @param a An mlx triangular matrix.
 #' @param b Right-hand side matrix or vector.
 #' @param upper Logical; if `TRUE`, `a` is upper triangular, otherwise lower.
@@ -319,8 +337,8 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
 #' @seealso [mlx.linalg.solve_triangular](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular)
 #' @export
 #' @examples
-#' a <- mlx_matrix(c(2, 1, 0, 3), 2, 2)
-#' b <- mlx_matrix(c(1, 5), 2, 1)
+#' a <- mlx_matrix(c(2, 1, 0, 3), 2, 2, device = "cpu")
+#' b <- mlx_matrix(c(1, 5), 2, 1, device = "cpu")
 #' mlx_solve_triangular(a, b, upper = FALSE)
 mlx_solve_triangular <- function(a, b, upper = FALSE) {
   a <- as_mlx(a)
@@ -499,11 +517,12 @@ mlx_unflatten <- function(x, axis, shape) {
 #' runs on the CPU.
 #'
 #' @inheritParams mlx_array_required
+#' @inherit mlx_cpu_only_operation details
 #' @return The inverse of `x`.
 #' @seealso [mlx.core.linalg.inv](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.inv)
 #' @export
 #' @examples
-#' A <- mlx_matrix(c(4, 7, 2, 6), 2, 2)
+#' A <- mlx_matrix(c(4, 7, 2, 6), 2, 2, device = "cpu")
 #' A_inv <- mlx_inv(A)
 #' # Verify: A %*% A_inv should be identity
 #' A %*% A_inv
@@ -519,6 +538,8 @@ mlx_inv <- function(x) {
 #'
 #' **Note:** MLX may crash if `x` is not triangular.
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_array_required
 #' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
 #' @return The inverse of the triangular matrix `x`.
@@ -526,7 +547,7 @@ mlx_inv <- function(x) {
 #' @export
 #' @examples
 #' # Lower triangular matrix
-#' L <- mlx_matrix(c(1:3, 0, 4:5, 0, 0, 6), 3, 3)
+#' L <- mlx_matrix(c(1:3, 0, 4:5, 0, 0, 6), 3, 3, device = "cpu")
 #' mlx_tri_inv(L, upper = FALSE)
 mlx_tri_inv <- function(x, upper = FALSE) {
   x <- as_mlx(x)
@@ -541,6 +562,8 @@ mlx_tri_inv <- function(x, upper = FALSE) {
 #'
 #' For a more R-like interface, see [chol2inv()].
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_array_required
 #' @param upper Logical; if `TRUE`, `x` is upper triangular, otherwise lower triangular.
 #' @return The inverse of the original matrix (A^-1 where A = LL' or A = U'U).
@@ -553,7 +576,7 @@ mlx_tri_inv <- function(x, upper = FALSE) {
 #' # Compute Cholesky factor
 #' L <- chol(A, pivot = FALSE, upper = FALSE)
 #' # Get inverse from Cholesky factor
-#' mlx_cholesky_inv(as_mlx(L))
+#' mlx_cholesky_inv(as_mlx(L, device = "cpu"))
 mlx_cholesky_inv <- function(x, upper = FALSE) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_cholesky_inv(x$ptr, upper, x$device)
@@ -564,13 +587,15 @@ mlx_cholesky_inv <- function(x, upper = FALSE) {
 #'
 #' Computes the LU factorization of a matrix.
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_array_required
 #' @return A list with components `p` (pivot indices), `l` (lower triangular),
 #'   and `u` (upper triangular). The relationship is `A = L[P, ] %*% U`.
 #' @seealso [mlx.core.linalg.lu](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.lu)
 #' @export
 #' @examples
-#' A <- mlx_matrix(rnorm(16), 4, 4)
+#' A <- mlx_matrix(rnorm(16), 4, 4, device = "cpu")
 #' lu_result <- mlx_lu(A)
 #' P <- lu_result$p  # Pivot indices
 #' L <- lu_result$l  # Lower triangular

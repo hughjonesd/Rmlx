@@ -21,8 +21,12 @@ A list with components \code{Q} and \code{R}, each an mlx matrix.
 \description{
 QR decomposition for mlx arrays
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly.
+}
 \examples{
-x <- mlx_matrix(c(1, 2, 3, 4, 5, 6), 3, 2)
+x <- mlx_matrix(c(1, 2, 3, 4, 5, 6), 3, 2, device = "cpu")
 qr(x)
 }
 \seealso{

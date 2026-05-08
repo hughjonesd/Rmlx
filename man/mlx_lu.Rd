@@ -16,8 +16,12 @@ and \code{u} (upper triangular). The relationship is \code{A = L[P, ] \%*\% U}.
 \description{
 Computes the LU factorization of a matrix.
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly.
+}
 \examples{
-A <- mlx_matrix(rnorm(16), 4, 4)
+A <- mlx_matrix(rnorm(16), 4, 4, device = "cpu")
 lu_result <- mlx_lu(A)
 P <- lu_result$p  # Pivot indices
 L <- lu_result$l  # Lower triangular

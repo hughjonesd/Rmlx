@@ -15,8 +15,12 @@ A list with components \code{values} and \code{vectors}, both mlx arrays.
 \description{
 Eigen decomposition for mlx arrays
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly.
+}
 \examples{
-x <- mlx_matrix(c(2, -1, 0, 2), 2, 2)
+x <- mlx_matrix(c(2, -1, 0, 2), 2, 2, device = "cpu")
 eig <- mlx_eig(x)
 eig$values
 eig$vectors

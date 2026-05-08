@@ -22,8 +22,12 @@ A list with components \code{d}, \code{u}, and \code{v}.
 Note that mlx's svd returns "full" SVD, with U and V' both square matrices.
 This is different from R's implementation.
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly.
+}
 \examples{
-x <- mlx_matrix(c(1, 0, 0, 2), 2, 2)
+x <- mlx_matrix(c(1, 0, 0, 2), 2, 2, device = "cpu")
 svd(x)
 }
 \seealso{

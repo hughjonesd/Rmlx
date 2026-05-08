@@ -16,8 +16,12 @@ The inverse of \code{x}.
 Computes the inverse of a square matrix. Note that as of MLX 0.30.0, this
 runs on the CPU.
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly.
+}
 \examples{
-A <- mlx_matrix(c(4, 7, 2, 6), 2, 2)
+A <- mlx_matrix(c(4, 7, 2, 6), 2, 2, device = "cpu")
 A_inv <- mlx_inv(A)
 # Verify: A \%*\% A_inv should be identity
 A \%*\% A_inv

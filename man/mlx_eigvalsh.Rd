@@ -17,8 +17,12 @@ An mlx array containing eigenvalues.
 \description{
 Eigenvalues of Hermitian mlx arrays
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly.
+}
 \examples{
-x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)
+x <- mlx_matrix(c(2, 1, 1, 3), 2, 2, device = "cpu")
 mlx_eigvalsh(x)
 }
 \seealso{

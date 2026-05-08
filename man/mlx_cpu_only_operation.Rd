@@ -7,9 +7,7 @@
 CPU-only MLX operation note
 }
 \details{
-As of MLX 0.31.1, this operation only runs on CPU. Rmlx respects the
-input array's preferred device and does not silently move GPU-preferred
-operands to CPU. To use this operation, create or cast the operands with
-\code{device = "cpu"} explicitly.
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly.
 }
 \keyword{internal}

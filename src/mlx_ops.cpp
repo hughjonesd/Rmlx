@@ -121,36 +121,33 @@ SEXP cpp_mlx_fft(SEXP xp_,
                  std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-  StreamOrDevice cpu_stream = Device(Device::cpu);
+  array input = wrapper->get();
+  StreamOrDevice target_device = typed_device(input.dtype(), device_str);
+  array input_target = astype(input, input.dtype(), target_device);
 
-  array input_cpu = astype(wrapper->get(), wrapper->get().dtype(), cpu_stream);
-
-  array result_cpu = [&]() -> array {
+  array result = [&]() -> array {
     if (axes_.isNull()) {
 #if MLX_VERSION_NUMERIC >= 31002
       return inverse
-        ? mlx::core::fft::ifftn(input_cpu, mlx::core::fft::FFTNorm::Backward, cpu_stream)
-        : mlx::core::fft::fftn(input_cpu, mlx::core::fft::FFTNorm::Backward, cpu_stream);
+        ? mlx::core::fft::ifftn(input_target, mlx::core::fft::FFTNorm::Backward, target_device)
+        : mlx::core::fft::fftn(input_target, mlx::core::fft::FFTNorm::Backward, target_device);
 #else
-      return inverse ? mlx::core::fft::ifftn(input_cpu, cpu_stream)
-                     : mlx::core::fft::fftn(input_cpu, cpu_stream);
+      return inverse ? mlx::core::fft::ifftn(input_target, target_device)
+                     : mlx::core::fft::fftn(input_target, target_device);
 #endif
     }
     std::vector<int> axes = Rcpp::as<std::vector<int>>(axes_.get());
 #if MLX_VERSION_NUMERIC >= 31002
     return inverse
-      ? mlx::core::fft::ifftn(input_cpu, axes, mlx::core::fft::FFTNorm::Backward, cpu_stream)
-      : mlx::core::fft::fftn(input_cpu, axes, mlx::core::fft::FFTNorm::Backward, cpu_stream);
+      ? mlx::core::fft::ifftn(input_target, axes, mlx::core::fft::FFTNorm::Backward, target_device)
+      : mlx::core::fft::fftn(input_target, axes, mlx::core::fft::FFTNorm::Backward, target_device);
 #else
-    return inverse ? mlx::core::fft::ifftn(input_cpu, axes, cpu_stream)
-                   : mlx::core::fft::fftn(input_cpu, axes, cpu_stream);
+    return inverse ? mlx::core::fft::ifftn(input_target, axes, target_device)
+                   : mlx::core::fft::fftn(input_target, axes, target_device);
 #endif
   }();
 
-  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
-
-  return make_mlx_xptr(std::move(result_target));
+  return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]

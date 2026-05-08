@@ -27,8 +27,12 @@ Compute the inverse of a symmetric, positive definite matrix from its
 Cholesky decomposition. The input \code{x} should be an upper triangular matrix
 from \code{chol()}.
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly.
+}
 \examples{
-A <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
+A <- mlx_matrix(c(4, 1, 1, 3), 2, 2, device = "cpu")
 U <- chol(A)
 A_inv <- chol2inv(U)
 # Verify: A \%*\% A_inv should be identity

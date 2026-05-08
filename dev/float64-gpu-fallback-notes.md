@@ -19,21 +19,28 @@ Local MLX headers checked:
 - `/opt/homebrew/include/mlx/ops.h`
 - `/opt/homebrew/include/mlx/backend/metal/kernels/fft.h`
 
-## Summary
+## Current branch update
 
-- Documented Rmlx CPU fallback: `mlx_inv`.
-- Resolved on this branch: `chol.mlx` now uses the operand's preferred device
-  and lets MLX report that GPU Cholesky is unsupported.
-- Undocumented Rmlx CPU fallback: `chol2inv`, `diag.mlx`, `fft.mlx`,
-  `mlx_cholesky_inv`, `mlx_diagonal`, `mlx_eig`, `mlx_eigh`,
-  `mlx_eigvals`, `mlx_eigvalsh`, `mlx_fft`, `mlx_fft2`, `mlx_fftn`, `mlx_lu`,
-  `mlx_norm`, `mlx_trace`, `mlx_tri_inv`, `mlx_unflatten`, `outer.mlx`,
-  `pinv`, `qr.mlx`.
-- Likely no-op or identity-style cases in this diagnostic: `mlx_cast`,
-  `mlx_conjugate`, `mlx_real`.
-- FFT documentation currently conflicts with implementation: the roxygen says
-  transforms run on the input array's device when `device = NULL`, but the C++
-  wrapper always performs the FFT call on a CPU stream.
+The explicit CPU staging has now been removed for the operations below. A GPU
+float32 probe on MLX 0.31.1 produced these results:
+
+- Now runs on GPU: `diag.mlx`, `fft.mlx`, `mlx_cross`, `mlx_diagonal`,
+  `mlx_fft`, `mlx_fft2`, `mlx_fftn`, `mlx_norm`, `mlx_trace`,
+  `mlx_unflatten`, `outer.mlx`.
+- Now respects GPU and lets MLX report unsupported execution: `chol.mlx`,
+  `chol2inv`, `mlx_cholesky_inv`, `mlx_eig`, `mlx_eigh`, `mlx_eigvals`,
+  `mlx_eigvalsh`, `mlx_inv`, `mlx_lu`, `mlx_solve_triangular`,
+  `mlx_tri_inv`, `pinv`, `qr.mlx`, `solve.mlx`, `svd`, `svd.mlx`.
+- Likely no-op or identity-style cases in the original diagnostic:
+  `mlx_cast`, `mlx_conjugate`, `mlx_real`.
+
+A later source scan found two more wrappers with the same explicit CPU staging
+pattern. After removing it, `mlx_cross()` runs on GPU and
+`mlx_solve_triangular()` respects GPU but MLX 0.31.1 reports that triangular
+solves are not yet supported there.
+
+The notes below describe the original diagnostic state and the specific source
+patterns that caused each success before these wrappers were changed.
 
 ## chol.mlx
 

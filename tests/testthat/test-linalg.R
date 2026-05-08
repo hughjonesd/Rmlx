@@ -154,6 +154,25 @@ test_that("chol.mlx respects gpu device and lets MLX report unsupported executio
   )
 })
 
+test_that("CPU-only linalg helpers let MLX report unsupported gpu execution", {
+  skip_if_not(mlx_has_gpu())
+  old_device <- mlx_default_device()
+  on.exit(mlx_default_device(old_device))
+  mlx_default_device("gpu")
+
+  mat <- as_mlx(matrix(c(4, 1, 2, 3), 2, 2), dtype = "float32", device = "gpu")
+  spd <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2), dtype = "float32", device = "gpu")
+  lower <- as_mlx(matrix(c(2, 1, 0, 3), 2, 2), dtype = "float32", device = "gpu")
+  chol_factor <- as_mlx(chol(matrix(c(4, 1, 1, 3), 2, 2)), dtype = "float32", device = "gpu")
+
+  expect_error(mlx_eval(qr(mat)$R), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_eval(pinv(mat)), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_eval(mlx_inv(spd)), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_eval(mlx_tri_inv(lower, upper = FALSE)), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_eval(mlx_cholesky_inv(chol_factor, upper = TRUE)), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_eval(mlx_lu(mat)$l), "not yet supported on the GPU", fixed = TRUE)
+})
+
 test_that("chol.mlx errors with pivot = TRUE", {
   set.seed(567)
   A <- matrix(rnorm(9), 3, 3)
@@ -168,7 +187,7 @@ test_that("chol.mlx errors with pivot = TRUE", {
 test_that("qr decomposition reconstructs the original matrix", {
   set.seed(42)
   A <- matrix(rnorm(12), 4, 3)
-  qr_mlx <- qr(as_mlx(A))
+  qr_mlx <- qr(as_mlx(A, device = "cpu"))
 
   Q <- as.matrix(qr_mlx$Q)
   R <- as.matrix(qr_mlx$R)
@@ -180,7 +199,7 @@ test_that("qr decomposition reconstructs the original matrix", {
 test_that("svd reconstructs the original matrix", {
   set.seed(101)
   A <- matrix(rnorm(12), 3, 4)
-  svd_mlx <- svd(as_mlx(A))
+  svd_mlx <- svd(as_mlx(A, device = "cpu"))
 
   U <- as.matrix(svd_mlx$u)
   d <- as.vector(svd_mlx$d)
@@ -194,7 +213,7 @@ test_that("svd reconstructs the original matrix", {
 test_that("svd.mlx with nu=0 and nv=0 returns only singular values", {
   set.seed(404)
   A <- matrix(rnorm(12), 3, 4)
-  svd_mlx <- svd(as_mlx(A), nu = 0, nv = 0)
+  svd_mlx <- svd(as_mlx(A, device = "cpu"), nu = 0, nv = 0)
 
   expect_null(svd_mlx$u)
   expect_true(is_mlx(svd_mlx$d))
@@ -207,7 +226,7 @@ test_that("svd.mlx singular values match base R", {
   A <- matrix(rnorm(20), 4, 5)
 
   svd_r <- svd(A)
-  svd_mlx <- svd(as_mlx(A))
+  svd_mlx <- svd(as_mlx(A, device = "cpu"))
 
   expect_equal(as.vector(svd_mlx$d), svd_r$d, tolerance = 1e-5)
 })
@@ -243,7 +262,7 @@ test_that("svd.mlx works with different matrix dimensions", {
 
   # Tall matrix (more rows than columns)
   A_tall <- matrix(rnorm(15), 5, 3)
-  svd_tall <- svd(as_mlx(A_tall))
+  svd_tall <- svd(as_mlx(A_tall, device = "cpu"))
   U <- as.matrix(svd_tall$u)
   V <- as.matrix(svd_tall$v)
   d <- as.vector(svd_tall$d)
@@ -253,7 +272,7 @@ test_that("svd.mlx works with different matrix dimensions", {
 
   # Wide matrix (more columns than rows)
   A_wide <- matrix(rnorm(15), 3, 5)
-  svd_wide <- svd(as_mlx(A_wide))
+  svd_wide <- svd(as_mlx(A_wide, device = "cpu"))
   U <- as.matrix(svd_wide$u)
   V <- as.matrix(svd_wide$v)
   d <- as.vector(svd_wide$d)
@@ -263,7 +282,7 @@ test_that("svd.mlx works with different matrix dimensions", {
 
   # Square matrix
   A_square <- matrix(rnorm(16), 4, 4)
-  svd_square <- svd(as_mlx(A_square))
+  svd_square <- svd(as_mlx(A_square, device = "cpu"))
   U <- as.matrix(svd_square$u)
   V <- as.matrix(svd_square$v)
   d <- as.vector(svd_square$d)
@@ -276,7 +295,7 @@ test_that("svd.mlx U and V are orthogonal", {
   set.seed(707)
   A <- matrix(rnorm(20), 5, 4)
 
-  svd_mlx <- svd(as_mlx(A))
+  svd_mlx <- svd(as_mlx(A, device = "cpu"))
   U <- as.matrix(svd_mlx$u)
   V <- as.matrix(svd_mlx$v)
 
@@ -287,7 +306,7 @@ test_that("svd.mlx U and V are orthogonal", {
   expect_equal(t(V) %*% V, diag(4), tolerance = 1e-5)
 })
 
-test_that("svd.mlx preserves device and dtype", {
+test_that("svd.mlx respects gpu device and lets MLX report unsupported execution", {
   skip_if_not(mlx_has_gpu())
   old_device <- mlx_default_device()
   on.exit(mlx_default_device(old_device))
@@ -298,16 +317,14 @@ test_that("svd.mlx preserves device and dtype", {
   A <- matrix(rnorm(12), 3, 4)
 
   A_gpu <- as_mlx(A, device = "gpu", dtype = "float32")
-  svd_gpu <- svd(A_gpu)
-
-  expect_equal(svd_gpu$u$device, "gpu")
-  expect_equal(svd_gpu$v$device, "gpu")
-  expect_equal(mlx_dtype(svd_gpu$u), "float32")
-  expect_equal(mlx_dtype(svd_gpu$v), "float32")
-
-  # Check values still match
-  svd_r <- svd(A)
-  expect_equal(as.vector(svd_gpu$d), svd_r$d, tolerance = 1e-4)
+  expect_error(
+    {
+      svd_gpu <- svd(A_gpu)
+      mlx_eval(svd_gpu$d)
+    },
+    "not yet supported on the GPU",
+    fixed = TRUE
+  )
 })
 
 test_that("svd.mlx errors with invalid nu or nv", {
@@ -329,7 +346,7 @@ test_that("svd.mlx handles rank-deficient matrices", {
   A <- matrix(c(1, 2, 2, 4, 3, 6), 3, 2, byrow = TRUE)
   # This matrix has rank 1 (second column is 2x first column)
 
-  svd_mlx <- svd(as_mlx(A))
+  svd_mlx <- svd(as_mlx(A, device = "cpu"))
 
   # Should have one large singular value and one near-zero
   svd_mlx_d <- as.vector(svd_mlx$d)
@@ -349,7 +366,7 @@ test_that("pinv matches analytical pseudoinverse for full-rank matrix", {
   A <- matrix(rnorm(12), 4, 3)
   pseudo_r <- solve(t(A) %*% A) %*% t(A)
 
-  pseudo_mlx <- pinv(as_mlx(A))
+  pseudo_mlx <- pinv(as_mlx(A, device = "cpu"))
   expect_equal(as.matrix(pseudo_mlx), pseudo_r, tolerance = 1e-4)
 })
 
@@ -357,13 +374,14 @@ test_that("mlx_inv computes matrix inverse", {
   set.seed(301)
   A <- matrix(rnorm(16), 4, 4)
 
-  A_inv_mlx <- mlx_inv(as_mlx(A))
+  A_mlx <- as_mlx(A, device = "cpu")
+  A_inv_mlx <- mlx_inv(A_mlx)
   A_inv_r <- solve(A)
 
   expect_equal(as.matrix(A_inv_mlx), A_inv_r, tolerance = 1e-5)
 
   # Verify: A %*% A_inv should be identity
-  I_mlx <- as_mlx(A) %*% A_inv_mlx
+  I_mlx <- A_mlx %*% A_inv_mlx
   I_expected <- diag(4)
   expect_equal(as.matrix(I_mlx), I_expected, tolerance = 1e-5)
 })
@@ -373,12 +391,12 @@ test_that("mlx_inv works with different matrix sizes", {
 
   # 2x2 matrix
   A2 <- matrix(rnorm(4), 2, 2)
-  A2_inv_mlx <- mlx_inv(as_mlx(A2))
+  A2_inv_mlx <- mlx_inv(as_mlx(A2, device = "cpu"))
   expect_equal(as.matrix(A2_inv_mlx), solve(A2), tolerance = 1e-5)
 
   # 5x5 matrix
   A5 <- matrix(rnorm(25), 5, 5)
-  A5_inv_mlx <- mlx_inv(as_mlx(A5))
+  A5_inv_mlx <- mlx_inv(as_mlx(A5, device = "cpu"))
   expect_equal(as.matrix(A5_inv_mlx), solve(A5), tolerance = 1e-5)
 })
 
@@ -389,14 +407,14 @@ test_that("mlx_tri_inv computes triangular matrix inverse", {
   # Lower triangular
   L <- A
   L[upper.tri(L)] <- 0
-  L_inv_mlx <- mlx_tri_inv(as_mlx(L), upper = FALSE)
+  L_inv_mlx <- mlx_tri_inv(as_mlx(L, device = "cpu"), upper = FALSE)
   L_inv_r <- solve(L)
   expect_equal(as.matrix(L_inv_mlx), L_inv_r, tolerance = 1e-5)
 
   # Upper triangular
   U <- A
   U[lower.tri(U)] <- 0
-  U_inv_mlx <- mlx_tri_inv(as_mlx(U), upper = TRUE)
+  U_inv_mlx <- mlx_tri_inv(as_mlx(U, device = "cpu"), upper = TRUE)
   U_inv_r <- solve(U)
   expect_equal(as.matrix(U_inv_mlx), U_inv_r, tolerance = 1e-5)
 })
@@ -411,13 +429,14 @@ test_that("mlx_cholesky_inv computes inverse via Cholesky", {
   U <- chol(A)
 
   # Get inverse from Cholesky factor
-  A_inv_mlx <- mlx_cholesky_inv(as_mlx(U), upper = TRUE)
+  A_mlx <- as_mlx(A, device = "cpu")
+  A_inv_mlx <- mlx_cholesky_inv(as_mlx(U, device = "cpu"), upper = TRUE)
   A_inv_r <- solve(A)
 
   expect_equal(as.matrix(A_inv_mlx), A_inv_r, tolerance = 1e-4)
 
   # Verify inverse
-  I_mlx <- as_mlx(A) %*% A_inv_mlx
+  I_mlx <- A_mlx %*% A_inv_mlx
   expect_equal(as.matrix(I_mlx), diag(4), tolerance = 1e-3)
 })
 
@@ -430,7 +449,7 @@ test_that("mlx_cholesky_inv works with lower triangle", {
   U <- chol(A)
   L <- t(U)
 
-  A_inv_mlx <- mlx_cholesky_inv(as_mlx(L), upper = FALSE)
+  A_inv_mlx <- mlx_cholesky_inv(as_mlx(L, device = "cpu"), upper = FALSE)
   A_inv_r <- solve(A)
 
   expect_equal(as.matrix(A_inv_mlx), A_inv_r, tolerance = 1e-4)
@@ -461,7 +480,7 @@ test_that("mlx_lu returns P, L and U factors", {
   set.seed(306)
   A <- matrix(rnorm(16), 4, 4)
 
-  lu_mlx <- mlx_lu(as_mlx(A))
+  lu_mlx <- mlx_lu(as_mlx(A, device = "cpu"))
 
   expect_true(is.list(lu_mlx))
   expect_true("p" %in% names(lu_mlx))
@@ -488,14 +507,14 @@ test_that("mlx_lu works with rectangular matrices", {
 
   # Tall matrix
   A_tall <- matrix(rnorm(12), 4, 3)
-  lu_tall <- mlx_lu(as_mlx(A_tall))
+  lu_tall <- mlx_lu(as_mlx(A_tall, device = "cpu"))
   # Check that we get results with expected structure
   expect_true(is.list(lu_tall))
   expect_true(all(c("p", "l", "u") %in% names(lu_tall)))
 
   # Wide matrix
   A_wide <- matrix(rnorm(12), 3, 4)
-  lu_wide <- mlx_lu(as_mlx(A_wide))
+  lu_wide <- mlx_lu(as_mlx(A_wide, device = "cpu"))
   expect_true(is.list(lu_wide))
   expect_true(all(c("p", "l", "u") %in% names(lu_wide)))
 })

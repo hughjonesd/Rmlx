@@ -32,6 +32,8 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
         message <- conditionMessage(e)
         status <- if (grepl("float64 is not supported on the GPU", message, fixed = TRUE)) {
           "gpu_float64_error"
+        } else if (grepl("not yet supported on the GPU", message, fixed = TRUE)) {
+          "gpu_unsupported"
         } else if (grepl("Does not yet support given type: float64", message, fixed = TRUE)) {
           "unsupported_float64"
         } else {
@@ -253,32 +255,24 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
 
   notes <- c(
     "all.equal.mlx" = "returns R logical after comparison",
-    "chol2inv" = "undocumented CPU fallback",
-    "diag.mlx" = "undocumented CPU fallback",
-    "fft.mlx" = "undocumented CPU fallback",
+    "chol.mlx" = "MLX reports GPU unsupported",
+    "chol2inv" = "MLX reports GPU unsupported",
     "mlx_cast" = "same dtype/device cast: likely no-op",
-    "mlx_cholesky_inv" = "undocumented CPU fallback",
+    "mlx_cholesky_inv" = "MLX reports GPU unsupported",
     "mlx_conjugate" = "real input: likely no-op",
-    "mlx_diagonal" = "undocumented CPU fallback",
-    "mlx_eig" = "undocumented CPU fallback",
-    "mlx_eigh" = "undocumented CPU fallback",
-    "mlx_eigvals" = "undocumented CPU fallback",
-    "mlx_eigvalsh" = "undocumented CPU fallback",
-    "mlx_fft" = "undocumented CPU fallback",
-    "mlx_fft2" = "undocumented CPU fallback",
-    "mlx_fftn" = "undocumented CPU fallback",
-    "mlx_inv" = "documented CPU fallback",
-    "mlx_lu" = "undocumented CPU fallback",
-    "mlx_norm" = "undocumented CPU fallback",
+    "mlx_eig" = "MLX reports GPU unsupported",
+    "mlx_eigh" = "MLX reports GPU unsupported",
+    "mlx_eigvals" = "MLX reports GPU unsupported",
+    "mlx_eigvalsh" = "MLX reports GPU unsupported",
+    "mlx_inv" = "MLX reports GPU unsupported",
+    "mlx_lu" = "MLX reports GPU unsupported",
     "mlx_real" = "real input: likely no-op",
-    "mlx_trace" = "undocumented CPU fallback",
-    "mlx_tri_inv" = "undocumented CPU fallback",
-    "mlx_unflatten" = "undocumented CPU fallback",
-    "outer.mlx" = "undocumented CPU fallback",
-    "pinv" = "undocumented CPU fallback",
-    "qr.mlx" = "undocumented CPU fallback",
-    "svd" = "undocumented CPU fallback",
-    "svd.mlx" = "undocumented CPU fallback"
+    "mlx_solve_triangular" = "MLX reports GPU unsupported",
+    "mlx_tri_inv" = "MLX reports GPU unsupported",
+    "pinv" = "MLX reports GPU unsupported",
+    "qr.mlx" = "MLX reports GPU unsupported",
+    "svd" = "MLX reports GPU unsupported",
+    "svd.mlx" = "MLX reports GPU unsupported"
   )
 
   results <- do.call(
@@ -295,6 +289,7 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
 
   successes <- results[results$status == "success", ]
   other_errors <- results[results$status == "other_error", ]
+  gpu_unsupported <- results[results$status == "gpu_unsupported", ]
   if (nrow(successes)) {
     message(
       "GPU-tagged float64 operations that did not fail:\n",
@@ -307,6 +302,12 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
       paste(capture.output(print(other_errors, row.names = FALSE)), collapse = "\n")
     )
   }
+  if (nrow(gpu_unsupported)) {
+    message(
+      "GPU-tagged float64 operations where MLX reports GPU unsupported:\n",
+      paste(capture.output(print(gpu_unsupported, row.names = FALSE)), collapse = "\n")
+    )
+  }
 
   expect_equal(
     other_errors$name,
@@ -315,10 +316,10 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
   )
   expect_equal(
     successes$name,
-    character(),
+    c("mlx_cast", "mlx_conjugate", "mlx_real"),
     info = paste(
-      "These GPU-tagged float64 operations did not fail; investigate whether",
-      "they are documented CPU fallbacks, undocumented CPU fallbacks, or no-ops."
+      "These GPU-tagged float64 operations did not fail because this diagnostic",
+      "uses identity-style calls that do not schedule MLX compute for real input."
     )
   )
 })
