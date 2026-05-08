@@ -253,7 +253,6 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
 
   notes <- c(
     "all.equal.mlx" = "returns R logical after comparison",
-    "chol.mlx" = "undocumented CPU fallback",
     "chol2inv" = "undocumented CPU fallback",
     "diag.mlx" = "undocumented CPU fallback",
     "fft.mlx" = "undocumented CPU fallback",
@@ -278,7 +277,6 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
     "outer.mlx" = "undocumented CPU fallback",
     "pinv" = "undocumented CPU fallback",
     "qr.mlx" = "undocumented CPU fallback",
-    "solve.mlx" = "documented CPU fallback",
     "svd" = "undocumented CPU fallback",
     "svd.mlx" = "undocumented CPU fallback"
   )

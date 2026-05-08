@@ -39,6 +39,7 @@
 ## Commit & Pull Request Guidelines
 - Follow the repository's imperative, capitalized commit style (e.g., `Add rowSums helper`); keep subject lines near 70 characters.
 - Each PR should link to issues when relevant, summarize API changes, and note Metal/CPU devices covered.
+- The pre-commit hook runs MLX benchmarks. Let the benchmark run finish when committing; do not interrupt it just because it takes a while.
 - Before opening a PR, run `R -q -e 'devtools::document()'`, `R -q -e 'devtools::test()'`, and `R -q -e 'devtools::check()'`; include notable outputs or screenshots for performance-sensitive work.
 
 ## Current Agent Notes (2025-10-22)

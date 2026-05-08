@@ -22,7 +22,7 @@ ops <- list(
   ),
   list(
     label = "solve",
-    fn = function(input) force_mlx(solve(input$mlx$spd, input$mlx$rhs))
+    fn = function(input) force_mlx(solve(input$mlx$spd_cpu, input$mlx$rhs_cpu))
   ),
   list(
     label = "as_mlx",

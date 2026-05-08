@@ -22,8 +22,10 @@ Local MLX headers checked:
 ## Summary
 
 - Documented Rmlx CPU fallback: `mlx_inv`.
-- Undocumented Rmlx CPU fallback: `chol.mlx`, `chol2inv`, `diag.mlx`,
-  `fft.mlx`, `mlx_cholesky_inv`, `mlx_diagonal`, `mlx_eig`, `mlx_eigh`,
+- Resolved on this branch: `chol.mlx` now uses the operand's preferred device
+  and lets MLX report that GPU Cholesky is unsupported.
+- Undocumented Rmlx CPU fallback: `chol2inv`, `diag.mlx`, `fft.mlx`,
+  `mlx_cholesky_inv`, `mlx_diagonal`, `mlx_eig`, `mlx_eigh`,
   `mlx_eigvals`, `mlx_eigvalsh`, `mlx_fft`, `mlx_fft2`, `mlx_fftn`, `mlx_lu`,
   `mlx_norm`, `mlx_trace`, `mlx_tri_inv`, `mlx_unflatten`, `outer.mlx`,
   `pinv`, `qr.mlx`.
@@ -37,12 +39,19 @@ Local MLX headers checked:
 
 - Underlying MLX capability: `mlx::core::linalg::cholesky()` accepts a
   `StreamOrDevice` in `mlx/linalg.h`, so the public MLX API is
-  stream/device-parameterized.
-- Why this succeeds: `chol.mlx()` passes `x$device` to `cpp_mlx_cholesky()`, but
-  `src/mlx_linalg.cpp` casts the input to `Device(Device::cpu)`, calls
-  `linalg::cholesky(..., cpu_stream)`, then casts the result back to the target
-  device.
-- Documentation: no Rmlx CPU-only note found in the roxygen/Rd for `chol.mlx`.
+  stream/device-parameterized. With MLX 0.31.1, attempting Cholesky on GPU
+  errors: "This op is not yet supported on the GPU."
+- Previous reason this succeeded: `chol.mlx()` passed `x$device` to
+  `cpp_mlx_cholesky()`, but `src/mlx_linalg.cpp` cast the input to
+  `Device(Device::cpu)`, called `linalg::cholesky(..., cpu_stream)`, then cast
+  the result back to the target device.
+- Current branch status: `cpp_mlx_cholesky()` now casts to
+  `typed_device(target_dtype, device_str)` and calls
+  `linalg::cholesky(..., target_device)`, so it respects the operand's
+  preferred device. CPU operands run; GPU operands receive the MLX unsupported
+  GPU error instead of silently falling back to CPU.
+- Documentation: no Rmlx CPU-only note found in the roxygen/Rd for `chol.mlx`;
+  that now matches the implementation.
 
 ## chol2inv
 

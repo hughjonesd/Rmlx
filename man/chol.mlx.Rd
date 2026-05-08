@@ -20,8 +20,14 @@ Upper-triangular Cholesky factor as an mlx matrix.
 If \code{x} is not symmetric positive semi-definite, "behaviour is undefined"
 according to the MLX documentation.
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Rmlx respects the
+input array's preferred device and does not silently move GPU-preferred
+operands to CPU. To use this operation, create or cast the operands with
+\code{device = "cpu"} explicitly.
+}
 \examples{
-x <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
+x <- mlx_matrix(c(4, 1, 1, 3), 2, 2, device = "cpu")
 chol(x)
 }
 \seealso{

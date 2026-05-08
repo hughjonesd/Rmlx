@@ -60,12 +60,19 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
   }
 
   make_payload <- function(base_data) {
+    as_cpu_mlx <- function(x) {
+      with_default_device("cpu", as_mlx(x, dtype = "float32"))
+    }
+
     mlx_data <- list(
       a = as_mlx(base_data$a, dtype = "float32"),
       b = as_mlx(base_data$b, dtype = "float32"),
       spd = as_mlx(base_data$spd, dtype = "float32"),
+      spd_cpu = as_cpu_mlx(base_data$spd),
       rhs = as_mlx(base_data$rhs, dtype = "float32"),
+      rhs_cpu = as_cpu_mlx(base_data$rhs),
       chol = as_mlx(base_data$chol, dtype = "float32"),
+      chol_cpu = as_cpu_mlx(base_data$chol),
       idx_vec = base_data$idx_vec,
       idx_mat = base_data$idx_mat,
       vec = as_mlx(base_data$vec, dtype = "float32"),
@@ -350,25 +357,25 @@ benchmark_operations <- function() {
       id = "solve",
       label = "Solve Ax = b",
       base = function(data) { solve(data$spd, data$rhs); invisible(NULL) },
-      mlx = function(data) { force_mlx(solve(data$spd, data$rhs)) }
+      mlx = function(data) { force_mlx(solve(data$spd_cpu, data$rhs_cpu)) }
     ),
     list(
       id = "backsolve",
       label = "Backsolve",
       base = function(data) { backsolve(data$chol, data$rhs); invisible(NULL) },
-      mlx = function(data) { force_mlx(backsolve(data$chol, data$rhs)) }
+      mlx = function(data) { force_mlx(backsolve(data$chol_cpu, data$rhs_cpu)) }
     ),
     list(
       id = "chol",
       label = "Cholesky",
       base = function(data) { chol(data$spd); invisible(NULL) },
-      mlx = function(data) { force_mlx(chol(data$spd)) }
+      mlx = function(data) { force_mlx(chol(data$spd_cpu)) }
     ),
     list(
       id = "chol2inv",
       label = "chol2inv",
       base = function(data) { chol2inv(data$chol); invisible(NULL) },
-      mlx = function(data) { force_mlx(chol2inv(data$chol)) }
+      mlx = function(data) { force_mlx(chol2inv(data$chol_cpu)) }
     ),
     list(
       id = "svd",

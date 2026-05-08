@@ -1,6 +1,6 @@
 #' Solve a system of linear equations
 #'
-#' Note that as of MLX 0.30.0, `solve()` runs on the CPU.
+#' @inherit mlx_cpu_only_operation details
 #'
 #' @param a An mlx matrix (the coefficient matrix)
 #' @param b An mlx vector or matrix (the right-hand side). If omitted,
@@ -10,8 +10,8 @@
 #' @seealso [mlx.linalg.solve](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve)
 #' @export
 #' @examples
-#' a <- mlx_matrix(c(3, 1, 1, 2), 2, 2)
-#' b <- as_mlx(c(9, 8))
+#' a <- mlx_matrix(c(3, 1, 1, 2), 2, 2, device = "cpu")
+#' b <- as_mlx(c(9, 8), device = "cpu")
 #' solve(a, b)
 solve.mlx <- function(a, b = NULL, ...) {
   target_device <- a$device

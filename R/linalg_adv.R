@@ -3,6 +3,8 @@
 #' If `x` is not symmetric positive semi-definite, "behaviour is undefined"
 #' according to the MLX documentation.
 #'
+#' @inherit mlx_cpu_only_operation details
+#'
 #' @inheritParams mlx_matrix_required
 #' @param pivot Ignored; pivoted decomposition is not supported.
 #' @inheritParams ellipsis_ignored
@@ -10,7 +12,7 @@
 #' @seealso [mlx.linalg.cholesky](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.cholesky)
 #' @export
 #' @examples
-#' x <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
+#' x <- mlx_matrix(c(4, 1, 1, 3), 2, 2, device = "cpu")
 #' chol(x)
 chol.mlx <- function(x, pivot = FALSE, ...) {
   x <- as_mlx(x)

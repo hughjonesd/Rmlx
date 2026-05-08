@@ -18,11 +18,17 @@ computes the matrix inverse.}
 An mlx object containing the solution.
 }
 \description{
-Note that as of MLX 0.30.0, \code{solve()} runs on the CPU.
+Solve a system of linear equations
+}
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Rmlx respects the
+input array's preferred device and does not silently move GPU-preferred
+operands to CPU. To use this operation, create or cast the operands with
+\code{device = "cpu"} explicitly.
 }
 \examples{
-a <- mlx_matrix(c(3, 1, 1, 2), 2, 2)
-b <- as_mlx(c(9, 8))
+a <- mlx_matrix(c(3, 1, 1, 2), 2, 2, device = "cpu")
+b <- as_mlx(c(9, 8), device = "cpu")
 solve(a, b)
 }
 \seealso{

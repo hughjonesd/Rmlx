@@ -15,27 +15,21 @@ SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
 
   Dtype target_dtype = string_to_dtype(dtype_str);
   StreamOrDevice target_device = typed_device(target_dtype, device_str);
-  StreamOrDevice cpu_stream = Device(Device::cpu);
-  array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
+  array a_target = astype(a_wrapper->get(), target_dtype, target_device);
 
   array result = [&]() -> array {
     if (b_xp_ == R_NilValue) {
       // No b provided: compute matrix inverse
-      return linalg::inv(a_cpu, cpu_stream);
+      return linalg::inv(a_target, target_device);
     } else {
       // b provided: solve linear system Ax = b
       MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
-      array b_cpu = astype(b_wrapper->get(), target_dtype, cpu_stream);
-      return linalg::solve(a_cpu, b_cpu, cpu_stream);
+      array b_target = astype(b_wrapper->get(), target_dtype, target_device);
+      return linalg::solve(a_target, b_target, target_device);
     }
   }();
 
-  if (device_str == "cpu") {
-    return make_mlx_xptr(std::move(result));
-  }
-
-  array result_target = astype(result, target_dtype, target_device);
-  return make_mlx_xptr(std::move(result_target));
+  return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
@@ -45,11 +39,9 @@ SEXP cpp_mlx_cholesky(SEXP a_xp_, bool upper,
 
   Dtype target_dtype = string_to_dtype(dtype_str);
   StreamOrDevice target_device = typed_device(target_dtype, device_str);
-  StreamOrDevice cpu_stream = Device(Device::cpu);
 
-  array a_cpu = astype(a_wrapper->get(), target_dtype, cpu_stream);
-  array chol_cpu = mlx::core::linalg::cholesky(a_cpu, upper, cpu_stream);
-  array chol_target = astype(chol_cpu, target_dtype, target_device);
+  array a_target = astype(a_wrapper->get(), target_dtype, target_device);
+  array chol_target = mlx::core::linalg::cholesky(a_target, upper, target_device);
 
   return make_mlx_xptr(std::move(chol_target));
 }
