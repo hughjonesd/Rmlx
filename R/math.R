@@ -19,7 +19,7 @@ Math.mlx <- function(x, ...) {
   # Cumulative operations flatten the array in column-major order (like R)
   # MLX flattens in row-major order, so we need to fall back to R
   if (op %in% c("cumsum", "cumprod", "cummax", "cummin")) {
-    ptr <- cpp_mlx_cumulative(x$ptr, op)
+    ptr <- cpp_mlx_cumulative(x$ptr, op, x$device)
     return(new_mlx(ptr, x$device))
   }
 
@@ -42,7 +42,7 @@ Math.mlx <- function(x, ...) {
 
   # Try MLX operation first
   result <- tryCatch({
-    .mlx_from_call(cpp_mlx_unary, x, op = op)
+    .mlx_from_call(cpp_mlx_unary, x, op = op, device_str = x$device)
   }, error = function(e) {
     # If MLX doesn't support this operation, fall back to base R
     if (grepl("Unsupported unary operation", e$message)) {
@@ -150,21 +150,21 @@ mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #' Im(z)
 mlx_real <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "real")
+  .mlx_from_call(cpp_mlx_unary, x, op = "real", device_str = x$device)
 }
 
 #' @rdname mlx_real
 #' @export
 mlx_imag <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "imag")
+  .mlx_from_call(cpp_mlx_unary, x, op = "imag", device_str = x$device)
 }
 
 #' @rdname mlx_real
 #' @export
 mlx_conjugate <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "conj")
+  .mlx_from_call(cpp_mlx_unary, x, op = "conj", device_str = x$device)
 }
 
 #' Convert between radians and degrees
@@ -184,7 +184,7 @@ mlx_conjugate <- function(x) {
 #' mlx_degrees(x)  # 90
 mlx_degrees <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "degrees")
+  .mlx_from_call(cpp_mlx_unary, x, op = "degrees", device_str = x$device)
 }
 
 #' @rdname mlx_degrees
@@ -193,7 +193,7 @@ mlx_degrees <- function(x) {
 #' mlx_radians(mlx_vector(c(0, 90, 180)))
 mlx_radians <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "radians")
+  .mlx_from_call(cpp_mlx_unary, x, op = "radians", device_str = x$device)
 }
 
 #' Detect signed infinities in mlx arrays
@@ -214,14 +214,14 @@ mlx_radians <- function(x) {
 #' mlx_isneginf(vals)
 mlx_isposinf <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "isposinf")
+  .mlx_from_call(cpp_mlx_unary, x, op = "isposinf", device_str = x$device)
 }
 
 #' @rdname mlx_isposinf
 #' @export
 mlx_isneginf <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "isneginf")
+  .mlx_from_call(cpp_mlx_unary, x, op = "isneginf", device_str = x$device)
 }
 
 #' Elementwise NaN and infinity predicates
@@ -241,21 +241,21 @@ NULL
 #' @export
 mlx_isnan <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "isnan")
+  .mlx_from_call(cpp_mlx_unary, x, op = "isnan", device_str = x$device)
 }
 
 #' @rdname mlx_isnan
 #' @export
 mlx_isinf <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "isinf")
+  .mlx_from_call(cpp_mlx_unary, x, op = "isinf", device_str = x$device)
 }
 
 #' @rdname mlx_isnan
 #' @export
 mlx_isfinite <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "isfinite")
+  .mlx_from_call(cpp_mlx_unary, x, op = "isfinite", device_str = x$device)
 }
 
 #' Replace NaN and infinite values with finite numbers
@@ -299,7 +299,8 @@ mlx_nan_to_num <- function(x, nan = 0, posinf = NULL, neginf = NULL) {
   }
 
   .mlx_from_call(cpp_mlx_nan_to_num, x,
-                 nan = nan, posinf = posinf, neginf = neginf)
+                 nan = nan, posinf = posinf, neginf = neginf,
+                 device_str = x$device)
 }
 
 #' @export
@@ -415,7 +416,7 @@ all.equal.mlx <- function(target, current, tolerance = sqrt(.Machine$double.eps)
 #' mlx_erf(x)
 mlx_erf <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "erf")
+  .mlx_from_call(cpp_mlx_unary, x, op = "erf", device_str = x$device)
 }
 
 #' @rdname mlx_erf
@@ -425,5 +426,5 @@ mlx_erf <- function(x) {
 #' mlx_erfinv(p)
 mlx_erfinv <- function(x) {
   x <- as_mlx(x)
-  .mlx_from_call(cpp_mlx_unary, x, op = "erfinv")
+  .mlx_from_call(cpp_mlx_unary, x, op = "erfinv", device_str = x$device)
 }

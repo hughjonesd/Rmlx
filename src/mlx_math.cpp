@@ -9,88 +9,90 @@ using namespace rmlx;
 using namespace mlx::core;
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
+SEXP cpp_mlx_unary(SEXP xp_, std::string op, std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
 
   array result = [&]() -> array {
     if (op == "neg") {
-      return negative(wrapper->get());
+      return negative(arr, dev);
     } else if (op == "abs") {
-      return abs(wrapper->get());
+      return abs(arr, dev);
     } else if (op == "sign") {
-      return sign(wrapper->get());
+      return sign(arr, dev);
     } else if (op == "sqrt") {
-      return sqrt(wrapper->get());
+      return sqrt(arr, dev);
     } else if (op == "rsqrt") {
-      return rsqrt(wrapper->get());
+      return rsqrt(arr, dev);
     } else if (op == "square") {
-      return square(wrapper->get());
+      return square(arr, dev);
     } else if (op == "exp") {
-      return exp(wrapper->get());
+      return exp(arr, dev);
     } else if (op == "expm1") {
-      return expm1(wrapper->get());
+      return expm1(arr, dev);
     } else if (op == "log") {
-      return log(wrapper->get());
+      return log(arr, dev);
     } else if (op == "log2") {
-      return log2(wrapper->get());
+      return log2(arr, dev);
     } else if (op == "log10") {
-      return log10(wrapper->get());
+      return log10(arr, dev);
     } else if (op == "log1p") {
-      return log1p(wrapper->get());
+      return log1p(arr, dev);
     } else if (op == "sin") {
-      return sin(wrapper->get());
+      return sin(arr, dev);
     } else if (op == "cos") {
-      return cos(wrapper->get());
+      return cos(arr, dev);
     } else if (op == "tan") {
-      return tan(wrapper->get());
+      return tan(arr, dev);
     } else if (op == "asin") {
-      return arcsin(wrapper->get());
+      return arcsin(arr, dev);
     } else if (op == "acos") {
-      return arccos(wrapper->get());
+      return arccos(arr, dev);
     } else if (op == "atan") {
-      return arctan(wrapper->get());
+      return arctan(arr, dev);
     } else if (op == "sinh") {
-      return sinh(wrapper->get());
+      return sinh(arr, dev);
     } else if (op == "cosh") {
-      return cosh(wrapper->get());
+      return cosh(arr, dev);
     } else if (op == "tanh") {
-      return tanh(wrapper->get());
+      return tanh(arr, dev);
     } else if (op == "asinh") {
-      return arcsinh(wrapper->get());
+      return arcsinh(arr, dev);
     } else if (op == "acosh") {
-      return arccosh(wrapper->get());
+      return arccosh(arr, dev);
     } else if (op == "atanh") {
-      return arctanh(wrapper->get());
+      return arctanh(arr, dev);
     } else if (op == "erf") {
-      return erf(wrapper->get());
+      return erf(arr, dev);
     } else if (op == "erfinv") {
-      return erfinv(wrapper->get());
+      return erfinv(arr, dev);
     } else if (op == "floor") {
-      return floor(wrapper->get());
+      return floor(arr, dev);
     } else if (op == "ceil") {
-      return ceil(wrapper->get());
+      return ceil(arr, dev);
     } else if (op == "round") {
-      return round(wrapper->get());
+      return round(arr, dev);
     } else if (op == "isnan") {
-      return isnan(wrapper->get());
+      return isnan(arr, dev);
     } else if (op == "isinf") {
-      return isinf(wrapper->get());
+      return isinf(arr, dev);
     } else if (op == "isfinite") {
-      return isfinite(wrapper->get());
+      return isfinite(arr, dev);
     } else if (op == "isposinf") {
-      return isposinf(wrapper->get());
+      return isposinf(arr, dev);
     } else if (op == "isneginf") {
-      return isneginf(wrapper->get());
+      return isneginf(arr, dev);
     } else if (op == "real") {
-      return real(wrapper->get());
+      return real(arr, dev);
     } else if (op == "imag") {
-      return imag(wrapper->get());
+      return imag(arr, dev);
     } else if (op == "conj") {
-      return conjugate(wrapper->get());
+      return conjugate(arr, dev);
     } else if (op == "degrees") {
-      return degrees(wrapper->get());
+      return degrees(arr, dev);
     } else if (op == "radians") {
-      return radians(wrapper->get());
+      return radians(arr, dev);
     } else {
       Rcpp::stop("Unsupported unary operation: " + op);
     }
@@ -100,11 +102,12 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_logical_not(SEXP xp_) {
+SEXP cpp_mlx_logical_not(SEXP xp_, std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  array arr_bool = astype(arr, bool_);
-  array result = logical_not(arr_bool);
+  StreamOrDevice dev = string_to_device(device_str);
+  array arr_bool = astype(arr, bool_, dev);
+  array result = logical_not(arr_bool, dev);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -338,9 +341,11 @@ SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal
 SEXP cpp_mlx_nan_to_num(SEXP xp_,
                         Rcpp::Nullable<double> nan_,
                         Rcpp::Nullable<double> posinf_,
-                        Rcpp::Nullable<double> neginf_) {
+                        Rcpp::Nullable<double> neginf_,
+                        std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
 
   float nan_value = nan_.isNull() ? 0.0f : static_cast<float>(Rcpp::as<double>(nan_.get()));
 
@@ -354,6 +359,6 @@ SEXP cpp_mlx_nan_to_num(SEXP xp_,
     neginf_opt = static_cast<float>(Rcpp::as<double>(neginf_.get()));
   }
 
-  array result = nan_to_num(arr, nan_value, posinf_opt, neginf_opt);
+  array result = nan_to_num(arr, nan_value, posinf_opt, neginf_opt, dev);
   return make_mlx_xptr(std::move(result));
 }

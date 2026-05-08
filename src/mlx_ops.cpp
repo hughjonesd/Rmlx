@@ -90,22 +90,23 @@ SEXP cpp_mlx_cast(SEXP xp_, std::string dtype_str, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
+SEXP cpp_mlx_cumulative(SEXP xp_, std::string op, std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
 
-  array flat = flatten_r_order(arr);
+  array flat = flatten_r_order(arr, dev);
 
   array result = [&]() -> array {
     if (op == "cumsum") {
-      return cumsum(flat);
+      return cumsum(flat, false, true, dev);
     } else if (op == "cumprod") {
-      return cumprod(flat);
+      return cumprod(flat, false, true, dev);
     } else if (op == "cummax") {
-      return cummax(flat);
+      return cummax(flat, false, true, dev);
     } else if (op == "cummin") {
-      return cummin(flat);
+      return cummin(flat, false, true, dev);
     } else {
       Rcpp::stop("Unsupported cumulative operation: " + op);
     }
@@ -151,25 +152,35 @@ SEXP cpp_mlx_fft(SEXP xp_,
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_cumsum(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive) {
+SEXP cpp_mlx_cumsum(SEXP xp_,
+                    Rcpp::Nullable<int> axis_,
+                    bool reverse,
+                    bool inclusive,
+                    std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
 
   array result = axis_.isNull()
-    ? cumsum(arr, reverse, inclusive)
-    : cumsum(arr, Rcpp::as<int>(axis_), reverse, inclusive);
+    ? cumsum(arr, reverse, inclusive, dev)
+    : cumsum(arr, Rcpp::as<int>(axis_), reverse, inclusive, dev);
 
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_cumprod(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive) {
+SEXP cpp_mlx_cumprod(SEXP xp_,
+                     Rcpp::Nullable<int> axis_,
+                     bool reverse,
+                     bool inclusive,
+                     std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
 
   array result = axis_.isNull()
-    ? cumprod(arr, reverse, inclusive)
-    : cumprod(arr, Rcpp::as<int>(axis_), reverse, inclusive);
+    ? cumprod(arr, reverse, inclusive, dev)
+    : cumprod(arr, Rcpp::as<int>(axis_), reverse, inclusive, dev);
 
   return make_mlx_xptr(std::move(result));
 }

@@ -185,7 +185,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with same shape.
 #' @noRd
 .mlx_unary <- function(x, op) {
-  ptr <- cpp_mlx_unary(x$ptr, op)
+  ptr <- cpp_mlx_unary(x$ptr, op, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -239,7 +239,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with dtype "bool".
 #' @noRd
 .mlx_logical_not <- function(x) {
-  ptr <- cpp_mlx_logical_not(x$ptr)
+  ptr <- cpp_mlx_logical_not(x$ptr, x$device)
   new_mlx(ptr, x$device)
 }
 
