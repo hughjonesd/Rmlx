@@ -89,10 +89,10 @@ vectors_assign <- function(x, idx_list, value) {
   value_mlx <- mlx_reshape(value_mlx, rev_shape)
   value_mlx <- aperm(value_mlx)
 
-  idx_grid <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = x$device)
+  idx_grid <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = mlx_device(x))
   idx_grid <- lapply(idx_grid, mlx_cast, dtype = "int32")
   axes <- seq_len(ndim) - 1L
-  ptr <- cpp_mlx_scatter(x$ptr, idx_grid, value_mlx$ptr, axes, x$device)
+  ptr <- cpp_mlx_scatter(x$ptr, idx_grid, value_mlx$ptr, axes, mlx_device(x))
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -162,6 +162,6 @@ check_value_fits <- function(val_len, target_len) {
 # Flatten an mlx array in R's column-major order
 .mlx_flatten_r_order <- function(x) {
   ptr <- cpp_mlx_flatten_r_order(x$ptr)
-  out <- new_mlx(ptr, x$device)
+  out <- new_mlx(ptr, mlx_device(x))
   mlx_reshape(out, length(x))
 }

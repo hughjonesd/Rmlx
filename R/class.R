@@ -343,12 +343,10 @@ is_mlx <- function(x) {
 #' @keywords internal
 #' @noRd
 new_mlx <- function(ptr, device) {
-  dtype <- cpp_mlx_dtype(ptr)
-  validate_float64_device(dtype, device)
+  ptr <- cpp_mlx_with_device(ptr, device)
   structure(
     list(
-      ptr = ptr,
-      device = device
+      ptr = ptr
     ),
     class = "mlx"
   )

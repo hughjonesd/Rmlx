@@ -242,6 +242,29 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_device
+std::string cpp_mlx_device(SEXP xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_device(SEXP xp_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_device(xp_));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cpp_mlx_with_device
+SEXP cpp_mlx_with_device(SEXP xp_, std::string device);
+RcppExport SEXP _Rmlx_cpp_mlx_with_device(SEXP xp_SEXP, SEXP deviceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type device(deviceSEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_with_device(xp_, device));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_compile_create
 SEXP cpp_mlx_compile_create(SEXP fun_sexp, bool shapeless);
 RcppExport SEXP _Rmlx_cpp_mlx_compile_create(SEXP fun_sexpSEXP, SEXP shapelessSEXP) {
@@ -2038,6 +2061,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_eval", (DL_FUNC) &_Rmlx_cpp_mlx_eval, 1},
     {"_Rmlx_cpp_mlx_shape", (DL_FUNC) &_Rmlx_cpp_mlx_shape, 1},
     {"_Rmlx_cpp_mlx_dtype", (DL_FUNC) &_Rmlx_cpp_mlx_dtype, 1},
+    {"_Rmlx_cpp_mlx_device", (DL_FUNC) &_Rmlx_cpp_mlx_device, 1},
+    {"_Rmlx_cpp_mlx_with_device", (DL_FUNC) &_Rmlx_cpp_mlx_with_device, 2},
     {"_Rmlx_cpp_mlx_compile_create", (DL_FUNC) &_Rmlx_cpp_mlx_compile_create, 2},
     {"_Rmlx_cpp_mlx_compile_call", (DL_FUNC) &_Rmlx_cpp_mlx_compile_call, 2},
     {"_Rmlx_cpp_mlx_disable_compile", (DL_FUNC) &_Rmlx_cpp_mlx_disable_compile, 0},

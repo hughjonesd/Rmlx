@@ -93,7 +93,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
   y_dtype <- mlx_dtype(y)
   target <- resolve_common_dtype_device(
     list(x_dtype, y_dtype),
-    list(x$device, y$device)
+    list(mlx_device(x), mlx_device(y))
   )
   result_dtype <- target$dtype
   result_device <- target$device
@@ -165,7 +165,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
   target <- resolve_common_dtype_device(
     list(mlx_dtype(input), mlx_dtype(mat1), mlx_dtype(mat2)),
-    list(input$device, mat1$device, mat2$device)
+    list(mlx_device(input), mlx_device(mat1), mlx_device(mat2))
   )
   result_dtype <- target$dtype
   result_device <- target$device
@@ -186,7 +186,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @noRd
 .mlx_unary <- function(x, op) {
   ptr <- cpp_mlx_unary(x$ptr, op)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Apply binary MLX operation with type promotion
@@ -200,7 +200,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   y_dtype <- mlx_dtype(y)
   target <- resolve_common_dtype_device(
     list(x_dtype, y_dtype),
-    list(x$device, y$device)
+    list(mlx_device(x), mlx_device(y))
   )
   input_dtype <- target$dtype
   result_device <- target$device
@@ -226,7 +226,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 .mlx_logical <- function(x, y, op) {
   result_device <- resolve_common_dtype_device(
     list(mlx_dtype(x), mlx_dtype(y)),
-    list(x$device, y$device)
+    list(mlx_device(x), mlx_device(y))
   )$device
 
   ptr <- cpp_mlx_logical(x$ptr, y$ptr, op, result_device)
@@ -240,7 +240,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @noRd
 .mlx_logical_not <- function(x) {
   ptr <- cpp_mlx_logical_not(x$ptr)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Integer division for mlx arrays
@@ -300,7 +300,7 @@ mlx_maximum <- function(x, y) {
 
   target <- resolve_common_dtype_device(
     list(mlx_dtype(x), mlx_dtype(y)),
-    list(x$device, y$device)
+    list(mlx_device(x), mlx_device(y))
   )
   result_device <- target$device
   result_dtype <- target$dtype
@@ -335,9 +335,9 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
     stop("'max' must be NULL or a scalar.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_clip(x$ptr, min, max, x$device)
+  ptr <- cpp_mlx_clip(x$ptr, min, max, mlx_device(x))
   x_dtype <- mlx_dtype(x)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Promote dtypes for mixed operations
@@ -409,9 +409,9 @@ common_device <- function(device1, device2) {
 
 coerce_binary_operands <- function(x, y) {
   if (is_mlx(x) && !is_mlx(y)) {
-    y <- as_mlx(y, dtype = mlx_dtype(x), device = x$device)
+    y <- as_mlx(y, dtype = mlx_dtype(x), device = mlx_device(x))
   } else if (!is_mlx(x) && is_mlx(y)) {
-    x <- as_mlx(x, dtype = mlx_dtype(y), device = y$device)
+    x <- as_mlx(x, dtype = mlx_dtype(y), device = mlx_device(y))
   } else {
     x <- as_mlx(x)
     y <- as_mlx(y)

@@ -215,8 +215,9 @@ SEXP cpp_mlx_random_laplace(SEXP dim_, double loc, double scale,
 // [[Rcpp::export]]
 SEXP cpp_mlx_random_categorical(SEXP logits_, int axis, int num_samples) {
   List logits_obj(logits_);
-  array logits_arr = get_mlx_wrapper(logits_obj["ptr"])->get();
-  std::string device_str = Rcpp::as<std::string>(logits_obj["device"]);
+  MlxArrayWrapper* logits_wrapper = get_mlx_wrapper(logits_obj["ptr"]);
+  array logits_arr = logits_wrapper->get();
+  std::string device_str = logits_wrapper->device();
 
   StreamOrDevice dev = string_to_device(device_str);
   array result = mlx::core::random::categorical(logits_arr, axis, num_samples, std::nullopt, dev);
@@ -245,8 +246,9 @@ SEXP cpp_mlx_random_permutation_n(int n, std::string device_str) {
 // [[Rcpp::export]]
 SEXP cpp_mlx_random_permutation(SEXP x_, int axis) {
   List x_obj(x_);
-  array x_arr = get_mlx_wrapper(x_obj["ptr"])->get();
-  std::string device_str = Rcpp::as<std::string>(x_obj["device"]);
+  MlxArrayWrapper* x_wrapper = get_mlx_wrapper(x_obj["ptr"]);
+  array x_arr = x_wrapper->get();
+  std::string device_str = x_wrapper->device();
 
   StreamOrDevice dev = string_to_device(device_str);
   array result = mlx::core::random::permutation(x_arr, axis, std::nullopt, dev);

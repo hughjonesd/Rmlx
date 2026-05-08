@@ -36,9 +36,10 @@ SEXP cpp_mlx_concat(SEXP args_, int axis) {
   std::string device_str;
   for (int i = 0; i < args.size(); ++i) {
     List obj(args[i]);
-    arrays.push_back(get_mlx_wrapper(obj["ptr"])->get());
+    MlxArrayWrapper* wrapper = get_mlx_wrapper(obj["ptr"]);
+    arrays.push_back(wrapper->get());
     if (i == 0) {
-      device_str = Rcpp::as<std::string>(obj["device"]);
+      device_str = wrapper->device();
     }
   }
 

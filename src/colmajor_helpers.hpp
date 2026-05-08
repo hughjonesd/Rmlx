@@ -14,6 +14,13 @@ inline mlx::core::array transpose_between_mlx_and_r(const mlx::core::array& arr)
   return transpose(arr);
 }
 
+inline mlx::core::array transpose_between_mlx_and_r(
+    const mlx::core::array& arr,
+    mlx::core::StreamOrDevice s) {
+  using namespace mlx::core;
+  return transpose(arr, s);
+}
+
 // Flatten an array in R's column-major order into a contiguous 1D vector.
 inline mlx::core::array flatten_r_order(const mlx::core::array& arr) {
   using namespace mlx::core;

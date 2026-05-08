@@ -80,7 +80,7 @@ mlx_metal_kernel <- function(name,
     }
 
     if (is.null(device)) {
-      device <- mlx_inputs[[1]]$device
+      device <- mlx_device(mlx_inputs[[1]])
     }
 
     result <- cpp_mlx_metal_kernel_call(

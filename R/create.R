@@ -67,8 +67,8 @@ mlx_zeros_like <- function(x,
     match.arg(dtype, valid_dtypes)
   }
 
-  target_device <- if (is.null(device)) x$device else device
-  handle <- resolve_typed_device(dtype, target_device, x$device)
+  target_device <- if (is.null(device)) mlx_device(x) else device
+  handle <- resolve_typed_device(dtype, target_device, mlx_device(x))
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_zeros_like(x$ptr, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -101,8 +101,8 @@ mlx_ones_like <- function(x,
     match.arg(dtype, valid_dtypes)
   }
 
-  target_device <- if (is.null(device)) x$device else device
-  handle <- resolve_typed_device(dtype, target_device, x$device)
+  target_device <- if (is.null(device)) mlx_device(x) else device
+  handle <- resolve_typed_device(dtype, target_device, mlx_device(x))
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_ones_like(x$ptr, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -435,8 +435,8 @@ mlx_tril <- function(x, k = 0L) {
     stop("k must be a single integer.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_tril(x$ptr, k, x$device)
-  new_mlx(ptr, x$device)
+  ptr <- cpp_mlx_tril(x$ptr, k, mlx_device(x))
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' @rdname mlx_tri
@@ -449,8 +449,8 @@ mlx_triu <- function(x, k = 0L) {
     stop("k must be a single integer.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_triu(x$ptr, k, x$device)
-  new_mlx(ptr, x$device)
+  ptr <- cpp_mlx_triu(x$ptr, k, mlx_device(x))
+  new_mlx(ptr, mlx_device(x))
 }
 
 
@@ -485,8 +485,8 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
     k <- as.integer(nrow)
   }
 
-  ptr <- cpp_mlx_diag(x$ptr, k, x$device)
-  new_mlx(ptr, x$device)
+  ptr <- cpp_mlx_diag(x$ptr, k, mlx_device(x))
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Numerical ranges on MLX devices

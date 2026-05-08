@@ -77,7 +77,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
     (is.null(idx_dims[[1]]) || !length(idx_dims[[1]]))
   if (use_take) {
     ptr <- cpp_mlx_take(x$ptr, as.vector(normalized[[1]]), axes0[[1]])
-    return(new_mlx(ptr, x$device))
+    return(new_mlx(ptr, mlx_device(x)))
   }
 
   # Convert normalized vectors into mlx int32 arrays, reapplying the user
@@ -86,11 +86,11 @@ mlx_gather <- function(x, indices, axes = NULL) {
     if (!is.null(d) && length(d) > 0L && prod(d) == length(vals)) {
       dim(vals) <- d
     }
-    as_mlx(vals, dtype = "int32", device = x$device)
+    as_mlx(vals, dtype = "int32", device = mlx_device(x))
   }, normalized, idx_dims)
 
-  ptr <- cpp_mlx_gather(x$ptr, idx_mlx, axes0, x$device)
-  res <- new_mlx(ptr, x$device)
+  ptr <- cpp_mlx_gather(x$ptr, idx_mlx, axes0, mlx_device(x))
+  res <- new_mlx(ptr, mlx_device(x))
 
   res_dims <- mlx_shape(res)
   ndim <- length(shape)
@@ -152,9 +152,9 @@ mlx_gather <- function(x, indices, axes = NULL) {
 mlx_take_along_axis <- function(x, indices, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)
-  idx_mlx <- .mlx_index_array(indices, dim(x)[axis], x$device)
+  idx_mlx <- .mlx_index_array(indices, dim(x)[axis], mlx_device(x))
   ptr <- cpp_mlx_take_along_axis(x$ptr, idx_mlx$ptr, axis_idx)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Write values using per-position axis indices
@@ -178,10 +178,10 @@ mlx_take_along_axis <- function(x, indices, axis) {
 mlx_put_along_axis <- function(x, indices, values, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)
-  idx_mlx <- .mlx_index_array(indices, dim(x)[axis], x$device)
-  values_mlx <- as_mlx(values, dtype = mlx_dtype(x), device = x$device)
+  idx_mlx <- .mlx_index_array(indices, dim(x)[axis], mlx_device(x))
+  values_mlx <- as_mlx(values, dtype = mlx_dtype(x), device = mlx_device(x))
   ptr <- cpp_mlx_put_along_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Add values using per-position axis indices
@@ -204,10 +204,10 @@ mlx_put_along_axis <- function(x, indices, values, axis) {
 mlx_scatter_add_axis <- function(x, indices, values, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)
-  idx_mlx <- .mlx_index_array(indices, dim(x)[axis], x$device)
-  values_mlx <- as_mlx(values, dtype = mlx_dtype(x), device = x$device)
+  idx_mlx <- .mlx_index_array(indices, dim(x)[axis], mlx_device(x))
+  values_mlx <- as_mlx(values, dtype = mlx_dtype(x), device = mlx_device(x))
   ptr <- cpp_mlx_scatter_add_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Update a slice of an mlx array
@@ -242,7 +242,7 @@ mlx_slice_update <- function(x,
                              stop,
                              strides = NULL) {
   x <- as_mlx(x)
-  value <- as_mlx(value, dtype = mlx_dtype(x), device = x$device)
+  value <- as_mlx(value, dtype = mlx_dtype(x), device = mlx_device(x))
 
   start <- as.integer(start)
   stop <- as.integer(stop)
@@ -266,7 +266,7 @@ mlx_slice_update <- function(x,
   stop0 <- stop
 
   ptr <- cpp_mlx_slice_update(x$ptr, value$ptr, start0, stop0, strides)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 # Internal helper for scatter-based updates on flattened tensors

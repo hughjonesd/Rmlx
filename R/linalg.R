@@ -14,7 +14,7 @@
 #' b <- as_mlx(c(9, 8), device = "cpu")
 #' solve(a, b)
 solve.mlx <- function(a, b = NULL, ...) {
-  target_device <- a$device
+  target_device <- mlx_device(a)
   target_dtype <- mlx_dtype(a)
   if (!(target_dtype %in% c("float32", "float64", "complex64"))) {
     target_dtype <- "float32"
@@ -32,7 +32,7 @@ solve.mlx <- function(a, b = NULL, ...) {
     } else {
       target <- resolve_common_dtype_device(
         list(target_dtype, mlx_dtype(b)),
-        list(target_device, b$device)
+        list(target_device, mlx_device(b))
       )
       target_dtype <- target$dtype
       target_device <- target$device
@@ -87,7 +87,7 @@ mlx_kron <- function(a, b) {
 
   target <- resolve_common_dtype_device(
     list(mlx_dtype(a), mlx_dtype(b)),
-    list(a$device, b$device)
+    list(mlx_device(a), mlx_device(b))
   )
   result_dtype <- target$dtype
   result_device <- target$device

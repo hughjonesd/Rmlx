@@ -479,7 +479,7 @@ mlx_dropout <- function(p = 0.5) {
       return(x * 0)
     }
     # Generate dropout mask
-    mask <- mlx_rand_bernoulli(dim(x), prob = 1 - env$p, device = x$device)
+    mask <- mlx_rand_bernoulli(dim(x), prob = 1 - env$p, device = mlx_device(x))
     # Scale by 1/(1-p) to maintain expected value
     x * mask / (1 - env$p)
   }
@@ -677,12 +677,12 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
     if (length(orig_shape) == 0) {
       # Scalar index - return (1, embedding_dim)
       mlx_matrix(result_list[[1]], nrow = 1, ncol = env$embedding_dim,
-                 device = indices$device)
+                 device = mlx_device(indices))
     } else {
       # Stack into matrix then reshape to match input shape + embedding dimension
       result_mat <- do.call(rbind, lapply(result_list, function(x) matrix(x, 1, env$embedding_dim)))
       new_shape <- c(orig_shape, env$embedding_dim)
-      mlx_array(as.numeric(result_mat), dim = new_shape, device = indices$device)
+      mlx_array(as.numeric(result_mat), dim = new_shape, device = mlx_device(indices))
     }
   }
 

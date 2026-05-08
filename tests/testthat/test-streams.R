@@ -17,17 +17,17 @@ test_that("operations accept stream arguments", {
   stream <- mlx_new_stream(dev)
 
   zeros <- mlx_zeros(c(2, 2), device = stream)
-  expect_equal(zeros$device, dev)
+  expect_equal(mlx_device(zeros), dev)
   expect_equal(as.matrix(zeros), matrix(0, 2, 2))
 
   ones <- mlx_ones(c(2, 2), device = stream)
   expect_equal(as.matrix(ones), matrix(1, 2, 2))
 
   rnd <- mlx_rand_uniform(c(3, 3), device = stream)
-  expect_equal(rnd$device, dev)
+  expect_equal(mlx_device(rnd), dev)
 
   perm <- mlx_rand_permutation(5, device = stream)
-  expect_equal(perm$device, dev)
+  expect_equal(mlx_device(perm), dev)
   expect_equal(sort(as.vector(perm)), 1:5)
 })
 

@@ -73,6 +73,14 @@ cpp_mlx_dtype <- function(xp_) {
     .Call(`_Rmlx_cpp_mlx_dtype`, xp_)
 }
 
+cpp_mlx_device <- function(xp_) {
+    .Call(`_Rmlx_cpp_mlx_device`, xp_)
+}
+
+cpp_mlx_with_device <- function(xp_, device) {
+    .Call(`_Rmlx_cpp_mlx_with_device`, xp_, device)
+}
+
 cpp_mlx_compile_create <- function(fun_sexp, shapeless) {
     .Call(`_Rmlx_cpp_mlx_compile_create`, fun_sexp, shapeless)
 }

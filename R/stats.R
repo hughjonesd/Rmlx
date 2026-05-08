@@ -245,7 +245,7 @@ colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 t.mlx <- function(x) {
   # Layout conversion (physical reordering) happens at boundaries during copy
   ptr <- cpp_mlx_transpose(x$ptr)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Cross product
@@ -291,7 +291,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @noRd
 .mlx_reduce <- function(x, op, ddof = 0L) {
   ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof))
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Reduce an mlx array along a single axis
@@ -309,7 +309,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
   ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Reduce an mlx array along multiple axes
@@ -492,7 +492,7 @@ row.mlx <- function(x, as.factor = FALSE) {
     1,
     dims[1],
     dtype = "int32",
-    device = x$device
+    device = mlx_device(x)
   )
   target_shape <- c(dims[1], rep.int(1L, length(dims) - 1L))
   reshaped <- mlx_reshape(rows, target_shape)
@@ -525,7 +525,7 @@ col.mlx <- function(x, as.factor = FALSE) {
     1,
     dims[2],
     dtype = "int32",
-    device = x$device
+    device = mlx_device(x)
   )
   target_shape <- c(1L, dims[2], rep.int(1L, length(dims) - 2L))
   reshaped <- mlx_reshape(cols, target_shape)
@@ -572,7 +572,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
       center_attr <- center_vec
       centers <- as_mlx(matrix(center_vec, nrow = 1L),
                         dtype = mlx_dtype(result),
-                        device = result$device)
+                        device = mlx_device(result))
     }
     result <- result - centers
   }
@@ -594,7 +594,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
       scale_attr <- scale_vec
       scales <- as_mlx(matrix(scale_vec, nrow = 1L),
                        dtype = mlx_dtype(result),
-                       device = result$device)
+                       device = mlx_device(result))
     }
 
     result <- result / scales
@@ -638,7 +638,7 @@ mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumsum(x$ptr, axis_mlx, reverse, inclusive)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' @rdname mlx_cumsum
@@ -649,7 +649,7 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Normal distribution functions
@@ -1213,5 +1213,5 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
 #' @export
 #' @importFrom stats quantile
 quantile.mlx <- function(x, probs, ...) {
-  mlx_quantile(x, probs = probs, axis = NULL, device = x$device)
+  mlx_quantile(x, probs = probs, axis = NULL, device = mlx_device(x))
 }

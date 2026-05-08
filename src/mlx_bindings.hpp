@@ -14,11 +14,15 @@ namespace rmlx {
 class MlxArrayWrapper {
 private:
   std::shared_ptr<mlx::core::array> ptr_;
+  std::string device_;
 
 public:
   MlxArrayWrapper();
   explicit MlxArrayWrapper(const mlx::core::array& arr);
   explicit MlxArrayWrapper(mlx::core::array&& arr);
+  MlxArrayWrapper(const mlx::core::array& arr, const std::string& device);
+  MlxArrayWrapper(mlx::core::array&& arr, const std::string& device);
+  MlxArrayWrapper(std::shared_ptr<mlx::core::array> ptr, const std::string& device);
   ~MlxArrayWrapper() = default;
 
   // Delete copy operations
@@ -32,6 +36,8 @@ public:
   // Accessors
   mlx::core::array& get() { return *ptr_; }
   const mlx::core::array& get() const { return *ptr_; }
+  std::shared_ptr<mlx::core::array> shared_array() const { return ptr_; }
+  const std::string& device() const { return device_; }
 
   bool is_null() const { return ptr_ == nullptr; }
 };
@@ -79,6 +85,8 @@ MlxImportedFunctionWrapper* get_mlx_imported_function(SEXP xp);
 // Helper to wrap MLX array in external pointer
 SEXP make_mlx_xptr(const mlx::core::array& arr);
 SEXP make_mlx_xptr(mlx::core::array&& arr);
+SEXP make_mlx_xptr(const mlx::core::array& arr, const std::string& device);
+SEXP make_mlx_xptr(mlx::core::array&& arr, const std::string& device);
 SEXP make_mlx_stream_xptr(mlx::core::Stream stream);
 SEXP make_mlx_imported_function_xptr(mlx::core::ImportedFunction function);
 

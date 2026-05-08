@@ -47,13 +47,13 @@ bind_along_axis <- function(objs, axis) {
     dtypes <- lapply(mlx_objs, mlx_dtype)
     target <- resolve_common_dtype_device(
       dtypes,
-      lapply(mlx_objs, `[[`, "device")
+      lapply(mlx_objs, mlx_device)
     )
     dtype <- target$dtype
     device <- target$device
   } else {
     dtype <- mlx_dtype(mlx_objs[[1L]])
-    device <- mlx_objs[[1L]]$device
+    device <- mlx_device(mlx_objs[[1L]])
     validate_float64_device(dtype, device)
   }
 

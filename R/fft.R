@@ -131,7 +131,7 @@ mlx_fftn <- function(x,
     )
   }
 
-  handle <- resolve_device(device, mlx_x$device)
+  handle <- resolve_device(device, mlx_device(mlx_x))
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_fft(mlx_x$ptr, axes_zero, isTRUE(inverse), dev)
   })

@@ -221,9 +221,9 @@ mlx_rand_categorical <- function(logits, axis = NULL, num_samples = 1L) {
   axis0 <- normalize_axis_single(as.integer(axis_val), logits)
 
   ptr <- cpp_mlx_random_categorical(logits, axis0, num_samples)
-  samples <- new_mlx(ptr, logits$device)
-  samples <- mlx_cast(samples, dtype = "int32", device = logits$device)
-  samples + as_mlx(1L, dtype = mlx_dtype(samples), device = samples$device)
+  samples <- new_mlx(ptr, mlx_device(logits))
+  samples <- mlx_cast(samples, dtype = "int32", device = mlx_device(logits))
+  samples + as_mlx(1L, dtype = mlx_dtype(samples), device = mlx_device(samples))
 }
 
 #' Sample random integers on mlx arrays
@@ -303,13 +303,13 @@ mlx_rand_permutation <- function(x, axis = 1L, device = mlx_default_device()) {
     ptr <- eval_with_stream(handle, function(dev) cpp_mlx_random_permutation_n(n, dev))
     perm <- new_mlx(ptr, handle$device)
     perm <- mlx_cast(perm, dtype = "int32", device = handle$device)
-    return(perm + as_mlx(1L, dtype = mlx_dtype(perm), device = perm$device))
+    return(perm + as_mlx(1L, dtype = mlx_dtype(perm), device = mlx_device(perm)))
   } else {
     # Permute array along axis
     x <- as_mlx(x)
     axis0 <- normalize_axis_single(as.integer(axis), x)
     ptr <- cpp_mlx_random_permutation(x, axis0)
-    new_mlx(ptr, x$device)
+    new_mlx(ptr, mlx_device(x))
   }
 }
 
@@ -348,7 +348,7 @@ mlx_key_split <- function(key, num = 2L) {
     stop("`num` must be a positive integer.", call. = FALSE)
   }
   raw <- cpp_mlx_random_split(key$ptr, num)
-  lapply(raw, function(ptr) new_mlx(ptr, key$device))
+  lapply(raw, function(ptr) new_mlx(ptr, mlx_device(key)))
 }
 
 #' Generate raw random bits on MLX arrays
