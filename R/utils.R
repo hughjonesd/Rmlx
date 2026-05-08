@@ -281,7 +281,7 @@ mlx_reshape <- function(x, newshape) {
     ), call. = FALSE)
   }
 
-  ptr <- cpp_mlx_reshape(x$ptr, newshape)
+  ptr <- cpp_mlx_reshape(x$ptr, newshape, x$device)
   new_mlx(ptr, x$device)
 }
 

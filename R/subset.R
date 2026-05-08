@@ -129,7 +129,7 @@ vectors_subset <- function(x, idx_list) {
       mlx_cast(idx - 1L, dtype = "int32")
     }
     idx_arg <- if (is_mlx(idx0)) idx0$ptr else as.integer(idx0)
-    ptr <- cpp_mlx_take(x$ptr, idx_arg, axis - 1L)
+    ptr <- cpp_mlx_take(x$ptr, idx_arg, axis - 1L, x$device)
     return(new_mlx(ptr, x$device))
   }
 

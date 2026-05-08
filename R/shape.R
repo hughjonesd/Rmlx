@@ -134,10 +134,10 @@ drop.mlx <- function(x) {
 mlx_squeeze <- function(x, axes = NULL) {
   x <- as_mlx(x)
   if (is.null(axes)) {
-    ptr <- cpp_mlx_squeeze(x$ptr, NULL)
+    ptr <- cpp_mlx_squeeze(x$ptr, NULL, x$device)
   } else {
     axes_idx <- normalize_axes(axes, x)
-    ptr <- cpp_mlx_squeeze(x$ptr, axes_idx)
+    ptr <- cpp_mlx_squeeze(x$ptr, axes_idx, x$device)
   }
   new_mlx(ptr, x$device)
 }
@@ -156,7 +156,7 @@ mlx_squeeze <- function(x, axes = NULL) {
 mlx_expand_dims <- function(x, axes) {
   x <- as_mlx(x)
   axes0 <- normalize_new_axes(axes, mlx_shape(x))
-  ptr <- cpp_mlx_expand_dims(x$ptr, axes0)
+  ptr <- cpp_mlx_expand_dims(x$ptr, axes0, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -180,10 +180,10 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
   }
 
   if (is.null(axis)) {
-    ptr <- cpp_mlx_repeat(x$ptr, repeats, NULL)
+    ptr <- cpp_mlx_repeat(x$ptr, repeats, NULL, x$device)
   } else {
     axis0 <- normalize_axis(axis, x)
-    ptr <- cpp_mlx_repeat(x$ptr, repeats, axis0)
+    ptr <- cpp_mlx_repeat(x$ptr, repeats, axis0, x$device)
   }
   new_mlx(ptr, x$device)
 }
@@ -204,7 +204,7 @@ mlx_tile <- function(x, reps) {
   if (length(reps) == 0L || anyNA(reps) || any(reps <= 0L)) {
     stop("reps must be positive integers.", call. = FALSE)
   }
-  ptr <- cpp_mlx_tile(x$ptr, reps)
+  ptr <- cpp_mlx_tile(x$ptr, reps, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -228,13 +228,13 @@ mlx_roll <- function(x, shift, axes = NULL) {
   }
 
   if (is.null(axes)) {
-    ptr <- cpp_mlx_roll(x$ptr, shift, NULL)
+    ptr <- cpp_mlx_roll(x$ptr, shift, NULL, x$device)
   } else {
     axes0 <- normalize_axes(axes, x)
     if (length(shift) != length(axes0)) {
       stop("shift and axes must have the same length.", call. = FALSE)
     }
-    ptr <- cpp_mlx_roll(x$ptr, shift, axes0)
+    ptr <- cpp_mlx_roll(x$ptr, shift, axes0, x$device)
   }
   new_mlx(ptr, x$device)
 }
@@ -528,7 +528,7 @@ mlx_moveaxis <- function(x, source, destination) {
     stop("destination axes must be unique.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_moveaxis(x$ptr, source_idx, dest_idx)
+  ptr <- cpp_mlx_moveaxis(x$ptr, source_idx, dest_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -638,7 +638,7 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = NULL) {
     stop("start_axis must be less than or equal to end_axis.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_flatten(x$ptr, start_idx, end_idx)
+  ptr <- cpp_mlx_flatten(x$ptr, start_idx, end_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -669,7 +669,7 @@ mlx_swapaxes <- function(x, axis1, axis2) {
   axis1_idx <- normalize_axis_single(axis1, x)
   axis2_idx <- normalize_axis_single(axis2, x)
 
-  ptr <- cpp_mlx_swapaxes(x$ptr, axis1_idx, axis2_idx)
+  ptr <- cpp_mlx_swapaxes(x$ptr, axis1_idx, axis2_idx, x$device)
   new_mlx(ptr, x$device)
 }
 

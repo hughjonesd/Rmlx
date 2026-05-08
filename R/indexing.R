@@ -76,7 +76,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
   use_take <- length(axes0) == 1L && length(idx_dims) == 1L &&
     (is.null(idx_dims[[1]]) || !length(idx_dims[[1]]))
   if (use_take) {
-    ptr <- cpp_mlx_take(x$ptr, as.vector(normalized[[1]]), axes0[[1]])
+    ptr <- cpp_mlx_take(x$ptr, as.vector(normalized[[1]]), axes0[[1]], x$device)
     return(new_mlx(ptr, x$device))
   }
 
@@ -153,7 +153,7 @@ mlx_take_along_axis <- function(x, indices, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)
   idx_mlx <- .mlx_index_array(indices, dim(x)[axis], x$device)
-  ptr <- cpp_mlx_take_along_axis(x$ptr, idx_mlx$ptr, axis_idx)
+  ptr <- cpp_mlx_take_along_axis(x$ptr, idx_mlx$ptr, axis_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -180,7 +180,7 @@ mlx_put_along_axis <- function(x, indices, values, axis) {
   axis_idx <- normalize_axis_single(as.integer(axis), x)
   idx_mlx <- .mlx_index_array(indices, dim(x)[axis], x$device)
   values_mlx <- as_mlx(values, dtype = mlx_dtype(x), device = x$device)
-  ptr <- cpp_mlx_put_along_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
+  ptr <- cpp_mlx_put_along_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -206,7 +206,7 @@ mlx_scatter_add_axis <- function(x, indices, values, axis) {
   axis_idx <- normalize_axis_single(as.integer(axis), x)
   idx_mlx <- .mlx_index_array(indices, dim(x)[axis], x$device)
   values_mlx <- as_mlx(values, dtype = mlx_dtype(x), device = x$device)
-  ptr <- cpp_mlx_scatter_add_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
+  ptr <- cpp_mlx_scatter_add_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx, x$device)
   new_mlx(ptr, x$device)
 }
 
@@ -265,7 +265,7 @@ mlx_slice_update <- function(x,
   start0 <- start - 1L
   stop0 <- stop
 
-  ptr <- cpp_mlx_slice_update(x$ptr, value$ptr, start0, stop0, strides)
+  ptr <- cpp_mlx_slice_update(x$ptr, value$ptr, start0, stop0, strides, x$device)
   new_mlx(ptr, x$device)
 }
 

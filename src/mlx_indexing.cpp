@@ -28,9 +28,10 @@ SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_,
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_take(SEXP xp_, SEXP indices_, int axis) {
+SEXP cpp_mlx_take(SEXP xp_, SEXP indices_, int axis, std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
 
   array idx_array = [&]() -> array {
     // Check if indices_ is an mlx array (external pointer)
@@ -40,61 +41,91 @@ SEXP cpp_mlx_take(SEXP xp_, SEXP indices_, int axis) {
       // Ensure index array is at least 1D to match R vector behavior
       // If scalar, reshape to [1] so take() preserves dimensions correctly
       if (idx.ndim() == 0) {
-        idx = reshape(idx, {1});
+        idx = reshape(idx, {1}, dev);
       }
-      return idx;
+      return astype(idx, idx.dtype(), dev);
     } else {
       // Handle R integer vector
       IntegerVector idx(indices_);
       std::vector<int64_t> data(idx.begin(), idx.end());
       Shape shape{static_cast<int>(data.size())};
-      return array(data.data(), shape, int64);
+      return astype(array(data.data(), shape, int64), int64, dev);
     }
   }();
 
-  array result = take(arr, idx_array, axis);
+  array result = take(arr, idx_array, axis, dev);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_take_along_axis(SEXP xp_, SEXP indices_xp_, int axis) {
+SEXP cpp_mlx_take_along_axis(SEXP xp_,
+                             SEXP indices_xp_,
+                             int axis,
+                             std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_xp_);
-  array result = take_along_axis(wrapper->get(), idx_wrapper->get(), axis);
+  array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
+  array indices = astype(idx_wrapper->get(), idx_wrapper->get().dtype(), dev);
+  array result = take_along_axis(arr, indices, axis, dev);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_put_along_axis(SEXP xp_, SEXP indices_xp_, SEXP values_xp_, int axis) {
+SEXP cpp_mlx_put_along_axis(SEXP xp_,
+                            SEXP indices_xp_,
+                            SEXP values_xp_,
+                            int axis,
+                            std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_xp_);
   MlxArrayWrapper* values_wrapper = get_mlx_wrapper(values_xp_);
+  array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
+  array indices = astype(idx_wrapper->get(), idx_wrapper->get().dtype(), dev);
+  array values = astype(values_wrapper->get(), arr.dtype(), dev);
   array result = put_along_axis(
-    wrapper->get(),
-    idx_wrapper->get(),
-    values_wrapper->get(),
-    axis
+    arr,
+    indices,
+    values,
+    axis,
+    dev
   );
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_scatter_add_axis(SEXP xp_, SEXP indices_xp_, SEXP values_xp_, int axis) {
+SEXP cpp_mlx_scatter_add_axis(SEXP xp_,
+                              SEXP indices_xp_,
+                              SEXP values_xp_,
+                              int axis,
+                              std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_xp_);
   MlxArrayWrapper* values_wrapper = get_mlx_wrapper(values_xp_);
+  array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
+  array indices = astype(idx_wrapper->get(), idx_wrapper->get().dtype(), dev);
+  array values = astype(values_wrapper->get(), arr.dtype(), dev);
   array result = scatter_add_axis(
-    wrapper->get(),
-    idx_wrapper->get(),
-    values_wrapper->get(),
-    axis
+    arr,
+    indices,
+    values,
+    axis,
+    dev
   );
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_slice(SEXP xp_, SEXP starts_, SEXP stops_, SEXP strides_) {
+SEXP cpp_mlx_slice(SEXP xp_,
+                   SEXP starts_,
+                   SEXP stops_,
+                   SEXP strides_,
+                   std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = wrapper->get();
+  StreamOrDevice dev = typed_device(arr.dtype(), device_str);
   IntegerVector starts(starts_);
   IntegerVector stops(stops_);
   IntegerVector strides(strides_);
@@ -104,7 +135,7 @@ SEXP cpp_mlx_slice(SEXP xp_, SEXP starts_, SEXP stops_, SEXP strides_) {
   Shape stop_shape(stops.begin(), stops.end());
   Shape stride_shape(strides.begin(), strides.end());
 
-  array result = slice(wrapper->get(), start_shape, stop_shape, stride_shape);
+  array result = slice(arr, start_shape, stop_shape, stride_shape, dev);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -114,15 +145,19 @@ SEXP cpp_mlx_slice_update(SEXP xp_,
                           SEXP update_xp_,
                           IntegerVector start_,
                           IntegerVector stop_,
-                          IntegerVector strides_) {
+                          IntegerVector strides_,
+                          std::string device_str) {
   MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
   MlxArrayWrapper* update_wrapper = get_mlx_wrapper(update_xp_);
+  array src = src_wrapper->get();
+  StreamOrDevice dev = typed_device(src.dtype(), device_str);
+  array update = astype(update_wrapper->get(), src.dtype(), dev);
 
   Shape start_shape(start_.begin(), start_.end());
   Shape stop_shape(stop_.begin(), stop_.end());
   Shape stride_shape(strides_.begin(), strides_.end());
 
-  array result = slice_update(src_wrapper->get(), update_wrapper->get(), start_shape, stop_shape, stride_shape);
+  array result = slice_update(src, update, start_shape, stop_shape, stride_shape, dev);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -198,11 +233,11 @@ SEXP cpp_mlx_masked_scatter(SEXP xp_,
 
   StreamOrDevice dev = string_to_device(device_str);
 
-  array src = transpose_between_mlx_and_r(src_wrapper->get());
-  array mask = transpose_between_mlx_and_r(astype(mask_wrapper->get(), bool_, dev));
+  array src = transpose_between_mlx_and_r(src_wrapper->get(), dev);
+  array mask = transpose_between_mlx_and_r(astype(mask_wrapper->get(), bool_, dev), dev);
   array updates = astype(updates_wrapper->get(), src.dtype(), dev);
 
   array result = masked_scatter(src, mask, updates, dev);
-  result = transpose_between_mlx_and_r(result);
+  result = transpose_between_mlx_and_r(result, dev);
   return make_mlx_xptr(std::move(result));
 }

@@ -157,7 +157,7 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
   Vh <- new_mlx(res$Vh, x$device)
 
   d <- S
-  V <- new_mlx(cpp_mlx_transpose(Vh$ptr), Vh$device)
+  V <- new_mlx(cpp_mlx_transpose(Vh$ptr, Vh$device), Vh$device)
 
   list(d = d, u = U, v = V)
 }
