@@ -32,6 +32,8 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
         message <- conditionMessage(e)
         status <- if (grepl("float64 is not supported on the GPU", message, fixed = TRUE)) {
           "gpu_float64_error"
+        } else if (grepl("Does not yet support given type: float64", message, fixed = TRUE)) {
+          "unsupported_float64"
         } else {
           "other_error"
         }
@@ -63,7 +65,7 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
     "all.equal.mlx" = function() all.equal(x, y),
     "aperm.mlx" = function() aperm(cube, c(3, 2, 1)),
     "asplit.mlx" = function() asplit(m, 1),
-    "cbind.mlx" = function() cbind(x, y),
+    "cbind.mlx" = function() cbind(m, n),
     "chol.mlx" = function() chol(spd),
     "chol2inv" = function() chol2inv(chol(spd)),
     "colMeans.mlx" = function() colMeans(m),
@@ -109,7 +111,9 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
     "mlx_argpartition" = function() mlx_argpartition(x, 1),
     "mlx_argsort" = function() mlx_argsort(x),
     "mlx_binary_cross_entropy" = function() mlx_binary_cross_entropy(x, y / 4, reduction = "none"),
-    "mlx_broadcast_arrays" = function() mlx_broadcast_arrays(x, m, device = "gpu"),
+    "mlx_broadcast_arrays" = function() {
+      mlx_broadcast_arrays(x, mlx_reshape(x, c(1, 4)), device = "gpu")
+    },
     "mlx_broadcast_to" = function() mlx_broadcast_to(x, c(2, 4), device = "gpu"),
     "mlx_cast" = function() mlx_cast(x, dtype = "float64", device = "gpu"),
     "mlx_cholesky_inv" = function() mlx_cholesky_inv(chol(spd)),
@@ -193,11 +197,14 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
     "mlx_roll" = function() mlx_roll(x, 1),
     "mlx_scatter_add_axis" = function() mlx_scatter_add_axis(m, as_mlx(matrix(c(1L, 2L), 2, 1), dtype = "int32", device = "gpu"), as_mlx(matrix(c(9, 8), 2, 1), dtype = "float64", device = "gpu"), axis = 2),
     "mlx_sd" = function() mlx_sd(m),
-    "mlx_slice_update" = function() mlx_slice_update(x, as_mlx(c(9, 9), dtype = "float64", device = "gpu"), 2),
+    "mlx_slice_update" = function() {
+      update <- as_mlx(c(9, 9), dtype = "float64", device = "gpu")
+      mlx_slice_update(x, update, start = 2, stop = 3)
+    },
     "mlx_softmax" = function() mlx_softmax(logits, axes = 2),
     "mlx_solve_triangular" = function() mlx_solve_triangular(lower, x[1:2], upper = FALSE),
     "mlx_sort" = function() mlx_sort(x),
-    "mlx_split" = function() mlx_split(x, 2),
+    "mlx_split" = function() mlx_split(m, 2, axis = 1),
     "mlx_squeeze" = function() mlx_squeeze(mlx_reshape(x, c(1, 4, 1))),
     "mlx_stack" = function() mlx_stack(x, y),
     "mlx_std" = function() mlx_std(m),
@@ -289,13 +296,25 @@ test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
   )
 
   successes <- results[results$status == "success", ]
+  other_errors <- results[results$status == "other_error", ]
   if (nrow(successes)) {
     message(
       "GPU-tagged float64 operations that did not fail:\n",
       paste(capture.output(print(successes, row.names = FALSE)), collapse = "\n")
     )
   }
+  if (nrow(other_errors)) {
+    message(
+      "GPU-tagged float64 operations that failed for another reason:\n",
+      paste(capture.output(print(other_errors, row.names = FALSE)), collapse = "\n")
+    )
+  }
 
+  expect_equal(
+    other_errors$name,
+    character(),
+    info = "These diagnostic cases failed for reasons unrelated to GPU float64 scheduling."
+  )
   expect_equal(
     successes$name,
     character(),
