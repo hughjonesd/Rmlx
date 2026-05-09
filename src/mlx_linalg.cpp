@@ -234,14 +234,14 @@ SEXP cpp_mlx_solve_triangular(SEXP a_xp_, SEXP b_xp_, bool upper,
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_cross(SEXP a_xp_, SEXP b_xp_, int axis, std::string device_str) {
+SEXP cpp_mlx_cross(SEXP a_xp_, SEXP b_xp_, int axis) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
   MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
 
   array a_arr = a_wrapper->get();
   array b_arr = b_wrapper->get();
   Dtype target_dtype = promote_numeric_dtype(a_arr.dtype(), b_arr.dtype());
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = a_wrapper->stream(target_dtype);
 
   array a_target = astype(a_arr, target_dtype, target_device);
   array b_target = astype(b_arr, target_dtype, target_device);
@@ -256,42 +256,38 @@ SEXP cpp_mlx_cross(SEXP a_xp_, SEXP b_xp_, int axis, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_trace(SEXP a_xp_, int offset, int axis1, int axis2, std::string device_str) {
+SEXP cpp_mlx_trace(SEXP a_xp_, int offset, int axis1, int axis2) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   array arr = a_wrapper->get();
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
-
-  array a_target = astype(arr, arr.dtype(), target_device);
+  StreamOrDevice target_device = a_wrapper->stream(arr.dtype());
 
   // Convert 1-indexed to 0-indexed
   int ax1 = axis1 - 1;
   int ax2 = axis2 - 1;
 
-  ax1 = normalize_axis(a_target, ax1);
-  ax2 = normalize_axis(a_target, ax2);
+  ax1 = normalize_axis(arr, ax1);
+  ax2 = normalize_axis(arr, ax2);
 
-  array result = trace(a_target, offset, ax1, ax2, target_device);
+  array result = trace(arr, offset, ax1, ax2, target_device);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_diagonal(SEXP a_xp_, int offset, int axis1, int axis2, std::string device_str) {
+SEXP cpp_mlx_diagonal(SEXP a_xp_, int offset, int axis1, int axis2) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   array arr = a_wrapper->get();
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
-
-  array a_target = astype(arr, arr.dtype(), target_device);
+  StreamOrDevice target_device = a_wrapper->stream(arr.dtype());
 
   // Convert 1-indexed to 0-indexed
   int ax1 = axis1 - 1;
   int ax2 = axis2 - 1;
 
-  ax1 = normalize_axis(a_target, ax1);
-  ax2 = normalize_axis(a_target, ax2);
+  ax1 = normalize_axis(arr, ax1);
+  ax2 = normalize_axis(arr, ax2);
 
-  array result = diagonal(a_target, offset, ax1, ax2, target_device);
+  array result = diagonal(arr, offset, ax1, ax2, target_device);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -307,14 +303,14 @@ SEXP cpp_mlx_diag(SEXP a_xp_, int k) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_outer(SEXP a_xp_, SEXP b_xp_, std::string device_str) {
+SEXP cpp_mlx_outer(SEXP a_xp_, SEXP b_xp_) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
   MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
 
   array a_arr = a_wrapper->get();
   array b_arr = b_wrapper->get();
   Dtype target_dtype = promote_numeric_dtype(a_arr.dtype(), b_arr.dtype());
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = a_wrapper->stream(target_dtype);
 
   array a_target = astype(a_arr, target_dtype, target_device);
   array b_target = astype(b_arr, target_dtype, target_device);

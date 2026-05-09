@@ -761,22 +761,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_cross
-SEXP cpp_mlx_cross(SEXP a_xp_, SEXP b_xp_, int axis, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_cross(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP axisSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_cross(SEXP a_xp_, SEXP b_xp_, int axis);
+RcppExport SEXP _Rmlx_cpp_mlx_cross(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP axisSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type b_xp_(b_xp_SEXP);
     Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_cross(a_xp_, b_xp_, axis, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_cross(a_xp_, b_xp_, axis));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_trace
-SEXP cpp_mlx_trace(SEXP a_xp_, int offset, int axis1, int axis2, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_trace(SEXP a_xp_SEXP, SEXP offsetSEXP, SEXP axis1SEXP, SEXP axis2SEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_trace(SEXP a_xp_, int offset, int axis1, int axis2);
+RcppExport SEXP _Rmlx_cpp_mlx_trace(SEXP a_xp_SEXP, SEXP offsetSEXP, SEXP axis1SEXP, SEXP axis2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -784,14 +783,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type offset(offsetSEXP);
     Rcpp::traits::input_parameter< int >::type axis1(axis1SEXP);
     Rcpp::traits::input_parameter< int >::type axis2(axis2SEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_trace(a_xp_, offset, axis1, axis2, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_trace(a_xp_, offset, axis1, axis2));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_diagonal
-SEXP cpp_mlx_diagonal(SEXP a_xp_, int offset, int axis1, int axis2, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_diagonal(SEXP a_xp_SEXP, SEXP offsetSEXP, SEXP axis1SEXP, SEXP axis2SEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_diagonal(SEXP a_xp_, int offset, int axis1, int axis2);
+RcppExport SEXP _Rmlx_cpp_mlx_diagonal(SEXP a_xp_SEXP, SEXP offsetSEXP, SEXP axis1SEXP, SEXP axis2SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -799,8 +797,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type offset(offsetSEXP);
     Rcpp::traits::input_parameter< int >::type axis1(axis1SEXP);
     Rcpp::traits::input_parameter< int >::type axis2(axis2SEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_diagonal(a_xp_, offset, axis1, axis2, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_diagonal(a_xp_, offset, axis1, axis2));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -817,15 +814,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_outer
-SEXP cpp_mlx_outer(SEXP a_xp_, SEXP b_xp_, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_outer(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_outer(SEXP a_xp_, SEXP b_xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_outer(SEXP a_xp_SEXP, SEXP b_xp_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type b_xp_(b_xp_SEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_outer(a_xp_, b_xp_, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_outer(a_xp_, b_xp_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1884,16 +1880,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_unflatten
-SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_unflatten(SEXP a_xp_SEXP, SEXP axisSEXP, SEXP shapeSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape);
+RcppExport SEXP _Rmlx_cpp_mlx_unflatten(SEXP a_xp_SEXP, SEXP axisSEXP, SEXP shapeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
     Rcpp::traits::input_parameter< IntegerVector >::type shape(shapeSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_unflatten(a_xp_, axis, shape, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_unflatten(a_xp_, axis, shape));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2096,11 +2091,11 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_eigvalsh", (DL_FUNC) &_Rmlx_cpp_mlx_eigvalsh, 3},
     {"_Rmlx_cpp_mlx_eigh", (DL_FUNC) &_Rmlx_cpp_mlx_eigh, 3},
     {"_Rmlx_cpp_mlx_solve_triangular", (DL_FUNC) &_Rmlx_cpp_mlx_solve_triangular, 4},
-    {"_Rmlx_cpp_mlx_cross", (DL_FUNC) &_Rmlx_cpp_mlx_cross, 4},
-    {"_Rmlx_cpp_mlx_trace", (DL_FUNC) &_Rmlx_cpp_mlx_trace, 5},
-    {"_Rmlx_cpp_mlx_diagonal", (DL_FUNC) &_Rmlx_cpp_mlx_diagonal, 5},
+    {"_Rmlx_cpp_mlx_cross", (DL_FUNC) &_Rmlx_cpp_mlx_cross, 3},
+    {"_Rmlx_cpp_mlx_trace", (DL_FUNC) &_Rmlx_cpp_mlx_trace, 4},
+    {"_Rmlx_cpp_mlx_diagonal", (DL_FUNC) &_Rmlx_cpp_mlx_diagonal, 4},
     {"_Rmlx_cpp_mlx_diag", (DL_FUNC) &_Rmlx_cpp_mlx_diag, 2},
-    {"_Rmlx_cpp_mlx_outer", (DL_FUNC) &_Rmlx_cpp_mlx_outer, 3},
+    {"_Rmlx_cpp_mlx_outer", (DL_FUNC) &_Rmlx_cpp_mlx_outer, 2},
     {"_Rmlx_cpp_mlx_inv", (DL_FUNC) &_Rmlx_cpp_mlx_inv, 2},
     {"_Rmlx_cpp_mlx_tri_inv", (DL_FUNC) &_Rmlx_cpp_mlx_tri_inv, 3},
     {"_Rmlx_cpp_mlx_cholesky_inv", (DL_FUNC) &_Rmlx_cpp_mlx_cholesky_inv, 3},
@@ -2177,7 +2172,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_broadcast_arrays", (DL_FUNC) &_Rmlx_cpp_mlx_broadcast_arrays, 2},
     {"_Rmlx_cpp_mlx_pad", (DL_FUNC) &_Rmlx_cpp_mlx_pad, 6},
     {"_Rmlx_cpp_mlx_split", (DL_FUNC) &_Rmlx_cpp_mlx_split, 6},
-    {"_Rmlx_cpp_mlx_unflatten", (DL_FUNC) &_Rmlx_cpp_mlx_unflatten, 4},
+    {"_Rmlx_cpp_mlx_unflatten", (DL_FUNC) &_Rmlx_cpp_mlx_unflatten, 3},
     {"_Rmlx_cpp_mlx_contiguous", (DL_FUNC) &_Rmlx_cpp_mlx_contiguous, 2},
     {"_Rmlx_cpp_mlx_sort", (DL_FUNC) &_Rmlx_cpp_mlx_sort, 2},
     {"_Rmlx_cpp_mlx_argsort", (DL_FUNC) &_Rmlx_cpp_mlx_argsort, 2},

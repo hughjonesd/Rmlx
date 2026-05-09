@@ -416,7 +416,7 @@ mlx_cross <- function(a, b, axis = NULL) {
   if (length(axis_val) != 1L || is.na(axis_val) || axis_val < 1L) {
     stop("`axis` must be NULL or a single positive integer.", call. = FALSE)
   }
-  ptr <- cpp_mlx_cross(a$ptr, b$ptr, as.integer(axis_val), mlx_device(a))
+  ptr <- cpp_mlx_cross(a$ptr, b$ptr, as.integer(axis_val))
   new_mlx(ptr, mlx_device(a))
 }
 
@@ -437,7 +437,7 @@ mlx_cross <- function(a, b, axis = NULL) {
 #' mlx_trace(x, offset = 1)
 mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_trace(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), mlx_device(x))
+  ptr <- cpp_mlx_trace(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2))
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -458,7 +458,7 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' # (Constructing diagonals from 1D inputs is not yet supported.)
 mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_diagonal(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2), mlx_device(x))
+  ptr <- cpp_mlx_diagonal(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2))
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -486,7 +486,7 @@ outer.default <- base::outer
 outer.mlx <- function(X, Y, FUN = "*", ...) {
   X <- as_mlx(X)
   Y <- as_mlx(Y)
-  ptr <- cpp_mlx_outer(X$ptr, Y$ptr, mlx_device(X))
+  ptr <- cpp_mlx_outer(X$ptr, Y$ptr)
   new_mlx(ptr, mlx_device(X))
 }
 
@@ -507,7 +507,7 @@ outer.mlx <- function(X, Y, FUN = "*", ...) {
 #' mlx_unflatten(x_flat, axis = 2, shape = c(3, 4))  # restore original shape
 mlx_unflatten <- function(x, axis, shape) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_unflatten(x$ptr, as.integer(axis), as.integer(shape), mlx_device(x))
+  ptr <- cpp_mlx_unflatten(x$ptr, as.integer(axis), as.integer(shape))
   new_mlx(ptr, mlx_device(x))
 }
 

@@ -420,16 +420,15 @@ SEXP cpp_mlx_split(SEXP xp_,
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape, std::string device_str) {
+SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   array arr = a_wrapper->get();
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
-  array a_target = astype(arr, arr.dtype(), target_device);
+  StreamOrDevice target_device = a_wrapper->stream(arr.dtype());
 
   // Convert 1-indexed to 0-indexed
   int ax = axis - 1;
-  ax = normalize_axis(a_target, ax);
+  ax = normalize_axis(arr, ax);
 
   // Convert shape to SmallVector
   Shape new_shape;
@@ -437,7 +436,7 @@ SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape, std::string de
     new_shape.push_back(shape[i]);
   }
 
-  array result = unflatten(a_target, ax, new_shape, target_device);
+  array result = unflatten(arr, ax, new_shape, target_device);
   return make_mlx_xptr(std::move(result));
 }
 

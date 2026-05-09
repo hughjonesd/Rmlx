@@ -233,24 +233,24 @@ cpp_mlx_solve_triangular <- function(a_xp_, b_xp_, upper, device_str) {
     .Call(`_Rmlx_cpp_mlx_solve_triangular`, a_xp_, b_xp_, upper, device_str)
 }
 
-cpp_mlx_cross <- function(a_xp_, b_xp_, axis, device_str) {
-    .Call(`_Rmlx_cpp_mlx_cross`, a_xp_, b_xp_, axis, device_str)
+cpp_mlx_cross <- function(a_xp_, b_xp_, axis) {
+    .Call(`_Rmlx_cpp_mlx_cross`, a_xp_, b_xp_, axis)
 }
 
-cpp_mlx_trace <- function(a_xp_, offset, axis1, axis2, device_str) {
-    .Call(`_Rmlx_cpp_mlx_trace`, a_xp_, offset, axis1, axis2, device_str)
+cpp_mlx_trace <- function(a_xp_, offset, axis1, axis2) {
+    .Call(`_Rmlx_cpp_mlx_trace`, a_xp_, offset, axis1, axis2)
 }
 
-cpp_mlx_diagonal <- function(a_xp_, offset, axis1, axis2, device_str) {
-    .Call(`_Rmlx_cpp_mlx_diagonal`, a_xp_, offset, axis1, axis2, device_str)
+cpp_mlx_diagonal <- function(a_xp_, offset, axis1, axis2) {
+    .Call(`_Rmlx_cpp_mlx_diagonal`, a_xp_, offset, axis1, axis2)
 }
 
 cpp_mlx_diag <- function(a_xp_, k) {
     .Call(`_Rmlx_cpp_mlx_diag`, a_xp_, k)
 }
 
-cpp_mlx_outer <- function(a_xp_, b_xp_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_outer`, a_xp_, b_xp_, device_str)
+cpp_mlx_outer <- function(a_xp_, b_xp_) {
+    .Call(`_Rmlx_cpp_mlx_outer`, a_xp_, b_xp_)
 }
 
 cpp_mlx_inv <- function(a_xp_, device_str) {
@@ -557,8 +557,8 @@ cpp_mlx_split <- function(xp_, num_splits_, indices_, axis, dtype_str, device_st
     .Call(`_Rmlx_cpp_mlx_split`, xp_, num_splits_, indices_, axis, dtype_str, device_str)
 }
 
-cpp_mlx_unflatten <- function(a_xp_, axis, shape, device_str) {
-    .Call(`_Rmlx_cpp_mlx_unflatten`, a_xp_, axis, shape, device_str)
+cpp_mlx_unflatten <- function(a_xp_, axis, shape) {
+    .Call(`_Rmlx_cpp_mlx_unflatten`, a_xp_, axis, shape)
 }
 
 cpp_mlx_contiguous <- function(xp_, device_str) {
