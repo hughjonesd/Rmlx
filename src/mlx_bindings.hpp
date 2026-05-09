@@ -38,6 +38,8 @@ public:
   const mlx::core::array& get() const { return *ptr_; }
   std::shared_ptr<mlx::core::array> shared_array() const { return ptr_; }
   const std::string& device() const { return device_; }
+  mlx::core::StreamOrDevice stream() const;
+  mlx::core::StreamOrDevice stream(mlx::core::Dtype dtype) const;
 
   bool is_null() const { return ptr_ == nullptr; }
 };

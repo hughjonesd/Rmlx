@@ -214,6 +214,14 @@ StreamOrDevice typed_device(Dtype dtype, const std::string& device) {
   return string_to_device(device);
 }
 
+StreamOrDevice MlxArrayWrapper::stream() const {
+  return stream(get().dtype());
+}
+
+StreamOrDevice MlxArrayWrapper::stream(Dtype dtype) const {
+  return typed_device(dtype, device_);
+}
+
 } // namespace rmlx
 
 using namespace rmlx;
@@ -386,7 +394,7 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
 SEXP cpp_mlx_to_r(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  StreamOrDevice preferred = typed_device(arr.dtype(), wrapper->device());
+  StreamOrDevice preferred = wrapper->stream(arr.dtype());
 
   size_t ndim = arr.ndim();
 

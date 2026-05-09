@@ -12,7 +12,7 @@ SEXP cpp_mlx_reduce(SEXP xp_, std::string op, int ddof) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   array input = wrapper->get();
-  StreamOrDevice dev = typed_device(input.dtype(), wrapper->device());
+  StreamOrDevice dev = wrapper->stream(input.dtype());
   array result = [&]() -> array {
     if (op == "sum") {
       if (input.dtype() == bool_) {
@@ -67,7 +67,7 @@ SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims, int 
 
   std::vector<int> axes = {axis};
   array input = wrapper->get();
-  StreamOrDevice dev = typed_device(input.dtype(), wrapper->device());
+  StreamOrDevice dev = wrapper->stream(input.dtype());
 
   array result = [&]() -> array {
     if (op == "sum") {
@@ -121,7 +121,7 @@ SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims, int 
 SEXP cpp_mlx_argmax(SEXP xp_, Rcpp::Nullable<int> axis, bool keepdims) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  StreamOrDevice dev = typed_device(arr.dtype(), wrapper->device());
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   array result = [&]() -> array {
     if (axis.isNotNull()) {
@@ -143,7 +143,7 @@ SEXP cpp_mlx_argmax(SEXP xp_, Rcpp::Nullable<int> axis, bool keepdims) {
 SEXP cpp_mlx_argmin(SEXP xp_, Rcpp::Nullable<int> axis, bool keepdims) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  StreamOrDevice dev = typed_device(arr.dtype(), wrapper->device());
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   array result = [&]() -> array {
     if (axis.isNotNull()) {
@@ -166,7 +166,7 @@ SEXP cpp_mlx_logsumexp(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes,
                        bool keepdims) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  StreamOrDevice dev = typed_device(arr.dtype(), wrapper->device());
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   array result = [&]() -> array {
     if (axes.isNotNull()) {
@@ -184,7 +184,7 @@ SEXP cpp_mlx_logcumsumexp(SEXP xp_, Rcpp::Nullable<int> axis,
                           bool reverse, bool inclusive) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  StreamOrDevice dev = typed_device(arr.dtype(), wrapper->device());
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   array result = [&]() -> array {
     if (axis.isNotNull()) {
@@ -201,7 +201,7 @@ SEXP cpp_mlx_softmax(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes,
                      bool precise) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  StreamOrDevice dev = typed_device(arr.dtype(), wrapper->device());
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   array result = [&]() -> array {
     if (axes.isNotNull()) {
