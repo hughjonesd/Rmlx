@@ -217,9 +217,8 @@ SEXP cpp_mlx_random_categorical(SEXP logits_, int axis, int num_samples) {
   List logits_obj(logits_);
   MlxArrayWrapper* logits_wrapper = get_mlx_wrapper(logits_obj["ptr"]);
   array logits_arr = logits_wrapper->get();
-  std::string device_str = logits_wrapper->device();
 
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = logits_wrapper->stream(logits_arr.dtype());
   array result = mlx::core::random::categorical(logits_arr, axis, num_samples, std::nullopt, dev);
   return make_mlx_xptr(std::move(result));
 }
@@ -248,9 +247,8 @@ SEXP cpp_mlx_random_permutation(SEXP x_, int axis) {
   List x_obj(x_);
   MlxArrayWrapper* x_wrapper = get_mlx_wrapper(x_obj["ptr"]);
   array x_arr = x_wrapper->get();
-  std::string device_str = x_wrapper->device();
 
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = x_wrapper->stream(x_arr.dtype());
   array result = mlx::core::random::permutation(x_arr, axis, std::nullopt, dev);
   return make_mlx_xptr(std::move(result));
 }

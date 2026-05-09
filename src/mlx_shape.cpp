@@ -33,17 +33,17 @@ SEXP cpp_mlx_concat(SEXP args_, int axis) {
   }
   std::vector<array> arrays;
   arrays.reserve(args.size());
-  std::string device_str;
+  StreamOrDevice dev;
   for (int i = 0; i < args.size(); ++i) {
     List obj(args[i]);
     MlxArrayWrapper* wrapper = get_mlx_wrapper(obj["ptr"]);
-    arrays.push_back(wrapper->get());
+    array arr = wrapper->get();
     if (i == 0) {
-      device_str = wrapper->device();
+      dev = wrapper->stream(arr.dtype());
     }
+    arrays.push_back(arr);
   }
 
-  StreamOrDevice dev = string_to_device(device_str);
   array result = concatenate(arrays, axis, dev);
   return make_mlx_xptr(std::move(result));
 }
