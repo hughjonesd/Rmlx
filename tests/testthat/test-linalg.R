@@ -142,7 +142,7 @@ test_that("chol.mlx respects gpu device and lets MLX report unsupported executio
 
   spd_gpu <- as_mlx(spd, device = "gpu", dtype = "float32")
   expect_error(
-    mlx_eval(chol(spd_gpu)),
+    chol(spd_gpu),
     "not yet supported on the GPU",
     fixed = TRUE
   )
@@ -157,12 +157,12 @@ test_that("CPU-only linalg helpers let MLX report unsupported gpu execution", {
   lower <- as_mlx(matrix(c(2, 1, 0, 3), 2, 2), dtype = "float32", device = "gpu")
   chol_factor <- as_mlx(chol(matrix(c(4, 1, 1, 3), 2, 2)), dtype = "float32", device = "gpu")
 
-  expect_error(mlx_eval(qr(mat)$R), "not yet supported on the GPU", fixed = TRUE)
-  expect_error(mlx_eval(pinv(mat)), "not yet supported on the GPU", fixed = TRUE)
-  expect_error(mlx_eval(mlx_inv(spd)), "not yet supported on the GPU", fixed = TRUE)
-  expect_error(mlx_eval(mlx_tri_inv(lower, upper = FALSE)), "not yet supported on the GPU", fixed = TRUE)
-  expect_error(mlx_eval(mlx_cholesky_inv(chol_factor, upper = TRUE)), "not yet supported on the GPU", fixed = TRUE)
-  expect_error(mlx_eval(mlx_lu(mat)$l), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(qr(mat), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(pinv(mat), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_inv(spd), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_tri_inv(lower, upper = FALSE), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_cholesky_inv(chol_factor, upper = TRUE), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_lu(mat), "not yet supported on the GPU", fixed = TRUE)
 })
 
 test_that("chol.mlx errors with pivot = TRUE", {
@@ -307,10 +307,7 @@ test_that("svd.mlx respects gpu device and lets MLX report unsupported execution
 
   A_gpu <- as_mlx(A, device = "gpu", dtype = "float32")
   expect_error(
-    {
-      svd_gpu <- svd(A_gpu)
-      mlx_eval(svd_gpu$d)
-    },
+    svd(A_gpu),
     "not yet supported on the GPU",
     fixed = TRUE
   )

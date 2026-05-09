@@ -56,10 +56,10 @@ test_that("eigen helpers let MLX report unsupported gpu execution", {
 
   mat <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2), dtype = "float32", device = "gpu")
 
-  expect_error(mlx_eval(mlx_eig(mat)$values), "not yet supported on the GPU", fixed = TRUE)
-  expect_error(mlx_eval(mlx_eigvals(mat)), "not yet supported on the GPU", fixed = TRUE)
-  expect_error(mlx_eval(mlx_eigvalsh(mat)), "not yet supported on the GPU", fixed = TRUE)
-  expect_error(mlx_eval(mlx_eigh(mat)$values), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_eig(mat), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_eigvals(mat), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_eigvalsh(mat), "not yet supported on the GPU", fixed = TRUE)
+  expect_error(mlx_eigh(mat), "not yet supported on the GPU", fixed = TRUE)
 })
 
 test_that("mlx_solve_triangular matches base solve", {
@@ -99,7 +99,7 @@ test_that("mlx_solve_triangular lets MLX report unsupported gpu execution", {
   rhs <- as_mlx(matrix(c(1, 5), 2, 1), dtype = "float32", device = "gpu")
 
   expect_error(
-    mlx_eval(mlx_solve_triangular(lower, rhs, upper = FALSE)),
+    mlx_solve_triangular(lower, rhs, upper = FALSE),
     "not yet supported on the GPU",
     fixed = TRUE
   )
