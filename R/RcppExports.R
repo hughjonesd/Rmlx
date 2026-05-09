@@ -189,48 +189,48 @@ cpp_mlx_load_gguf <- function(file, device_str) {
     .Call(`_Rmlx_cpp_mlx_load_gguf`, file, device_str)
 }
 
-cpp_mlx_solve <- function(a_xp_, b_xp_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_solve`, a_xp_, b_xp_, dtype_str, device_str)
+cpp_mlx_solve <- function(a_xp_, b_xp_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_solve`, a_xp_, b_xp_, dtype_str)
 }
 
-cpp_mlx_cholesky <- function(a_xp_, upper, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_cholesky`, a_xp_, upper, dtype_str, device_str)
+cpp_mlx_cholesky <- function(a_xp_, upper, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_cholesky`, a_xp_, upper, dtype_str)
 }
 
-cpp_mlx_qr <- function(a_xp_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_qr`, a_xp_, dtype_str, device_str)
+cpp_mlx_qr <- function(a_xp_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_qr`, a_xp_, dtype_str)
 }
 
-cpp_mlx_svd <- function(a_xp_, compute_uv, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_svd`, a_xp_, compute_uv, dtype_str, device_str)
+cpp_mlx_svd <- function(a_xp_, compute_uv, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_svd`, a_xp_, compute_uv, dtype_str)
 }
 
-cpp_mlx_pinv <- function(a_xp_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_pinv`, a_xp_, dtype_str, device_str)
+cpp_mlx_pinv <- function(a_xp_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_pinv`, a_xp_, dtype_str)
 }
 
-cpp_mlx_norm <- function(xp_, ord_, axes, keepdims, device_str) {
-    .Call(`_Rmlx_cpp_mlx_norm`, xp_, ord_, axes, keepdims, device_str)
+cpp_mlx_norm <- function(xp_, ord_, axes, keepdims) {
+    .Call(`_Rmlx_cpp_mlx_norm`, xp_, ord_, axes, keepdims)
 }
 
-cpp_mlx_eig <- function(xp_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_eig`, xp_, device_str)
+cpp_mlx_eig <- function(xp_) {
+    .Call(`_Rmlx_cpp_mlx_eig`, xp_)
 }
 
-cpp_mlx_eigvals <- function(xp_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_eigvals`, xp_, device_str)
+cpp_mlx_eigvals <- function(xp_) {
+    .Call(`_Rmlx_cpp_mlx_eigvals`, xp_)
 }
 
-cpp_mlx_eigvalsh <- function(xp_, uplo, device_str) {
-    .Call(`_Rmlx_cpp_mlx_eigvalsh`, xp_, uplo, device_str)
+cpp_mlx_eigvalsh <- function(xp_, uplo) {
+    .Call(`_Rmlx_cpp_mlx_eigvalsh`, xp_, uplo)
 }
 
-cpp_mlx_eigh <- function(xp_, uplo, device_str) {
-    .Call(`_Rmlx_cpp_mlx_eigh`, xp_, uplo, device_str)
+cpp_mlx_eigh <- function(xp_, uplo) {
+    .Call(`_Rmlx_cpp_mlx_eigh`, xp_, uplo)
 }
 
-cpp_mlx_solve_triangular <- function(a_xp_, b_xp_, upper, device_str) {
-    .Call(`_Rmlx_cpp_mlx_solve_triangular`, a_xp_, b_xp_, upper, device_str)
+cpp_mlx_solve_triangular <- function(a_xp_, b_xp_, upper) {
+    .Call(`_Rmlx_cpp_mlx_solve_triangular`, a_xp_, b_xp_, upper)
 }
 
 cpp_mlx_cross <- function(a_xp_, b_xp_, axis) {
@@ -253,24 +253,24 @@ cpp_mlx_outer <- function(a_xp_, b_xp_) {
     .Call(`_Rmlx_cpp_mlx_outer`, a_xp_, b_xp_)
 }
 
-cpp_mlx_inv <- function(a_xp_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_inv`, a_xp_, device_str)
+cpp_mlx_inv <- function(a_xp_) {
+    .Call(`_Rmlx_cpp_mlx_inv`, a_xp_)
 }
 
-cpp_mlx_tri_inv <- function(a_xp_, upper, device_str) {
-    .Call(`_Rmlx_cpp_mlx_tri_inv`, a_xp_, upper, device_str)
+cpp_mlx_tri_inv <- function(a_xp_, upper) {
+    .Call(`_Rmlx_cpp_mlx_tri_inv`, a_xp_, upper)
 }
 
-cpp_mlx_cholesky_inv <- function(a_xp_, upper, device_str) {
-    .Call(`_Rmlx_cpp_mlx_cholesky_inv`, a_xp_, upper, device_str)
+cpp_mlx_cholesky_inv <- function(a_xp_, upper) {
+    .Call(`_Rmlx_cpp_mlx_cholesky_inv`, a_xp_, upper)
 }
 
-cpp_mlx_lu <- function(a_xp_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_lu`, a_xp_, device_str)
+cpp_mlx_lu <- function(a_xp_) {
+    .Call(`_Rmlx_cpp_mlx_lu`, a_xp_)
 }
 
-cpp_mlx_kron <- function(a_xp_, b_xp_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_kron`, a_xp_, b_xp_, device_str)
+cpp_mlx_kron <- function(a_xp_, b_xp_) {
+    .Call(`_Rmlx_cpp_mlx_kron`, a_xp_, b_xp_)
 }
 
 cpp_mlx_unary <- function(xp_, op) {

@@ -18,7 +18,7 @@ chol.mlx <- function(x, pivot = FALSE, ...) {
   x <- as_mlx(x)
   if (pivot) stop("pivoted Cholesky is not supported for mlx objects.", call. = FALSE)
   x_dtype <- mlx_dtype(x)
-  ptr <- cpp_mlx_cholesky(x$ptr, TRUE, x_dtype, mlx_device(x))
+  ptr <- cpp_mlx_cholesky(x$ptr, TRUE, x_dtype)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -85,7 +85,7 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ...) {
   }
   if (LAPACK) stop("LAPACK = TRUE is not supported for mlx objects.", call. = FALSE)
 
-  res <- cpp_mlx_qr(x$ptr, x_dtype, mlx_device(x))
+  res <- cpp_mlx_qr(x$ptr, x_dtype)
   device <- mlx_device(x)
   structure(
     list(
@@ -144,7 +144,7 @@ svd.mlx <- function(x, nu = min(n, p), nv = min(n, p), ...) {
 
   compute_uv <- (nu > 0 || nv > 0)
   x_dtype <- mlx_dtype(x)
-  res <- cpp_mlx_svd(x$ptr, compute_uv, x_dtype, mlx_device(x))
+  res <- cpp_mlx_svd(x$ptr, compute_uv, x_dtype)
 
   if (!compute_uv) {
     s_ptr <- res[[1L]]
@@ -178,7 +178,7 @@ pinv <- function(x) {
   stopifnot(length(dim(x)) == 2L)
 
   x_dtype <- mlx_dtype(x)
-  ptr <- cpp_mlx_pinv(x$ptr, x_dtype, mlx_device(x))
+  ptr <- cpp_mlx_pinv(x$ptr, x_dtype)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -237,7 +237,7 @@ mlx_norm <- function(x, ord = NULL, axes = NULL, drop = TRUE) {
     ord <- toupper(ord)
   }
   axes_arg <- if (is.null(axes)) NULL else as.integer(axes)
-  ptr <- cpp_mlx_norm(x$ptr, ord, axes_arg, !isTRUE(drop), mlx_device(x))
+  ptr <- cpp_mlx_norm(x$ptr, ord, axes_arg, !isTRUE(drop))
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -258,7 +258,7 @@ mlx_eig <- function(x) {
   x <- as_mlx(x)
   stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
 
-  res <- cpp_mlx_eig(x$ptr, mlx_device(x))
+  res <- cpp_mlx_eig(x$ptr)
   list(
     values = new_mlx(res$values, mlx_device(x)),
     vectors = new_mlx(res$vectors, mlx_device(x))
@@ -279,7 +279,7 @@ mlx_eig <- function(x) {
 mlx_eigvals <- function(x) {
   x <- as_mlx(x)
   stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
-  ptr <- cpp_mlx_eigvals(x$ptr, mlx_device(x))
+  ptr <- cpp_mlx_eigvals(x$ptr)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -299,7 +299,7 @@ mlx_eigvalsh <- function(x, uplo = c("L", "U")) {
   x <- as_mlx(x)
   stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
   uplo <- match.arg(uplo)
-  ptr <- cpp_mlx_eigvalsh(x$ptr, uplo, mlx_device(x))
+  ptr <- cpp_mlx_eigvalsh(x$ptr, uplo)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -318,7 +318,7 @@ mlx_eigh <- function(x, uplo = c("L", "U")) {
   x <- as_mlx(x)
   stopifnot(length(dim(x)) == 2L, dim(x)[1] == dim(x)[2])
   uplo <- match.arg(uplo)
-  res <- cpp_mlx_eigh(x$ptr, uplo, mlx_device(x))
+  res <- cpp_mlx_eigh(x$ptr, uplo)
   list(
     values = new_mlx(res$values, mlx_device(x)),
     vectors = new_mlx(res$vectors, mlx_device(x))
@@ -344,7 +344,7 @@ mlx_solve_triangular <- function(a, b, upper = FALSE) {
   a <- as_mlx(a)
   b <- as_mlx(b)
   stopifnot(length(dim(a)) == 2L, dim(a)[1] == dim(a)[2])
-  ptr <- cpp_mlx_solve_triangular(a$ptr, b$ptr, upper, mlx_device(a))
+  ptr <- cpp_mlx_solve_triangular(a$ptr, b$ptr, upper)
   new_mlx(ptr, mlx_device(a))
 }
 
@@ -528,7 +528,7 @@ mlx_unflatten <- function(x, axis, shape) {
 #' A %*% A_inv
 mlx_inv <- function(x) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_inv(x$ptr, mlx_device(x))
+  ptr <- cpp_mlx_inv(x$ptr)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -551,7 +551,7 @@ mlx_inv <- function(x) {
 #' mlx_tri_inv(L, upper = FALSE)
 mlx_tri_inv <- function(x, upper = FALSE) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_tri_inv(x$ptr, upper, mlx_device(x))
+  ptr <- cpp_mlx_tri_inv(x$ptr, upper)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -579,7 +579,7 @@ mlx_tri_inv <- function(x, upper = FALSE) {
 #' mlx_cholesky_inv(as_mlx(L, device = "cpu"))
 mlx_cholesky_inv <- function(x, upper = FALSE) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_cholesky_inv(x$ptr, upper, mlx_device(x))
+  ptr <- cpp_mlx_cholesky_inv(x$ptr, upper)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -602,7 +602,7 @@ mlx_cholesky_inv <- function(x, upper = FALSE) {
 #' U <- lu_result$u  # Upper triangular
 mlx_lu <- function(x) {
   x <- as_mlx(x)
-  result <- cpp_mlx_lu(x$ptr, mlx_device(x))
+  result <- cpp_mlx_lu(x$ptr)
   list(
     p = new_mlx(result$p, mlx_device(x)),
     l = new_mlx(result$l, mlx_device(x)),

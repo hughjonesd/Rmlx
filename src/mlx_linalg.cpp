@@ -10,11 +10,11 @@ using namespace mlx::core;
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
-                   std::string dtype_str, std::string device_str) {
+                   std::string dtype_str) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = a_wrapper->stream(target_dtype);
   array a_target = astype(a_wrapper->get(), target_dtype, target_device);
 
   array result = [&]() -> array {
@@ -34,11 +34,11 @@ SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_cholesky(SEXP a_xp_, bool upper,
-                      std::string dtype_str, std::string device_str) {
+                      std::string dtype_str) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = a_wrapper->stream(target_dtype);
 
   array a_target = astype(a_wrapper->get(), target_dtype, target_device);
   array chol_target = mlx::core::linalg::cholesky(a_target, upper, target_device);
@@ -48,11 +48,11 @@ SEXP cpp_mlx_cholesky(SEXP a_xp_, bool upper,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_qr(SEXP a_xp_,
-                std::string dtype_str, std::string device_str) {
+                std::string dtype_str) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = a_wrapper->stream(target_dtype);
 
   array a_target = astype(a_wrapper->get(), target_dtype, target_device);
   auto qr_target = mlx::core::linalg::qr(a_target, target_device);
@@ -67,11 +67,11 @@ SEXP cpp_mlx_qr(SEXP a_xp_,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_svd(SEXP a_xp_, bool compute_uv,
-                 std::string dtype_str, std::string device_str) {
+                 std::string dtype_str) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = a_wrapper->stream(target_dtype);
 
   array a_target = astype(a_wrapper->get(), target_dtype, target_device);
   std::vector<array> svd_target = mlx::core::linalg::svd(a_target, compute_uv, target_device);
@@ -103,11 +103,11 @@ SEXP cpp_mlx_svd(SEXP a_xp_, bool compute_uv,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_pinv(SEXP a_xp_,
-                  std::string dtype_str, std::string device_str) {
+                  std::string dtype_str) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = a_wrapper->stream(target_dtype);
 
   array a_target = astype(a_wrapper->get(), target_dtype, target_device);
   array pinv_target = mlx::core::linalg::pinv(a_target, target_device);
@@ -118,11 +118,11 @@ SEXP cpp_mlx_pinv(SEXP a_xp_,
 // [[Rcpp::export]]
 SEXP cpp_mlx_norm(SEXP xp_, SEXP ord_,
                   Rcpp::Nullable<Rcpp::IntegerVector> axes,
-                  bool keepdims, std::string device_str) {
+                  bool keepdims) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = wrapper->stream(arr.dtype());
 
   array arr_target = astype(arr, arr.dtype(), target_device);
   std::optional<std::vector<int>> axes_opt = optional_axes(arr, axes);
@@ -155,11 +155,11 @@ SEXP cpp_mlx_norm(SEXP xp_, SEXP ord_,
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_eig(SEXP xp_, std::string device_str) {
+SEXP cpp_mlx_eig(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = wrapper->stream(arr.dtype());
 
   array arr_target = astype(arr, arr.dtype(), target_device);
   auto eig_pair = mlx::core::linalg::eig(arr_target, target_device);
@@ -173,11 +173,11 @@ SEXP cpp_mlx_eig(SEXP xp_, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_eigvals(SEXP xp_, std::string device_str) {
+SEXP cpp_mlx_eigvals(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = wrapper->stream(arr.dtype());
 
   array arr_target = astype(arr, arr.dtype(), target_device);
   array vals_target = mlx::core::linalg::eigvals(arr_target, target_device);
@@ -185,11 +185,11 @@ SEXP cpp_mlx_eigvals(SEXP xp_, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_eigvalsh(SEXP xp_, std::string uplo, std::string device_str) {
+SEXP cpp_mlx_eigvalsh(SEXP xp_, std::string uplo) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = wrapper->stream(arr.dtype());
 
   array arr_target = astype(arr, arr.dtype(), target_device);
   array vals_target = mlx::core::linalg::eigvalsh(arr_target, uplo, target_device);
@@ -197,11 +197,11 @@ SEXP cpp_mlx_eigvalsh(SEXP xp_, std::string uplo, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_eigh(SEXP xp_, std::string uplo, std::string device_str) {
+SEXP cpp_mlx_eigh(SEXP xp_, std::string uplo) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = wrapper->stream(arr.dtype());
 
   array arr_target = astype(arr, arr.dtype(), target_device);
   auto eig_pair = mlx::core::linalg::eigh(arr_target, uplo, target_device);
@@ -215,15 +215,14 @@ SEXP cpp_mlx_eigh(SEXP xp_, std::string uplo, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_solve_triangular(SEXP a_xp_, SEXP b_xp_, bool upper,
-                              std::string device_str) {
+SEXP cpp_mlx_solve_triangular(SEXP a_xp_, SEXP b_xp_, bool upper) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
   MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
 
   array a_arr = a_wrapper->get();
   array b_arr = b_wrapper->get();
   Dtype target_dtype = promote_numeric_dtype(a_arr.dtype(), b_arr.dtype());
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = a_wrapper->stream(target_dtype);
 
   array a_target = astype(a_arr, target_dtype, target_device);
   array b_target = astype(b_arr, target_dtype, target_device);
@@ -320,11 +319,11 @@ SEXP cpp_mlx_outer(SEXP a_xp_, SEXP b_xp_) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_inv(SEXP a_xp_, std::string device_str) {
+SEXP cpp_mlx_inv(SEXP a_xp_) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   array arr = a_wrapper->get();
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = a_wrapper->stream(arr.dtype());
 
   array a_target = astype(arr, arr.dtype(), target_device);
   array result_target = linalg::inv(a_target, target_device);
@@ -333,11 +332,11 @@ SEXP cpp_mlx_inv(SEXP a_xp_, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_tri_inv(SEXP a_xp_, bool upper, std::string device_str) {
+SEXP cpp_mlx_tri_inv(SEXP a_xp_, bool upper) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   array arr = a_wrapper->get();
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = a_wrapper->stream(arr.dtype());
 
   array a_target = astype(arr, arr.dtype(), target_device);
   array result_target = linalg::tri_inv(a_target, upper, target_device);
@@ -346,11 +345,11 @@ SEXP cpp_mlx_tri_inv(SEXP a_xp_, bool upper, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_cholesky_inv(SEXP a_xp_, bool upper, std::string device_str) {
+SEXP cpp_mlx_cholesky_inv(SEXP a_xp_, bool upper) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   array arr = a_wrapper->get();
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = a_wrapper->stream(arr.dtype());
 
   array a_target = astype(arr, arr.dtype(), target_device);
   array result_target = linalg::cholesky_inv(a_target, upper, target_device);
@@ -359,11 +358,11 @@ SEXP cpp_mlx_cholesky_inv(SEXP a_xp_, bool upper, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_lu(SEXP a_xp_, std::string device_str) {
+SEXP cpp_mlx_lu(SEXP a_xp_) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   array arr = a_wrapper->get();
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = a_wrapper->stream(arr.dtype());
 
   array a_target = astype(arr, arr.dtype(), target_device);
 
@@ -386,14 +385,14 @@ SEXP cpp_mlx_lu(SEXP a_xp_, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_kron(SEXP a_xp_, SEXP b_xp_, std::string device_str) {
+SEXP cpp_mlx_kron(SEXP a_xp_, SEXP b_xp_) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
   MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
 
   array a_arr = a_wrapper->get();
   array b_arr = b_wrapper->get();
 
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = a_wrapper->stream(a_arr.dtype());
   array result = kron(a_arr, b_arr, dev);
   return make_mlx_xptr(std::move(result));
 }

@@ -614,76 +614,71 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_solve
-SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_, std::string dtype_str, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_solve(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_, std::string dtype_str);
+RcppExport SEXP _Rmlx_cpp_mlx_solve(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP dtype_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type b_xp_(b_xp_SEXP);
     Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_solve(a_xp_, b_xp_, dtype_str, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_solve(a_xp_, b_xp_, dtype_str));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_cholesky
-SEXP cpp_mlx_cholesky(SEXP a_xp_, bool upper, std::string dtype_str, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_cholesky(SEXP a_xp_SEXP, SEXP upperSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_cholesky(SEXP a_xp_, bool upper, std::string dtype_str);
+RcppExport SEXP _Rmlx_cpp_mlx_cholesky(SEXP a_xp_SEXP, SEXP upperSEXP, SEXP dtype_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< bool >::type upper(upperSEXP);
     Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_cholesky(a_xp_, upper, dtype_str, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_cholesky(a_xp_, upper, dtype_str));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_qr
-SEXP cpp_mlx_qr(SEXP a_xp_, std::string dtype_str, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_qr(SEXP a_xp_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_qr(SEXP a_xp_, std::string dtype_str);
+RcppExport SEXP _Rmlx_cpp_mlx_qr(SEXP a_xp_SEXP, SEXP dtype_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_qr(a_xp_, dtype_str, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_qr(a_xp_, dtype_str));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_svd
-SEXP cpp_mlx_svd(SEXP a_xp_, bool compute_uv, std::string dtype_str, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_svd(SEXP a_xp_SEXP, SEXP compute_uvSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_svd(SEXP a_xp_, bool compute_uv, std::string dtype_str);
+RcppExport SEXP _Rmlx_cpp_mlx_svd(SEXP a_xp_SEXP, SEXP compute_uvSEXP, SEXP dtype_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< bool >::type compute_uv(compute_uvSEXP);
     Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_svd(a_xp_, compute_uv, dtype_str, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_svd(a_xp_, compute_uv, dtype_str));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_pinv
-SEXP cpp_mlx_pinv(SEXP a_xp_, std::string dtype_str, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_pinv(SEXP a_xp_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_pinv(SEXP a_xp_, std::string dtype_str);
+RcppExport SEXP _Rmlx_cpp_mlx_pinv(SEXP a_xp_SEXP, SEXP dtype_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_pinv(a_xp_, dtype_str, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_pinv(a_xp_, dtype_str));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_norm
-SEXP cpp_mlx_norm(SEXP xp_, SEXP ord_, Rcpp::Nullable<Rcpp::IntegerVector> axes, bool keepdims, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_norm(SEXP xp_SEXP, SEXP ord_SEXP, SEXP axesSEXP, SEXP keepdimsSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_norm(SEXP xp_, SEXP ord_, Rcpp::Nullable<Rcpp::IntegerVector> axes, bool keepdims);
+RcppExport SEXP _Rmlx_cpp_mlx_norm(SEXP xp_SEXP, SEXP ord_SEXP, SEXP axesSEXP, SEXP keepdimsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -691,72 +686,66 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type ord_(ord_SEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type axes(axesSEXP);
     Rcpp::traits::input_parameter< bool >::type keepdims(keepdimsSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_norm(xp_, ord_, axes, keepdims, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_norm(xp_, ord_, axes, keepdims));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_eig
-SEXP cpp_mlx_eig(SEXP xp_, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_eig(SEXP xp_SEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_eig(SEXP xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_eig(SEXP xp_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_eig(xp_, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_eig(xp_));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_eigvals
-SEXP cpp_mlx_eigvals(SEXP xp_, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_eigvals(SEXP xp_SEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_eigvals(SEXP xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_eigvals(SEXP xp_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_eigvals(xp_, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_eigvals(xp_));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_eigvalsh
-SEXP cpp_mlx_eigvalsh(SEXP xp_, std::string uplo, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_eigvalsh(SEXP xp_SEXP, SEXP uploSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_eigvalsh(SEXP xp_, std::string uplo);
+RcppExport SEXP _Rmlx_cpp_mlx_eigvalsh(SEXP xp_SEXP, SEXP uploSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
     Rcpp::traits::input_parameter< std::string >::type uplo(uploSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_eigvalsh(xp_, uplo, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_eigvalsh(xp_, uplo));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_eigh
-SEXP cpp_mlx_eigh(SEXP xp_, std::string uplo, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_eigh(SEXP xp_SEXP, SEXP uploSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_eigh(SEXP xp_, std::string uplo);
+RcppExport SEXP _Rmlx_cpp_mlx_eigh(SEXP xp_SEXP, SEXP uploSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
     Rcpp::traits::input_parameter< std::string >::type uplo(uploSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_eigh(xp_, uplo, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_eigh(xp_, uplo));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_solve_triangular
-SEXP cpp_mlx_solve_triangular(SEXP a_xp_, SEXP b_xp_, bool upper, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_solve_triangular(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP upperSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_solve_triangular(SEXP a_xp_, SEXP b_xp_, bool upper);
+RcppExport SEXP _Rmlx_cpp_mlx_solve_triangular(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP upperSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type b_xp_(b_xp_SEXP);
     Rcpp::traits::input_parameter< bool >::type upper(upperSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_solve_triangular(a_xp_, b_xp_, upper, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_solve_triangular(a_xp_, b_xp_, upper));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -826,65 +815,60 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_inv
-SEXP cpp_mlx_inv(SEXP a_xp_, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_inv(SEXP a_xp_SEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_inv(SEXP a_xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_inv(SEXP a_xp_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_inv(a_xp_, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_inv(a_xp_));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_tri_inv
-SEXP cpp_mlx_tri_inv(SEXP a_xp_, bool upper, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_tri_inv(SEXP a_xp_SEXP, SEXP upperSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_tri_inv(SEXP a_xp_, bool upper);
+RcppExport SEXP _Rmlx_cpp_mlx_tri_inv(SEXP a_xp_SEXP, SEXP upperSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< bool >::type upper(upperSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_tri_inv(a_xp_, upper, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_tri_inv(a_xp_, upper));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_cholesky_inv
-SEXP cpp_mlx_cholesky_inv(SEXP a_xp_, bool upper, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_cholesky_inv(SEXP a_xp_SEXP, SEXP upperSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_cholesky_inv(SEXP a_xp_, bool upper);
+RcppExport SEXP _Rmlx_cpp_mlx_cholesky_inv(SEXP a_xp_SEXP, SEXP upperSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< bool >::type upper(upperSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_cholesky_inv(a_xp_, upper, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_cholesky_inv(a_xp_, upper));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_lu
-SEXP cpp_mlx_lu(SEXP a_xp_, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_lu(SEXP a_xp_SEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_lu(SEXP a_xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_lu(SEXP a_xp_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_lu(a_xp_, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_lu(a_xp_));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_kron
-SEXP cpp_mlx_kron(SEXP a_xp_, SEXP b_xp_, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_kron(SEXP a_xp_SEXP, SEXP b_xp_SEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_kron(SEXP a_xp_, SEXP b_xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_kron(SEXP a_xp_SEXP, SEXP b_xp_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type b_xp_(b_xp_SEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_kron(a_xp_, b_xp_, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_kron(a_xp_, b_xp_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2080,27 +2064,27 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_load_safetensors", (DL_FUNC) &_Rmlx_cpp_mlx_load_safetensors, 2},
     {"_Rmlx_cpp_mlx_save_gguf", (DL_FUNC) &_Rmlx_cpp_mlx_save_gguf, 5},
     {"_Rmlx_cpp_mlx_load_gguf", (DL_FUNC) &_Rmlx_cpp_mlx_load_gguf, 2},
-    {"_Rmlx_cpp_mlx_solve", (DL_FUNC) &_Rmlx_cpp_mlx_solve, 4},
-    {"_Rmlx_cpp_mlx_cholesky", (DL_FUNC) &_Rmlx_cpp_mlx_cholesky, 4},
-    {"_Rmlx_cpp_mlx_qr", (DL_FUNC) &_Rmlx_cpp_mlx_qr, 3},
-    {"_Rmlx_cpp_mlx_svd", (DL_FUNC) &_Rmlx_cpp_mlx_svd, 4},
-    {"_Rmlx_cpp_mlx_pinv", (DL_FUNC) &_Rmlx_cpp_mlx_pinv, 3},
-    {"_Rmlx_cpp_mlx_norm", (DL_FUNC) &_Rmlx_cpp_mlx_norm, 5},
-    {"_Rmlx_cpp_mlx_eig", (DL_FUNC) &_Rmlx_cpp_mlx_eig, 2},
-    {"_Rmlx_cpp_mlx_eigvals", (DL_FUNC) &_Rmlx_cpp_mlx_eigvals, 2},
-    {"_Rmlx_cpp_mlx_eigvalsh", (DL_FUNC) &_Rmlx_cpp_mlx_eigvalsh, 3},
-    {"_Rmlx_cpp_mlx_eigh", (DL_FUNC) &_Rmlx_cpp_mlx_eigh, 3},
-    {"_Rmlx_cpp_mlx_solve_triangular", (DL_FUNC) &_Rmlx_cpp_mlx_solve_triangular, 4},
+    {"_Rmlx_cpp_mlx_solve", (DL_FUNC) &_Rmlx_cpp_mlx_solve, 3},
+    {"_Rmlx_cpp_mlx_cholesky", (DL_FUNC) &_Rmlx_cpp_mlx_cholesky, 3},
+    {"_Rmlx_cpp_mlx_qr", (DL_FUNC) &_Rmlx_cpp_mlx_qr, 2},
+    {"_Rmlx_cpp_mlx_svd", (DL_FUNC) &_Rmlx_cpp_mlx_svd, 3},
+    {"_Rmlx_cpp_mlx_pinv", (DL_FUNC) &_Rmlx_cpp_mlx_pinv, 2},
+    {"_Rmlx_cpp_mlx_norm", (DL_FUNC) &_Rmlx_cpp_mlx_norm, 4},
+    {"_Rmlx_cpp_mlx_eig", (DL_FUNC) &_Rmlx_cpp_mlx_eig, 1},
+    {"_Rmlx_cpp_mlx_eigvals", (DL_FUNC) &_Rmlx_cpp_mlx_eigvals, 1},
+    {"_Rmlx_cpp_mlx_eigvalsh", (DL_FUNC) &_Rmlx_cpp_mlx_eigvalsh, 2},
+    {"_Rmlx_cpp_mlx_eigh", (DL_FUNC) &_Rmlx_cpp_mlx_eigh, 2},
+    {"_Rmlx_cpp_mlx_solve_triangular", (DL_FUNC) &_Rmlx_cpp_mlx_solve_triangular, 3},
     {"_Rmlx_cpp_mlx_cross", (DL_FUNC) &_Rmlx_cpp_mlx_cross, 3},
     {"_Rmlx_cpp_mlx_trace", (DL_FUNC) &_Rmlx_cpp_mlx_trace, 4},
     {"_Rmlx_cpp_mlx_diagonal", (DL_FUNC) &_Rmlx_cpp_mlx_diagonal, 4},
     {"_Rmlx_cpp_mlx_diag", (DL_FUNC) &_Rmlx_cpp_mlx_diag, 2},
     {"_Rmlx_cpp_mlx_outer", (DL_FUNC) &_Rmlx_cpp_mlx_outer, 2},
-    {"_Rmlx_cpp_mlx_inv", (DL_FUNC) &_Rmlx_cpp_mlx_inv, 2},
-    {"_Rmlx_cpp_mlx_tri_inv", (DL_FUNC) &_Rmlx_cpp_mlx_tri_inv, 3},
-    {"_Rmlx_cpp_mlx_cholesky_inv", (DL_FUNC) &_Rmlx_cpp_mlx_cholesky_inv, 3},
-    {"_Rmlx_cpp_mlx_lu", (DL_FUNC) &_Rmlx_cpp_mlx_lu, 2},
-    {"_Rmlx_cpp_mlx_kron", (DL_FUNC) &_Rmlx_cpp_mlx_kron, 3},
+    {"_Rmlx_cpp_mlx_inv", (DL_FUNC) &_Rmlx_cpp_mlx_inv, 1},
+    {"_Rmlx_cpp_mlx_tri_inv", (DL_FUNC) &_Rmlx_cpp_mlx_tri_inv, 2},
+    {"_Rmlx_cpp_mlx_cholesky_inv", (DL_FUNC) &_Rmlx_cpp_mlx_cholesky_inv, 2},
+    {"_Rmlx_cpp_mlx_lu", (DL_FUNC) &_Rmlx_cpp_mlx_lu, 1},
+    {"_Rmlx_cpp_mlx_kron", (DL_FUNC) &_Rmlx_cpp_mlx_kron, 2},
     {"_Rmlx_cpp_mlx_unary", (DL_FUNC) &_Rmlx_cpp_mlx_unary, 2},
     {"_Rmlx_cpp_mlx_logical_not", (DL_FUNC) &_Rmlx_cpp_mlx_logical_not, 1},
     {"_Rmlx_cpp_mlx_binary", (DL_FUNC) &_Rmlx_cpp_mlx_binary, 5},
