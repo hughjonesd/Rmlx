@@ -129,8 +129,7 @@ SEXP cpp_mlx_slice_update(SEXP xp_,
 // [[Rcpp::export]]
 SEXP cpp_mlx_gather(SEXP xp_,
                     List indices_,
-                    IntegerVector axes_,
-                    std::string device_str) {
+                    IntegerVector axes_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array src = wrapper->get();
   std::vector<array> indices;
@@ -141,7 +140,7 @@ SEXP cpp_mlx_gather(SEXP xp_,
   }
 
   std::vector<int> axes(axes_.begin(), axes_.end());
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = wrapper->stream(src.dtype());
   Shape slice_sizes(src.ndim(), 0);
   Shape src_shape = src.shape();
   for (int i = 0; i < src.ndim(); ++i) {
@@ -157,10 +156,10 @@ SEXP cpp_mlx_gather(SEXP xp_,
 SEXP cpp_mlx_scatter(SEXP xp_,
                      List indices_,
                      SEXP updates_xp_,
-                     IntegerVector axes_,
-                     std::string device_str) {
+                     IntegerVector axes_) {
   MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
   MlxArrayWrapper* upd_wrapper = get_mlx_wrapper(updates_xp_);
+  array src = src_wrapper->get();
 
   std::vector<array> indices_vec;
   indices_vec.reserve(indices_.size());
@@ -170,9 +169,9 @@ SEXP cpp_mlx_scatter(SEXP xp_,
   }
 
   std::vector<int> axes_vec(axes_.begin(), axes_.end());
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = src_wrapper->stream(src.dtype());
 
-  array result = scatter(src_wrapper->get(), indices_vec, upd_wrapper->get(), axes_vec, dev);
+  array result = scatter(src, indices_vec, upd_wrapper->get(), axes_vec, dev);
   return make_mlx_xptr(std::move(result));
 }
 

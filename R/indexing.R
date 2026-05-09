@@ -89,7 +89,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
     as_mlx(vals, dtype = "int32", device = mlx_device(x))
   }, normalized, idx_dims)
 
-  ptr <- cpp_mlx_gather(x$ptr, idx_mlx, axes0, mlx_device(x))
+  ptr <- cpp_mlx_gather(x$ptr, idx_mlx, axes0)
   res <- new_mlx(ptr, mlx_device(x))
 
   res_dims <- mlx_shape(res)
@@ -280,6 +280,6 @@ mlx_slice_update <- function(x,
 #' @noRd
 .mlx_scatter_axis <- function(x, indices, updates, axes, device) {
   idx_list <- if (is.list(indices)) indices else list(indices)
-  ptr <- cpp_mlx_scatter(x$ptr, idx_list, updates$ptr, as.integer(axes), device)
+  ptr <- cpp_mlx_scatter(x$ptr, idx_list, updates$ptr, as.integer(axes))
   new_mlx(ptr, device)
 }

@@ -153,12 +153,12 @@ cpp_mlx_slice_update <- function(xp_, update_xp_, start_, stop_, strides_) {
     .Call(`_Rmlx_cpp_mlx_slice_update`, xp_, update_xp_, start_, stop_, strides_)
 }
 
-cpp_mlx_gather <- function(xp_, indices_, axes_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_gather`, xp_, indices_, axes_, device_str)
+cpp_mlx_gather <- function(xp_, indices_, axes_) {
+    .Call(`_Rmlx_cpp_mlx_gather`, xp_, indices_, axes_)
 }
 
-cpp_mlx_scatter <- function(xp_, indices_, updates_xp_, axes_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_scatter`, xp_, indices_, updates_xp_, axes_, device_str)
+cpp_mlx_scatter <- function(xp_, indices_, updates_xp_, axes_) {
+    .Call(`_Rmlx_cpp_mlx_scatter`, xp_, indices_, updates_xp_, axes_)
 }
 
 cpp_mlx_masked_scatter <- function(xp_, mask_xp_, updates_xp_, device_str) {

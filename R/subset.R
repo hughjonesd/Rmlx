@@ -167,7 +167,7 @@ check_matrix_index <- function(idx_mat, shape, assign) {
 gather_for_subset <- function(x, idx_list) {
   ndim <- length(mlx_shape(x))
   axes <- seq_len(ndim) - 1L
-  ptr <- cpp_mlx_gather(x$ptr, idx_list, axes, mlx_device(x))
+  ptr <- cpp_mlx_gather(x$ptr, idx_list, axes)
   res <- new_mlx(ptr, mlx_device(x))
 
   # return to the same rank as x

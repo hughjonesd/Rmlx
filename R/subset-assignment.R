@@ -58,7 +58,7 @@ matrix_assign <- function (x, idx_mat, value) {
   value <- mlx_reshape(value, c(nrow(idx_mat), rep(1L, ndims)))
   axes <- seq_len(ndims) - 1L
 
-  ptr <- cpp_mlx_scatter(x$ptr, coord_list, value$ptr, axes, mlx_device(x))
+  ptr <- cpp_mlx_scatter(x$ptr, coord_list, value$ptr, axes)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -92,7 +92,7 @@ vectors_assign <- function(x, idx_list, value) {
   idx_grid <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = mlx_device(x))
   idx_grid <- lapply(idx_grid, mlx_cast, dtype = "int32")
   axes <- seq_len(ndim) - 1L
-  ptr <- cpp_mlx_scatter(x$ptr, idx_grid, value_mlx$ptr, axes, mlx_device(x))
+  ptr <- cpp_mlx_scatter(x$ptr, idx_grid, value_mlx$ptr, axes)
   new_mlx(ptr, mlx_device(x))
 }
 
