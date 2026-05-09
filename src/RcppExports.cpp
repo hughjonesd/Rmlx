@@ -1307,16 +1307,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_fft
-SEXP cpp_mlx_fft(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes_, bool inverse, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_fft(SEXP xp_SEXP, SEXP axes_SEXP, SEXP inverseSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_fft(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes_, bool inverse, SEXP device_);
+RcppExport SEXP _Rmlx_cpp_mlx_fft(SEXP xp_SEXP, SEXP axes_SEXP, SEXP inverseSEXP, SEXP device_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type axes_(axes_SEXP);
     Rcpp::traits::input_parameter< bool >::type inverse(inverseSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_fft(xp_, axes_, inverse, device_str));
+    Rcpp::traits::input_parameter< SEXP >::type device_(device_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_fft(xp_, axes_, inverse, device_));
     return rcpp_result_gen;
 END_RCPP
 }

@@ -381,8 +381,8 @@ cpp_mlx_cumulative <- function(xp_, op) {
     .Call(`_Rmlx_cpp_mlx_cumulative`, xp_, op)
 }
 
-cpp_mlx_fft <- function(xp_, axes_, inverse, device_str) {
-    .Call(`_Rmlx_cpp_mlx_fft`, xp_, axes_, inverse, device_str)
+cpp_mlx_fft <- function(xp_, axes_, inverse, device_) {
+    .Call(`_Rmlx_cpp_mlx_fft`, xp_, axes_, inverse, device_)
 }
 
 cpp_mlx_cumsum <- function(xp_, axis_, reverse, inclusive) {

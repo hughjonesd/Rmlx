@@ -118,32 +118,33 @@ SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
 SEXP cpp_mlx_fft(SEXP xp_,
                  Rcpp::Nullable<Rcpp::IntegerVector> axes_,
                  bool inverse,
-                 std::string device_str) {
+                 SEXP device_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   array input = wrapper->get();
-  StreamOrDevice target_device = typed_device(input.dtype(), device_str);
-  array input_target = astype(input, input.dtype(), target_device);
+  StreamOrDevice target_device = device_ == R_NilValue
+    ? wrapper->stream(input.dtype())
+    : typed_device(input.dtype(), Rcpp::as<std::string>(device_));
 
   array result = [&]() -> array {
     if (axes_.isNull()) {
 #if MLX_VERSION_NUMERIC >= 31002
       return inverse
-        ? mlx::core::fft::ifftn(input_target, mlx::core::fft::FFTNorm::Backward, target_device)
-        : mlx::core::fft::fftn(input_target, mlx::core::fft::FFTNorm::Backward, target_device);
+        ? mlx::core::fft::ifftn(input, mlx::core::fft::FFTNorm::Backward, target_device)
+        : mlx::core::fft::fftn(input, mlx::core::fft::FFTNorm::Backward, target_device);
 #else
-      return inverse ? mlx::core::fft::ifftn(input_target, target_device)
-                     : mlx::core::fft::fftn(input_target, target_device);
+      return inverse ? mlx::core::fft::ifftn(input, target_device)
+                     : mlx::core::fft::fftn(input, target_device);
 #endif
     }
     std::vector<int> axes = Rcpp::as<std::vector<int>>(axes_.get());
 #if MLX_VERSION_NUMERIC >= 31002
     return inverse
-      ? mlx::core::fft::ifftn(input_target, axes, mlx::core::fft::FFTNorm::Backward, target_device)
-      : mlx::core::fft::fftn(input_target, axes, mlx::core::fft::FFTNorm::Backward, target_device);
+      ? mlx::core::fft::ifftn(input, axes, mlx::core::fft::FFTNorm::Backward, target_device)
+      : mlx::core::fft::fftn(input, axes, mlx::core::fft::FFTNorm::Backward, target_device);
 #else
-    return inverse ? mlx::core::fft::ifftn(input_target, axes, target_device)
-                   : mlx::core::fft::fftn(input_target, axes, target_device);
+    return inverse ? mlx::core::fft::ifftn(input, axes, target_device)
+                   : mlx::core::fft::fftn(input, axes, target_device);
 #endif
   }();
 
