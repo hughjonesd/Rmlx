@@ -90,7 +90,7 @@ mlx_stack <- function(..., axis = 1L) {
     stop("`axis` must be a single insertion position.", call. = FALSE)
   }
   axis0 <- axis_vec
-  ptr <- cpp_mlx_stack(arrays, axis0, device)
+  ptr <- cpp_mlx_stack(arrays, axis0)
   new_mlx(ptr, device)
 }
 
@@ -592,7 +592,8 @@ mlx_contiguous <- function(x, device = NULL) {
   x <- as_mlx(x)
   target <- if (is.null(device)) mlx_device(x) else device
   handle <- resolve_device(target, mlx_device(x))
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_contiguous(x$ptr, dev))
+  x <- mlx_cast(x, device = handle$device)
+  ptr <- cpp_mlx_contiguous(x$ptr)
   new_mlx(ptr, handle$device)
 }
 
@@ -714,7 +715,7 @@ mlx_meshgrid <- function(...,
   arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
 
   indexing <- match.arg(indexing)
-  ptrs <- eval_with_stream(handle, function(dev) cpp_mlx_meshgrid(arrays, sparse, indexing, dev))
+  ptrs <- cpp_mlx_meshgrid(arrays, sparse, indexing)
   lapply(ptrs, function(ptr) new_mlx(ptr, handle$device))
 }
 
@@ -738,8 +739,9 @@ mlx_broadcast_to <- function(x, shape, device = NULL) {
   shape <- validate_shape(shape)
   target <- if (is.null(device)) mlx_device(x) else device
   handle <- resolve_typed_device(mlx_dtype(x), target, mlx_device(x))
+  x <- mlx_cast(x, dtype = mlx_dtype(x), device = handle$device)
 
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_broadcast_to(x$ptr, shape, dev))
+  ptr <- cpp_mlx_broadcast_to(x$ptr, shape)
   new_mlx(ptr, handle$device)
 }
 
@@ -779,7 +781,7 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
   handle <- resolve_typed_device(dtype, target, default_device)
   arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
 
-  ptrs <- eval_with_stream(handle, function(dev) cpp_mlx_broadcast_arrays(arrays, dev))
+  ptrs <- cpp_mlx_broadcast_arrays(arrays)
   lapply(ptrs, function(ptr) new_mlx(ptr, handle$device))
 }
 
