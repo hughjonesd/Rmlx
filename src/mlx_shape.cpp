@@ -356,7 +356,6 @@ SEXP cpp_mlx_pad(SEXP xp_,
                  Rcpp::IntegerMatrix pad_pairs_,
                  double pad_value,
                  std::string dtype_str,
-                 std::string device_str,
                  std::string mode_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
@@ -381,7 +380,7 @@ SEXP cpp_mlx_pad(SEXP xp_,
   }
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = wrapper->stream(dtype);
   array pad_val = array(pad_value, dtype);
 
   array result = pad(arr, pad_width, pad_val, mode_str, dev);
@@ -392,14 +391,12 @@ SEXP cpp_mlx_pad(SEXP xp_,
 SEXP cpp_mlx_split(SEXP xp_,
                    Rcpp::Nullable<int> num_splits_,
                    Rcpp::Nullable<Rcpp::IntegerVector> indices_,
-                   int axis,
-                   std::string dtype_str,
-                   std::string device_str) {
+                   int axis) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
   int ax = normalize_axis(arr, axis);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   std::vector<array> outputs;
 

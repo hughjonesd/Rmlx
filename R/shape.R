@@ -301,7 +301,6 @@ mlx_pad <- function(x,
     pad_matrix,
     as.numeric(value),
     x_dtype,
-    mlx_device(x),
     mode
   )
   new_mlx(ptr, mlx_device(x))
@@ -350,9 +349,7 @@ mlx_split <- function(x, sections, axis = 1L) {
       x$ptr,
       num_splits_ = num,
       indices_ = NULL,
-      axis = axis_idx,
-      dtype_str = x_dtype,
-      device_str = mlx_device(x)
+      axis = axis_idx
     )
   } else {
     indices <- unlist(sections, use.names = FALSE, recursive = FALSE)
@@ -371,9 +368,7 @@ mlx_split <- function(x, sections, axis = 1L) {
       x$ptr,
       num_splits_ = NULL,
       indices_ = indices,
-      axis = axis_idx,
-      dtype_str = x_dtype,
-      device_str = mlx_device(x)
+      axis = axis_idx
     )
   }
 

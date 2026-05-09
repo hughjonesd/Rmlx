@@ -189,13 +189,12 @@ struct AxisSelection {
 // [[Rcpp::export]]
 SEXP cpp_mlx_masked_scatter(SEXP xp_,
                                      SEXP mask_xp_,
-                                     SEXP updates_xp_,
-                                     std::string device_str) {
+                                     SEXP updates_xp_) {
   MlxArrayWrapper* src_wrapper = get_mlx_wrapper(xp_);
   MlxArrayWrapper* mask_wrapper = get_mlx_wrapper(mask_xp_);
   MlxArrayWrapper* updates_wrapper = get_mlx_wrapper(updates_xp_);
 
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = src_wrapper->stream(src_wrapper->get().dtype());
 
   array src = transpose_between_mlx_and_r(src_wrapper->get());
   array mask = transpose_between_mlx_and_r(astype(mask_wrapper->get(), bool_, dev));

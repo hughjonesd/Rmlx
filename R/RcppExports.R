@@ -161,8 +161,8 @@ cpp_mlx_scatter <- function(xp_, indices_, updates_xp_, axes_) {
     .Call(`_Rmlx_cpp_mlx_scatter`, xp_, indices_, updates_xp_, axes_)
 }
 
-cpp_mlx_masked_scatter <- function(xp_, mask_xp_, updates_xp_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_masked_scatter`, xp_, mask_xp_, updates_xp_, device_str)
+cpp_mlx_masked_scatter <- function(xp_, mask_xp_, updates_xp_) {
+    .Call(`_Rmlx_cpp_mlx_masked_scatter`, xp_, mask_xp_, updates_xp_)
 }
 
 cpp_mlx_save <- function(xp_, file) {
@@ -549,12 +549,12 @@ cpp_mlx_broadcast_arrays <- function(args_) {
     .Call(`_Rmlx_cpp_mlx_broadcast_arrays`, args_)
 }
 
-cpp_mlx_pad <- function(xp_, pad_pairs_, pad_value, dtype_str, device_str, mode_str) {
-    .Call(`_Rmlx_cpp_mlx_pad`, xp_, pad_pairs_, pad_value, dtype_str, device_str, mode_str)
+cpp_mlx_pad <- function(xp_, pad_pairs_, pad_value, dtype_str, mode_str) {
+    .Call(`_Rmlx_cpp_mlx_pad`, xp_, pad_pairs_, pad_value, dtype_str, mode_str)
 }
 
-cpp_mlx_split <- function(xp_, num_splits_, indices_, axis, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_split`, xp_, num_splits_, indices_, axis, dtype_str, device_str)
+cpp_mlx_split <- function(xp_, num_splits_, indices_, axis) {
+    .Call(`_Rmlx_cpp_mlx_split`, xp_, num_splits_, indices_, axis)
 }
 
 cpp_mlx_unflatten <- function(a_xp_, axis, shape) {

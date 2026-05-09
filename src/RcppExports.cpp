@@ -524,16 +524,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_masked_scatter
-SEXP cpp_mlx_masked_scatter(SEXP xp_, SEXP mask_xp_, SEXP updates_xp_, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_masked_scatter(SEXP xp_SEXP, SEXP mask_xp_SEXP, SEXP updates_xp_SEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_masked_scatter(SEXP xp_, SEXP mask_xp_, SEXP updates_xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_masked_scatter(SEXP xp_SEXP, SEXP mask_xp_SEXP, SEXP updates_xp_SEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type mask_xp_(mask_xp_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type updates_xp_(updates_xp_SEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_masked_scatter(xp_, mask_xp_, updates_xp_, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_masked_scatter(xp_, mask_xp_, updates_xp_));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1805,8 +1804,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_pad
-SEXP cpp_mlx_pad(SEXP xp_, Rcpp::IntegerMatrix pad_pairs_, double pad_value, std::string dtype_str, std::string device_str, std::string mode_str);
-RcppExport SEXP _Rmlx_cpp_mlx_pad(SEXP xp_SEXP, SEXP pad_pairs_SEXP, SEXP pad_valueSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP, SEXP mode_strSEXP) {
+SEXP cpp_mlx_pad(SEXP xp_, Rcpp::IntegerMatrix pad_pairs_, double pad_value, std::string dtype_str, std::string mode_str);
+RcppExport SEXP _Rmlx_cpp_mlx_pad(SEXP xp_SEXP, SEXP pad_pairs_SEXP, SEXP pad_valueSEXP, SEXP dtype_strSEXP, SEXP mode_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1814,15 +1813,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::IntegerMatrix >::type pad_pairs_(pad_pairs_SEXP);
     Rcpp::traits::input_parameter< double >::type pad_value(pad_valueSEXP);
     Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
     Rcpp::traits::input_parameter< std::string >::type mode_str(mode_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_pad(xp_, pad_pairs_, pad_value, dtype_str, device_str, mode_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_pad(xp_, pad_pairs_, pad_value, dtype_str, mode_str));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_split
-SEXP cpp_mlx_split(SEXP xp_, Rcpp::Nullable<int> num_splits_, Rcpp::Nullable<Rcpp::IntegerVector> indices_, int axis, std::string dtype_str, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_split(SEXP xp_SEXP, SEXP num_splits_SEXP, SEXP indices_SEXP, SEXP axisSEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_split(SEXP xp_, Rcpp::Nullable<int> num_splits_, Rcpp::Nullable<Rcpp::IntegerVector> indices_, int axis);
+RcppExport SEXP _Rmlx_cpp_mlx_split(SEXP xp_SEXP, SEXP num_splits_SEXP, SEXP indices_SEXP, SEXP axisSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1830,9 +1828,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::Nullable<int> >::type num_splits_(num_splits_SEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type indices_(indices_SEXP);
     Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
-    Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_split(xp_, num_splits_, indices_, axis, dtype_str, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_split(xp_, num_splits_, indices_, axis));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2029,7 +2025,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_slice_update", (DL_FUNC) &_Rmlx_cpp_mlx_slice_update, 5},
     {"_Rmlx_cpp_mlx_gather", (DL_FUNC) &_Rmlx_cpp_mlx_gather, 3},
     {"_Rmlx_cpp_mlx_scatter", (DL_FUNC) &_Rmlx_cpp_mlx_scatter, 4},
-    {"_Rmlx_cpp_mlx_masked_scatter", (DL_FUNC) &_Rmlx_cpp_mlx_masked_scatter, 4},
+    {"_Rmlx_cpp_mlx_masked_scatter", (DL_FUNC) &_Rmlx_cpp_mlx_masked_scatter, 3},
     {"_Rmlx_cpp_mlx_save", (DL_FUNC) &_Rmlx_cpp_mlx_save, 2},
     {"_Rmlx_cpp_mlx_load", (DL_FUNC) &_Rmlx_cpp_mlx_load, 2},
     {"_Rmlx_cpp_mlx_save_safetensors", (DL_FUNC) &_Rmlx_cpp_mlx_save_safetensors, 5},
@@ -2126,8 +2122,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_meshgrid", (DL_FUNC) &_Rmlx_cpp_mlx_meshgrid, 3},
     {"_Rmlx_cpp_mlx_broadcast_to", (DL_FUNC) &_Rmlx_cpp_mlx_broadcast_to, 2},
     {"_Rmlx_cpp_mlx_broadcast_arrays", (DL_FUNC) &_Rmlx_cpp_mlx_broadcast_arrays, 1},
-    {"_Rmlx_cpp_mlx_pad", (DL_FUNC) &_Rmlx_cpp_mlx_pad, 6},
-    {"_Rmlx_cpp_mlx_split", (DL_FUNC) &_Rmlx_cpp_mlx_split, 6},
+    {"_Rmlx_cpp_mlx_pad", (DL_FUNC) &_Rmlx_cpp_mlx_pad, 5},
+    {"_Rmlx_cpp_mlx_split", (DL_FUNC) &_Rmlx_cpp_mlx_split, 4},
     {"_Rmlx_cpp_mlx_unflatten", (DL_FUNC) &_Rmlx_cpp_mlx_unflatten, 3},
     {"_Rmlx_cpp_mlx_contiguous", (DL_FUNC) &_Rmlx_cpp_mlx_contiguous, 1},
     {"_Rmlx_cpp_mlx_sort", (DL_FUNC) &_Rmlx_cpp_mlx_sort, 2},
