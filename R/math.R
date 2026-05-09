@@ -89,12 +89,21 @@ Math.mlx <- function(x, ...) {
 #' b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-3))
 #' mlx_isclose(a, b)  # First two TRUE, last FALSE
 mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
-                        device = mlx_default_device()) {
+                        device = NULL) {
   a <- as_mlx(a)
   b <- as_mlx(b)
 
-  ptr <- cpp_mlx_isclose(a$ptr, b$ptr, rtol, atol, equal_nan, device)
-  new_mlx(ptr, device)
+  target <- resolve_common_dtype_device(
+    list(mlx_dtype(a), mlx_dtype(b)),
+    list(mlx_device(a), mlx_device(b))
+  )
+  target_device <- if (is.null(device)) target$device else device
+  handle <- resolve_typed_device(target$dtype, target_device, target$device)
+  a <- mlx_cast(a, dtype = target$dtype, device = handle$device)
+  b <- mlx_cast(b, dtype = target$dtype, device = handle$device)
+
+  ptr <- cpp_mlx_isclose(a$ptr, b$ptr, rtol, atol, equal_nan)
+  new_mlx(ptr, handle$device)
 }
 
 #' Test if all elements of two arrays are close
@@ -125,12 +134,21 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #' b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-6))
 #' mlx_allclose(a, b)  # TRUE
 mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
-                         device = mlx_default_device()) {
+                         device = NULL) {
   a <- as_mlx(a)
   b <- as_mlx(b)
 
-  ptr <- cpp_mlx_allclose(a$ptr, b$ptr, rtol, atol, equal_nan, device)
-  new_mlx(ptr, device)
+  target <- resolve_common_dtype_device(
+    list(mlx_dtype(a), mlx_dtype(b)),
+    list(mlx_device(a), mlx_device(b))
+  )
+  target_device <- if (is.null(device)) target$device else device
+  handle <- resolve_typed_device(target$dtype, target_device, target$device)
+  a <- mlx_cast(a, dtype = target$dtype, device = handle$device)
+  b <- mlx_cast(b, dtype = target$dtype, device = handle$device)
+
+  ptr <- cpp_mlx_allclose(a$ptr, b$ptr, rtol, atol, equal_nan)
+  new_mlx(ptr, handle$device)
 }
 
 #' Complex-valued helpers for mlx arrays

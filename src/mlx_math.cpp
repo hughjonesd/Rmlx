@@ -303,12 +303,11 @@ SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan,
-                     std::string device_str) {
+SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = wrapper1->stream(wrapper1->get().dtype());
 
   array lhs = astype(wrapper1->get(), wrapper1->get().dtype(), target_device);
   array rhs = astype(wrapper2->get(), wrapper2->get().dtype(), target_device);
@@ -319,12 +318,11 @@ SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan,
-                      std::string device_str) {
+SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = wrapper1->stream(wrapper1->get().dtype());
 
   array lhs = astype(wrapper1->get(), wrapper1->get().dtype(), target_device);
   array rhs = astype(wrapper2->get(), wrapper2->get().dtype(), target_device);

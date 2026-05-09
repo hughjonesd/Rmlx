@@ -11,13 +11,13 @@ using namespace mlx::core;
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_,
-                   std::string dtype_str, std::string device_str) {
+                   std::string dtype_str) {
   MlxArrayWrapper* cond_wrapper = get_mlx_wrapper(cond_xp_);
   MlxArrayWrapper* true_wrapper = get_mlx_wrapper(xp_true_);
   MlxArrayWrapper* false_wrapper = get_mlx_wrapper(xp_false_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = true_wrapper->stream(target_dtype);
 
   array cond = astype(cond_wrapper->get(), bool_, target_device);
   array x = astype(true_wrapper->get(), target_dtype, target_device);

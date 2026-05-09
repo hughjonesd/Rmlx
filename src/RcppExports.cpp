@@ -400,8 +400,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_where
-SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_, std::string dtype_str, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_where(SEXP cond_xp_SEXP, SEXP xp_true_SEXP, SEXP xp_false_SEXP, SEXP dtype_strSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_, std::string dtype_str);
+RcppExport SEXP _Rmlx_cpp_mlx_where(SEXP cond_xp_SEXP, SEXP xp_true_SEXP, SEXP xp_false_SEXP, SEXP dtype_strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -409,8 +409,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type xp_true_(xp_true_SEXP);
     Rcpp::traits::input_parameter< SEXP >::type xp_false_(xp_false_SEXP);
     Rcpp::traits::input_parameter< std::string >::type dtype_str(dtype_strSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_where(cond_xp_, xp_true_, xp_false_, dtype_str, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_where(cond_xp_, xp_true_, xp_false_, dtype_str));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -984,8 +983,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_isclose
-SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_isclose(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP rtolSEXP, SEXP atolSEXP, SEXP equal_nanSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan);
+RcppExport SEXP _Rmlx_cpp_mlx_isclose(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP rtolSEXP, SEXP atolSEXP, SEXP equal_nanSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -994,14 +993,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type rtol(rtolSEXP);
     Rcpp::traits::input_parameter< double >::type atol(atolSEXP);
     Rcpp::traits::input_parameter< bool >::type equal_nan(equal_nanSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_isclose(xp1_, xp2_, rtol, atol, equal_nan, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_isclose(xp1_, xp2_, rtol, atol, equal_nan));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_allclose
-SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_allclose(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP rtolSEXP, SEXP atolSEXP, SEXP equal_nanSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan);
+RcppExport SEXP _Rmlx_cpp_mlx_allclose(SEXP xp1_SEXP, SEXP xp2_SEXP, SEXP rtolSEXP, SEXP atolSEXP, SEXP equal_nanSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -1010,8 +1008,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type rtol(rtolSEXP);
     Rcpp::traits::input_parameter< double >::type atol(atolSEXP);
     Rcpp::traits::input_parameter< bool >::type equal_nan(equal_nanSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_allclose(xp1_, xp2_, rtol, atol, equal_nan, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_allclose(xp1_, xp2_, rtol, atol, equal_nan));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2038,7 +2035,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_call_imported", (DL_FUNC) &_Rmlx_cpp_mlx_call_imported, 4},
     {"_Rmlx_cpp_mlx_metal_kernel_create", (DL_FUNC) &_Rmlx_cpp_mlx_metal_kernel_create, 7},
     {"_Rmlx_cpp_mlx_metal_kernel_call", (DL_FUNC) &_Rmlx_cpp_mlx_metal_kernel_call, 10},
-    {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 5},
+    {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 4},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_take_along_axis", (DL_FUNC) &_Rmlx_cpp_mlx_take_along_axis, 3},
     {"_Rmlx_cpp_mlx_put_along_axis", (DL_FUNC) &_Rmlx_cpp_mlx_put_along_axis, 4},
@@ -2084,8 +2081,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_floor_divide", (DL_FUNC) &_Rmlx_cpp_mlx_floor_divide, 2},
     {"_Rmlx_cpp_mlx_remainder", (DL_FUNC) &_Rmlx_cpp_mlx_remainder, 2},
     {"_Rmlx_cpp_mlx_logical", (DL_FUNC) &_Rmlx_cpp_mlx_logical, 3},
-    {"_Rmlx_cpp_mlx_isclose", (DL_FUNC) &_Rmlx_cpp_mlx_isclose, 6},
-    {"_Rmlx_cpp_mlx_allclose", (DL_FUNC) &_Rmlx_cpp_mlx_allclose, 6},
+    {"_Rmlx_cpp_mlx_isclose", (DL_FUNC) &_Rmlx_cpp_mlx_isclose, 5},
+    {"_Rmlx_cpp_mlx_allclose", (DL_FUNC) &_Rmlx_cpp_mlx_allclose, 5},
     {"_Rmlx_cpp_mlx_nan_to_num", (DL_FUNC) &_Rmlx_cpp_mlx_nan_to_num, 4},
     {"_Rmlx_cpp_mlx_conv1d", (DL_FUNC) &_Rmlx_cpp_mlx_conv1d, 7},
     {"_Rmlx_cpp_mlx_conv2d", (DL_FUNC) &_Rmlx_cpp_mlx_conv2d, 7},

@@ -815,6 +815,6 @@ mlx_where <- function(condition, x, y) {
   x <- mlx_cast(x, dtype = result_dtype, device = result_device)
   y <- mlx_cast(y, dtype = result_dtype, device = result_device)
 
-  ptr <- cpp_mlx_where(condition$ptr, x$ptr, y$ptr, result_dtype, result_device)
+  ptr <- cpp_mlx_where(condition$ptr, x$ptr, y$ptr, result_dtype)
   new_mlx(ptr, result_device)
 }
