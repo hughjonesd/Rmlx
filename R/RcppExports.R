@@ -281,32 +281,32 @@ cpp_mlx_logical_not <- function(xp_) {
     .Call(`_Rmlx_cpp_mlx_logical_not`, xp_)
 }
 
-cpp_mlx_binary <- function(xp1_, xp2_, op, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_binary`, xp1_, xp2_, op, dtype_str, device_str)
+cpp_mlx_binary <- function(xp1_, xp2_, op, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_binary`, xp1_, xp2_, op, dtype_str)
 }
 
-cpp_mlx_minimum <- function(xp1_, xp2_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_minimum`, xp1_, xp2_, device_str)
+cpp_mlx_minimum <- function(xp1_, xp2_) {
+    .Call(`_Rmlx_cpp_mlx_minimum`, xp1_, xp2_)
 }
 
-cpp_mlx_maximum <- function(xp1_, xp2_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_maximum`, xp1_, xp2_, device_str)
+cpp_mlx_maximum <- function(xp1_, xp2_) {
+    .Call(`_Rmlx_cpp_mlx_maximum`, xp1_, xp2_)
 }
 
-cpp_mlx_clip <- function(xp_, min_, max_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_clip`, xp_, min_, max_, device_str)
+cpp_mlx_clip <- function(xp_, min_, max_) {
+    .Call(`_Rmlx_cpp_mlx_clip`, xp_, min_, max_)
 }
 
-cpp_mlx_floor_divide <- function(xp1_, xp2_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_floor_divide`, xp1_, xp2_, device_str)
+cpp_mlx_floor_divide <- function(xp1_, xp2_) {
+    .Call(`_Rmlx_cpp_mlx_floor_divide`, xp1_, xp2_)
 }
 
-cpp_mlx_remainder <- function(xp1_, xp2_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_remainder`, xp1_, xp2_, device_str)
+cpp_mlx_remainder <- function(xp1_, xp2_) {
+    .Call(`_Rmlx_cpp_mlx_remainder`, xp1_, xp2_)
 }
 
-cpp_mlx_logical <- function(xp1_, xp2_, op, device_str) {
-    .Call(`_Rmlx_cpp_mlx_logical`, xp1_, xp2_, op, device_str)
+cpp_mlx_logical <- function(xp1_, xp2_, op) {
+    .Call(`_Rmlx_cpp_mlx_logical`, xp1_, xp2_, op)
 }
 
 cpp_mlx_isclose <- function(xp1_, xp2_, rtol, atol, equal_nan, device_str) {
@@ -361,16 +361,16 @@ cpp_mlx_dequantize <- function(w_xp_, scales_xp_, biases_xp_, group_size, bits, 
     .Call(`_Rmlx_cpp_mlx_dequantize`, w_xp_, scales_xp_, biases_xp_, group_size, bits, mode, device_str)
 }
 
-cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str, device_str)
+cpp_mlx_matmul <- function(xp1_, xp2_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_matmul`, xp1_, xp2_, dtype_str)
 }
 
-cpp_mlx_addmm <- function(input_xp_, mat1_xp_, mat2_xp_, alpha, beta, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_addmm`, input_xp_, mat1_xp_, mat2_xp_, alpha, beta, dtype_str, device_str)
+cpp_mlx_addmm <- function(input_xp_, mat1_xp_, mat2_xp_, alpha, beta, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_addmm`, input_xp_, mat1_xp_, mat2_xp_, alpha, beta, dtype_str)
 }
 
-cpp_mlx_hadamard_transform <- function(xp_, scale_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_hadamard_transform`, xp_, scale_, device_str)
+cpp_mlx_hadamard_transform <- function(xp_, scale_) {
+    .Call(`_Rmlx_cpp_mlx_hadamard_transform`, xp_, scale_)
 }
 
 cpp_mlx_cast <- function(xp_, dtype_str, device_str) {

@@ -98,7 +98,10 @@ Ops.mlx <- function(e1, e2 = NULL) {
   result_dtype <- target$dtype
   result_device <- target$device
 
-  ptr <- cpp_mlx_matmul(x$ptr, y$ptr, result_dtype, result_device)
+  x <- mlx_cast(x, dtype = result_dtype, device = result_device)
+  y <- mlx_cast(y, dtype = result_dtype, device = result_device)
+
+  ptr <- cpp_mlx_matmul(x$ptr, y$ptr, result_dtype)
   new_mlx(ptr, result_device)
 }
 
@@ -174,7 +177,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   mat1 <- mlx_cast(mat1, dtype = result_dtype, device = result_device)
   mat2 <- mlx_cast(mat2, dtype = result_dtype, device = result_device)
 
-  ptr <- cpp_mlx_addmm(input$ptr, mat1$ptr, mat2$ptr, alpha, beta, result_dtype, result_device)
+  ptr <- cpp_mlx_addmm(input$ptr, mat1$ptr, mat2$ptr, alpha, beta, result_dtype)
   new_mlx(ptr, result_device)
 }
 
@@ -213,7 +216,10 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
   result_dtype <- if (is_comparison) "bool" else input_dtype
 
-  ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype, result_device)
+  x <- mlx_cast(x, dtype = input_dtype, device = result_device)
+  y <- mlx_cast(y, dtype = input_dtype, device = result_device)
+
+  ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype)
   new_mlx(ptr, result_device)
 }
 
@@ -229,7 +235,10 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
     list(mlx_device(x), mlx_device(y))
   )$device
 
-  ptr <- cpp_mlx_logical(x$ptr, y$ptr, op, result_device)
+  x <- mlx_cast(x, device = result_device)
+  y <- mlx_cast(y, device = result_device)
+
+  ptr <- cpp_mlx_logical(x$ptr, y$ptr, op)
   new_mlx(ptr, result_device)
 }
 
@@ -290,7 +299,7 @@ mlx_maximum <- function(x, y) {
 #' Internal wrapper for binary operations
 #'
 #' @param x,y mlx arrays or coercible to mlx
-#' @param cpp_fn C++ function to call (takes x$ptr, y$ptr, device)
+#' @param cpp_fn C++ function to call.
 #' @return mlx array.
 #' @noRd
 .mlx_binary_result <- function(x, y, cpp_fn) {
@@ -309,7 +318,10 @@ mlx_maximum <- function(x, y) {
     result_dtype <- "float32"
   }
 
-  ptr <- cpp_fn(x$ptr, y$ptr, result_device)
+  x <- mlx_cast(x, dtype = result_dtype, device = result_device)
+  y <- mlx_cast(y, dtype = result_dtype, device = result_device)
+
+  ptr <- cpp_fn(x$ptr, y$ptr)
   new_mlx(ptr, result_device)
 }
 
@@ -335,7 +347,7 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
     stop("'max' must be NULL or a scalar.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_clip(x$ptr, min, max, mlx_device(x))
+  ptr <- cpp_mlx_clip(x$ptr, min, max)
   x_dtype <- mlx_dtype(x)
   new_mlx(ptr, mlx_device(x))
 }

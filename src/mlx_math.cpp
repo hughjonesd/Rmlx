@@ -110,12 +110,12 @@ SEXP cpp_mlx_logical_not(SEXP xp_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
-                    std::string dtype_str, std::string device_str) {
+                    std::string dtype_str) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
@@ -155,7 +155,7 @@ SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_, std::string device_str) {
+SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
@@ -171,7 +171,7 @@ SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_, std::string device_str) {
   } else if (rhs.dtype() == float32 || target_dtype == float32) {
     target_dtype = float32;
   }
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
@@ -181,7 +181,7 @@ SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_, std::string device_str) {
+SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
@@ -197,7 +197,7 @@ SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_, std::string device_str) {
   } else if (rhs.dtype() == float32 || target_dtype == float32) {
     target_dtype = float32;
   }
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
@@ -207,12 +207,12 @@ SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_, std::string device_str) {
+SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
   Dtype original_dtype = arr.dtype();
-  StreamOrDevice target_device = typed_device(original_dtype, device_str);
+  StreamOrDevice target_device = wrapper->stream(original_dtype);
 
   if (!(original_dtype == float32 || original_dtype == float64)) {
     original_dtype = float32;
@@ -241,7 +241,7 @@ SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_, std::string device_str) {
+SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
@@ -249,7 +249,7 @@ SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_, std::string device_str) {
   array rhs = wrapper2->get();
 
   Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
@@ -259,7 +259,7 @@ SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_remainder(SEXP xp1_, SEXP xp2_, std::string device_str) {
+SEXP cpp_mlx_remainder(SEXP xp1_, SEXP xp2_) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
@@ -267,7 +267,7 @@ SEXP cpp_mlx_remainder(SEXP xp1_, SEXP xp2_, std::string device_str) {
   array rhs = wrapper2->get();
 
   Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
@@ -277,11 +277,11 @@ SEXP cpp_mlx_remainder(SEXP xp1_, SEXP xp2_, std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op, std::string device_str) {
+SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = wrapper1->stream(bool_);
 
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();

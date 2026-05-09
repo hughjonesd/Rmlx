@@ -26,7 +26,7 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
     scale <- as.numeric(scale)
   }
 
-  ptr <- cpp_mlx_hadamard_transform(x$ptr, scale, mlx_device(x))
+  ptr <- cpp_mlx_hadamard_transform(x$ptr, scale)
   new_mlx(ptr, mlx_device(x))
 }
 

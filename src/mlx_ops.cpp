@@ -11,12 +11,12 @@ using namespace mlx::core;
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
-                    std::string dtype_str, std::string device_str) {
+                    std::string dtype_str) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
@@ -35,14 +35,13 @@ SEXP cpp_mlx_addmm(SEXP input_xp_,
                    SEXP mat2_xp_,
                    double alpha,
                    double beta,
-                   std::string dtype_str,
-                   std::string device_str) {
+                   std::string dtype_str) {
   MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
   MlxArrayWrapper* mat1_wrapper = get_mlx_wrapper(mat1_xp_);
   MlxArrayWrapper* mat2_wrapper = get_mlx_wrapper(mat2_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = typed_device(target_dtype, device_str);
+  StreamOrDevice target_device = input_wrapper->stream(target_dtype);
 
   array input_arr = astype(input_wrapper->get(), target_dtype, target_device);
   array mat1_arr = astype(mat1_wrapper->get(), target_dtype, target_device);
@@ -61,12 +60,11 @@ SEXP cpp_mlx_addmm(SEXP input_xp_,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_hadamard_transform(SEXP xp_,
-                                Rcpp::Nullable<double> scale_,
-                                std::string device_str) {
+                                Rcpp::Nullable<double> scale_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = wrapper->stream(arr.dtype());
   arr = astype(arr, arr.dtype(), target_device);
 
   std::optional<float> scale = std::nullopt;
