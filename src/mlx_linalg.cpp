@@ -296,14 +296,13 @@ SEXP cpp_mlx_diagonal(SEXP a_xp_, int offset, int axis1, int axis2, std::string 
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_diag(SEXP a_xp_, int k, std::string device_str) {
+SEXP cpp_mlx_diag(SEXP a_xp_, int k) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
   array arr = a_wrapper->get();
-  StreamOrDevice target_device = typed_device(arr.dtype(), device_str);
+  StreamOrDevice target_device = a_wrapper->stream(arr.dtype());
 
-  array a_target = astype(arr, arr.dtype(), target_device);
-  array result = diag(a_target, k, target_device);
+  array result = diag(arr, k, target_device);
   return make_mlx_xptr(std::move(result));
 }
 

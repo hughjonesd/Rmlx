@@ -807,15 +807,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_diag
-SEXP cpp_mlx_diag(SEXP a_xp_, int k, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_diag(SEXP a_xp_SEXP, SEXP kSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_diag(SEXP a_xp_, int k);
+RcppExport SEXP _Rmlx_cpp_mlx_diag(SEXP a_xp_SEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type a_xp_(a_xp_SEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_diag(a_xp_, k, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_diag(a_xp_, k));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -1359,28 +1358,26 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_tril
-SEXP cpp_mlx_tril(SEXP xp_, int k, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_tril(SEXP xp_SEXP, SEXP kSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_tril(SEXP xp_, int k);
+RcppExport SEXP _Rmlx_cpp_mlx_tril(SEXP xp_SEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_tril(xp_, k, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_tril(xp_, k));
     return rcpp_result_gen;
 END_RCPP
 }
 // cpp_mlx_triu
-SEXP cpp_mlx_triu(SEXP xp_, int k, std::string device_str);
-RcppExport SEXP _Rmlx_cpp_mlx_triu(SEXP xp_SEXP, SEXP kSEXP, SEXP device_strSEXP) {
+SEXP cpp_mlx_triu(SEXP xp_, int k);
+RcppExport SEXP _Rmlx_cpp_mlx_triu(SEXP xp_SEXP, SEXP kSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
     Rcpp::traits::input_parameter< int >::type k(kSEXP);
-    Rcpp::traits::input_parameter< std::string >::type device_str(device_strSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_triu(xp_, k, device_str));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_triu(xp_, k));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2104,7 +2101,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_cross", (DL_FUNC) &_Rmlx_cpp_mlx_cross, 4},
     {"_Rmlx_cpp_mlx_trace", (DL_FUNC) &_Rmlx_cpp_mlx_trace, 5},
     {"_Rmlx_cpp_mlx_diagonal", (DL_FUNC) &_Rmlx_cpp_mlx_diagonal, 5},
-    {"_Rmlx_cpp_mlx_diag", (DL_FUNC) &_Rmlx_cpp_mlx_diag, 3},
+    {"_Rmlx_cpp_mlx_diag", (DL_FUNC) &_Rmlx_cpp_mlx_diag, 2},
     {"_Rmlx_cpp_mlx_outer", (DL_FUNC) &_Rmlx_cpp_mlx_outer, 3},
     {"_Rmlx_cpp_mlx_inv", (DL_FUNC) &_Rmlx_cpp_mlx_inv, 2},
     {"_Rmlx_cpp_mlx_tri_inv", (DL_FUNC) &_Rmlx_cpp_mlx_tri_inv, 3},
@@ -2142,8 +2139,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_cumsum", (DL_FUNC) &_Rmlx_cpp_mlx_cumsum, 4},
     {"_Rmlx_cpp_mlx_cumprod", (DL_FUNC) &_Rmlx_cpp_mlx_cumprod, 4},
     {"_Rmlx_cpp_mlx_synchronize", (DL_FUNC) &_Rmlx_cpp_mlx_synchronize, 1},
-    {"_Rmlx_cpp_mlx_tril", (DL_FUNC) &_Rmlx_cpp_mlx_tril, 3},
-    {"_Rmlx_cpp_mlx_triu", (DL_FUNC) &_Rmlx_cpp_mlx_triu, 3},
+    {"_Rmlx_cpp_mlx_tril", (DL_FUNC) &_Rmlx_cpp_mlx_tril, 2},
+    {"_Rmlx_cpp_mlx_triu", (DL_FUNC) &_Rmlx_cpp_mlx_triu, 2},
     {"_Rmlx_cpp_mlx_random_key", (DL_FUNC) &_Rmlx_cpp_mlx_random_key, 1},
     {"_Rmlx_cpp_mlx_random_split", (DL_FUNC) &_Rmlx_cpp_mlx_random_split, 2},
     {"_Rmlx_cpp_mlx_random_bits", (DL_FUNC) &_Rmlx_cpp_mlx_random_bits, 4},

@@ -435,7 +435,7 @@ mlx_tril <- function(x, k = 0L) {
     stop("k must be a single integer.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_tril(x$ptr, k, mlx_device(x))
+  ptr <- cpp_mlx_tril(x$ptr, k)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -449,7 +449,7 @@ mlx_triu <- function(x, k = 0L) {
     stop("k must be a single integer.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_triu(x$ptr, k, mlx_device(x))
+  ptr <- cpp_mlx_triu(x$ptr, k)
   new_mlx(ptr, mlx_device(x))
 }
 
@@ -485,7 +485,7 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
     k <- as.integer(nrow)
   }
 
-  ptr <- cpp_mlx_diag(x$ptr, k, mlx_device(x))
+  ptr <- cpp_mlx_diag(x$ptr, k)
   new_mlx(ptr, mlx_device(x))
 }
 

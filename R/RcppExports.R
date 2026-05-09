@@ -245,8 +245,8 @@ cpp_mlx_diagonal <- function(a_xp_, offset, axis1, axis2, device_str) {
     .Call(`_Rmlx_cpp_mlx_diagonal`, a_xp_, offset, axis1, axis2, device_str)
 }
 
-cpp_mlx_diag <- function(a_xp_, k, device_str) {
-    .Call(`_Rmlx_cpp_mlx_diag`, a_xp_, k, device_str)
+cpp_mlx_diag <- function(a_xp_, k) {
+    .Call(`_Rmlx_cpp_mlx_diag`, a_xp_, k)
 }
 
 cpp_mlx_outer <- function(a_xp_, b_xp_, device_str) {
@@ -397,12 +397,12 @@ cpp_mlx_synchronize <- function(device_str) {
     invisible(.Call(`_Rmlx_cpp_mlx_synchronize`, device_str))
 }
 
-cpp_mlx_tril <- function(xp_, k, device_str) {
-    .Call(`_Rmlx_cpp_mlx_tril`, xp_, k, device_str)
+cpp_mlx_tril <- function(xp_, k) {
+    .Call(`_Rmlx_cpp_mlx_tril`, xp_, k)
 }
 
-cpp_mlx_triu <- function(xp_, k, device_str) {
-    .Call(`_Rmlx_cpp_mlx_triu`, xp_, k, device_str)
+cpp_mlx_triu <- function(xp_, k) {
+    .Call(`_Rmlx_cpp_mlx_triu`, xp_, k)
 }
 
 cpp_mlx_random_key <- function(seed) {
