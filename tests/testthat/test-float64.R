@@ -94,9 +94,7 @@ test_that("float64 cannot be created or moved to GPU", {
 
 test_that("default GPU does not silently create float64 on CPU", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device), add = TRUE)
-  mlx_default_device("gpu")
+  local_default_device("gpu")
 
   expect_error(
     as_mlx(1:3, dtype = "float64"),

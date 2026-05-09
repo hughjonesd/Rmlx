@@ -118,7 +118,6 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
 
     ptr <- eval_with_stream(handle, function(dev) {
       target_dtype <- if (need_dtype) dtype_val else mlx_dtype(x)
-      validate_float64_device(target_dtype, handle$device)
       cpp_mlx_cast(x$ptr, target_dtype, handle$device)
     })
     return(new_mlx(ptr, handle$device))

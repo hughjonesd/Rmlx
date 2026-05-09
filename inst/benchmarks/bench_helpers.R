@@ -61,7 +61,7 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
 
   make_payload <- function(base_data) {
     as_cpu_mlx <- function(x) {
-      with_default_device("cpu", as_mlx(x, dtype = "float32"))
+      as_mlx(x, dtype = "float32", device = "cpu")
     }
 
     mlx_data <- list(

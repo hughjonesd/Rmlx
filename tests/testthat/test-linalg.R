@@ -67,10 +67,7 @@ test_that("solve works when A is_mlx and b is R matrix", {
 
 test_that("solve respects gpu device and lets MLX report unsupported execution", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
-
-  mlx_default_device("gpu")
+  local_default_device("gpu")
 
   set.seed(987)
   A <- matrix(rnorm(9), 3, 3)
@@ -137,10 +134,7 @@ test_that("chol.mlx reconstruction works", {
 
 test_that("chol.mlx respects gpu device and lets MLX report unsupported execution", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
-
-  mlx_default_device("gpu")
+  local_default_device("gpu")
 
   set.seed(456)
   A <- matrix(rnorm(9), 3, 3)
@@ -156,9 +150,7 @@ test_that("chol.mlx respects gpu device and lets MLX report unsupported executio
 
 test_that("CPU-only linalg helpers let MLX report unsupported gpu execution", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
-  mlx_default_device("gpu")
+  local_default_device("gpu")
 
   mat <- as_mlx(matrix(c(4, 1, 2, 3), 2, 2), dtype = "float32", device = "gpu")
   spd <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2), dtype = "float32", device = "gpu")
@@ -308,10 +300,7 @@ test_that("svd.mlx U and V are orthogonal", {
 
 test_that("svd.mlx respects gpu device and lets MLX report unsupported execution", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
-
-  mlx_default_device("gpu")
+  local_default_device("gpu")
 
   set.seed(808)
   A <- matrix(rnorm(12), 3, 4)

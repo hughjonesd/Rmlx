@@ -34,10 +34,10 @@ solve.mlx <- function(a, b = NULL, ...) {
         list(target_dtype, mlx_dtype(b)),
         list(target_device, mlx_device(b))
       )
+      a <- mlx_cast(a, dtype = target$dtype, device = target$device)
+      b <- mlx_cast(b, dtype = target$dtype, device = target$device)
       target_dtype <- target$dtype
       target_device <- target$device
-      a <- mlx_cast(a, dtype = target_dtype, device = target_device)
-      b <- mlx_cast(b, dtype = target_dtype, device = target_device)
     }
 
     # Solve Ax = b
@@ -89,14 +89,12 @@ mlx_kron <- function(a, b) {
     list(mlx_dtype(a), mlx_dtype(b)),
     list(mlx_device(a), mlx_device(b))
   )
-  result_dtype <- target$dtype
-  result_device <- target$device
 
-  a <- mlx_cast(a, dtype = result_dtype, device = result_device)
-  b <- mlx_cast(b, dtype = result_dtype, device = result_device)
+  a <- mlx_cast(a, dtype = target$dtype, device = target$device)
+  b <- mlx_cast(b, dtype = target$dtype, device = target$device)
 
   ptr <- cpp_mlx_kron(a$ptr, b$ptr)
-  new_mlx(ptr, result_device)
+  new_mlx(ptr, target$device)
 }
 
 setOldClass("mlx")

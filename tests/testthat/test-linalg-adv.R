@@ -52,9 +52,7 @@ test_that("mlx_eigh and mlx_eigvalsh agree with symmetric eigenvalues", {
 
 test_that("eigen helpers let MLX report unsupported gpu execution", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
-  mlx_default_device("gpu")
+  local_default_device("gpu")
 
   mat <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2), dtype = "float32", device = "gpu")
 
@@ -91,9 +89,7 @@ test_that("mlx_solve_triangular matches base solve", {
 
 test_that("mlx_solve_triangular lets MLX report unsupported gpu execution", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
-  mlx_default_device("gpu")
+  local_default_device("gpu")
 
   lower <- as_mlx(
     matrix(c(2, 0, 1, 3), 2, 2, byrow = TRUE),
@@ -128,9 +124,7 @@ test_that("mlx_cross matches manual cross product", {
 
 test_that("mlx_cross runs on gpu", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
-  mlx_default_device("gpu")
+  local_default_device("gpu")
 
   u <- as_mlx(matrix(c(1, 0, 0), 1, 3), dtype = "float32", device = "gpu")
   v <- as_mlx(matrix(c(0, 1, 0), 1, 3), dtype = "float32", device = "gpu")
