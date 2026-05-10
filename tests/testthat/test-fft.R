@@ -50,3 +50,22 @@ test_that("mlx_fftn supports custom axes", {
   expect_equal(Re(inv_scaled), arr, tolerance = 1e-6)
   expect_lt(max(abs(Im(inv_scaled))), 1e-6)
 })
+
+test_that("mlx_fft respects the operand device when device is NULL", {
+  skip_if_not(mlx_has_gpu())
+
+  local_default_device("cpu")
+  x <- as_mlx(1:4, dtype = "float64", device = "gpu")
+
+  expect_error(mlx_fft(x), "float64|not supported|unsupported")
+})
+
+test_that("mlx_fft explicit device override does not retag the operand", {
+  skip_if_not(mlx_has_gpu())
+
+  x <- as_mlx(1:4, dtype = "float32", device = "cpu")
+  res <- mlx_fft(x, device = "gpu")
+
+  expect_equal(mlx_device(x), "cpu")
+  expect_equal(mlx_device(res), "gpu")
+})

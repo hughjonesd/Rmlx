@@ -1,0 +1,320 @@
+name description documented exported
+[.mlx "Subset MLX array" TRUE FALSE
+[<-.mlx NA TRUE FALSE
+%*%.mlx "Matrix multiplication for MLX arrays" TRUE FALSE
+%||% NA NA FALSE
+abind "Bind mlx arrays along an axis" TRUE TRUE
+all.equal.mlx "Test if two MLX arrays are (nearly) equal" TRUE FALSE
+aperm.mlx NA TRUE FALSE
+as_mlx "Create MLX array from R object" TRUE TRUE
+as_r "Convert MLX array to base R objects" TRUE TRUE
+as.array.mlx "Convert MLX array to R array" TRUE FALSE
+as.double.mlx NA TRUE FALSE
+as.integer.mlx NA TRUE FALSE
+as.logical.mlx NA TRUE FALSE
+as.matrix.mlx "Convert MLX array to R matrix" TRUE FALSE
+as.numeric.mlx NA TRUE FALSE
+as.vector.mlx "Convert MLX array to R vector" TRUE FALSE
+asplit "Split mlx arrays along a margin" TRUE TRUE
+asplit.default NA TRUE FALSE
+asplit.mlx NA TRUE FALSE
+backsolve NA TRUE TRUE
+backsolve.default NA TRUE FALSE
+backsolve.mlx NA TRUE FALSE
+bind_along_axis NA NA FALSE
+cbind.mlx "Column-bind mlx arrays" TRUE FALSE
+check_matrix_index NA NA FALSE
+check_value_fits NA NA FALSE
+chol.mlx "Cholesky decomposition for mlx arrays" TRUE FALSE
+chol2inv "Inverse from Cholesky decomposition" TRUE TRUE
+chol2inv.default NA TRUE FALSE
+chol2inv.mlx NA TRUE FALSE
+coerce_binary_operands "Match R operands to mlx operand dtype and device" TRUE FALSE
+coerce_payload "Coerce R payload into the storage format expected by MLX" TRUE FALSE
+col NA TRUE TRUE
+col.default NA TRUE FALSE
+col.mlx NA TRUE FALSE
+collect_indices "Evaluate and align index expressions with dimension count" TRUE FALSE
+colMeans "Column means for mlx arrays" TRUE TRUE
+colMeans.default NA TRUE FALSE
+colMeans.mlx NA TRUE FALSE
+colSums "Column sums for mlx arrays" TRUE TRUE
+colSums.default NA TRUE FALSE
+colSums.mlx NA TRUE FALSE
+common_device "Select common device from two arrays" TRUE FALSE
+Conj.mlx NA TRUE FALSE
+crossprod.mlx "Cross product" TRUE FALSE
+diag "Diagonal matrix extraction and construction" TRUE TRUE
+diag.default NA TRUE FALSE
+diag.mlx NA TRUE FALSE
+dim.mlx "Get dimensions of MLX array" TRUE FALSE
+dim<-.mlx "Set dimensions of MLX array" TRUE FALSE
+drop "Drop singleton dimensions" TRUE TRUE
+drop.default NA TRUE FALSE
+drop.mlx NA TRUE FALSE
+duplicated_rows "Check for duplicated rows in an mlx matrix" TRUE FALSE
+duplicated_rows_lex "Check for duplicated rows" TRUE FALSE
+ensure_extension NA NA FALSE
+ensure_parent_dir NA NA FALSE
+eval_with_stream NA NA FALSE
+fft "Fast Fourier Transform" TRUE TRUE
+fft.default NA TRUE FALSE
+fft.mlx NA TRUE FALSE
+format.mlx_stream "Format method for mlx_stream" TRUE FALSE
+gather_for_subset NA NA FALSE
+Im.mlx NA TRUE FALSE
+is_matrix_index NA NA FALSE
+is_mlx "Test if object is an MLX array" TRUE TRUE
+is_mlx_stream "Wrap a raw MLX pointer into an mlx object" TRUE FALSE
+is.finite.mlx NA TRUE FALSE
+is.infinite.mlx NA TRUE FALSE
+is.na.mlx NA TRUE FALSE
+is.nan.mlx NA TRUE FALSE
+kronecker "Kronecker product dispatcher" TRUE TRUE
+kronecker.default NA TRUE TRUE
+kronecker.mlx "Kronecker method for mlx objects (S3 dispatch)" TRUE TRUE
+length.mlx "Get length of MLX array" TRUE FALSE
+lex_sort "Lexicographically sort rows of x" TRUE FALSE
+local_default_device "Set the default MLX device for the current scope" TRUE TRUE
+Math.mlx "Math operations for MLX arrays" TRUE FALSE
+matrix_assign NA NA FALSE
+matrix_subset NA NA FALSE
+mean.mlx "Mean of MLX array elements" TRUE FALSE
+mlx_addmm "Fused matrix multiply and add for MLX arrays" TRUE TRUE
+mlx_all NA TRUE TRUE
+mlx_allclose "Test if all elements of two arrays are close" TRUE TRUE
+mlx_any NA TRUE TRUE
+mlx_arange "Numerical ranges on MLX devices" TRUE TRUE
+mlx_argmax "Argmax and argmin on mlx arrays" TRUE TRUE
+mlx_argmin NA TRUE TRUE
+mlx_argpartition NA TRUE TRUE
+mlx_argsort NA TRUE TRUE
+mlx_array "Construct an MLX array from R data" TRUE TRUE
+mlx_batch_norm "Batch normalization" TRUE TRUE
+mlx_best_device "Get best available device" TRUE TRUE
+mlx_binary_cross_entropy "Binary cross-entropy loss" TRUE TRUE
+mlx_broadcast_arrays "Broadcast multiple arrays to a shared shape" TRUE TRUE
+mlx_broadcast_to "Broadcast an array to a new shape" TRUE TRUE
+mlx_cast "Cast an mlx array" TRUE TRUE
+mlx_cholesky_inv "Compute matrix inverse via Cholesky decomposition" TRUE TRUE
+mlx_clip "Clip mlx array values into a range" TRUE TRUE
+mlx_compile "Compile an MLX Function for Optimized Execution" TRUE TRUE
+mlx_conjugate NA TRUE TRUE
+mlx_contiguous "Ensure contiguous memory layout" TRUE TRUE
+mlx_conv_transpose1d "1D Transposed Convolution" TRUE TRUE
+mlx_conv_transpose2d "2D Transposed Convolution" TRUE TRUE
+mlx_conv_transpose3d "3D Transposed Convolution" TRUE TRUE
+mlx_conv1d "1D Convolution" TRUE TRUE
+mlx_conv2d "2D Convolution" TRUE TRUE
+mlx_conv3d "3D Convolution" TRUE TRUE
+mlx_coordinate_descent "Coordinate Descent with L1 Regularization" TRUE TRUE
+mlx_cross "Vector cross product with mlx arrays" TRUE TRUE
+mlx_cross_entropy "Cross-entropy loss" TRUE TRUE
+mlx_cumprod NA TRUE TRUE
+mlx_cumsum "Cumulative sum and product" TRUE TRUE
+mlx_default_device "Get or set default MLX device" TRUE TRUE
+mlx_default_stream NA TRUE TRUE
+mlx_degrees "Convert between radians and degrees" TRUE TRUE
+mlx_dequantize "Dequantize a Matrix" TRUE TRUE
+mlx_device "Get device associated with an MLX object" TRUE TRUE
+mlx_dexp "Exponential distribution functions" TRUE TRUE
+mlx_diagonal "Extract diagonal or construct diagonal matrix for mlx arrays" TRUE TRUE
+mlx_disable_compile "Control Global Compilation Behavior" TRUE TRUE
+mlx_dlnorm "Lognormal distribution functions" TRUE TRUE
+mlx_dlogis "Logistic distribution functions" TRUE TRUE
+mlx_dnorm "Normal distribution functions" TRUE TRUE
+mlx_dropout "Dropout layer" TRUE TRUE
+mlx_dtype "Get the data type of an MLX array" TRUE TRUE
+mlx_dunif "Uniform distribution functions" TRUE TRUE
+mlx_eig "Eigen decomposition for mlx arrays" TRUE TRUE
+mlx_eigh "Eigen decomposition of Hermitian mlx arrays" TRUE TRUE
+mlx_eigvals "Eigenvalues of mlx arrays" TRUE TRUE
+mlx_eigvalsh "Eigenvalues of Hermitian mlx arrays" TRUE TRUE
+mlx_embedding "Embedding layer" TRUE TRUE
+mlx_enable_compile NA TRUE TRUE
+mlx_erf "Error function and inverse error function" TRUE TRUE
+mlx_erfinv NA TRUE TRUE
+mlx_eval "Force evaluation of an MLX operations" TRUE TRUE
+mlx_expand_dims "Insert singleton dimensions" TRUE TRUE
+mlx_eye "Identity-like matrices on MLX devices" TRUE TRUE
+mlx_fft "Fast Fourier transforms for MLX arrays" TRUE TRUE
+mlx_fft2 NA TRUE TRUE
+mlx_fftn NA TRUE TRUE
+mlx_flatten "Flatten axes of an mlx array" TRUE TRUE
+mlx_forward "Forward pass utility" TRUE TRUE
+mlx_full "Fill an mlx array with a constant value" TRUE TRUE
+mlx_gather "Gather elements from an mlx array" TRUE TRUE
+mlx_gather_qmm "Gather-based Quantized Matrix Multiplication" TRUE TRUE
+mlx_gelu "GELU activation" TRUE TRUE
+mlx_grad "Automatic differentiation for MLX functions" TRUE TRUE
+mlx_hadamard_transform "Hadamard transform for MLX arrays" TRUE TRUE
+mlx_has_gpu "Check if GPU backend is available" TRUE TRUE
+mlx_identity "Identity matrices on MLX devices" TRUE TRUE
+mlx_imag NA TRUE TRUE
+mlx_import_function "Import an exported MLX function" TRUE TRUE
+mlx_inv "Compute matrix inverse" TRUE TRUE
+mlx_isclose "Element-wise approximate equality" TRUE TRUE
+mlx_isfinite NA TRUE TRUE
+mlx_isinf NA TRUE TRUE
+mlx_isnan NA TRUE TRUE
+mlx_isneginf NA TRUE TRUE
+mlx_isposinf "Detect signed infinities in mlx arrays" TRUE TRUE
+mlx_key "Construct MLX random number generator keys" TRUE TRUE
+mlx_key_bits "Generate raw random bits on MLX arrays" TRUE TRUE
+mlx_key_split NA TRUE TRUE
+mlx_kron "Kronecker product for mlx arrays" TRUE TRUE
+mlx_l1_loss "L1 loss (Mean Absolute Error)" TRUE TRUE
+mlx_layer_norm "Layer normalization" TRUE TRUE
+mlx_leaky_relu "Leaky ReLU activation" TRUE TRUE
+mlx_linear "Create a learnable linear transformation" TRUE TRUE
+mlx_linspace "Evenly spaced ranges on MLX devices" TRUE TRUE
+mlx_load "Load an MLX array from disk" TRUE TRUE
+mlx_load_gguf "Load MLX tensors from the GGUF format" TRUE TRUE
+mlx_load_safetensors "Load MLX arrays from the safetensors format" TRUE TRUE
+mlx_logcumsumexp "Log cumulative sum exponential for mlx arrays" TRUE TRUE
+mlx_logsumexp "Log-sum-exp reduction for mlx arrays" TRUE TRUE
+mlx_lu "LU factorization" TRUE TRUE
+mlx_matrix "Construct MLX matrices efficiently" TRUE TRUE
+mlx_maximum "Elementwise maximum of two mlx arrays" TRUE TRUE
+mlx_mean NA TRUE TRUE
+mlx_meshgrid "Construct coordinate arrays from input vectors" TRUE TRUE
+mlx_metal_kernel "Create a JIT-compiled custom Metal kernel" TRUE TRUE
+mlx_minimum "Elementwise minimum of two mlx arrays" TRUE TRUE
+mlx_module_forward NA NA FALSE
+mlx_module_parameters NA NA FALSE
+mlx_module_set_training NA NA FALSE
+mlx_moveaxis "Reorder mlx array axes" TRUE TRUE
+mlx_mse_loss "Mean squared error loss" TRUE TRUE
+mlx_nan_to_num "Replace NaN and infinite values with finite numbers" TRUE TRUE
+mlx_new_stream "MLX streams for asynchronous execution" TRUE TRUE
+mlx_norm "Matrix and vector norms for mlx arrays" TRUE TRUE
+mlx_ones "Create arrays of ones on MLX devices" TRUE TRUE
+mlx_ones_like "Ones shaped like an existing mlx array" TRUE TRUE
+mlx_optimizer_sgd "Stochastic gradient descent optimizer" TRUE TRUE
+mlx_pad "Pad mlx arrays" TRUE TRUE
+mlx_param "Wrap an environment entry as a learnable parameter" TRUE FALSE
+mlx_param_set_values "Assign arrays back to parameters" TRUE TRUE
+mlx_param_values "Retrieve parameter arrays" TRUE TRUE
+mlx_parameters "Collect parameters from modules" TRUE TRUE
+mlx_partition NA TRUE TRUE
+mlx_pexp NA TRUE TRUE
+mlx_plnorm NA TRUE TRUE
+mlx_plogis NA TRUE TRUE
+mlx_pnorm NA TRUE TRUE
+mlx_prod NA TRUE TRUE
+mlx_punif NA TRUE TRUE
+mlx_put_along_axis "Write values using per-position axis indices" TRUE TRUE
+mlx_qexp NA TRUE TRUE
+mlx_qlnorm NA TRUE TRUE
+mlx_qlogis NA TRUE TRUE
+mlx_qnorm NA TRUE TRUE
+mlx_quantile "Compute quantiles of MLX arrays" TRUE TRUE
+mlx_quantize "Quantize a Matrix" TRUE TRUE
+mlx_quantized_matmul "Quantized Matrix Multiplication" TRUE TRUE
+mlx_qunif NA TRUE TRUE
+mlx_radians NA TRUE TRUE
+mlx_rand_bernoulli "Sample Bernoulli random variables on mlx arrays" TRUE TRUE
+mlx_rand_categorical "Sample from a categorical distribution on mlx arrays" TRUE TRUE
+mlx_rand_gumbel "Sample from the Gumbel distribution on mlx arrays" TRUE TRUE
+mlx_rand_laplace "Sample from the Laplace distribution on mlx arrays" TRUE TRUE
+mlx_rand_multivariate_normal "Sample from a multivariate normal distribution on mlx arrays" TRUE TRUE
+mlx_rand_normal "Sample from a normal distribution on mlx arrays" TRUE TRUE
+mlx_rand_permutation "Generate random permutations on mlx arrays" TRUE TRUE
+mlx_rand_randint "Sample random integers on mlx arrays" TRUE TRUE
+mlx_rand_truncated_normal "Sample from a truncated normal distribution on mlx arrays" TRUE TRUE
+mlx_rand_uniform "Sample from a uniform distribution on mlx arrays" TRUE TRUE
+mlx_real "Complex-valued helpers for mlx arrays" TRUE TRUE
+mlx_relu "Rectified linear activation module" TRUE TRUE
+mlx_repeat "Repeat array elements" TRUE TRUE
+mlx_reshape "Reshape an mlx array" TRUE TRUE
+mlx_roll "Roll array elements" TRUE TRUE
+mlx_save "Save an MLX array to disk" TRUE TRUE
+mlx_save_gguf "Save MLX arrays to the GGUF format" TRUE TRUE
+mlx_save_safetensors "Save MLX arrays to the safetensors format" TRUE TRUE
+mlx_scalar "Construct MLX scalars" TRUE TRUE
+mlx_scatter_add_axis "Add values using per-position axis indices" TRUE TRUE
+mlx_sd NA TRUE TRUE
+mlx_sequential "Compose modules sequentially" TRUE TRUE
+mlx_set_default_stream "Set the default MLX stream" TRUE TRUE
+mlx_set_training "Toggle training mode for MLX modules" TRUE TRUE
+mlx_shape NA TRUE TRUE
+mlx_sigmoid "Sigmoid activation" TRUE TRUE
+mlx_silu "SiLU (Swish) activation" TRUE TRUE
+mlx_slice_update "Update a slice of an mlx array" TRUE TRUE
+mlx_softmax "Softmax for mlx arrays" TRUE TRUE
+mlx_softmax_layer "Softmax activation" TRUE TRUE
+mlx_solve_triangular "Solve triangular systems with mlx arrays" TRUE TRUE
+mlx_sort "Sort and argsort for mlx arrays" TRUE TRUE
+mlx_split "Split mlx arrays" TRUE TRUE
+mlx_squeeze "Remove singleton dimensions" TRUE TRUE
+mlx_stack "Stack mlx arrays along a new axis" TRUE TRUE
+mlx_std NA TRUE TRUE
+mlx_stop_gradient "Stop gradient propagation through an mlx array" TRUE TRUE
+mlx_sum NA TRUE TRUE
+mlx_swapaxes "Swap two axes of an mlx array" TRUE TRUE
+mlx_synchronize "Synchronize MLX execution" TRUE TRUE
+mlx_take_along_axis "Take values using per-position axis indices" TRUE TRUE
+mlx_tanh "Tanh activation" TRUE TRUE
+mlx_tile "Tile an array" TRUE TRUE
+mlx_topk "Top-k selection and partitioning on mlx arrays" TRUE TRUE
+mlx_trace "Matrix trace for mlx arrays" TRUE TRUE
+mlx_train_step "Single training step helper" TRUE TRUE
+mlx_tri "Triangular helpers for MLX arrays" TRUE TRUE
+mlx_tri_inv "Compute triangular matrix inverse" TRUE TRUE
+mlx_tril NA TRUE TRUE
+mlx_triu NA TRUE TRUE
+mlx_unflatten "Unflatten an axis into multiple axes" TRUE TRUE
+mlx_value_grad NA TRUE TRUE
+mlx_var NA TRUE TRUE
+mlx_vector "Construct MLX vectors" TRUE TRUE
+mlx_where "Elementwise conditional selection" TRUE TRUE
+mlx_zeros "Create arrays of zeros on MLX devices" TRUE TRUE
+mlx_zeros_like "Zeros shaped like an existing mlx array" TRUE TRUE
+new_mlx "Internal constructor for mlx objects" TRUE FALSE
+new_mlx_module "Internal helpers for mlx modules" TRUE FALSE
+normalize_array_list NA NA FALSE
+normalize_axes "Normalize multiple axes to 0-indexed values" TRUE FALSE
+normalize_axis "Normalize a possibly `NULL` axis" TRUE FALSE
+normalize_axis_single "Normalize a single axis to 0-indexed form" TRUE FALSE
+normalize_gguf_metadata NA NA FALSE
+normalize_index "Normalize an index to a standard form" TRUE FALSE
+normalize_new_axes "Normalize axes for insertion operations" TRUE FALSE
+Ops.mlx "Arithmetic and comparison operators for MLX arrays" TRUE FALSE
+outer "Outer product of two vectors" TRUE TRUE
+outer.default NA TRUE FALSE
+outer.mlx NA TRUE FALSE
+parse_pad_width "Parse padding specification into matrix format" TRUE FALSE
+pinv "Moore-Penrose pseudoinverse for MLX arrays" TRUE TRUE
+print.mlx "Print MLX array" TRUE FALSE
+print.mlx_stream "Print method for mlx_stream" TRUE FALSE
+promote_dtype "Promote dtypes for mixed operations" TRUE FALSE
+qr.mlx "QR decomposition for mlx arrays" TRUE FALSE
+quantile.mlx NA TRUE FALSE
+rbind.mlx "Row-bind mlx arrays" TRUE FALSE
+Re.mlx NA TRUE FALSE
+resolve_common_dtype_device NA NA FALSE
+resolve_device NA NA FALSE
+resolve_nn_device NA NA FALSE
+row "Row and column indices for mlx arrays" TRUE TRUE
+row.default NA TRUE FALSE
+row.mlx NA TRUE FALSE
+rowMeans "Row means for mlx arrays" TRUE TRUE
+rowMeans.default NA TRUE FALSE
+rowMeans.mlx NA TRUE FALSE
+rowSums "Row sums for mlx arrays" TRUE TRUE
+rowSums.default NA TRUE FALSE
+rowSums.mlx NA TRUE FALSE
+scale.mlx "Scale mlx arrays" TRUE FALSE
+solve.mlx "Solve a system of linear equations" TRUE FALSE
+str.mlx "Object structure for MLX array" TRUE FALSE
+Summary.mlx "Summary operations for MLX arrays" TRUE FALSE
+svd "Singular value decomposition" TRUE TRUE
+svd.default NA TRUE FALSE
+svd.mlx "Singular value decomposition for mlx arrays" TRUE FALSE
+t.mlx "Transpose of MLX matrix" TRUE FALSE
+tcrossprod.mlx "Transposed cross product" TRUE FALSE
+validate_path NA NA FALSE
+validate_shape "Validate and coerce shape specification" TRUE FALSE
+vectors_assign NA NA FALSE
+vectors_subset NA NA FALSE
+with_default_device "Temporarily set the default MLX device or stream" TRUE TRUE

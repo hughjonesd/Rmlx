@@ -166,5 +166,5 @@ mlx_best_device <- function() {
 #' mlx_device(x)
 mlx_device <- function(x) {
   stopifnot(is_mlx(x))
-  x$device
+  cpp_mlx_device(x$ptr)
 }

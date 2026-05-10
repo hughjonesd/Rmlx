@@ -427,6 +427,7 @@ mean((final_loss - y) * (final_loss - y))
 Supported data types:
 
 - `float32` for numeric data (default)
+- `float64` for CPU-only double-precision work
 - `bool` for logical data
 - Integer types `int8`, `int16`, `int32`, `int64`, `uint8`, `uint16`,
   `uint32`, `uint64`.
@@ -443,16 +444,10 @@ typeof(1:10)
 x_float <- as_mlx(1:10)
 x_int <- as_mlx(1:10, dtype = "int32")
 
-# The Apple GPU uses float32 internally. Requests for `dtype = "float64"` 
-# are downcast with a warning.
-as_mlx(matrix(1:12, 3, 4), dtype = "float64")
-#> Warning: MLX arrays are stored in float32; downcasting input.
-#> mlx array [3 x 4]
-#>   dtype: float32
-#>   device: gpu
-#>   values:
-#>      [,1] [,2] [,3] [,4]
-#> [1,]    1    4    7   10
-#> [2,]    2    5    8   11
-#> [3,]    3    6    9   12
+# float64 arrays are CPU-only. Finish GPU work by explicitly casting to CPU.
+x64 <- mlx_cast(x_f32, dtype = "float64", device = "cpu")
+mlx_dtype(x64)
+#> [1] "float64"
+mlx_device(x64)
+#> [1] "cpu"
 ```

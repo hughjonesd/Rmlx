@@ -53,7 +53,9 @@ coerce_payload <- function(x, dtype) {
 #'
 #' ## Type precision
 #'
-#' - `float64` is supported but emits a warning and downcasts to `float32`
+#' - `float64` is supported on CPU only; use `device = "cpu"` explicitly.
+#'   Cast GPU arrays to `float64` with `mlx_cast(x, dtype = "float64",
+#'   device = "cpu")`, and cast back to `float32` before returning to GPU.
 #' - Integer arithmetic may promote types (e.g., int32 + int32 might → int64)
 #' - Mixed integer/float operations promote to float
 #'
@@ -96,7 +98,6 @@ coerce_payload <- function(x, dtype) {
 as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
                                  "int8", "int16", "int32", "int64",
                                  "uint8", "uint16", "uint32", "uint64"), device = mlx_default_device()) {
-  handle <- resolve_device(device, mlx_default_device())
   dtype_val <- if (missing(dtype)) {
     if (is.logical(x)) {
       "bool"
@@ -108,11 +109,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
   } else {
     match.arg(dtype)
   }
-
-  if (dtype_val == "float64") {
-    warning("MLX arrays are stored in float32; downcasting input.", call. = FALSE)
-    dtype_val <- "float32"
-  }
+  handle <- resolve_device(device)
 
   if (is_mlx(x)) {
     need_device <- !missing(device) && !identical(mlx_device(x), handle$device)
@@ -345,10 +342,10 @@ is_mlx <- function(x) {
 #' @keywords internal
 #' @noRd
 new_mlx <- function(ptr, device) {
+  ptr <- cpp_mlx_with_device(ptr, device)
   structure(
     list(
-      ptr = ptr,
-      device = device
+      ptr = ptr
     ),
     class = "mlx"
   )

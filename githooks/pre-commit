@@ -10,9 +10,13 @@ if [ ! -x "$BENCH_SCRIPT" ]; then
   exit 1
 fi
 
-echo "[pre-commit] Running MLX benchmarks..." 
+echo "[pre-commit] Running MLX benchmarks..."
 Rscript "$BENCH_SCRIPT" > "$OUTPUT_FILE"
 echo "[pre-commit] Benchmark TSV updated at $OUTPUT_FILE"
 echo "[pre-commit] Latest benchmark results:" >&2
 cat "$OUTPUT_FILE" >&2
 git add "$OUTPUT_FILE"
+
+echo "[pre-commit] Updating dev/mlx-functions.txt"
+Rscript "$REPO_ROOT/dev/print-functions-list.R"
+git add "$REPO_ROOT/dev/mlx-functions.txt"

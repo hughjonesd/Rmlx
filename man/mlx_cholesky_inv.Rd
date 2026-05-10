@@ -4,7 +4,7 @@
 \alias{mlx_cholesky_inv}
 \title{Compute matrix inverse via Cholesky decomposition}
 \usage{
-mlx_cholesky_inv(x, upper = FALSE)
+mlx_cholesky_inv(x, upper = FALSE, device = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}
@@ -28,7 +28,7 @@ A <- t(A) \%*\% A
 # Compute Cholesky factor
 L <- chol(A, pivot = FALSE, upper = FALSE)
 # Get inverse from Cholesky factor
-mlx_cholesky_inv(as_mlx(L))
+mlx_cholesky_inv(as_mlx(L, device = "cpu"))
 }
 \seealso{
 \code{\link[=chol2inv]{chol2inv()}}, \href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}{mlx.core.linalg.cholesky_inv}

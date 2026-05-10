@@ -35,7 +35,7 @@ test_that("mlx_addmm promotes dtype and device", {
   res <- mlx_addmm(input, mat1, mat2)
 
   expect_identical(mlx_dtype(res), "float32")
-  expect_identical(res$device, "gpu")
+  expect_identical(mlx_device(res), "gpu")
   expect_equal(as.matrix(res), as.matrix(input) + as.matrix(mat1) %*% as.matrix(mat2), tolerance = 1e-6)
 })
 

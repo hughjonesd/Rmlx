@@ -16,7 +16,7 @@ SEXP cpp_mlx_zeros(SEXP dim_, std::string dtype_str, std::string device_str) {
 
   Shape shape(dim.begin(), dim.end());
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array result = zeros(shape, dtype, dev);
   return make_mlx_xptr(std::move(result));
@@ -31,7 +31,7 @@ SEXP cpp_mlx_ones(SEXP dim_, std::string dtype_str, std::string device_str) {
 
   Shape shape(dim.begin(), dim.end());
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array result = ones(shape, dtype, dev);
   return make_mlx_xptr(std::move(result));
@@ -43,7 +43,7 @@ SEXP cpp_mlx_zeros_like(SEXP xp_, std::string dtype_str, std::string device_str)
   array arr = wrapper->get();
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   Shape shape = arr.shape();
   array result = zeros(shape, dtype, dev);
@@ -56,7 +56,7 @@ SEXP cpp_mlx_ones_like(SEXP xp_, std::string dtype_str, std::string device_str) 
   array arr = wrapper->get();
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   Shape shape = arr.shape();
   array result = ones(shape, dtype, dev);
@@ -76,7 +76,7 @@ SEXP cpp_mlx_full(SEXP dim_, SEXP value_, std::string dtype_str, std::string dev
 
   Shape shape(dim.begin(), dim.end());
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array result = [&]() -> array {
     if (dtype == complex64) {
@@ -115,7 +115,7 @@ SEXP cpp_mlx_eye(int n,
   }
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array result = eye(n, m_val, k, dtype, dev);
   return make_mlx_xptr(std::move(result));
@@ -136,7 +136,7 @@ SEXP cpp_mlx_tri(int n,
   }
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array result = tri(n, m_val, k, dtype, dev);
   return make_mlx_xptr(std::move(result));
@@ -148,7 +148,7 @@ SEXP cpp_mlx_identity(int n, std::string dtype_str, std::string device_str) {
     Rcpp::stop("n must be positive.");
   }
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array result = identity(n, dtype, dev);
   return make_mlx_xptr(std::move(result));
@@ -161,7 +161,7 @@ SEXP cpp_mlx_arange(SEXP start_,
                     std::string dtype_str,
                     std::string device_str) {
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   bool has_start = start_ != R_NilValue;
   bool has_step = step_ != R_NilValue;
@@ -193,7 +193,7 @@ SEXP cpp_mlx_linspace(double start,
     Rcpp::stop("num must be positive.");
   }
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array result = linspace(start, stop, num, dtype, dev);
   return make_mlx_xptr(std::move(result));

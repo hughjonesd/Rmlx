@@ -191,8 +191,9 @@ List cpp_mlx_compile_call(SEXP compiled_xp, List mlx_args) {
       Rcpp::stop("Argument %d is not an mlx object. All arguments must be mlx arrays.", i + 1);
     }
     SEXP ptr = obj["ptr"];
-    inputs.push_back(get_mlx_wrapper(ptr)->get());
-    devices.push_back(as<std::string>(obj["device"]));
+    MlxArrayWrapper* wrapper = get_mlx_wrapper(ptr);
+    inputs.push_back(wrapper->get());
+    devices.push_back(wrapper->device());
   }
 
   // Call compiled function

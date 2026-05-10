@@ -10,9 +10,8 @@ mlx_import_function(path, device = mlx_default_device())
 \item{path}{Path to a \code{.mlxfn} file created via MLX export utilities.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).}
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An R function. Calling it returns an \code{mlx} array if the imported
@@ -42,7 +41,7 @@ signature. MLX selects the appropriate trace at runtime based on the shapes
 and keyword names you provide.
 }
 \examples{
-\dontshow{if (mlx_has_gpu()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (mlx_has_gpu()) withAutoprint(\{ # examplesIf}
 add_fn <- mlx_import_function(
   system.file("extdata/add_matrix.mlxfn", package = "Rmlx"),
   device = "gpu"

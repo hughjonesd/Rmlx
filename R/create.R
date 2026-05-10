@@ -13,7 +13,7 @@ mlx_zeros <- function(dim,
                       device = mlx_default_device()) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device)
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_zeros(dim, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -33,7 +33,7 @@ mlx_ones <- function(dim,
                      device = mlx_default_device()) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device)
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_ones(dim, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -67,8 +67,7 @@ mlx_zeros_like <- function(x,
     match.arg(dtype, valid_dtypes)
   }
 
-  target_device <- if (is.null(device)) x$device else device
-  handle <- resolve_device(target_device, x$device)
+  handle <- resolve_device(device, mlx_device(x))
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_zeros_like(x$ptr, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -101,8 +100,7 @@ mlx_ones_like <- function(x,
     match.arg(dtype, valid_dtypes)
   }
 
-  target_device <- if (is.null(device)) x$device else device
-  handle <- resolve_device(target_device, x$device)
+  handle <- resolve_device(device, mlx_device(x))
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_ones_like(x$ptr, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -144,7 +142,7 @@ mlx_full <- function(dim,
     stop("Unsupported dtype: ", dtype, call. = FALSE)
   }
 
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device)
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_full(dim, value, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -179,7 +177,7 @@ mlx_eye <- function(n,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device)
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_eye(n, m, k, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -249,7 +247,7 @@ mlx_array <- function(data,
   }
 
   payload <- coerce_payload(data_vec, dtype_val)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device)
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_from_r(payload, as.integer(dim), dtype_val, dev)
   })
@@ -373,7 +371,7 @@ mlx_identity <- function(n,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device)
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_identity(n, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -420,7 +418,7 @@ mlx_tri <- function(n,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device)
   ptr <- eval_with_stream(handle, function(dev) cpp_mlx_tri(n, m_arg, k, dtype, dev))
   new_mlx(ptr, handle$device)
 }
@@ -435,8 +433,8 @@ mlx_tril <- function(x, k = 0L) {
     stop("k must be a single integer.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_tril(x$ptr, k, x$device)
-  new_mlx(ptr, x$device)
+  ptr <- cpp_mlx_tril(x$ptr, k)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' @rdname mlx_tri
@@ -449,8 +447,8 @@ mlx_triu <- function(x, k = 0L) {
     stop("k must be a single integer.", call. = FALSE)
   }
 
-  ptr <- cpp_mlx_triu(x$ptr, k, x$device)
-  new_mlx(ptr, x$device)
+  ptr <- cpp_mlx_triu(x$ptr, k)
+  new_mlx(ptr, mlx_device(x))
 }
 
 
@@ -485,8 +483,8 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
     k <- as.integer(nrow)
   }
 
-  ptr <- cpp_mlx_diag(x$ptr, k, x$device)
-  new_mlx(ptr, x$device)
+  ptr <- cpp_mlx_diag(x$ptr, k)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Numerical ranges on MLX devices
@@ -530,7 +528,7 @@ mlx_arange <- function(start,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device)
 
   # Convert to exclusive stop for underlying MLX function
   # Add a tiny epsilon to include stop if exactly reachable (like seq())
@@ -571,7 +569,7 @@ mlx_linspace <- function(start,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device, mlx_default_device())
+  handle <- resolve_device(device)
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_linspace(

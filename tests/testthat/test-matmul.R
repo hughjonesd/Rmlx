@@ -33,7 +33,7 @@ test_that("matrix multiplication aligns devices and dtypes", {
 
   c_mlx <- a_gpu %*% b_cpu
 
-  expect_equal(c_mlx$device, "gpu")
+  expect_equal(mlx_device(c_mlx), "gpu")
   expect_equal(mlx_dtype(c_mlx), "float32")
   expect_equal(as.matrix(c_mlx), a %*% b, tolerance = 1e-5)
 })
