@@ -31,6 +31,9 @@ We'll create:
 ```{r}
 library(Rmlx)
 
+# should work on cpu only
+mlx_default_device(mlx_best_device())
+
 # Problem metadata
 num_features <- 100
 num_cases <- 10000
