@@ -77,12 +77,12 @@ test_that("solve respects gpu device and lets MLX report unsupported execution",
   b_gpu <- as_mlx(b, device = "gpu", dtype = "float32")
 
   expect_error(
-    mlx_eval(solve(A_gpu, b_gpu)),
+    solve(A_gpu, b_gpu),
     "not yet supported on the GPU",
     fixed = TRUE
   )
   expect_error(
-    mlx_eval(solve(A_gpu)),
+    solve(A_gpu),
     "not yet supported on the GPU",
     fixed = TRUE
   )
@@ -164,6 +164,44 @@ test_that("CPU-only linalg helpers let MLX report unsupported gpu execution", {
   expect_error(mlx_cholesky_inv(chol_factor, upper = TRUE), "not yet supported on the GPU", fixed = TRUE)
   expect_error(mlx_lu(mat), "not yet supported on the GPU", fixed = TRUE)
 })
+
+
+test_that("CPU-only linalg helpers respect `device` argument", {
+  skip_if_not(mlx_has_gpu())
+  local_default_device("gpu")
+
+  mat <- as_mlx(matrix(c(4, 1, 2, 3), 2, 2), dtype = "float32", device = "gpu")
+  vec <- mlx_vector(1:2, device = "gpu")
+  spd <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2), dtype = "float32", device = "gpu")
+  lower <- as_mlx(matrix(c(2, 1, 0, 3), 2, 2), dtype = "float32", device = "gpu")
+  chol_factor <- as_mlx(chol(matrix(c(4, 1, 1, 3), 2, 2)), dtype = "float32", device = "gpu")
+
+  expect_no_error(res <- solve(mat, device = "cpu"))
+  expect_equal(mlx_device(res), "gpu")
+  expect_no_error(res <- solve(mat, vec, device = "cpu"))
+  expect_equal(mlx_device(res), "gpu")
+  expect_no_error(res <- qr(mat, device = "cpu"))
+  expect_equal(mlx_device(res$Q), "gpu")
+  expect_no_error(res <- mlx_inv(mat, device = "cpu"))
+  expect_equal(mlx_device(res), "gpu")
+  expect_no_error(res <- mlx_tri_inv(mat, device = "cpu"))
+  expect_equal(mlx_device(res), "gpu")
+  expect_no_error(res <- mlx_cholesky_inv(mat, device = "cpu"))
+  expect_equal(mlx_device(res), "gpu")
+  expect_no_error(res <- mlx_lu(mat, device = "cpu"))
+  expect_equal(mlx_device(res$l), "gpu")
+  expect_no_error(res <- svd(mat, device = "cpu"))
+  expect_equal(mlx_device(res$d), "gpu")
+  expect_no_error(res <- mlx_eig(mat, device = "cpu"))
+  expect_equal(mlx_device(res$vectors), "gpu")
+  expect_no_error(res <- mlx_eigvals(mat, device = "cpu"))
+  expect_equal(mlx_device(res), "gpu")
+  expect_no_error(res <- mlx_eigh(mat, device = "cpu"))
+  expect_equal(mlx_device(res$vectors), "gpu")
+  expect_no_error(res <- mlx_eigvalsh(mat, device = "cpu"))
+  expect_equal(mlx_device(res), "gpu")
+})
+
 
 test_that("chol.mlx errors with pivot = TRUE", {
   set.seed(567)

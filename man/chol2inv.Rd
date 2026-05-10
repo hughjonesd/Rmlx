@@ -10,7 +10,7 @@ chol2inv(x, size = NCOL(x), ...)
 
 \method{chol2inv}{default}(x, size = NCOL(x), ...)
 
-\method{chol2inv}{mlx}(x, size = NCOL(x), ...)
+\method{chol2inv}{mlx}(x, size = NCOL(x), ..., device = NULL)
 }
 \arguments{
 \item{x}{An mlx matrix (2-dimensional array).}
@@ -18,6 +18,10 @@ chol2inv(x, size = NCOL(x), ...)
 \item{size}{Ignored; included for compatibility with base R.}
 
 \item{...}{Additional arguments; ignored.}
+
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 The inverse of the original matrix (before Cholesky decomposition).
@@ -29,7 +33,9 @@ from \code{chol()}.
 }
 \details{
 As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly.
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
 }
 \examples{
 A <- mlx_matrix(c(4, 1, 1, 3), 2, 2, device = "cpu")

@@ -2,6 +2,7 @@ name description documented exported
 [.mlx "Subset MLX array" TRUE FALSE
 [<-.mlx NA TRUE FALSE
 %*%.mlx "Matrix multiplication for MLX arrays" TRUE FALSE
+%||% NA NA FALSE
 abind "Bind mlx arrays along an axis" TRUE TRUE
 all.equal.mlx "Test if two MLX arrays are (nearly) equal" TRUE FALSE
 aperm.mlx NA TRUE FALSE

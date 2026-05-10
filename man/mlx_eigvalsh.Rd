@@ -4,12 +4,16 @@
 \alias{mlx_eigvalsh}
 \title{Eigenvalues of Hermitian mlx arrays}
 \usage{
-mlx_eigvalsh(x, uplo = c("L", "U"))
+mlx_eigvalsh(x, uplo = c("L", "U"), device = NULL)
 }
 \arguments{
 \item{x}{An mlx matrix (2-dimensional array).}
 
 \item{uplo}{Character string indicating which triangle to use ("L" or "U").}
+
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array containing eigenvalues.
@@ -19,7 +23,9 @@ Eigenvalues of Hermitian mlx arrays
 }
 \details{
 As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly.
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
 }
 \examples{
 x <- mlx_matrix(c(2, 1, 1, 3), 2, 2, device = "cpu")

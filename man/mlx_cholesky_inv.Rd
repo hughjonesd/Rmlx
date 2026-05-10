@@ -4,7 +4,7 @@
 \alias{mlx_cholesky_inv}
 \title{Compute matrix inverse via Cholesky decomposition}
 \usage{
-mlx_cholesky_inv(x, upper = FALSE)
+mlx_cholesky_inv(x, upper = FALSE, device = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}

@@ -19,9 +19,8 @@ accuracy at the cost of slightly higher memory. Default: 64.}
 \item{mode}{Quantization mode, either \code{"affine"} or \code{"mxfp4"}.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).}
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 A list containing:

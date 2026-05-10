@@ -10,9 +10,8 @@ mlx_broadcast_arrays(..., device = NULL)
 \item{...}{One or more arrays (or a single list) convertible via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).}
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 A list of broadcast mlx arrays.

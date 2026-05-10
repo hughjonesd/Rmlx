@@ -4,7 +4,7 @@
 \alias{svd.mlx}
 \title{Singular value decomposition for mlx arrays}
 \usage{
-\method{svd}{mlx}(x, nu = min(n, p), nv = min(n, p), ...)
+\method{svd}{mlx}(x, nu = min(n, p), nv = min(n, p), ..., device = NULL)
 }
 \arguments{
 \item{x}{An mlx matrix (2-dimensional array).}
@@ -14,6 +14,10 @@
 \item{nv}{Number of right singular vectors to return (0 or \code{min(dim(x))}).}
 
 \item{...}{Additional arguments; ignored.}
+
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 A list with components \code{d}, \code{u}, and \code{v}.
@@ -24,7 +28,9 @@ This is different from R's implementation.
 }
 \details{
 As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly.
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
 }
 \examples{
 x <- mlx_matrix(c(1, 0, 0, 2), 2, 2, device = "cpu")

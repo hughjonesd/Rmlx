@@ -31,9 +31,8 @@ casting to \code{float64}, and cast back to \code{float32} before using the GPU.
 Not all functions support all types. See individual function documentation.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).}
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array with samples from the multivariate normal.

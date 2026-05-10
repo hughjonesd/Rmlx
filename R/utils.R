@@ -1,4 +1,7 @@
 
+
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 #' Wrap a raw MLX pointer into an mlx object
 #'
 #' @param ptr External pointer returned by C++ bindings.

@@ -4,15 +4,19 @@
 \alias{solve.mlx}
 \title{Solve a system of linear equations}
 \usage{
-\method{solve}{mlx}(a, b = NULL, ...)
+\method{solve}{mlx}(a, b = NULL, ..., device = NULL)
 }
 \arguments{
-\item{a}{An mlx matrix (the coefficient matrix)}
+\item{a}{An mlx matrix of coefficients.}
 
 \item{b}{An mlx vector or matrix (the right-hand side). If omitted,
 computes the matrix inverse.}
 
 \item{...}{Additional arguments forwarded to the corresponding base R implementation for signature compatibility.}
+
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx object containing the solution.
@@ -22,7 +26,9 @@ Solve a system of linear equations
 }
 \details{
 As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly.
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
 }
 \examples{
 a <- mlx_matrix(c(3, 1, 1, 2), 2, 2, device = "cpu")

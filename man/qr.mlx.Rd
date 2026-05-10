@@ -4,7 +4,7 @@
 \alias{qr.mlx}
 \title{QR decomposition for mlx arrays}
 \usage{
-\method{qr}{mlx}(x, tol = 1e-07, LAPACK = FALSE, ...)
+\method{qr}{mlx}(x, tol = 1e-07, LAPACK = FALSE, ..., device = NULL)
 }
 \arguments{
 \item{x}{An mlx matrix (2-dimensional array).}
@@ -14,6 +14,10 @@
 \item{LAPACK}{Ignored; set to \code{FALSE}.}
 
 \item{...}{Additional arguments; ignored.}
+
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 A list with components \code{Q} and \code{R}, each an mlx matrix.
@@ -23,7 +27,9 @@ QR decomposition for mlx arrays
 }
 \details{
 As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly.
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
 }
 \examples{
 x <- mlx_matrix(c(1, 2, 3, 4, 5, 6), 3, 2, device = "cpu")

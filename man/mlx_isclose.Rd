@@ -16,9 +16,8 @@ mlx_isclose(a, b, rtol = 1e-05, atol = 1e-08, equal_nan = FALSE, device = NULL)
 \item{equal_nan}{If \code{TRUE}, NaN values are considered equal (default: \code{FALSE})}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).}
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array of booleans with element-wise comparison results

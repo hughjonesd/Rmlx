@@ -2,10 +2,11 @@
 #'
 #' @inherit mlx_cpu_only_operation details
 #'
-#' @param a An mlx matrix (the coefficient matrix)
+#' @param a An mlx matrix of coefficients.
 #' @param b An mlx vector or matrix (the right-hand side). If omitted,
 #'   computes the matrix inverse.
 #' @inheritParams ellipsis_base
+#' @inheritParams common_params
 #' @return An mlx object containing the solution.
 #' @seealso [mlx.linalg.solve](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve)
 #' @export
@@ -13,25 +14,27 @@
 #' a <- mlx_matrix(c(3, 1, 1, 2), 2, 2, device = "cpu")
 #' b <- as_mlx(c(9, 8), device = "cpu")
 #' solve(a, b)
-solve.mlx <- function(a, b = NULL, ...) {
-  target_device <- mlx_device(a)
+solve.mlx <- function(a, b = NULL, ..., device = NULL) {
+  return_device <- mlx_device(a)
   target_dtype <- mlx_dtype(a)
+  target_device <- device %||% return_device
   if (!(target_dtype %in% c("float32", "float64", "complex64"))) {
     target_dtype <- "float32"
   }
 
   if (is.null(b)) {
     # No b: compute matrix inverse
+    a <- mlx_cast(a, device = target_device)
     ptr <- cpp_mlx_solve(a$ptr, NULL, target_dtype)
-    new_mlx(ptr, target_device)
   } else {
     # Convert b to mlx if needed
     if (!is_mlx(b)) {
       b <- as_mlx(b, dtype = target_dtype, device = target_device)
     } else {
+      target_device_b <- device %||% mlx_device(b)
       target <- resolve_common_dtype_device(
         list(target_dtype, mlx_dtype(b)),
-        list(target_device, mlx_device(b))
+        list(target_device, target_device_b)
       )
       target_dtype <- target$dtype
       target_device <- target$device
@@ -41,11 +44,9 @@ solve.mlx <- function(a, b = NULL, ...) {
 
     # Solve Ax = b
     ptr <- cpp_mlx_solve(a$ptr, b$ptr, target_dtype)
-
-    # Result dimensions: if b is a vector, result is a vector
-    # if b is a matrix with k columns, result has same dimensions as b
-    new_mlx(ptr, target_device)
   }
+
+  new_mlx(ptr, return_device)
 }
 
 #' Kronecker product dispatcher

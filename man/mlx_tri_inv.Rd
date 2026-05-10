@@ -4,7 +4,7 @@
 \alias{mlx_tri_inv}
 \title{Compute triangular matrix inverse}
 \usage{
-mlx_tri_inv(x, upper = FALSE)
+mlx_tri_inv(x, upper = FALSE, device = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}

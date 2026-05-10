@@ -4,10 +4,14 @@
 \alias{mlx_inv}
 \title{Compute matrix inverse}
 \usage{
-mlx_inv(x)
+mlx_inv(x, device = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}
+
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 The inverse of \code{x}.
@@ -18,7 +22,9 @@ runs on the CPU.
 }
 \details{
 As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly.
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
 }
 \examples{
 A <- mlx_matrix(c(4, 7, 2, 6), 2, 2, device = "cpu")
