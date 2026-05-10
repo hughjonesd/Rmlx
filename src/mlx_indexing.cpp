@@ -60,7 +60,11 @@ SEXP cpp_mlx_take(SEXP xp_, SEXP indices_, int axis) {
 SEXP cpp_mlx_take_along_axis(SEXP xp_, SEXP indices_xp_, int axis) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   MlxArrayWrapper* idx_wrapper = get_mlx_wrapper(indices_xp_);
-  array result = take_along_axis(wrapper->get(), idx_wrapper->get(), axis);
+  array result = take_along_axis(
+    wrapper->get(),
+    idx_wrapper->get(),
+    axis,
+    wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -73,7 +77,8 @@ SEXP cpp_mlx_put_along_axis(SEXP xp_, SEXP indices_xp_, SEXP values_xp_, int axi
     wrapper->get(),
     idx_wrapper->get(),
     values_wrapper->get(),
-    axis
+    axis,
+    wrapper->stream()
   );
   return make_mlx_xptr(std::move(result));
 }
@@ -87,7 +92,8 @@ SEXP cpp_mlx_scatter_add_axis(SEXP xp_, SEXP indices_xp_, SEXP values_xp_, int a
     wrapper->get(),
     idx_wrapper->get(),
     values_wrapper->get(),
-    axis
+    axis,
+    wrapper->stream()
   );
   return make_mlx_xptr(std::move(result));
 }
@@ -122,7 +128,13 @@ SEXP cpp_mlx_slice_update(SEXP xp_,
   Shape stop_shape(stop_.begin(), stop_.end());
   Shape stride_shape(strides_.begin(), strides_.end());
 
-  array result = slice_update(src_wrapper->get(), update_wrapper->get(), start_shape, stop_shape, stride_shape);
+  array result = slice_update(
+    src_wrapper->get(),
+    update_wrapper->get(),
+    start_shape,
+    stop_shape,
+    stride_shape,
+    src_wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 

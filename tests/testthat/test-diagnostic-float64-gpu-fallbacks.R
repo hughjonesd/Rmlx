@@ -1,9 +1,7 @@
 test_that("diagnostic: GPU-tagged float64 operations expose CPU fallbacks", {
   skip_if_not(mlx_has_gpu())
 
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device), add = TRUE)
-  mlx_default_device("cpu")
+  local_default_device("cpu")
 
   force_mlx <- function(x) {
     if (is_mlx(x)) {

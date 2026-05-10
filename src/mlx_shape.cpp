@@ -10,7 +10,7 @@ using namespace mlx::core;
 // [[Rcpp::export]]
 SEXP cpp_mlx_transpose(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array result = transpose(wrapper->get());
+  array result = transpose(wrapper->get(), wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -20,7 +20,7 @@ SEXP cpp_mlx_reshape(SEXP xp_, SEXP new_dim_) {
   IntegerVector new_dim(new_dim_);
 
   Shape shape(new_dim.begin(), new_dim.end());
-  array result = reshape(wrapper->get(), shape);
+  array result = reshape(wrapper->get(), shape, wrapper->stream());
 
   return make_mlx_xptr(std::move(result));
 }
@@ -81,9 +81,9 @@ SEXP cpp_mlx_squeeze(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes) {
     if (axes.isNotNull()) {
       Rcpp::IntegerVector axes_vec(axes.get());
       std::vector<int> ax(axes_vec.begin(), axes_vec.end());
-      return squeeze(arr, normalize_axes(arr, ax));
+      return squeeze(arr, normalize_axes(arr, ax), wrapper->stream());
     }
-    return squeeze(arr);
+    return squeeze(arr, wrapper->stream());
   }();
   return make_mlx_xptr(std::move(result));
 }
@@ -95,7 +95,7 @@ SEXP cpp_mlx_expand_dims(SEXP xp_, Rcpp::IntegerVector axes_) {
 
   std::vector<int> axes(axes_.begin(), axes_.end());
   std::vector<int> normalized = normalize_new_axes(arr, axes);
-  array result = expand_dims(arr, normalized);
+  array result = expand_dims(arr, normalized, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -110,9 +110,9 @@ SEXP cpp_mlx_repeat(SEXP xp_, int repeats, Rcpp::Nullable<int> axis) {
   array result = [&]() -> array {
     if (axis.isNotNull()) {
       int ax = normalize_axis(arr, Rcpp::as<int>(axis.get()));
-      return repeat(arr, repeats, ax);
+      return repeat(arr, repeats, ax, wrapper->stream());
     }
-    return repeat(arr, repeats);
+    return repeat(arr, repeats, wrapper->stream());
   }();
   return make_mlx_xptr(std::move(result));
 }
@@ -132,7 +132,7 @@ SEXP cpp_mlx_tile(SEXP xp_, Rcpp::IntegerVector reps_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  array result = tile(arr, reps);
+  array result = tile(arr, reps, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -160,20 +160,20 @@ SEXP cpp_mlx_roll(SEXP xp_, SEXP shift_, Rcpp::Nullable<Rcpp::IntegerVector> axe
         shift_shape.push_back(static_cast<int>(val));
       }
       if (axes.size() == 1) {
-        return roll(arr, static_cast<int>(shifts[0]), axes[0]);
+        return roll(arr, static_cast<int>(shifts[0]), axes[0], wrapper->stream());
       }
-      return roll(arr, shift_shape, axes);
+      return roll(arr, shift_shape, axes, wrapper->stream());
     }
 
     if (shifts.size() == 1) {
-      return roll(arr, static_cast<int>(shifts[0]));
+      return roll(arr, static_cast<int>(shifts[0]), wrapper->stream());
     }
     Shape shift_shape;
     shift_shape.reserve(shifts.size());
     for (double val : shifts) {
       shift_shape.push_back(static_cast<int>(val));
     }
-    return roll(arr, shift_shape);
+    return roll(arr, shift_shape, wrapper->stream());
   }();
 
   return make_mlx_xptr(std::move(result));
@@ -255,7 +255,7 @@ SEXP cpp_mlx_moveaxis(SEXP xp_, Rcpp::IntegerVector source_, Rcpp::IntegerVector
     }
   }
 
-  array result = transpose(arr, permutation);
+  array result = transpose(arr, permutation, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -264,7 +264,7 @@ SEXP cpp_mlx_flatten(SEXP xp_, int start_axis, int end_axis) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  array result = flatten(arr, start_axis, end_axis);
+  array result = flatten(arr, start_axis, end_axis, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -273,7 +273,7 @@ SEXP cpp_mlx_swapaxes(SEXP xp_, int axis1, int axis2) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  array result = swapaxes(arr, axis1, axis2);
+  array result = swapaxes(arr, axis1, axis2, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
