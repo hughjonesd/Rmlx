@@ -124,13 +124,14 @@ when you call functions like <code><a href="https://rdrr.io/r/base/matrix.html" 
 <span><span class="co"># Specify the device explicitly (uses GPU if available, CPU otherwise)</span></span>
 <span><span class="va">x_dev</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">m</span>, device <span class="op">=</span> <span class="va">device</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
-<p><strong>Precision note:</strong> Numeric inputs are stored in single
-precision (<code>float32</code>). Requesting
-<code>dtype = "float64"</code> will downcast the input with a warning.
+<p><strong>Precision note:</strong> Numeric inputs use single precision
+(<code>float32</code>) by default. <code>float64</code> arrays are
+supported on CPU only; request them with
+<code>dtype = "float64", device = "cpu"</code> or explicitly finish GPU
+work with <code>mlx_cast(x, dtype = "float64", device = "cpu")</code>.
 Logical inputs are stored as MLX <code>bool</code> tensors (logical
 <code>NA</code> values are not supported). Complex inputs are stored as
-<code>complex64</code> (single-precision real and imaginary parts). Use
-base R arrays if you need double precision arithmetic.</p>
+<code>complex64</code> (single-precision real and imaginary parts).</p>
 </blockquote>
 </div>
 <div class="section level2">
@@ -391,9 +392,10 @@ computed until needed:</p>
 <span><span class="co"># Set back to best available device</span></span>
 <span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "gpu"</span></span></code></pre></div>
-<p>Remember that numeric computations are always performed in
-<code>float32</code>; the CPU mode is useful when you need to compare
-against base R or debug without a GPU.</p>
+<p>Numeric computations default to <code>float32</code> for GPU
+compatibility. Use CPU <code>float64</code> when you need double
+precision, and cast back to <code>float32</code> before moving results
+to the GPU.</p>
 </div>
 <div class="section level2">
 <h2 id="performance-comparison">Performance Comparison<a class="anchor" aria-label="anchor" href="#performance-comparison"></a>
@@ -420,9 +422,9 @@ multiplication:</p>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Base R:"</span>, <span class="va">t1</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Base R: 0.357 seconds</span></span>
+<span><span class="co">#&gt; Base R: 0.335 seconds</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"MLX:"</span>, <span class="va">t2</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; MLX: 0.023 seconds</span></span></code></pre></div>
+<span><span class="co">#&gt; MLX: 0.011 seconds</span></span></code></pre></div>
 <p>Note: This is an informal comparison, not a rigorous benchmark.
 Performance gains depend on array size, operation type, and
 hardware.</p>

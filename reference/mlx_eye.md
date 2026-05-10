@@ -40,6 +40,8 @@ mlx_eye(
 
   - Other: `"bool"`, `"complex64"`
 
+  `float64` arrays are CPU-only. Use `device = "cpu"` when creating or
+  casting to `float64`, and cast back to `float32` before using the GPU.
   Not all functions support all types. See individual function
   documentation.
 
@@ -48,10 +50,9 @@ mlx_eye(
   Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
   via
   [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  Defaults to the current
-  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
-  unless noted otherwise (helpers that act on an existing array
-  typically reuse that array's device or stream).
+  By default, many functions use the
+  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  of their first argument.
 
 ## Value
 

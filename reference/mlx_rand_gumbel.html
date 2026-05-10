@@ -59,14 +59,15 @@
 <dd><p>Data type string. Supported types include:</p><ul><li><p>Floating point: <code>"float32"</code>, <code>"float64"</code></p></li>
 <li><p>Integer: <code>"int8"</code>, <code>"int16"</code>, <code>"int32"</code>, <code>"int64"</code>, <code>"uint8"</code>, <code>"uint16"</code>, <code>"uint32"</code>, <code>"uint64"</code></p></li>
 <li><p>Other: <code>"bool"</code>, <code>"complex64"</code></p></li>
-</ul><p>Not all functions support all types. See individual function documentation.</p></dd>
+</ul><p><code>float64</code> arrays are CPU-only. Use <code>device = "cpu"</code> when creating or
+casting to <code>float64</code>, and cast back to <code>float32</code> before using the GPU.
+Not all functions support all types. See individual function documentation.</p></dd>
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
 <dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Defaults to the current
-<code><a href="mlx_default_device.html">mlx_default_device()</a></code> unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).</p></dd>
+<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. By default, many
+functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of their first argument.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -5,7 +5,7 @@ Computes the inverse of a triangular matrix.
 ## Usage
 
 ``` r
-mlx_tri_inv(x, upper = FALSE)
+mlx_tri_inv(x, upper = FALSE, device = NULL)
 ```
 
 ## Arguments
@@ -35,7 +35,7 @@ The inverse of the triangular matrix `x`.
 
 ``` r
 # Lower triangular matrix
-L <- mlx_matrix(c(1:3, 0, 4:5, 0, 0, 6), 3, 3)
+L <- mlx_matrix(c(1:3, 0, 4:5, 0, 0, 6), 3, 3, device = "cpu")
 mlx_tri_inv(L, upper = FALSE)
 #> mlx array [3 x 3]
 #>   dtype: float32

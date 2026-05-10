@@ -49,7 +49,7 @@ are close within specified tolerances.</p>
 <span>  rtol <span class="op">=</span> <span class="fl">1e-05</span>,</span>
 <span>  atol <span class="op">=</span> <span class="fl">1e-08</span>,</span>
 <span>  equal_nan <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  device <span class="op">=</span> <span class="fu"><a href="mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  device <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -75,9 +75,8 @@ are close within specified tolerances.</p>
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
 <dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Defaults to the current
-<code><a href="mlx_default_device.html">mlx_default_device()</a></code> unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).</p></dd>
+<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. By default, many
+functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of their first argument.</p></dd>
 
 </dl></div>
     <div class="section level2">

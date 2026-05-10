@@ -49,6 +49,10 @@ Useful links:
 
 **Maintainer**: David Hugh-Jones <david@hughjones.com>
 
+Authors:
+
+- David Hugh-Jones <david@hughjones.com>
+
 Other contributors:
 
 - Apple Inc. (MLX library downloaded at install time) \[copyright

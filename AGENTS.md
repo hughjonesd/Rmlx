@@ -50,6 +50,10 @@
   base R generics (e.g., `Ops.mlx`, `mean.mlx`).
 - Unexported helpers avoid the `mlx_` prefix; only low-level helpers
   that mirror MLX API calls should use a `.mlx_` prefix.
+- Keep the architecture simple. Avoid creating functions that are used
+  only once: inline instead. To avoid duplication, check the existing
+  codebase before creating new functionality. There’s a list of all
+  functions, including brief descriptions, in `dev/mlx-functions.txt`.
 
 ## Testing Guidelines
 
@@ -74,6 +78,8 @@
   `Add rowSums helper`); keep subject lines near 70 characters.
 - Each PR should link to issues when relevant, summarize API changes,
   and note Metal/CPU devices covered.
+- The pre-commit hook runs MLX benchmarks. Let the benchmark run finish
+  when committing; do not interrupt it just because it takes a while.
 - Before opening a PR, run `R -q -e 'devtools::document()'`,
   `R -q -e 'devtools::test()'`, and `R -q -e 'devtools::check()'`;
   include notable outputs or screenshots for performance-sensitive work.

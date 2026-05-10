@@ -18,10 +18,9 @@ mlx_default_stream(device = mlx_default_device())
 - device:
 
   Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via `mlx_new_stream()`. Defaults to the current
-  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
-  unless noted otherwise (helpers that act on an existing array
-  typically reuse that array's device or stream).
+  via `mlx_new_stream()`. By default, many functions use the
+  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  of their first argument.
 
 ## Value
 

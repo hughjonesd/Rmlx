@@ -13,7 +13,7 @@ chol2inv(x, size = NCOL(x), ...)
 chol2inv(x, size = NCOL(x), ...)
 
 # S3 method for class 'mlx'
-chol2inv(x, size = NCOL(x), ...)
+chol2inv(x, size = NCOL(x), ..., device = NULL)
 ```
 
 ## Arguments
@@ -30,9 +30,25 @@ chol2inv(x, size = NCOL(x), ...)
 
   Additional arguments; ignored.
 
+- device:
+
+  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
+  via
+  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
+  By default, many functions use the
+  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  of their first argument.
+
 ## Value
 
 The inverse of the original matrix (before Cholesky decomposition).
+
+## Details
+
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast the
+operands with `device = "cpu"` explicitly, or pass a `device = "cpu"`
+argument. (Passing the argument won't affect the device of any mlx
+object returned, just where this particular operation is run.)
 
 ## See also
 
@@ -43,14 +59,14 @@ The inverse of the original matrix (before Cholesky decomposition).
 ## Examples
 
 ``` r
-A <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
+A <- mlx_matrix(c(4, 1, 1, 3), 2, 2, device = "cpu")
 U <- chol(A)
 A_inv <- chol2inv(U)
 # Verify: A %*% A_inv should be identity
 A %*% A_inv
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    1    0

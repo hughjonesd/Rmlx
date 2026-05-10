@@ -73,12 +73,13 @@ print(x)
 x_dev <- as_mlx(m, device = device)
 ```
 
-> **Precision note:** Numeric inputs are stored in single precision
-> (`float32`). Requesting `dtype = "float64"` will downcast the input
-> with a warning. Logical inputs are stored as MLX `bool` tensors
-> (logical `NA` values are not supported). Complex inputs are stored as
-> `complex64` (single-precision real and imaginary parts). Use base R
-> arrays if you need double precision arithmetic.
+> **Precision note:** Numeric inputs use single precision (`float32`) by
+> default. `float64` arrays are supported on CPU only; request them with
+> `dtype = "float64", device = "cpu"` or explicitly finish GPU work with
+> `mlx_cast(x, dtype = "float64", device = "cpu")`. Logical inputs are
+> stored as MLX `bool` tensors (logical `NA` values are not supported).
+> Complex inputs are stored as `complex64` (single-precision real and
+> imaginary parts).
 
 ## Lazy Evaluation
 
@@ -350,9 +351,9 @@ mlx_default_device(device)
 #> [1] "gpu"
 ```
 
-Remember that numeric computations are always performed in `float32`;
-the CPU mode is useful when you need to compare against base R or debug
-without a GPU.
+Numeric computations default to `float32` for GPU compatibility. Use CPU
+`float64` when you need double precision, and cast back to `float32`
+before moving results to the GPU.
 
 ## Performance Comparison
 
@@ -379,9 +380,9 @@ t2 <- system.time({
 })
 
 cat("Base R:", t1["elapsed"], "seconds\n")
-#> Base R: 0.357 seconds
+#> Base R: 0.335 seconds
 cat("MLX:", t2["elapsed"], "seconds\n")
-#> MLX: 0.023 seconds
+#> MLX: 0.011 seconds
 ```
 
 Note: This is an informal comparison, not a rigorous benchmark.

@@ -39,10 +39,9 @@ as_mlx(
   Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
   via
   [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  Defaults to the current
-  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
-  unless noted otherwise (helpers that act on an existing array
-  typically reuse that array's device or stream).
+  By default, many functions use the
+  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  of their first argument.
 
 ## Value
 
@@ -58,7 +57,10 @@ create integer MLX arrays, you must explicitly specify `dtype`:
 
 ### Type precision
 
-- `float64` is supported but emits a warning and downcasts to `float32`
+- `float64` is supported on CPU only; use `device = "cpu"` explicitly.
+  Cast GPU arrays to `float64` with
+  `mlx_cast(x, dtype = "float64", device = "cpu")`, and cast back to
+  `float32` before returning to GPU.
 
 - Integer arithmetic may promote types (e.g., int32 + int32 might →
   int64)

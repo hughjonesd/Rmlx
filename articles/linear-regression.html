@@ -93,6 +93,10 @@ GPU-accelerated arrays.</p>
 <span><span class="co">#&gt;     asplit, backsolve, chol2inv, col, colMeans, colSums, diag, drop,</span></span>
 <span><span class="co">#&gt;     outer, row, rowMeans, rowSums, svd</span></span>
 <span></span>
+<span><span class="co"># should work on cpu only</span></span>
+<span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="fu"><a href="../reference/mlx_best_device.html">mlx_best_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "gpu"</span></span>
+<span></span>
 <span><span class="co"># Problem metadata</span></span>
 <span><span class="va">num_features</span> <span class="op">&lt;-</span> <span class="fl">100</span></span>
 <span><span class="va">num_cases</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
@@ -166,7 +170,7 @@ unbounded</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">w_sgd</span> <span class="op">&lt;-</span> <span class="fu">train_sgd</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Iteration 1000 - Loss: 0.4979068</span></span></code></pre></div>
+<span><span class="co">#&gt; Iteration 1000 - Loss: 0.4936745</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-2-closed-form-regression-via-matrix-algebra">Method 2: Closed-form Regression via Matrix Algebra<a class="anchor" aria-label="anchor" href="#method-2-closed-form-regression-via-matrix-algebra"></a>
@@ -183,11 +187,12 @@ and solve the triangular system
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mi>w</mi><mo>=</mo><msup><mi>Q</mi><mi>⊤</mi></msup><mi>y</mi></mrow><annotation encoding="application/x-tex">Rw = Q^\top y</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mlx_normal_eq</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">qr_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/qr.html" class="external-link">qr</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span></span>
+<span>  <span class="co"># in mlx at present, qr only works on the cpu</span></span>
+<span>  <span class="va">qr_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/qr.html" class="external-link">qr</a></span><span class="op">(</span><span class="va">X</span>, device <span class="op">=</span> <span class="st">"cpu"</span><span class="op">)</span></span>
 <span>  <span class="va">q</span> <span class="op">&lt;-</span> <span class="va">qr_res</span><span class="op">$</span><span class="va">Q</span></span>
 <span>  <span class="va">r</span> <span class="op">&lt;-</span> <span class="va">qr_res</span><span class="op">$</span><span class="va">R</span></span>
 <span>  <span class="va">q_ty</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/crossprod.html" class="external-link">crossprod</a></span><span class="op">(</span><span class="va">q</span>, <span class="va">y</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="../reference/mlx_solve_triangular.html">mlx_solve_triangular</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">q_ty</span>, upper <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="../reference/mlx_solve_triangular.html">mlx_solve_triangular</a></span><span class="op">(</span><span class="va">r</span>, <span class="va">q_ty</span>, upper <span class="op">=</span> <span class="cn">TRUE</span>, device <span class="op">=</span> <span class="st">"cpu"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="va">w_closed</span> <span class="op">&lt;-</span> <span class="fu">mlx_normal_eq</span><span class="op">(</span><span class="va">X</span>, <span class="va">y</span><span class="op">)</span></span>
@@ -196,7 +201,7 @@ and solve the triangular system
 <span><span class="va">closed_error</span> <span class="op">&lt;-</span> <span class="va">w_closed</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">closed_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">closed_error</span> <span class="op">*</span> <span class="va">closed_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">closed_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.1028542</span></span></code></pre></div>
+<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.1012061</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accelerating-the-closed-form-solution-with-mlx_compile">Accelerating the Closed-form Solution with
@@ -219,7 +224,7 @@ graph.</p>
 <span><span class="va">compiled_error</span> <span class="op">&lt;-</span> <span class="va">w_compiled</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">compiled_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">compiled_error</span> <span class="op">*</span> <span class="va">compiled_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Compiled closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">compiled_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.1028542</span></span></code></pre></div>
+<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.1012061</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accuracy-and-performance-comparison">Accuracy and Performance Comparison<a class="anchor" aria-label="anchor" href="#accuracy-and-performance-comparison"></a>
@@ -291,23 +296,23 @@ as a reference.</p>
 <tbody>
 <tr class="odd">
 <td align="left">SGD</td>
-<td align="right">2.21s</td>
-<td align="right">0.1029</td>
+<td align="right">1.83s</td>
+<td align="right">0.1012</td>
 </tr>
 <tr class="even">
 <td align="left">MLX closed form</td>
-<td align="right">26ms</td>
-<td align="right">0.1029</td>
+<td align="right">23.45ms</td>
+<td align="right">0.1012</td>
 </tr>
 <tr class="odd">
 <td align="left">MLX closed form (compiled)</td>
-<td align="right">26.76ms</td>
-<td align="right">0.1029</td>
+<td align="right">19.51ms</td>
+<td align="right">0.1012</td>
 </tr>
 <tr class="even">
 <td align="left">Base R</td>
-<td align="right">91.07ms</td>
-<td align="right">0.1029</td>
+<td align="right">83.32ms</td>
+<td align="right">0.1012</td>
 </tr>
 </tbody>
 </table>

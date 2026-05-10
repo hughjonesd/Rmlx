@@ -6,7 +6,7 @@ without changing its shape.
 ## Usage
 
 ``` r
-mlx_cast(x, dtype = NULL, device = x$device)
+mlx_cast(x, dtype = NULL, device = mlx_device(x))
 ```
 
 ## Arguments

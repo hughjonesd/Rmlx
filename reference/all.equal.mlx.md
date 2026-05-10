@@ -7,8 +7,8 @@ are not.
 ## Usage
 
 ``` r
-# S3 method for class 'equal.mlx'
-all(target, current, tolerance = sqrt(.Machine$double.eps), ...)
+# S3 method for class 'mlx'
+all.equal(target, current, tolerance = sqrt(.Machine$double.eps), ...)
 ```
 
 ## Arguments

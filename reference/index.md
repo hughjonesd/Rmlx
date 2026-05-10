@@ -284,7 +284,7 @@
   : Element-wise approximate equality
 - [`mlx_allclose()`](https://hughjonesd.github.io/Rmlx/reference/mlx_allclose.md)
   : Test if all elements of two arrays are close
-- [`all(`*`<equal.mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/all.equal.mlx.md)
+- [`all.equal(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/all.equal.mlx.md)
   : Test if two MLX arrays are (nearly) equal
 - [`colSums()`](https://hughjonesd.github.io/Rmlx/reference/colSums.md)
   : Column sums for mlx arrays

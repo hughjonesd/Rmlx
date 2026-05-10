@@ -2,6 +2,8 @@
 
 ## Rmlx (development version)
 
+- We now allow float64 arrays. (Note that mlx doesn’t yet do operations
+  on the gpu for these, however.)
 - [`rbind()`](https://rdrr.io/r/base/cbind.html) and
   [`cbind()`](https://rdrr.io/r/base/cbind.html) now accept 1D vectors.
 - Bugfix:

@@ -7,7 +7,7 @@ matrices. This is different from R's implementation.
 
 ``` r
 # S3 method for class 'mlx'
-svd(x, nu = min(n, p), nv = min(n, p), ...)
+svd(x, nu = min(n, p), nv = min(n, p), ..., device = NULL)
 ```
 
 ## Arguments
@@ -28,9 +28,25 @@ svd(x, nu = min(n, p), nv = min(n, p), ...)
 
   Additional arguments; ignored.
 
+- device:
+
+  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
+  via
+  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
+  By default, many functions use the
+  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  of their first argument.
+
 ## Value
 
 A list with components `d`, `u`, and `v`.
+
+## Details
+
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast the
+operands with `device = "cpu"` explicitly, or pass a `device = "cpu"`
+argument. (Passing the argument won't affect the device of any mlx
+object returned, just where this particular operation is run.)
 
 ## See also
 
@@ -39,7 +55,7 @@ A list with components `d`, `u`, and `v`.
 ## Examples
 
 ``` r
-x <- mlx_matrix(c(1, 0, 0, 2), 2, 2)
+x <- mlx_matrix(c(1, 0, 0, 2), 2, 2, device = "cpu")
 svd(x)
 #> $d
 #> mlx array [2]

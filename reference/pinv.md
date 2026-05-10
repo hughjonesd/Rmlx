@@ -5,7 +5,7 @@ Moore-Penrose pseudoinverse for MLX arrays
 ## Usage
 
 ``` r
-pinv(x)
+pinv(x, device = NULL)
 ```
 
 ## Arguments
@@ -18,6 +18,13 @@ pinv(x)
 
 An mlx object containing the pseudoinverse.
 
+## Details
+
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast the
+operands with `device = "cpu"` explicitly, or pass a `device = "cpu"`
+argument. (Passing the argument won't affect the device of any mlx
+object returned, just where this particular operation is run.)
+
 ## See also
 
 [mlx.linalg.pinv](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv)
@@ -25,7 +32,7 @@ An mlx object containing the pseudoinverse.
 ## Examples
 
 ``` r
-x <- mlx_matrix(c(1, 2, 3, 4), 2, 2)
+x <- mlx_matrix(c(1, 2, 3, 4), 2, 2, device = "cpu")
 pinv(x)
 #> mlx array [2 x 2]
 #>   dtype: float32

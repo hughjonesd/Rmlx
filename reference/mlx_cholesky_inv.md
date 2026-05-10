@@ -7,7 +7,7 @@ original matrix.
 ## Usage
 
 ``` r
-mlx_cholesky_inv(x, upper = FALSE)
+mlx_cholesky_inv(x, upper = FALSE, device = NULL)
 ```
 
 ## Arguments
@@ -44,10 +44,10 @@ A <- t(A) %*% A
 # Compute Cholesky factor
 L <- chol(A, pivot = FALSE, upper = FALSE)
 # Get inverse from Cholesky factor
-mlx_cholesky_inv(as_mlx(L))
+mlx_cholesky_inv(as_mlx(L, device = "cpu"))
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: gpu
+#>   device: cpu
 #>   values:
 #>           [,1]     [,2]     [,3]
 #> [1,] 0.1525249 0.000000 0.000000
