@@ -120,12 +120,11 @@ the triangular system \(Rw = Q^\top y\):
 ```{r}
 mlx_normal_eq <- function(X, y) {
   # in mlx at present, qr only works on the cpu
-  X <- mlx_cast(X, device = "cpu")
-  qr_res <- qr(X)
+  qr_res <- qr(X, device = "cpu")
   q <- qr_res$Q
   r <- qr_res$R
   q_ty <- crossprod(q, y)
-  mlx_solve_triangular(r, q_ty, upper = TRUE)
+  mlx_solve_triangular(r, q_ty, upper = TRUE, device = "cpu")
 }
 
 w_closed <- mlx_normal_eq(X, y)
