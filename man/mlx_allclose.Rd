@@ -10,7 +10,7 @@ mlx_allclose(
   rtol = 1e-05,
   atol = 1e-08,
   equal_nan = FALSE,
-  device = mlx_default_device()
+  device = NULL
 )
 }
 \arguments{

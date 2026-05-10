@@ -411,6 +411,12 @@ common_device <- function(device1, device2) {
   return("cpu")
 }
 
+#' Match R operands to mlx operand dtype and device
+#'
+#' @param x,y mlx or R
+#'
+#' @returns `list(x, y)` with both elements mlx
+#' @noRd
 coerce_binary_operands <- function(x, y) {
   # For one mlx operand plus one plain R operand, inherit the mlx operand's
   # dtype/device before common promotion. This keeps scalar arithmetic on a

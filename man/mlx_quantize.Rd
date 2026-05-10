@@ -4,13 +4,7 @@
 \alias{mlx_quantize}
 \title{Quantize a Matrix}
 \usage{
-mlx_quantize(
-  w,
-  group_size = 64L,
-  bits = 4L,
-  mode = "affine",
-  device = mlx_default_device()
-)
+mlx_quantize(w, group_size = 64L, bits = 4L, mode = "affine", device = NULL)
 }
 \arguments{
 \item{w}{An mlx array representing the weight matrix. Accepts either an

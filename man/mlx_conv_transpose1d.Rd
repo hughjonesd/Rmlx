@@ -12,7 +12,7 @@ mlx_conv_transpose1d(
   dilation = 1L,
   output_padding = 0L,
   groups = 1L,
-  device = mlx_default_device()
+  device = NULL
 )
 }
 \arguments{

@@ -11,7 +11,7 @@ mlx_conv1d(
   padding = 0L,
   dilation = 1L,
   groups = 1L,
-  device = mlx_default_device()
+  device = NULL
 )
 }
 \arguments{

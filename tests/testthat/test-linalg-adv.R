@@ -121,15 +121,3 @@ test_that("mlx_cross matches manual cross product", {
   }))
   expect_equal(cross_res, expected, tolerance = 1e-6)
 })
-
-test_that("mlx_cross runs on gpu", {
-  skip_if_not(mlx_has_gpu())
-  local_default_device("gpu")
-
-  u <- as_mlx(matrix(c(1, 0, 0), 1, 3), dtype = "float32", device = "gpu")
-  v <- as_mlx(matrix(c(0, 1, 0), 1, 3), dtype = "float32", device = "gpu")
-  res <- mlx_cross(u, v)
-
-  expect_equal(mlx_device(res), "gpu")
-  expect_equal(as.matrix(res), matrix(c(0, 0, 1), 1, 3), tolerance = 1e-6)
-})

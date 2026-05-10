@@ -4,14 +4,7 @@
 \alias{mlx_isclose}
 \title{Element-wise approximate equality}
 \usage{
-mlx_isclose(
-  a,
-  b,
-  rtol = 1e-05,
-  atol = 1e-08,
-  equal_nan = FALSE,
-  device = mlx_default_device()
-)
+mlx_isclose(a, b, rtol = 1e-05, atol = 1e-08, equal_nan = FALSE, device = NULL)
 }
 \arguments{
 \item{a, b}{MLX arrays or objects coercible to MLX arrays}

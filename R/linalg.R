@@ -34,10 +34,10 @@ solve.mlx <- function(a, b = NULL, ...) {
         list(target_dtype, mlx_dtype(b)),
         list(target_device, mlx_device(b))
       )
-      a <- mlx_cast(a, dtype = target$dtype, device = target$device)
-      b <- mlx_cast(b, dtype = target$dtype, device = target$device)
       target_dtype <- target$dtype
       target_device <- target$device
+      a <- mlx_cast(a, dtype = target_dtype, device = target_device)
+      b <- mlx_cast(b, dtype = target_dtype, device = target_device)
     }
 
     # Solve Ax = b

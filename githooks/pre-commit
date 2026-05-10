@@ -19,3 +19,4 @@ git add "$OUTPUT_FILE"
 
 echo "[pre-commit] Updating dev/mlx-functions.txt"
 Rscript "$REPO_ROOT/dev/print-functions-list.R"
+git add "$REPO_ROOT/dev/mlx-functions.txt"

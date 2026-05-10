@@ -4,7 +4,7 @@
 \alias{mlx_cast}
 \title{Cast an mlx array}
 \usage{
-mlx_cast(x, dtype = NULL, device = x$device)
+mlx_cast(x, dtype = NULL, device = mlx_device(x))
 }
 \arguments{
 \item{x}{An mlx array.}

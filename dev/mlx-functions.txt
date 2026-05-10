@@ -28,7 +28,7 @@ chol.mlx "Cholesky decomposition for mlx arrays" TRUE FALSE
 chol2inv "Inverse from Cholesky decomposition" TRUE TRUE
 chol2inv.default NA TRUE FALSE
 chol2inv.mlx NA TRUE FALSE
-coerce_binary_operands NA NA FALSE
+coerce_binary_operands "Match R operands to mlx operand dtype and device" TRUE FALSE
 coerce_payload "Coerce R payload into the storage format expected by MLX" TRUE FALSE
 col NA TRUE TRUE
 col.default NA TRUE FALSE

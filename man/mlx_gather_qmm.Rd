@@ -16,7 +16,7 @@ mlx_gather_qmm(
   bits = 4L,
   mode = "affine",
   sorted_indices = FALSE,
-  device = mlx_default_device()
+  device = NULL
 )
 }
 \arguments{

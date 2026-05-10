@@ -60,19 +60,17 @@ build_benchmark_inputs <- function(sizes, seed = 20251031L, cache_dir = NULL) {
   }
 
   make_payload <- function(base_data) {
-    as_cpu_mlx <- function(x) {
-      as_mlx(x, dtype = "float32", device = "cpu")
-    }
 
     mlx_data <- list(
       a = as_mlx(base_data$a, dtype = "float32"),
+      a_cpu = as_mlx(base_data$a, dtype = "float32", device = "cpu"),
       b = as_mlx(base_data$b, dtype = "float32"),
       spd = as_mlx(base_data$spd, dtype = "float32"),
-      spd_cpu = as_cpu_mlx(base_data$spd),
+      spd_cpu = as_mlx(base_data$spd, dtype = "float32", device = "cpu"),
       rhs = as_mlx(base_data$rhs, dtype = "float32"),
-      rhs_cpu = as_cpu_mlx(base_data$rhs),
+      rhs_cpu = as_mlx(base_data$rhs, dtype = "float32", device = "cpu"),
       chol = as_mlx(base_data$chol, dtype = "float32"),
-      chol_cpu = as_cpu_mlx(base_data$chol),
+      chol_cpu = as_mlx(base_data$chol, dtype = "float32", device = "cpu"),
       idx_vec = base_data$idx_vec,
       idx_mat = base_data$idx_mat,
       vec = as_mlx(base_data$vec, dtype = "float32"),
@@ -381,8 +379,8 @@ benchmark_operations <- function() {
       id = "svd",
       label = "SVD (values only)",
       min_iterations = 1L,
-      base = function(data) { svd(data$a, nu = 0, nv = 0); invisible(NULL) },
-      mlx = function(data) { force_mlx(svd(data$a, nu = 0, nv = 0)) }
+      base = function(data) { svd(data$a, nu = 0, nv = 0, ); invisible(NULL) },
+      mlx = function(data) { force_mlx(svd(data$a_cpu, nu = 0, nv = 0)) }
     ),
     list(
       id = "diag",

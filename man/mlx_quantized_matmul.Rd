@@ -13,7 +13,7 @@ mlx_quantized_matmul(
   group_size = 64L,
   bits = 4L,
   mode = "affine",
-  device = mlx_default_device()
+  device = NULL
 )
 }
 \arguments{

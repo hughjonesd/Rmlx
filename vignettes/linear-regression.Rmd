@@ -116,6 +116,8 @@ the triangular system \(Rw = Q^\top y\):
 
 ```{r}
 mlx_normal_eq <- function(X, y) {
+  # in mlx at present, qr only works on the cpu
+  X <- mlx_cast(X, device = "cpu")
   qr_res <- qr(X)
   q <- qr_res$Q
   r <- qr_res$R
