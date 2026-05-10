@@ -4,10 +4,14 @@
 \alias{mlx_lu}
 \title{LU factorization}
 \usage{
-mlx_lu(x)
+mlx_lu(x, device = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}
+
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 A list with components \code{p} (pivot indices), \code{l} (lower triangular),
@@ -16,8 +20,14 @@ and \code{u} (upper triangular). The relationship is \code{A = L[P, ] \%*\% U}.
 \description{
 Computes the LU factorization of a matrix.
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
+}
 \examples{
-A <- mlx_matrix(rnorm(16), 4, 4)
+A <- mlx_matrix(rnorm(16), 4, 4, device = "cpu")
 lu_result <- mlx_lu(A)
 P <- lu_result$p  # Pivot indices
 L <- lu_result$l  # Lower triangular

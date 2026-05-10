@@ -39,7 +39,7 @@ SEXP cpp_mlx_value_grad(SEXP fun_sexp,
     if (!obj.inherits("mlx")) {
       Rcpp::stop("All arguments must be 'mlx' objects. Use as_mlx() to convert.");
     }
-    devices[i] = as<std::string>(obj["device"]);
+    devices[i] = get_mlx_wrapper(obj["ptr"])->device();
   }
 
   std::vector<int> argnums_vec(argnums.size());

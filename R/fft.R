@@ -131,9 +131,11 @@ mlx_fftn <- function(x,
     )
   }
 
-  handle <- resolve_device(device, mlx_x$device)
+  device_override <- !is.null(device)
+  handle <- resolve_device(device, mlx_device(mlx_x))
+  operation_device <- if (device_override) handle$device else NULL
   ptr <- eval_with_stream(handle, function(dev) {
-    cpp_mlx_fft(mlx_x$ptr, axes_zero, isTRUE(inverse), dev)
+    cpp_mlx_fft(mlx_x$ptr, axes_zero, isTRUE(inverse), operation_device)
   })
   result <- new_mlx(ptr, handle$device)
 

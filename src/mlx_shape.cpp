@@ -10,7 +10,7 @@ using namespace mlx::core;
 // [[Rcpp::export]]
 SEXP cpp_mlx_transpose(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array result = transpose(wrapper->get());
+  array result = transpose(wrapper->get(), wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -20,7 +20,7 @@ SEXP cpp_mlx_reshape(SEXP xp_, SEXP new_dim_) {
   IntegerVector new_dim(new_dim_);
 
   Shape shape(new_dim.begin(), new_dim.end());
-  array result = reshape(wrapper->get(), shape);
+  array result = reshape(wrapper->get(), shape, wrapper->stream());
 
   return make_mlx_xptr(std::move(result));
 }
@@ -33,22 +33,23 @@ SEXP cpp_mlx_concat(SEXP args_, int axis) {
   }
   std::vector<array> arrays;
   arrays.reserve(args.size());
-  std::string device_str;
+  StreamOrDevice dev;
   for (int i = 0; i < args.size(); ++i) {
     List obj(args[i]);
-    arrays.push_back(get_mlx_wrapper(obj["ptr"])->get());
+    MlxArrayWrapper* wrapper = get_mlx_wrapper(obj["ptr"]);
+    array arr = wrapper->get();
     if (i == 0) {
-      device_str = Rcpp::as<std::string>(obj["device"]);
+      dev = wrapper->stream(arr.dtype());
     }
+    arrays.push_back(arr);
   }
 
-  StreamOrDevice dev = string_to_device(device_str);
   array result = concatenate(arrays, axis, dev);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_stack(SEXP args_, int axis, std::string device_str) {
+SEXP cpp_mlx_stack(SEXP args_, int axis) {
   List args(args_);
   if (args.size() == 0) {
     Rcpp::stop("No tensors supplied for stacking.");
@@ -56,12 +57,17 @@ SEXP cpp_mlx_stack(SEXP args_, int axis, std::string device_str) {
 
   std::vector<array> arrays;
   arrays.reserve(args.size());
+  StreamOrDevice dev;
   for (int i = 0; i < args.size(); ++i) {
     List obj(args[i]);
-    arrays.push_back(get_mlx_wrapper(obj["ptr"])->get());
+    MlxArrayWrapper* wrapper = get_mlx_wrapper(obj["ptr"]);
+    array arr = wrapper->get();
+    if (i == 0) {
+      dev = wrapper->stream(arr.dtype());
+    }
+    arrays.push_back(arr);
   }
 
-  StreamOrDevice dev = string_to_device(device_str);
   array result = stack(arrays, axis, dev);
   return make_mlx_xptr(std::move(result));
 }
@@ -75,9 +81,9 @@ SEXP cpp_mlx_squeeze(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes) {
     if (axes.isNotNull()) {
       Rcpp::IntegerVector axes_vec(axes.get());
       std::vector<int> ax(axes_vec.begin(), axes_vec.end());
-      return squeeze(arr, normalize_axes(arr, ax));
+      return squeeze(arr, normalize_axes(arr, ax), wrapper->stream());
     }
-    return squeeze(arr);
+    return squeeze(arr, wrapper->stream());
   }();
   return make_mlx_xptr(std::move(result));
 }
@@ -89,7 +95,7 @@ SEXP cpp_mlx_expand_dims(SEXP xp_, Rcpp::IntegerVector axes_) {
 
   std::vector<int> axes(axes_.begin(), axes_.end());
   std::vector<int> normalized = normalize_new_axes(arr, axes);
-  array result = expand_dims(arr, normalized);
+  array result = expand_dims(arr, normalized, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -104,9 +110,9 @@ SEXP cpp_mlx_repeat(SEXP xp_, int repeats, Rcpp::Nullable<int> axis) {
   array result = [&]() -> array {
     if (axis.isNotNull()) {
       int ax = normalize_axis(arr, Rcpp::as<int>(axis.get()));
-      return repeat(arr, repeats, ax);
+      return repeat(arr, repeats, ax, wrapper->stream());
     }
-    return repeat(arr, repeats);
+    return repeat(arr, repeats, wrapper->stream());
   }();
   return make_mlx_xptr(std::move(result));
 }
@@ -126,7 +132,7 @@ SEXP cpp_mlx_tile(SEXP xp_, Rcpp::IntegerVector reps_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  array result = tile(arr, reps);
+  array result = tile(arr, reps, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -154,20 +160,20 @@ SEXP cpp_mlx_roll(SEXP xp_, SEXP shift_, Rcpp::Nullable<Rcpp::IntegerVector> axe
         shift_shape.push_back(static_cast<int>(val));
       }
       if (axes.size() == 1) {
-        return roll(arr, static_cast<int>(shifts[0]), axes[0]);
+        return roll(arr, static_cast<int>(shifts[0]), axes[0], wrapper->stream());
       }
-      return roll(arr, shift_shape, axes);
+      return roll(arr, shift_shape, axes, wrapper->stream());
     }
 
     if (shifts.size() == 1) {
-      return roll(arr, static_cast<int>(shifts[0]));
+      return roll(arr, static_cast<int>(shifts[0]), wrapper->stream());
     }
     Shape shift_shape;
     shift_shape.reserve(shifts.size());
     for (double val : shifts) {
       shift_shape.push_back(static_cast<int>(val));
     }
-    return roll(arr, shift_shape);
+    return roll(arr, shift_shape, wrapper->stream());
   }();
 
   return make_mlx_xptr(std::move(result));
@@ -249,7 +255,7 @@ SEXP cpp_mlx_moveaxis(SEXP xp_, Rcpp::IntegerVector source_, Rcpp::IntegerVector
     }
   }
 
-  array result = transpose(arr, permutation);
+  array result = transpose(arr, permutation, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -258,7 +264,7 @@ SEXP cpp_mlx_flatten(SEXP xp_, int start_axis, int end_axis) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  array result = flatten(arr, start_axis, end_axis);
+  array result = flatten(arr, start_axis, end_axis, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
@@ -267,12 +273,12 @@ SEXP cpp_mlx_swapaxes(SEXP xp_, int axis1, int axis2) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  array result = swapaxes(arr, axis1, axis2);
+  array result = swapaxes(arr, axis1, axis2, wrapper->stream());
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_meshgrid(SEXP args_, bool sparse, std::string indexing, std::string device_str) {
+SEXP cpp_mlx_meshgrid(SEXP args_, bool sparse, std::string indexing) {
   List args(args_);
   if (args.size() == 0) {
     Rcpp::stop("No tensors supplied for meshgrid.");
@@ -280,12 +286,17 @@ SEXP cpp_mlx_meshgrid(SEXP args_, bool sparse, std::string indexing, std::string
 
   std::vector<array> arrays;
   arrays.reserve(args.size());
+  StreamOrDevice dev;
   for (int i = 0; i < args.size(); ++i) {
     List obj(args[i]);
-    arrays.push_back(get_mlx_wrapper(obj["ptr"])->get());
+    MlxArrayWrapper* wrapper = get_mlx_wrapper(obj["ptr"]);
+    array arr = wrapper->get();
+    if (i == 0) {
+      dev = wrapper->stream(arr.dtype());
+    }
+    arrays.push_back(arr);
   }
 
-  StreamOrDevice dev = string_to_device(device_str);
   std::vector<array> result = meshgrid(arrays, sparse, indexing, dev);
 
   List out(result.size());
@@ -296,7 +307,7 @@ SEXP cpp_mlx_meshgrid(SEXP args_, bool sparse, std::string indexing, std::string
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_broadcast_to(SEXP xp_, Rcpp::IntegerVector shape_, std::string device_str) {
+SEXP cpp_mlx_broadcast_to(SEXP xp_, Rcpp::IntegerVector shape_) {
   if (shape_.size() == 0) {
     Rcpp::stop("shape must contain at least one element.");
   }
@@ -305,14 +316,14 @@ SEXP cpp_mlx_broadcast_to(SEXP xp_, Rcpp::IntegerVector shape_, std::string devi
   array arr = wrapper->get();
 
   Shape shape(shape_.begin(), shape_.end());
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   array result = broadcast_to(arr, shape, dev);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_broadcast_arrays(SEXP args_, std::string device_str) {
+SEXP cpp_mlx_broadcast_arrays(SEXP args_) {
   List args(args_);
   if (args.size() == 0) {
     Rcpp::stop("No tensors supplied for broadcast.");
@@ -320,12 +331,17 @@ SEXP cpp_mlx_broadcast_arrays(SEXP args_, std::string device_str) {
 
   std::vector<array> arrays;
   arrays.reserve(args.size());
+  StreamOrDevice dev;
   for (int i = 0; i < args.size(); ++i) {
     List obj(args[i]);
-    arrays.push_back(get_mlx_wrapper(obj["ptr"])->get());
+    MlxArrayWrapper* wrapper = get_mlx_wrapper(obj["ptr"]);
+    array arr = wrapper->get();
+    if (i == 0) {
+      dev = wrapper->stream(arr.dtype());
+    }
+    arrays.push_back(arr);
   }
 
-  StreamOrDevice dev = string_to_device(device_str);
   std::vector<array> result = broadcast_arrays(arrays, dev);
 
   List out(result.size());
@@ -340,7 +356,6 @@ SEXP cpp_mlx_pad(SEXP xp_,
                  Rcpp::IntegerMatrix pad_pairs_,
                  double pad_value,
                  std::string dtype_str,
-                 std::string device_str,
                  std::string mode_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
@@ -365,7 +380,7 @@ SEXP cpp_mlx_pad(SEXP xp_,
   }
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = wrapper->stream(dtype);
   array pad_val = array(pad_value, dtype);
 
   array result = pad(arr, pad_width, pad_val, mode_str, dev);
@@ -376,14 +391,12 @@ SEXP cpp_mlx_pad(SEXP xp_,
 SEXP cpp_mlx_split(SEXP xp_,
                    Rcpp::Nullable<int> num_splits_,
                    Rcpp::Nullable<Rcpp::IntegerVector> indices_,
-                   int axis,
-                   std::string dtype_str,
-                   std::string device_str) {
+                   int axis) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
   int ax = normalize_axis(arr, axis);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   std::vector<array> outputs;
 
@@ -419,17 +432,15 @@ SEXP cpp_mlx_split(SEXP xp_,
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape, std::string device_str) {
+SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape) {
   MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
 
-  StreamOrDevice cpu_stream = Device(Device::cpu);
-  StreamOrDevice target_device = string_to_device(device_str);
-
-  array a_cpu = astype(a_wrapper->get(), a_wrapper->get().dtype(), cpu_stream);
+  array arr = a_wrapper->get();
+  StreamOrDevice target_device = a_wrapper->stream(arr.dtype());
 
   // Convert 1-indexed to 0-indexed
   int ax = axis - 1;
-  ax = normalize_axis(a_cpu, ax);
+  ax = normalize_axis(arr, ax);
 
   // Convert shape to SmallVector
   Shape new_shape;
@@ -437,18 +448,16 @@ SEXP cpp_mlx_unflatten(SEXP a_xp_, int axis, IntegerVector shape, std::string de
     new_shape.push_back(shape[i]);
   }
 
-  array result_cpu = unflatten(a_cpu, ax, new_shape, cpu_stream);
-  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
-  return make_mlx_xptr(std::move(result_target));
+  array result = unflatten(arr, ax, new_shape, target_device);
+  return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_contiguous(SEXP xp_, std::string device_str) {
+SEXP cpp_mlx_contiguous(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice target_device = string_to_device(device_str);
-  array on_device = astype(arr, arr.dtype(), target_device);
-  array result = contiguous(on_device);
+  StreamOrDevice target_device = wrapper->stream(arr.dtype());
+  array result = contiguous(arr, /*allow_col_major=*/false, target_device);
   return make_mlx_xptr(std::move(result));
 }

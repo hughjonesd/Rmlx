@@ -11,12 +11,12 @@ using namespace mlx::core;
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
-                    std::string dtype_str, std::string device_str) {
+                    std::string dtype_str) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
@@ -24,7 +24,7 @@ SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
   lhs = astype(lhs, target_dtype, target_device);
   rhs = astype(rhs, target_dtype, target_device);
 
-  array result = matmul(lhs, rhs);
+  array result = matmul(lhs, rhs, target_device);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -35,14 +35,13 @@ SEXP cpp_mlx_addmm(SEXP input_xp_,
                    SEXP mat2_xp_,
                    double alpha,
                    double beta,
-                   std::string dtype_str,
-                   std::string device_str) {
+                   std::string dtype_str) {
   MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
   MlxArrayWrapper* mat1_wrapper = get_mlx_wrapper(mat1_xp_);
   MlxArrayWrapper* mat2_wrapper = get_mlx_wrapper(mat2_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = input_wrapper->stream(target_dtype);
 
   array input_arr = astype(input_wrapper->get(), target_dtype, target_device);
   array mat1_arr = astype(mat1_wrapper->get(), target_dtype, target_device);
@@ -61,12 +60,11 @@ SEXP cpp_mlx_addmm(SEXP input_xp_,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_hadamard_transform(SEXP xp_,
-                                Rcpp::Nullable<double> scale_,
-                                std::string device_str) {
+                                Rcpp::Nullable<double> scale_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice target_device = string_to_device(device_str);
+  StreamOrDevice target_device = wrapper->stream(arr.dtype());
   arr = astype(arr, arr.dtype(), target_device);
 
   std::optional<float> scale = std::nullopt;
@@ -82,7 +80,7 @@ SEXP cpp_mlx_hadamard_transform(SEXP xp_,
 SEXP cpp_mlx_cast(SEXP xp_, std::string dtype_str, std::string device_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array arr = wrapper->get();
   array result = astype(arr, dtype, dev);
@@ -94,18 +92,19 @@ SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   array arr = wrapper->get();
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
-  array flat = flatten_r_order(arr);
+  array flat = flatten_r_order(arr, dev);
 
   array result = [&]() -> array {
     if (op == "cumsum") {
-      return cumsum(flat);
+      return cumsum(flat, false, true, dev);
     } else if (op == "cumprod") {
-      return cumprod(flat);
+      return cumprod(flat, false, true, dev);
     } else if (op == "cummax") {
-      return cummax(flat);
+      return cummax(flat, false, true, dev);
     } else if (op == "cummin") {
-      return cummin(flat);
+      return cummin(flat, false, true, dev);
     } else {
       Rcpp::stop("Unsupported cumulative operation: " + op);
     }
@@ -118,49 +117,48 @@ SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
 SEXP cpp_mlx_fft(SEXP xp_,
                  Rcpp::Nullable<Rcpp::IntegerVector> axes_,
                  bool inverse,
-                 std::string device_str) {
+                 SEXP device_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-  StreamOrDevice cpu_stream = Device(Device::cpu);
+  array input = wrapper->get();
+  StreamOrDevice target_device = device_ == R_NilValue
+    ? wrapper->stream(input.dtype())
+    : typed_device(input.dtype(), Rcpp::as<std::string>(device_));
 
-  array input_cpu = astype(wrapper->get(), wrapper->get().dtype(), cpu_stream);
-
-  array result_cpu = [&]() -> array {
+  array result = [&]() -> array {
     if (axes_.isNull()) {
 #if MLX_VERSION_NUMERIC >= 31002
       return inverse
-        ? mlx::core::fft::ifftn(input_cpu, mlx::core::fft::FFTNorm::Backward, cpu_stream)
-        : mlx::core::fft::fftn(input_cpu, mlx::core::fft::FFTNorm::Backward, cpu_stream);
+        ? mlx::core::fft::ifftn(input, mlx::core::fft::FFTNorm::Backward, target_device)
+        : mlx::core::fft::fftn(input, mlx::core::fft::FFTNorm::Backward, target_device);
 #else
-      return inverse ? mlx::core::fft::ifftn(input_cpu, cpu_stream)
-                     : mlx::core::fft::fftn(input_cpu, cpu_stream);
+      return inverse ? mlx::core::fft::ifftn(input, target_device)
+                     : mlx::core::fft::fftn(input, target_device);
 #endif
     }
     std::vector<int> axes = Rcpp::as<std::vector<int>>(axes_.get());
 #if MLX_VERSION_NUMERIC >= 31002
     return inverse
-      ? mlx::core::fft::ifftn(input_cpu, axes, mlx::core::fft::FFTNorm::Backward, cpu_stream)
-      : mlx::core::fft::fftn(input_cpu, axes, mlx::core::fft::FFTNorm::Backward, cpu_stream);
+      ? mlx::core::fft::ifftn(input, axes, mlx::core::fft::FFTNorm::Backward, target_device)
+      : mlx::core::fft::fftn(input, axes, mlx::core::fft::FFTNorm::Backward, target_device);
 #else
-    return inverse ? mlx::core::fft::ifftn(input_cpu, axes, cpu_stream)
-                   : mlx::core::fft::fftn(input_cpu, axes, cpu_stream);
+    return inverse ? mlx::core::fft::ifftn(input, axes, target_device)
+                   : mlx::core::fft::fftn(input, axes, target_device);
 #endif
   }();
 
-  array result_target = astype(result_cpu, result_cpu.dtype(), target_device);
-
-  return make_mlx_xptr(std::move(result_target));
+  return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_cumsum(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   array result = axis_.isNull()
-    ? cumsum(arr, reverse, inclusive)
-    : cumsum(arr, Rcpp::as<int>(axis_), reverse, inclusive);
+    ? cumsum(arr, reverse, inclusive, dev)
+    : cumsum(arr, Rcpp::as<int>(axis_), reverse, inclusive, dev);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -169,10 +167,11 @@ SEXP cpp_mlx_cumsum(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool incl
 SEXP cpp_mlx_cumprod(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
 
   array result = axis_.isNull()
-    ? cumprod(arr, reverse, inclusive)
-    : cumprod(arr, Rcpp::as<int>(axis_), reverse, inclusive);
+    ? cumprod(arr, reverse, inclusive, dev)
+    : cumprod(arr, Rcpp::as<int>(axis_), reverse, inclusive, dev);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -185,21 +184,21 @@ void cpp_mlx_synchronize(std::string device_str) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_tril(SEXP xp_, int k, std::string device_str) {
+SEXP cpp_mlx_tril(SEXP xp_, int k) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
   array result = tril(arr, k, dev);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_triu(SEXP xp_, int k, std::string device_str) {
+SEXP cpp_mlx_triu(SEXP xp_, int k) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = wrapper->stream(arr.dtype());
   array result = triu(arr, k, dev);
   return make_mlx_xptr(std::move(result));
 }

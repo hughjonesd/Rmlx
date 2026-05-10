@@ -4,7 +4,7 @@
 \alias{all.equal.mlx}
 \title{Test if two MLX arrays are (nearly) equal}
 \usage{
-\method{all}{equal.mlx}(target, current, tolerance = sqrt(.Machine$double.eps), ...)
+\method{all.equal}{mlx}(target, current, tolerance = sqrt(.Machine$double.eps), ...)
 }
 \arguments{
 \item{target, current}{MLX arrays to compare}

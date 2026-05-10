@@ -11,7 +11,7 @@ mlx_conv3d(
   padding = c(0L, 0L, 0L),
   dilation = c(1L, 1L, 1L),
   groups = 1L,
-  device = mlx_default_device()
+  device = NULL
 )
 }
 \arguments{
@@ -31,9 +31,8 @@ depends on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.}
 \item{groups}{Number of blocked connections from input to output channels. Default: 1.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).}
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 Convolved output array

@@ -1,4 +1,7 @@
 
+
+`%||%` <- function(x, y) if (is.null(x)) y else x
+
 #' Wrap a raw MLX pointer into an mlx object
 #'
 #' @param ptr External pointer returned by C++ bindings.
@@ -123,7 +126,7 @@ lex_sort <- function (x) {
 print.mlx <- function(x, ...) {
   cat(sprintf("mlx array [%s]\n", paste(mlx_shape(x), collapse = " x ")))
   cat(sprintf("  dtype: %s\n", mlx_dtype(x)))
-  cat(sprintf("  device: %s\n", x$device))
+  cat(sprintf("  device: %s\n", mlx_device(x)))
 
   # Show preview for small arrays
   total_size <- length(x)
@@ -152,7 +155,7 @@ str.mlx <- function(object, ...) {
     "mlx [%s] %s on %s\n",
     paste(mlx_shape(object), collapse = " x "),
     mlx_dtype(object),
-    object$device
+    mlx_device(object)
   ))
   invisible(NULL)
 }
@@ -270,7 +273,7 @@ mlx_reshape <- function(x, newshape) {
   }
 
   ptr <- cpp_mlx_reshape(x$ptr, newshape)
-  new_mlx(ptr, x$device)
+  new_mlx(ptr, mlx_device(x))
 }
 
 #' Get length of MLX array

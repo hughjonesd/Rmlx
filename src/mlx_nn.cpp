@@ -9,14 +9,13 @@ using namespace mlx::core;
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv1d(SEXP input_xp_, SEXP weight_xp_, int stride, int padding,
-                    int dilation, int groups, std::string device_str) {
+                    int dilation, int groups) {
   MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
   MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
+  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   array result = conv1d(input, weight, stride, padding, dilation, groups, target_device);
 
@@ -25,15 +24,13 @@ SEXP cpp_mlx_conv1d(SEXP input_xp_, SEXP weight_xp_, int stride, int padding,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
-                    IntegerVector padding, IntegerVector dilation, int groups,
-                    std::string device_str) {
+                    IntegerVector padding, IntegerVector dilation, int groups) {
   MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
   MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
+  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   std::pair<int, int> stride_pair = {stride[0], stride[1]};
   std::pair<int, int> padding_pair = {padding[0], padding[1]};
@@ -47,15 +44,13 @@ SEXP cpp_mlx_conv2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
-                    IntegerVector padding, IntegerVector dilation, int groups,
-                    std::string device_str) {
+                    IntegerVector padding, IntegerVector dilation, int groups) {
   MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
   MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
+  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   std::tuple<int, int, int> stride_tuple = {stride[0], stride[1], stride[2]};
   std::tuple<int, int, int> padding_tuple = {padding[0], padding[1], padding[2]};
@@ -69,15 +64,13 @@ SEXP cpp_mlx_conv3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv_transpose1d(SEXP input_xp_, SEXP weight_xp_, int stride, int padding,
-                               int dilation, int output_padding, int groups,
-                               std::string device_str) {
+                               int dilation, int output_padding, int groups) {
   MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
   MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
+  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   array result = conv_transpose1d(input, weight, stride, padding, dilation,
                                    output_padding, groups, target_device);
@@ -88,15 +81,13 @@ SEXP cpp_mlx_conv_transpose1d(SEXP input_xp_, SEXP weight_xp_, int stride, int p
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv_transpose2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
                                IntegerVector padding, IntegerVector dilation,
-                               IntegerVector output_padding, int groups,
-                               std::string device_str) {
+                               IntegerVector output_padding, int groups) {
   MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
   MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
+  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   std::pair<int, int> stride_pair = {stride[0], stride[1]};
   std::pair<int, int> padding_pair = {padding[0], padding[1]};
@@ -113,15 +104,13 @@ SEXP cpp_mlx_conv_transpose2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector str
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv_transpose3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
                                IntegerVector padding, IntegerVector dilation,
-                               IntegerVector output_padding, int groups,
-                               std::string device_str) {
+                               IntegerVector output_padding, int groups) {
   MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
   MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
+  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   std::tuple<int, int, int> stride_tuple = {stride[0], stride[1], stride[2]};
   std::tuple<int, int, int> padding_tuple = {padding[0], padding[1], padding[2]};
@@ -139,16 +128,15 @@ SEXP cpp_mlx_conv_transpose3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector str
 SEXP cpp_mlx_quantized_matmul(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
                                SEXP biases_xp_,
                                bool transpose, int group_size, int bits,
-                               std::string mode, std::string device_str) {
+                               std::string mode) {
   MlxArrayWrapper* x_wrapper = get_mlx_wrapper(x_xp_);
   MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
   MlxArrayWrapper* scales_wrapper = get_mlx_wrapper(scales_xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   array x = x_wrapper->get();
   array w = w_wrapper->get();
   array scales = scales_wrapper->get();
+  StreamOrDevice target_device = x_wrapper->stream(x.dtype());
 
   std::optional<array> biases = std::nullopt;
   if (biases_xp_ != R_NilValue) {
@@ -169,17 +157,15 @@ SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
                          SEXP lhs_indices_xp_,
                          SEXP rhs_indices_xp_,
                          bool transpose, int group_size, int bits,
-                         std::string mode, bool sorted_indices,
-                         std::string device_str) {
+                         std::string mode, bool sorted_indices) {
   MlxArrayWrapper* x_wrapper = get_mlx_wrapper(x_xp_);
   MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
   MlxArrayWrapper* scales_wrapper = get_mlx_wrapper(scales_xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   array x = x_wrapper->get();
   array w = w_wrapper->get();
   array scales = scales_wrapper->get();
+  StreamOrDevice target_device = x_wrapper->stream(x.dtype());
 
   std::optional<array> biases = std::nullopt;
   if (biases_xp_ != R_NilValue) {
@@ -209,11 +195,11 @@ SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
 
 // [[Rcpp::export]]
 List cpp_mlx_quantize(SEXP w_xp_, int group_size, int bits,
-                      std::string mode, std::string device_str) {
+                      std::string mode) {
   MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
-  StreamOrDevice target_device = string_to_device(device_str);
 
   array w = w_wrapper->get();
+  StreamOrDevice target_device = w_wrapper->stream(w.dtype());
   std::vector<array> result = quantize(w, std::optional<int>(group_size),
                                        std::optional<int>(bits), mode,
                                        std::nullopt, target_device);
@@ -233,15 +219,13 @@ List cpp_mlx_quantize(SEXP w_xp_, int group_size, int bits,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_dequantize(SEXP w_xp_, SEXP scales_xp_, SEXP biases_xp_,
-                        int group_size, int bits, std::string mode,
-                        std::string device_str) {
+                        int group_size, int bits, std::string mode) {
   MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
   MlxArrayWrapper* scales_wrapper = get_mlx_wrapper(scales_xp_);
 
-  StreamOrDevice target_device = string_to_device(device_str);
-
   array w = w_wrapper->get();
   array scales = scales_wrapper->get();
+  StreamOrDevice target_device = w_wrapper->stream(w.dtype());
 
   std::optional<array> biases = std::nullopt;
   if (biases_xp_ != R_NilValue) {

@@ -99,7 +99,7 @@ test_that("binary operations align devices and dtypes", {
 
   result <- x_gpu + y_cpu
 
-  expect_equal(result$device, "gpu")
+  expect_equal(mlx_device(result), "gpu")
   expect_equal(mlx_dtype(result), "float32")
   expect_equal(as.matrix(result), matrix(c(6, 8, 10, 12), 2, 2), tolerance = 1e-6)
 })
@@ -139,7 +139,7 @@ test_that("logical operators work", {
 
   res_and <- a_mlx & b_mlx
   expect_equal(mlx_dtype(res_and), "bool")
-  expect_equal(res_and$device, "gpu")
+  expect_equal(mlx_device(res_and), "gpu")
 
   # Unary not
   expect_equal(as.matrix(!a_mlx), !a)

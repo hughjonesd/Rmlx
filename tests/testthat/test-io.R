@@ -19,7 +19,7 @@ test_that("mlx_save and mlx_load round trip arrays", {
 
   loaded <- mlx_load(base_path, device = "cpu")
   expect_s3_class(loaded, "mlx")
-  expect_identical(loaded$device, "cpu")
+  expect_identical(mlx_device(loaded), "cpu")
   expect_equal(as.matrix(loaded), x, tolerance = 1e-6)
 })
 

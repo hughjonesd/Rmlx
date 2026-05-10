@@ -19,7 +19,7 @@ colSums(x, ...)
 
 \item{na.rm}{Logical; currently ignored for mlx arrays.}
 
-\item{dims}{Leading dimensions treated as rows/cols (see \code{\link[base:colSums]{base::rowSums()}}).}
+\item{dims}{Leading dimensions treated as rows/cols (see \code{\link[base:rowSums]{base::rowSums()}}).}
 }
 \value{
 An mlx array if \code{x} is_mlx, otherwise a numeric vector.

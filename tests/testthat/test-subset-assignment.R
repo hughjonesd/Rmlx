@@ -1,3 +1,16 @@
+
+test_that("subset assignment returns a new wrapper and preserves aliases", {
+  x <- mlx_matrix(1:4, 2, 2, device = "cpu")
+  y <- x
+
+  x[1, 1] <- 100
+
+  expect_equal(as.matrix(y), matrix(1:4, 2, 2))
+  expect_equal(as.matrix(x), matrix(c(100, 2, 3, 4), 2, 2))
+  expect_equal(mlx_device(x), "cpu")
+  expect_equal(mlx_device(y), "cpu")
+})
+
 test_that("single logical index flattens like base R", {
   mat <- matrix((-4):3, nrow = 2)
   mask <- mat < 0
@@ -52,7 +65,7 @@ test_that("subset assignment accepts mlx replacement arrays", {
 
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 
-  repl_alt <- as_mlx(repl, dtype = "float32", device = x$device)
+  repl_alt <- as_mlx(repl, dtype = "float32", device = mlx_device(x))
   x[rows, cols] <- repl_alt
   mat[rows, cols] <- repl
 
@@ -87,7 +100,7 @@ test_that("vector subset assignment updates the correct element", {
 })
 
 test_that("vector subset assignment rejects unordered repeats", {
-  skip("Disabled on mlx branch")
+  skip("Disabled (why?)")
   seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
   set.seed(seed)
   base_vec <- sample(-5:5, 6, replace = TRUE)
@@ -357,7 +370,7 @@ test_that("subset assignment preserves GPU device", {
   x[2, ] <- c(30, 10, 20)
   mat[2, ] <- c(30, 10, 20)
 
-  expect_equal(x$device, "gpu")
+  expect_equal(mlx_device(x), "gpu")
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 

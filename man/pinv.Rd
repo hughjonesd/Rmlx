@@ -4,7 +4,7 @@
 \alias{pinv}
 \title{Moore-Penrose pseudoinverse for MLX arrays}
 \usage{
-pinv(x)
+pinv(x, device = NULL)
 }
 \arguments{
 \item{x}{An mlx object or coercible matrix.}
@@ -15,8 +15,14 @@ An mlx object containing the pseudoinverse.
 \description{
 Moore-Penrose pseudoinverse for MLX arrays
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
+}
 \examples{
-x <- mlx_matrix(c(1, 2, 3, 4), 2, 2)
+x <- mlx_matrix(c(1, 2, 3, 4), 2, 2, device = "cpu")
 pinv(x)
 }
 \seealso{

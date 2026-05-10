@@ -7,7 +7,7 @@
 \alias{backsolve.mlx}
 \title{Solve triangular systems with mlx arrays}
 \usage{
-mlx_solve_triangular(a, b, upper = FALSE)
+mlx_solve_triangular(a, b, upper = FALSE, device = NULL)
 
 backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 
@@ -40,9 +40,15 @@ An mlx array solution.
 \description{
 Solve triangular systems with mlx arrays
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
+}
 \examples{
-a <- mlx_matrix(c(2, 1, 0, 3), 2, 2)
-b <- mlx_matrix(c(1, 5), 2, 1)
+a <- mlx_matrix(c(2, 1, 0, 3), 2, 2, device = "cpu")
+b <- mlx_matrix(c(1, 5), 2, 1, device = "cpu")
 mlx_solve_triangular(a, b, upper = FALSE)
 }
 \seealso{

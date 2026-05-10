@@ -4,7 +4,7 @@
 \alias{chol.mlx}
 \title{Cholesky decomposition for mlx arrays}
 \usage{
-\method{chol}{mlx}(x, pivot = FALSE, ...)
+\method{chol}{mlx}(x, pivot = FALSE, ..., device = NULL)
 }
 \arguments{
 \item{x}{An mlx matrix (2-dimensional array).}
@@ -12,6 +12,10 @@
 \item{pivot}{Ignored; pivoted decomposition is not supported.}
 
 \item{...}{Additional arguments; ignored.}
+
+\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 Upper-triangular Cholesky factor as an mlx matrix.
@@ -20,8 +24,14 @@ Upper-triangular Cholesky factor as an mlx matrix.
 If \code{x} is not symmetric positive semi-definite, "behaviour is undefined"
 according to the MLX documentation.
 }
+\details{
+As of MLX 0.31.1, this operation only runs on CPU. Create or cast
+the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
+argument. (Passing the argument won't affect the device of any
+mlx object returned, just where this particular operation is run.)
+}
 \examples{
-x <- mlx_matrix(c(4, 1, 1, 3), 2, 2)
+x <- mlx_matrix(c(4, 1, 1, 3), 2, 2, device = "cpu")
 chol(x)
 }
 \seealso{

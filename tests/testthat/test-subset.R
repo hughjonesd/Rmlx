@@ -1,3 +1,4 @@
+
 test_that("basic slicing matches base semantics", {
   mat <- matrix(1:9, 3, 3)
   x <- as_mlx(mat)
@@ -439,7 +440,7 @@ test_that("mlx indexing preserves device", {
   idx <- as_mlx(c(1L, 3L), device = "gpu")
   result <- x[idx, ]
 
-  expect_equal(result$device, "gpu")
+  expect_equal(mlx_device(result), "gpu")
 })
 
 test_that("empty mlx index returns empty result", {

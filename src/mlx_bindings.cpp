@@ -23,13 +23,22 @@ SEXP stream_tag() {
 } // namespace
 
 // MlxArrayWrapper implementation
-MlxArrayWrapper::MlxArrayWrapper() : ptr_(nullptr) {}
+MlxArrayWrapper::MlxArrayWrapper() : ptr_(nullptr), device_("cpu") {}
 
 MlxArrayWrapper::MlxArrayWrapper(const array& arr)
-    : ptr_(std::make_shared<array>(arr)) {}
+    : ptr_(std::make_shared<array>(arr)), device_("cpu") {}
 
 MlxArrayWrapper::MlxArrayWrapper(array&& arr)
-    : ptr_(std::make_shared<array>(std::move(arr))) {}
+    : ptr_(std::make_shared<array>(std::move(arr))), device_("cpu") {}
+
+MlxArrayWrapper::MlxArrayWrapper(const array& arr, const std::string& device)
+    : ptr_(std::make_shared<array>(arr)), device_(device) {}
+
+MlxArrayWrapper::MlxArrayWrapper(array&& arr, const std::string& device)
+    : ptr_(std::make_shared<array>(std::move(arr))), device_(device) {}
+
+MlxArrayWrapper::MlxArrayWrapper(std::shared_ptr<array> ptr, const std::string& device)
+    : ptr_(std::move(ptr)), device_(device) {}
 
 // Finalizer for R external pointer
 void mlx_array_finalizer(SEXP xp) {
@@ -116,6 +125,20 @@ SEXP make_mlx_xptr(array&& arr) {
   return xp;
 }
 
+SEXP make_mlx_xptr(const array& arr, const std::string& device) {
+  MlxArrayWrapper* wrapper = new MlxArrayWrapper(arr, device);
+  SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, R_NilValue);
+  R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);
+  return xp;
+}
+
+SEXP make_mlx_xptr(array&& arr, const std::string& device) {
+  MlxArrayWrapper* wrapper = new MlxArrayWrapper(std::move(arr), device);
+  SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, R_NilValue);
+  R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);
+  return xp;
+}
+
 SEXP make_mlx_stream_xptr(Stream stream) {
   auto* wrapper = new MlxStreamWrapper(stream);
   SEXP xp = R_MakeExternalPtr(wrapper, stream_tag(), R_NilValue);
@@ -181,6 +204,18 @@ std::string device_to_string(const Device& device) {
   Rcpp::stop("Unsupported device type");
 }
 
+StreamOrDevice typed_device(Dtype dtype, const std::string& device) {
+  return string_to_device(device);
+}
+
+StreamOrDevice MlxArrayWrapper::stream() const {
+  return stream(get().dtype());
+}
+
+StreamOrDevice MlxArrayWrapper::stream(Dtype dtype) const {
+  return typed_device(dtype, device_);
+}
+
 } // namespace rmlx
 
 using namespace rmlx;
@@ -194,7 +229,7 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
   // Convert dimensions
   Shape shape(dim.begin(), dim.end());
   Dtype dt = string_to_dtype(dtype_str);
-  StreamOrDevice dev = string_to_device(device_str);
+  StreamOrDevice dev = typed_device(dt, device_str);
 
   size_t ndim = shape.size();
 
@@ -353,21 +388,19 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
 SEXP cpp_mlx_to_r(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-
-  // Move to CPU if needed
-  if (arr.dtype() == float64) {
-    arr = astype(arr, float64, Device(Device::cpu));
-  }
+  StreamOrDevice preferred = wrapper->stream(arr.dtype());
 
   size_t ndim = arr.ndim();
 
   // Transpose to column-major layout if multi-dimensional
   if (ndim > 1) {
-    arr = transpose_between_mlx_and_r(arr);
+    arr = transpose_between_mlx_and_r(arr, preferred);
   }
 
-  // Make contiguous and evaluate
-  arr = contiguous(arr);
+  // Return data to R from CPU memory after any layout work has run on the
+  // object's preferred device.
+  arr = astype(arr, arr.dtype(), Device(Device::cpu));
+  arr = contiguous(arr, /*allow_col_major=*/false, Device(Device::cpu));
   eval(arr);
 
   // Get total size
@@ -510,4 +543,19 @@ IntegerVector cpp_mlx_shape(SEXP xp_) {
 std::string cpp_mlx_dtype(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   return dtype_to_string(wrapper->get().dtype());
+}
+
+// [[Rcpp::export]]
+std::string cpp_mlx_device(SEXP xp_) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  return wrapper->device();
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_with_device(SEXP xp_, std::string device) {
+  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  auto* out = new MlxArrayWrapper(wrapper->shared_array(), device);
+  SEXP xp = R_MakeExternalPtr(out, R_NilValue, R_NilValue);
+  R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);
+  return xp;
 }

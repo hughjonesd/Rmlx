@@ -26,9 +26,8 @@ If not specified, defaults to \code{"float32"} for numeric, \code{"bool"} for lo
 and \code{"complex64"} for complex inputs.}
 
 \item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. Defaults to the current
-\code{\link[=mlx_default_device]{mlx_default_device()}} unless noted otherwise (helpers that act on an existing
-array typically reuse that array's device or stream).}
+\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
+functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An object of class \code{mlx}
@@ -44,7 +43,8 @@ x <- as_mlx(1:10)                    # Creates float32 array
 
 \subsection{Type precision}{
 \itemize{
-\item \code{float64} is supported but emits a warning and downcasts to \code{float32}
+\item \code{float64} is supported on CPU only; use \code{device = "cpu"} explicitly.
+Cast GPU arrays to \code{float64} with \code{mlx_cast(x, dtype = "float64", device = "cpu")}, and cast back to \code{float32} before returning to GPU.
 \item Integer arithmetic may promote types (e.g., int32 + int32 might → int64)
 \item Mixed integer/float operations promote to float
 }

@@ -23,10 +23,10 @@ test_that("device argument is respected", {
   x <- matrix(1:12, 3, 4)
 
   x_gpu <- as_mlx(x, device = "gpu")
-  expect_equal(x_gpu$device, "gpu")
+  expect_equal(mlx_device(x_gpu), "gpu")
 
   x_cpu <- as_mlx(x, device = "cpu")
-  expect_equal(x_cpu$device, "cpu")
+  expect_equal(mlx_device(x_cpu), "cpu")
 })
 
 test_that("with_default_device temporarily overrides device", {
@@ -158,10 +158,10 @@ test_that("mixed-device arithmetic stages to GPU and preserves inputs", {
 
   res <- cpu_mat + gpu_mat
 
-  expect_equal(res$device, "gpu")
+  expect_equal(mlx_device(res), "gpu")
   expect_equal(as.matrix(res), as.matrix(cpu_mat) + as.matrix(gpu_mat))
-  expect_equal(cpu_mat$device, "cpu")
-  expect_equal(gpu_mat$device, "gpu")
+  expect_equal(mlx_device(cpu_mat), "cpu")
+  expect_equal(mlx_device(gpu_mat), "gpu")
 })
 
 test_that("mixed-device reductions with multiple operands choose GPU", {
@@ -172,7 +172,7 @@ test_that("mixed-device reductions with multiple operands choose GPU", {
 
   res <- sum(cpu_mat, gpu_mat)
 
-  expect_equal(res$device, "gpu")
+  expect_equal(mlx_device(res), "gpu")
   expect_equal(as_r(res), sum(as_r(cpu_mat)) + sum(as_r(gpu_mat)))
 })
 

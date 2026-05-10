@@ -80,7 +80,7 @@ mlx_metal_kernel <- function(name,
     }
 
     if (is.null(device)) {
-      device <- mlx_inputs[[1]]$device
+      device <- mlx_device(mlx_inputs[[1]])
     }
 
     result <- cpp_mlx_metal_kernel_call(
@@ -91,7 +91,7 @@ mlx_metal_kernel <- function(name,
       grid = as.integer(grid),
       threadgroup = as.integer(threadgroup),
       template_args = template,
-      init_value = init_value,
+      init_value_ = init_value,
       verbose = isTRUE(verbose),
       device_str = as.character(device)
     )

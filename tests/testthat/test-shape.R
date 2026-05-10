@@ -126,7 +126,7 @@ test_that("mlx_contiguous materializes a contiguous copy", {
   expect_equal(as.matrix(contig), as.matrix(view), tolerance = 1e-6)
 
   cpu_copy <- mlx_contiguous(view, device = "cpu")
-  expect_equal(cpu_copy$device, "cpu")
+  expect_equal(mlx_device(cpu_copy), "cpu")
   expect_equal(as.matrix(cpu_copy), as.matrix(view), tolerance = 1e-6)
 })
 

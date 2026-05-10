@@ -58,7 +58,7 @@ test_that("mlx_zeros_like matches source metadata", {
   expect_s3_class(zeros, "mlx")
   expect_equal(mlx_shape(zeros), mlx_shape(base))
   expect_equal(mlx_dtype(zeros), mlx_dtype(base))
-  expect_equal(zeros$device, base$device)
+  expect_equal(mlx_device(zeros), mlx_device(base))
   expect_equal(as.matrix(zeros), matrix(0, 2, 3), tolerance = 1e-6)
 })
 
@@ -67,7 +67,7 @@ test_that("mlx_zeros_like allows overriding dtype and device", {
   zeros <- mlx_zeros_like(base, dtype = "int32", device = "cpu")
 
   expect_equal(mlx_dtype(zeros), "int32")
-  expect_equal(zeros$device, "cpu")
+  expect_equal(mlx_device(zeros), "cpu")
   expect_equal(as.matrix(zeros), matrix(0, 2, 2))
 })
 
@@ -77,7 +77,7 @@ test_that("mlx_ones_like mirrors shape and supports overrides", {
 
   expect_equal(mlx_shape(ones), mlx_shape(base))
   expect_equal(mlx_dtype(ones), "int16")
-  expect_equal(ones$device, "cpu")
+  expect_equal(mlx_device(ones), "cpu")
   expect_equal(as.array(ones), array(1, dim = c(3, 1, 2)))
 
   ones_float <- mlx_ones_like(base, dtype = "float32")

@@ -20,7 +20,7 @@ Math.mlx <- function(x, ...) {
   # MLX flattens in row-major order, so we need to fall back to R
   if (op %in% c("cumsum", "cumprod", "cummax", "cummin")) {
     ptr <- cpp_mlx_cumulative(x$ptr, op)
-    return(new_mlx(ptr, x$device))
+    return(new_mlx(ptr, mlx_device(x)))
   }
 
   # Map R function names to MLX operations
@@ -33,7 +33,7 @@ Math.mlx <- function(x, ...) {
   if (length(dots) > 0 && op %in% c("log", "round", "signif")) {
     x_r <- as_r(x)
     result_r <- do.call(get(op, mode = "function"), c(list(x_r), dots))
-    return(as_mlx(result_r, dtype = x_dtype, device = x$device))
+    return(as_mlx(result_r, dtype = x_dtype, device = mlx_device(x)))
   }
 
   if (op %in% names(op_map)) {
@@ -51,7 +51,7 @@ Math.mlx <- function(x, ...) {
       # Convert to R matrix, apply operation, convert back
       x_r <- as_r(x)
       result_r <- get(.Generic, mode = "function")(x_r, ...)
-      as_mlx(result_r, dtype = x_dtype, device = x$device)
+      as_mlx(result_r, dtype = x_dtype, device = mlx_device(x))
     } else {
       # Re-throw other errors
       stop(e)
@@ -89,12 +89,21 @@ Math.mlx <- function(x, ...) {
 #' b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-3))
 #' mlx_isclose(a, b)  # First two TRUE, last FALSE
 mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
-                        device = mlx_default_device()) {
+                        device = NULL) {
   a <- as_mlx(a)
   b <- as_mlx(b)
 
-  ptr <- cpp_mlx_isclose(a$ptr, b$ptr, rtol, atol, equal_nan, device)
-  new_mlx(ptr, device)
+  target <- resolve_common_dtype_device(
+    list(mlx_dtype(a), mlx_dtype(b)),
+    list(mlx_device(a), mlx_device(b))
+  )
+  target_device <- if (is.null(device)) target$device else device
+  handle <- resolve_device(target_device)
+  a <- mlx_cast(a, dtype = target$dtype, device = handle$device)
+  b <- mlx_cast(b, dtype = target$dtype, device = handle$device)
+
+  ptr <- cpp_mlx_isclose(a$ptr, b$ptr, rtol, atol, equal_nan)
+  new_mlx(ptr, handle$device)
 }
 
 #' Test if all elements of two arrays are close
@@ -125,12 +134,21 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
 #' b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-6))
 #' mlx_allclose(a, b)  # TRUE
 mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
-                         device = mlx_default_device()) {
+                         device = NULL) {
   a <- as_mlx(a)
   b <- as_mlx(b)
 
-  ptr <- cpp_mlx_allclose(a$ptr, b$ptr, rtol, atol, equal_nan, device)
-  new_mlx(ptr, device)
+  target <- resolve_common_dtype_device(
+    list(mlx_dtype(a), mlx_dtype(b)),
+    list(mlx_device(a), mlx_device(b))
+  )
+  target_device <- if (is.null(device)) target$device else device
+  handle <- resolve_device(target_device)
+  a <- mlx_cast(a, dtype = target$dtype, device = handle$device)
+  b <- mlx_cast(b, dtype = target$dtype, device = handle$device)
+
+  ptr <- cpp_mlx_allclose(a$ptr, b$ptr, rtol, atol, equal_nan)
+  new_mlx(ptr, handle$device)
 }
 
 #' Complex-valued helpers for mlx arrays
@@ -388,7 +406,7 @@ all.equal.mlx <- function(target, current, tolerance = sqrt(.Machine$double.eps)
 
   # Use mlx_allclose with tolerance mapped to both rtol and atol
   result <- mlx_allclose(target, current, rtol = tolerance, atol = tolerance,
-                         equal_nan = FALSE, device = target$device)
+                         equal_nan = FALSE, device = mlx_device(target))
 
   # Convert to logical
   are_close <- as.logical(result)

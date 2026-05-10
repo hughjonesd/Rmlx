@@ -60,7 +60,7 @@ mlx_import_function <- function(path, device = mlx_default_device()) {
     eval_with_stream(handle, function(dev) {
       cast_to_device <- function(arg) {
         obj <- as_mlx(arg)
-        if (obj$device == dev) {
+        if (mlx_device(obj) == dev) {
           return(obj)
         }
         mlx_cast(obj, device = dev)

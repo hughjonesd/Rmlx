@@ -32,9 +32,11 @@ test_that("roundtrip conversion preserves higher-dimensional arrays", {
 test_that("dtype argument works", {
   m <- matrix(1:12, 3, 4)
   m_fp32 <- as_mlx(m, dtype = "float32")
-  expect_warning(as_mlx(m, dtype = "float64"), "stored in float32", fixed = TRUE)
+  m_fp64 <- as_mlx(m, dtype = "float64", device = "cpu")
 
   expect_equal(mlx_dtype(m_fp32), "float32")
+  expect_equal(mlx_dtype(m_fp64), "float64")
+  expect_equal(mlx_device(m_fp64), "cpu")
 })
 
 test_that("logical inputs create boolean MLX arrays", {
@@ -192,8 +194,16 @@ test_that("backsolve() delegates to mlx_solve_triangular", {
   expected_mat <- base::backsolve(r, b_mat)
   expected_vec <- base::backsolve(r, b_vec)
 
-  res_mat <- backsolve(as_mlx(r), as_mlx(b_mat), upper.tri = TRUE)
-  res_vec <- backsolve(as_mlx(r), as_mlx(b_vec), upper.tri = TRUE)
+  res_mat <- backsolve(
+    as_mlx(r, device = "cpu"),
+    as_mlx(b_mat, device = "cpu"),
+    upper.tri = TRUE
+  )
+  res_vec <- backsolve(
+    as_mlx(r, device = "cpu"),
+    as_mlx(b_vec, device = "cpu"),
+    upper.tri = TRUE
+  )
 
   expect_s3_class(res_mat, "mlx")
   expect_equal(as.matrix(res_mat), expected_mat, tolerance = 1e-6)
