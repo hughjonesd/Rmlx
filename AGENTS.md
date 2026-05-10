@@ -25,6 +25,7 @@
 - Document R functions with roxygen `#'` blocks; let `@export` drive NAMESPACE entries.
 - Exported functions start with `mlx_` except when they are methods for base R generics (e.g., `Ops.mlx`, `mean.mlx`).
 - Unexported helpers avoid the `mlx_` prefix; only low-level helpers that mirror MLX API calls should use a `.mlx_` prefix.
+- Keep the architecture simple. Avoid creating functions that are used only once: inline instead. To avoid duplication, check the existing codebase before creating new functionality. There's a list of all functions, including brief descriptions, in `dev/mlx-functions.txt`.
 
 ## Testing Guidelines
 - Write tests with testthat in `tests/testthat`; mirror existing structure and keep scenario-focused blocks within a `test_that`.
