@@ -32,4 +32,16 @@ inline mlx::core::array flatten_r_order(const mlx::core::array& arr) {
   return reshape(transposed, Shape{static_cast<int>(transposed.size())});
 }
 
+inline mlx::core::array flatten_r_order(
+    const mlx::core::array& arr,
+    mlx::core::StreamOrDevice s) {
+  using namespace mlx::core;
+  if (arr.ndim() <= 1) {
+    return reshape(arr, Shape{static_cast<int>(arr.size())}, s);
+  }
+  array transposed = transpose_between_mlx_and_r(arr, s);
+  transposed = contiguous(transposed, /*allow_col_major=*/false, s);
+  return reshape(transposed, Shape{static_cast<int>(transposed.size())}, s);
+}
+
 } // namespace rmlx
