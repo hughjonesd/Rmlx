@@ -294,7 +294,6 @@ Re.mlx NA TRUE FALSE
 resolve_common_dtype_device NA NA FALSE
 resolve_device NA NA FALSE
 resolve_nn_device NA NA FALSE
-resolve_typed_device NA NA FALSE
 row "Row and column indices for mlx arrays" TRUE TRUE
 row.default NA TRUE FALSE
 row.mlx NA TRUE FALSE
@@ -313,7 +312,6 @@ svd.default NA TRUE FALSE
 svd.mlx "Singular value decomposition for mlx arrays" TRUE FALSE
 t.mlx "Transpose of MLX matrix" TRUE FALSE
 tcrossprod.mlx "Transposed cross product" TRUE FALSE
-validate_float64_device NA NA FALSE
 validate_path NA NA FALSE
 validate_shape "Validate and coerce shape specification" TRUE FALSE
 vectors_assign NA NA FALSE

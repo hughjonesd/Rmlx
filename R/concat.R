@@ -54,7 +54,6 @@ bind_along_axis <- function(objs, axis) {
   } else {
     dtype <- mlx_dtype(mlx_objs[[1L]])
     device <- mlx_device(mlx_objs[[1L]])
-    validate_float64_device(dtype, device)
   }
 
   aligned <- lapply(mlx_objs, mlx_cast, dtype = dtype, device = device)

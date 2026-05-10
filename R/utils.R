@@ -24,18 +24,6 @@ resolve_device <- function(device, default = mlx_default_device()) {
   list(device = device_chr, stream_ptr = NULL)
 }
 
-validate_float64_device <- function(dtype, device) {
-  # Diagnostic branch: disabled so GPU-tagged float64 arrays can expose which
-  # operations actually schedule work on GPU and which silently fall back to CPU.
-  invisible(NULL)
-}
-
-resolve_typed_device <- function(dtype, device, default = mlx_default_device()) {
-  handle <- resolve_device(device, default)
-  validate_float64_device(dtype, handle$device)
-  handle
-}
-
 eval_with_stream <- function(handle, fn) {
   if (is.null(handle$stream_ptr)) {
     return(fn(handle$device))

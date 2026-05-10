@@ -22,7 +22,7 @@ mlx_cast <- function(x, dtype = NULL, device = mlx_device(x)) {
   if (is.null(dtype)) {
     dtype <- current_dtype
   }
-  handle <- resolve_typed_device(dtype, device, mlx_device(x))
+  handle <- resolve_device(device, mlx_device(x))
   if (identical(dtype, current_dtype) && identical(device, mlx_device(x))) {
     return(x)
   }
@@ -705,8 +705,7 @@ mlx_meshgrid <- function(...,
   )
   dtype <- target_info$dtype
   default_device <- target_info$device
-  target <- if (is.null(device)) default_device else device
-  handle <- resolve_typed_device(dtype, target, default_device)
+  handle <- resolve_device(device, default_device)
   arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
 
   indexing <- match.arg(indexing)
@@ -732,8 +731,7 @@ mlx_meshgrid <- function(...,
 mlx_broadcast_to <- function(x, shape, device = NULL) {
   x <- as_mlx(x)
   shape <- validate_shape(shape)
-  target <- if (is.null(device)) mlx_device(x) else device
-  handle <- resolve_typed_device(mlx_dtype(x), target, mlx_device(x))
+  handle <- resolve_device(device, mlx_device(x))
   x <- mlx_cast(x, dtype = mlx_dtype(x), device = handle$device)
 
   ptr <- cpp_mlx_broadcast_to(x$ptr, shape)
@@ -771,9 +769,7 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
     lapply(arrays, mlx_device)
   )
   dtype <- target_info$dtype
-  default_device <- target_info$device
-  target <- if (is.null(device)) default_device else device
-  handle <- resolve_typed_device(dtype, target, default_device)
+  handle <- resolve_device(target_info$device)
   arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
 
   ptrs <- cpp_mlx_broadcast_arrays(arrays)

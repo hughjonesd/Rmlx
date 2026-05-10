@@ -438,6 +438,5 @@ resolve_common_dtype_device <- function(dtypes, devices) {
   # so C++ can read the stream/device from the bundled MlxArrayWrapper.
   dtype <- Reduce(promote_dtype, dtypes)
   device <- Reduce(common_device, devices)
-  validate_float64_device(dtype, device)
   list(dtype = dtype, device = device)
 }

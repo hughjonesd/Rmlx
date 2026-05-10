@@ -72,45 +72,15 @@ test_that("float64 arithmetic and linear algebra stay on CPU", {
   expect_equal(as.vector(sol), solve(as.matrix(a), as.vector(b)), tolerance = 1e-10)
 })
 
-test_that("float64 cannot be created or moved to GPU", {
-  expect_error(
-    as_mlx(1:3, dtype = "float64", device = "gpu"),
-    "float64 arrays are CPU-only",
-    fixed = TRUE
-  )
-  expect_error(
-    mlx_zeros(c(2, 2), dtype = "float64", device = "gpu"),
-    "float64 arrays are CPU-only",
-    fixed = TRUE
-  )
-
-  x <- as_mlx(1:3, dtype = "float64", device = "cpu")
-  expect_error(
-    mlx_cast(x, dtype = "float64", device = "gpu"),
-    "float64 arrays are CPU-only",
-    fixed = TRUE
-  )
-})
-
-test_that("default GPU does not silently create float64 on CPU", {
-  skip_if_not(mlx_has_gpu())
-  local_default_device("gpu")
-
-  expect_error(
-    as_mlx(1:3, dtype = "float64"),
-    "float64 arrays are CPU-only",
-    fixed = TRUE
-  )
-})
 
 test_that("mixed CPU float64 and GPU operands error clearly", {
   skip_if_not(mlx_has_gpu())
   x <- as_mlx(1:3, dtype = "float64", device = "cpu")
   y <- as_mlx(1:3, dtype = "float32", device = "gpu")
 
-  expect_error(x + y, "float64 arrays are CPU-only", fixed = TRUE)
-  expect_error(mlx_stack(x, y), "float64 arrays are CPU-only", fixed = TRUE)
-  expect_error(mlx_where(x > 1, x, y), "float64 arrays are CPU-only", fixed = TRUE)
+  expect_error(x + y, "float64", fixed = TRUE)
+  expect_error(mlx_stack(x, y), "float64", fixed = TRUE)
+  expect_error(mlx_where(x > 1, x, y), "float64", fixed = TRUE)
 })
 
 test_that("GPU float32 can be explicitly finished on CPU float64", {

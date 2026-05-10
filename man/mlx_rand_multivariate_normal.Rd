@@ -42,14 +42,13 @@ An mlx array with samples from the multivariate normal.
 Sample from a multivariate normal distribution on mlx arrays
 }
 \details{
-Samples are generated on the CPU: GPU execution is currently
-unavailable because the covariance factorisation runs on the host. Supply a
-CPU stream (via \code{\link[=mlx_new_stream]{mlx_new_stream()}}) to integrate with asynchronous flows.
+GPU execution is currently
+unavailable because the covariance factorisation runs on the host.
 }
 \examples{
 mean <- as_mlx(c(0, 0), device = "cpu")
 cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2), device = "cpu")
-samples <- mlx_rand_multivariate_normal(c(100, 2), mean, cov, device = "cpu")
+samples <- mlx_rand_multivariate_normal(10, mean, cov, device = "cpu")
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.multivariate_normal}{mlx.core.random.multivariate_normal}

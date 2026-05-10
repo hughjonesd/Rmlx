@@ -204,13 +204,7 @@ std::string device_to_string(const Device& device) {
   Rcpp::stop("Unsupported device type");
 }
 
-void validate_float64_device(Dtype dtype, const std::string& device) {
-  // Diagnostic branch: disabled so GPU-tagged float64 arrays can expose which
-  // operations actually schedule work on GPU and which silently fall back to CPU.
-}
-
 StreamOrDevice typed_device(Dtype dtype, const std::string& device) {
-  validate_float64_device(dtype, device);
   return string_to_device(device);
 }
 
@@ -560,7 +554,6 @@ std::string cpp_mlx_device(SEXP xp_) {
 // [[Rcpp::export]]
 SEXP cpp_mlx_with_device(SEXP xp_, std::string device) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  validate_float64_device(wrapper->get().dtype(), device);
   auto* out = new MlxArrayWrapper(wrapper->shared_array(), device);
   SEXP xp = R_MakeExternalPtr(out, R_NilValue, R_NilValue);
   R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);

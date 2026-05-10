@@ -19,7 +19,6 @@ solve.mlx <- function(a, b = NULL, ...) {
   if (!(target_dtype %in% c("float32", "float64", "complex64"))) {
     target_dtype <- "float32"
   }
-  validate_float64_device(target_dtype, target_device)
 
   if (is.null(b)) {
     # No b: compute matrix inverse

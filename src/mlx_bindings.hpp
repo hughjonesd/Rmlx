@@ -101,7 +101,6 @@ std::string dtype_to_string(mlx::core::Dtype dtype);
 // Helper: convert device string to MLX device
 mlx::core::Device string_to_device(const std::string& device);
 std::string device_to_string(const mlx::core::Device& device);
-void validate_float64_device(mlx::core::Dtype dtype, const std::string& device);
 mlx::core::StreamOrDevice typed_device(mlx::core::Dtype dtype, const std::string& device);
 
 // Helper: determine if SEXP is stream external pointer

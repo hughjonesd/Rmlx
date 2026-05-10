@@ -109,7 +109,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
   } else {
     match.arg(dtype)
   }
-  handle <- resolve_typed_device(dtype_val, device, mlx_default_device())
+  handle <- resolve_device(device)
 
   if (is_mlx(x)) {
     need_device <- !missing(device) && !identical(mlx_device(x), handle$device)

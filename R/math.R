@@ -98,7 +98,7 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
     list(mlx_device(a), mlx_device(b))
   )
   target_device <- if (is.null(device)) target$device else device
-  handle <- resolve_typed_device(target$dtype, target_device, target$device)
+  handle <- resolve_device(target_device)
   a <- mlx_cast(a, dtype = target$dtype, device = handle$device)
   b <- mlx_cast(b, dtype = target$dtype, device = handle$device)
 
@@ -143,7 +143,7 @@ mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE,
     list(mlx_device(a), mlx_device(b))
   )
   target_device <- if (is.null(device)) target$device else device
-  handle <- resolve_typed_device(target$dtype, target_device, target$device)
+  handle <- resolve_device(target_device)
   a <- mlx_cast(a, dtype = target$dtype, device = handle$device)
   b <- mlx_cast(b, dtype = target$dtype, device = handle$device)
 

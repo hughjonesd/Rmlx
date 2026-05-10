@@ -14,7 +14,7 @@ mlx_rand_uniform <- function(dim, min = 0, max = 1,
                              device = mlx_default_device()) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_typed_device(dtype, device, mlx_default_device())
+  handle <- resolve_device(device)
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_uniform(dim, min, max, dtype, dev)
@@ -37,7 +37,7 @@ mlx_rand_normal <- function(dim, mean = 0, sd = 1,
                             device = mlx_default_device()) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_typed_device(dtype, device, mlx_default_device())
+  handle <- resolve_device(device)
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_normal(dim, mean, sd, dtype, dev)
@@ -59,7 +59,7 @@ mlx_rand_bernoulli <- function(dim, prob = 0.5, device = mlx_default_device()) {
   if (prob < 0 || prob > 1) {
     stop("prob must be between 0 and 1.", call. = FALSE)
   }
-  handle <- resolve_typed_device("bool", device, mlx_default_device())
+  handle <- resolve_device(device)
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_bernoulli(dim, prob, dev)
@@ -79,7 +79,7 @@ mlx_rand_gumbel <- function(dim, dtype = c("float32", "float64"),
                             device = mlx_default_device()) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_typed_device(dtype, device, mlx_default_device())
+  handle <- resolve_device(device)
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_gumbel(dim, dtype, dev)
@@ -108,7 +108,7 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
     stop("upper must be a single numeric value.", call. = FALSE)
   }
   dtype <- match.arg(dtype)
-  handle <- resolve_typed_device(dtype, device, mlx_default_device())
+  handle <- resolve_device(device)
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_truncated_normal(lower, upper, dim, dtype, dev)
@@ -121,16 +121,15 @@ mlx_rand_truncated_normal <- function(lower, upper, dim,
 #' @inheritParams common_params
 #' @param mean An mlx array or vector for the mean.
 #' @param cov An mlx array or matrix for the covariance.
-#' @details Samples are generated on the CPU: GPU execution is currently
-#'   unavailable because the covariance factorisation runs on the host. Supply a
-#'   CPU stream (via [mlx_new_stream()]) to integrate with asynchronous flows.
+#' @details GPU execution is currently
+#'   unavailable because the covariance factorisation runs on the host.
 #' @return An mlx array with samples from the multivariate normal.
 #' @seealso [mlx.core.random.multivariate_normal](https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.multivariate_normal)
 #' @export
 #' @examples
 #' mean <- as_mlx(c(0, 0), device = "cpu")
 #' cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2), device = "cpu")
-#' samples <- mlx_rand_multivariate_normal(c(100, 2), mean, cov, device = "cpu")
+#' samples <- mlx_rand_multivariate_normal(10, mean, cov, device = "cpu")
 mlx_rand_multivariate_normal <- function(dim, mean, cov,
                                          dtype = c("float32", "float64"),
                                          device = "cpu") {
@@ -145,7 +144,7 @@ mlx_rand_multivariate_normal <- function(dim, mean, cov,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_typed_device(dtype, device, "cpu")
+  handle <- resolve_device(device)
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_multivariate_normal(mean, cov, dim, dtype, dev)
@@ -174,7 +173,7 @@ mlx_rand_laplace <- function(dim, loc = 0, scale = 1,
     stop("scale must be a single positive numeric value.", call. = FALSE)
   }
   dtype <- match.arg(dtype)
-  handle <- resolve_typed_device(dtype, device, mlx_default_device())
+  handle <- resolve_device(device)
 
   ptr <- eval_with_stream(handle, function(dev) {
     cpp_mlx_random_laplace(dim, loc, scale, dtype, dev)
