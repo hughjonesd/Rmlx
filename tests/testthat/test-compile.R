@@ -198,3 +198,19 @@ test_that("compiled functions preserve list names", {
   expect_equal(mlx_shape(result_compiled$sum), c(5, 1))
   expect_equal(mlx_shape(result_compiled$product), c(5, 1))
 })
+
+
+test_that("compiled functions respect arguments' device", {
+  skip_if_not(mlx_has_gpu())
+  local_default_device("gpu")
+
+  f <- function (x, y) x + y
+  fc <- mlx_compile(f)
+  x <- mlx_vector(1:5, dtype = "float64", device = "gpu")
+  y <- mlx_vector(1:5, dtype = "float64", device = "gpu")
+  expect_error(fc(x, y), "float64")
+
+  x <- mlx_vector(1:5, dtype = "float64", device = "cpu")
+  y <- mlx_vector(1:5, dtype = "float64", device = "cpu")
+  expect_no_error(fc(x, y))
+})
