@@ -101,8 +101,8 @@ local_default_device <- function(device, .local_envir = parent.frame()) {
     do.call(
       on.exit,
       list(substitute({
-        mlx_set_default_stream(old_stream_val)
-        mlx_default_device(old_device_val)
+        Rmlx::mlx_set_default_stream(old_stream_val)
+        Rmlx::mlx_default_device(old_device_val)
       }, list(
         old_stream_val = old_stream,
         old_device_val = old_device
@@ -118,7 +118,7 @@ local_default_device <- function(device, .local_envir = parent.frame()) {
   old_device <- mlx_default_device()
   do.call(
     on.exit,
-    list(substitute(mlx_default_device(old_device_val),
+    list(substitute(Rmlx::mlx_default_device(old_device_val),
       list(old_device_val = old_device)
     ), add = TRUE),
     envir = .local_envir
