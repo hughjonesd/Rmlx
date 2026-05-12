@@ -15,8 +15,7 @@ SEXP cpp_mlx_import_function(const std::string& path) {
 // [[Rcpp::export]]
 SEXP cpp_mlx_call_imported(SEXP fn_xp,
                            List args_ptrs,
-                           List kwargs_ptrs,
-                           std::string device_str) {
+                           List kwargs_ptrs) {
   MlxImportedFunctionWrapper* fn_wrapper = get_mlx_imported_function(fn_xp);
   const ImportedFunction& function = fn_wrapper->get();
 
@@ -62,11 +61,9 @@ SEXP cpp_mlx_call_imported(SEXP fn_xp,
     result = function(positional);
   }
 
-  StreamOrDevice target_device = string_to_device(device_str);
   List out(result.size());
   for (size_t i = 0; i < result.size(); ++i) {
-    array converted = astype(result[i], result[i].dtype(), target_device);
-    out[i] = wrap_array_as_mlx(converted, device_str);
+    out[i] = wrap_array_as_mlx(result[i]);
   }
 
   return out;

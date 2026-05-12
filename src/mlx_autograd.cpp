@@ -33,13 +33,11 @@ SEXP cpp_mlx_value_grad(SEXP fun_sexp,
 
   Function fun(fun_sexp);
 
-  std::vector<std::string> devices(args.size());
   for (int i = 0; i < args.size(); ++i) {
     List obj(args[i]);
     if (!obj.inherits("mlx")) {
       Rcpp::stop("All arguments must be 'mlx' objects. Use as_mlx() to convert.");
     }
-    devices[i] = get_mlx_wrapper(obj["ptr"])->device();
   }
 
   std::vector<int> argnums_vec(argnums.size());
@@ -56,7 +54,7 @@ SEXP cpp_mlx_value_grad(SEXP fun_sexp,
   auto wrap_inputs = [&](const std::vector<array>& inputs) -> List {
     List wrapped(inputs.size());
     for (size_t i = 0; i < inputs.size(); ++i) {
-      wrapped[i] = wrap_array_as_mlx(inputs[i], devices[i]);
+      wrapped[i] = wrap_array_as_mlx(inputs[i]);
     }
     return wrapped;
   };
@@ -110,15 +108,14 @@ SEXP cpp_mlx_value_grad(SEXP fun_sexp,
 
   List grads(argnums_vec.size());
   for (size_t i = 0; i < argnums_vec.size(); ++i) {
-    int arg_index = argnums_vec[i];
-    grads[i] = wrap_array_as_mlx(vg_result.second[i], devices[arg_index]);
+    grads[i] = wrap_array_as_mlx(vg_result.second[i]);
   }
 
   if (!return_value) {
     return grads;
   }
 
-  List value = wrap_array_as_mlx(vg_result.first, devices[0]);
+  List value = wrap_array_as_mlx(vg_result.first);
   return List::create(Named("value") = value,
                       Named("grads") = grads);
 }

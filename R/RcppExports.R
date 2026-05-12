@@ -5,44 +5,44 @@ cpp_mlx_flatten_r_order <- function(xp_) {
     .Call(`_Rmlx_cpp_mlx_flatten_r_order`, xp_)
 }
 
-cpp_mlx_zeros <- function(dim_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_zeros`, dim_, dtype_str, device_str)
+cpp_mlx_zeros <- function(dim_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_zeros`, dim_, dtype_str)
 }
 
-cpp_mlx_ones <- function(dim_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_ones`, dim_, dtype_str, device_str)
+cpp_mlx_ones <- function(dim_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_ones`, dim_, dtype_str)
 }
 
-cpp_mlx_zeros_like <- function(xp_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_zeros_like`, xp_, dtype_str, device_str)
+cpp_mlx_zeros_like <- function(xp_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_zeros_like`, xp_, dtype_str)
 }
 
-cpp_mlx_ones_like <- function(xp_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_ones_like`, xp_, dtype_str, device_str)
+cpp_mlx_ones_like <- function(xp_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_ones_like`, xp_, dtype_str)
 }
 
-cpp_mlx_full <- function(dim_, value_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_full`, dim_, value_, dtype_str, device_str)
+cpp_mlx_full <- function(dim_, value_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_full`, dim_, value_, dtype_str)
 }
 
-cpp_mlx_eye <- function(n, m, k, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_eye`, n, m, k, dtype_str, device_str)
+cpp_mlx_eye <- function(n, m, k, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_eye`, n, m, k, dtype_str)
 }
 
-cpp_mlx_tri <- function(n, m, k, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_tri`, n, m, k, dtype_str, device_str)
+cpp_mlx_tri <- function(n, m, k, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_tri`, n, m, k, dtype_str)
 }
 
-cpp_mlx_identity <- function(n, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_identity`, n, dtype_str, device_str)
+cpp_mlx_identity <- function(n, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_identity`, n, dtype_str)
 }
 
-cpp_mlx_arange <- function(start_, stop, step_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_arange`, start_, stop, step_, dtype_str, device_str)
+cpp_mlx_arange <- function(start_, stop, step_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_arange`, start_, stop, step_, dtype_str)
 }
 
-cpp_mlx_linspace <- function(start, stop, num, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_linspace`, start, stop, num, dtype_str, device_str)
+cpp_mlx_linspace <- function(start, stop, num, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_linspace`, start, stop, num, dtype_str)
 }
 
 cpp_mlx_value_grad <- function(fun_sexp, args, argnums, return_value) {
@@ -53,8 +53,8 @@ cpp_mlx_stop_gradient <- function(xp_) {
     .Call(`_Rmlx_cpp_mlx_stop_gradient`, xp_)
 }
 
-cpp_mlx_from_r <- function(x_, dim_, dtype_, device_) {
-    .Call(`_Rmlx_cpp_mlx_from_r`, x_, dim_, dtype_, device_)
+cpp_mlx_from_r <- function(x_, dim_, dtype_) {
+    .Call(`_Rmlx_cpp_mlx_from_r`, x_, dim_, dtype_)
 }
 
 cpp_mlx_to_r <- function(xp_) {
@@ -73,14 +73,6 @@ cpp_mlx_dtype <- function(xp_) {
     .Call(`_Rmlx_cpp_mlx_dtype`, xp_)
 }
 
-cpp_mlx_device <- function(xp_) {
-    .Call(`_Rmlx_cpp_mlx_device`, xp_)
-}
-
-cpp_mlx_with_device <- function(xp_, device) {
-    .Call(`_Rmlx_cpp_mlx_with_device`, xp_, device)
-}
-
 cpp_mlx_compile_create <- function(fun_sexp, shapeless) {
     .Call(`_Rmlx_cpp_mlx_compile_create`, fun_sexp, shapeless)
 }
@@ -97,12 +89,12 @@ cpp_mlx_enable_compile <- function() {
     invisible(.Call(`_Rmlx_cpp_mlx_enable_compile`))
 }
 
-cpp_mlx_default_device <- function() {
-    .Call(`_Rmlx_cpp_mlx_default_device`)
+cpp_mlx_device <- function() {
+    .Call(`_Rmlx_cpp_mlx_device`)
 }
 
-cpp_mlx_set_default_device <- function(device_str) {
-    invisible(.Call(`_Rmlx_cpp_mlx_set_default_device`, device_str))
+cpp_mlx_set_device <- function(device_str) {
+    invisible(.Call(`_Rmlx_cpp_mlx_set_device`, device_str))
 }
 
 cpp_mlx_has_gpu <- function() {
@@ -113,16 +105,16 @@ cpp_mlx_import_function <- function(path) {
     .Call(`_Rmlx_cpp_mlx_import_function`, path)
 }
 
-cpp_mlx_call_imported <- function(fn_xp, args_ptrs, kwargs_ptrs, device_str) {
-    .Call(`_Rmlx_cpp_mlx_call_imported`, fn_xp, args_ptrs, kwargs_ptrs, device_str)
+cpp_mlx_call_imported <- function(fn_xp, args_ptrs, kwargs_ptrs) {
+    .Call(`_Rmlx_cpp_mlx_call_imported`, fn_xp, args_ptrs, kwargs_ptrs)
 }
 
 cpp_mlx_metal_kernel_create <- function(name, input_names, output_names, source, header, ensure_row_contiguous, atomic_outputs) {
     .Call(`_Rmlx_cpp_mlx_metal_kernel_create`, name, input_names, output_names, source, header, ensure_row_contiguous, atomic_outputs)
 }
 
-cpp_mlx_metal_kernel_call <- function(kernel_xp, mlx_args, output_shapes, output_dtypes, grid, threadgroup, template_args, init_value_, verbose, device_str) {
-    .Call(`_Rmlx_cpp_mlx_metal_kernel_call`, kernel_xp, mlx_args, output_shapes, output_dtypes, grid, threadgroup, template_args, init_value_, verbose, device_str)
+cpp_mlx_metal_kernel_call <- function(kernel_xp, mlx_args, output_shapes, output_dtypes, grid, threadgroup, template_args, init_value_, verbose) {
+    .Call(`_Rmlx_cpp_mlx_metal_kernel_call`, kernel_xp, mlx_args, output_shapes, output_dtypes, grid, threadgroup, template_args, init_value_, verbose)
 }
 
 cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str) {
@@ -169,24 +161,24 @@ cpp_mlx_save <- function(xp_, file) {
     invisible(.Call(`_Rmlx_cpp_mlx_save`, xp_, file))
 }
 
-cpp_mlx_load <- function(file, device_str) {
-    .Call(`_Rmlx_cpp_mlx_load`, file, device_str)
+cpp_mlx_load <- function(file) {
+    .Call(`_Rmlx_cpp_mlx_load`, file)
 }
 
 cpp_mlx_save_safetensors <- function(array_ptrs, array_names, metadata_names, metadata_values, file) {
     invisible(.Call(`_Rmlx_cpp_mlx_save_safetensors`, array_ptrs, array_names, metadata_names, metadata_values, file))
 }
 
-cpp_mlx_load_safetensors <- function(file, device_str) {
-    .Call(`_Rmlx_cpp_mlx_load_safetensors`, file, device_str)
+cpp_mlx_load_safetensors <- function(file) {
+    .Call(`_Rmlx_cpp_mlx_load_safetensors`, file)
 }
 
 cpp_mlx_save_gguf <- function(array_ptrs, array_names, metadata_payload, metadata_names, file) {
     invisible(.Call(`_Rmlx_cpp_mlx_save_gguf`, array_ptrs, array_names, metadata_payload, metadata_names, file))
 }
 
-cpp_mlx_load_gguf <- function(file, device_str) {
-    .Call(`_Rmlx_cpp_mlx_load_gguf`, file, device_str)
+cpp_mlx_load_gguf <- function(file) {
+    .Call(`_Rmlx_cpp_mlx_load_gguf`, file)
 }
 
 cpp_mlx_solve <- function(a_xp_, b_xp_, dtype_str) {
@@ -373,16 +365,16 @@ cpp_mlx_hadamard_transform <- function(xp_, scale_) {
     .Call(`_Rmlx_cpp_mlx_hadamard_transform`, xp_, scale_)
 }
 
-cpp_mlx_cast <- function(xp_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_cast`, xp_, dtype_str, device_str)
+cpp_mlx_cast <- function(xp_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_cast`, xp_, dtype_str)
 }
 
 cpp_mlx_cumulative <- function(xp_, op) {
     .Call(`_Rmlx_cpp_mlx_cumulative`, xp_, op)
 }
 
-cpp_mlx_fft <- function(xp_, axes_, inverse, device_) {
-    .Call(`_Rmlx_cpp_mlx_fft`, xp_, axes_, inverse, device_)
+cpp_mlx_fft <- function(xp_, axes_, inverse) {
+    .Call(`_Rmlx_cpp_mlx_fft`, xp_, axes_, inverse)
 }
 
 cpp_mlx_cumsum <- function(xp_, axis_, reverse, inclusive) {
@@ -413,48 +405,48 @@ cpp_mlx_random_split <- function(key_xp_, num) {
     .Call(`_Rmlx_cpp_mlx_random_split`, key_xp_, num)
 }
 
-cpp_mlx_random_bits <- function(dim_, width, key_xp_, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_bits`, dim_, width, key_xp_, device_str)
+cpp_mlx_random_bits <- function(dim_, width, key_xp_) {
+    .Call(`_Rmlx_cpp_mlx_random_bits`, dim_, width, key_xp_)
 }
 
-cpp_mlx_random_normal <- function(dim_, mean, std, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_normal`, dim_, mean, std, dtype_str, device_str)
+cpp_mlx_random_normal <- function(dim_, mean, std, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_random_normal`, dim_, mean, std, dtype_str)
 }
 
-cpp_mlx_random_uniform <- function(dim_, low, high, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_uniform`, dim_, low, high, dtype_str, device_str)
+cpp_mlx_random_uniform <- function(dim_, low, high, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_random_uniform`, dim_, low, high, dtype_str)
 }
 
-cpp_mlx_random_bernoulli <- function(dim_, prob, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_bernoulli`, dim_, prob, device_str)
+cpp_mlx_random_bernoulli <- function(dim_, prob) {
+    .Call(`_Rmlx_cpp_mlx_random_bernoulli`, dim_, prob)
 }
 
-cpp_mlx_random_gumbel <- function(dim_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_gumbel`, dim_, dtype_str, device_str)
+cpp_mlx_random_gumbel <- function(dim_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_random_gumbel`, dim_, dtype_str)
 }
 
-cpp_mlx_random_truncated_normal <- function(lower_, upper_, dim_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_truncated_normal`, lower_, upper_, dim_, dtype_str, device_str)
+cpp_mlx_random_truncated_normal <- function(lower_, upper_, dim_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_random_truncated_normal`, lower_, upper_, dim_, dtype_str)
 }
 
-cpp_mlx_random_multivariate_normal <- function(mean_, cov_, dim_, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_multivariate_normal`, mean_, cov_, dim_, dtype_str, device_str)
+cpp_mlx_random_multivariate_normal <- function(mean_, cov_, dim_, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_random_multivariate_normal`, mean_, cov_, dim_, dtype_str)
 }
 
-cpp_mlx_random_laplace <- function(dim_, loc, scale, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_laplace`, dim_, loc, scale, dtype_str, device_str)
+cpp_mlx_random_laplace <- function(dim_, loc, scale, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_random_laplace`, dim_, loc, scale, dtype_str)
 }
 
 cpp_mlx_random_categorical <- function(logits_, axis, num_samples) {
     .Call(`_Rmlx_cpp_mlx_random_categorical`, logits_, axis, num_samples)
 }
 
-cpp_mlx_random_randint <- function(dim_, low, high, dtype_str, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_randint`, dim_, low, high, dtype_str, device_str)
+cpp_mlx_random_randint <- function(dim_, low, high, dtype_str) {
+    .Call(`_Rmlx_cpp_mlx_random_randint`, dim_, low, high, dtype_str)
 }
 
-cpp_mlx_random_permutation_n <- function(n, device_str) {
-    .Call(`_Rmlx_cpp_mlx_random_permutation_n`, n, device_str)
+cpp_mlx_random_permutation_n <- function(n) {
+    .Call(`_Rmlx_cpp_mlx_random_permutation_n`, n)
 }
 
 cpp_mlx_random_permutation <- function(x_, axis) {

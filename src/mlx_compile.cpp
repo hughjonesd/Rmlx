@@ -75,7 +75,7 @@ struct CompiledFunctionWrapper {
       // Wrap inputs as mlx objects
       List wrapped_inputs(inputs.size());
       for (size_t i = 0; i < inputs.size(); ++i) {
-        wrapped_inputs[i] = wrap_array_as_mlx(inputs[i], "gpu");
+        wrapped_inputs[i] = wrap_array_as_mlx(inputs[i]);
       }
 
       // Call R function
@@ -181,9 +181,7 @@ List cpp_mlx_compile_call(SEXP compiled_xp, List mlx_args) {
 
   // Extract arrays from mlx objects
   std::vector<array> inputs;
-  std::vector<std::string> devices;
   inputs.reserve(mlx_args.size());
-  devices.reserve(mlx_args.size());
 
   for (int i = 0; i < mlx_args.size(); ++i) {
     List obj(mlx_args[i]);
@@ -193,7 +191,6 @@ List cpp_mlx_compile_call(SEXP compiled_xp, List mlx_args) {
     SEXP ptr = obj["ptr"];
     MlxArrayWrapper* wrapper = get_mlx_wrapper(ptr);
     inputs.push_back(wrapper->get());
-    devices.push_back(wrapper->device());
   }
 
   // Call compiled function
@@ -214,9 +211,8 @@ List cpp_mlx_compile_call(SEXP compiled_xp, List mlx_args) {
 
   // Wrap results as mlx objects
   List result(outputs.size());
-  std::string result_device = devices.empty() ? "gpu" : devices[0];
   for (size_t i = 0; i < outputs.size(); ++i) {
-    result[i] = wrap_array_as_mlx(outputs[i], result_device);
+    result[i] = wrap_array_as_mlx(outputs[i]);
   }
 
   // Apply stored names if available

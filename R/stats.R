@@ -245,7 +245,7 @@ colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 t.mlx <- function(x) {
   # Layout conversion (physical reordering) happens at boundaries during copy
   ptr <- cpp_mlx_transpose(x$ptr)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Cross product
@@ -291,7 +291,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @noRd
 .mlx_reduce <- function(x, op, ddof = 0L) {
   ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof))
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Reduce an mlx array along a single axis
@@ -309,7 +309,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
   ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Reduce an mlx array along multiple axes
@@ -491,8 +491,7 @@ row.mlx <- function(x, as.factor = FALSE) {
   rows <- mlx_arange(
     1,
     dims[1],
-    dtype = "int32",
-    device = mlx_device(x)
+    dtype = "int32"
   )
   target_shape <- c(dims[1], rep.int(1L, length(dims) - 1L))
   reshaped <- mlx_reshape(rows, target_shape)
@@ -524,8 +523,7 @@ col.mlx <- function(x, as.factor = FALSE) {
   cols <- mlx_arange(
     1,
     dims[2],
-    dtype = "int32",
-    device = mlx_device(x)
+    dtype = "int32"
   )
   target_shape <- c(1L, dims[2], rep.int(1L, length(dims) - 2L))
   reshaped <- mlx_reshape(cols, target_shape)
@@ -571,8 +569,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
       }
       center_attr <- center_vec
       centers <- as_mlx(matrix(center_vec, nrow = 1L),
-                        dtype = mlx_dtype(result),
-                        device = mlx_device(result))
+                        dtype = mlx_dtype(result))
     }
     result <- result - centers
   }
@@ -593,8 +590,7 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
       }
       scale_attr <- scale_vec
       scales <- as_mlx(matrix(scale_vec, nrow = 1L),
-                       dtype = mlx_dtype(result),
-                       device = mlx_device(result))
+                       dtype = mlx_dtype(result))
     }
 
     result <- result / scales
@@ -638,7 +634,7 @@ mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumsum(x$ptr, axis_mlx, reverse, inclusive)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' @rdname mlx_cumsum
@@ -649,7 +645,7 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Normal distribution functions
@@ -674,16 +670,16 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
 #'
 #' p <- as_mlx(c(0.025, 0.5, 0.975))
 #' mlx_qnorm(p)
-mlx_dnorm <- function(x, mean = 0, sd = 1, log = FALSE, device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
+  x <- as_mlx(x)
 
   if (sd <= 0) {
     stop("sd must be positive", call. = FALSE)
   }
 
   # Convert mean and sd to mlx arrays
-  mean_mlx <- as_mlx(mean, device = device)
-  sd_mlx <- as_mlx(sd, device = device)
+  mean_mlx <- as_mlx(mean)
+  sd_mlx <- as_mlx(sd)
 
   # Standardize
   z <- (x - mean_mlx) / sd_mlx
@@ -691,7 +687,7 @@ mlx_dnorm <- function(x, mean = 0, sd = 1, log = FALSE, device = mlx_default_dev
   # dnorm(x, mean, sd) = (1/sqrt(2*pi*sd^2)) * exp(-0.5 * z^2)
   # = (1/(sd * sqrt(2*pi))) * exp(-0.5 * z^2)
 
-  sqrt_2pi <- as_mlx(sqrt(2 * pi), device = device)
+  sqrt_2pi <- as_mlx(sqrt(2 * pi))
   log_density <- -0.5 * z^2 - log(sd_mlx) - log(sqrt_2pi)
 
   if (log) {
@@ -704,40 +700,40 @@ mlx_dnorm <- function(x, mean = 0, sd = 1, log = FALSE, device = mlx_default_dev
 #' @rdname mlx_dnorm
 #' @export
 #' @param p Vector of probabilities (mlx array or coercible to mlx)
-mlx_pnorm <- function(x, mean = 0, sd = 1, device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_pnorm <- function(x, mean = 0, sd = 1) {
+  x <- as_mlx(x)
 
   if (sd <= 0) {
     stop("sd must be positive", call. = FALSE)
   }
 
   # Convert mean and sd to mlx arrays
-  mean_mlx <- as_mlx(mean, device = device)
-  sd_mlx <- as_mlx(sd, device = device)
+  mean_mlx <- as_mlx(mean)
+  sd_mlx <- as_mlx(sd)
 
   # Standardize
   z <- (x - mean_mlx) / sd_mlx
 
   # pnorm(x) = 0.5 * (1 + erf(z / sqrt(2)))
-  sqrt_2 <- as_mlx(sqrt(2), device = device)
+  sqrt_2 <- as_mlx(sqrt(2))
   return(0.5 * (1 + mlx_erf(z / sqrt_2)))
 }
 
 #' @rdname mlx_dnorm
 #' @export
-mlx_qnorm <- function(p, mean = 0, sd = 1, device = mlx_default_device()) {
-  p <- as_mlx(p, device = device)
+mlx_qnorm <- function(p, mean = 0, sd = 1) {
+  p <- as_mlx(p)
 
   if (sd <= 0) {
     stop("sd must be positive", call. = FALSE)
   }
 
   # Convert mean and sd to mlx arrays
-  mean_mlx <- as_mlx(mean, device = device)
-  sd_mlx <- as_mlx(sd, device = device)
+  mean_mlx <- as_mlx(mean)
+  sd_mlx <- as_mlx(sd)
 
   # qnorm(p) = mean + sd * sqrt(2) * erfinv(2*p - 1)
-  sqrt_2 <- as_mlx(sqrt(2), device = device)
+  sqrt_2 <- as_mlx(sqrt(2))
   return(mean_mlx + sd_mlx * sqrt_2 * mlx_erfinv(2 * p - 1))
 }
 
@@ -759,15 +755,15 @@ mlx_qnorm <- function(p, mean = 0, sd = 1, device = mlx_default_device()) {
 #'
 #' p <- as_mlx(c(0.25, 0.5, 0.75))
 #' mlx_qunif(p)
-mlx_dunif <- function(x, min = 0, max = 1, log = FALSE, device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_dunif <- function(x, min = 0, max = 1, log = FALSE) {
+  x <- as_mlx(x)
 
   if (min >= max) {
     stop("min must be less than max", call. = FALSE)
   }
 
-  min_mlx <- as_mlx(min, device = device)
-  max_mlx <- as_mlx(max, device = device)
+  min_mlx <- as_mlx(min)
+  max_mlx <- as_mlx(max)
 
   # dunif(x, min, max) = 1/(max-min) for x in [min, max], 0 otherwise
   width <- max_mlx - min_mlx
@@ -777,10 +773,10 @@ mlx_dunif <- function(x, min = 0, max = 1, log = FALSE, device = mlx_default_dev
     # log(1/width) = -log(width)
     log_density <- -log(width)
     # Set out of range to -Inf
-    result <- mlx_where(in_range, log_density, as_mlx(-Inf, device = device))
+    result <- mlx_where(in_range, log_density, as_mlx(-Inf))
   } else {
     density <- 1 / width
-    result <- mlx_where(in_range, density, as_mlx(0, device = device))
+    result <- mlx_where(in_range, density, as_mlx(0))
   }
 
   return(result)
@@ -789,15 +785,15 @@ mlx_dunif <- function(x, min = 0, max = 1, log = FALSE, device = mlx_default_dev
 #' @rdname mlx_dunif
 #' @export
 #' @param p Vector of probabilities (mlx array or coercible to mlx)
-mlx_punif <- function(x, min = 0, max = 1, device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_punif <- function(x, min = 0, max = 1) {
+  x <- as_mlx(x)
 
   if (min >= max) {
     stop("min must be less than max", call. = FALSE)
   }
 
-  min_mlx <- as_mlx(min, device = device)
-  max_mlx <- as_mlx(max, device = device)
+  min_mlx <- as_mlx(min)
+  max_mlx <- as_mlx(max)
 
   # punif(x, min, max) = (x-min)/(max-min), clipped to [0, 1]
   prob <- (x - min_mlx) / (max_mlx - min_mlx)
@@ -806,15 +802,15 @@ mlx_punif <- function(x, min = 0, max = 1, device = mlx_default_device()) {
 
 #' @rdname mlx_dunif
 #' @export
-mlx_qunif <- function(p, min = 0, max = 1, device = mlx_default_device()) {
-  p <- as_mlx(p, device = device)
+mlx_qunif <- function(p, min = 0, max = 1) {
+  p <- as_mlx(p)
 
   if (min >= max) {
     stop("min must be less than max", call. = FALSE)
   }
 
-  min_mlx <- as_mlx(min, device = device)
-  max_mlx <- as_mlx(max, device = device)
+  min_mlx <- as_mlx(min)
+  max_mlx <- as_mlx(max)
 
   # qunif(p, min, max) = min + p*(max-min)
   return(min_mlx + p * (max_mlx - min_mlx))
@@ -838,14 +834,14 @@ mlx_qunif <- function(p, min = 0, max = 1, device = mlx_default_device()) {
 #'
 #' p <- as_mlx(c(0.25, 0.5, 0.75))
 #' mlx_qexp(p)
-mlx_dexp <- function(x, rate = 1, log = FALSE, device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_dexp <- function(x, rate = 1, log = FALSE) {
+  x <- as_mlx(x)
 
   if (rate <= 0) {
     stop("rate must be positive", call. = FALSE)
   }
 
-  rate_mlx <- as_mlx(rate, device = device)
+  rate_mlx <- as_mlx(rate)
 
   # dexp(x, rate) = rate * exp(-rate*x) for x >= 0, 0 otherwise
   non_negative <- x >= 0
@@ -853,10 +849,10 @@ mlx_dexp <- function(x, rate = 1, log = FALSE, device = mlx_default_device()) {
   if (log) {
     # log(rate * exp(-rate*x)) = log(rate) - rate*x
     log_density <- log(rate_mlx) - rate_mlx * x
-    result <- mlx_where(non_negative, log_density, as_mlx(-Inf, device = device))
+    result <- mlx_where(non_negative, log_density, as_mlx(-Inf))
   } else {
     density <- rate_mlx * exp(-rate_mlx * x)
-    result <- mlx_where(non_negative, density, as_mlx(0, device = device))
+    result <- mlx_where(non_negative, density, as_mlx(0))
   }
 
   return(result)
@@ -865,31 +861,31 @@ mlx_dexp <- function(x, rate = 1, log = FALSE, device = mlx_default_device()) {
 #' @rdname mlx_dexp
 #' @export
 #' @param p Vector of probabilities (mlx array or coercible to mlx)
-mlx_pexp <- function(x, rate = 1, device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_pexp <- function(x, rate = 1) {
+  x <- as_mlx(x)
 
   if (rate <= 0) {
     stop("rate must be positive", call. = FALSE)
   }
 
-  rate_mlx <- as_mlx(rate, device = device)
+  rate_mlx <- as_mlx(rate)
 
   # pexp(x, rate) = 1 - exp(-rate*x) for x >= 0, 0 otherwise
   prob <- 1 - exp(-rate_mlx * x)
   non_negative <- x >= 0
-  return(mlx_where(non_negative, prob, as_mlx(0, device = device)))
+  return(mlx_where(non_negative, prob, as_mlx(0)))
 }
 
 #' @rdname mlx_dexp
 #' @export
-mlx_qexp <- function(p, rate = 1, device = mlx_default_device()) {
-  p <- as_mlx(p, device = device)
+mlx_qexp <- function(p, rate = 1) {
+  p <- as_mlx(p)
 
   if (rate <= 0) {
     stop("rate must be positive", call. = FALSE)
   }
 
-  rate_mlx <- as_mlx(rate, device = device)
+  rate_mlx <- as_mlx(rate)
 
   # qexp(p, rate) = -log(1-p) / rate
   return(-log(1 - p) / rate_mlx)
@@ -914,9 +910,8 @@ mlx_qexp <- function(p, rate = 1, device = mlx_default_device()) {
 #'
 #' p <- as_mlx(c(0.25, 0.5, 0.75))
 #' mlx_qlnorm(p)
-mlx_dlnorm <- function(x, meanlog = 0, sdlog = 1, log = FALSE,
-                       device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_dlnorm <- function(x, meanlog = 0, sdlog = 1, log = FALSE) {
+  x <- as_mlx(x)
 
   if (sdlog <= 0) {
     stop("sdlog must be positive", call. = FALSE)
@@ -926,15 +921,15 @@ mlx_dlnorm <- function(x, meanlog = 0, sdlog = 1, log = FALSE,
   positive <- x > 0
 
   log_x <- log(x)
-  log_dnorm <- mlx_dnorm(log_x, mean = meanlog, sd = sdlog, log = TRUE, device = device)
+  log_dnorm <- mlx_dnorm(log_x, mean = meanlog, sd = sdlog, log = TRUE)
 
   if (log) {
     # log(dnorm(log(x)) / x) = log(dnorm(log(x))) - log(x)
     log_density <- log_dnorm - log_x
-    result <- mlx_where(positive, log_density, as_mlx(-Inf, device = device))
+    result <- mlx_where(positive, log_density, as_mlx(-Inf))
   } else {
     density <- exp(log_dnorm) / x
-    result <- mlx_where(positive, density, as_mlx(0, device = device))
+    result <- mlx_where(positive, density, as_mlx(0))
   }
 
   return(result)
@@ -943,8 +938,8 @@ mlx_dlnorm <- function(x, meanlog = 0, sdlog = 1, log = FALSE,
 #' @rdname mlx_dlnorm
 #' @export
 #' @param p Vector of probabilities (mlx array or coercible to mlx)
-mlx_plnorm <- function(x, meanlog = 0, sdlog = 1, device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_plnorm <- function(x, meanlog = 0, sdlog = 1) {
+  x <- as_mlx(x)
 
   if (sdlog <= 0) {
     stop("sdlog must be positive", call. = FALSE)
@@ -952,21 +947,21 @@ mlx_plnorm <- function(x, meanlog = 0, sdlog = 1, device = mlx_default_device())
 
   # plnorm(x) = pnorm(log(x), meanlog, sdlog) for x > 0, 0 otherwise
   positive <- x > 0
-  prob <- mlx_pnorm(log(x), mean = meanlog, sd = sdlog, device = device)
-  return(mlx_where(positive, prob, as_mlx(0, device = device)))
+  prob <- mlx_pnorm(log(x), mean = meanlog, sd = sdlog)
+  return(mlx_where(positive, prob, as_mlx(0)))
 }
 
 #' @rdname mlx_dlnorm
 #' @export
-mlx_qlnorm <- function(p, meanlog = 0, sdlog = 1, device = mlx_default_device()) {
-  p <- as_mlx(p, device = device)
+mlx_qlnorm <- function(p, meanlog = 0, sdlog = 1) {
+  p <- as_mlx(p)
 
   if (sdlog <= 0) {
     stop("sdlog must be positive", call. = FALSE)
   }
 
   # qlnorm(p) = exp(qnorm(p, meanlog, sdlog))
-  return(exp(mlx_qnorm(p, mean = meanlog, sd = sdlog, device = device)))
+  return(exp(mlx_qnorm(p, mean = meanlog, sd = sdlog)))
 }
 
 #' Logistic distribution functions
@@ -987,16 +982,15 @@ mlx_qlnorm <- function(p, meanlog = 0, sdlog = 1, device = mlx_default_device())
 #'
 #' p <- as_mlx(c(0.25, 0.5, 0.75))
 #' mlx_qlogis(p)
-mlx_dlogis <- function(x, location = 0, scale = 1, log = FALSE,
-                       device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_dlogis <- function(x, location = 0, scale = 1, log = FALSE) {
+  x <- as_mlx(x)
 
   if (scale <= 0) {
     stop("scale must be positive", call. = FALSE)
   }
 
-  location_mlx <- as_mlx(location, device = device)
-  scale_mlx <- as_mlx(scale, device = device)
+  location_mlx <- as_mlx(location)
+  scale_mlx <- as_mlx(scale)
 
   # Standardize
   z <- (x - location_mlx) / scale_mlx
@@ -1022,15 +1016,15 @@ mlx_dlogis <- function(x, location = 0, scale = 1, log = FALSE,
 #' @rdname mlx_dlogis
 #' @export
 #' @param p Vector of probabilities (mlx array or coercible to mlx)
-mlx_plogis <- function(x, location = 0, scale = 1, device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+mlx_plogis <- function(x, location = 0, scale = 1) {
+  x <- as_mlx(x)
 
   if (scale <= 0) {
     stop("scale must be positive", call. = FALSE)
   }
 
-  location_mlx <- as_mlx(location, device = device)
-  scale_mlx <- as_mlx(scale, device = device)
+  location_mlx <- as_mlx(location)
+  scale_mlx <- as_mlx(scale)
 
   # Standardize
   z <- (x - location_mlx) / scale_mlx
@@ -1041,15 +1035,15 @@ mlx_plogis <- function(x, location = 0, scale = 1, device = mlx_default_device()
 
 #' @rdname mlx_dlogis
 #' @export
-mlx_qlogis <- function(p, location = 0, scale = 1, device = mlx_default_device()) {
-  p <- as_mlx(p, device = device)
+mlx_qlogis <- function(p, location = 0, scale = 1) {
+  p <- as_mlx(p)
 
   if (scale <= 0) {
     stop("scale must be positive", call. = FALSE)
   }
 
-  location_mlx <- as_mlx(location, device = device)
-  scale_mlx <- as_mlx(scale, device = device)
+  location_mlx <- as_mlx(location)
+  scale_mlx <- as_mlx(scale)
 
   # qlogis(p) = location + scale * log(p / (1-p))
   return(location_mlx + scale_mlx * log(p / (1 - p)))
@@ -1102,9 +1096,9 @@ mlx_qlogis <- function(p, location = 0, scale = 1, device = mlx_default_device()
 #' mat <- mlx_matrix(1:12, 3, 4)  # shape (3, 4)
 #' result <- mlx_quantile(mat, c(0.25, 0.75), axis = 1)  # shape (2, 4)
 #' result <- mlx_quantile(mat, 0.5, axis = 1)  # shape (1, 4)
-#' result <- mlx_quantile(mat, 0.5, axis = 1, drop = TRUE)  # shape (4,)
-mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_default_device()) {
-  x <- as_mlx(x, device = device)
+#' result <- mlx_quantile(mat, 0.5, axis = 1, drop = TRUE)  # shape (4)
+mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE) {
+  x <- as_mlx(x)
 
   # Validate probs
   if (!is.numeric(probs) || anyNA(probs)) {
@@ -1139,7 +1133,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
   }
 
   # Convert probs to mlx array
-  probs_mlx <- as_mlx(probs, device = device)
+  probs_mlx <- as_mlx(probs)
 
   # Compute positions using type 7 formula: h = (n-1) * p
   # In 0-indexed: positions range from 0 to n-1
@@ -1181,7 +1175,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
     upper_vals <- mlx_gather(sorted_x, list(upper_idx_1based), axes = axis)
 
     # Reshape weight to be broadcastable
-    # weight has shape (n_probs,), need to add dimensions for broadcasting
+    # weight has shape (n_probs), need to add dimensions for broadcasting
     # Result from gather has the axis dimension replaced by the index dimension
     # So we need to reshape weight to (n_probs, 1, 1, ...) with extra dims after axis
     lv_shape <- mlx_shape(lower_vals)
@@ -1213,5 +1207,5 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE, device = mlx_defau
 #' @export
 #' @importFrom stats quantile
 quantile.mlx <- function(x, probs, ...) {
-  mlx_quantile(x, probs = probs, axis = NULL, device = mlx_device(x))
+  mlx_quantile(x, probs = probs, axis = NULL)
 }

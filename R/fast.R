@@ -64,8 +64,7 @@ mlx_metal_kernel <- function(name,
            threadgroup,
            template = list(),
            init_value = NULL,
-           verbose = FALSE,
-           device = NULL) {
+           verbose = FALSE) {
     if (!is.list(inputs) || length(inputs) == 0) {
       stop("inputs must be a non-empty list.", call. = FALSE)
     }
@@ -79,10 +78,6 @@ mlx_metal_kernel <- function(name,
       output_dtypes <- rep(output_dtypes, length(output_shapes))
     }
 
-    if (is.null(device)) {
-      device <- mlx_device(mlx_inputs[[1]])
-    }
-
     result <- cpp_mlx_metal_kernel_call(
       kernel_xp = kernel_ptr,
       mlx_args = mlx_inputs,
@@ -92,8 +87,7 @@ mlx_metal_kernel <- function(name,
       threadgroup = as.integer(threadgroup),
       template_args = template,
       init_value_ = init_value,
-      verbose = isTRUE(verbose),
-      device_str = as.character(device)
+      verbose = isTRUE(verbose)
     )
 
     if (length(result) == 1L) {

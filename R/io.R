@@ -11,8 +11,8 @@
 #' @export
 #' @examples
 #' path <- tempfile(fileext = ".mlx")
-#' mlx_save(as_mlx(matrix(1:4, 2, 2), device = "cpu"), path)
-#' restored <- mlx_load(path, device = "cpu")
+#' mlx_save(as_mlx(matrix(1:4, 2, 2)), path)
+#' restored <- mlx_load(path)
 mlx_save <- function(x, file) {
   x <- as_mlx(x)
   file <- ensure_extension(path.expand(validate_path(file)), ".npy")
@@ -24,27 +24,21 @@ mlx_save <- function(x, file) {
 
 #' Load an MLX array from disk
 #'
-#' Restores an array saved with [mlx_save()] and optionally places it on a
-#' specified device.
+#' Restores an array saved with [mlx_save()].
 #'
 #' @param file Path to a `.npy` file. The extension is appended automatically
 #'   when missing.
-#' @inheritParams common_params
-#' @details Use an `mlx_stream` from [mlx_new_stream()] to load directly onto a
-#'   specific stream; otherwise the array is placed on the current
-#'   [mlx_default_device()].
 #' @return An `mlx` array containing the file contents.
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.load>
 #' @export
-mlx_load <- function(file, device = mlx_default_device()) {
+mlx_load <- function(file) {
   file <- ensure_extension(path.expand(validate_path(file)), ".npy")
   if (!file.exists(file)) {
     stop("File '", file, "' does not exist.", call. = FALSE)
   }
 
-  handle <- resolve_device(device, mlx_default_device())
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_load(file, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_load(file)
+  new_mlx(ptr)
 }
 
 #' Save MLX arrays to the safetensors format
@@ -93,14 +87,13 @@ mlx_save_safetensors <- function(file, arrays, metadata = character()) {
 #' }
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.load_safetensors>
 #' @export
-mlx_load_safetensors <- function(file, device = mlx_default_device()) {
+mlx_load_safetensors <- function(file) {
   file <- ensure_extension(path.expand(validate_path(file)), ".safetensors")
   if (!file.exists(file)) {
     stop("File '", file, "' does not exist.", call. = FALSE)
   }
 
-  handle <- resolve_device(device, mlx_default_device())
-  eval_with_stream(handle, function(dev) cpp_mlx_load_safetensors(file, dev))
+  cpp_mlx_load_safetensors(file)
 }
 
 #' Save MLX arrays to the GGUF format
@@ -140,14 +133,13 @@ mlx_save_gguf <- function(file, arrays, metadata = list()) {
 #' }
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.load_gguf>
 #' @export
-mlx_load_gguf <- function(file, device = mlx_default_device()) {
+mlx_load_gguf <- function(file) {
   file <- ensure_extension(path.expand(validate_path(file)), ".gguf")
   if (!file.exists(file)) {
     stop("File '", file, "' does not exist.", call. = FALSE)
   }
 
-  handle <- resolve_device(device, mlx_default_device())
-  eval_with_stream(handle, function(dev) cpp_mlx_load_gguf(file, dev))
+  cpp_mlx_load_gguf(file)
 }
 
 normalize_array_list <- function(arrays) {

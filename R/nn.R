@@ -48,13 +48,6 @@ mlx_module_set_training <- function(module, mode = TRUE) {
   invisible(module)
 }
 
-resolve_nn_device <- function(arrays, device = NULL) {
-  devices <- lapply(Filter(Negate(is.null), arrays), mlx_device)
-  default <- Reduce(common_device, devices)
-  target <- if (is.null(device)) default else device
-  resolve_device(target, default)
-}
-
 #' @param w An mlx array representing the weight matrix. Accepts either an
 #'   unquantized matrix (which may be quantized automatically) or a pre-quantized
 #'   uint32 matrix produced by [mlx_quantize()].
@@ -80,7 +73,6 @@ NULL
 #' @param in_features Number of input features.
 #' @param out_features Number of output features.
 #' @param bias Should a bias term be included?
-#' @inheritParams common_params
 #' @return An object of class `mlx_module`.
 #' @seealso [mlx.nn.Linear](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Linear)
 #' @importFrom stats rnorm
@@ -92,8 +84,7 @@ NULL
 #' mlx_forward(layer, x)
 mlx_linear <- function(in_features,
                        out_features,
-                       bias = TRUE,
-                       device = mlx_default_device()) {
+                       bias = TRUE) {
   stopifnot(in_features > 0, out_features > 0)
 
   env <- new.env(parent = emptyenv())
@@ -102,9 +93,9 @@ mlx_linear <- function(in_features,
     nrow = in_features,
     ncol = out_features
   )
-  env$weight <- as_mlx(w_init, device = device)
+  env$weight <- as_mlx(w_init)
   env$bias <- if (bias) {
-    as_mlx(matrix(0, nrow = 1, ncol = out_features), device = device)
+    as_mlx(matrix(0, nrow = 1, ncol = out_features))
   } else {
     NULL
   }
@@ -486,7 +477,7 @@ mlx_dropout <- function(p = 0.5) {
       return(x * 0)
     }
     # Generate dropout mask
-    mask <- mlx_rand_bernoulli(dim(x), prob = 1 - env$p, device = mlx_device(x))
+    mask <- mlx_rand_bernoulli(dim(x), prob = 1 - env$p)
     # Scale by 1/(1-p) to maintain expected value
     x * mask / (1 - env$p)
   }
@@ -512,7 +503,6 @@ mlx_dropout <- function(p = 0.5) {
 #'
 #' @param normalized_shape Size of the feature dimension to normalize.
 #' @param eps Small constant for numerical stability (default: 1e-5).
-#' @inheritParams common_params
 #' @return An `mlx_module` applying layer normalization.
 #' @seealso [mlx.nn.LayerNorm](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.LayerNorm)
 #' @export
@@ -521,13 +511,13 @@ mlx_dropout <- function(p = 0.5) {
 #' ln <- mlx_layer_norm(4)
 #' x <- as_mlx(matrix(rnorm(12), 3, 4))
 #' mlx_forward(ln, x)
-mlx_layer_norm <- function(normalized_shape, eps = 1e-5, device = mlx_default_device()) {
+mlx_layer_norm <- function(normalized_shape, eps = 1e-5) {
   stopifnot(normalized_shape > 0)
   stopifnot(eps > 0)
 
   env <- new.env(parent = emptyenv())
-  env$gamma <- as_mlx(rep(1, normalized_shape), device = device)
-  env$beta <- as_mlx(rep(0, normalized_shape), device = device)
+  env$gamma <- as_mlx(rep(1, normalized_shape))
+  env$beta <- as_mlx(rep(0, normalized_shape))
   env$eps <- eps
 
   forward <- function(x) {
@@ -566,7 +556,6 @@ mlx_layer_norm <- function(normalized_shape, eps = 1e-5, device = mlx_default_de
 #' @param num_features Number of feature channels.
 #' @param eps Small constant for numerical stability (default: 1e-5).
 #' @param momentum Momentum for running statistics (default: 0.1).
-#' @inheritParams common_params
 #' @return An `mlx_module` applying batch normalization.
 #' @seealso [mlx.nn.BatchNorm](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.BatchNorm)
 #' @export
@@ -575,16 +564,16 @@ mlx_layer_norm <- function(normalized_shape, eps = 1e-5, device = mlx_default_de
 #' bn <- mlx_batch_norm(4)
 #' x <- as_mlx(matrix(rnorm(12), 3, 4))
 #' mlx_forward(bn, x)
-mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1, device = mlx_default_device()) {
+mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1) {
   stopifnot(num_features > 0)
   stopifnot(eps > 0)
   stopifnot(momentum >= 0 && momentum <= 1)
 
   env <- new.env(parent = emptyenv())
-  env$gamma <- as_mlx(rep(1, num_features), device = device)
-  env$beta <- as_mlx(rep(0, num_features), device = device)
-  env$running_mean <- as_mlx(rep(0, num_features), device = device)
-  env$running_var <- as_mlx(rep(1, num_features), device = device)
+  env$gamma <- as_mlx(rep(1, num_features))
+  env$beta <- as_mlx(rep(0, num_features))
+  env$running_mean <- as_mlx(rep(0, num_features))
+  env$running_var <- as_mlx(rep(1, num_features))
   env$eps <- eps
   env$momentum <- momentum
   env$training <- TRUE
@@ -641,7 +630,6 @@ mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1, device = ml
 #'
 #' @param num_embeddings Size of vocabulary.
 #' @param embedding_dim Dimension of embedding vectors.
-#' @inheritParams common_params
 #' @return An `mlx_module` for token embeddings.
 #' @seealso [mlx.nn.Embedding](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.Embedding)
 #' @export
@@ -651,7 +639,7 @@ mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1, device = ml
 #' # Token indices (1-indexed)
 #' tokens <- as_mlx(matrix(c(5, 10, 3, 7), 2, 2))
 #' mlx_forward(emb, tokens)
-mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_device()) {
+mlx_embedding <- function(num_embeddings, embedding_dim) {
   stopifnot(num_embeddings > 0, embedding_dim > 0)
 
   env <- new.env(parent = emptyenv())
@@ -661,7 +649,7 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
     num_embeddings,
     embedding_dim
   )
-  env$weight <- as_mlx(weight_init, device = device)
+  env$weight <- as_mlx(weight_init)
   env$num_embeddings <- num_embeddings
   env$embedding_dim <- embedding_dim
 
@@ -683,13 +671,12 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
     # Stack results and reshape
     if (length(orig_shape) == 0) {
       # Scalar index - return (1, embedding_dim)
-      mlx_matrix(result_list[[1]], nrow = 1, ncol = env$embedding_dim,
-                 device = mlx_device(indices))
+      mlx_matrix(result_list[[1]], nrow = 1, ncol = env$embedding_dim)
     } else {
       # Stack into matrix then reshape to match input shape + embedding dimension
       result_mat <- do.call(rbind, lapply(result_list, function(x) matrix(x, 1, env$embedding_dim)))
       new_shape <- c(orig_shape, env$embedding_dim)
-      mlx_array(as.numeric(result_mat), dim = new_shape, device = mlx_device(indices))
+      mlx_array(as.numeric(result_mat), dim = new_shape)
     }
   }
 
@@ -713,22 +700,20 @@ mlx_embedding <- function(num_embeddings, embedding_dim, device = mlx_default_de
 #' and C_in is number of input channels. Weight has shape `(C_out, kernel_size, C_in)`.
 #'
 #' @inheritParams conv_params
-#' @inheritParams common_params
 #' @return Convolved output array
 #' @seealso [mlx.core.conv1d](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv1d.html)
 #' @export
 mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
-                       groups = 1L, device = NULL) {
+                       groups = 1L) {
   input <- as_mlx(input)
   weight <- as_mlx(weight)
-  handle <- resolve_nn_device(list(input, weight), device)
-  input <- mlx_cast(input, device = handle$device)
-  weight <- mlx_cast(weight, device = handle$device)
+  input <- mlx_cast(input)
+  weight <- mlx_cast(weight)
 
   ptr <- cpp_mlx_conv1d(input$ptr, weight$ptr, as.integer(stride),
                        as.integer(padding), as.integer(dilation),
                        as.integer(groups))
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' 2D Convolution
@@ -740,7 +725,6 @@ mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
 #' `(C_out, kernel_h, kernel_w, C_in)`.
 #'
 #' @inheritParams conv_params
-#' @inheritParams common_params
 #' @return Convolved output array
 #' @seealso [mlx.core.conv2d](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv2d.html)
 #' @export
@@ -750,13 +734,11 @@ mlx_conv1d <- function(input, weight, stride = 1L, padding = 0L, dilation = 1L,
 #' weight <- mlx_array(rnorm(16*3*3*3), dim = c(16, 3, 3, 3))  # 16 filters, 3x3 kernel
 #' output <- mlx_conv2d(input, weight, stride = c(1, 1), padding = c(1, 1))
 mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
-                       dilation = c(1L, 1L), groups = 1L,
-                       device = NULL) {
+                       dilation = c(1L, 1L), groups = 1L) {
   input <- as_mlx(input)
   weight <- as_mlx(weight)
-  handle <- resolve_nn_device(list(input, weight), device)
-  input <- mlx_cast(input, device = handle$device)
-  weight <- mlx_cast(weight, device = handle$device)
+  input <- mlx_cast(input)
+  weight <- mlx_cast(weight)
 
   # Handle scalar inputs
   if (length(stride) == 1) stride <- rep(stride, 2)
@@ -766,7 +748,7 @@ mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
   ptr <- cpp_mlx_conv2d(input$ptr, weight$ptr, as.integer(stride),
                        as.integer(padding), as.integer(dilation),
                        as.integer(groups))
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' 3D Convolution
@@ -778,18 +760,15 @@ mlx_conv2d <- function(input, weight, stride = c(1L, 1L), padding = c(0L, 0L),
 #' `(C_out, kernel_d, kernel_h, kernel_w, C_in)`.
 #'
 #' @inheritParams conv_params
-#' @inheritParams common_params
 #' @return Convolved output array
 #' @seealso [mlx.core.conv3d](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.conv3d.html)
 #' @export
 mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L, 0L),
-                       dilation = c(1L, 1L, 1L), groups = 1L,
-                       device = NULL) {
+                       dilation = c(1L, 1L, 1L), groups = 1L) {
   input <- as_mlx(input)
   weight <- as_mlx(weight)
-  handle <- resolve_nn_device(list(input, weight), device)
-  input <- mlx_cast(input, device = handle$device)
-  weight <- mlx_cast(weight, device = handle$device)
+  input <- mlx_cast(input)
+  weight <- mlx_cast(weight)
 
   # Handle scalar inputs
   if (length(stride) == 1) stride <- rep(stride, 3)
@@ -799,7 +778,7 @@ mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L
   ptr <- cpp_mlx_conv3d(input$ptr, weight$ptr, as.integer(stride),
                        as.integer(padding), as.integer(dilation),
                        as.integer(groups))
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' 1D Transposed Convolution
@@ -812,25 +791,22 @@ mlx_conv3d <- function(input, weight, stride = c(1L, 1L, 1L), padding = c(0L, 0L
 #'
 #' @inheritParams conv_params
 #' @param output_padding Additional size added to output shape. Default: 0
-#' @inheritParams common_params
 #'
 #' @return An mlx array with the transposed convolution result
 #' @seealso [mlx_conv1d()], [mlx_conv_transpose2d()], [mlx_conv_transpose3d()]
 #' @seealso [mlx.nn](https://ml-explore.github.io/mlx/build/html/python/nn.html)
 #' @export
 mlx_conv_transpose1d <- function(input, weight, stride = 1L, padding = 0L,
-                                  dilation = 1L, output_padding = 0L, groups = 1L,
-                                  device = NULL) {
+                                  dilation = 1L, output_padding = 0L, groups = 1L) {
   input <- as_mlx(input)
   weight <- as_mlx(weight)
-  handle <- resolve_nn_device(list(input, weight), device)
-  input <- mlx_cast(input, device = handle$device)
-  weight <- mlx_cast(weight, device = handle$device)
+  input <- mlx_cast(input)
+  weight <- mlx_cast(weight)
 
   ptr <- cpp_mlx_conv_transpose1d(input$ptr, weight$ptr, as.integer(stride),
                                    as.integer(padding), as.integer(dilation),
                                    as.integer(output_padding), as.integer(groups))
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' 2D Transposed Convolution
@@ -844,7 +820,6 @@ mlx_conv_transpose1d <- function(input, weight, stride = 1L, padding = 0L,
 #' @inheritParams conv_params
 #' @param output_padding Additional size added to output shape. Can be a scalar or
 #'   length-2 vector. Default: c(0, 0)
-#' @inheritParams common_params
 #'
 #' @return An mlx array with the transposed convolution result
 #' @seealso [mlx_conv2d()], [mlx_conv_transpose1d()], [mlx_conv_transpose3d()]
@@ -852,13 +827,11 @@ mlx_conv_transpose1d <- function(input, weight, stride = 1L, padding = 0L,
 #' @export
 mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
                                   padding = c(0L, 0L), dilation = c(1L, 1L),
-                                  output_padding = c(0L, 0L), groups = 1L,
-                                  device = NULL) {
+                                  output_padding = c(0L, 0L), groups = 1L) {
   input <- as_mlx(input)
   weight <- as_mlx(weight)
-  handle <- resolve_nn_device(list(input, weight), device)
-  input <- mlx_cast(input, device = handle$device)
-  weight <- mlx_cast(weight, device = handle$device)
+  input <- mlx_cast(input)
+  weight <- mlx_cast(weight)
 
   # Handle scalar inputs
   if (length(stride) == 1) stride <- rep(stride, 2)
@@ -869,7 +842,7 @@ mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
   ptr <- cpp_mlx_conv_transpose2d(input$ptr, weight$ptr, as.integer(stride),
                                    as.integer(padding), as.integer(dilation),
                                    as.integer(output_padding), as.integer(groups))
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' 3D Transposed Convolution
@@ -883,7 +856,6 @@ mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
 #' @inheritParams conv_params
 #' @param output_padding Additional size added to output shape. Can be a scalar or
 #'   length-3 vector. Default: c(0, 0, 0)
-#' @inheritParams common_params
 #'
 #' @return An mlx array with the transposed convolution result
 #' @seealso [mlx_conv3d()], [mlx_conv_transpose1d()], [mlx_conv_transpose2d()]
@@ -891,13 +863,11 @@ mlx_conv_transpose2d <- function(input, weight, stride = c(1L, 1L),
 #' @export
 mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
                                   padding = c(0L, 0L, 0L), dilation = c(1L, 1L, 1L),
-                                  output_padding = c(0L, 0L, 0L), groups = 1L,
-                                  device = NULL) {
+                                  output_padding = c(0L, 0L, 0L), groups = 1L) {
   input <- as_mlx(input)
   weight <- as_mlx(weight)
-  handle <- resolve_nn_device(list(input, weight), device)
-  input <- mlx_cast(input, device = handle$device)
-  weight <- mlx_cast(weight, device = handle$device)
+  input <- mlx_cast(input)
+  weight <- mlx_cast(weight)
 
   # Handle scalar inputs
   if (length(stride) == 1) stride <- rep(stride, 3)
@@ -908,7 +878,7 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
   ptr <- cpp_mlx_conv_transpose3d(input$ptr, weight$ptr, as.integer(stride),
                                    as.integer(padding), as.integer(dilation),
                                    as.integer(output_padding), as.integer(groups))
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' Quantize a Matrix
@@ -917,7 +887,6 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
 #' This reduces memory usage and enables faster computation during inference.
 #'
 #' @inheritParams quant_params
-#' @inheritParams common_params
 #'
 #' @return A list containing:
 #'   \item{w_q}{The quantized weight matrix (packed as uint32)}
@@ -936,21 +905,19 @@ mlx_conv_transpose3d <- function(input, weight, stride = c(1L, 1L, 1L),
 #'
 #' @seealso [mlx_dequantize()], [mlx_quantized_matmul()]
 #' @export
-mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
-                         device = NULL) {
+mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine") {
   w <- as_mlx(w)
-  handle <- resolve_nn_device(list(w), device)
-  w <- mlx_cast(w, device = handle$device)
+  w <- mlx_cast(w)
 
   result <- cpp_mlx_quantize(w$ptr, as.integer(group_size), as.integer(bits),
                               mode)
 
   # Wrap the returned pointers as mlx objects
   out <- list()
-  out$w_q <- new_mlx(result$w_q, handle$device)
-  out$scales <- new_mlx(result$scales, handle$device)
+  out$w_q <- new_mlx(result$w_q)
+  out$scales <- new_mlx(result$scales)
   if (!is.null(result$biases)) {
-    out$biases <- new_mlx(result$biases, handle$device)
+    out$biases <- new_mlx(result$biases)
   } else {
     out$biases <- NULL
   }
@@ -964,7 +931,6 @@ mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
 #' produced by [mlx_quantize()].
 #'
 #' @inheritParams quant_params
-#' @inheritParams common_params
 #'
 #' @return An mlx array with the dequantized (approximate) floating-point weights
 #'
@@ -981,25 +947,24 @@ mlx_quantize <- function(w, group_size = 64L, bits = 4L, mode = "affine",
 #' @seealso [mlx_quantize()], [mlx_quantized_matmul()]
 #' @export
 mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L,
-                            mode = "affine", device = NULL) {
+                            mode = "affine") {
   w <- as_mlx(w)
   scales <- as_mlx(scales)
   if (!is.null(biases)) {
     biases <- as_mlx(biases)
   }
-  handle <- resolve_nn_device(list(w, scales, biases), device)
-  w <- mlx_cast(w, device = handle$device)
-  scales <- mlx_cast(scales, device = handle$device)
+  w <- mlx_cast(w)
+  scales <- mlx_cast(scales)
 
   biases_ptr <- NULL
   if (!is.null(biases)) {
-    biases <- mlx_cast(biases, device = handle$device)
+    biases <- mlx_cast(biases)
     biases_ptr <- biases$ptr
   }
 
   ptr <- cpp_mlx_dequantize(w$ptr, scales$ptr, biases_ptr,
                             as.integer(group_size), as.integer(bits), mode)
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' Quantized Matrix Multiplication
@@ -1010,7 +975,6 @@ mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L
 #'
 #' @inheritParams mlx_array_required
 #' @inheritParams quant_params
-#' @inheritParams common_params
 #'
 #' @return An mlx array with the result of the quantized matrix multiplication
 #'
@@ -1041,8 +1005,7 @@ mlx_dequantize <- function(w, scales, biases = NULL, group_size = 64L, bits = 4L
 #' @seealso [mlx_quantize()], [mlx_dequantize()], [mlx_gather_qmm()]
 #' @export
 mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose = TRUE,
-                                  group_size = 64L, bits = 4L, mode = "affine",
-                                  device = NULL) {
+                                  group_size = 64L, bits = 4L, mode = "affine") {
   x <- as_mlx(x)
   w <- as_mlx(w)
   if (!is.null(scales)) {
@@ -1051,32 +1014,31 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
   if (!is.null(biases)) {
     biases <- as_mlx(biases)
   }
-  handle <- resolve_nn_device(list(x, w, scales, biases), device)
-  x <- mlx_cast(x, device = handle$device)
-  w <- mlx_cast(w, device = handle$device)
+  x <- mlx_cast(x)
+  w <- mlx_cast(w)
 
   # Auto-quantize if scales not provided
   if (is.null(scales)) {
-    quant <- mlx_quantize(w, group_size, bits, mode, handle$device)
+    quant <- mlx_quantize(w, group_size, bits, mode)
     w <- quant$w_q
     scales <- quant$scales
     if (is.null(biases) && !is.null(quant$biases)) {
       biases <- quant$biases
     }
   } else {
-    scales <- mlx_cast(scales, device = handle$device)
+    scales <- mlx_cast(scales)
   }
 
   biases_ptr <- NULL
   if (!is.null(biases)) {
-    biases <- mlx_cast(biases, device = handle$device)
+    biases <- mlx_cast(biases)
     biases_ptr <- biases$ptr
   }
 
   ptr <- cpp_mlx_quantized_matmul(x$ptr, w$ptr, scales$ptr, biases_ptr,
                                    transpose, as.integer(group_size),
                                    as.integer(bits), mode)
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' Gather-based Quantized Matrix Multiplication
@@ -1091,7 +1053,6 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
 #' @param rhs_indices An optional integer vector/array (1-indexed) or `mlx` tensor
 #'   of indices for gathering from `w`'s leading (batch) dimension. Default: NULL
 #' @inheritParams quant_params
-#' @inheritParams common_params
 #'
 #' @return An mlx array with the result of the gather-based quantized matrix multiplication
 #'
@@ -1109,22 +1070,20 @@ mlx_quantized_matmul <- function(x, w, scales = NULL, biases = NULL, transpose =
 #' @export
 mlx_gather_qmm <- function(x, w, scales, biases = NULL, lhs_indices = NULL,
                             rhs_indices = NULL, transpose = TRUE, group_size = 64L,
-                            bits = 4L, mode = "affine", sorted_indices = FALSE,
-                            device = NULL) {
+                            bits = 4L, mode = "affine", sorted_indices = FALSE) {
   x <- as_mlx(x)
   w <- as_mlx(w)
   scales <- as_mlx(scales)
   if (!is.null(biases)) {
     biases <- as_mlx(biases)
   }
-  handle <- resolve_nn_device(list(x, w, scales, biases), device)
-  x <- mlx_cast(x, device = handle$device)
-  w <- mlx_cast(w, device = handle$device)
-  scales <- mlx_cast(scales, device = handle$device)
+  x <- mlx_cast(x)
+  w <- mlx_cast(w)
+  scales <- mlx_cast(scales)
 
   biases_ptr <- NULL
   if (!is.null(biases)) {
-    biases <- mlx_cast(biases, device = handle$device)
+    biases <- mlx_cast(biases)
     biases_ptr <- biases$ptr
   }
 
@@ -1139,14 +1098,14 @@ mlx_gather_qmm <- function(x, w, scales, biases = NULL, lhs_indices = NULL,
   lhs_indices_ptr <- NULL
   if (!is.null(lhs_indices)) {
     lhs_indices <- normalize_batch_indices(lhs_indices, mlx_shape(x)[1])
-    lhs_indices <- mlx_cast(lhs_indices, device = handle$device)
+    lhs_indices <- mlx_cast(lhs_indices)
     lhs_indices_ptr <- lhs_indices$ptr
   }
 
   rhs_indices_ptr <- NULL
   if (!is.null(rhs_indices)) {
     rhs_indices <- normalize_batch_indices(rhs_indices, mlx_shape(w)[1])
-    rhs_indices <- mlx_cast(rhs_indices, device = handle$device)
+    rhs_indices <- mlx_cast(rhs_indices)
     rhs_indices_ptr <- rhs_indices$ptr
   }
 
@@ -1154,5 +1113,5 @@ mlx_gather_qmm <- function(x, w, scales, biases = NULL, lhs_indices = NULL,
                             lhs_indices_ptr, rhs_indices_ptr, transpose,
                             as.integer(group_size), as.integer(bits), mode,
                             sorted_indices)
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }

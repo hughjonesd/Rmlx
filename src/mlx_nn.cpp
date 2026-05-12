@@ -15,9 +15,8 @@ SEXP cpp_mlx_conv1d(SEXP input_xp_, SEXP weight_xp_, int stride, int padding,
 
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
-  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
-  array result = conv1d(input, weight, stride, padding, dilation, groups, target_device);
+  array result = conv1d(input, weight, stride, padding, dilation, groups);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -30,14 +29,13 @@ SEXP cpp_mlx_conv2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
 
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
-  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   std::pair<int, int> stride_pair = {stride[0], stride[1]};
   std::pair<int, int> padding_pair = {padding[0], padding[1]};
   std::pair<int, int> dilation_pair = {dilation[0], dilation[1]};
 
   array result = conv2d(input, weight, stride_pair, padding_pair, dilation_pair,
-                       groups, target_device);
+                       groups);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -50,14 +48,13 @@ SEXP cpp_mlx_conv3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
 
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
-  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   std::tuple<int, int, int> stride_tuple = {stride[0], stride[1], stride[2]};
   std::tuple<int, int, int> padding_tuple = {padding[0], padding[1], padding[2]};
   std::tuple<int, int, int> dilation_tuple = {dilation[0], dilation[1], dilation[2]};
 
   array result = conv3d(input, weight, stride_tuple, padding_tuple, dilation_tuple,
-                       groups, target_device);
+                       groups);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -70,10 +67,9 @@ SEXP cpp_mlx_conv_transpose1d(SEXP input_xp_, SEXP weight_xp_, int stride, int p
 
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
-  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   array result = conv_transpose1d(input, weight, stride, padding, dilation,
-                                   output_padding, groups, target_device);
+                                   output_padding, groups);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -87,7 +83,6 @@ SEXP cpp_mlx_conv_transpose2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector str
 
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
-  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   std::pair<int, int> stride_pair = {stride[0], stride[1]};
   std::pair<int, int> padding_pair = {padding[0], padding[1]};
@@ -95,8 +90,7 @@ SEXP cpp_mlx_conv_transpose2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector str
   std::pair<int, int> output_padding_pair = {output_padding[0], output_padding[1]};
 
   array result = conv_transpose2d(input, weight, stride_pair, padding_pair,
-                                   dilation_pair, output_padding_pair, groups,
-                                   target_device);
+                                   dilation_pair, output_padding_pair, groups);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -110,7 +104,6 @@ SEXP cpp_mlx_conv_transpose3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector str
 
   array input = input_wrapper->get();
   array weight = weight_wrapper->get();
-  StreamOrDevice target_device = input_wrapper->stream(input.dtype());
 
   std::tuple<int, int, int> stride_tuple = {stride[0], stride[1], stride[2]};
   std::tuple<int, int, int> padding_tuple = {padding[0], padding[1], padding[2]};
@@ -118,8 +111,7 @@ SEXP cpp_mlx_conv_transpose3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector str
   std::tuple<int, int, int> output_padding_tuple = {output_padding[0], output_padding[1], output_padding[2]};
 
   array result = conv_transpose3d(input, weight, stride_tuple, padding_tuple,
-                                   dilation_tuple, output_padding_tuple, groups,
-                                   target_device);
+                                   dilation_tuple, output_padding_tuple, groups);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -136,7 +128,6 @@ SEXP cpp_mlx_quantized_matmul(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
   array x = x_wrapper->get();
   array w = w_wrapper->get();
   array scales = scales_wrapper->get();
-  StreamOrDevice target_device = x_wrapper->stream(x.dtype());
 
   std::optional<array> biases = std::nullopt;
   if (biases_xp_ != R_NilValue) {
@@ -146,7 +137,7 @@ SEXP cpp_mlx_quantized_matmul(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
 
   array result = quantized_matmul(x, w, scales, biases, transpose,
                                    std::optional<int>(group_size),
-                                   std::optional<int>(bits), mode, target_device);
+                                   std::optional<int>(bits), mode);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -165,7 +156,6 @@ SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
   array x = x_wrapper->get();
   array w = w_wrapper->get();
   array scales = scales_wrapper->get();
-  StreamOrDevice target_device = x_wrapper->stream(x.dtype());
 
   std::optional<array> biases = std::nullopt;
   if (biases_xp_ != R_NilValue) {
@@ -187,8 +177,7 @@ SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
 
   array result = gather_qmm(x, w, scales, biases, lhs_indices, rhs_indices,
                             transpose, std::optional<int>(group_size),
-                            std::optional<int>(bits), mode, sorted_indices,
-                            target_device);
+                            std::optional<int>(bits), mode, sorted_indices);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -199,10 +188,9 @@ List cpp_mlx_quantize(SEXP w_xp_, int group_size, int bits,
   MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
 
   array w = w_wrapper->get();
-  StreamOrDevice target_device = w_wrapper->stream(w.dtype());
   std::vector<array> result = quantize(w, std::optional<int>(group_size),
                                        std::optional<int>(bits), mode,
-                                       std::nullopt, target_device);
+                                       std::nullopt);
 
   // quantize returns a vector with 2 or 3 elements: [w_q, scales, biases (optional)]
   List out;
@@ -225,7 +213,6 @@ SEXP cpp_mlx_dequantize(SEXP w_xp_, SEXP scales_xp_, SEXP biases_xp_,
 
   array w = w_wrapper->get();
   array scales = scales_wrapper->get();
-  StreamOrDevice target_device = w_wrapper->stream(w.dtype());
 
   std::optional<array> biases = std::nullopt;
   if (biases_xp_ != R_NilValue) {
@@ -235,7 +222,7 @@ SEXP cpp_mlx_dequantize(SEXP w_xp_, SEXP scales_xp_, SEXP biases_xp_,
 
   array result = dequantize(w, scales, biases, std::optional<int>(group_size),
                             std::optional<int>(bits), mode, std::nullopt,
-                            std::nullopt, target_device);
+                            std::nullopt);
 
   return make_mlx_xptr(std::move(result));
 }

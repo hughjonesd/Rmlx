@@ -11,42 +11,36 @@
 #' @seealso [mlx.linalg.solve](https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve)
 #' @export
 #' @examples
-#' a <- mlx_matrix(c(3, 1, 1, 2), 2, 2, device = "cpu")
-#' b <- as_mlx(c(9, 8), device = "cpu")
-#' solve(a, b)
+#' with_device("cpu", {
+#'   a <- mlx_matrix(c(3, 1, 1, 2), 2, 2)
+#'   b <- as_mlx(c(9, 8))
+#'   solve(a, b)
+#' })
 solve.mlx <- function(a, b = NULL, ..., device = NULL) {
-  return_device <- mlx_device(a)
-  target_dtype <- mlx_dtype(a)
-  target_device <- device %||% return_device
-  if (!(target_dtype %in% c("float32", "float64", "complex64"))) {
-    target_dtype <- "float32"
-  }
-
-  if (is.null(b)) {
-    # No b: compute matrix inverse
-    a <- mlx_cast(a, device = target_device)
-    ptr <- cpp_mlx_solve(a$ptr, NULL, target_dtype)
-  } else {
-    # Convert b to mlx if needed
-    if (!is_mlx(b)) {
-      b <- as_mlx(b, dtype = target_dtype, device = target_device)
-    } else {
-      target_device_b <- device %||% mlx_device(b)
-      target <- resolve_common_dtype_device(
-        list(target_dtype, mlx_dtype(b)),
-        list(target_device, target_device_b)
-      )
-      target_dtype <- target$dtype
-      target_device <- target$device
-      a <- mlx_cast(a, dtype = target_dtype, device = target_device)
-      b <- mlx_cast(b, dtype = target_dtype, device = target_device)
+  with_optional_device(device, {
+    a <- as_mlx(a)
+    target_dtype <- mlx_dtype(a)
+    if (!(target_dtype %in% c("float32", "float64", "complex64"))) {
+      target_dtype <- "float32"
     }
 
-    # Solve Ax = b
-    ptr <- cpp_mlx_solve(a$ptr, b$ptr, target_dtype)
-  }
+    if (is.null(b)) {
+      a <- mlx_cast(a, dtype = target_dtype)
+      ptr <- cpp_mlx_solve(a$ptr, NULL, target_dtype)
+    } else {
+      if (!is_mlx(b)) {
+        b <- as_mlx(b, dtype = target_dtype)
+      } else {
+        target_dtype <- resolve_common_dtype(list(target_dtype, mlx_dtype(b)))
+        a <- mlx_cast(a, dtype = target_dtype)
+        b <- mlx_cast(b, dtype = target_dtype)
+      }
 
-  new_mlx(ptr, return_device)
+      ptr <- cpp_mlx_solve(a$ptr, b$ptr, target_dtype)
+    }
+
+    new_mlx(ptr)
+  })
 }
 
 #' Kronecker product dispatcher
@@ -70,7 +64,7 @@ kronecker.default <- function(X, Y, FUN = "*", make.dimnames = FALSE, ...) {
 #' Kronecker product for mlx arrays
 #'
 #' Computes the Kronecker (tensor) product between two mlx arrays. Inputs are
-#' automatically cast to a common dtype and device before evaluation.
+#' automatically cast to a common dtype before evaluation.
 #'
 #' @param a,b Objects coercible to `mlx`.
 #' @return An `mlx` array representing the Kronecker product.
@@ -85,16 +79,13 @@ mlx_kron <- function(a, b) {
   a <- operands[[1L]]
   b <- operands[[2L]]
 
-  target <- resolve_common_dtype_device(
-    list(mlx_dtype(a), mlx_dtype(b)),
-    list(mlx_device(a), mlx_device(b))
-  )
+  target_dtype <- resolve_common_dtype(list(mlx_dtype(a), mlx_dtype(b)))
 
-  a <- mlx_cast(a, dtype = target$dtype, device = target$device)
-  b <- mlx_cast(b, dtype = target$dtype, device = target$device)
+  a <- mlx_cast(a, dtype = target_dtype)
+  b <- mlx_cast(b, dtype = target_dtype)
 
   ptr <- cpp_mlx_kron(a$ptr, b$ptr)
-  new_mlx(ptr, target$device)
+  new_mlx(ptr)
 }
 
 setOldClass("mlx")

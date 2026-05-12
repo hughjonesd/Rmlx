@@ -219,13 +219,13 @@ List cpp_mlx_metal_kernel_call(SEXP kernel_xp,
                                IntegerVector threadgroup,
                                List template_args,
                                SEXP init_value_,
-                               bool verbose,
-                               std::string device_str) {
+                               bool verbose) {
   if (TYPEOF(kernel_xp) != EXTPTRSXP) {
     Rcpp::stop("Expected external pointer to Metal kernel.");
   }
 
-  if (device_str != "gpu") {
+  Device device = default_device();
+  if (device_to_string(device) != "gpu") {
     Rcpp::stop("Metal kernels currently require the gpu device.");
   }
 
@@ -276,7 +276,7 @@ List cpp_mlx_metal_kernel_call(SEXP kernel_xp,
       template_vec,
       init_value,
       verbose,
-      string_to_device(device_str)
+      device
     );
   } catch (const std::exception& e) {
     Rcpp::stop("Metal kernel execution failed: %s", e.what());
@@ -284,7 +284,7 @@ List cpp_mlx_metal_kernel_call(SEXP kernel_xp,
 
   List result(outputs.size());
   for (size_t i = 0; i < outputs.size(); ++i) {
-    result[i] = wrap_array_as_mlx(outputs[i], device_str);
+    result[i] = wrap_array_as_mlx(outputs[i]);
   }
 
   if (wrapper->output_names.size() == outputs.size()) {

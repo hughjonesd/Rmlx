@@ -80,8 +80,7 @@ GGUFMetaData build_meta_from_payload(const List& payload, const StreamOrDevice& 
 }
 
 List wrap_gguf_metadata(const std::unordered_map<std::string, GGUFMetaData>& meta,
-                        const StreamOrDevice& target_device,
-                        const std::string& device_hint) {
+                        const StreamOrDevice& target_device) {
   List out(meta.size());
   std::vector<std::string> names;
   names.reserve(meta.size());
@@ -94,7 +93,7 @@ List wrap_gguf_metadata(const std::unordered_map<std::string, GGUFMetaData>& met
     } else if (std::holds_alternative<array>(value)) {
       array arr = std::get<array>(value);
       array casted = to_device(arr, target_device);
-      out[idx++] = wrap_array_as_mlx(casted, device_hint);
+      out[idx++] = wrap_array_as_mlx(casted);
     } else if (std::holds_alternative<std::string>(value)) {
       out[idx++] = std::get<std::string>(value);
     } else if (std::holds_alternative<std::vector<std::string>>(value)) {
@@ -112,8 +111,7 @@ List wrap_gguf_metadata(const std::unordered_map<std::string, GGUFMetaData>& met
 }
 
 List wrap_tensor_map(const std::unordered_map<std::string, array>& tensor_map,
-                     const StreamOrDevice& target_device,
-                     const std::string& device_hint) {
+                     const StreamOrDevice& target_device) {
   List tensors(tensor_map.size());
   std::vector<std::string> names;
   names.reserve(tensor_map.size());
@@ -121,7 +119,7 @@ List wrap_tensor_map(const std::unordered_map<std::string, array>& tensor_map,
   for (const auto& kv : tensor_map) {
     names.push_back(kv.first);
     array casted = to_device(kv.second, target_device);
-    tensors[idx++] = wrap_array_as_mlx(casted, device_hint);
+    tensors[idx++] = wrap_array_as_mlx(casted);
   }
   CharacterVector r_names(names.begin(), names.end());
   tensors.attr("names") = r_names;
@@ -139,8 +137,8 @@ void cpp_mlx_save(SEXP xp_, std::string file) {
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_load(std::string file, std::string device_str) {
-  StreamOrDevice target_device = string_to_device(device_str);
+SEXP cpp_mlx_load(std::string file) {
+  StreamOrDevice target_device = default_device();
   array cpu_arr = load(std::move(file), cpu_device());
   array result = to_device(cpu_arr, target_device);
   return make_mlx_xptr(std::move(result));
@@ -161,11 +159,11 @@ void cpp_mlx_save_safetensors(List array_ptrs,
 }
 
 // [[Rcpp::export]]
-List cpp_mlx_load_safetensors(std::string file, std::string device_str) {
-  StreamOrDevice target_device = string_to_device(device_str);
+List cpp_mlx_load_safetensors(std::string file) {
+  StreamOrDevice target_device = default_device();
   auto loaded = load_safetensors(std::move(file), cpu_device());
 
-  List tensors = wrap_tensor_map(loaded.first, target_device, device_str);
+  List tensors = wrap_tensor_map(loaded.first, target_device);
   CharacterVector metadata = map_to_character(loaded.second);
 
   return List::create(
@@ -193,12 +191,12 @@ void cpp_mlx_save_gguf(List array_ptrs,
 }
 
 // [[Rcpp::export]]
-List cpp_mlx_load_gguf(std::string file, std::string device_str) {
-  StreamOrDevice target_device = string_to_device(device_str);
+List cpp_mlx_load_gguf(std::string file) {
+  StreamOrDevice target_device = default_device();
   auto loaded = load_gguf(std::move(file), cpu_device());
 
-  List tensors = wrap_tensor_map(loaded.first, target_device, device_str);
-  List metadata = wrap_gguf_metadata(loaded.second, target_device, device_str);
+  List tensors = wrap_tensor_map(loaded.first, target_device);
+  List metadata = wrap_gguf_metadata(loaded.second, target_device);
 
   return List::create(
       Named("tensors") = tensors,

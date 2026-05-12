@@ -8,8 +8,7 @@
 #'   the original MLX function expects.
 #' - Named arguments (e.g. `bias = ...`) become MLX keyword arguments and must
 #'   match the names that were used when exporting.
-#' - Each argument is coerced to `mlx` via [as_mlx()] and automatically moved to
-#'   the requested device/stream before execution.
+#' - Each argument is coerced to `mlx` via [as_mlx()].
 #' - If the MLX function yields a single array the result is returned as an
 #'   `mlx` object; multiple outputs are returned as a list in the order MLX
 #'   produced them.
@@ -20,22 +19,19 @@
 #' and keyword names you provide.
 #'
 #' @param path Path to a `.mlxfn` file created via MLX export utilities.
-#' @inheritParams common_params
 #' @return An R function. Calling it returns an `mlx` array if the imported
 #'   function has a single output, or a list of `mlx` arrays otherwise.
 #' @export
 #' @examplesIf mlx_has_gpu()
 #' add_fn <- mlx_import_function(
-#'   system.file("extdata/add_matrix.mlxfn", package = "Rmlx"),
-#'   device = "gpu"
+#'   system.file("extdata/add_matrix.mlxfn", package = "Rmlx")
 #' )
-#' x <- mlx_matrix(1:4, 2, 2, device = "gpu")
-#' y <- mlx_matrix(5:8, 2, 2, device = "gpu")
+#' x <- mlx_matrix(1:4, 2, 2)
+#' y <- mlx_matrix(5:8, 2, 2)
 #' add_fn(x, bias = y)  # positional + keyword argument
-mlx_import_function <- function(path, device = mlx_default_device()) {
+mlx_import_function <- function(path) {
   stopifnot(is.character(path), length(path) == 1L)
   normalized <- normalizePath(path, mustWork = TRUE)
-  default_handle <- resolve_device(device, mlx_default_device())
   ptr <- cpp_mlx_import_function(normalized)
 
   format_outputs <- function(result) {
@@ -45,7 +41,7 @@ mlx_import_function <- function(path, device = mlx_default_device()) {
     result
   }
 
-  function(..., .device = default_handle$device) {
+  function(...) {
     dots <- list(...)
     dot_names <- names(dots)
     if (is.null(dot_names)) {
@@ -56,27 +52,16 @@ mlx_import_function <- function(path, device = mlx_default_device()) {
     positional <- if (length(dots)) dots[!is_named] else list()
     kwargs <- if (length(dots)) dots[is_named] else list()
 
-    handle <- resolve_device(.device, default_handle$device)
-    eval_with_stream(handle, function(dev) {
-      cast_to_device <- function(arg) {
-        obj <- as_mlx(arg)
-        if (mlx_device(obj) == dev) {
-          return(obj)
-        }
-        mlx_cast(obj, device = dev)
-      }
+    positional_mlx <- lapply(positional, as_mlx)
+    kwargs_mlx <- lapply(kwargs, as_mlx)
 
-      positional_mlx <- lapply(positional, cast_to_device)
-      kwargs_mlx <- lapply(kwargs, cast_to_device)
+    args_ptrs <- lapply(positional_mlx, `[[`, "ptr")
+    kwargs_ptrs <- lapply(kwargs_mlx, `[[`, "ptr")
+    if (length(kwargs_ptrs)) {
+      names(kwargs_ptrs) <- names(kwargs)
+    }
 
-      args_ptrs <- lapply(positional_mlx, `[[`, "ptr")
-      kwargs_ptrs <- lapply(kwargs_mlx, `[[`, "ptr")
-      if (length(kwargs_ptrs)) {
-        names(kwargs_ptrs) <- names(kwargs)
-      }
-
-      result <- cpp_mlx_call_imported(ptr, args_ptrs, kwargs_ptrs, dev)
-      format_outputs(result)
-    })
+    result <- cpp_mlx_call_imported(ptr, args_ptrs, kwargs_ptrs)
+    format_outputs(result)
   }
 }
