@@ -1,14 +1,12 @@
 
 test_that("subset assignment returns a new wrapper and preserves aliases", {
-  x <- mlx_matrix(1:4, 2, 2, device = "cpu")
+  x <- mlx_matrix(1:4, 2, 2)
   y <- x
 
   x[1, 1] <- 100
 
   expect_equal(as.matrix(y), matrix(1:4, 2, 2))
   expect_equal(as.matrix(x), matrix(c(100, 2, 3, 4), 2, 2))
-  expect_equal(mlx_device(x), "cpu")
-  expect_equal(mlx_device(y), "cpu")
 })
 
 test_that("single logical index flattens like base R", {
@@ -65,7 +63,7 @@ test_that("subset assignment accepts mlx replacement arrays", {
 
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 
-  repl_alt <- as_mlx(repl, dtype = "float32", device = mlx_device(x))
+  repl_alt <- as_mlx(repl, dtype = "float32")
   x[rows, cols] <- repl_alt
   mat[rows, cols] <- repl
 
@@ -365,12 +363,11 @@ test_that("negative numeric indices work for assignment", {
 test_that("subset assignment preserves GPU device", {
   skip_if_not(mlx_has_gpu())
   mat <- matrix(1:6, 2, 3)
-  x <- as_mlx(mat, device = "gpu")
+  x <- as_mlx(mat)
 
   x[2, ] <- c(30, 10, 20)
   mat[2, ] <- c(30, 10, 20)
 
-  expect_equal(mlx_device(x), "gpu")
   expect_equal(as.matrix(x), mat, tolerance = 1e-6)
 })
 

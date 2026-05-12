@@ -1,5 +1,5 @@
 test_that("mlx_grad accepts length-1 vector outputs", {
-  w <- mlx_vector(c(2, 4, 6), device = "cpu")
+  w <- mlx_vector(c(2, 4, 6))
 
   loss_fn <- function(x) {
     # Returns a 1D length-1 mlx vector, not a scalar

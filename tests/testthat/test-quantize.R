@@ -71,18 +71,18 @@ test_that("gather_qmm matches quantized_matmul without gathers", {
   seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
   set.seed(seed)
 
-  x <- mlx_matrix(rnorm(64), nrow = 2, ncol = 32, dtype = "float32", device = "cpu")
-  w <- mlx_matrix(rnorm(96), nrow = 3, ncol = 32, dtype = "float32", device = "cpu")
+  x <- mlx_matrix(rnorm(64), nrow = 2, ncol = 32, dtype = "float32")
+  w <- mlx_matrix(rnorm(96), nrow = 3, ncol = 32, dtype = "float32")
 
   quant <- mlx_quantize(w, group_size = 32L, bits = 4L, mode = "affine")
 
   mm_ref <- mlx_quantized_matmul(
     x, quant$w_q, quant$scales, quant$biases,
-    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, device = "cpu"
+    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE
   )
   mm_gather <- mlx_gather_qmm(
     x, quant$w_q, quant$scales, quant$biases,
-    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, device = "cpu"
+    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE
   )
 
   expect_equal(as_r(mm_gather), as_r(mm_ref), tolerance = 1e-4)
@@ -94,11 +94,11 @@ test_that("gather_qmm applies lhs/rhs indices correctly", {
 
   # Batch 3, M=2, K=32
   x_data <- array(rnorm(3 * 2 * 32), dim = c(3, 2, 32))
-  x <- mlx_array(x_data, dim = c(3, 2, 32), dtype = "float32", device = "cpu")
+  x <- mlx_array(x_data, dim = c(3, 2, 32), dtype = "float32")
 
   # Batch 3, N=5, K=32
   w_data <- array(rnorm(3 * 5 * 32), dim = c(3, 5, 32))
-  w <- mlx_array(w_data, dim = c(3, 5, 32), dtype = "float32", device = "cpu")
+  w <- mlx_array(w_data, dim = c(3, 5, 32), dtype = "float32")
 
   quant <- mlx_quantize(w, group_size = 32L, bits = 4L, mode = "affine")
   w_dequant <- mlx_dequantize(quant$w_q, quant$scales, quant$biases,
@@ -110,8 +110,7 @@ test_that("gather_qmm applies lhs/rhs indices correctly", {
   res <- mlx_gather_qmm(
     x, quant$w_q, quant$scales, quant$biases,
     lhs_indices = lhs_idx_r, rhs_indices = rhs_idx_r,
-    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, sorted_indices = FALSE,
-    device = "cpu"
+    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, sorted_indices = FALSE
   )
 
   x_ref <- x_data[lhs_idx_r, , , drop = FALSE]

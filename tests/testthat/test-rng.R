@@ -70,20 +70,18 @@ test_that("mlx_rand_truncated_normal works with different bounds", {
 
 test_that("mlx_rand_truncated_normal works on CPU device", {
   set.seed(123)
-  mx_tnorm <- mlx_rand_truncated_normal(-2, 2, c(40L, 40L), device = "cpu")
+  mx_tnorm <- mlx_rand_truncated_normal(-2, 2, c(40L, 40L))
 
-  expect_equal(mlx_device(mx_tnorm), "cpu")
   expect_equal(dim(mx_tnorm), c(40L, 40L))
 })
 
 test_that("mlx_rand_multivariate_normal generates finite values", {
   set.seed(123)
-  mvn_mean <- as_mlx(c(0, 0), device = "cpu")
-  mvn_cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2), device = "cpu")
-  mx_mvn <- mlx_rand_multivariate_normal(c(10L, 2L), mvn_mean, mvn_cov, device = "cpu")
+  mvn_mean <- as_mlx(c(0, 0))
+  mvn_cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2))
+  mx_mvn <- mlx_rand_multivariate_normal(c(10L, 2L), mvn_mean, mvn_cov)
 
   expect_s3_class(mx_mvn, "mlx")
-  expect_equal(mlx_device(mx_mvn), "cpu")
   expect_equal(mlx_dtype(mx_mvn), "float32")
   mvn_vals <- as.vector(mx_mvn)
   expect_true(all(is.finite(mvn_vals)))
@@ -91,12 +89,11 @@ test_that("mlx_rand_multivariate_normal generates finite values", {
 
 test_that("mlx_rand_multivariate_normal works with non-identity covariance", {
   set.seed(123)
-  mvn_mean <- as_mlx(c(1, 2), device = "cpu")
-  mvn_cov <- as_mlx(matrix(c(2, 0.5, 0.5, 1), 2, 2), device = "cpu")
-  mx_mvn <- mlx_rand_multivariate_normal(c(5L, 2L), mvn_mean, mvn_cov, device = "cpu")
+  mvn_mean <- as_mlx(c(1, 2))
+  mvn_cov <- as_mlx(matrix(c(2, 0.5, 0.5, 1), 2, 2))
+  mx_mvn <- mlx_rand_multivariate_normal(c(5L, 2L), mvn_mean, mvn_cov)
 
   expect_s3_class(mx_mvn, "mlx")
-  expect_equal(mlx_device(mx_mvn), "cpu")
   mvn_vals <- as.vector(mx_mvn)
   expect_true(all(is.finite(mvn_vals)))
 })
@@ -226,7 +223,6 @@ test_that("mlx_key is deterministic for a given seed", {
   key3 <- mlx_key(124)
 
   expect_s3_class(key1, "mlx")
-  expect_equal(mlx_device(key1), "cpu")
   expect_equal(as.vector(key1), as.vector(key2))
   expect_false(all(as.vector(key1) == as.vector(key3)))
 })

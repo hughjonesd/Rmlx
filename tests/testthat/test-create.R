@@ -1,5 +1,5 @@
 test_that("mlx_zeros creates tensors of zeros", {
-  tens <- mlx_zeros(c(2, 3), dtype = "float32", device = "cpu")
+  tens <- mlx_zeros(c(2, 3), dtype = "float32")
   expect_s3_class(tens, "mlx")
   expect_equal(mlx_shape(tens), c(2L, 3L))
   expect_equal(mlx_dtype(tens), "float32")
@@ -7,7 +7,7 @@ test_that("mlx_zeros creates tensors of zeros", {
 })
 
 test_that("mlx_ones creates tensors of ones", {
-  tens <- mlx_ones(c(2, 2), dtype = "float32", device = "cpu")
+  tens <- mlx_ones(c(2, 2), dtype = "float32")
   expect_equal(as.matrix(tens), matrix(1, 2, 2), tolerance = 1e-6)
   expect_equal(mlx_dtype(tens), "float32")
 })
@@ -52,32 +52,29 @@ test_that("range helpers produce expected sequences", {
 })
 
 test_that("mlx_zeros_like matches source metadata", {
-  base <- mlx_full(c(2, 3), 4, dtype = "float32", device = "cpu")
+  base <- mlx_full(c(2, 3), 4, dtype = "float32")
   zeros <- mlx_zeros_like(base)
 
   expect_s3_class(zeros, "mlx")
   expect_equal(mlx_shape(zeros), mlx_shape(base))
   expect_equal(mlx_dtype(zeros), mlx_dtype(base))
-  expect_equal(mlx_device(zeros), mlx_device(base))
   expect_equal(as.matrix(zeros), matrix(0, 2, 3), tolerance = 1e-6)
 })
 
-test_that("mlx_zeros_like allows overriding dtype and device", {
-  base <- mlx_full(c(2, 2), 1, dtype = "float32", device = mlx_default_device())
-  zeros <- mlx_zeros_like(base, dtype = "int32", device = "cpu")
+test_that("mlx_zeros_like allows overriding dtype", {
+  base <- mlx_full(c(2, 2), 1, dtype = "float32")
+  zeros <- mlx_zeros_like(base, dtype = "int32")
 
   expect_equal(mlx_dtype(zeros), "int32")
-  expect_equal(mlx_device(zeros), "cpu")
   expect_equal(as.matrix(zeros), matrix(0, 2, 2))
 })
 
 test_that("mlx_ones_like mirrors shape and supports overrides", {
-  base <- mlx_array(rep(7L, 6), dim = c(3, 1, 2), dtype = "int16", device = "cpu")
+  base <- mlx_array(rep(7L, 6), dim = c(3, 1, 2), dtype = "int16")
   ones <- mlx_ones_like(base)
 
   expect_equal(mlx_shape(ones), mlx_shape(base))
   expect_equal(mlx_dtype(ones), "int16")
-  expect_equal(mlx_device(ones), "cpu")
   expect_equal(as.array(ones), array(1, dim = c(3, 1, 2)))
 
   ones_float <- mlx_ones_like(base, dtype = "float32")
@@ -86,58 +83,58 @@ test_that("mlx_ones_like mirrors shape and supports overrides", {
 
 test_that("mlx_array constructs arrays without extra copies", {
   data <- runif(6)
-  arr <- mlx_array(data, dim = c(2, 3), device = "cpu")
+  arr <- mlx_array(data, dim = c(2, 3))
 
   expect_s3_class(arr, "mlx")
   expect_equal(mlx_shape(arr), c(2L, 3L))
   expect_equal(mlx_dtype(arr), "float32")
   expect_equal(as.matrix(arr), matrix(data, 2, 3), tolerance = 1e-6)
 
-  bool_arr <- mlx_array(c(TRUE, FALSE), dim = 2, dtype = "bool", device = "cpu")
+  bool_arr <- mlx_array(c(TRUE, FALSE), dim = 2, dtype = "bool")
   expect_equal(mlx_dtype(bool_arr), "bool")
   expect_equal(as.vector(bool_arr), c(TRUE, FALSE))
 
-  recycled <- mlx_array(1:2, dim = c(2, 3), device = "cpu")
+  recycled <- mlx_array(1:2, dim = c(2, 3))
   expect_equal(mlx_shape(recycled), c(2L, 3L))
   expect_equal(as.matrix(recycled), matrix(rep_len(1:2, 6), nrow = 2, ncol = 3))
 
   expect_error(
-    mlx_array(1:5, dim = c(2, 3), device = "cpu"),
+    mlx_array(1:5, dim = c(2, 3)),
     "must divide prod\\(dim\\)",
     fixed = FALSE
   )
 })
 
 test_that("mlx_matrix respects dimensions and byrow flag", {
-  mat <- mlx_matrix(1:6, nrow = 2, ncol = 3, device = "cpu")
+  mat <- mlx_matrix(1:6, nrow = 2, ncol = 3)
   expect_equal(mlx_shape(mat), c(2L, 3L))
   expect_equal(as.matrix(mat), matrix(1:6, 2, 3))
 
-  mat_byrow <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE, device = "cpu")
+  mat_byrow <- mlx_matrix(1:6, nrow = 2, ncol = 3, byrow = TRUE)
   expect_equal(as.matrix(mat_byrow), matrix(1:6, 2, 3, byrow = TRUE))
 
-  inferred_rows <- mlx_matrix(1:6, ncol = 3, device = "cpu")
+  inferred_rows <- mlx_matrix(1:6, ncol = 3)
   expect_equal(mlx_shape(inferred_rows), c(2L, 3L))
 
-  inferred_cols <- mlx_matrix(1:6, nrow = 3, device = "cpu")
+  inferred_cols <- mlx_matrix(1:6, nrow = 3)
   expect_equal(mlx_shape(inferred_cols), c(3L, 2L))
 
-  expect_error(mlx_matrix(1:5, ncol = 4, device = "cpu"), "length(data) must be divisible by ncol", fixed = TRUE)
+  expect_error(mlx_matrix(1:5, ncol = 4), "length(data) must be divisible by ncol", fixed = TRUE)
   expect_error(mlx_matrix(integer(0)), "Provide either nrow or ncol", fixed = TRUE)
 
-  recycled_matrix <- mlx_matrix(1:2, nrow = 2, ncol = 4, device = "cpu")
+  recycled_matrix <- mlx_matrix(1:2, nrow = 2, ncol = 4)
   expect_equal(as.matrix(recycled_matrix), matrix(rep_len(1:2, 8), nrow = 2, ncol = 4))
 
-  recycled_byrow <- mlx_matrix(1:2, nrow = 2, ncol = 4, byrow = TRUE, device = "cpu")
+  recycled_byrow <- mlx_matrix(1:2, nrow = 2, ncol = 4, byrow = TRUE)
   expect_equal(as.matrix(recycled_byrow), matrix(rep_len(1:2, 8), nrow = 2, ncol = 4, byrow = TRUE))
 
   expect_error(
-    mlx_matrix(1:5, nrow = 2, ncol = 3, device = "cpu")
+    mlx_matrix(1:5, nrow = 2, ncol = 3)
   )
 })
 
 test_that("mlx_vector creates 1D arrays", {
-  vec <- mlx_vector(1:5, device = "cpu")
+  vec <- mlx_vector(1:5)
   expect_equal(mlx_shape(vec), 5L)
   expect_equal(as.vector(vec), as.numeric(1:5))
 
@@ -146,11 +143,11 @@ test_that("mlx_vector creates 1D arrays", {
 })
 
 test_that("mlx_scalar creates dimensionless arrays", {
-  s <- mlx_scalar(3.14, device = "cpu")
+  s <- mlx_scalar(3.14)
   expect_equal(mlx_shape(s), integer(0))
   expect_equal(as.vector(s), 3.14, tolerance = 1e-6)
 
-  logical_scalar <- mlx_scalar(TRUE, dtype = "bool", device = "cpu")
+  logical_scalar <- mlx_scalar(TRUE, dtype = "bool")
   expect_equal(mlx_dtype(logical_scalar), "bool")
   expect_equal(as.vector(logical_scalar), TRUE)
 

@@ -200,17 +200,13 @@ test_that("compiled functions preserve list names", {
 })
 
 
-test_that("compiled functions respect arguments' device", {
-  skip_if_not(mlx_has_gpu())
-  local_default_device("gpu")
-
-  f <- function (x, y) x + y
+test_that("compiled functions work with float64 on CPU", {
+  f <- function(x, y) x + y
   fc <- mlx_compile(f)
-  x <- mlx_vector(1:5, dtype = "float64", device = "gpu")
-  y <- mlx_vector(1:5, dtype = "float64", device = "gpu")
-  expect_error(fc(x, y), "float64")
 
-  x <- mlx_vector(1:5, dtype = "float64", device = "cpu")
-  y <- mlx_vector(1:5, dtype = "float64", device = "cpu")
-  expect_no_error(fc(x, y))
+  with_device("cpu", {
+    x <- mlx_vector(1:5, dtype = "float64")
+    y <- mlx_vector(1:5, dtype = "float64")
+    expect_no_error(fc(x, y))
+  })
 })

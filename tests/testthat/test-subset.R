@@ -435,12 +435,11 @@ test_that("mlx indexing works with higher dimensional arrays", {
 test_that("mlx indexing preserves device", {
   skip_if_not(mlx_has_gpu())
   mat <- matrix(1:12, 3, 4)
-  x <- as_mlx(mat, device = "gpu")
+  x <- as_mlx(mat)
 
-  idx <- as_mlx(c(1L, 3L), device = "gpu")
+  idx <- as_mlx(c(1L, 3L))
   result <- x[idx, ]
 
-  expect_equal(mlx_device(result), "gpu")
 })
 
 test_that("empty mlx index returns empty result", {

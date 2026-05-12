@@ -1,6 +1,6 @@
 test_that("mlx_norm matches base computations", {
   mat <- matrix(c(1, -2, 3, 4), 2, 2)
-  x <- as_mlx(mat, device = "cpu")
+  x <- as_mlx(mat)
 
   frob <- as.numeric(mlx_norm(x))
   expect_equal(frob, base::norm(mat, type = "F"), tolerance = 1e-6)
@@ -15,8 +15,8 @@ test_that("mlx_norm matches base computations", {
 
 test_that("mlx_eig recreates eigen decomposition", {
   mat <- matrix(c(2, -1, 0, 2), 2, 2)
-  x <- as_mlx(mat, device = "cpu")
-  eig_res <- mlx_eig(x)
+  x <- as_mlx(mat)
+  eig_res <- mlx_eig(x, device = "cpu")
 
   values <- as.vector(eig_res$values)
   vectors <- as.matrix(eig_res$vectors)
@@ -28,7 +28,7 @@ test_that("mlx_eig recreates eigen decomposition", {
 
 test_that("mlx_eigvals matches base eigenvalues", {
   mat <- matrix(c(3, 1, 0, 2), 2, 2)
-  vals <- sort(Re(as.vector(mlx_eigvals(as_mlx(mat, device = "cpu")))))
+  vals <- sort(Re(as.vector(mlx_eigvals(as_mlx(mat), device = "cpu"))))
   expected <- sort(base::eigen(mat, only.values = TRUE)$values)
   expect_equal(vals, expected, tolerance = 1e-6)
 })
@@ -37,13 +37,13 @@ test_that("mlx_eigh and mlx_eigvalsh agree with symmetric eigenvalues", {
   mat <- matrix(c(2, 1, 1,
                   1, 3, 0,
                   1, 0, 4), 3, 3, byrow = TRUE)
-  x <- as_mlx(mat, device = "cpu")
+  x <- as_mlx(mat)
 
   base_eig <- eigen(mat, symmetric = TRUE)
-  vals <- as.vector(mlx_eigvalsh(x))
+  vals <- as.vector(mlx_eigvalsh(x, device = "cpu"))
   expect_equal(sort(vals), sort(base_eig$values), tolerance = 1e-6)
 
-  eigh <- mlx_eigh(x)
+  eigh <- mlx_eigh(x, device = "cpu")
   vecs <- as.matrix(eigh$vectors)
   check <- mat %*% vecs
   expect_equal(check, vecs %*% diag(as.vector(eigh$values)),
@@ -52,9 +52,9 @@ test_that("mlx_eigh and mlx_eigvalsh agree with symmetric eigenvalues", {
 
 test_that("eigen helpers let MLX report unsupported gpu execution", {
   skip_if_not(mlx_has_gpu())
-  local_default_device("gpu")
+  local_device("gpu")
 
-  mat <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2), dtype = "float32", device = "gpu")
+  mat <- as_mlx(matrix(c(4, 1, 1, 3), 2, 2), dtype = "float32")
 
   expect_error(mlx_eig(mat), "not yet supported on the GPU", fixed = TRUE)
   expect_error(mlx_eigvals(mat), "not yet supported on the GPU", fixed = TRUE)
@@ -68,9 +68,10 @@ test_that("mlx_solve_triangular matches base solve", {
 
   sol_lower <- as.matrix(
     mlx_solve_triangular(
-      as_mlx(lower, device = "cpu"),
-      as_mlx(rhs, device = "cpu"),
-      upper = FALSE
+      as_mlx(lower),
+      as_mlx(rhs),
+      upper = FALSE,
+      device = "cpu"
     )
   )
   expect_equal(sol_lower, forwardsolve(lower, rhs), tolerance = 1e-6)
@@ -79,9 +80,10 @@ test_that("mlx_solve_triangular matches base solve", {
   rhs2 <- matrix(c(4, 2), 2, 1)
   sol_upper <- as.matrix(
     mlx_solve_triangular(
-      as_mlx(upper, device = "cpu"),
-      as_mlx(rhs2, device = "cpu"),
-      upper = TRUE
+      as_mlx(upper),
+      as_mlx(rhs2),
+      upper = TRUE,
+      device = "cpu"
     )
   )
   expect_equal(sol_upper, backsolve(upper, rhs2), tolerance = 1e-6)
@@ -89,14 +91,13 @@ test_that("mlx_solve_triangular matches base solve", {
 
 test_that("mlx_solve_triangular lets MLX report unsupported gpu execution", {
   skip_if_not(mlx_has_gpu())
-  local_default_device("gpu")
+  local_device("gpu")
 
   lower <- as_mlx(
     matrix(c(2, 0, 1, 3), 2, 2, byrow = TRUE),
-    dtype = "float32",
-    device = "gpu"
+    dtype = "float32"
   )
-  rhs <- as_mlx(matrix(c(1, 5), 2, 1), dtype = "float32", device = "gpu")
+  rhs <- as_mlx(matrix(c(1, 5), 2, 1), dtype = "float32")
 
   expect_error(
     mlx_solve_triangular(lower, rhs, upper = FALSE),

@@ -89,17 +89,16 @@ test_that("boolean operands coerce for arithmetic", {
 
 test_that("binary operations align devices and dtypes", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
+  old_device <- mlx_device()
+  on.exit(mlx_device(old_device))
 
-  mlx_default_device("gpu")
+  mlx_device("gpu")
 
-  x_gpu <- as_mlx(matrix(1:4, 2, 2), device = "gpu", dtype = "float32")
-  y_cpu <- as_mlx(matrix(5:8, 2, 2), device = "cpu")
+  x_gpu <- as_mlx(matrix(1:4, 2, 2), dtype = "float32")
+  y_cpu <- as_mlx(matrix(5:8, 2, 2))
 
   result <- x_gpu + y_cpu
 
-  expect_equal(mlx_device(result), "gpu")
   expect_equal(mlx_dtype(result), "float32")
   expect_equal(as.matrix(result), matrix(c(6, 8, 10, 12), 2, 2), tolerance = 1e-6)
 })
@@ -124,22 +123,21 @@ test_that("arithmetic works on non-contiguous views", {
 
 test_that("logical operators work", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
-  mlx_default_device("gpu")
+  old_device <- mlx_device()
+  on.exit(mlx_device(old_device))
+  mlx_device("gpu")
 
   a <- matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2)
   b <- matrix(c(TRUE, TRUE, FALSE, FALSE), 2, 2)
 
-  a_mlx <- as_mlx(a, device = "gpu")
-  b_mlx <- as_mlx(b, device = "cpu")
+  a_mlx <- as_mlx(a)
+  b_mlx <- as_mlx(b)
 
   expect_equal(as.matrix(a_mlx & b_mlx), a & b)
   expect_equal(as.matrix(a_mlx | b_mlx), a | b)
 
   res_and <- a_mlx & b_mlx
   expect_equal(mlx_dtype(res_and), "bool")
-  expect_equal(mlx_device(res_and), "gpu")
 
   # Unary not
   expect_equal(as.matrix(!a_mlx), !a)

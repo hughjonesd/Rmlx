@@ -26,8 +26,7 @@ test_that("mlx_cast converts dtype and device", {
   expect_equal(mlx_dtype(cast_dtype), "float32")
   expect_equal(as.numeric(cast_dtype), as.numeric(1:3), tolerance = 1e-6)
 
-  cast_device <- mlx_cast(x, device = "cpu")
-  expect_equal(mlx_device(cast_device), "cpu")
+  cast_device <- mlx_cast(x)
 })
 
 test_that("mlx_squeeze and mlx_expand_dims adjust shapes", {
@@ -125,8 +124,7 @@ test_that("mlx_contiguous materializes a contiguous copy", {
   contig <- mlx_contiguous(view)
   expect_equal(as.matrix(contig), as.matrix(view), tolerance = 1e-6)
 
-  cpu_copy <- mlx_contiguous(view, device = "cpu")
-  expect_equal(mlx_device(cpu_copy), "cpu")
+  cpu_copy <- mlx_contiguous(view)
   expect_equal(as.matrix(cpu_copy), as.matrix(view), tolerance = 1e-6)
 })
 

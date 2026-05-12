@@ -32,11 +32,10 @@ test_that("roundtrip conversion preserves higher-dimensional arrays", {
 test_that("dtype argument works", {
   m <- matrix(1:12, 3, 4)
   m_fp32 <- as_mlx(m, dtype = "float32")
-  m_fp64 <- as_mlx(m, dtype = "float64", device = "cpu")
+  m_fp64 <- with_device("cpu", as_mlx(m, dtype = "float64"))
 
   expect_equal(mlx_dtype(m_fp32), "float32")
   expect_equal(mlx_dtype(m_fp64), "float64")
-  expect_equal(mlx_device(m_fp64), "cpu")
 })
 
 test_that("logical inputs create boolean MLX arrays", {
@@ -153,14 +152,12 @@ test_that("as.numeric.mlx drops dimensions", {
   expect_equal(result_3d, as.numeric(as.vector(arr)))
 })
 
-test_that("as_mlx changes device and dtype for existing mlx inputs", {
-  skip_if_not(mlx_has_gpu())
-  cpu_vec <- mlx_vector(1:10, device = "cpu")
-  gpu_vec <- as_mlx(cpu_vec, dtype = "float32", device = "gpu")
+test_that("as_mlx changes dtype for existing mlx inputs", {
+  vec <- mlx_vector(1:10)
+  cast_vec <- as_mlx(vec, dtype = "float32")
 
-  expect_equal(mlx_device(gpu_vec), "gpu")
-  expect_equal(mlx_dtype(gpu_vec), "float32")
-  expect_equal(as.vector(gpu_vec), as.vector(cpu_vec))
+  expect_equal(mlx_dtype(cast_vec), "float32")
+  expect_equal(as.vector(cast_vec), as.vector(vec))
 })
 
 test_that("row()/col() match base results for mlx matrices", {
@@ -195,14 +192,16 @@ test_that("backsolve() delegates to mlx_solve_triangular", {
   expected_vec <- base::backsolve(r, b_vec)
 
   res_mat <- backsolve(
-    as_mlx(r, device = "cpu"),
-    as_mlx(b_mat, device = "cpu"),
-    upper.tri = TRUE
+    as_mlx(r),
+    as_mlx(b_mat),
+    upper.tri = TRUE,
+    device = "cpu"
   )
   res_vec <- backsolve(
-    as_mlx(r, device = "cpu"),
-    as_mlx(b_vec, device = "cpu"),
-    upper.tri = TRUE
+    as_mlx(r),
+    as_mlx(b_vec),
+    upper.tri = TRUE,
+    device = "cpu"
   )
 
   expect_s3_class(res_mat, "mlx")

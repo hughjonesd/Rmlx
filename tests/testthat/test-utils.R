@@ -4,7 +4,6 @@ test_that("print.mlx works", {
 
   expect_output(print(x_mlx), "mlx array")
   expect_output(print(x_mlx), "dtype")
-  expect_output(print(x_mlx), "device")
 })
 
 test_that("dim.mlx works", {
@@ -60,10 +59,9 @@ test_that("dim<-.mlx works for 3D arrays", {
 
 test_that("dim<-.mlx preserves device and dtype", {
   skip_if_not(mlx_has_gpu())
-  x <- as_mlx(1:12, device = "gpu", dtype = "float32")
+  x <- as_mlx(1:12, dtype = "float32")
   dim(x) <- c(3, 4)
 
-  expect_equal(mlx_device(x), "gpu")
   expect_equal(mlx_dtype(x), "float32")
 })
 

@@ -20,20 +20,19 @@ test_that("matrix multiplication requires matrices (no vector auto-promotion)", 
 
 test_that("matrix multiplication aligns devices and dtypes", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_default_device()
-  on.exit(mlx_default_device(old_device))
+  old_device <- mlx_device()
+  on.exit(mlx_device(old_device))
 
-  mlx_default_device("gpu")
+  mlx_device("gpu")
 
   a <- matrix(1:6, 2, 3)
   b <- matrix(7:12, 3, 2)
 
-  a_gpu <- as_mlx(a, device = "gpu", dtype = "float32")
-  b_cpu <- as_mlx(b, device = "cpu")
+  a_gpu <- as_mlx(a, dtype = "float32")
+  b_cpu <- as_mlx(b)
 
   c_mlx <- a_gpu %*% b_cpu
 
-  expect_equal(mlx_device(c_mlx), "gpu")
   expect_equal(mlx_dtype(c_mlx), "float32")
   expect_equal(as.matrix(c_mlx), a %*% b, tolerance = 1e-5)
 })
