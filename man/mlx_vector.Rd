@@ -4,7 +4,7 @@
 \alias{mlx_vector}
 \title{Construct MLX vectors}
 \usage{
-mlx_vector(data, dtype = NULL, device = mlx_default_device())
+mlx_vector(data, dtype = NULL)
 }
 \arguments{
 \item{data}{Atomic vector providing the elements (recycling is not allowed).}
@@ -16,13 +16,7 @@ mlx_vector(data, dtype = NULL, device = mlx_default_device())
 \item Other: \code{"bool"}, \code{"complex64"}
 }
 
-\code{float64} arrays are CPU-only. Use \code{device = "cpu"} when creating or
-casting to \code{float64}, and cast back to \code{float32} before using the GPU.
 Not all functions support all types. See individual function documentation.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An \code{mlx} vector with \code{dim = length(data)}.

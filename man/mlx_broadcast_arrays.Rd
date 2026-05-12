@@ -4,14 +4,10 @@
 \alias{mlx_broadcast_arrays}
 \title{Broadcast multiple arrays to a shared shape}
 \usage{
-mlx_broadcast_arrays(..., device = NULL)
+mlx_broadcast_arrays(...)
 }
 \arguments{
 \item{...}{One or more arrays (or a single list) convertible via \code{\link[=as_mlx]{as_mlx()}}.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 A list of broadcast mlx arrays.

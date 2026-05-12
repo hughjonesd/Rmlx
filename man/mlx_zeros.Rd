@@ -7,8 +7,7 @@
 mlx_zeros(
   dim,
   dtype = c("float32", "float64", "int8", "int16", "int32", "int64", "uint8", "uint16",
-    "uint32", "uint64", "bool", "complex64"),
-  device = mlx_default_device()
+    "uint32", "uint64", "bool", "complex64")
 )
 }
 \arguments{
@@ -21,13 +20,7 @@ mlx_zeros(
 \item Other: \code{"bool"}, \code{"complex64"}
 }
 
-\code{float64} arrays are CPU-only. Use \code{device = "cpu"} when creating or
-casting to \code{float64}, and cast back to \code{float32} before using the GPU.
 Not all functions support all types. See individual function documentation.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array filled with zeros.

@@ -21,8 +21,8 @@ Persists an MLX array to a \code{.npy} file using MLX's native serialization.
 }
 \examples{
 path <- tempfile(fileext = ".mlx")
-mlx_save(as_mlx(matrix(1:4, 2, 2), device = "cpu"), path)
-restored <- mlx_load(path, device = "cpu")
+mlx_save(as_mlx(matrix(1:4, 2, 2)), path)
+restored <- mlx_load(path)
 }
 \seealso{
 \url{https://ml-explore.github.io/mlx/build/html/python/io.html#mlx.core.save}

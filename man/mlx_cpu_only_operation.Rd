@@ -7,9 +7,8 @@
 CPU-only MLX operation note
 }
 \details{
-As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
-argument. (Passing the argument won't affect the device of any
-mlx object returned, just where this particular operation is run.)
+As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+\code{\link[=with_device]{with_device()}} or \code{\link[=local_device]{local_device()}}, or pass \code{device = "cpu"} when the
+function exposes that argument.
 }
 \keyword{internal}

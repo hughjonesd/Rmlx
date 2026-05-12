@@ -23,7 +23,7 @@ Rmlx provides modular neural network components that can be combined using `mlx_
 ```{r setup}
 library(Rmlx)
 
-mlx_default_device(mlx_best_device())
+mlx_device(mlx_best_device())
 
 # Create a 3-layer MLP
 mlp <- mlx_sequential(

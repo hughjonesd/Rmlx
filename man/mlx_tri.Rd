@@ -6,13 +6,7 @@
 \alias{mlx_triu}
 \title{Triangular helpers for MLX arrays}
 \usage{
-mlx_tri(
-  n,
-  m = NULL,
-  k = 0L,
-  dtype = c("float32", "float64"),
-  device = mlx_default_device()
-)
+mlx_tri(n, m = NULL, k = 0L, dtype = c("float32", "float64"))
 
 mlx_tril(x, k = 0L)
 
@@ -33,13 +27,7 @@ to the upper diagonals, negative values to the lower diagonals.}
 \item Other: \code{"bool"}, \code{"complex64"}
 }
 
-\code{float64} arrays are CPU-only. Use \code{device = "cpu"} when creating or
-casting to \code{float64}, and cast back to \code{float32} before using the GPU.
 Not all functions support all types. See individual function documentation.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 
 \item{x}{Object coercible to \code{mlx}.}
 }

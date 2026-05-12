@@ -4,7 +4,7 @@
 \alias{mlx_array}
 \title{Construct an MLX array from R data}
 \usage{
-mlx_array(data, dim, dtype = NULL, device = mlx_default_device())
+mlx_array(data, dim, dtype = NULL)
 }
 \arguments{
 \item{data}{Numeric, logical, or complex vector. \code{data} is recycled to
@@ -21,13 +21,7 @@ a scalar, in which case \code{data} must be length 1.}
 \item Other: \code{"bool"}, \code{"complex64"}
 }
 
-\code{float64} arrays are CPU-only. Use \code{device = "cpu"} when creating or
-casting to \code{float64}, and cast back to \code{float32} before using the GPU.
 Not all functions support all types. See individual function documentation.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An \code{mlx} array with the requested shape.

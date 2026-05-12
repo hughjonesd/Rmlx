@@ -38,7 +38,7 @@ current_branch <- system("git rev-parse --abbrev-ref HEAD", intern = TRUE)
 current_commit <- system("git rev-parse --short HEAD", intern = TRUE)
 
 bench_res <- bench::mark(
-  as_mlx(matrix_payload, device = device),
+  with_device(device, as_mlx(matrix_payload)),
   iterations = iterations,
   check = FALSE,
   time_unit = "s",

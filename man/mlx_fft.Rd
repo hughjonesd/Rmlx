@@ -6,11 +6,11 @@
 \alias{mlx_fftn}
 \title{Fast Fourier transforms for MLX arrays}
 \usage{
-mlx_fft(x, axis, inverse = FALSE, device = NULL)
+mlx_fft(x, axis, inverse = FALSE)
 
-mlx_fft2(x, axes, inverse = FALSE, device = NULL)
+mlx_fft2(x, axes, inverse = FALSE)
 
-mlx_fftn(x, axes = NULL, inverse = FALSE, device = NULL)
+mlx_fftn(x, axes = NULL, inverse = FALSE)
 }
 \arguments{
 \item{x}{Array-like object coercible to \code{mlx}.}
@@ -21,10 +21,6 @@ transform. Omit the argument to use the last dimension (no negative axes).}
 \item{inverse}{Logical flag; if \code{TRUE}, compute the inverse transform. The
 inverse is un-normalised to match base R's \code{fft()}, i.e. results are
 multiplied by the product of the transformed axis lengths.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 
 \item{axes}{Optional integer vector of axes for the multi-dimensional
 transforms. Supply positive, 1-based axes; omit the argument to use the
@@ -38,10 +34,6 @@ An \code{mlx} array containing complex frequency coefficients.
 \code{mlx_fft()}, \code{mlx_fft2()}, and \code{mlx_fftn()} wrap the MLX FFT kernels with
 R-friendly defaults. Inputs are converted with \code{\link[=as_mlx]{as_mlx()}} and results are
 returned as \code{mlx} arrays.
-}
-\details{
-When \code{device} is \code{NULL}, the transform runs on the input array's device,
-falling back to \code{\link[=mlx_default_device]{mlx_default_device()}} only when coercing non-mlx inputs.
 }
 \examples{
 x <- as_mlx(c(1, 2, 3, 4))

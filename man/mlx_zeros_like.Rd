@@ -4,7 +4,7 @@
 \alias{mlx_zeros_like}
 \title{Zeros shaped like an existing mlx array}
 \usage{
-mlx_zeros_like(x, dtype = NULL, device = NULL)
+mlx_zeros_like(x, dtype = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}
@@ -16,13 +16,7 @@ mlx_zeros_like(x, dtype = NULL, device = NULL)
 \item Other: \code{"bool"}, \code{"complex64"}
 }
 
-\code{float64} arrays are CPU-only. Use \code{device = "cpu"} when creating or
-casting to \code{float64}, and cast back to \code{float32} before using the GPU.
 Not all functions support all types. See individual function documentation.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array of zeros matching \code{x}.
@@ -30,7 +24,7 @@ An mlx array of zeros matching \code{x}.
 \description{
 \code{mlx_zeros_like()} mirrors \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like}{\code{mlx.core.zeros_like()}}:
 it creates a zero-filled array matching the source array's shape. Optionally override the dtype
-or device.
+or dtype.
 }
 \examples{
 base <- mlx_ones(c(2, 2))

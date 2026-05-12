@@ -29,7 +29,7 @@ chol.mlx "Cholesky decomposition for mlx arrays" TRUE FALSE
 chol2inv "Inverse from Cholesky decomposition" TRUE TRUE
 chol2inv.default NA TRUE FALSE
 chol2inv.mlx NA TRUE FALSE
-coerce_binary_operands "Match R operands to mlx operand dtype and device" TRUE FALSE
+coerce_binary_operands "Match R operands to mlx operand dtype" TRUE FALSE
 coerce_payload "Coerce R payload into the storage format expected by MLX" TRUE FALSE
 col NA TRUE TRUE
 col.default NA TRUE FALSE
@@ -41,7 +41,6 @@ colMeans.mlx NA TRUE FALSE
 colSums "Column sums for mlx arrays" TRUE TRUE
 colSums.default NA TRUE FALSE
 colSums.mlx NA TRUE FALSE
-common_device "Select common device from two arrays" TRUE FALSE
 Conj.mlx NA TRUE FALSE
 crossprod.mlx "Cross product" TRUE FALSE
 diag "Diagonal matrix extraction and construction" TRUE TRUE
@@ -56,7 +55,6 @@ duplicated_rows "Check for duplicated rows in an mlx matrix" TRUE FALSE
 duplicated_rows_lex "Check for duplicated rows" TRUE FALSE
 ensure_extension NA NA FALSE
 ensure_parent_dir NA NA FALSE
-eval_with_stream NA NA FALSE
 fft "Fast Fourier Transform" TRUE TRUE
 fft.default NA TRUE FALSE
 fft.mlx NA TRUE FALSE
@@ -65,7 +63,7 @@ gather_for_subset NA NA FALSE
 Im.mlx NA TRUE FALSE
 is_matrix_index NA NA FALSE
 is_mlx "Test if object is an MLX array" TRUE TRUE
-is_mlx_stream "Wrap a raw MLX pointer into an mlx object" TRUE FALSE
+is_mlx_stream NA NA FALSE
 is.finite.mlx NA TRUE FALSE
 is.infinite.mlx NA TRUE FALSE
 is.na.mlx NA TRUE FALSE
@@ -75,7 +73,7 @@ kronecker.default NA TRUE TRUE
 kronecker.mlx "Kronecker method for mlx objects (S3 dispatch)" TRUE TRUE
 length.mlx "Get length of MLX array" TRUE FALSE
 lex_sort "Lexicographically sort rows of x" TRUE FALSE
-local_default_device "Set the default MLX device for the current scope" TRUE TRUE
+local_device "Set the current MLX device for the current scope" TRUE TRUE
 Math.mlx "Math operations for MLX arrays" TRUE FALSE
 matrix_assign NA NA FALSE
 matrix_subset NA NA FALSE
@@ -112,11 +110,10 @@ mlx_cross "Vector cross product with mlx arrays" TRUE TRUE
 mlx_cross_entropy "Cross-entropy loss" TRUE TRUE
 mlx_cumprod NA TRUE TRUE
 mlx_cumsum "Cumulative sum and product" TRUE TRUE
-mlx_default_device "Get or set default MLX device" TRUE TRUE
 mlx_default_stream NA TRUE TRUE
 mlx_degrees "Convert between radians and degrees" TRUE TRUE
 mlx_dequantize "Dequantize a Matrix" TRUE TRUE
-mlx_device "Get device associated with an MLX object" TRUE TRUE
+mlx_device "Get or set current MLX device" TRUE TRUE
 mlx_dexp "Exponential distribution functions" TRUE TRUE
 mlx_diagonal "Extract diagonal or construct diagonal matrix for mlx arrays" TRUE TRUE
 mlx_disable_compile "Control Global Compilation Behavior" TRUE TRUE
@@ -292,9 +289,7 @@ qr.mlx "QR decomposition for mlx arrays" TRUE FALSE
 quantile.mlx NA TRUE FALSE
 rbind.mlx "Row-bind mlx arrays" TRUE FALSE
 Re.mlx NA TRUE FALSE
-resolve_common_dtype_device NA NA FALSE
-resolve_device NA NA FALSE
-resolve_nn_device NA NA FALSE
+resolve_common_dtype NA NA FALSE
 row "Row and column indices for mlx arrays" TRUE TRUE
 row.default NA TRUE FALSE
 row.mlx NA TRUE FALSE
@@ -317,4 +312,5 @@ validate_path NA NA FALSE
 validate_shape "Validate and coerce shape specification" TRUE FALSE
 vectors_assign NA NA FALSE
 vectors_subset NA NA FALSE
-with_default_device "Temporarily set the default MLX device or stream" TRUE TRUE
+with_device "Temporarily set the current MLX device or stream" TRUE TRUE
+with_optional_device NA NA FALSE

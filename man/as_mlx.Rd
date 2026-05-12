@@ -7,8 +7,7 @@
 as_mlx(
   x,
   dtype = c("float32", "float64", "bool", "complex64", "int8", "int16", "int32", "int64",
-    "uint8", "uint16", "uint32", "uint64"),
-  device = mlx_default_device()
+    "uint8", "uint16", "uint32", "uint64")
 )
 }
 \arguments{
@@ -24,10 +23,6 @@ as_mlx(
 
 If not specified, defaults to \code{"float32"} for numeric, \code{"bool"} for logical,
 and \code{"complex64"} for complex inputs.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An object of class \code{mlx}
@@ -43,8 +38,8 @@ x <- as_mlx(1:10)                    # Creates float32 array
 
 \subsection{Type precision}{
 \itemize{
-\item \code{float64} is supported on CPU only; use \code{device = "cpu"} explicitly.
-Cast GPU arrays to \code{float64} with \code{mlx_cast(x, dtype = "float64", device = "cpu")}, and cast back to \code{float32} before returning to GPU.
+\item \code{float64} is supported on CPU only. Use \code{\link[=with_device]{with_device()}} or \code{\link[=local_device]{local_device()}}
+to run float64 work on CPU.
 \item Integer arithmetic may promote types (e.g., int32 + int32 might → int64)
 \item Mixed integer/float operations promote to float
 }

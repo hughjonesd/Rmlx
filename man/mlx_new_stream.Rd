@@ -5,14 +5,15 @@
 \alias{mlx_default_stream}
 \title{MLX streams for asynchronous execution}
 \usage{
-mlx_new_stream(device = mlx_default_device())
+mlx_new_stream(device = mlx_device())
 
-mlx_default_stream(device = mlx_default_device())
+mlx_default_stream(device = mlx_device())
 }
 \arguments{
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
+\item{device}{Execution target for APIs that expose a one-off device or
+stream override. Supply \code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}. Ordinary array operations use the current
+\code{\link[=mlx_device]{mlx_device()}} instead.}
 }
 \value{
 An object of class \code{mlx_stream}.

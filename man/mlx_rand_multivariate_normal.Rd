@@ -26,13 +26,12 @@ mlx_rand_multivariate_normal(
 \item Other: \code{"bool"}, \code{"complex64"}
 }
 
-\code{float64} arrays are CPU-only. Use \code{device = "cpu"} when creating or
-casting to \code{float64}, and cast back to \code{float32} before using the GPU.
 Not all functions support all types. See individual function documentation.}
 
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
+\item{device}{Execution target for APIs that expose a one-off device or
+stream override. Supply \code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}. Ordinary array operations use the current
+\code{\link[=mlx_device]{mlx_device()}} instead.}
 }
 \value{
 An mlx array with samples from the multivariate normal.
@@ -45,9 +44,9 @@ GPU execution is currently
 unavailable because the covariance factorisation runs on the host.
 }
 \examples{
-mean <- as_mlx(c(0, 0), device = "cpu")
-cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2), device = "cpu")
-samples <- mlx_rand_multivariate_normal(10, mean, cov, device = "cpu")
+mean <- as_mlx(c(0, 0))
+cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2))
+samples <- with_device("cpu", mlx_rand_multivariate_normal(10, mean, cov))
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/random.html#mlx.core.random.multivariate_normal}{mlx.core.random.multivariate_normal}

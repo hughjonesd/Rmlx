@@ -6,11 +6,11 @@
 \alias{mlx_qunif}
 \title{Uniform distribution functions}
 \usage{
-mlx_dunif(x, min = 0, max = 1, log = FALSE, device = mlx_default_device())
+mlx_dunif(x, min = 0, max = 1, log = FALSE)
 
-mlx_punif(x, min = 0, max = 1, device = mlx_default_device())
+mlx_punif(x, min = 0, max = 1)
 
-mlx_qunif(p, min = 0, max = 1, device = mlx_default_device())
+mlx_qunif(p, min = 0, max = 1)
 }
 \arguments{
 \item{x}{Vector of quantiles (mlx array or coercible to mlx)}
@@ -18,10 +18,6 @@ mlx_qunif(p, min = 0, max = 1, device = mlx_default_device())
 \item{min, max}{Lower and upper limits of the distribution (default: 0, 1)}
 
 \item{log}{If \code{TRUE}, return log density for \code{mlx_dunif} (default: \code{FALSE})}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 
 \item{p}{Vector of probabilities (mlx array or coercible to mlx)}
 }

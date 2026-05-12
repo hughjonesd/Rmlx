@@ -4,14 +4,10 @@
 \alias{mlx_import_function}
 \title{Import an exported MLX function}
 \usage{
-mlx_import_function(path, device = mlx_default_device())
+mlx_import_function(path)
 }
 \arguments{
 \item{path}{Path to a \code{.mlxfn} file created via MLX export utilities.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An R function. Calling it returns an \code{mlx} array if the imported
@@ -28,8 +24,7 @@ Imported functions behave like regular R closures:
 the original MLX function expects.
 \item Named arguments (e.g. \code{bias = ...}) become MLX keyword arguments and must
 match the names that were used when exporting.
-\item Each argument is coerced to \code{mlx} via \code{\link[=as_mlx]{as_mlx()}} and automatically moved to
-the requested device/stream before execution.
+\item Each argument is coerced to \code{mlx} via \code{\link[=as_mlx]{as_mlx()}}.
 \item If the MLX function yields a single array the result is returned as an
 \code{mlx} object; multiple outputs are returned as a list in the order MLX
 produced them.
@@ -43,11 +38,10 @@ and keyword names you provide.
 \examples{
 \dontshow{if (mlx_has_gpu()) withAutoprint(\{ # examplesIf}
 add_fn <- mlx_import_function(
-  system.file("extdata/add_matrix.mlxfn", package = "Rmlx"),
-  device = "gpu"
+  system.file("extdata/add_matrix.mlxfn", package = "Rmlx")
 )
-x <- mlx_matrix(1:4, 2, 2, device = "gpu")
-y <- mlx_matrix(5:8, 2, 2, device = "gpu")
+x <- mlx_matrix(1:4, 2, 2)
+y <- mlx_matrix(5:8, 2, 2)
 add_fn(x, bias = y)  # positional + keyword argument
 \dontshow{\}) # examplesIf}
 }

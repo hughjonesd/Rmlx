@@ -11,8 +11,7 @@ mlx_conv_transpose2d(
   padding = c(0L, 0L),
   dilation = c(1L, 1L),
   output_padding = c(0L, 0L),
-  groups = 1L,
-  device = NULL
+  groups = 1L
 )
 }
 \arguments{
@@ -33,10 +32,6 @@ depends on dimensionality). Default: 1 for 1D, c(1,1) for 2D, c(1,1,1) for 3D.}
 length-2 vector. Default: c(0, 0)}
 
 \item{groups}{Number of blocked connections from input to output channels. Default: 1.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array with the transposed convolution result

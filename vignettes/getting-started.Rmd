@@ -61,8 +61,8 @@ m <- matrix(1:12, nrow = 3, ncol = 4)
 x <- as_mlx(m)
 print(x)
 
-# Specify the device explicitly (uses GPU if available, CPU otherwise)
-x_dev <- as_mlx(m, device = device)
+# Specify the current device explicitly (uses GPU if available, CPU otherwise)
+x_dev <- with_device(device, as_mlx(m))
 ```
 
 > **Precision note:** Numeric inputs use single precision (`float32`) by default.
@@ -230,16 +230,16 @@ Control whether computations run on GPU or CPU:
 
 ```{r}
 # Check default device
-mlx_default_device()
+mlx_device()
 
 # Set to CPU for debugging
-mlx_default_device("cpu")
+mlx_device("cpu")
 
-# Create array on CPU
-x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
+# Create array while CPU is current
+x_cpu <- with_device("cpu", as_mlx(matrix(1:12, 3, 4)))
 
 # Set back to best available device
-mlx_default_device(device)
+mlx_device(device)
 ```
 
 Numeric computations default to `float32` for GPU compatibility. Use CPU

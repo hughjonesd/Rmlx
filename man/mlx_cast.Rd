@@ -4,20 +4,18 @@
 \alias{mlx_cast}
 \title{Cast an mlx array}
 \usage{
-mlx_cast(x, dtype = NULL, device = mlx_device(x))
+mlx_cast(x, dtype = NULL)
 }
 \arguments{
 \item{x}{An mlx array.}
 
 \item{dtype}{Target dtype string. Defaults to the array's current dtype.}
-
-\item{device}{Target device string. Defaults to the array's current device.}
 }
 \value{
-An mlx array with the requested dtype and device.
+An mlx array with the requested dtype.
 }
 \description{
-\code{mlx_cast()} converts an mlx array to a different dtype and/or device without
+\code{mlx_cast()} converts an mlx array to a different dtype without
 changing its shape.
 }
 \examples{
@@ -25,5 +23,5 @@ x <- mlx_vector(1:3, dtype = "int32")
 mlx_cast(x, dtype = "float32")
 }
 \seealso{
-\code{\link[=mlx_dtype]{mlx_dtype()}}, \code{\link[=mlx_device]{mlx_device()}}
+\code{\link[=mlx_dtype]{mlx_dtype()}}
 }

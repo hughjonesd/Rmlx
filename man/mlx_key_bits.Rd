@@ -4,7 +4,7 @@
 \alias{mlx_key_bits}
 \title{Generate raw random bits on MLX arrays}
 \usage{
-mlx_key_bits(dim, width = 4L, key = NULL, device = mlx_default_device())
+mlx_key_bits(dim, width = 4L, key = NULL)
 }
 \arguments{
 \item{dim}{Integer vector specifying array dimensions (shape).}
@@ -14,10 +14,6 @@ positive.}
 
 \item{key}{Optional \code{mlx} key array. If omitted, MLX's default generator is
 used.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An \code{mlx} array of unsigned integers filled with random bits.

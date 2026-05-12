@@ -6,11 +6,11 @@
 \alias{mlx_qexp}
 \title{Exponential distribution functions}
 \usage{
-mlx_dexp(x, rate = 1, log = FALSE, device = mlx_default_device())
+mlx_dexp(x, rate = 1, log = FALSE)
 
-mlx_pexp(x, rate = 1, device = mlx_default_device())
+mlx_pexp(x, rate = 1)
 
-mlx_qexp(p, rate = 1, device = mlx_default_device())
+mlx_qexp(p, rate = 1)
 }
 \arguments{
 \item{x}{Vector of quantiles (mlx array or coercible to mlx)}
@@ -18,10 +18,6 @@ mlx_qexp(p, rate = 1, device = mlx_default_device())
 \item{rate}{Rate parameter (default: 1)}
 
 \item{log}{If \code{TRUE}, return log density for \code{mlx_dexp} (default: \code{FALSE})}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 
 \item{p}{Vector of probabilities (mlx array or coercible to mlx)}
 }

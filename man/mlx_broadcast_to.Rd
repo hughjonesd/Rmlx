@@ -4,16 +4,12 @@
 \alias{mlx_broadcast_to}
 \title{Broadcast an array to a new shape}
 \usage{
-mlx_broadcast_to(x, shape, device = NULL)
+mlx_broadcast_to(x, shape)
 }
 \arguments{
 \item{x}{An mlx array.}
 
 \item{shape}{Integer vector describing the broadcasted shape.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array with the requested dimensions.

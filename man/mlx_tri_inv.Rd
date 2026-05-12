@@ -10,6 +10,11 @@ mlx_tri_inv(x, upper = FALSE, device = NULL)
 \item{x}{An mlx array.}
 
 \item{upper}{Logical; if \code{TRUE}, \code{x} is upper triangular, otherwise lower triangular.}
+
+\item{device}{Execution target for APIs that expose a one-off device or
+stream override. Supply \code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}. Ordinary array operations use the current
+\code{\link[=mlx_device]{mlx_device()}} instead.}
 }
 \value{
 The inverse of the triangular matrix \code{x}.
@@ -22,8 +27,8 @@ Computes the inverse of a triangular matrix.
 }
 \examples{
 # Lower triangular matrix
-L <- mlx_matrix(c(1:3, 0, 4:5, 0, 0, 6), 3, 3, device = "cpu")
-mlx_tri_inv(L, upper = FALSE)
+L <- mlx_matrix(c(1:3, 0, 4:5, 0, 0, 6), 3, 3)
+mlx_tri_inv(L, upper = FALSE, device = "cpu")
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.tri_inv}{mlx.core.linalg.tri_inv}

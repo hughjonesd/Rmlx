@@ -32,7 +32,7 @@ We'll create:
 library(Rmlx)
 
 # should work on cpu only
-mlx_default_device(mlx_best_device())
+mlx_device(mlx_best_device())
 
 # Problem metadata
 num_features <- 100
@@ -222,9 +222,9 @@ By default, computations run on the best available device. Switch to CPU if need
 
 ```{r, eval = FALSE}
 # Use CPU (useful for debugging)
-mlx_default_device("cpu")
+mlx_device("cpu")
 
-with_default_device("cpu", {
+with_device("cpu", {
   ...
 })
 ```

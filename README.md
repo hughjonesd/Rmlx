@@ -166,14 +166,14 @@ M series chips have shared memory between the CPU and GPU, so switching
 between devices is costless.
 
 ``` r
-# Check/set default device
-dev <- mlx_default_device()           
-mlx_default_device("cpu")    # Switch to CPU
-mlx_default_device(dev)      # Back to GPU
+# Check/set current device
+dev <- mlx_device()           
+mlx_device("cpu")    # Switch to CPU
+mlx_device(dev)      # Back to GPU
 
-# Create on specific device
-x_gpu <- as_mlx(matrix(1:12, 3, 4), device = "gpu")
-x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
+# Create while a specific device is current
+x_gpu <- with_device("gpu", as_mlx(matrix(1:12, 3, 4)))
+x_cpu <- with_device("cpu", as_mlx(matrix(1:12, 3, 4)))
 ```
 
 ### Subsetting
@@ -444,10 +444,8 @@ typeof(1:10)
 x_float <- as_mlx(1:10)
 x_int <- as_mlx(1:10, dtype = "int32")
 
-# float64 arrays are CPU-only. Finish GPU work by explicitly casting to CPU.
-x64 <- mlx_cast(x_f32, dtype = "float64", device = "cpu")
+# float64 arrays are CPU-only. Finish GPU work by explicitly switching to CPU.
+x64 <- with_device("cpu", mlx_cast(x_f32, dtype = "float64"))
 mlx_dtype(x64)
 #> [1] "float64"
-mlx_device(x64)
-#> [1] "cpu"
 ```

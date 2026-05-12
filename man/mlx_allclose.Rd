@@ -4,14 +4,7 @@
 \alias{mlx_allclose}
 \title{Test if all elements of two arrays are close}
 \usage{
-mlx_allclose(
-  a,
-  b,
-  rtol = 1e-05,
-  atol = 1e-08,
-  equal_nan = FALSE,
-  device = NULL
-)
+mlx_allclose(a, b, rtol = 1e-05, atol = 1e-08, equal_nan = FALSE)
 }
 \arguments{
 \item{a, b}{MLX arrays or objects coercible to MLX arrays}
@@ -21,10 +14,6 @@ mlx_allclose(
 \item{atol}{Absolute tolerance (default: 1e-8)}
 
 \item{equal_nan}{If \code{TRUE}, NaN values are considered equal (default: \code{FALSE})}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array containing a single boolean value

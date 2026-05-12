@@ -4,20 +4,16 @@
 \alias{mlx_contiguous}
 \title{Ensure contiguous memory layout}
 \usage{
-mlx_contiguous(x, device = NULL)
+mlx_contiguous(x)
 }
 \arguments{
 \item{x}{An mlx array.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
-An mlx array backed by contiguous storage on the specified device.
+An mlx array backed by contiguous storage.
 }
 \description{
-Returns a copy of \code{x} with contiguous strides on the requested device or stream.
+Returns a copy of \code{x} with contiguous strides.
 }
 \examples{
 x <- mlx_swapaxes(mlx_matrix(1:4, 2, 2), axis1 = 1, axis2 = 2)

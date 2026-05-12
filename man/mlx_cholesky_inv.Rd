@@ -10,6 +10,11 @@ mlx_cholesky_inv(x, upper = FALSE, device = NULL)
 \item{x}{An mlx array.}
 
 \item{upper}{Logical; if \code{TRUE}, \code{x} is upper triangular, otherwise lower triangular.}
+
+\item{device}{Execution target for APIs that expose a one-off device or
+stream override. Supply \code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}. Ordinary array operations use the current
+\code{\link[=mlx_device]{mlx_device()}} instead.}
 }
 \value{
 The inverse of the original matrix (A^-1 where A = LL' or A = U'U).
@@ -28,7 +33,7 @@ A <- t(A) \%*\% A
 # Compute Cholesky factor
 L <- chol(A, pivot = FALSE, upper = FALSE)
 # Get inverse from Cholesky factor
-mlx_cholesky_inv(as_mlx(L, device = "cpu"))
+mlx_cholesky_inv(as_mlx(L), device = "cpu")
 }
 \seealso{
 \code{\link[=chol2inv]{chol2inv()}}, \href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.core.linalg.cholesky_inv}{mlx.core.linalg.cholesky_inv}

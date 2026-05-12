@@ -13,7 +13,15 @@ backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 
 \method{backsolve}{default}(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 
-\method{backsolve}{mlx}(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
+\method{backsolve}{mlx}(
+  r,
+  x,
+  k = NULL,
+  upper.tri = TRUE,
+  transpose = FALSE,
+  ...,
+  device = NULL
+)
 }
 \arguments{
 \item{a}{An mlx triangular matrix.}
@@ -21,6 +29,11 @@ backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 \item{b}{Right-hand side matrix or vector.}
 
 \item{upper}{Logical; if \code{TRUE}, \code{a} is upper triangular, otherwise lower.}
+
+\item{device}{Execution target for APIs that expose a one-off device or
+stream override. Supply \code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}. Ordinary array operations use the current
+\code{\link[=mlx_device]{mlx_device()}} instead.}
 
 \item{r}{Triangular system matrix passed to \code{\link[=backsolve]{backsolve()}}.}
 
@@ -41,15 +54,14 @@ An mlx array solution.
 Solve triangular systems with mlx arrays
 }
 \details{
-As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
-argument. (Passing the argument won't affect the device of any
-mlx object returned, just where this particular operation is run.)
+As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+\code{\link[=with_device]{with_device()}} or \code{\link[=local_device]{local_device()}}, or pass \code{device = "cpu"} when the
+function exposes that argument.
 }
 \examples{
-a <- mlx_matrix(c(2, 1, 0, 3), 2, 2, device = "cpu")
-b <- mlx_matrix(c(1, 5), 2, 1, device = "cpu")
-mlx_solve_triangular(a, b, upper = FALSE)
+a <- mlx_matrix(c(2, 1, 0, 3), 2, 2)
+b <- mlx_matrix(c(1, 5), 2, 1)
+mlx_solve_triangular(a, b, upper = FALSE, device = "cpu")
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.solve_triangular}{mlx.linalg.solve_triangular}

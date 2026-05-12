@@ -5,13 +5,7 @@
 \alias{quantile.mlx}
 \title{Compute quantiles of MLX arrays}
 \usage{
-mlx_quantile(
-  x,
-  probs,
-  axis = NULL,
-  drop = FALSE,
-  device = mlx_default_device()
-)
+mlx_quantile(x, probs, axis = NULL, drop = FALSE)
 
 \method{quantile}{mlx}(x, probs, ...)
 }
@@ -27,10 +21,6 @@ flattened array.}
 \item{drop}{Logical; when \code{TRUE} and computing quantiles along an axis with a
 single probability, removes the quantile dimension of length 1. Defaults to
 \code{FALSE} to match the behavior of other reduction functions.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 
 \item{...}{Additional arguments; ignored.}
 }
@@ -70,7 +60,7 @@ quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
 mat <- mlx_matrix(1:12, 3, 4)  # shape (3, 4)
 result <- mlx_quantile(mat, c(0.25, 0.75), axis = 1)  # shape (2, 4)
 result <- mlx_quantile(mat, 0.5, axis = 1)  # shape (1, 4)
-result <- mlx_quantile(mat, 0.5, axis = 1, drop = TRUE)  # shape (4,)
+result <- mlx_quantile(mat, 0.5, axis = 1, drop = TRUE)  # shape (4)
 }
 \seealso{
 \code{\link[stats:quantile]{stats::quantile()}},

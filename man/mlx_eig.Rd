@@ -9,9 +9,10 @@ mlx_eig(x, device = NULL)
 \arguments{
 \item{x}{An mlx matrix (2-dimensional array).}
 
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
+\item{device}{Execution target for APIs that expose a one-off device or
+stream override. Supply \code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}. Ordinary array operations use the current
+\code{\link[=mlx_device]{mlx_device()}} instead.}
 }
 \value{
 A list with components \code{values} and \code{vectors}, both mlx arrays.
@@ -20,14 +21,13 @@ A list with components \code{values} and \code{vectors}, both mlx arrays.
 Eigen decomposition for mlx arrays
 }
 \details{
-As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
-argument. (Passing the argument won't affect the device of any
-mlx object returned, just where this particular operation is run.)
+As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+\code{\link[=with_device]{with_device()}} or \code{\link[=local_device]{local_device()}}, or pass \code{device = "cpu"} when the
+function exposes that argument.
 }
 \examples{
-x <- mlx_matrix(c(2, -1, 0, 2), 2, 2, device = "cpu")
-eig <- mlx_eig(x)
+x <- mlx_matrix(c(2, -1, 0, 2), 2, 2)
+eig <- mlx_eig(x, device = "cpu")
 eig$values
 eig$vectors
 }

@@ -2,20 +2,29 @@
 % Please edit documentation in R/device.R
 \name{mlx_device}
 \alias{mlx_device}
-\title{Get device associated with an MLX object}
+\title{Get or set current MLX device}
 \usage{
-mlx_device(x)
+mlx_device(value)
 }
 \arguments{
-\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{value}{New current device ("gpu" or "cpu"). If missing, returns the
+current device.}
 }
 \value{
-\code{"gpu"} or \code{"cpu"}.
+Current device (character).
 }
 \description{
-Get device associated with an MLX object
+Get or set current MLX device
 }
 \examples{
-x <- as_mlx(1:10)
-mlx_device(x)
+mlx_device()  # Get current device
+mlx_device("cpu")  # Set to CPU
+if (mlx_has_gpu()) {
+  mlx_device("gpu")  # Set back to GPU
+  mlx_device()
+}
+mlx_device("cpu")
+}
+\seealso{
+\href{https://ml-explore.github.io/mlx/build/html/python/metal.html}{mlx.core.default_device}
 }

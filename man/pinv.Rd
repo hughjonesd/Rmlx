@@ -8,6 +8,11 @@ pinv(x, device = NULL)
 }
 \arguments{
 \item{x}{An mlx object or coercible matrix.}
+
+\item{device}{Execution target for APIs that expose a one-off device or
+stream override. Supply \code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}. Ordinary array operations use the current
+\code{\link[=mlx_device]{mlx_device()}} instead.}
 }
 \value{
 An mlx object containing the pseudoinverse.
@@ -16,14 +21,13 @@ An mlx object containing the pseudoinverse.
 Moore-Penrose pseudoinverse for MLX arrays
 }
 \details{
-As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
-argument. (Passing the argument won't affect the device of any
-mlx object returned, just where this particular operation is run.)
+As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+\code{\link[=with_device]{with_device()}} or \code{\link[=local_device]{local_device()}}, or pass \code{device = "cpu"} when the
+function exposes that argument.
 }
 \examples{
-x <- mlx_matrix(c(1, 2, 3, 4), 2, 2, device = "cpu")
-pinv(x)
+x <- mlx_matrix(c(1, 2, 3, 4), 2, 2)
+pinv(x, device = "cpu")
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.pinv}{mlx.linalg.pinv}

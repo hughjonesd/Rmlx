@@ -4,11 +4,7 @@
 \alias{mlx_rand_gumbel}
 \title{Sample from the Gumbel distribution on mlx arrays}
 \usage{
-mlx_rand_gumbel(
-  dim,
-  dtype = c("float32", "float64"),
-  device = mlx_default_device()
-)
+mlx_rand_gumbel(dim, dtype = c("float32", "float64"))
 }
 \arguments{
 \item{dim}{Integer vector specifying array dimensions (shape).}
@@ -20,13 +16,7 @@ mlx_rand_gumbel(
 \item Other: \code{"bool"}, \code{"complex64"}
 }
 
-\code{float64} arrays are CPU-only. Use \code{device = "cpu"} when creating or
-casting to \code{float64}, and cast back to \code{float32} before using the GPU.
 Not all functions support all types. See individual function documentation.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array with Gumbel-distributed entries.

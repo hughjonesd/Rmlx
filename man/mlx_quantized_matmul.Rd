@@ -12,8 +12,7 @@ mlx_quantized_matmul(
   transpose = TRUE,
   group_size = 64L,
   bits = 4L,
-  mode = "affine",
-  device = NULL
+  mode = "affine"
 )
 }
 \arguments{
@@ -37,10 +36,6 @@ accuracy at the cost of slightly higher memory. Default: 64.}
 \item{bits}{Number of bits for quantization (typically 4 or 8). Default: 4.}
 
 \item{mode}{Quantization mode, either \code{"affine"} or \code{"mxfp4"}.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array with the result of the quantized matrix multiplication

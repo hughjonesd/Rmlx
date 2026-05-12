@@ -14,7 +14,7 @@ An \code{mlx} array representing the Kronecker product.
 }
 \description{
 Computes the Kronecker (tensor) product between two mlx arrays. Inputs are
-automatically cast to a common dtype and device before evaluation.
+automatically cast to a common dtype before evaluation.
 }
 \examples{
 A <- mlx_matrix(1:4, 2, 2)

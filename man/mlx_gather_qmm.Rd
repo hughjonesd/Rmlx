@@ -15,8 +15,7 @@ mlx_gather_qmm(
   group_size = 64L,
   bits = 4L,
   mode = "affine",
-  sorted_indices = FALSE,
-  device = NULL
+  sorted_indices = FALSE
 )
 }
 \arguments{
@@ -49,10 +48,6 @@ accuracy at the cost of slightly higher memory. Default: 64.}
 
 \item{sorted_indices}{Whether supplied indices are sorted (enables
 optimizations in gather-based kernels).}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An mlx array with the result of the gather-based quantized matrix multiplication

@@ -4,15 +4,11 @@
 \alias{mlx_load_gguf}
 \title{Load MLX tensors from the GGUF format}
 \usage{
-mlx_load_gguf(file, device = mlx_default_device())
+mlx_load_gguf(file)
 }
 \arguments{
 \item{file}{Path to a \code{.npy} file. The extension is appended automatically
 when missing.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 A list containing:

@@ -4,7 +4,7 @@
 \alias{mlx_meshgrid}
 \title{Construct coordinate arrays from input vectors}
 \usage{
-mlx_meshgrid(..., sparse = FALSE, indexing = c("xy", "ij"), device = NULL)
+mlx_meshgrid(..., sparse = FALSE, indexing = c("xy", "ij"))
 }
 \arguments{
 \item{...}{One or more arrays (or a single list) convertible via \code{\link[=as_mlx]{as_mlx()}} representing coordinate vectors.}
@@ -12,10 +12,6 @@ mlx_meshgrid(..., sparse = FALSE, indexing = c("xy", "ij"), device = NULL)
 \item{sparse}{Logical flag producing broadcast-friendly outputs when \code{TRUE}.}
 
 \item{indexing}{Either \code{"xy"} (Cartesian) or \code{"ij"} (matrix) indexing.}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 A list of mlx arrays matching the number of inputs.

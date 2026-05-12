@@ -4,12 +4,7 @@
 \alias{mlx_linear}
 \title{Create a learnable linear transformation}
 \usage{
-mlx_linear(
-  in_features,
-  out_features,
-  bias = TRUE,
-  device = mlx_default_device()
-)
+mlx_linear(in_features, out_features, bias = TRUE)
 }
 \arguments{
 \item{in_features}{Number of input features.}
@@ -17,10 +12,6 @@ mlx_linear(
 \item{out_features}{Number of output features.}
 
 \item{bias}{Should a bias term be included?}
-
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
 }
 \value{
 An object of class \code{mlx_module}.

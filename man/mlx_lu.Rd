@@ -9,9 +9,10 @@ mlx_lu(x, device = NULL)
 \arguments{
 \item{x}{An mlx array.}
 
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
+\item{device}{Execution target for APIs that expose a one-off device or
+stream override. Supply \code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}. Ordinary array operations use the current
+\code{\link[=mlx_device]{mlx_device()}} instead.}
 }
 \value{
 A list with components \code{p} (pivot indices), \code{l} (lower triangular),
@@ -21,14 +22,13 @@ and \code{u} (upper triangular). The relationship is \code{A = L[P, ] \%*\% U}.
 Computes the LU factorization of a matrix.
 }
 \details{
-As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
-argument. (Passing the argument won't affect the device of any
-mlx object returned, just where this particular operation is run.)
+As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+\code{\link[=with_device]{with_device()}} or \code{\link[=local_device]{local_device()}}, or pass \code{device = "cpu"} when the
+function exposes that argument.
 }
 \examples{
-A <- mlx_matrix(rnorm(16), 4, 4, device = "cpu")
-lu_result <- mlx_lu(A)
+A <- mlx_matrix(rnorm(16), 4, 4)
+lu_result <- mlx_lu(A, device = "cpu")
 P <- lu_result$p  # Pivot indices
 L <- lu_result$l  # Lower triangular
 U <- lu_result$u  # Upper triangular

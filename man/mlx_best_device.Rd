@@ -14,5 +14,5 @@ Returns \code{"gpu"} if available, otherwise \code{"cpu"}.
 }
 \examples{
 device <- mlx_best_device()
-x <- as_mlx(1:10, device = device)
+with_device(device, x <- as_mlx(1:10))
 }

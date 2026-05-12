@@ -20,7 +20,7 @@ An \code{mlx} matrix with the same shape as \code{input}.
 }
 \description{
 Computes \code{beta * input + alpha * (mat1 \%*\% mat2)} in a single MLX kernel.
-All operands are promoted to a common dtype/device prior to evaluation.
+All operands are promoted to a common dtype prior to evaluation.
 }
 \examples{
 input <- as_mlx(diag(3))

@@ -37,8 +37,8 @@ reference:
       - as.double.mlx
   - title: Device and execution
     contents:
-      - mlx_default_device
-      - with_default_device
+      - mlx_device
+      - with_device
       - mlx_default_stream
       - mlx_new_stream
       - mlx_set_default_stream

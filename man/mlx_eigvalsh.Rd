@@ -11,9 +11,10 @@ mlx_eigvalsh(x, uplo = c("L", "U"), device = NULL)
 
 \item{uplo}{Character string indicating which triangle to use ("L" or "U").}
 
-\item{device}{Execution target: supply \code{"gpu"}, \code{"cpu"}, or an
-\code{mlx_stream} created via \code{\link[=mlx_new_stream]{mlx_new_stream()}}. By default, many
-functions use the \code{\link[=mlx_device]{mlx_device()}} of their first argument.}
+\item{device}{Execution target for APIs that expose a one-off device or
+stream override. Supply \code{"gpu"}, \code{"cpu"}, or an \code{mlx_stream} created via
+\code{\link[=mlx_new_stream]{mlx_new_stream()}}. Ordinary array operations use the current
+\code{\link[=mlx_device]{mlx_device()}} instead.}
 }
 \value{
 An mlx array containing eigenvalues.
@@ -22,14 +23,13 @@ An mlx array containing eigenvalues.
 Eigenvalues of Hermitian mlx arrays
 }
 \details{
-As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with \code{device = "cpu"} explicitly, or pass a \code{device = "cpu"}
-argument. (Passing the argument won't affect the device of any
-mlx object returned, just where this particular operation is run.)
+As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+\code{\link[=with_device]{with_device()}} or \code{\link[=local_device]{local_device()}}, or pass \code{device = "cpu"} when the
+function exposes that argument.
 }
 \examples{
-x <- mlx_matrix(c(2, 1, 1, 3), 2, 2, device = "cpu")
-mlx_eigvalsh(x)
+x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)
+mlx_eigvalsh(x, device = "cpu")
 }
 \seealso{
 \href{https://ml-explore.github.io/mlx/build/html/python/linalg.html#mlx.linalg.eigvalsh}{mlx.linalg.eigvalsh}
