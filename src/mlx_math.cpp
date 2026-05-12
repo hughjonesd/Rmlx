@@ -12,87 +12,86 @@ using namespace mlx::core;
 SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array input = wrapper->get();
-  StreamOrDevice dev = wrapper->stream(input.dtype());
 
   array result = [&]() -> array {
     if (op == "neg") {
-      return negative(input, dev);
+      return negative(input);
     } else if (op == "abs") {
-      return abs(input, dev);
+      return abs(input);
     } else if (op == "sign") {
-      return sign(input, dev);
+      return sign(input);
     } else if (op == "sqrt") {
-      return sqrt(input, dev);
+      return sqrt(input);
     } else if (op == "rsqrt") {
-      return rsqrt(input, dev);
+      return rsqrt(input);
     } else if (op == "square") {
-      return square(input, dev);
+      return square(input);
     } else if (op == "exp") {
-      return exp(input, dev);
+      return exp(input);
     } else if (op == "expm1") {
-      return expm1(input, dev);
+      return expm1(input);
     } else if (op == "log") {
-      return log(input, dev);
+      return log(input);
     } else if (op == "log2") {
-      return log2(input, dev);
+      return log2(input);
     } else if (op == "log10") {
-      return log10(input, dev);
+      return log10(input);
     } else if (op == "log1p") {
-      return log1p(input, dev);
+      return log1p(input);
     } else if (op == "sin") {
-      return sin(input, dev);
+      return sin(input);
     } else if (op == "cos") {
-      return cos(input, dev);
+      return cos(input);
     } else if (op == "tan") {
-      return tan(input, dev);
+      return tan(input);
     } else if (op == "asin") {
-      return arcsin(input, dev);
+      return arcsin(input);
     } else if (op == "acos") {
-      return arccos(input, dev);
+      return arccos(input);
     } else if (op == "atan") {
-      return arctan(input, dev);
+      return arctan(input);
     } else if (op == "sinh") {
-      return sinh(input, dev);
+      return sinh(input);
     } else if (op == "cosh") {
-      return cosh(input, dev);
+      return cosh(input);
     } else if (op == "tanh") {
-      return tanh(input, dev);
+      return tanh(input);
     } else if (op == "asinh") {
-      return arcsinh(input, dev);
+      return arcsinh(input);
     } else if (op == "acosh") {
-      return arccosh(input, dev);
+      return arccosh(input);
     } else if (op == "atanh") {
-      return arctanh(input, dev);
+      return arctanh(input);
     } else if (op == "erf") {
-      return erf(input, dev);
+      return erf(input);
     } else if (op == "erfinv") {
-      return erfinv(input, dev);
+      return erfinv(input);
     } else if (op == "floor") {
-      return floor(input, dev);
+      return floor(input);
     } else if (op == "ceil") {
-      return ceil(input, dev);
+      return ceil(input);
     } else if (op == "round") {
-      return round(input, dev);
+      return round(input);
     } else if (op == "isnan") {
-      return isnan(input, dev);
+      return isnan(input);
     } else if (op == "isinf") {
-      return isinf(input, dev);
+      return isinf(input);
     } else if (op == "isfinite") {
-      return isfinite(input, dev);
+      return isfinite(input);
     } else if (op == "isposinf") {
-      return isposinf(input, dev);
+      return isposinf(input);
     } else if (op == "isneginf") {
-      return isneginf(input, dev);
+      return isneginf(input);
     } else if (op == "real") {
-      return real(input, dev);
+      return real(input);
     } else if (op == "imag") {
-      return imag(input, dev);
+      return imag(input);
     } else if (op == "conj") {
-      return conjugate(input, dev);
+      return conjugate(input);
     } else if (op == "degrees") {
-      return degrees(input, dev);
+      return degrees(input);
     } else if (op == "radians") {
-      return radians(input, dev);
+      return radians(input);
     } else {
       Rcpp::stop("Unsupported unary operation: " + op);
     }
@@ -105,9 +104,8 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
 SEXP cpp_mlx_logical_not(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  StreamOrDevice dev = wrapper->stream(bool_);
-  array arr_bool = astype(arr, bool_, dev);
-  array result = logical_not(arr_bool, dev);
+  array arr_bool = astype(arr, bool_);
+  array result = logical_not(arr_bool);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -118,37 +116,36 @@ SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
 
-  lhs = astype(lhs, target_dtype, target_device);
-  rhs = astype(rhs, target_dtype, target_device);
+  lhs = astype(lhs, target_dtype);
+  rhs = astype(rhs, target_dtype);
 
   array result = [&]() -> array {
     if (op == "+") {
-      return add(lhs, rhs, target_device);
+      return add(lhs, rhs);
     } else if (op == "-") {
-      return subtract(lhs, rhs, target_device);
+      return subtract(lhs, rhs);
     } else if (op == "*") {
-      return multiply(lhs, rhs, target_device);
+      return multiply(lhs, rhs);
     } else if (op == "/") {
-      return divide(lhs, rhs, target_device);
+      return divide(lhs, rhs);
     } else if (op == "^") {
-      return power(lhs, rhs, target_device);
+      return power(lhs, rhs);
     } else if (op == "==") {
-      return equal(lhs, rhs, target_device);
+      return equal(lhs, rhs);
     } else if (op == "!=") {
-      return not_equal(lhs, rhs, target_device);
+      return not_equal(lhs, rhs);
     } else if (op == "<") {
-      return less(lhs, rhs, target_device);
+      return less(lhs, rhs);
     } else if (op == "<=") {
-      return less_equal(lhs, rhs, target_device);
+      return less_equal(lhs, rhs);
     } else if (op == ">") {
-      return greater(lhs, rhs, target_device);
+      return greater(lhs, rhs);
     } else if (op == ">=") {
-      return greater_equal(lhs, rhs, target_device);
+      return greater_equal(lhs, rhs);
     } else {
       Rcpp::stop("Unsupported binary operation: " + op);
     }
@@ -174,12 +171,11 @@ SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_) {
   } else if (rhs.dtype() == float32 || target_dtype == float32) {
     target_dtype = float32;
   }
-  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
-  lhs = astype(lhs, target_dtype, target_device);
-  rhs = astype(rhs, target_dtype, target_device);
+  lhs = astype(lhs, target_dtype);
+  rhs = astype(rhs, target_dtype);
 
-  array result = minimum(lhs, rhs, target_device);
+  array result = minimum(lhs, rhs);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -200,12 +196,11 @@ SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_) {
   } else if (rhs.dtype() == float32 || target_dtype == float32) {
     target_dtype = float32;
   }
-  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
-  lhs = astype(lhs, target_dtype, target_device);
-  rhs = astype(rhs, target_dtype, target_device);
+  lhs = astype(lhs, target_dtype);
+  rhs = astype(rhs, target_dtype);
 
-  array result = maximum(lhs, rhs, target_device);
+  array result = maximum(lhs, rhs);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -215,13 +210,12 @@ SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_) {
   array arr = wrapper->get();
 
   Dtype original_dtype = arr.dtype();
-  StreamOrDevice target_device = wrapper->stream(original_dtype);
 
   if (!(original_dtype == float32 || original_dtype == float64)) {
     original_dtype = float32;
-    arr = astype(arr, original_dtype, target_device);
+    arr = astype(arr, original_dtype);
   } else {
-    arr = astype(arr, original_dtype, target_device);
+    arr = astype(arr, original_dtype);
   }
 
   double min_val = Rf_isNull(min_) ? -std::numeric_limits<double>::infinity()
@@ -236,10 +230,10 @@ SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_) {
   array min_arr = array(min_val, original_dtype);
   array max_arr = array(max_val, original_dtype);
 
-  min_arr = astype(min_arr, original_dtype, target_device);
-  max_arr = astype(max_arr, original_dtype, target_device);
+  min_arr = astype(min_arr, original_dtype);
+  max_arr = astype(max_arr, original_dtype);
 
-  array result = clip(arr, min_arr, max_arr, target_device);
+  array result = clip(arr, min_arr, max_arr);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -252,12 +246,11 @@ SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_) {
   array rhs = wrapper2->get();
 
   Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
-  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
-  lhs = astype(lhs, target_dtype, target_device);
-  rhs = astype(rhs, target_dtype, target_device);
+  lhs = astype(lhs, target_dtype);
+  rhs = astype(rhs, target_dtype);
 
-  array result = floor_divide(lhs, rhs, target_device);
+  array result = floor_divide(lhs, rhs);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -270,12 +263,11 @@ SEXP cpp_mlx_remainder(SEXP xp1_, SEXP xp2_) {
   array rhs = wrapper2->get();
 
   Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
-  StreamOrDevice target_device = wrapper1->stream(target_dtype);
 
-  lhs = astype(lhs, target_dtype, target_device);
-  rhs = astype(rhs, target_dtype, target_device);
+  lhs = astype(lhs, target_dtype);
+  rhs = astype(rhs, target_dtype);
 
-  array result = remainder(lhs, rhs, target_device);
+  array result = remainder(lhs, rhs);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -284,19 +276,18 @@ SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op) {
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
-  StreamOrDevice target_device = wrapper1->stream(bool_);
 
   array lhs = wrapper1->get();
   array rhs = wrapper2->get();
 
-  lhs = astype(lhs, bool_, target_device);
-  rhs = astype(rhs, bool_, target_device);
+  lhs = astype(lhs, bool_);
+  rhs = astype(rhs, bool_);
 
   array result = [&]() -> array {
     if (op == "&" || op == "&&") {
-      return logical_and(lhs, rhs, target_device);
+      return logical_and(lhs, rhs);
     } else if (op == "|" || op == "||") {
-      return logical_or(lhs, rhs, target_device);
+      return logical_or(lhs, rhs);
     } else {
       Rcpp::stop("Unsupported logical operation: " + op);
     }
@@ -310,12 +301,11 @@ SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
-  StreamOrDevice target_device = wrapper1->stream(wrapper1->get().dtype());
 
-  array lhs = astype(wrapper1->get(), wrapper1->get().dtype(), target_device);
-  array rhs = astype(wrapper2->get(), wrapper2->get().dtype(), target_device);
+  array lhs = astype(wrapper1->get(), wrapper1->get().dtype());
+  array rhs = astype(wrapper2->get(), wrapper2->get().dtype());
 
-  array result = isclose(lhs, rhs, rtol, atol, equal_nan, target_device);
+  array result = isclose(lhs, rhs, rtol, atol, equal_nan);
 
   return make_mlx_xptr(std::move(result));
 }
@@ -325,12 +315,11 @@ SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal
   MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
   MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
 
-  StreamOrDevice target_device = wrapper1->stream(wrapper1->get().dtype());
 
-  array lhs = astype(wrapper1->get(), wrapper1->get().dtype(), target_device);
-  array rhs = astype(wrapper2->get(), wrapper2->get().dtype(), target_device);
+  array lhs = astype(wrapper1->get(), wrapper1->get().dtype());
+  array rhs = astype(wrapper2->get(), wrapper2->get().dtype());
 
-  array result = allclose(lhs, rhs, rtol, atol, equal_nan, target_device);
+  array result = allclose(lhs, rhs, rtol, atol, equal_nan);
 
   return make_mlx_xptr(std::move(result));
 }

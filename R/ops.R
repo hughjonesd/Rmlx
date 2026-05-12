@@ -26,7 +26,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
   }
 
   # Binary operators - coerce plain R operands to the existing mlx operand's
-  # dtype/device so scalar arithmetic preserves CPU float64 arrays.
+  # dtype so scalar arithmetic preserves precision.
   operands <- coerce_binary_operands(e1, e2)
   e1 <- operands[[1L]]
   e2 <- operands[[2L]]
@@ -89,22 +89,19 @@ Ops.mlx <- function(e1, e2 = NULL) {
     ))
   }
 
-  target <- resolve_common_dtype_device(
-    list(mlx_dtype(x), mlx_dtype(y)),
-    list(mlx_device(x), mlx_device(y))
-  )
+  target_dtype <- resolve_common_dtype(list(mlx_dtype(x), mlx_dtype(y)))
 
-  x <- mlx_cast(x, dtype = target$dtype, device = target$device)
-  y <- mlx_cast(y, dtype = target$dtype, device = target$device)
+  x <- mlx_cast(x, dtype = target_dtype)
+  y <- mlx_cast(y, dtype = target_dtype)
 
-  ptr <- cpp_mlx_matmul(x$ptr, y$ptr, target$dtype)
-  new_mlx(ptr, target$device)
+  ptr <- cpp_mlx_matmul(x$ptr, y$ptr, target_dtype)
+  new_mlx(ptr)
 }
 
 #' Fused matrix multiply and add for MLX arrays
 #'
 #' Computes `beta * input + alpha * (mat1 %*% mat2)` in a single MLX kernel.
-#' All operands are promoted to a common dtype/device prior to evaluation.
+#' All operands are promoted to a common dtype prior to evaluation.
 #'
 #' @param input Matrix-like object providing the additive term.
 #' @param mat1 Left matrix operand.
@@ -162,17 +159,16 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
     stop("beta must be a single finite numeric value.", call. = FALSE)
   }
 
-  target <- resolve_common_dtype_device(
-    list(mlx_dtype(input), mlx_dtype(mat1), mlx_dtype(mat2)),
-    list(mlx_device(input), mlx_device(mat1), mlx_device(mat2))
+  target_dtype <- resolve_common_dtype(
+    list(mlx_dtype(input), mlx_dtype(mat1), mlx_dtype(mat2))
   )
 
-  input <- mlx_cast(input, dtype = target$dtype, device = target$device)
-  mat1 <- mlx_cast(mat1, dtype = target$dtype, device = target$device)
-  mat2 <- mlx_cast(mat2, dtype = target$dtype, device = target$device)
+  input <- mlx_cast(input, dtype = target_dtype)
+  mat1 <- mlx_cast(mat1, dtype = target_dtype)
+  mat2 <- mlx_cast(mat2, dtype = target_dtype)
 
-  ptr <- cpp_mlx_addmm(input$ptr, mat1$ptr, mat2$ptr, alpha, beta, target$dtype)
-  new_mlx(ptr, target$device)
+  ptr <- cpp_mlx_addmm(input$ptr, mat1$ptr, mat2$ptr, alpha, beta, target_dtype)
+  new_mlx(ptr)
 }
 
 #' Apply unary MLX operation
@@ -183,7 +179,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @noRd
 .mlx_unary <- function(x, op) {
   ptr <- cpp_mlx_unary(x$ptr, op)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Apply binary MLX operation with type promotion
@@ -195,12 +191,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 .mlx_binary <- function(x, y, op) {
   x_dtype <- mlx_dtype(x)
   y_dtype <- mlx_dtype(y)
-  target <- resolve_common_dtype_device(
-    list(x_dtype, y_dtype),
-    list(mlx_device(x), mlx_device(y))
-  )
-  input_dtype <- target$dtype
-  result_device <- target$device
+  input_dtype <- resolve_common_dtype(list(x_dtype, y_dtype))
 
   is_comparison <- op %in% c("==", "!=", "<", "<=", ">", ">=")
 
@@ -208,11 +199,11 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
     input_dtype <- "float32"
   }
 
-  x <- mlx_cast(x, dtype = input_dtype, device = result_device)
-  y <- mlx_cast(y, dtype = input_dtype, device = result_device)
+  x <- mlx_cast(x, dtype = input_dtype)
+  y <- mlx_cast(y, dtype = input_dtype)
 
   ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype)
-  new_mlx(ptr, result_device)
+  new_mlx(ptr)
 }
 
 #' Apply logical MLX operation
@@ -222,16 +213,8 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @return mlx array with dtype "bool".
 #' @noRd
 .mlx_logical <- function(x, y, op) {
-  result_device <- resolve_common_dtype_device(
-    list(mlx_dtype(x), mlx_dtype(y)),
-    list(mlx_device(x), mlx_device(y))
-  )$device
-
-  x <- mlx_cast(x, device = result_device)
-  y <- mlx_cast(y, device = result_device)
-
   ptr <- cpp_mlx_logical(x$ptr, y$ptr, op)
-  new_mlx(ptr, result_device)
+  new_mlx(ptr)
 }
 
 #' Apply logical NOT to mlx array
@@ -241,7 +224,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @noRd
 .mlx_logical_not <- function(x) {
   ptr <- cpp_mlx_logical_not(x$ptr)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Integer division for mlx arrays
@@ -299,22 +282,17 @@ mlx_maximum <- function(x, y) {
   x <- operands[[1L]]
   y <- operands[[2L]]
 
-  target <- resolve_common_dtype_device(
-    list(mlx_dtype(x), mlx_dtype(y)),
-    list(mlx_device(x), mlx_device(y))
-  )
-  result_device <- target$device
-  result_dtype <- target$dtype
+  result_dtype <- resolve_common_dtype(list(mlx_dtype(x), mlx_dtype(y)))
 
   if (identical(result_dtype, "bool")) {
     result_dtype <- "float32"
   }
 
-  x <- mlx_cast(x, dtype = result_dtype, device = result_device)
-  y <- mlx_cast(y, dtype = result_dtype, device = result_device)
+  x <- mlx_cast(x, dtype = result_dtype)
+  y <- mlx_cast(y, dtype = result_dtype)
 
   ptr <- cpp_fn(x$ptr, y$ptr)
-  new_mlx(ptr, result_device)
+  new_mlx(ptr)
 }
 
 #' Clip mlx array values into a range
@@ -340,8 +318,7 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
   }
 
   ptr <- cpp_mlx_clip(x$ptr, min, max)
-  x_dtype <- mlx_dtype(x)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Promote dtypes for mixed operations
@@ -399,19 +376,7 @@ promote_dtype <- function(dtype1, dtype2) {
   stop("Unsupported dtype combination: ", dtype1, " and ", dtype2)
 }
 
-#' Select common device from two arrays
-#'
-#' @param device1,device2 Character strings ("gpu" or "cpu").
-#' @return Character string ("gpu" or "cpu").
-#' @noRd
-common_device <- function(device1, device2) {
-  if (device1 == device2) return(device1)
-  # Prefer GPU if devices differ
-  if (device1 == "gpu" || device2 == "gpu") return("gpu")
-  return("cpu")
-}
-
-#' Match R operands to mlx operand dtype and device
+#' Match R operands to mlx operand dtype
 #'
 #' @param x,y mlx or R
 #'
@@ -419,12 +384,11 @@ common_device <- function(device1, device2) {
 #' @noRd
 coerce_binary_operands <- function(x, y) {
   # For one mlx operand plus one plain R operand, inherit the mlx operand's
-  # dtype/device before common promotion. This keeps scalar arithmetic on a
-  # CPU-preferred array from accidentally using the global default device.
+  # dtype before common promotion.
   if (is_mlx(x) && !is_mlx(y)) {
-    y <- as_mlx(y, dtype = mlx_dtype(x), device = mlx_device(x))
+    y <- as_mlx(y, dtype = mlx_dtype(x))
   } else if (!is_mlx(x) && is_mlx(y)) {
-    x <- as_mlx(x, dtype = mlx_dtype(y), device = mlx_device(y))
+    x <- as_mlx(x, dtype = mlx_dtype(y))
   } else {
     x <- as_mlx(x)
     y <- as_mlx(y)
@@ -432,11 +396,6 @@ coerce_binary_operands <- function(x, y) {
   list(x, y)
 }
 
-resolve_common_dtype_device <- function(dtypes, devices) {
-  # Shared binary/multi-input policy: promote dtype first, then choose a common
-  # operation device. Callers cast operands to this result before entering C++,
-  # so C++ can read the stream/device from the bundled MlxArrayWrapper.
-  dtype <- Reduce(promote_dtype, dtypes)
-  device <- Reduce(common_device, devices)
-  list(dtype = dtype, device = device)
+resolve_common_dtype <- function(dtypes) {
+  Reduce(promote_dtype, dtypes)
 }

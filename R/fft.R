@@ -4,9 +4,6 @@
 #' R-friendly defaults. Inputs are converted with [as_mlx()] and results are
 #' returned as `mlx` arrays.
 #'
-#' When `device` is `NULL`, the transform runs on the input array's device,
-#' falling back to [mlx_default_device()] only when coercing non-mlx inputs.
-#'
 #' @param x Array-like object coercible to `mlx`.
 #' @param axis Optional integer axis (1-indexed) for the one-dimensional
 #'   transform. Omit the argument to use the last dimension (no negative axes).
@@ -17,7 +14,6 @@
 #' @param inverse Logical flag; if `TRUE`, compute the inverse transform. The
 #'   inverse is un-normalised to match base R's `fft()`, i.e. results are
 #'   multiplied by the product of the transformed axis lengths.
-#' @inheritParams common_params
 #'
 #' @return An `mlx` array containing complex frequency coefficients.
 #' @seealso [fft()], [mlx.fft](https://ml-explore.github.io/mlx/build/html/python/fft.html)
@@ -26,7 +22,7 @@
 #' x <- as_mlx(c(1, 2, 3, 4))
 #' mlx_fft(x)
 #' mlx_fft(x, inverse = TRUE)
-mlx_fft <- function(x, axis, inverse = FALSE, device = NULL) {
+mlx_fft <- function(x, axis, inverse = FALSE) {
   axis_missing <- missing(axis)
   if (!axis_missing) {
     if (is.null(axis) || length(axis) != 1L) {
@@ -40,7 +36,6 @@ mlx_fft <- function(x, axis, inverse = FALSE, device = NULL) {
     x,
     axes = axes,
     inverse = inverse,
-    device = device,
     default_axes = if (axis_missing) "last" else "none"
   )
 }
@@ -52,8 +47,7 @@ mlx_fft <- function(x, axis, inverse = FALSE, device = NULL) {
 #' mlx_fft2(as_mlx(mat))
 mlx_fft2 <- function(x,
                      axes,
-                     inverse = FALSE,
-                     device = NULL) {
+                     inverse = FALSE) {
   axes_missing <- missing(axes)
   if (!axes_missing) {
     if (is.null(axes)) {
@@ -67,7 +61,6 @@ mlx_fft2 <- function(x,
     x,
     axes = axes,
     inverse = inverse,
-    device = device,
     default_axes = if (axes_missing) "last2" else "none"
   )
 }
@@ -79,8 +72,7 @@ mlx_fft2 <- function(x,
 #' mlx_fftn(arr)
 mlx_fftn <- function(x,
                      axes = NULL,
-                     inverse = FALSE,
-                     device = NULL) {
+                     inverse = FALSE) {
   axes_missing <- missing(axes)
   use_default <- axes_missing || is.null(axes)
   axes <- if (use_default) NULL else as.integer(axes)
@@ -88,7 +80,6 @@ mlx_fftn <- function(x,
     x,
     axes = axes,
     inverse = inverse,
-    device = device,
     default_axes = if (use_default) "all" else "none"
   )
 }
@@ -96,7 +87,6 @@ mlx_fftn <- function(x,
 .mlx_fft_dispatch <- function(x,
                               axes,
                               inverse,
-                              device,
                               default_axes = c("none", "last", "last2", "all")) {
   default_axes <- match.arg(default_axes)
   mlx_x <- as_mlx(x)
@@ -131,13 +121,8 @@ mlx_fftn <- function(x,
     )
   }
 
-  device_override <- !is.null(device)
-  handle <- resolve_device(device, mlx_device(mlx_x))
-  operation_device <- if (device_override) handle$device else NULL
-  ptr <- eval_with_stream(handle, function(dev) {
-    cpp_mlx_fft(mlx_x$ptr, axes_zero, isTRUE(inverse), operation_device)
-  })
-  result <- new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_fft(mlx_x$ptr, axes_zero, isTRUE(inverse))
+  result <- new_mlx(ptr)
 
   if (isTRUE(inverse)) {
     scale_axes <- if (is.null(axes_zero)) {

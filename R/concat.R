@@ -45,23 +45,17 @@ bind_along_axis <- function(objs, axis) {
 
   if (length(mlx_objs) > 1L) {
     dtypes <- lapply(mlx_objs, mlx_dtype)
-    target <- resolve_common_dtype_device(
-      dtypes,
-      lapply(mlx_objs, mlx_device)
-    )
-    dtype <- target$dtype
-    device <- target$device
+    dtype <- resolve_common_dtype(dtypes)
   } else {
     dtype <- mlx_dtype(mlx_objs[[1L]])
-    device <- mlx_device(mlx_objs[[1L]])
   }
 
-  aligned <- lapply(mlx_objs, mlx_cast, dtype = dtype, device = device)
+  aligned <- lapply(mlx_objs, mlx_cast, dtype = dtype)
   ptr <- cpp_mlx_concat(aligned, axis - 1L)
   axis_lengths <- vapply(aligned, function(x) dim(x)[axis], integer(1))
   new_dim <- dim(aligned[[1L]])
   new_dim[axis] <- sum(axis_lengths)
-  new_mlx(ptr, device)
+  new_mlx(ptr)
 }
 
 #' Row-bind mlx arrays

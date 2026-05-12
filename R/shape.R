@@ -2,19 +2,18 @@
 
 #' Cast an mlx array
 #'
-#' `mlx_cast()` converts an mlx array to a different dtype and/or device without
+#' `mlx_cast()` converts an mlx array to a different dtype without
 #' changing its shape.
 #'
 #' @inheritParams mlx_array_required
 #' @param dtype Target dtype string. Defaults to the array's current dtype.
-#' @param device Target device string. Defaults to the array's current device.
-#' @return An mlx array with the requested dtype and device.
-#' @seealso [mlx_dtype()], [mlx_device()]
+#' @return An mlx array with the requested dtype.
+#' @seealso [mlx_dtype()]
 #' @export
 #' @examples
 #' x <- mlx_vector(1:3, dtype = "int32")
 #' mlx_cast(x, dtype = "float32")
-mlx_cast <- function(x, dtype = NULL, device = mlx_device(x)) {
+mlx_cast <- function(x, dtype = NULL) {
   if (!inherits(x, "mlx")) {
     stop("Expected an mlx array.", call. = FALSE)
   }
@@ -22,12 +21,11 @@ mlx_cast <- function(x, dtype = NULL, device = mlx_device(x)) {
   if (is.null(dtype)) {
     dtype <- current_dtype
   }
-  handle <- resolve_device(device, mlx_device(x))
-  if (identical(dtype, current_dtype) && identical(device, mlx_device(x))) {
+  if (identical(dtype, current_dtype)) {
     return(x)
   }
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_cast(x$ptr, dtype, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_cast(x$ptr, dtype)
+  new_mlx(ptr)
 }
 
 #' Normalize axes for insertion operations
@@ -77,13 +75,8 @@ mlx_stack <- function(..., axis = 1L) {
   }
   arrays <- lapply(arrays, as_mlx)
   dtypes <- lapply(arrays, mlx_dtype)
-  target <- resolve_common_dtype_device(
-    dtypes,
-    lapply(arrays, mlx_device)
-  )
-  dtype <- target$dtype
-  device <- target$device
-  arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = device)
+  dtype <- resolve_common_dtype(dtypes)
+  arrays <- lapply(arrays, mlx_cast, dtype = dtype)
 
   axis_vec <- normalize_new_axes(axis, dim(arrays[[1]]))
   if (length(axis_vec) != 1L) {
@@ -91,7 +84,7 @@ mlx_stack <- function(..., axis = 1L) {
   }
   axis0 <- axis_vec
   ptr <- cpp_mlx_stack(arrays, axis0)
-  new_mlx(ptr, device)
+  new_mlx(ptr)
 }
 
 #' Drop singleton dimensions
@@ -139,7 +132,7 @@ mlx_squeeze <- function(x, axes = NULL) {
     axes_idx <- normalize_axes(axes, x)
     ptr <- cpp_mlx_squeeze(x$ptr, axes_idx)
   }
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Insert singleton dimensions
@@ -157,7 +150,7 @@ mlx_expand_dims <- function(x, axes) {
   x <- as_mlx(x)
   axes0 <- normalize_new_axes(axes, mlx_shape(x))
   ptr <- cpp_mlx_expand_dims(x$ptr, axes0)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Repeat array elements
@@ -185,7 +178,7 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
     axis0 <- normalize_axis(axis, x)
     ptr <- cpp_mlx_repeat(x$ptr, repeats, axis0)
   }
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Tile an array
@@ -205,7 +198,7 @@ mlx_tile <- function(x, reps) {
     stop("reps must be positive integers.", call. = FALSE)
   }
   ptr <- cpp_mlx_tile(x$ptr, reps)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Roll array elements
@@ -236,7 +229,7 @@ mlx_roll <- function(x, shift, axes = NULL) {
     }
     ptr <- cpp_mlx_roll(x$ptr, shift, axes0)
   }
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Pad mlx arrays
@@ -303,7 +296,7 @@ mlx_pad <- function(x,
     x_dtype,
     mode
   )
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Split mlx arrays
@@ -372,7 +365,7 @@ mlx_split <- function(x, sections, axis = 1L) {
     )
   }
 
-  res <- lapply(ptrs, function(ptr) new_mlx(ptr, mlx_device(x)))
+  res <- lapply(ptrs, new_mlx)
   res
 }
 
@@ -524,7 +517,7 @@ mlx_moveaxis <- function(x, source, destination) {
   }
 
   ptr <- cpp_mlx_moveaxis(x$ptr, source_idx, dest_idx)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' @rdname mlx_moveaxis
@@ -572,24 +565,20 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
 
 #' Ensure contiguous memory layout
 #'
-#' Returns a copy of `x` with contiguous strides on the requested device or stream.
+#' Returns a copy of `x` with contiguous strides.
 #'
 #' @inheritParams mlx_array_required
-#' @inheritParams common_params
-#' @return An mlx array backed by contiguous storage on the specified device.
+#' @return An mlx array backed by contiguous storage.
 #' @seealso <https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.contiguous>
 #' @export
 #' @examples
 #' x <- mlx_swapaxes(mlx_matrix(1:4, 2, 2), axis1 = 1, axis2 = 2)
 #' y <- mlx_contiguous(x)
 #' identical(as.array(x), as.array(y))
-mlx_contiguous <- function(x, device = NULL) {
+mlx_contiguous <- function(x) {
   x <- as_mlx(x)
-  target <- if (is.null(device)) mlx_device(x) else device
-  handle <- resolve_device(target, mlx_device(x))
-  x <- mlx_cast(x, device = handle$device)
   ptr <- cpp_mlx_contiguous(x$ptr)
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' Flatten axes of an mlx array
@@ -635,7 +624,7 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = NULL) {
   }
 
   ptr <- cpp_mlx_flatten(x$ptr, start_idx, end_idx)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Swap two axes of an mlx array
@@ -666,7 +655,7 @@ mlx_swapaxes <- function(x, axis1, axis2) {
   axis2_idx <- normalize_axis_single(axis2, x)
 
   ptr <- cpp_mlx_swapaxes(x$ptr, axis1_idx, axis2_idx)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Construct coordinate arrays from input vectors
@@ -687,8 +676,7 @@ mlx_swapaxes <- function(x, axis1, axis2) {
 #' mlx_meshgrid(xs, ys, indexing = "xy")
 mlx_meshgrid <- function(...,
                          sparse = FALSE,
-                         indexing = c("xy", "ij"),
-                         device = NULL) {
+                         indexing = c("xy", "ij")) {
   arrays <- list(...)
   if (length(arrays) == 1L && is.list(arrays[[1]]) && !is_mlx(arrays[[1]])) {
     arrays <- arrays[[1]]
@@ -699,18 +687,12 @@ mlx_meshgrid <- function(...,
   arrays <- lapply(arrays, as_mlx)
 
   dtypes <- lapply(arrays, mlx_dtype)
-  target_info <- resolve_common_dtype_device(
-    dtypes,
-    lapply(arrays, mlx_device)
-  )
-  dtype <- target_info$dtype
-  default_device <- target_info$device
-  handle <- resolve_device(device, default_device)
-  arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
+  dtype <- resolve_common_dtype(dtypes)
+  arrays <- lapply(arrays, mlx_cast, dtype = dtype)
 
   indexing <- match.arg(indexing)
   ptrs <- cpp_mlx_meshgrid(arrays, sparse, indexing)
-  lapply(ptrs, function(ptr) new_mlx(ptr, handle$device))
+  lapply(ptrs, new_mlx)
 }
 
 #' Broadcast an array to a new shape
@@ -720,7 +702,6 @@ mlx_meshgrid <- function(...,
 #'
 #' @inheritParams mlx_array_required
 #' @param shape Integer vector describing the broadcasted shape.
-#' @inheritParams common_params
 #' @return An mlx array with the requested dimensions.
 #' @seealso [mlx.core.broadcast_to](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_to)
 #' @export
@@ -728,14 +709,12 @@ mlx_meshgrid <- function(...,
 #' x <- mlx_matrix(1:3, nrow = 1)
 #' broadcast <- mlx_broadcast_to(x, c(5, 3))
 #' dim(broadcast)
-mlx_broadcast_to <- function(x, shape, device = NULL) {
+mlx_broadcast_to <- function(x, shape) {
   x <- as_mlx(x)
   shape <- validate_shape(shape)
-  handle <- resolve_device(device, mlx_device(x))
-  x <- mlx_cast(x, dtype = mlx_dtype(x), device = handle$device)
 
   ptr <- cpp_mlx_broadcast_to(x$ptr, shape)
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' Broadcast multiple arrays to a shared shape
@@ -744,7 +723,6 @@ mlx_broadcast_to <- function(x, shape, device = NULL) {
 #' returning a list of inputs expanded to a common shape.
 #'
 #' @param ... One or more arrays (or a single list) convertible via [as_mlx()].
-#' @inheritParams common_params
 #' @return A list of broadcast mlx arrays.
 #' @seealso [mlx.core.broadcast_arrays](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_arrays)
 #' @export
@@ -753,7 +731,7 @@ mlx_broadcast_to <- function(x, shape, device = NULL) {
 #' b <- mlx_matrix(1:3, ncol = 1)
 #' outs <- mlx_broadcast_arrays(a, b)
 #' lapply(outs, dim)
-mlx_broadcast_arrays <- function(..., device = NULL) {
+mlx_broadcast_arrays <- function(...) {
   arrays <- list(...)
   if (length(arrays) == 1L && is.list(arrays[[1]]) && !is_mlx(arrays[[1]])) {
     arrays <- arrays[[1]]
@@ -764,16 +742,11 @@ mlx_broadcast_arrays <- function(..., device = NULL) {
   arrays <- lapply(arrays, as_mlx)
 
   dtypes <- lapply(arrays, mlx_dtype)
-  target_info <- resolve_common_dtype_device(
-    dtypes,
-    lapply(arrays, mlx_device)
-  )
-  dtype <- target_info$dtype
-  handle <- resolve_device(target_info$device)
-  arrays <- lapply(arrays, mlx_cast, dtype = dtype, device = handle$device)
+  dtype <- resolve_common_dtype(dtypes)
+  arrays <- lapply(arrays, mlx_cast, dtype = dtype)
 
   ptrs <- cpp_mlx_broadcast_arrays(arrays)
-  lapply(ptrs, function(ptr) new_mlx(ptr, handle$device))
+  lapply(ptrs, new_mlx)
 }
 
 #' Elementwise conditional selection
@@ -797,17 +770,12 @@ mlx_where <- function(condition, x, y) {
 
   x_dtype <- mlx_dtype(x)
   y_dtype <- mlx_dtype(y)
-  target <- resolve_common_dtype_device(
-    list(x_dtype, y_dtype, mlx_dtype(condition)),
-    list(mlx_device(x), mlx_device(y), mlx_device(condition))
-  )
-  result_dtype <- target$dtype
-  result_device <- target$device
+  result_dtype <- resolve_common_dtype(list(x_dtype, y_dtype, mlx_dtype(condition)))
 
-  condition <- mlx_cast(condition, dtype = "bool", device = result_device)
-  x <- mlx_cast(x, dtype = result_dtype, device = result_device)
-  y <- mlx_cast(y, dtype = result_dtype, device = result_device)
+  condition <- mlx_cast(condition, dtype = "bool")
+  x <- mlx_cast(x, dtype = result_dtype)
+  y <- mlx_cast(y, dtype = result_dtype)
 
   ptr <- cpp_mlx_where(condition$ptr, x$ptr, y$ptr, result_dtype)
-  new_mlx(ptr, result_device)
+  new_mlx(ptr)
 }

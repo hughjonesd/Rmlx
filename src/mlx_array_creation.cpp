@@ -8,7 +8,7 @@ using namespace rmlx;
 using namespace mlx::core;
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_zeros(SEXP dim_, std::string dtype_str, std::string device_str) {
+SEXP cpp_mlx_zeros(SEXP dim_, std::string dtype_str) {
   IntegerVector dim(dim_);
   if (dim.size() == 0) {
     Rcpp::stop("dim must contain at least one element.");
@@ -16,14 +16,13 @@ SEXP cpp_mlx_zeros(SEXP dim_, std::string dtype_str, std::string device_str) {
 
   Shape shape(dim.begin(), dim.end());
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
-  array result = zeros(shape, dtype, dev);
+  array result = zeros(shape, dtype);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_ones(SEXP dim_, std::string dtype_str, std::string device_str) {
+SEXP cpp_mlx_ones(SEXP dim_, std::string dtype_str) {
   IntegerVector dim(dim_);
   if (dim.size() == 0) {
     Rcpp::stop("dim must contain at least one element.");
@@ -31,40 +30,37 @@ SEXP cpp_mlx_ones(SEXP dim_, std::string dtype_str, std::string device_str) {
 
   Shape shape(dim.begin(), dim.end());
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
-  array result = ones(shape, dtype, dev);
+  array result = ones(shape, dtype);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_zeros_like(SEXP xp_, std::string dtype_str, std::string device_str) {
+SEXP cpp_mlx_zeros_like(SEXP xp_, std::string dtype_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
   Shape shape = arr.shape();
-  array result = zeros(shape, dtype, dev);
+  array result = zeros(shape, dtype);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_ones_like(SEXP xp_, std::string dtype_str, std::string device_str) {
+SEXP cpp_mlx_ones_like(SEXP xp_, std::string dtype_str) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
   Shape shape = arr.shape();
-  array result = ones(shape, dtype, dev);
+  array result = ones(shape, dtype);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_full(SEXP dim_, SEXP value_, std::string dtype_str, std::string device_str) {
+SEXP cpp_mlx_full(SEXP dim_, SEXP value_, std::string dtype_str) {
   if (Rf_length(value_) != 1) {
     Rcpp::stop("value must be a scalar.");
   }
@@ -76,22 +72,21 @@ SEXP cpp_mlx_full(SEXP dim_, SEXP value_, std::string dtype_str, std::string dev
 
   Shape shape(dim.begin(), dim.end());
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
   array result = [&]() -> array {
     if (dtype == complex64) {
       Rcomplex val = Rcpp::as<Rcomplex>(value_);
       std::complex<float> cval(static_cast<float>(val.r), static_cast<float>(val.i));
-      return full(shape, cval, complex64, dev);
+      return full(shape, cval, complex64);
     } else if (dtype == bool_) {
       bool val = Rcpp::as<bool>(value_);
-      return full(shape, val, bool_, dev);
+      return full(shape, val, bool_);
     } else if (dtype == float64) {
       double val = Rcpp::as<double>(value_);
-      return full(shape, val, float64, dev);
+      return full(shape, val, float64);
     } else if (dtype == float32) {
       double val = Rcpp::as<double>(value_);
-      return full(shape, static_cast<float>(val), float32, dev);
+      return full(shape, static_cast<float>(val), float32);
     } else {
       Rcpp::stop("Unsupported dtype for mlx_full.");
     }
@@ -104,8 +99,7 @@ SEXP cpp_mlx_full(SEXP dim_, SEXP value_, std::string dtype_str, std::string dev
 SEXP cpp_mlx_eye(int n,
                  Rcpp::Nullable<int> m,
                  int k,
-                 std::string dtype_str,
-                 std::string device_str) {
+                 std::string dtype_str) {
   if (n <= 0) {
     Rcpp::stop("n must be positive.");
   }
@@ -115,9 +109,8 @@ SEXP cpp_mlx_eye(int n,
   }
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
-  array result = eye(n, m_val, k, dtype, dev);
+  array result = eye(n, m_val, k, dtype);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -125,8 +118,7 @@ SEXP cpp_mlx_eye(int n,
 SEXP cpp_mlx_tri(int n,
                  Rcpp::Nullable<int> m,
                  int k,
-                 std::string dtype_str,
-                 std::string device_str) {
+                 std::string dtype_str) {
   if (n <= 0) {
     Rcpp::stop("n must be positive.");
   }
@@ -136,21 +128,19 @@ SEXP cpp_mlx_tri(int n,
   }
 
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
-  array result = tri(n, m_val, k, dtype, dev);
+  array result = tri(n, m_val, k, dtype);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_identity(int n, std::string dtype_str, std::string device_str) {
+SEXP cpp_mlx_identity(int n, std::string dtype_str) {
   if (n <= 0) {
     Rcpp::stop("n must be positive.");
   }
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
-  array result = identity(n, dtype, dev);
+  array result = identity(n, dtype);
   return make_mlx_xptr(std::move(result));
 }
 
@@ -158,10 +148,8 @@ SEXP cpp_mlx_identity(int n, std::string dtype_str, std::string device_str) {
 SEXP cpp_mlx_arange(SEXP start_,
                     double stop,
                     SEXP step_,
-                    std::string dtype_str,
-                    std::string device_str) {
+                    std::string dtype_str) {
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
   bool has_start = start_ != R_NilValue;
   bool has_step = step_ != R_NilValue;
@@ -171,13 +159,13 @@ SEXP cpp_mlx_arange(SEXP start_,
     double step_val = has_step ? Rcpp::as<double>(step_) : 1.0;
 
     if (has_start && has_step) {
-      return arange(start_val, stop, step_val, dtype, dev);
+      return arange(start_val, stop, step_val, dtype);
     } else if (has_start) {
-      return arange(start_val, stop, dtype, dev);
+      return arange(start_val, stop, dtype);
     } else if (has_step) {
-      return arange(0.0, stop, step_val, dtype, dev);
+      return arange(0.0, stop, step_val, dtype);
     }
-    return arange(stop, dtype, dev);
+    return arange(stop, dtype);
   }();
 
   return make_mlx_xptr(std::move(result));
@@ -187,14 +175,12 @@ SEXP cpp_mlx_arange(SEXP start_,
 SEXP cpp_mlx_linspace(double start,
                       double stop,
                       int num,
-                      std::string dtype_str,
-                      std::string device_str) {
+                      std::string dtype_str) {
   if (num <= 0) {
     Rcpp::stop("num must be positive.");
   }
   Dtype dtype = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dtype, device_str);
 
-  array result = linspace(start, stop, num, dtype, dev);
+  array result = linspace(start, stop, num, dtype);
   return make_mlx_xptr(std::move(result));
 }

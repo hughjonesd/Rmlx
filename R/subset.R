@@ -100,7 +100,7 @@ matrix_subset <- function(x, idx_mat) {
   check_matrix_index(idx_mat, shape, assign = FALSE)
 
   # Convert to mlx-style zero-based indices
-  idx_mat <- as_mlx(idx_mat - 1L, dtype = "int32", device = mlx_device(x))
+  idx_mat <- as_mlx(idx_mat - 1L, dtype = "int32")
 
   # Per-axis indices (0-based) as mlx arrays
   coord_list <- mlx_split(idx_mat, sections = ncol(idx_mat), axis = 2L)
@@ -130,14 +130,14 @@ vectors_subset <- function(x, idx_list) {
     }
     idx_arg <- if (is_mlx(idx0)) idx0$ptr else as.integer(idx0)
     ptr <- cpp_mlx_take(x$ptr, idx_arg, axis - 1L)
-    return(new_mlx(ptr, mlx_device(x)))
+    return(new_mlx(ptr))
   }
 
   idx_list <- mapply(normalize_index, idx_list, shape, SIMPLIFY = FALSE,
                      MoreArgs = list(assign = FALSE))
   idx_norm <- lapply(idx_list, function (x) x - 1L)
 
-  idx_grids <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = mlx_device(x))
+  idx_grids <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij")
   idx_grids <- lapply(idx_grids, mlx_cast, dtype = "int32")
 
   gather_for_subset(x, idx_grids)
@@ -168,7 +168,7 @@ gather_for_subset <- function(x, idx_list) {
   ndim <- length(mlx_shape(x))
   axes <- seq_len(ndim) - 1L
   ptr <- cpp_mlx_gather(x$ptr, idx_list, axes)
-  res <- new_mlx(ptr, mlx_device(x))
+  res <- new_mlx(ptr)
 
   # return to the same rank as x
   res_ndim <- length(mlx_shape(res))

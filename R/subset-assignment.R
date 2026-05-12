@@ -43,7 +43,7 @@ matrix_assign <- function (x, idx_mat, value) {
   }
 
   # Convert to mlx-style zero-based indices
-  idx_mat <- as_mlx(idx_mat - 1L, dtype = "int32", device = mlx_device(x))
+  idx_mat <- as_mlx(idx_mat - 1L, dtype = "int32")
 
   # Per-axis indices (0-based) as mlx arrays
   coord_list <- mlx_split(idx_mat, sections = ncol(idx_mat), axis = 2L)
@@ -53,13 +53,13 @@ matrix_assign <- function (x, idx_mat, value) {
   # if (duplicated_rows_lex(idx_mat)) {
   #   stop("Duplicate indices are not allowed in assignment.", call. = FALSE)
   # }
-  value <- as_mlx(value, dtype = mlx_dtype(x), device = mlx_device(x))
+  value <- as_mlx(value, dtype = mlx_dtype(x))
   value <- mlx_repeat(value, nrow(idx_mat) %/% length(value))
   value <- mlx_reshape(value, c(nrow(idx_mat), rep(1L, ndims)))
   axes <- seq_len(ndims) - 1L
 
   ptr <- cpp_mlx_scatter(x$ptr, coord_list, value$ptr, axes)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 
@@ -76,7 +76,7 @@ vectors_assign <- function(x, idx_list, value) {
   lens <- lengths(idx_norm)
 
   target_len <- prod(lens)
-  value_mlx <- as_mlx(value, dtype = mlx_dtype(x), device = mlx_device(x))
+  value_mlx <- as_mlx(value, dtype = mlx_dtype(x))
   val_len <- length(value_mlx)
   check_value_fits(val_len, target_len)
 
@@ -89,11 +89,11 @@ vectors_assign <- function(x, idx_list, value) {
   value_mlx <- mlx_reshape(value_mlx, rev_shape)
   value_mlx <- aperm(value_mlx)
 
-  idx_grid <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij", device = mlx_device(x))
+  idx_grid <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij")
   idx_grid <- lapply(idx_grid, mlx_cast, dtype = "int32")
   axes <- seq_len(ndim) - 1L
   ptr <- cpp_mlx_scatter(x$ptr, idx_grid, value_mlx$ptr, axes)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Normalize an index to a standard form
@@ -162,6 +162,6 @@ check_value_fits <- function(val_len, target_len) {
 # Flatten an mlx array in R's column-major order
 .mlx_flatten_r_order <- function(x) {
   ptr <- cpp_mlx_flatten_r_order(x$ptr)
-  out <- new_mlx(ptr, mlx_device(x))
+  out <- new_mlx(ptr)
   mlx_reshape(out, length(x))
 }

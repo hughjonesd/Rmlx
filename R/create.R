@@ -9,13 +9,11 @@
 #' zeros_int <- mlx_zeros(c(2, 3), dtype = "int32")
 mlx_zeros <- function(dim,
                       dtype = c("float32", "float64", "int8", "int16", "int32", "int64",
-                               "uint8", "uint16", "uint32", "uint64", "bool", "complex64"),
-                      device = mlx_default_device()) {
+                               "uint8", "uint16", "uint32", "uint64", "bool", "complex64")) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device)
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_zeros(dim, dtype, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_zeros(dim, dtype)
+  new_mlx(ptr)
 }
 
 #' Create arrays of ones on MLX devices
@@ -25,24 +23,22 @@ mlx_zeros <- function(dim,
 #' @seealso [mlx.core.ones](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones)
 #' @export
 #' @examples
-#' ones <- mlx_ones(c(2, 2), dtype = "float64", device = "cpu")
+#' ones <- with_device("cpu", mlx_ones(c(2, 2), dtype = "float64"))
 #' ones_int <- mlx_ones(c(3, 3), dtype = "int32")
 mlx_ones <- function(dim,
                      dtype = c("float32", "float64", "int8", "int16", "int32", "int64",
-                              "uint8", "uint16", "uint32", "uint64", "bool", "complex64"),
-                     device = mlx_default_device()) {
+                              "uint8", "uint16", "uint32", "uint64", "bool", "complex64")) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device)
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_ones(dim, dtype, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_ones(dim, dtype)
+  new_mlx(ptr)
 }
 
 #' Zeros shaped like an existing mlx array
 #'
 #' `mlx_zeros_like()` mirrors [`mlx.core.zeros_like()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like):
 #' it creates a zero-filled array matching the source array's shape. Optionally override the dtype
-#' or device.
+#' or dtype.
 #'
 #' @inheritParams mlx_array_required
 #' @inheritParams common_params
@@ -53,8 +49,7 @@ mlx_ones <- function(dim,
 #' base <- mlx_ones(c(2, 2))
 #' mlx_zeros_like(base)
 mlx_zeros_like <- function(x,
-                           dtype = NULL,
-                           device = NULL) {
+                           dtype = NULL) {
   x <- as_mlx(x)
   valid_dtypes <- c(
     "float32", "float64", "int8", "int16", "int32", "int64",
@@ -67,15 +62,14 @@ mlx_zeros_like <- function(x,
     match.arg(dtype, valid_dtypes)
   }
 
-  handle <- resolve_device(device, mlx_device(x))
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_zeros_like(x$ptr, dtype, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_zeros_like(x$ptr, dtype)
+  new_mlx(ptr)
 }
 
 #' Ones shaped like an existing mlx array
 #'
 #' `mlx_ones_like()` mirrors [`mlx.core.ones_like()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like),
-#' creating an array of ones with the same shape. Optionally override dtype or device.
+#' creating an array of ones with the same shape. Optionally override dtype.
 #'
 #' @inheritParams mlx_array_required
 #' @inheritParams common_params
@@ -86,8 +80,7 @@ mlx_zeros_like <- function(x,
 #' base <- mlx_full(c(2, 3), 5)
 #' mlx_ones_like(base)
 mlx_ones_like <- function(x,
-                          dtype = NULL,
-                          device = NULL) {
+                          dtype = NULL) {
   x <- as_mlx(x)
   valid_dtypes <- c(
     "float32", "float64", "int8", "int16", "int32", "int64",
@@ -100,9 +93,8 @@ mlx_ones_like <- function(x,
     match.arg(dtype, valid_dtypes)
   }
 
-  handle <- resolve_device(device, mlx_device(x))
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_ones_like(x$ptr, dtype, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_ones_like(x$ptr, dtype)
+  new_mlx(ptr)
 }
 
 #' Fill an mlx array with a constant value
@@ -117,8 +109,7 @@ mlx_ones_like <- function(x,
 #' complex_full <- mlx_full(c(2, 2), 1+2i, dtype = "complex64")
 mlx_full <- function(dim,
                      value,
-                     dtype = NULL,
-                     device = mlx_default_device()) {
+                     dtype = NULL) {
   dim <- validate_shape(dim)
   if (length(value) != 1) {
     stop("value must be a scalar.", call. = FALSE)
@@ -142,9 +133,8 @@ mlx_full <- function(dim,
     stop("Unsupported dtype: ", dtype, call. = FALSE)
   }
 
-  handle <- resolve_device(device)
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_full(dim, value, dtype, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_full(dim, value, dtype)
+  new_mlx(ptr)
 }
 
 #' Identity-like matrices on MLX devices
@@ -163,8 +153,7 @@ mlx_full <- function(dim,
 mlx_eye <- function(n,
                     m = n,
                     k = 0L,
-                    dtype = c("float32", "float64"),
-                    device = mlx_default_device()) {
+                    dtype = c("float32", "float64")) {
   n <- as.integer(n)
   m <- as.integer(m)
   k <- as.integer(k)
@@ -177,9 +166,8 @@ mlx_eye <- function(n,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device)
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_eye(n, m, k, dtype, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_eye(n, m, k, dtype)
+  new_mlx(ptr)
 }
 
 #' Construct an MLX array from R data
@@ -201,8 +189,7 @@ mlx_eye <- function(n,
 #'mlx_array(payload, dim = c(2, 3))
 mlx_array <- function(data,
                       dim,
-                      dtype = NULL,
-                      device = mlx_default_device()) {
+                      dtype = NULL) {
   if (!is.atomic(data) || is.list(data)) {
     stop("data must be an atomic vector.", call. = FALSE)
   }
@@ -247,11 +234,8 @@ mlx_array <- function(data,
   }
 
   payload <- coerce_payload(data_vec, dtype_val)
-  handle <- resolve_device(device)
-  ptr <- eval_with_stream(handle, function(dev) {
-    cpp_mlx_from_r(payload, as.integer(dim), dtype_val, dev)
-  })
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_from_r(payload, as.integer(dim), dtype_val)
+  new_mlx(ptr)
 }
 
 #' Construct MLX matrices efficiently
@@ -271,8 +255,7 @@ mlx_matrix <- function(data,
                        nrow = NULL,
                        ncol = NULL,
                        byrow = FALSE,
-                       dtype = NULL,
-                       device = mlx_default_device()) {
+                       dtype = NULL) {
   data_vec <- as.vector(data)
   total <- length(data_vec)
 
@@ -306,7 +289,7 @@ mlx_matrix <- function(data,
     data_vec <- as.vector(matrix(data_vec, nrow = nrow, ncol = ncol, byrow = TRUE))
   }
 
-  mlx_array(data_vec, c(nrow, ncol), dtype = dtype, device = device)
+  mlx_array(data_vec, c(nrow, ncol), dtype = dtype)
 }
 
 #' Construct MLX vectors
@@ -318,8 +301,7 @@ mlx_matrix <- function(data,
 #' @return An `mlx` vector with `dim = length(data)`.
 #' @export
 mlx_vector <- function(data,
-                       dtype = NULL,
-                       device = mlx_default_device()) {
+                       dtype = NULL) {
   if (!is.atomic(data) || is.list(data)) {
     stop("data must be an atomic vector.", call. = FALSE)
   }
@@ -329,7 +311,7 @@ mlx_vector <- function(data,
     stop("data must contain at least one element.", call. = FALSE)
   }
 
-  mlx_array(data_vec, length(data_vec), dtype = dtype, device = device)
+  mlx_array(data_vec, length(data_vec), dtype = dtype)
 }
 
 #' Construct MLX scalars
@@ -339,8 +321,7 @@ mlx_vector <- function(data,
 #' @return A dimensionless `mlx` scalar.
 #' @export
 mlx_scalar <- function(value,
-                       dtype = NULL,
-                       device = mlx_default_device()) {
+                       dtype = NULL) {
   if (length(value) != 1L) {
     stop("value must be length 1.", call. = FALSE)
   }
@@ -348,8 +329,7 @@ mlx_scalar <- function(value,
   mlx_array(
     value,
     dim = integer(0),
-    dtype = dtype,
-    device = device
+    dtype = dtype
   )
 }
 
@@ -363,17 +343,15 @@ mlx_scalar <- function(value,
 #' @examples
 #' I4 <- mlx_identity(4)
 mlx_identity <- function(n,
-                         dtype = c("float32", "float64"),
-                         device = mlx_default_device()) {
+                         dtype = c("float32", "float64")) {
   n <- as.integer(n)
   if (length(n) != 1L || n <= 0) {
     stop("n must be a positive integer.", call. = FALSE)
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device)
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_identity(n, dtype, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_identity(n, dtype)
+  new_mlx(ptr)
 }
 
 #' Triangular helpers for MLX arrays
@@ -396,8 +374,7 @@ mlx_identity <- function(n,
 mlx_tri <- function(n,
                     m = NULL,
                     k = 0L,
-                    dtype = c("float32", "float64"),
-                    device = mlx_default_device()) {
+                    dtype = c("float32", "float64")) {
   n <- as.integer(n)
   if (length(n) != 1L || is.na(n) || n <= 0L) {
     stop("n must be a positive integer.", call. = FALSE)
@@ -418,9 +395,8 @@ mlx_tri <- function(n,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device)
-  ptr <- eval_with_stream(handle, function(dev) cpp_mlx_tri(n, m_arg, k, dtype, dev))
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_tri(n, m_arg, k, dtype)
+  new_mlx(ptr)
 }
 
 #' @rdname mlx_tri
@@ -434,7 +410,7 @@ mlx_tril <- function(x, k = 0L) {
   }
 
   ptr <- cpp_mlx_tril(x$ptr, k)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' @rdname mlx_tri
@@ -448,7 +424,7 @@ mlx_triu <- function(x, k = 0L) {
   }
 
   ptr <- cpp_mlx_triu(x$ptr, k)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 
@@ -484,7 +460,7 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
   }
 
   ptr <- cpp_mlx_diag(x$ptr, k)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Numerical ranges on MLX devices
@@ -515,8 +491,7 @@ mlx_arange <- function(start,
                        stop,
                        step = 1,
                        dtype = c("float32", "float64", "int8", "int16", "int32", "int64",
-                                "uint8", "uint16", "uint32", "uint64"),
-                       device = mlx_default_device()) {
+                                "uint8", "uint16", "uint32", "uint64")) {
   if (length(start) != 1L) {
     stop("start must be a single numeric value.", call. = FALSE)
   }
@@ -528,7 +503,6 @@ mlx_arange <- function(start,
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device)
 
   # Convert to exclusive stop for underlying MLX function
   # Add a tiny epsilon to include stop if exactly reachable (like seq())
@@ -539,10 +513,8 @@ mlx_arange <- function(start,
     stop - 1e-10
   }
 
-  ptr <- eval_with_stream(handle, function(dev) {
-    cpp_mlx_arange(as.numeric(start), as.numeric(stop_exclusive), as.numeric(step), dtype, dev)
-  })
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_arange(as.numeric(start), as.numeric(stop_exclusive), as.numeric(step), dtype)
+  new_mlx(ptr)
 }
 
 #' Evenly spaced ranges on MLX devices
@@ -562,25 +534,20 @@ mlx_arange <- function(start,
 mlx_linspace <- function(start,
                          stop,
                          num = 50L,
-                         dtype = c("float32", "float64"),
-                         device = mlx_default_device()) {
+                         dtype = c("float32", "float64")) {
   if (length(num) != 1L || num <= 0) {
     stop("num must be a positive integer.", call. = FALSE)
   }
 
   dtype <- match.arg(dtype)
-  handle <- resolve_device(device)
 
-  ptr <- eval_with_stream(handle, function(dev) {
-    cpp_mlx_linspace(
-      as.numeric(start),
-      as.numeric(stop),
-      as.integer(num),
-      dtype,
-      dev
-    )
-  })
-  new_mlx(ptr, handle$device)
+  ptr <- cpp_mlx_linspace(
+    as.numeric(start),
+    as.numeric(stop),
+    as.integer(num),
+    dtype
+  )
+  new_mlx(ptr)
 }
 
 # Helper to validate shapes ----------------------------------------------------
