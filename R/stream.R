@@ -10,7 +10,7 @@
 #' @examples
 #' stream <- mlx_new_stream()
 #' stream
-mlx_new_stream <- function(device = mlx_default_device()) {
+mlx_new_stream <- function(device = mlx_device()) {
   device_chr <- match.arg(device, c("gpu", "cpu"))
   ptr <- cpp_mlx_stream_new(device_chr)
   .mlx_make_stream(ptr)
@@ -19,7 +19,7 @@ mlx_new_stream <- function(device = mlx_default_device()) {
 #' @rdname mlx_new_stream
 #' @description `mlx_default_stream()` returns the current default stream for a device.
 #' @export
-mlx_default_stream <- function(device = mlx_default_device()) {
+mlx_default_stream <- function(device = mlx_device()) {
   device_chr <- match.arg(device, c("gpu", "cpu"))
   ptr <- cpp_mlx_stream_default(device_chr)
   .mlx_make_stream(ptr)

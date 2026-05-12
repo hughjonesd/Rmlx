@@ -2,41 +2,7 @@
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
 
-#' Wrap a raw MLX pointer into an mlx object
-#'
-#' @param ptr External pointer returned by C++ bindings.
-#' @param device Device string associated with the array.
-#' @return An mlx array.
-#' @noRd
 is_mlx_stream <- function(x) inherits(x, "mlx_stream")
-
-resolve_device <- function(device, default = mlx_default_device()) {
-  if (missing(device) || is.null(device)) {
-    device <- default
-  }
-
-  if (is_mlx_stream(device)) {
-    return(list(device = device$device, stream_ptr = device$ptr))
-  }
-
-  if (!is.character(device) || length(device) != 1L) {
-    stop('device must be "gpu", "cpu", or an mlx_stream.', call. = FALSE)
-  }
-
-  device_chr <- match.arg(device, c("gpu", "cpu"))
-  list(device = device_chr, stream_ptr = NULL)
-}
-
-eval_with_stream <- function(handle, fn) {
-  if (is.null(handle$stream_ptr)) {
-    return(fn(handle$device))
-  }
-
-  old <- cpp_mlx_stream_default(handle$device)
-  on.exit(cpp_mlx_set_default_stream(old), add = TRUE)
-  cpp_mlx_set_default_stream(handle$stream_ptr)
-  fn(handle$device)
-}
 
 #' Check for duplicated rows in an mlx matrix
 #'
@@ -126,7 +92,6 @@ lex_sort <- function (x) {
 print.mlx <- function(x, ...) {
   cat(sprintf("mlx array [%s]\n", paste(mlx_shape(x), collapse = " x ")))
   cat(sprintf("  dtype: %s\n", mlx_dtype(x)))
-  cat(sprintf("  device: %s\n", mlx_device(x)))
 
   # Show preview for small arrays
   total_size <- length(x)
@@ -152,10 +117,9 @@ print.mlx <- function(x, ...) {
 #' str(x)
 str.mlx <- function(object, ...) {
   cat(sprintf(
-    "mlx [%s] %s on %s\n",
+    "mlx [%s] %s\n",
     paste(mlx_shape(object), collapse = " x "),
-    mlx_dtype(object),
-    mlx_device(object)
+    mlx_dtype(object)
   ))
   invisible(NULL)
 }
@@ -273,7 +237,7 @@ mlx_reshape <- function(x, newshape) {
   }
 
   ptr <- cpp_mlx_reshape(x$ptr, newshape)
-  new_mlx(ptr, mlx_device(x))
+  new_mlx(ptr)
 }
 
 #' Get length of MLX array

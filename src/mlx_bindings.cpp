@@ -23,22 +23,13 @@ SEXP stream_tag() {
 } // namespace
 
 // MlxArrayWrapper implementation
-MlxArrayWrapper::MlxArrayWrapper() : ptr_(nullptr), device_("cpu") {}
+MlxArrayWrapper::MlxArrayWrapper() : ptr_(nullptr) {}
 
 MlxArrayWrapper::MlxArrayWrapper(const array& arr)
-    : ptr_(std::make_shared<array>(arr)), device_("cpu") {}
+    : ptr_(std::make_shared<array>(arr)) {}
 
 MlxArrayWrapper::MlxArrayWrapper(array&& arr)
-    : ptr_(std::make_shared<array>(std::move(arr))), device_("cpu") {}
-
-MlxArrayWrapper::MlxArrayWrapper(const array& arr, const std::string& device)
-    : ptr_(std::make_shared<array>(arr)), device_(device) {}
-
-MlxArrayWrapper::MlxArrayWrapper(array&& arr, const std::string& device)
-    : ptr_(std::make_shared<array>(std::move(arr))), device_(device) {}
-
-MlxArrayWrapper::MlxArrayWrapper(std::shared_ptr<array> ptr, const std::string& device)
-    : ptr_(std::move(ptr)), device_(device) {}
+    : ptr_(std::make_shared<array>(std::move(arr))) {}
 
 // Finalizer for R external pointer
 void mlx_array_finalizer(SEXP xp) {
@@ -125,20 +116,6 @@ SEXP make_mlx_xptr(array&& arr) {
   return xp;
 }
 
-SEXP make_mlx_xptr(const array& arr, const std::string& device) {
-  MlxArrayWrapper* wrapper = new MlxArrayWrapper(arr, device);
-  SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, R_NilValue);
-  R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);
-  return xp;
-}
-
-SEXP make_mlx_xptr(array&& arr, const std::string& device) {
-  MlxArrayWrapper* wrapper = new MlxArrayWrapper(std::move(arr), device);
-  SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, R_NilValue);
-  R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);
-  return xp;
-}
-
 SEXP make_mlx_stream_xptr(Stream stream) {
   auto* wrapper = new MlxStreamWrapper(stream);
   SEXP xp = R_MakeExternalPtr(wrapper, stream_tag(), R_NilValue);
@@ -204,32 +181,18 @@ std::string device_to_string(const Device& device) {
   Rcpp::stop("Unsupported device type");
 }
 
-StreamOrDevice typed_device(Dtype dtype, const std::string& device) {
-  return string_to_device(device);
-}
-
-StreamOrDevice MlxArrayWrapper::stream() const {
-  return stream(get().dtype());
-}
-
-StreamOrDevice MlxArrayWrapper::stream(Dtype dtype) const {
-  return typed_device(dtype, device_);
-}
-
 } // namespace rmlx
 
 using namespace rmlx;
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
+SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_) {
   IntegerVector dim(dim_);
   std::string dtype_str = as<std::string>(dtype_);
-  std::string device_str = as<std::string>(device_);
 
   // Convert dimensions
   Shape shape(dim.begin(), dim.end());
   Dtype dt = string_to_dtype(dtype_str);
-  StreamOrDevice dev = typed_device(dt, device_str);
 
   size_t ndim = shape.size();
 
@@ -263,35 +226,17 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
     }
 
     auto col_major_from_ptr = [&](auto ptr, Dtype ptr_dtype) -> array {
-      const Device original_device = default_device();
-      const bool switch_to_cpu = original_device.type != Device::DeviceType::cpu;
-      if (switch_to_cpu) {
-        set_default_device(Device(Device::cpu));
+      array flat(ptr, Shape{static_cast<int32_t>(total)}, ptr_dtype);
+      array view = as_strided(
+        flat,
+        target_shape,
+        col_major_strides,
+        /*offset=*/0);
+      array arr = contiguous(view, /*allow_col_major=*/true);
+      if (arr.dtype() != dt) {
+        arr = astype(arr, dt);
       }
-      try {
-        array flat(ptr, Shape{static_cast<int32_t>(total)}, ptr_dtype);
-        array view = as_strided(
-          flat,
-          target_shape,
-          col_major_strides,
-          /*offset=*/0);
-        array arr = contiguous(view, /*allow_col_major=*/true, Device(Device::cpu));
-        if (arr.dtype() != dt) {
-          arr = astype(arr, dt, Device(Device::cpu));
-        }
-        if (switch_to_cpu) {
-          set_default_device(original_device);
-        }
-        if (device_str != "cpu") {
-          arr = astype(arr, dt, dev);
-        }
-        return arr;
-      } catch (...) {
-        if (switch_to_cpu) {
-          set_default_device(original_device);
-        }
-        throw;
-      }
+      return arr;
     };
 
     bool used_fast_path = false;
@@ -378,8 +323,8 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
     arr_temp = transpose_between_mlx_and_r(arr_temp);
   }
 
-  // Convert to target dtype and device
-  array arr = astype(arr_temp, dt, dev);
+  // Convert to target dtype
+  array arr = astype(arr_temp, dt);
 
   return make_mlx_xptr(std::move(arr));
 }
@@ -388,19 +333,15 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_, SEXP device_) {
 SEXP cpp_mlx_to_r(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   array arr = wrapper->get();
-  StreamOrDevice preferred = wrapper->stream(arr.dtype());
 
   size_t ndim = arr.ndim();
 
   // Transpose to column-major layout if multi-dimensional
   if (ndim > 1) {
-    arr = transpose_between_mlx_and_r(arr, preferred);
+    arr = transpose_between_mlx_and_r(arr);
   }
 
-  // Return data to R from CPU memory after any layout work has run on the
-  // object's preferred device.
-  arr = astype(arr, arr.dtype(), Device(Device::cpu));
-  arr = contiguous(arr, /*allow_col_major=*/false, Device(Device::cpu));
+  arr = contiguous(arr, /*allow_col_major=*/false);
   eval(arr);
 
   // Get total size
@@ -543,19 +484,4 @@ IntegerVector cpp_mlx_shape(SEXP xp_) {
 std::string cpp_mlx_dtype(SEXP xp_) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
   return dtype_to_string(wrapper->get().dtype());
-}
-
-// [[Rcpp::export]]
-std::string cpp_mlx_device(SEXP xp_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  return wrapper->device();
-}
-
-// [[Rcpp::export]]
-SEXP cpp_mlx_with_device(SEXP xp_, std::string device) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  auto* out = new MlxArrayWrapper(wrapper->shared_array(), device);
-  SEXP xp = R_MakeExternalPtr(out, R_NilValue, R_NilValue);
-  R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);
-  return xp;
 }

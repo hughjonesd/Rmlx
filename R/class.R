@@ -53,9 +53,8 @@ coerce_payload <- function(x, dtype) {
 #'
 #' ## Type precision
 #'
-#' - `float64` is supported on CPU only; use `device = "cpu"` explicitly.
-#'   Cast GPU arrays to `float64` with `mlx_cast(x, dtype = "float64",
-#'   device = "cpu")`, and cast back to `float32` before returning to GPU.
+#' - `float64` is supported on CPU only. Use [with_device()] or [local_device()]
+#'   to run float64 work on CPU.
 #' - Integer arithmetic may promote types (e.g., int32 + int32 might → int64)
 #' - Mixed integer/float operations promote to float
 #'
@@ -97,7 +96,7 @@ coerce_payload <- function(x, dtype) {
 #' mlx_dtype(mask)  # "bool"
 as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
                                  "int8", "int16", "int32", "int64",
-                                 "uint8", "uint16", "uint32", "uint64"), device = mlx_default_device()) {
+                                 "uint8", "uint16", "uint32", "uint64")) {
   dtype_val <- if (missing(dtype)) {
     if (is.logical(x)) {
       "bool"
@@ -109,18 +108,13 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
   } else {
     match.arg(dtype)
   }
-  handle <- resolve_device(device)
 
   if (is_mlx(x)) {
-    need_device <- !missing(device) && !identical(mlx_device(x), handle$device)
     need_dtype <- !missing(dtype) && !identical(mlx_dtype(x), dtype_val)
-    if (!need_device && !need_dtype) return(x)
+    if (!need_dtype) return(x)
 
-    ptr <- eval_with_stream(handle, function(dev) {
-      target_dtype <- if (need_dtype) dtype_val else mlx_dtype(x)
-      cpp_mlx_cast(x$ptr, target_dtype, handle$device)
-    })
-    return(new_mlx(ptr, handle$device))
+    ptr <- cpp_mlx_cast(x$ptr, dtype_val)
+    return(new_mlx(ptr))
   }
 
   is_supported <- (is.vector(x) && !is.list(x)) || is.matrix(x) || is.array(x)
@@ -139,12 +133,10 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
   x_payload <- coerce_payload(x, dtype_val)
 
   # Create MLX array via C++
-  ptr <- eval_with_stream(handle, function(dev) {
-    cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val, dev)
-  })
+  ptr <- cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val)
 
   # Create S3 object (dim is always read from MLX via dim.mlx())
-  new_mlx(ptr, handle$device)
+  new_mlx(ptr)
 }
 
 #' Force evaluation of an MLX operations
@@ -323,26 +315,22 @@ is_mlx <- function(x) {
 #'
 #' @param fn Function that takes `x$ptr` as its first argument and returns an
 #'   external pointer.
-#' @param x An mlx object providing the pointer and default device.
-#' @param device Device to attach to the returned mlx object. Defaults to
-#'   `mlx_device(x)`.
+#' @param x An mlx object providing the pointer.
 #' @param ... Additional arguments forwarded to `fn` after `x$ptr`.
 #' @return An mlx object wrapping the pointer returned by `fn`.
 #' @noRd
-.mlx_from_call <- function(fn, x, device = mlx_device(x), ...) {
+.mlx_from_call <- function(fn, x, ...) {
   stopifnot(is_mlx(x))
   ptr <- fn(x$ptr, ...)
-  new_mlx(ptr, device)
+  new_mlx(ptr)
 }
 
 #' Internal constructor for mlx objects
 #'
 #' @param ptr External pointer to MLX array
-#' @param device Device
 #' @keywords internal
 #' @noRd
-new_mlx <- function(ptr, device) {
-  ptr <- cpp_mlx_with_device(ptr, device)
+new_mlx <- function(ptr) {
   structure(
     list(
       ptr = ptr

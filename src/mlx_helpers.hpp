@@ -100,9 +100,9 @@ inline std::vector<int> normalize_new_axes(const array& arr, const std::vector<i
   return normalized;
 }
 
-inline List wrap_array_as_mlx(const array& arr, const std::string& device_hint) {
+inline List wrap_array_as_mlx(const array& arr) {
   array copy = arr;
-  Shield<SEXP> ptr(make_mlx_xptr(std::move(copy), device_hint));
+  Shield<SEXP> ptr(make_mlx_xptr(std::move(copy)));
 
   List obj = List::create(
       Named("ptr") = static_cast<SEXP>(ptr));
