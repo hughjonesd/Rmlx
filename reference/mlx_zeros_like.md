@@ -3,12 +3,12 @@
 `mlx_zeros_like()` mirrors
 [`mlx.core.zeros_like()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like):
 it creates a zero-filled array matching the source array's shape.
-Optionally override the dtype or device.
+Optionally override the dtype or dtype.
 
 ## Usage
 
 ``` r
-mlx_zeros_like(x, dtype = NULL, device = NULL)
+mlx_zeros_like(x, dtype = NULL)
 ```
 
 ## Arguments
@@ -28,23 +28,20 @@ mlx_zeros_like(x, dtype = NULL, device = NULL)
 
   - Other: `"bool"`, `"complex64"`
 
-  `float64` arrays are CPU-only. Use `device = "cpu"` when creating or
-  casting to `float64`, and cast back to `float32` before using the GPU.
   Not all functions support all types. See individual function
   documentation.
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 
 An mlx array of zeros matching `x`.
+
+## Details
+
+MLX does not support `float64` operations on GPU. When this function
+creates a `float64` array or converts one back to R, Rmlx temporarily
+switches only that internal creation or layout work to CPU. Later
+operations on the returned array still use the current
+[`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md).
 
 ## See also
 
@@ -57,7 +54,6 @@ base <- mlx_ones(c(2, 2))
 mlx_zeros_like(base)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    0    0

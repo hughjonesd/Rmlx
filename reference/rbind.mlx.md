@@ -45,7 +45,6 @@ y <- mlx_matrix(5:8, 2, 2)
 rbind(x, y)
 #> mlx array [4 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    1    3

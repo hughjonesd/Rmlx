@@ -1,28 +1,40 @@
-# Get device associated with an MLX object
+# Get or set current MLX device
 
-Get device associated with an MLX object
+Get or set current MLX device
 
 ## Usage
 
 ``` r
-mlx_device(x)
+mlx_device(value)
 ```
 
 ## Arguments
 
-- x:
+- value:
 
-  An mlx array, or an R array/matrix/vector that will be converted via
-  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
+  New current device ("gpu" or "cpu"). If missing, returns the current
+  device.
 
 ## Value
 
-`"gpu"` or `"cpu"`.
+Current device (character).
+
+## See also
+
+[mlx.core.default_device](https://ml-explore.github.io/mlx/build/html/python/metal.html)
 
 ## Examples
 
 ``` r
-x <- as_mlx(1:10)
-mlx_device(x)
+mlx_device()  # Get current device
+#> [1] "gpu"
+mlx_device("cpu")  # Set to CPU
+#> [1] "cpu"
+if (mlx_has_gpu()) {
+  mlx_device("gpu")  # Set back to GPU
+  mlx_device()
+}
+#> [1] "gpu"
+mlx_device("cpu")
 #> [1] "cpu"
 ```

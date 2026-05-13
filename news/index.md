@@ -1,9 +1,22 @@
 # Changelog
 
-## Rmlx (development version)
+## Rmlx 0.3.0
 
 - We now allow float64 arrays. (Note that mlx doesn’t yet do operations
   on the gpu for these, however.)
+- Breaking change: arrays no longer have an associated device. Instead,
+  use
+  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md),
+  [`with_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md)
+  or
+  [`local_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md)
+  to choose a device to work on. This also makes irrelevant a bug in
+  which many/most operations were silently ignoring their operands’
+  `device`.
+- Operations which are currently cpu-only used to switch silently to
+  cpu. They now take a `device` argument which must be explicitly set to
+  `"cpu"`. This is a teaching tool to help the user understand what
+  operations can take place on which device.
 - [`rbind()`](https://rdrr.io/r/base/cbind.html) and
   [`cbind()`](https://rdrr.io/r/base/cbind.html) now accept 1D vectors.
 - Bugfix:

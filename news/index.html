@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,8 +34,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="rmlx-development-version">Rmlx (development version)<a class="anchor" aria-label="anchor" href="#rmlx-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="rmlx-030">Rmlx 0.3.0<a class="anchor" aria-label="anchor" href="#rmlx-030"></a></h2>
 <ul><li>We now allow float64 arrays. (Note that mlx doesn’t yet do operations on the gpu for these, however.)</li>
+<li>Breaking change: arrays no longer have an associated device. Instead, use <code><a href="../reference/mlx_device.html">mlx_device()</a></code>, <code><a href="../reference/with_device.html">with_device()</a></code> or <code><a href="../reference/with_device.html">local_device()</a></code> to choose a device to work on. This also makes irrelevant a bug in which many/most operations were silently ignoring their operands’ <code>device</code>.</li>
+<li>Operations which are currently cpu-only used to switch silently to cpu. They now take a <code>device</code> argument which must be explicitly set to <code>"cpu"</code>. This is a teaching tool to help the user understand what operations can take place on which device.</li>
 <li>
 <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind()</a></code> and <code><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind()</a></code> now accept 1D vectors.</li>
 <li>Bugfix: <code><a href="../reference/mlx_expand_dims.html">mlx_expand_dims()</a></code> works with 1D vectors.</li>

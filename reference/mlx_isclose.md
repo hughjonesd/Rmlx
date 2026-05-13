@@ -6,7 +6,7 @@ close within specified tolerances.
 ## Usage
 
 ``` r
-mlx_isclose(a, b, rtol = 1e-05, atol = 1e-08, equal_nan = FALSE, device = NULL)
+mlx_isclose(a, b, rtol = 1e-05, atol = 1e-08, equal_nan = FALSE)
 ```
 
 ## Arguments
@@ -26,15 +26,6 @@ mlx_isclose(a, b, rtol = 1e-05, atol = 1e-08, equal_nan = FALSE, device = NULL)
 - equal_nan:
 
   If `TRUE`, NaN values are considered equal (default: `FALSE`)
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 
@@ -62,7 +53,6 @@ b <- as_mlx(c(1.0 + 1e-6, 2.0 + 1e-6, 3.0 + 1e-3))
 mlx_isclose(a, b)  # First two TRUE, last FALSE
 #> mlx array [3]
 #>   dtype: bool
-#>   device: cpu
 #>   values:
 #> [1]  TRUE  TRUE FALSE
 ```

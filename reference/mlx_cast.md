@@ -1,12 +1,12 @@
 # Cast an mlx array
 
-`mlx_cast()` converts an mlx array to a different dtype and/or device
-without changing its shape.
+`mlx_cast()` converts an mlx array to a different dtype without changing
+its shape.
 
 ## Usage
 
 ``` r
-mlx_cast(x, dtype = NULL, device = mlx_device(x))
+mlx_cast(x, dtype = NULL)
 ```
 
 ## Arguments
@@ -19,18 +19,13 @@ mlx_cast(x, dtype = NULL, device = mlx_device(x))
 
   Target dtype string. Defaults to the array's current dtype.
 
-- device:
-
-  Target device string. Defaults to the array's current device.
-
 ## Value
 
-An mlx array with the requested dtype and device.
+An mlx array with the requested dtype.
 
 ## See also
 
-[`mlx_dtype()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dtype.md),
-[`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+[`mlx_dtype()`](https://hughjonesd.github.io/Rmlx/reference/mlx_dtype.md)
 
 ## Examples
 
@@ -39,7 +34,6 @@ x <- mlx_vector(1:3, dtype = "int32")
 mlx_cast(x, dtype = "float32")
 #> mlx array [3]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 1 2 3
 ```

@@ -47,7 +47,6 @@ x <- mlx_matrix(1:9, 3, 3)
 mlx_gather(x, list(1:2, 1:2))
 #> mlx array [2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 1 5
 
@@ -61,7 +60,6 @@ col_idx <- matrix(c(1, 3,
 mlx_gather(x, list(row_idx, col_idx))
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    1    7

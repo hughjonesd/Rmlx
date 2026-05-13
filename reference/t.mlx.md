@@ -30,7 +30,6 @@ x <- mlx_matrix(1:6, 2, 3)
 t(x)
 #> mlx array [3 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    1    2

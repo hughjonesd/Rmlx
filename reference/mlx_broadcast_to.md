@@ -7,7 +7,7 @@ repeating singleton dimensions without copying data.
 ## Usage
 
 ``` r
-mlx_broadcast_to(x, shape, device = NULL)
+mlx_broadcast_to(x, shape)
 ```
 
 ## Arguments
@@ -19,15 +19,6 @@ mlx_broadcast_to(x, shape, device = NULL)
 - shape:
 
   Integer vector describing the broadcasted shape.
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 

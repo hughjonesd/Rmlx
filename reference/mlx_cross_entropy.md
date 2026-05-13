@@ -39,7 +39,6 @@ targets <- as_mlx(c(1, 3, 2))
 mlx_cross_entropy(logits, targets)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 2.319621
 ```

@@ -39,19 +39,17 @@ mlx_rand_multivariate_normal(
 
   - Other: `"bool"`, `"complex64"`
 
-  `float64` arrays are CPU-only. Use `device = "cpu"` when creating or
-  casting to `float64`, and cast back to `float32` before using the GPU.
   Not all functions support all types. See individual function
   documentation.
 
 - device:
 
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
+  Execution target for APIs that expose a one-off device or stream
+  override. Supply `"gpu"`, `"cpu"`, or an `mlx_stream` created via
   [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
+  Ordinary array operations use the current
   [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
+  instead.
 
 ## Value
 
@@ -69,7 +67,7 @@ factorisation runs on the host.
 ## Examples
 
 ``` r
-mean <- as_mlx(c(0, 0), device = "cpu")
-cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2), device = "cpu")
-samples <- mlx_rand_multivariate_normal(10, mean, cov, device = "cpu")
+mean <- as_mlx(c(0, 0))
+cov <- as_mlx(matrix(c(1, 0, 0, 1), 2, 2))
+samples <- with_device("cpu", mlx_rand_multivariate_normal(10, mean, cov))
 ```

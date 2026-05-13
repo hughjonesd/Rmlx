@@ -30,7 +30,7 @@ library(Rmlx)
 #>     outer, row, rowMeans, rowSums, svd
 
 # should work on cpu only
-mlx_default_device(mlx_best_device())
+mlx_device(mlx_best_device())
 #> [1] "gpu"
 
 # Problem metadata
@@ -112,7 +112,7 @@ each iteration, we:
 ``` r
 
 w_sgd <- train_sgd()
-#> Iteration 1000 - Loss: 0.500561
+#> Iteration 1000 - Loss: 0.4928489
 ```
 
 ## Method 2: Closed-form Regression via Matrix Algebra
@@ -139,7 +139,7 @@ mlx_eval(w_closed)
 closed_error <- w_closed - w_star
 closed_error_norm <- sqrt(sum(closed_error * closed_error))
 cat("Closed-form ||w - w*|| =", as.vector(closed_error_norm), "\n")
-#> Closed-form ||w - w*|| = 0.1053591
+#> Closed-form ||w - w*|| = 0.09398162
 ```
 
 ## Accelerating the Closed-form Solution with `mlx_compile()`
@@ -164,7 +164,7 @@ mlx_eval(w_compiled)
 compiled_error <- w_compiled - w_star
 compiled_error_norm <- sqrt(sum(compiled_error * compiled_error))
 cat("Compiled closed-form ||w - w*|| =", as.vector(compiled_error_norm), "\n")
-#> Compiled closed-form ||w - w*|| = 0.1053591
+#> Compiled closed-form ||w - w*|| = 0.09398162
 ```
 
 ## Accuracy and Performance Comparison
@@ -233,10 +233,10 @@ knitr::kable(results, digits = 4)
 
 | method                     | median_time | parameter_error |
 |:---------------------------|------------:|----------------:|
-| SGD                        |          3s |          0.1054 |
-| MLX closed form            |      43.6ms |          0.1054 |
-| MLX closed form (compiled) |      39.4ms |          0.1054 |
-| Base R                     |      89.9ms |          0.1054 |
+| SGD                        |       2.26s |           0.094 |
+| MLX closed form            |     23.25ms |           0.094 |
+| MLX closed form (compiled) |     18.57ms |           0.094 |
+| Base R                     |     90.79ms |           0.094 |
 
 ## Device Selection
 
@@ -246,9 +246,9 @@ if needed:
 ``` r
 
 # Use CPU (useful for debugging)
-mlx_default_device("cpu")
+mlx_device("cpu")
 
-with_default_device("cpu", {
+with_device("cpu", {
   ...
 })
 ```

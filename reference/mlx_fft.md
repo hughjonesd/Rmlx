@@ -8,11 +8,11 @@ results are returned as `mlx` arrays.
 ## Usage
 
 ``` r
-mlx_fft(x, axis, inverse = FALSE, device = NULL)
+mlx_fft(x, axis, inverse = FALSE)
 
-mlx_fft2(x, axes, inverse = FALSE, device = NULL)
+mlx_fft2(x, axes, inverse = FALSE)
 
-mlx_fftn(x, axes = NULL, inverse = FALSE, device = NULL)
+mlx_fftn(x, axes = NULL, inverse = FALSE)
 ```
 
 ## Arguments
@@ -33,15 +33,6 @@ mlx_fftn(x, axes = NULL, inverse = FALSE, device = NULL)
   [`fft()`](https://hughjonesd.github.io/Rmlx/reference/fft.md), i.e.
   results are multiplied by the product of the transformed axis lengths.
 
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
-
 - axes:
 
   Optional integer vector of axes for the multi-dimensional transforms.
@@ -52,13 +43,6 @@ mlx_fftn(x, axes = NULL, inverse = FALSE, device = NULL)
 ## Value
 
 An `mlx` array containing complex frequency coefficients.
-
-## Details
-
-When `device` is `NULL`, the transform runs on the input array's device,
-falling back to
-[`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
-only when coercing non-mlx inputs.
 
 ## See also
 
@@ -72,20 +56,17 @@ x <- as_mlx(c(1, 2, 3, 4))
 mlx_fft(x)
 #> mlx array [4]
 #>   dtype: complex64
-#>   device: cpu
 #>   values:
 #> [1] 10+0i -2+2i -2+0i -2-2i
 mlx_fft(x, inverse = TRUE)
 #> mlx array [4]
 #>   dtype: complex64
-#>   device: cpu
 #>   values:
 #> [1] 10+0i -2-2i -2+0i -2+2i
 mat <- matrix(1:9, 3, 3)
 mlx_fft2(as_mlx(mat))
 #> mlx array [3 x 3]
 #>   dtype: complex64
-#>   device: cpu
 #>   values:
 #>                [,1]            [,2]            [,3]
 #> [1,] 45.0+0.000000i -13.5+7.794229i -13.5-7.794229i
@@ -95,6 +76,5 @@ arr <- mlx_array(1:8, dim = c(2, 2, 2))
 mlx_fftn(arr)
 #> mlx array [2 x 2 x 2]
 #>   dtype: complex64
-#>   device: cpu
 #>   (8 elements, not shown)
 ```

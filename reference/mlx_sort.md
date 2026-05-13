@@ -55,7 +55,6 @@ x <- as_mlx(c(3, 1, 4, 2))
 mlx_sort(x)
 #> mlx array [4]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 1 2 3 4
 
@@ -75,7 +74,6 @@ original[sorted_idx]  # [1] 1 2 3 4
 mlx_sort(mlx_matrix(1:6, 2, 3), axis = 1)
 #> mlx array [2 x 3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1    3    5

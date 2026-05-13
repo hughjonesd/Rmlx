@@ -42,14 +42,12 @@ x <- as_mlx(1:4)
 mlx_logcumsumexp(x)
 #> mlx array [4]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 1.000000 2.313262 3.407606 4.440190
 m <- mlx_matrix(1:6, 2, 3)
 mlx_logcumsumexp(m, axis = 2)
 #> mlx array [2 x 3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1]     [,2]     [,3]
 #> [1,]    1 3.126928 5.142931

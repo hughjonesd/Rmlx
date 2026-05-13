@@ -68,7 +68,6 @@ w <- mlx_matrix(0, 2, 1)
 mlx_grad(loss, w, x, y)[[1]]
 #> mlx array [2 x 1]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>       [,1]
 #> [1,] -14.5
@@ -80,7 +79,6 @@ mlx_value_grad(loss, w, x)
 #> $value
 #> mlx array []
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 8
 #> 
@@ -88,7 +86,6 @@ mlx_value_grad(loss, w, x)
 #> $grads[[1]]
 #> mlx array [2 x 1]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1]
 #> [1,]  -12
@@ -97,7 +94,6 @@ mlx_value_grad(loss, w, x)
 #> $grads[[2]]
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]   -4    4

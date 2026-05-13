@@ -16,12 +16,12 @@ mlx_lu(x, device = NULL)
 
 - device:
 
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
+  Execution target for APIs that expose a one-off device or stream
+  override. Supply `"gpu"`, `"cpu"`, or an `mlx_stream` created via
   [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
+  Ordinary array operations use the current
   [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
+  instead.
 
 ## Value
 
@@ -30,10 +30,11 @@ A list with components `p` (pivot indices), `l` (lower triangular), and
 
 ## Details
 
-As of MLX 0.31.1, this operation only runs on CPU. Create or cast the
-operands with `device = "cpu"` explicitly, or pass a `device = "cpu"`
-argument. (Passing the argument won't affect the device of any mlx
-object returned, just where this particular operation is run.)
+As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+[`with_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md)
+or
+[`local_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md),
+or pass `device = "cpu"`.
 
 ## See also
 
@@ -42,8 +43,8 @@ object returned, just where this particular operation is run.)
 ## Examples
 
 ``` r
-A <- mlx_matrix(rnorm(16), 4, 4, device = "cpu")
-lu_result <- mlx_lu(A)
+A <- mlx_matrix(rnorm(16), 4, 4)
+lu_result <- mlx_lu(A, device = "cpu")
 P <- lu_result$p  # Pivot indices
 L <- lu_result$l  # Lower triangular
 U <- lu_result$u  # Upper triangular

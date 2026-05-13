@@ -11,8 +11,7 @@ mlx_conv3d(
   stride = c(1L, 1L, 1L),
   padding = c(0L, 0L, 0L),
   dilation = c(1L, 1L, 1L),
-  groups = 1L,
-  device = NULL
+  groups = 1L
 )
 ```
 
@@ -48,15 +47,6 @@ mlx_conv3d(
 
   Number of blocked connections from input to output channels. Default:
   1.
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 

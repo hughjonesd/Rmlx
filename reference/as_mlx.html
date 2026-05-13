@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,8 +43,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_mlx</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  dtype <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"float32"</span>, <span class="st">"float64"</span>, <span class="st">"bool"</span>, <span class="st">"complex64"</span>, <span class="st">"int8"</span>, <span class="st">"int16"</span>, <span class="st">"int32"</span>, <span class="st">"int64"</span>,</span>
-<span>    <span class="st">"uint8"</span>, <span class="st">"uint16"</span>, <span class="st">"uint32"</span>, <span class="st">"uint64"</span><span class="op">)</span>,</span>
-<span>  device <span class="op">=</span> <span class="fu"><a href="mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="st">"uint8"</span>, <span class="st">"uint16"</span>, <span class="st">"uint32"</span>, <span class="st">"uint64"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -64,12 +63,6 @@
 </ul><p>If not specified, defaults to <code>"float32"</code> for numeric, <code>"bool"</code> for logical,
 and <code>"complex64"</code> for complex inputs.</p></dd>
 
-
-<dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. By default, many
-functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of their first argument.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -86,8 +79,8 @@ To create integer MLX arrays, you must explicitly specify <code>dtype</code>:</p
 <div class="section">
 <h3 id="type-precision">Type precision<a class="anchor" aria-label="anchor" href="#type-precision"></a></h3>
 
-<ul><li><p><code>float64</code> is supported on CPU only; use <code>device = "cpu"</code> explicitly.
-Cast GPU arrays to <code>float64</code> with <code>mlx_cast(x, dtype = "float64", device = "cpu")</code>, and cast back to <code>float32</code> before returning to GPU.</p></li>
+<ul><li><p><code>float64</code> is supported on CPU only. Use <code><a href="with_device.html">with_device()</a></code> or <code><a href="with_device.html">local_device()</a></code>
+to run float64 work on CPU.</p></li>
 <li><p>Integer arithmetic may promote types (e.g., int32 + int32 might → int64)</p></li>
 <li><p>Mixed integer/float operations promote to float</p></li>
 </ul></div>
@@ -112,6 +105,13 @@ are not usually what R users want. <code>as_mlx()</code> never returns a scalar;
 use <code>[mlx_array(..., allow_scalar = TRUE)][mlx_array()]</code>.</p>
 </div>
 
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>MLX does not support <code>float64</code> operations on GPU. When this function
+creates a <code>float64</code> array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current <code><a href="mlx_device.html">mlx_device()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

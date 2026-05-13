@@ -49,7 +49,6 @@ x <- mlx_matrix(1:6, 3, 2)
 colSums(x)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1]  6 15
 ```

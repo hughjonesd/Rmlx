@@ -72,13 +72,11 @@ scores <- as_mlx(c(0.7, 0.2, 0.9, 0.4))
 mlx_topk(scores, k = 2)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 0.7 0.9
 mlx_partition(scores, kth = 1)
 #> mlx array [4]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 0.2 0.4 0.7 0.9
 
@@ -91,7 +89,6 @@ as.integer(as.matrix(idx))  # 1-based indices
 mlx_topk(mlx_matrix(1:6, 2, 3), k = 1, axis = 1)
 #> mlx array [1 x 3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    2    4    6

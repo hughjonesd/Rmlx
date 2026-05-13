@@ -25,6 +25,14 @@ as.array(x, ...)
 
 An R array with the same shape as the MLX input.
 
+## Details
+
+MLX does not support `float64` operations on GPU. When this function
+creates a `float64` array or converts one back to R, Rmlx temporarily
+switches only that internal creation or layout work to CPU. Later
+operations on the returned array still use the current
+[`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md).
+
 ## See also
 
 [`as_r()`](https://hughjonesd.github.io/Rmlx/reference/as_r.md),

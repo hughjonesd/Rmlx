@@ -21,6 +21,15 @@ mlx_cholesky_inv(x, upper = FALSE, device = NULL)
   Logical; if `TRUE`, `x` is upper triangular, otherwise lower
   triangular.
 
+- device:
+
+  Execution target for APIs that expose a one-off device or stream
+  override. Supply `"gpu"`, `"cpu"`, or an `mlx_stream` created via
+  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
+  Ordinary array operations use the current
+  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  instead.
+
 ## Value
 
 The inverse of the original matrix (A^-1 where A = LL' or A = U'U).
@@ -44,10 +53,9 @@ A <- t(A) %*% A
 # Compute Cholesky factor
 L <- chol(A, pivot = FALSE, upper = FALSE)
 # Get inverse from Cholesky factor
-mlx_cholesky_inv(as_mlx(L, device = "cpu"))
+mlx_cholesky_inv(as_mlx(L), device = "cpu")
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>           [,1]     [,2]     [,3]
 #> [1,] 0.1525249 0.000000 0.000000

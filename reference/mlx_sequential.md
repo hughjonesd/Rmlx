@@ -31,7 +31,6 @@ input <- as_mlx(matrix(c(1, 2), 1, 2))
 mlx_forward(net, input)
 #> mlx array [1 x 1]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>          [,1]
 #> [1,] 1.419647

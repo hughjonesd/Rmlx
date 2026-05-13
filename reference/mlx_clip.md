@@ -34,7 +34,6 @@ x <- as_mlx(rnorm(4))
 mlx_clip(x, min = -1, max = 1)
 #> mlx array [4]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1]  0.78213632  0.07456499 -1.00000000  0.61982572
 ```

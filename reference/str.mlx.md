@@ -28,5 +28,5 @@ str(object, ...)
 ``` r
 x <- mlx_matrix(1:4, 2, 2)
 str(x)
-#> mlx [2 x 2] float32 on cpu
+#> mlx [2 x 2] float32
 ```

@@ -5,7 +5,7 @@ Maps discrete tokens to continuous vectors.
 ## Usage
 
 ``` r
-mlx_embedding(num_embeddings, embedding_dim, device = mlx_default_device())
+mlx_embedding(num_embeddings, embedding_dim)
 ```
 
 ## Arguments
@@ -17,15 +17,6 @@ mlx_embedding(num_embeddings, embedding_dim, device = mlx_default_device())
 - embedding_dim:
 
   Dimension of embedding vectors.
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 
@@ -45,6 +36,5 @@ tokens <- as_mlx(matrix(c(5, 10, 3, 7), 2, 2))
 mlx_forward(emb, tokens)
 #> mlx array [2 x 2 x 16]
 #>   dtype: float32
-#>   device: cpu
 #>   (64 elements, not shown)
 ```

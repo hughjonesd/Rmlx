@@ -52,7 +52,6 @@ v <- as_mlx(1:10)
 print(v)
 #> mlx array [10]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>  [1]  1  2  3  4  5  6  7  8  9 10
 
@@ -62,15 +61,37 @@ x <- as_mlx(m)
 print(x)
 #> mlx array [3 x 4]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>      [,1] [,2] [,3] [,4]
 #> [1,]    1    4    7   10
 #> [2,]    2    5    8   11
 #> [3,]    3    6    9   12
+```
 
-# Specify the device explicitly (uses GPU if available, CPU otherwise)
-x_dev <- as_mlx(m, device = device)
+Or use
+[`mlx_vector()`](https://hughjonesd.github.io/Rmlx/reference/mlx_vector.md),
+[`mlx_matrix()`](https://hughjonesd.github.io/Rmlx/reference/mlx_matrix.md)
+or
+[`mlx_array()`](https://hughjonesd.github.io/Rmlx/reference/mlx_array.md):
+
+``` r
+
+# like as_mlx(1:10) but more explicit
+mlx_vector(1:10)
+#> mlx array [10]
+#>   dtype: float32
+#>   values:
+#>  [1]  1  2  3  4  5  6  7  8  9 10
+
+# From a matrix
+mlx_matrix(1:12, 3, 4)
+#> mlx array [3 x 4]
+#>   dtype: float32
+#>   values:
+#>      [,1] [,2] [,3] [,4]
+#> [1,]    1    4    7   10
+#> [2,]    2    5    8   11
+#> [3,]    3    6    9   12
 ```
 
 > **Precision note:** Numeric inputs use single precision (`float32`) by
@@ -88,9 +109,11 @@ computed until needed:
 
 ``` r
 
+
+x <- mlx_matrix(1:100, 10, 10)
+y <- mlx_matrix(101:200, 10, 10)
+
 # These operations are not computed immediately
-x <- as_mlx(matrix(1:100, 10, 10))
-y <- as_mlx(matrix(101:200, 10, 10))
 z <- x + y * 2
 
 # Force evaluation of a specific array
@@ -164,7 +187,6 @@ x_t <- t(x)
 print(x_t)
 #> mlx array [4 x 3]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1    2    3
@@ -261,13 +283,11 @@ x <- as_mlx(matrix(1:100, 10, 10))
 sum(x)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 5050
 mean(x)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 50.5
 
@@ -275,13 +295,11 @@ mean(x)
 colMeans(x)
 #> mlx array [10]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>  [1]  5.5 15.5 25.5 35.5 45.5 55.5 65.5 75.5 85.5 95.5
 rowMeans(x)
 #> mlx array [10]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>  [1] 46 47 48 49 50 51 52 53 54 55
 
@@ -317,7 +335,7 @@ Subset MLX arrays similar to R:
 
 ``` r
 
-x <- as_mlx(matrix(1:100, 10, 10))
+x <- mlx_matrix(1:100, 10, 10)
 
 # Select rows and columns
 x_sub <- x[1:5, 1:5]
@@ -336,18 +354,24 @@ Control whether computations run on GPU or CPU:
 ``` r
 
 # Check default device
-mlx_default_device()
+mlx_device()
 #> [1] "gpu"
 
-# Set to CPU for debugging
-mlx_default_device("cpu")
-#> [1] "cpu"
+a <- b <- mlx_matrix(1:4, 2, 2)
 
-# Create array on CPU
-x_cpu <- as_mlx(matrix(1:12, 3, 4), device = "cpu")
+# Run an operation on the CPU
+mlx_device("cpu")
+#> [1] "cpu"
+a %*% b
+#> mlx array [2 x 2]
+#>   dtype: float32
+#>   values:
+#>      [,1] [,2]
+#> [1,]    7   15
+#> [2,]   10   22
 
 # Set back to best available device
-mlx_default_device(device)
+mlx_device(device)
 #> [1] "gpu"
 ```
 
@@ -373,34 +397,14 @@ x1 <- as_mlx(m1)
 x2 <- as_mlx(m2)
 mlx_eval(x1)
 mlx_eval(x2)
-t2 <- system.time({
-  mlx_result <- x1 %*% x2
-  mlx_eval(mlx_result)
-  final <- as.matrix(mlx_result)
-})
+t2 <- system.time(
+  as.matrix(x1 %*% x2)
+)
 
 cat("Base R:", t1["elapsed"], "seconds\n")
-#> Base R: 0.369 seconds
+#> Base R: 0.368 seconds
 cat("MLX:", t2["elapsed"], "seconds\n")
-#> MLX: 0.017 seconds
+#> MLX: 0.021 seconds
 ```
 
-Note: This is an informal comparison, not a rigorous benchmark.
-Performance gains depend on array size, operation type, and hardware.
-
-## Best Practices
-
-1.  **Keep data on GPU**: Minimize transfers between R and MLX
-2.  **Use lazy evaluation**: Build computation graphs before evaluating
-3.  **Batch operations**: Combine operations before forcing evaluation
-4.  **Monitor memory**: GPU memory is limited; free unused arrays
-5.  **Start with CPU**: Use CPU device for debugging, then switch to GPU
-
-## Limitations
-
-Current limitations in this initial version:
-
-- Apple Silicon only (no Intel Mac or other platforms)
-- 2D arrays (matrices) are primary focus
-- Limited indexing operations
-- No autodiff or gradient computation (planned for future release)
+For more information see the Benchmarks vignette.

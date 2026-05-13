@@ -8,8 +8,7 @@ Create MLX array from R object
 as_mlx(
   x,
   dtype = c("float32", "float64", "bool", "complex64", "int8", "int16", "int32", "int64",
-    "uint8", "uint16", "uint32", "uint64"),
-  device = mlx_default_device()
+    "uint8", "uint16", "uint32", "uint64")
 )
 ```
 
@@ -34,15 +33,6 @@ as_mlx(
   If not specified, defaults to `"float32"` for numeric, `"bool"` for
   logical, and `"complex64"` for complex inputs.
 
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
-
 ## Value
 
 An object of class `mlx`
@@ -57,10 +47,11 @@ create integer MLX arrays, you must explicitly specify `dtype`:
 
 ### Type precision
 
-- `float64` is supported on CPU only; use `device = "cpu"` explicitly.
-  Cast GPU arrays to `float64` with
-  `mlx_cast(x, dtype = "float64", device = "cpu")`, and cast back to
-  `float32` before returning to GPU.
+- `float64` is supported on CPU only. Use
+  [`with_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md)
+  or
+  [`local_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md)
+  to run float64 work on CPU.
 
 - Integer arithmetic may promote types (e.g., int32 + int32 might →
   int64)
@@ -81,6 +72,14 @@ MLX allows scalar values, with a zero-length dimension (`integer(0)`).
 These are not usually what R users want. `as_mlx()` never returns a
 scalar; call `[mlx_reshape(x, integer(0))][mlx_reshape()]` to create one
 explicitly, or use `[mlx_array(..., allow_scalar = TRUE)][mlx_array()]`.
+
+## Details
+
+MLX does not support `float64` operations on GPU. When this function
+creates a `float64` array or converts one back to R, Rmlx temporarily
+switches only that internal creation or layout work to CPU. Later
+operations on the returned array still use the current
+[`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md).
 
 ## See also
 

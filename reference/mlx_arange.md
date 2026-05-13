@@ -13,8 +13,7 @@ mlx_arange(
   stop,
   step = 1,
   dtype = c("float32", "float64", "int8", "int16", "int32", "int64", "uint8", "uint16",
-    "uint32", "uint64"),
-  device = mlx_default_device()
+    "uint32", "uint64")
 )
 ```
 
@@ -43,23 +42,20 @@ mlx_arange(
 
   - Other: `"bool"`, `"complex64"`
 
-  `float64` arrays are CPU-only. Use `device = "cpu"` when creating or
-  casting to `float64`, and cast back to `float32` before using the GPU.
   Not all functions support all types. See individual function
   documentation.
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 
 A 1D mlx array.
+
+## Details
+
+MLX does not support `float64` operations on GPU. When this function
+creates a `float64` array or converts one back to R, Rmlx temporarily
+switches only that internal creation or layout work to CPU. Later
+operations on the returned array still use the current
+[`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md).
 
 ## Difference from Python/C++
 
@@ -83,25 +79,21 @@ which also follow R conventions.
 mlx_arange(0, 4)        # 0, 1, 2, 3, 4
 #> mlx array [5]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 0 1 2 3 4
 mlx_arange(1, 5)        # 1, 2, 3, 4, 5
 #> mlx array [5]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 1 2 3 4 5
 mlx_arange(1, 9, 2)     # 1, 3, 5, 7, 9
 #> mlx array [5]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 1 3 5 7 9
 mlx_arange(1, 6, 2)     # 1, 3, 5 (6 not reachable)
 #> mlx array [3]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 1 3 5
 ```

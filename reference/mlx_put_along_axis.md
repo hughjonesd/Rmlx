@@ -46,7 +46,6 @@ values <- matrix(c(100, 200,
 mlx_put_along_axis(x, idx, values, axis = 2L)
 #> mlx array [3 x 4]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3] [,4]
 #> [1,]  100    4    7  200

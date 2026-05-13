@@ -49,7 +49,6 @@ x <- mlx_matrix(1:6, 3, 2)
 colMeans(x)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 2 5
 ```

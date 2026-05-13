@@ -5,7 +5,7 @@ Generate raw random bits on MLX arrays
 ## Usage
 
 ``` r
-mlx_key_bits(dim, width = 4L, key = NULL, device = mlx_default_device())
+mlx_key_bits(dim, width = 4L, key = NULL)
 ```
 
 ## Arguments
@@ -21,15 +21,6 @@ mlx_key_bits(dim, width = 4L, key = NULL, device = mlx_default_device())
 - key:
 
   Optional `mlx` key array. If omitted, MLX's default generator is used.
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 

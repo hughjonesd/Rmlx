@@ -39,7 +39,6 @@ x <- mlx_matrix(1:6, 2, 3)
 crossprod(x)
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    5   11   17

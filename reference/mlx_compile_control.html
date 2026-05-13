@@ -21,7 +21,7 @@ MLX_DISABLE_COMPILE environment variable).
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,26 +86,24 @@ environment variable before loading the package.</p>
 <span class="r-in"><span><span class="fu">demo_fn</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>  <span class="co"># Runs without optimization</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4 x 4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]       [,2]       [,3]      [,4]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.3836465 1.71735191  1.5605609 1.6003039</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1.5279211 0.09221715  1.8047714 1.5233958</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.6830271 0.27678919 -0.2305609 1.1041986</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 1.2423619 1.81426215  0.4005625 0.9181083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]      [,2]      [,3]      [,4]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.0885874 0.7768625 0.9621620 2.3668942</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  1.2404819 0.5184271 2.4920807 0.8550780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.2689133 0.3263482 1.4498489 0.1389729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -0.4080561 1.2234949 0.8776785 2.3516393</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Re-enable compilation</span></span></span>
 <span class="r-in"><span><span class="fu">mlx_enable_compile</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">demo_fn</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>  <span class="co"># Runs with optimization</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4 x 4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: gpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]       [,2]       [,3]      [,4]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 1.3836465 1.71735191  1.5605609 1.6003039</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 1.5279211 0.09221715  1.8047714 1.5233958</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.6830271 0.27678919 -0.2305609 1.1041986</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] 1.2423619 1.81426215  0.4005625 0.9181083</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]      [,2]      [,3]      [,4]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]  1.0885874 0.7768625 0.9621620 2.3668942</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  1.2404819 0.5184271 2.4920807 0.8550780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.2689133 0.3263482 1.4498489 0.1389729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [4,] -0.4080561 1.2234949 0.8776785 2.3516393</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

@@ -41,7 +41,6 @@ sm <- mlx_softmax(x, axes = 2)
 rowSums(sm)
 #> mlx array [2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 1 1
 ```

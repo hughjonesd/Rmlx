@@ -56,7 +56,6 @@ x <- as_mlx(1:5)
 mlx_cumsum(x)  # [1, 3, 6, 10, 15]
 #> mlx array [5]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1]  1  3  6 10 15
 
@@ -64,7 +63,6 @@ mat <- mlx_matrix(1:12, 3, 4)
 mlx_cumsum(mat, axis = 1)  # cumsum down rows
 #> mlx array [3 x 4]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>      [,1] [,2] [,3] [,4]
 #> [1,]    1    4    7   10

@@ -31,7 +31,6 @@ x <- mlx_matrix(1:6, 2, 3)
 mlx_forward(act, x)
 #> mlx array [2 x 3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>            [,1]      [,2]      [,3]
 #> [1,] 0.01587624 0.1173104 0.8668134

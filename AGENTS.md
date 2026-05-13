@@ -191,5 +191,4 @@
 - **Lazy evaluation**: computations build a graph; force with
   [`mlx_eval()`](https://hughjonesd.github.io/Rmlx/reference/mlx_eval.md)
   or [`as.matrix()`](https://rdrr.io/r/base/matrix.html). GPU is default
-  device; switch via
-  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md).
+  device; switch via `mlx_default_device()`.

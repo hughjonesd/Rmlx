@@ -39,13 +39,11 @@ x <- mlx_matrix(1:9, 3, 3)
 mlx_trace(x)
 #> mlx array []
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 15
 mlx_trace(x, offset = 1)
 #> mlx array []
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 12
 ```

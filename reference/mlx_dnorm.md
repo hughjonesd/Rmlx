@@ -7,11 +7,11 @@ MLX.
 ## Usage
 
 ``` r
-mlx_dnorm(x, mean = 0, sd = 1, log = FALSE, device = mlx_default_device())
+mlx_dnorm(x, mean = 0, sd = 1, log = FALSE)
 
-mlx_pnorm(x, mean = 0, sd = 1, device = mlx_default_device())
+mlx_pnorm(x, mean = 0, sd = 1)
 
-mlx_qnorm(p, mean = 0, sd = 1, device = mlx_default_device())
+mlx_qnorm(p, mean = 0, sd = 1)
 ```
 
 ## Arguments
@@ -31,15 +31,6 @@ mlx_qnorm(p, mean = 0, sd = 1, device = mlx_default_device())
 - log:
 
   If `TRUE`, return log density for `mlx_dnorm` (default: `FALSE`)
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 - p:
 
@@ -63,7 +54,6 @@ x <- as_mlx(seq(-3, 3, by = 0.5))
 mlx_dnorm(x)
 #> mlx array [13]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>  [1] 0.004431848 0.017528297 0.053990964 0.129517585 0.241970733 0.352065325
 #>  [7] 0.398942322 0.352065325 0.241970733 0.129517585 0.053990964 0.017528297
@@ -71,7 +61,6 @@ mlx_dnorm(x)
 mlx_pnorm(x)
 #> mlx array [13]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>  [1] 0.001349956 0.006209671 0.022750080 0.066807210 0.158655226 0.308537483
 #>  [7] 0.500000000 0.691462517 0.841344714 0.933192790 0.977249920 0.993790329
@@ -81,7 +70,6 @@ p <- as_mlx(c(0.025, 0.5, 0.975))
 mlx_qnorm(p)
 #> mlx array [3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] -1.959964  0.000000  1.959964
 ```

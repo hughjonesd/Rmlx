@@ -49,7 +49,6 @@ x <- mlx_matrix(1:6, 3, 2)
 rowSums(x)
 #> mlx array [3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 5 7 9
 ```

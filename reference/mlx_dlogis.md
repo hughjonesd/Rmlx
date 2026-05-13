@@ -7,17 +7,11 @@ using MLX.
 ## Usage
 
 ``` r
-mlx_dlogis(
-  x,
-  location = 0,
-  scale = 1,
-  log = FALSE,
-  device = mlx_default_device()
-)
+mlx_dlogis(x, location = 0, scale = 1, log = FALSE)
 
-mlx_plogis(x, location = 0, scale = 1, device = mlx_default_device())
+mlx_plogis(x, location = 0, scale = 1)
 
-mlx_qlogis(p, location = 0, scale = 1, device = mlx_default_device())
+mlx_qlogis(p, location = 0, scale = 1)
 ```
 
 ## Arguments
@@ -34,15 +28,6 @@ mlx_qlogis(p, location = 0, scale = 1, device = mlx_default_device())
 
   If `TRUE`, return log density for `mlx_dlogis` (default: `FALSE`)
 
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
-
 - p:
 
   Vector of probabilities (mlx array or coercible to mlx)
@@ -58,7 +43,6 @@ x <- as_mlx(seq(-3, 3, by = 0.5))
 mlx_dlogis(x)
 #> mlx array [13]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>  [1] 0.04517667 0.07010371 0.10499357 0.14914644 0.19661194 0.23500369
 #>  [7] 0.25000000 0.23500372 0.19661194 0.14914645 0.10499360 0.07010371
@@ -66,7 +50,6 @@ mlx_dlogis(x)
 mlx_plogis(x)
 #> mlx array [13]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>  [1] 0.04742588 0.07585818 0.11920293 0.18242553 0.26894143 0.37754068
 #>  [7] 0.50000000 0.62245935 0.73105860 0.81757444 0.88079703 0.92414182
@@ -76,7 +59,6 @@ p <- as_mlx(c(0.25, 0.5, 0.75))
 mlx_qlogis(p)
 #> mlx array [3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] -1.098612  0.000000  1.098612
 ```

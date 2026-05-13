@@ -34,7 +34,6 @@ x <- mlx_matrix(c(-1, 0, 1), 3, 1)
 sin(x)
 #> mlx array [3 x 1]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>           [,1]
 #> [1,] -0.841471
@@ -43,7 +42,6 @@ sin(x)
 round(x + 0.4)
 #> mlx array [3 x 1]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>      [,1]
 #> [1,]   -1

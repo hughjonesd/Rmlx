@@ -5,12 +5,7 @@ Normalizes inputs across the batch dimension.
 ## Usage
 
 ``` r
-mlx_batch_norm(
-  num_features,
-  eps = 1e-05,
-  momentum = 0.1,
-  device = mlx_default_device()
-)
+mlx_batch_norm(num_features, eps = 1e-05, momentum = 0.1)
 ```
 
 ## Arguments
@@ -26,15 +21,6 @@ mlx_batch_norm(
 - momentum:
 
   Momentum for running statistics (default: 0.1).
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 
@@ -53,7 +39,6 @@ x <- as_mlx(matrix(rnorm(12), 3, 4))
 mlx_forward(bn, x)
 #> mlx array [3 x 4]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>            [,1]        [,2]       [,3]       [,4]
 #> [1,] -0.4556868  1.24383128 -1.0877743 -1.1186367

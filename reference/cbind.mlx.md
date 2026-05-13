@@ -45,7 +45,6 @@ y <- mlx_matrix(5:8, 2, 2)
 cbind(x, y)
 #> mlx array [2 x 4]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>      [,1] [,2] [,3] [,4]
 #> [1,]    1    3    5    7

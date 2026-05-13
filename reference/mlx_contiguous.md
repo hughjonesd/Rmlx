@@ -1,12 +1,11 @@
 # Ensure contiguous memory layout
 
-Returns a copy of `x` with contiguous strides on the requested device or
-stream.
+Returns a copy of `x` with contiguous strides.
 
 ## Usage
 
 ``` r
-mlx_contiguous(x, device = NULL)
+mlx_contiguous(x)
 ```
 
 ## Arguments
@@ -15,18 +14,9 @@ mlx_contiguous(x, device = NULL)
 
   An mlx array.
 
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
-
 ## Value
 
-An mlx array backed by contiguous storage on the specified device.
+An mlx array backed by contiguous storage.
 
 ## See also
 

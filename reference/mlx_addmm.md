@@ -1,8 +1,7 @@
 # Fused matrix multiply and add for MLX arrays
 
 Computes `beta * input + alpha * (mat1 %*% mat2)` in a single MLX
-kernel. All operands are promoted to a common dtype/device prior to
-evaluation.
+kernel. All operands are promoted to a common dtype prior to evaluation.
 
 ## Usage
 
@@ -45,7 +44,6 @@ mat2 <- as_mlx(matrix(rnorm(9), 3, 3))
 mlx_addmm(input, mat1, mat2, alpha = 0.5, beta = 2)
 #> mlx array [3 x 3]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>             [,1]      [,2]       [,3]
 #> [1,]  1.62649703 -1.907793  1.3535182

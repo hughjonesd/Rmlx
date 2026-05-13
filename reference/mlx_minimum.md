@@ -31,7 +31,6 @@ b <- as_mlx(matrix(c(4, 3, 2, 1), 2, 2))
 mlx_minimum(a, b)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    1    2

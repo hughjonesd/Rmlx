@@ -38,7 +38,6 @@ x <- mlx_matrix(1:4, 2, 2)
 mlx_repeat(x, repeats = 2, axis = 2)
 #> mlx array [2 x 4]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3] [,4]
 #> [1,]    1    1    3    3

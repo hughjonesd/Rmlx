@@ -9,7 +9,7 @@ and quantile (mlx_qunif) functions for the uniform distribution using MLX."></he
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,11 +43,11 @@ and quantile (<code>mlx_qunif</code>) functions for the uniform distribution usi
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_dunif</span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, device <span class="op">=</span> <span class="fu"><a href="mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_dunif</span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, log <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mlx_punif</span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, device <span class="op">=</span> <span class="fu"><a href="mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu">mlx_punif</span><span class="op">(</span><span class="va">x</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mlx_qunif</span><span class="op">(</span><span class="va">p</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, device <span class="op">=</span> <span class="fu"><a href="mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mlx_qunif</span><span class="op">(</span><span class="va">p</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,12 +66,6 @@ and quantile (<code>mlx_qunif</code>) functions for the uniform distribution usi
 <dd><p>If <code>TRUE</code>, return log density for <code>mlx_dunif</code> (default: <code>FALSE</code>)</p></dd>
 
 
-<dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. By default, many
-functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of their first argument.</p></dd>
-
-
 <dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
 <dd><p>Vector of probabilities (mlx array or coercible to mlx)</p></dd>
 
@@ -87,13 +81,11 @@ functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of the
 <span class="r-in"><span><span class="fu">mlx_dunif</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1 1</span>
 <span class="r-in"><span><span class="fu">mlx_punif</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [11]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0</span>
 <span class="r-in"><span></span></span>
@@ -101,7 +93,6 @@ functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of the
 <span class="r-in"><span><span class="fu">mlx_qunif</span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.25 0.50 0.75</span>
 </code></pre></div>

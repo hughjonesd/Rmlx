@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,7 +104,6 @@ when you call functions like <code><a href="https://rdrr.io/r/base/matrix.html" 
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">v</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array [10]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
-<span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt;  [1]  1  2  3  4  5  6  7  8  9 10</span></span>
 <span></span>
@@ -114,15 +113,30 @@ when you call functions like <code><a href="https://rdrr.io/r/base/matrix.html" 
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array [3 x 4]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
-<span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt;      [,1] [,2] [,3] [,4]</span></span>
 <span><span class="co">#&gt; [1,]    1    4    7   10</span></span>
 <span><span class="co">#&gt; [2,]    2    5    8   11</span></span>
-<span><span class="co">#&gt; [3,]    3    6    9   12</span></span>
+<span><span class="co">#&gt; [3,]    3    6    9   12</span></span></code></pre></div>
+<p>Or use <code><a href="../reference/mlx_vector.html">mlx_vector()</a></code>, <code><a href="../reference/mlx_matrix.html">mlx_matrix()</a></code> or
+<code><a href="../reference/mlx_array.html">mlx_array()</a></code>:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># like as_mlx(1:10) but more explicit</span></span>
+<span><span class="fu"><a href="../reference/mlx_vector.html">mlx_vector</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mlx array [10]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt;  [1]  1  2  3  4  5  6  7  8  9 10</span></span>
 <span></span>
-<span><span class="co"># Specify the device explicitly (uses GPU if available, CPU otherwise)</span></span>
-<span><span class="va">x_dev</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">m</span>, device <span class="op">=</span> <span class="va">device</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># From a matrix</span></span>
+<span><span class="fu"><a href="../reference/mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; mlx array [3 x 4]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt;      [,1] [,2] [,3] [,4]</span></span>
+<span><span class="co">#&gt; [1,]    1    4    7   10</span></span>
+<span><span class="co">#&gt; [2,]    2    5    8   11</span></span>
+<span><span class="co">#&gt; [3,]    3    6    9   12</span></span></code></pre></div>
 <blockquote>
 <p><strong>Precision note:</strong> Numeric inputs use single precision
 (<code>float32</code>) by default. <code>float64</code> arrays are
@@ -139,10 +153,12 @@ Logical inputs are stored as MLX <code>bool</code> tensors (logical
 </h2>
 <p>MLX arrays use lazy evaluation - operations are recorded but not
 computed until needed:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># These operations are not computed immediately</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">101</span><span class="op">:</span><span class="fl">200</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fl">101</span><span class="op">:</span><span class="fl">200</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># These operations are not computed immediately</span></span>
 <span><span class="va">z</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op">+</span> <span class="va">y</span> <span class="op">*</span> <span class="fl">2</span></span>
 <span></span>
 <span><span class="co"># Force evaluation of a specific array</span></span>
@@ -169,7 +185,7 @@ computed until needed:</p>
 <h2 id="arithmetic-operations">Arithmetic Operations<a class="anchor" aria-label="anchor" href="#arithmetic-operations"></a>
 </h2>
 <p>Rmlx supports standard arithmetic operators:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">13</span><span class="op">:</span><span class="fl">24</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -193,7 +209,7 @@ computed until needed:</p>
 <div class="section level3">
 <h3 id="matrix-multiplication">Matrix Multiplication<a class="anchor" aria-label="anchor" href="#matrix-multiplication"></a>
 </h3>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">2</span>, <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">3</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -207,13 +223,12 @@ computed until needed:</p>
 <div class="section level3">
 <h3 id="transpose">Transpose<a class="anchor" aria-label="anchor" href="#transpose"></a>
 </h3>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">x_t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x_t</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array [4 x 3]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
-<span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
 <span><span class="co">#&gt; [1,]    1    2    3</span></span>
@@ -224,7 +239,7 @@ computed until needed:</p>
 <div class="section level3">
 <h3 id="cross-products">Cross Products<a class="anchor" aria-label="anchor" href="#cross-products"></a>
 </h3>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, <span class="fl">5</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">true_w</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="op">-</span><span class="fl">1</span>, <span class="fl">0.5</span>, <span class="fl">0.25</span><span class="op">)</span>, <span class="fl">4</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">true_w</span></span>
@@ -301,20 +316,18 @@ computed until needed:</p>
 <h2 id="reductions">Reductions<a class="anchor" aria-label="anchor" href="#reductions"></a>
 </h2>
 <p>Compute summaries across arrays:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Overall reductions</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array []</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
-<span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt; [1] 5050</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array []</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
-<span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt; [1] 50.5</span></span>
 <span></span>
@@ -322,13 +335,11 @@ computed until needed:</p>
 <span><span class="fu"><a href="../reference/colMeans.html">colMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array [10]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
-<span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt;  [1]  5.5 15.5 25.5 35.5 45.5 55.5 65.5 75.5 85.5 95.5</span></span>
 <span><span class="fu"><a href="../reference/rowMeans.html">rowMeans</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="co">#&gt; mlx array [10]</span></span>
 <span><span class="co">#&gt;   dtype: float32</span></span>
-<span><span class="co">#&gt;   device: gpu</span></span>
 <span><span class="co">#&gt;   values:</span></span>
 <span><span class="co">#&gt;  [1] 46 47 48 49 50 51 52 53 54 55</span></span>
 <span></span>
@@ -361,8 +372,8 @@ computed until needed:</p>
 <h2 id="indexing">Indexing<a class="anchor" aria-label="anchor" href="#indexing"></a>
 </h2>
 <p>Subset MLX arrays similar to R:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">100</span>, <span class="fl">10</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Select rows and columns</span></span>
 <span><span class="va">x_sub</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
@@ -377,20 +388,26 @@ computed until needed:</p>
 <h2 id="device-management">Device Management<a class="anchor" aria-label="anchor" href="#device-management"></a>
 </h2>
 <p>Control whether computations run on GPU or CPU:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check default device</span></span>
-<span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mlx_device.html">mlx_device</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "gpu"</span></span>
 <span></span>
-<span><span class="co"># Set to CPU for debugging</span></span>
-<span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="st">"cpu"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "cpu"</span></span>
+<span><span class="va">a</span> <span class="op">&lt;-</span> <span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Create array on CPU</span></span>
-<span><span class="va">x_cpu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">12</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>, device <span class="op">=</span> <span class="st">"cpu"</span><span class="op">)</span></span>
+<span><span class="co"># Run an operation on the CPU</span></span>
+<span><span class="fu"><a href="../reference/mlx_device.html">mlx_device</a></span><span class="op">(</span><span class="st">"cpu"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "cpu"</span></span>
+<span><span class="va">a</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">b</span></span>
+<span><span class="co">#&gt; mlx array [2 x 2]</span></span>
+<span><span class="co">#&gt;   dtype: float32</span></span>
+<span><span class="co">#&gt;   values:</span></span>
+<span><span class="co">#&gt;      [,1] [,2]</span></span>
+<span><span class="co">#&gt; [1,]    7   15</span></span>
+<span><span class="co">#&gt; [2,]   10   22</span></span>
 <span></span>
 <span><span class="co"># Set back to best available device</span></span>
-<span><span class="fu"><a href="../reference/mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mlx_device.html">mlx_device</a></span><span class="op">(</span><span class="va">device</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "gpu"</span></span></code></pre></div>
 <p>Numeric computations default to <code>float32</code> for GPU
 compatibility. Use CPU <code>float64</code> when you need double
@@ -402,7 +419,7 @@ to the GPU.</p>
 </h2>
 <p>Here’s a simple timing comparison for large matrix
 multiplication:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
 <span></span>
 <span><span class="co"># R base</span></span>
@@ -415,52 +432,15 @@ multiplication:</p>
 <span><span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">m2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">x1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span></span>
-<span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="va">mlx_result</span> <span class="op">&lt;-</span> <span class="va">x1</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x2</span></span>
-<span>  <span class="fu"><a href="../reference/mlx_eval.html">mlx_eval</a></span><span class="op">(</span><span class="va">mlx_result</span><span class="op">)</span></span>
-<span>  <span class="va">final</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">mlx_result</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">x1</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">x2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Base R:"</span>, <span class="va">t1</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Base R: 0.369 seconds</span></span>
+<span><span class="co">#&gt; Base R: 0.368 seconds</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"MLX:"</span>, <span class="va">t2</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; MLX: 0.017 seconds</span></span></code></pre></div>
-<p>Note: This is an informal comparison, not a rigorous benchmark.
-Performance gains depend on array size, operation type, and
-hardware.</p>
-</div>
-<div class="section level2">
-<h2 id="best-practices">Best Practices<a class="anchor" aria-label="anchor" href="#best-practices"></a>
-</h2>
-<ol style="list-style-type: decimal">
-<li>
-<strong>Keep data on GPU</strong>: Minimize transfers between R and
-MLX</li>
-<li>
-<strong>Use lazy evaluation</strong>: Build computation graphs
-before evaluating</li>
-<li>
-<strong>Batch operations</strong>: Combine operations before forcing
-evaluation</li>
-<li>
-<strong>Monitor memory</strong>: GPU memory is limited; free unused
-arrays</li>
-<li>
-<strong>Start with CPU</strong>: Use CPU device for debugging, then
-switch to GPU</li>
-</ol>
-</div>
-<div class="section level2">
-<h2 id="limitations">Limitations<a class="anchor" aria-label="anchor" href="#limitations"></a>
-</h2>
-<p>Current limitations in this initial version:</p>
-<ul>
-<li>Apple Silicon only (no Intel Mac or other platforms)</li>
-<li>2D arrays (matrices) are primary focus</li>
-<li>Limited indexing operations</li>
-<li>No autodiff or gradient computation (planned for future
-release)</li>
-</ul>
+<span><span class="co">#&gt; MLX: 0.021 seconds</span></span></code></pre></div>
+<p>For more information see the Benchmarks vignette.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

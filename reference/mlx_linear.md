@@ -5,12 +5,7 @@ Create a learnable linear transformation
 ## Usage
 
 ``` r
-mlx_linear(
-  in_features,
-  out_features,
-  bias = TRUE,
-  device = mlx_default_device()
-)
+mlx_linear(in_features, out_features, bias = TRUE)
 ```
 
 ## Arguments
@@ -26,15 +21,6 @@ mlx_linear(
 - bias:
 
   Should a bias term be included?
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 
@@ -53,7 +39,6 @@ x <- mlx_matrix(1:6, 2, 3)
 mlx_forward(layer, x)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>           [,1]       [,2]
 #> [1,] -3.473105 -1.2398810

@@ -11,7 +11,7 @@ mlx_default_stream() returns the current default stream for a device."></head><b
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,9 +46,9 @@ computation and finer control over scheduling.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_new_stream</span><span class="op">(</span>device <span class="op">=</span> <span class="fu"><a href="mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_new_stream</span><span class="op">(</span>device <span class="op">=</span> <span class="fu"><a href="mlx_device.html">mlx_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mlx_default_stream</span><span class="op">(</span>device <span class="op">=</span> <span class="fu"><a href="mlx_default_device.html">mlx_default_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mlx_default_stream</span><span class="op">(</span>device <span class="op">=</span> <span class="fu"><a href="mlx_device.html">mlx_device</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -56,9 +56,10 @@ computation and finer control over scheduling.</p>
 
 
 <dl><dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code>mlx_new_stream()</code>. By default, many
-functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of their first argument.</p></dd>
+<dd><p>Execution target for APIs that expose a one-off device or
+stream override. Supply <code>"gpu"</code>, <code>"cpu"</code>, or an <code>mlx_stream</code> created via
+<code>mlx_new_stream()</code>. Ordinary array operations use the current
+<code><a href="mlx_device.html">mlx_device()</a></code> instead.</p></dd>
 
 </dl></div>
     <div class="section level2">

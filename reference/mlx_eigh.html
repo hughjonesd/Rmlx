@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -56,9 +56,10 @@
 
 
 <dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. By default, many
-functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of their first argument.</p></dd>
+<dd><p>Execution target for APIs that expose a one-off device or
+stream override. Supply <code>"gpu"</code>, <code>"cpu"</code>, or an <code>mlx_stream</code> created via
+<code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Ordinary array operations use the current
+<code><a href="mlx_device.html">mlx_device()</a></code> instead.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -67,10 +68,8 @@ functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of the
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with <code>device = "cpu"</code> explicitly, or pass a <code>device = "cpu"</code>
-argument. (Passing the argument won't affect the device of any
-mlx object returned, just where this particular operation is run.)</p>
+    <p>As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+<code><a href="with_device.html">with_device()</a></code> or <code><a href="with_device.html">local_device()</a></code>, or pass <code>device = "cpu"</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -79,19 +78,17 @@ mlx object returned, just where this particular operation is run.)</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span>, device <span class="op">=</span> <span class="st">"cpu"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">mlx_eigh</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="mlx_matrix.html">mlx_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mlx_eigh</span><span class="op">(</span><span class="va">x</span>, device <span class="op">=</span> <span class="st">"cpu"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $values</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.381966 3.618034</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $vectors</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [2 x 2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]      [,2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.8506508 0.5257311</span>

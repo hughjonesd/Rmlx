@@ -36,13 +36,11 @@ vals <- as_mlx(c(-Inf, -1, 0, Inf))
 mlx_isposinf(vals)
 #> mlx array [4]
 #>   dtype: bool
-#>   device: cpu
 #>   values:
 #> [1] FALSE FALSE FALSE  TRUE
 mlx_isneginf(vals)
 #> mlx array [4]
 #>   dtype: bool
-#>   device: cpu
 #>   values:
 #> [1]  TRUE FALSE FALSE FALSE
 ```

@@ -43,7 +43,6 @@ targets <- mlx_matrix(c(1, 0, 1), 3, 1)
 mlx_binary_cross_entropy(preds, targets)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 0.1838825
 ```

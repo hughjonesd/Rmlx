@@ -9,7 +9,7 @@ produced by mlx_quantize()."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,8 +49,7 @@ produced by <code><a href="mlx_quantize.html">mlx_quantize()</a></code>.</p>
 <span>  biases <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_size <span class="op">=</span> <span class="fl">64L</span>,</span>
 <span>  bits <span class="op">=</span> <span class="fl">4L</span>,</span>
-<span>  mode <span class="op">=</span> <span class="st">"affine"</span>,</span>
-<span>  device <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  mode <span class="op">=</span> <span class="st">"affine"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,12 +84,6 @@ accuracy at the cost of slightly higher memory. Default: 64.</p></dd>
 
 <dt id="arg-mode">mode<a class="anchor" aria-label="anchor" href="#arg-mode"></a></dt>
 <dd><p>Quantization mode, either <code>"affine"</code> or <code>"mxfp4"</code>.</p></dd>
-
-
-<dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. By default, many
-functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of their first argument.</p></dd>
 
 </dl></div>
     <div class="section level2">

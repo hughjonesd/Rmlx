@@ -9,13 +9,7 @@ generic [`stats::quantile()`](https://rdrr.io/r/stats/quantile.html).
 ## Usage
 
 ``` r
-mlx_quantile(
-  x,
-  probs,
-  axis = NULL,
-  drop = FALSE,
-  device = mlx_default_device()
-)
+mlx_quantile(x, probs, axis = NULL, drop = FALSE)
 
 # S3 method for class 'mlx'
 quantile(x, probs, ...)
@@ -44,15 +38,6 @@ quantile(x, probs, ...)
   single probability, removes the quantile dimension of length 1.
   Defaults to `FALSE` to match the behavior of other reduction
   functions.
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 - ...:
 
@@ -91,13 +76,11 @@ x <- as_mlx(1:10)
 mlx_quantile(x, 0.5)  # median
 #> mlx array [1]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 5.5
 mlx_quantile(x, c(0.25, 0.5, 0.75))  # quartiles
 #> mlx array [3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 3.25 5.50 7.75
 
@@ -105,7 +88,6 @@ mlx_quantile(x, c(0.25, 0.5, 0.75))  # quartiles
 quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
 #> mlx array [5]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1]  1.00  3.25  5.50  7.75 10.00
 
@@ -113,5 +95,5 @@ quantile(x, probs = c(0, 0.25, 0.5, 0.75, 1))
 mat <- mlx_matrix(1:12, 3, 4)  # shape (3, 4)
 result <- mlx_quantile(mat, c(0.25, 0.75), axis = 1)  # shape (2, 4)
 result <- mlx_quantile(mat, 0.5, axis = 1)  # shape (1, 4)
-result <- mlx_quantile(mat, 0.5, axis = 1, drop = TRUE)  # shape (4,)
+result <- mlx_quantile(mat, 0.5, axis = 1, drop = TRUE)  # shape (4)
 ```

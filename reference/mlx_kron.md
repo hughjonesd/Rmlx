@@ -1,7 +1,7 @@
 # Kronecker product for mlx arrays
 
 Computes the Kronecker (tensor) product between two mlx arrays. Inputs
-are automatically cast to a common dtype and device before evaluation.
+are automatically cast to a common dtype before evaluation.
 
 ## Usage
 
@@ -31,7 +31,6 @@ B <- mlx_matrix(c(0, 5, 6, 7), 2, 2)
 mlx_kron(A, B)
 #> mlx array [4 x 4]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3] [,4]
 #> [1,]    0    6    0   18

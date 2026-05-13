@@ -9,7 +9,7 @@ Note: x should be the Cholesky factor (L or U), not the original matrix."></head
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,13 @@ Note: <code>x</code> should be the Cholesky factor (L or U), not the original ma
 <dt id="arg-upper">upper<a class="anchor" aria-label="anchor" href="#arg-upper"></a></dt>
 <dd><p>Logical; if <code>TRUE</code>, <code>x</code> is upper triangular, otherwise lower triangular.</p></dd>
 
+
+<dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
+<dd><p>Execution target for APIs that expose a one-off device or
+stream override. Supply <code>"gpu"</code>, <code>"cpu"</code>, or an <code>mlx_stream</code> created via
+<code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. Ordinary array operations use the current
+<code><a href="mlx_device.html">mlx_device()</a></code> instead.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -79,10 +86,9 @@ Note: <code>x</code> should be the Cholesky factor (L or U), not the original ma
 <span class="r-in"><span><span class="co"># Compute Cholesky factor</span></span></span>
 <span class="r-in"><span><span class="va">L</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/chol.html" class="external-link">chol</a></span><span class="op">(</span><span class="va">A</span>, pivot <span class="op">=</span> <span class="cn">FALSE</span>, upper <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Get inverse from Cholesky factor</span></span></span>
-<span class="r-in"><span><span class="fu">mlx_cholesky_inv</span><span class="op">(</span><span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">L</span>, device <span class="op">=</span> <span class="st">"cpu"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">mlx_cholesky_inv</span><span class="op">(</span><span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">L</span><span class="op">)</span>, device <span class="op">=</span> <span class="st">"cpu"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [3 x 3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: float32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]     [,2]     [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.1525249 0.000000 0.000000</span>

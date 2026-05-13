@@ -13,7 +13,15 @@ backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 
 # S3 method for class 'mlx'
-backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
+backsolve(
+  r,
+  x,
+  k = NULL,
+  upper.tri = TRUE,
+  transpose = FALSE,
+  ...,
+  device = NULL
+)
 ```
 
 ## Arguments
@@ -29,6 +37,15 @@ backsolve(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, ...)
 - upper:
 
   Logical; if `TRUE`, `a` is upper triangular, otherwise lower.
+
+- device:
+
+  Execution target for APIs that expose a one-off device or stream
+  override. Supply `"gpu"`, `"cpu"`, or an `mlx_stream` created via
+  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
+  Ordinary array operations use the current
+  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  instead.
 
 - r:
 
@@ -61,10 +78,11 @@ An mlx array solution.
 
 ## Details
 
-As of MLX 0.31.1, this operation only runs on CPU. Create or cast the
-operands with `device = "cpu"` explicitly, or pass a `device = "cpu"`
-argument. (Passing the argument won't affect the device of any mlx
-object returned, just where this particular operation is run.)
+As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+[`with_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md)
+or
+[`local_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md),
+or pass `device = "cpu"`.
 
 ## See also
 
@@ -73,12 +91,11 @@ object returned, just where this particular operation is run.)
 ## Examples
 
 ``` r
-a <- mlx_matrix(c(2, 1, 0, 3), 2, 2, device = "cpu")
-b <- mlx_matrix(c(1, 5), 2, 1, device = "cpu")
-mlx_solve_triangular(a, b, upper = FALSE)
+a <- mlx_matrix(c(2, 1, 0, 3), 2, 2)
+b <- mlx_matrix(c(1, 5), 2, 1)
+mlx_solve_triangular(a, b, upper = FALSE, device = "cpu")
 #> mlx array [2 x 1]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1]
 #> [1,]  0.5

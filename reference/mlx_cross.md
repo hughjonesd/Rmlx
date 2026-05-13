@@ -35,7 +35,6 @@ v <- as_mlx(c(0, 1, 0))
 mlx_cross(u, v)
 #> mlx array [3]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 0 0 1
 ```

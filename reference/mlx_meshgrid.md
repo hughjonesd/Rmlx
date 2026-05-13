@@ -8,7 +8,7 @@ devices.
 ## Usage
 
 ``` r
-mlx_meshgrid(..., sparse = FALSE, indexing = c("xy", "ij"), device = NULL)
+mlx_meshgrid(..., sparse = FALSE, indexing = c("xy", "ij"))
 ```
 
 ## Arguments
@@ -27,15 +27,6 @@ mlx_meshgrid(..., sparse = FALSE, indexing = c("xy", "ij"), device = NULL)
 
   Either `"xy"` (Cartesian) or `"ij"` (matrix) indexing.
 
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
-
 ## Value
 
 A list of mlx arrays matching the number of inputs.
@@ -53,7 +44,6 @@ mlx_meshgrid(xs, ys, indexing = "xy")
 #> [[1]]
 #> mlx array [2 x 3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1    2    3
@@ -62,7 +52,6 @@ mlx_meshgrid(xs, ys, indexing = "xy")
 #> [[2]]
 #> mlx array [2 x 3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2] [,3]
 #> [1,]    1    1    1

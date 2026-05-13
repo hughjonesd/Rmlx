@@ -39,7 +39,6 @@ x <- mlx_matrix(1:6, 2, 3)
 tcrossprod(x)
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]   35   44

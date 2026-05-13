@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -41,10 +41,8 @@
 
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>As of MLX 0.31.1, this operation only runs on CPU. Create or cast
-the operands with <code>device = "cpu"</code> explicitly, or pass a <code>device = "cpu"</code>
-argument. (Passing the argument won't affect the device of any
-mlx object returned, just where this particular operation is run.)</p>
+    <p>As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+<code><a href="with_device.html">with_device()</a></code> or <code><a href="with_device.html">local_device()</a></code>, or pass <code>device = "cpu"</code>.</p>
     </div>
 
   </main></div>

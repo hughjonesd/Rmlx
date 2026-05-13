@@ -16,12 +16,12 @@ mlx_eigvals(x, device = NULL)
 
 - device:
 
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
+  Execution target for APIs that expose a one-off device or stream
+  override. Supply `"gpu"`, `"cpu"`, or an `mlx_stream` created via
   [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
+  Ordinary array operations use the current
   [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
+  instead.
 
 ## Value
 
@@ -29,10 +29,11 @@ An mlx array containing eigenvalues.
 
 ## Details
 
-As of MLX 0.31.1, this operation only runs on CPU. Create or cast the
-operands with `device = "cpu"` explicitly, or pass a `device = "cpu"`
-argument. (Passing the argument won't affect the device of any mlx
-object returned, just where this particular operation is run.)
+As of MLX 0.31.1, this operation only runs on CPU. Run it inside
+[`with_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md)
+or
+[`local_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md),
+or pass `device = "cpu"`.
 
 ## See also
 
@@ -41,11 +42,10 @@ object returned, just where this particular operation is run.)
 ## Examples
 
 ``` r
-x <- mlx_matrix(c(3, 1, 0, 2), 2, 2, device = "cpu")
-mlx_eigvals(x)
+x <- mlx_matrix(c(3, 1, 0, 2), 2, 2)
+mlx_eigvals(x, device = "cpu")
 #> mlx array [2]
 #>   dtype: complex64
-#>   device: cpu
 #>   values:
 #> [1] 3+0i 2+0i
 ```

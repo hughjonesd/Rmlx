@@ -16,5 +16,5 @@ Character: `"gpu"` or `"cpu"`.
 
 ``` r
 device <- mlx_best_device()
-x <- as_mlx(1:10, device = device)
+with_device(device, x <- as_mlx(1:10))
 ```

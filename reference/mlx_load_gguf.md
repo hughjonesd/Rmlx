@@ -5,7 +5,7 @@ Load MLX tensors from the GGUF format
 ## Usage
 
 ``` r
-mlx_load_gguf(file, device = mlx_default_device())
+mlx_load_gguf(file)
 ```
 
 ## Arguments
@@ -14,15 +14,6 @@ mlx_load_gguf(file, device = mlx_default_device())
 
   Path to a `.npy` file. The extension is appended automatically when
   missing.
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 

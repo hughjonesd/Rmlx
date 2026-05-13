@@ -36,13 +36,11 @@ x <- as_mlx(pi / 2)
 mlx_degrees(x)  # 90
 #> mlx array [1]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 90
 mlx_radians(mlx_vector(c(0, 90, 180)))
 #> mlx array [3]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] 0.000000 1.570796 3.141593
 ```

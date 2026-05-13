@@ -45,7 +45,6 @@ x <- mlx_matrix(1:6, 2, 3)
 sum(x)
 #> mlx array []
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #> [1] 21
 any(x > 3)

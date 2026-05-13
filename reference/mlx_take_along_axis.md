@@ -39,7 +39,6 @@ idx <- matrix(c(1L, 4L,
 mlx_take_along_axis(x, idx, axis = 2L)
 #> mlx array [3 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    1   10

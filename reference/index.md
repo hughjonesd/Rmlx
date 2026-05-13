@@ -48,11 +48,11 @@
 
 ## Device and execution
 
-- [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
-  : Get or set default MLX device
-- [`with_default_device()`](https://hughjonesd.github.io/Rmlx/reference/with_default_device.md)
-  [`local_default_device()`](https://hughjonesd.github.io/Rmlx/reference/with_default_device.md)
-  : Temporarily set the default MLX device or stream
+- [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  : Get or set current MLX device
+- [`with_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md)
+  [`local_device()`](https://hughjonesd.github.io/Rmlx/reference/with_device.md)
+  : Temporarily set the current MLX device or stream
 - [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md)
   [`mlx_default_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md)
   : MLX streams for asynchronous execution
@@ -60,8 +60,6 @@
   : Set the default MLX stream
 - [`mlx_best_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_best_device.md)
   : Get best available device
-- [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  : Get device associated with an MLX object
 - [`mlx_has_gpu()`](https://hughjonesd.github.io/Rmlx/reference/mlx_has_gpu.md)
   : Check if GPU backend is available
 - [`mlx_synchronize()`](https://hughjonesd.github.io/Rmlx/reference/mlx_synchronize.md)

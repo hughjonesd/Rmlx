@@ -11,7 +11,7 @@ returned as mlx arrays."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">Rmlx</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,11 +46,11 @@ returned as <code>mlx</code> arrays.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_fft</span><span class="op">(</span><span class="va">x</span>, <span class="va">axis</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, device <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_fft</span><span class="op">(</span><span class="va">x</span>, <span class="va">axis</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mlx_fft2</span><span class="op">(</span><span class="va">x</span>, <span class="va">axes</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, device <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="fu">mlx_fft2</span><span class="op">(</span><span class="va">x</span>, <span class="va">axes</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">mlx_fftn</span><span class="op">(</span><span class="va">x</span>, axes <span class="op">=</span> <span class="cn">NULL</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span>, device <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">mlx_fftn</span><span class="op">(</span><span class="va">x</span>, axes <span class="op">=</span> <span class="cn">NULL</span>, inverse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -72,12 +72,6 @@ inverse is un-normalised to match base R's <code><a href="fft.html">fft()</a></c
 multiplied by the product of the transformed axis lengths.</p></dd>
 
 
-<dt id="arg-device">device<a class="anchor" aria-label="anchor" href="#arg-device"></a></dt>
-<dd><p>Execution target: supply <code>"gpu"</code>, <code>"cpu"</code>, or an
-<code>mlx_stream</code> created via <code><a href="mlx_new_stream.html">mlx_new_stream()</a></code>. By default, many
-functions use the <code><a href="mlx_device.html">mlx_device()</a></code> of their first argument.</p></dd>
-
-
 <dt id="arg-axes">axes<a class="anchor" aria-label="anchor" href="#arg-axes"></a></dt>
 <dd><p>Optional integer vector of axes for the multi-dimensional
 transforms. Supply positive, 1-based axes; omit the argument to use the
@@ -90,11 +84,6 @@ to the last two axes, and <code>mlx_fftn()</code> defaults to all axes).</p></dd
     <p>An <code>mlx</code> array containing complex frequency coefficients.</p>
     </div>
     <div class="section level2">
-    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>When <code>device</code> is <code>NULL</code>, the transform runs on the input array's device,
-falling back to <code><a href="mlx_default_device.html">mlx_default_device()</a></code> only when coercing non-mlx inputs.</p>
-    </div>
-    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="fft.html">fft()</a></code>, <a href="https://ml-explore.github.io/mlx/build/html/python/fft.html" class="external-link">mlx.fft</a></p></div>
     </div>
@@ -105,20 +94,17 @@ falling back to <code><a href="mlx_default_device.html">mlx_default_device()</a>
 <span class="r-in"><span><span class="fu">mlx_fft</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10+0i -2+2i -2+0i -2-2i</span>
 <span class="r-in"><span><span class="fu">mlx_fft</span><span class="op">(</span><span class="va">x</span>, inverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [4]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10+0i -2-2i -2+0i -2+2i</span>
 <span class="r-in"><span><span class="va">mat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">9</span>, <span class="fl">3</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">mlx_fft2</span><span class="op">(</span><span class="fu"><a href="as_mlx.html">as_mlx</a></span><span class="op">(</span><span class="va">mat</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [3 x 3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   values:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                [,1]            [,2]            [,3]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 45.0+0.000000i -13.5+7.794229i -13.5-7.794229i</span>
@@ -128,7 +114,6 @@ falling back to <code><a href="mlx_default_device.html">mlx_default_device()</a>
 <span class="r-in"><span><span class="fu">mlx_fftn</span><span class="op">(</span><span class="va">arr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mlx array [2 x 2 x 2]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   dtype: complex64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   device: cpu</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (8 elements, not shown)</span>
 </code></pre></div>
     </div>

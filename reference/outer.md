@@ -43,7 +43,6 @@ y <- as_mlx(c(4, 5))
 outer(x, y)
 #> mlx array [3 x 2]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    4    5

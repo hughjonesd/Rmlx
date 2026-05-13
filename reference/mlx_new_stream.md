@@ -8,19 +8,20 @@ overlap of computation and finer control over scheduling.
 ## Usage
 
 ``` r
-mlx_new_stream(device = mlx_default_device())
+mlx_new_stream(device = mlx_device())
 
-mlx_default_stream(device = mlx_default_device())
+mlx_default_stream(device = mlx_device())
 ```
 
 ## Arguments
 
 - device:
 
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via `mlx_new_stream()`. By default, many functions use the
+  Execution target for APIs that expose a one-off device or stream
+  override. Supply `"gpu"`, `"cpu"`, or an `mlx_stream` created via
+  `mlx_new_stream()`. Ordinary array operations use the current
   [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
+  instead.
 
 ## Value
 

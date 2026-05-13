@@ -6,7 +6,7 @@ returns an R callable.
 ## Usage
 
 ``` r
-mlx_import_function(path, device = mlx_default_device())
+mlx_import_function(path)
 ```
 
 ## Arguments
@@ -14,15 +14,6 @@ mlx_import_function(path, device = mlx_default_device())
 - path:
 
   Path to a `.mlxfn` file created via MLX export utilities.
-
-- device:
-
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
-  [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  By default, many functions use the
-  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
-  of their first argument.
 
 ## Value
 
@@ -40,9 +31,7 @@ Imported functions behave like regular R closures:
   must match the names that were used when exporting.
 
 - Each argument is coerced to `mlx` via
-  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md)
-  and automatically moved to the requested device/stream before
-  execution.
+  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
 
 - If the MLX function yields a single array the result is returned as an
   `mlx` object; multiple outputs are returned as a list in the order MLX
@@ -57,15 +46,13 @@ shapes and keyword names you provide.
 
 ``` r
 add_fn <- mlx_import_function(
-  system.file("extdata/add_matrix.mlxfn", package = "Rmlx"),
-  device = "gpu"
+  system.file("extdata/add_matrix.mlxfn", package = "Rmlx")
 )
-x <- mlx_matrix(1:4, 2, 2, device = "gpu")
-y <- mlx_matrix(5:8, 2, 2, device = "gpu")
+x <- mlx_matrix(1:4, 2, 2)
+y <- mlx_matrix(5:8, 2, 2)
 add_fn(x, bias = y)  # positional + keyword argument
 #> mlx array [2 x 2]
 #>   dtype: float32
-#>   device: gpu
 #>   values:
 #>      [,1] [,2]
 #> [1,]    6   10

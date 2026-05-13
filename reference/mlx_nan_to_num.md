@@ -44,7 +44,6 @@ x <- as_mlx(c(-Inf, -1, NaN, 3, Inf))
 mlx_nan_to_num(x, nan = 0, posinf = 10, neginf = -10)
 #> mlx array [5]
 #>   dtype: float32
-#>   device: cpu
 #>   values:
 #> [1] -10  -1   0   3  10
 ```

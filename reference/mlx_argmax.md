@@ -51,19 +51,16 @@ x <- as_mlx(matrix(c(1, 5, 3, 2), 2, 2))
 mlx_argmax(x)
 #> mlx array []
 #>   dtype: uint32
-#>   device: gpu
 #>   values:
 #> [1] 3
 mlx_argmax(x, axis = 1)
 #> mlx array [2]
 #>   dtype: uint32
-#>   device: gpu
 #>   values:
 #> [1] 2 1
 mlx_argmin(x)
 #> mlx array []
 #>   dtype: uint32
-#>   device: gpu
 #>   values:
 #> [1] 1
 ```
