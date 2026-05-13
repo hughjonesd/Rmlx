@@ -6,23 +6,49 @@ test_that("mlx_device getter works", {
 
 test_that("mlx_device setter works", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_device()
-  on.exit(mlx_device(old_device), add = TRUE)
+  local_device(mlx_device())
 
   mlx_device("cpu")
+  expect_equal(mlx_device(), "cpu")
 
   mlx_device("gpu")
+  expect_equal(mlx_device(), "gpu")
 })
 
 test_that("with_device temporarily overrides device", {
-  original <- mlx_device()
-  on.exit(mlx_device(original), add = TRUE)
+  skip_if_not(mlx_has_gpu())
+  local_device(mlx_device())
+
+  mlx_device("gpu")
 
   result <- with_device("cpu", {
+    expect_equal(mlx_device(), "cpu")
     "value"
   })
 
   expect_equal(result, "value")
+  expect_equal(mlx_device(), "gpu")
+})
+
+test_that("operations respect the current device", {
+  skip_if_not(mlx_has_gpu())
+
+  x <- with_device("cpu", as_mlx(c(1, 2, 3), dtype = "float64"))
+  m <- with_device("cpu", as_mlx(matrix(c(4, 1, 1, 3), 2, 2), dtype = "float64"))
+
+  with_device("cpu", {
+    expect_equal(as.vector(x + 1), c(2, 3, 4), tolerance = 1e-12)
+    expect_equal(as.vector(sin(x)), sin(c(1, 2, 3)), tolerance = 1e-6)
+    expect_equal(as.numeric(mlx_sum(x)), 6, tolerance = 1e-12)
+    expect_equal(as.matrix(m %*% m), matrix(c(17, 7, 7, 10), 2, 2), tolerance = 1e-12)
+  })
+
+  with_device("gpu", {
+    expect_error(as.vector(x + 1), "float64")
+    expect_error(as.vector(sin(x)), "float64")
+    expect_error(as.numeric(mlx_sum(x)), "float64")
+    expect_error(as.matrix(m %*% m), "float64")
+  })
 })
 
 test_that("with_device accepts streams", {
@@ -46,13 +72,17 @@ test_that("with_device accepts streams", {
 })
 
 test_that("local_device restores device", {
-  original <- mlx_device()
-  on.exit(mlx_device(original), add = TRUE)
+  skip_if_not(mlx_has_gpu())
+  local_device(mlx_device())
+
+  mlx_device("gpu")
 
   fn <- function() {
     local_device("cpu")
+    expect_equal(mlx_device(), "cpu")
   }
   fn()
+  expect_equal(mlx_device(), "gpu")
 })
 
 test_that("local_device accepts streams", {

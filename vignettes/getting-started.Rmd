@@ -61,8 +61,16 @@ m <- matrix(1:12, nrow = 3, ncol = 4)
 x <- as_mlx(m)
 print(x)
 
-# Specify the current device explicitly (uses GPU if available, CPU otherwise)
-x_dev <- with_device(device, as_mlx(m))
+```
+
+Or use `mlx_vector()`, `mlx_matrix()` or `mlx_array()`:
+
+```{r}
+# like as_mlx(1:10) but more explicit
+mlx_vector(1:10)
+
+# From a matrix
+mlx_matrix(1:12, 3, 4)
 ```
 
 > **Precision note:** Numeric inputs use single precision (`float32`) by default.
@@ -79,9 +87,11 @@ MLX arrays use lazy evaluation - operations are recorded but not computed
 until needed:
 
 ```{r}
+
+x <- mlx_matrix(1:100, 10, 10)
+y <- mlx_matrix(101:200, 10, 10)
+
 # These operations are not computed immediately
-x <- as_mlx(matrix(1:100, 10, 10))
-y <- as_mlx(matrix(101:200, 10, 10))
 z <- x + y * 2
 
 # Force evaluation of a specific array
@@ -212,7 +222,7 @@ as.vector(cumsum(x))
 Subset MLX arrays similar to R:
 
 ```{r}
-x <- as_mlx(matrix(1:100, 10, 10))
+x <- mlx_matrix(1:100, 10, 10)
 
 # Select rows and columns
 x_sub <- x[1:5, 1:5]
@@ -232,11 +242,11 @@ Control whether computations run on GPU or CPU:
 # Check default device
 mlx_device()
 
-# Set to CPU for debugging
-mlx_device("cpu")
+a <- b <- mlx_matrix(1:4, 2, 2)
 
-# Create array while CPU is current
-x_cpu <- with_device("cpu", as_mlx(matrix(1:12, 3, 4)))
+# Run an operation on the CPU
+mlx_device("cpu")
+a %*% b
 
 # Set back to best available device
 mlx_device(device)
@@ -263,32 +273,12 @@ x1 <- as_mlx(m1)
 x2 <- as_mlx(m2)
 mlx_eval(x1)
 mlx_eval(x2)
-t2 <- system.time({
-  mlx_result <- x1 %*% x2
-  mlx_eval(mlx_result)
-  final <- as.matrix(mlx_result)
-})
+t2 <- system.time(
+  as.matrix(x1 %*% x2)
+)
 
 cat("Base R:", t1["elapsed"], "seconds\n")
 cat("MLX:", t2["elapsed"], "seconds\n")
 ```
 
-Note: This is an informal comparison, not a rigorous benchmark. Performance
-gains depend on array size, operation type, and hardware.
-
-## Best Practices
-
-1. **Keep data on GPU**: Minimize transfers between R and MLX
-2. **Use lazy evaluation**: Build computation graphs before evaluating
-3. **Batch operations**: Combine operations before forcing evaluation
-4. **Monitor memory**: GPU memory is limited; free unused arrays
-5. **Start with CPU**: Use CPU device for debugging, then switch to GPU
-
-## Limitations
-
-Current limitations in this initial version:
-
-- Apple Silicon only (no Intel Mac or other platforms)
-- 2D arrays (matrices) are primary focus
-- Limited indexing operations
-- No autodiff or gradient computation (planned for future release)
+For more information see the Benchmarks vignette.

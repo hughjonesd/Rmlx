@@ -89,10 +89,7 @@ test_that("boolean operands coerce for arithmetic", {
 
 test_that("binary operations align devices and dtypes", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_device()
-  on.exit(mlx_device(old_device))
-
-  mlx_device("gpu")
+  local_device("gpu")
 
   x_gpu <- as_mlx(matrix(1:4, 2, 2), dtype = "float32")
   y_cpu <- as_mlx(matrix(5:8, 2, 2))
@@ -123,9 +120,7 @@ test_that("arithmetic works on non-contiguous views", {
 
 test_that("logical operators work", {
   skip_if_not(mlx_has_gpu())
-  old_device <- mlx_device()
-  on.exit(mlx_device(old_device))
-  mlx_device("gpu")
+  local_device("gpu")
 
   a <- matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2)
   b <- matrix(c(TRUE, TRUE, FALSE, FALSE), 2, 2)

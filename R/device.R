@@ -127,12 +127,6 @@ local_device <- function(device, .local_envir = parent.frame()) {
   invisible(old_device)
 }
 
-with_optional_device <- function(device, code) {
-  if (is.null(device)) {
-    return(eval.parent(substitute(code)))
-  }
-  with_device(device, code)
-}
 
 #' Check if GPU backend is available
 #'

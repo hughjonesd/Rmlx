@@ -24,8 +24,7 @@ Eigen decomposition of Hermitian mlx arrays
 }
 \details{
 As of MLX 0.31.1, this operation only runs on CPU. Run it inside
-\code{\link[=with_device]{with_device()}} or \code{\link[=local_device]{local_device()}}, or pass \code{device = "cpu"} when the
-function exposes that argument.
+\code{\link[=with_device]{with_device()}} or \code{\link[=local_device]{local_device()}}, or pass \code{device = "cpu"}.
 }
 \examples{
 x <- mlx_matrix(c(2, 1, 1, 3), 2, 2)

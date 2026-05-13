@@ -124,8 +124,9 @@ instructions and troubleshooting.
 library(Rmlx)
 
 A <- matrix(rnorm(1e6), 1e3, 1e3)
-system.time(solve(A))
-system.time(solve(as_mlx(A)))
+B <- matrix(rnorm(1e6), 1e3, 1e3)
+system.time(A %*% B)
+system.time(as.matrix(as_mlx(A) %*% as_mlx(B)))
 
 ```
 
@@ -161,9 +162,6 @@ dev <- mlx_device()
 mlx_device("cpu")    # Switch to CPU
 mlx_device(dev)      # Back to GPU
 
-# Create while a specific device is current
-x_gpu <- with_device("gpu", as_mlx(matrix(1:12, 3, 4)))
-x_cpu <- with_device("cpu", as_mlx(matrix(1:12, 3, 4)))
 ```
 
 
@@ -209,8 +207,8 @@ as.matrix(lt)
 Many base R matrix functions have mlx-specific methods:
 
 ```{r}
-a <- as_mlx(matrix(1:6, 2, 3))
-b <- as_mlx(matrix(1:6, 3, 2))
+a <- mlx_matrix(1:6, 2, 3)
+b <- mlx_matrix(1:6, 3, 2)
 
 # rbind, cbind, transpose
 rbind(a, t(b))
@@ -221,7 +219,7 @@ c <- a %*% b
 as.matrix(c)
 
 # Reductions
-x <- as_mlx(matrix(1:25, 5, 5))
+x <- mlx_matrix(1:25, 5, 5)
 
 sum(a)
 mean(a)
@@ -229,12 +227,16 @@ colMeans(a)
 rowMeans(a)
 
 # Cumulative operations flatten column-major
-as.vector(cumsum(a))
+cumsum(a)
 
-qr_res <- qr(a)
-svd_res <- svd(a)
-chol_res <- chol(as_mlx(crossprod(matrix(1:6, 3, 2))))
-fft_res <- fft(a)
+
+# Some mlx operations only work on the cpu
+with_device("cpu", {
+  qr_res <- qr(a)
+  svd_res <- svd(a)
+  chol_res <- chol(crossprod(a))
+  fft_res <- fft(a)
+})
 
 qr_res$Q
 svd_res$d

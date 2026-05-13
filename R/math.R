@@ -92,7 +92,7 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE) {
   a <- as_mlx(a)
   b <- as_mlx(b)
 
-  target_dtype <- resolve_common_dtype(list(mlx_dtype(a), mlx_dtype(b)))
+  target_dtype <- promote_dtype(mlx_dtype(a), mlx_dtype(b))
   a <- mlx_cast(a, dtype = target_dtype)
   b <- mlx_cast(b, dtype = target_dtype)
 
@@ -131,7 +131,7 @@ mlx_allclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE) {
   a <- as_mlx(a)
   b <- as_mlx(b)
 
-  target_dtype <- resolve_common_dtype(list(mlx_dtype(a), mlx_dtype(b)))
+  target_dtype <- promote_dtype(mlx_dtype(a), mlx_dtype(b))
   a <- mlx_cast(a, dtype = target_dtype)
   b <- mlx_cast(b, dtype = target_dtype)
 

@@ -89,7 +89,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
     ))
   }
 
-  target_dtype <- resolve_common_dtype(list(mlx_dtype(x), mlx_dtype(y)))
+  target_dtype <- promote_dtype(mlx_dtype(x), mlx_dtype(y))
 
   x <- mlx_cast(x, dtype = target_dtype)
   y <- mlx_cast(y, dtype = target_dtype)
@@ -191,7 +191,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 .mlx_binary <- function(x, y, op) {
   x_dtype <- mlx_dtype(x)
   y_dtype <- mlx_dtype(y)
-  input_dtype <- resolve_common_dtype(list(x_dtype, y_dtype))
+  input_dtype <- promote_dtype(x_dtype, y_dtype)
 
   is_comparison <- op %in% c("==", "!=", "<", "<=", ">", ">=")
 
@@ -282,7 +282,7 @@ mlx_maximum <- function(x, y) {
   x <- operands[[1L]]
   y <- operands[[2L]]
 
-  result_dtype <- resolve_common_dtype(list(mlx_dtype(x), mlx_dtype(y)))
+  result_dtype <- promote_dtype(mlx_dtype(x), mlx_dtype(y))
 
   if (identical(result_dtype, "bool")) {
     result_dtype <- "float32"

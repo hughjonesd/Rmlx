@@ -64,8 +64,7 @@ NULL
 #' CPU-only MLX operation note
 #'
 #' @details As of MLX 0.31.1, this operation only runs on CPU. Run it inside
-#' [with_device()] or [local_device()], or pass `device = "cpu"` when the
-#' function exposes that argument.
+#' [with_device()] or [local_device()], or pass `device = "cpu"`.
 #' @name mlx_cpu_only_operation
 #' @keywords internal
 NULL

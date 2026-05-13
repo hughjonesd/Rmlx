@@ -17,30 +17,30 @@
 #'   solve(a, b)
 #' })
 solve.mlx <- function(a, b = NULL, ..., device = NULL) {
-  with_optional_device(device, {
-    a <- as_mlx(a)
-    target_dtype <- mlx_dtype(a)
-    if (!(target_dtype %in% c("float32", "float64", "complex64"))) {
-      target_dtype <- "float32"
-    }
+  if (! is.null(device)) local_device(device)
 
-    if (is.null(b)) {
-      a <- mlx_cast(a, dtype = target_dtype)
-      ptr <- cpp_mlx_solve(a$ptr, NULL, target_dtype)
+  a <- as_mlx(a)
+  target_dtype <- mlx_dtype(a)
+  if (!(target_dtype %in% c("float32", "float64", "complex64"))) {
+    target_dtype <- "float32"
+  }
+
+  if (is.null(b)) {
+    a <- mlx_cast(a, dtype = target_dtype)
+    ptr <- cpp_mlx_solve(a$ptr, NULL, target_dtype)
+  } else {
+    if (!is_mlx(b)) {
+      b <- as_mlx(b, dtype = target_dtype)
     } else {
-      if (!is_mlx(b)) {
-        b <- as_mlx(b, dtype = target_dtype)
-      } else {
-        target_dtype <- resolve_common_dtype(list(target_dtype, mlx_dtype(b)))
-        a <- mlx_cast(a, dtype = target_dtype)
-        b <- mlx_cast(b, dtype = target_dtype)
-      }
-
-      ptr <- cpp_mlx_solve(a$ptr, b$ptr, target_dtype)
+      target_dtype <- promote_dtype(target_dtype, mlx_dtype(b))
+      a <- mlx_cast(a, dtype = target_dtype)
+      b <- mlx_cast(b, dtype = target_dtype)
     }
 
-    new_mlx(ptr)
-  })
+    ptr <- cpp_mlx_solve(a$ptr, b$ptr, target_dtype)
+  }
+
+  new_mlx(ptr)
 }
 
 #' Kronecker product dispatcher
@@ -79,7 +79,7 @@ mlx_kron <- function(a, b) {
   a <- operands[[1L]]
   b <- operands[[2L]]
 
-  target_dtype <- resolve_common_dtype(list(mlx_dtype(a), mlx_dtype(b)))
+  target_dtype <- promote_dtype(mlx_dtype(a), mlx_dtype(b))
 
   a <- mlx_cast(a, dtype = target_dtype)
   b <- mlx_cast(b, dtype = target_dtype)
