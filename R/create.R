@@ -1,5 +1,7 @@
 #' Create arrays of zeros on MLX devices
 #'
+#' @inherit mlx_float64_cpu_internal details
+#'
 #' @inheritParams common_params
 #' @return An mlx array filled with zeros.
 #' @seealso [mlx.core.zeros](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros)
@@ -12,6 +14,7 @@ mlx_zeros <- function(dim,
                                "uint8", "uint16", "uint32", "uint64", "bool", "complex64")) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
+  local_float64_cpu(dtype)
   ptr <- cpp_mlx_zeros(dim, dtype)
   new_mlx(ptr)
 }
@@ -30,6 +33,7 @@ mlx_ones <- function(dim,
                               "uint8", "uint16", "uint32", "uint64", "bool", "complex64")) {
   dim <- validate_shape(dim)
   dtype <- match.arg(dtype)
+  local_float64_cpu(dtype)
   ptr <- cpp_mlx_ones(dim, dtype)
   new_mlx(ptr)
 }
@@ -39,6 +43,8 @@ mlx_ones <- function(dim,
 #' `mlx_zeros_like()` mirrors [`mlx.core.zeros_like()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.zeros_like):
 #' it creates a zero-filled array matching the source array's shape. Optionally override the dtype
 #' or dtype.
+#'
+#' @inherit mlx_float64_cpu_internal details
 #'
 #' @inheritParams mlx_array_required
 #' @inheritParams common_params
@@ -62,6 +68,7 @@ mlx_zeros_like <- function(x,
     match.arg(dtype, valid_dtypes)
   }
 
+  local_float64_cpu(dtype)
   ptr <- cpp_mlx_zeros_like(x$ptr, dtype)
   new_mlx(ptr)
 }
@@ -70,6 +77,8 @@ mlx_zeros_like <- function(x,
 #'
 #' `mlx_ones_like()` mirrors [`mlx.core.ones_like()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like),
 #' creating an array of ones with the same shape. Optionally override dtype.
+#'
+#' @inherit mlx_float64_cpu_internal details
 #'
 #' @inheritParams mlx_array_required
 #' @inheritParams common_params
@@ -93,11 +102,14 @@ mlx_ones_like <- function(x,
     match.arg(dtype, valid_dtypes)
   }
 
+  local_float64_cpu(dtype)
   ptr <- cpp_mlx_ones_like(x$ptr, dtype)
   new_mlx(ptr)
 }
 
 #' Fill an mlx array with a constant value
+#'
+#' @inherit mlx_float64_cpu_internal details
 #'
 #' @param value Scalar value used to fill the array. Numeric, logical, or complex.
 #' @inheritParams mlx_zeros
@@ -133,11 +145,14 @@ mlx_full <- function(dim,
     stop("Unsupported dtype: ", dtype, call. = FALSE)
   }
 
+  local_float64_cpu(dtype)
   ptr <- cpp_mlx_full(dim, value, dtype)
   new_mlx(ptr)
 }
 
 #' Identity-like matrices on MLX devices
+#'
+#' @inherit mlx_float64_cpu_internal details
 #'
 #' @param n Number of rows.
 #' @param m Optional number of columns (defaults to `n`).
@@ -166,6 +181,7 @@ mlx_eye <- function(n,
   }
 
   dtype <- match.arg(dtype)
+  local_float64_cpu(dtype)
   ptr <- cpp_mlx_eye(n, m, k, dtype)
   new_mlx(ptr)
 }
@@ -175,6 +191,8 @@ mlx_eye <- function(n,
 #' `mlx_array()` is a low-level constructor that skips `as_mlx()`'s type inference
 #' and dimension guessing. Supply the raw payload vector plus an explicit shape
 #' and it pipes the data straight into MLX.
+#'
+#' @inherit mlx_float64_cpu_internal details
 #'
 #' @inheritParams common_params
 #' @param data Numeric, logical, or complex vector. `data` is recycled to
@@ -234,6 +252,7 @@ mlx_array <- function(data,
   }
 
   payload <- coerce_payload(data_vec, dtype_val)
+  local_float64_cpu(dtype_val)
   ptr <- cpp_mlx_from_r(payload, as.integer(dim), dtype_val)
   new_mlx(ptr)
 }
@@ -335,6 +354,8 @@ mlx_scalar <- function(value,
 
 #' Identity matrices on MLX devices
 #'
+#' @inherit mlx_float64_cpu_internal details
+#'
 #' @param n Size of the square matrix.
 #' @inheritParams mlx_eye
 #' @return An mlx identity matrix.
@@ -350,6 +371,7 @@ mlx_identity <- function(n,
   }
 
   dtype <- match.arg(dtype)
+  local_float64_cpu(dtype)
   ptr <- cpp_mlx_identity(n, dtype)
   new_mlx(ptr)
 }
@@ -359,6 +381,8 @@ mlx_identity <- function(n,
 #' `mlx_tri()` creates a lower-triangular mask (ones on and below a diagonal,
 #' zeros elsewhere). `mlx_tril()` and `mlx_triu()` retain only the lower or
 #' upper triangular part of an existing array, respectively.
+#'
+#' @inherit mlx_float64_cpu_internal details
 #'
 #' @inheritParams mlx_eye
 #' @param m Optional number of columns (defaults to `n` for square output).
@@ -395,6 +419,7 @@ mlx_tri <- function(n,
   }
 
   dtype <- match.arg(dtype)
+  local_float64_cpu(dtype)
   ptr <- cpp_mlx_tri(n, m_arg, k, dtype)
   new_mlx(ptr)
 }
@@ -468,6 +493,8 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
 #' `mlx_arange()` creates evenly spaced values starting at `start`, stepping by `step`,
 #' up to and including `stop` (if exactly reachable). This matches R's [base::seq()] behavior.
 #'
+#' @inherit mlx_float64_cpu_internal details
+#'
 #' @param start Starting value.
 #' @param stop Upper bound (included if exactly reachable by the step sequence).
 #' @param step Step size (defaults to 1).
@@ -503,6 +530,7 @@ mlx_arange <- function(start,
   }
 
   dtype <- match.arg(dtype)
+  local_float64_cpu(dtype)
 
   # Convert to exclusive stop for underlying MLX function
   # Add a tiny epsilon to include stop if exactly reachable (like seq())
@@ -522,6 +550,8 @@ mlx_arange <- function(start,
 #' `mlx_linspace()` creates `num` evenly spaced values from `start` to `stop`, inclusive.
 #' Unlike `mlx_arange()`, you specify how many samples you want rather than the step size.
 #'
+#' @inherit mlx_float64_cpu_internal details
+#'
 #' @param start Starting value.
 #' @param stop Final value (inclusive).
 #' @param num Number of samples to generate.
@@ -540,6 +570,7 @@ mlx_linspace <- function(start,
   }
 
   dtype <- match.arg(dtype)
+  local_float64_cpu(dtype)
 
   ptr <- cpp_mlx_linspace(
     as.numeric(start),

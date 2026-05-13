@@ -19,6 +19,12 @@ A vector, matrix, or array depending on the dimensions of \code{x}.
 \code{NULL} return a plain vector, while higher-dimensional inputs return matrices
 or arrays.
 }
+\details{
+MLX does not support \code{float64} operations on GPU. When this function
+creates a \code{float64} array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current \code{\link[=mlx_device]{mlx_device()}}.
+}
 \examples{
 v <- as_mlx(1:3)
 as_r(v)      # numeric vector

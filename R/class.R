@@ -27,7 +27,15 @@ coerce_payload <- function(x, dtype) {
   )
 }
 
+local_float64_cpu <- function(dtype, .local_envir = parent.frame()) {
+  if (identical(dtype, "float64")) {
+    local_device("cpu", .local_envir = .local_envir)
+  }
+}
+
 #' Create MLX array from R object
+#'
+#' @inherit mlx_float64_cpu_internal details
 #'
 #' @inheritParams common_params
 #' @param x Numeric, logical, or complex vector, matrix, or array to convert
@@ -132,6 +140,8 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
   }
   x_payload <- coerce_payload(x, dtype_val)
 
+  local_float64_cpu(dtype_val)
+
   # Create MLX array via C++
   ptr <- cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val)
 
@@ -162,6 +172,8 @@ mlx_eval <- function(x) {
 #' MLX arrays with other than 2 dimensions are converted to
 #' a 1 column matrix, with a warning.
 #'
+#' @inherit mlx_float64_cpu_internal details
+#'
 #' @inheritParams mlx_array_required
 #' @inheritParams ellipsis_ignored
 #' @return A vector, matrix or array (numeric or logical depending on dtype).
@@ -185,6 +197,8 @@ as.matrix.mlx <- function(x, ...) {
 #' `NULL` return a plain vector, while higher-dimensional inputs return matrices
 #' or arrays.
 #'
+#' @inherit mlx_float64_cpu_internal details
+#'
 #' @inheritParams mlx_array_required
 #' @inheritParams ellipsis_ignored
 #' @return A vector, matrix, or array depending on the dimensions of `x`.
@@ -195,6 +209,7 @@ as.matrix.mlx <- function(x, ...) {
 #' as_r(v)      # numeric vector
 as_r <- function(x, ...) {
   stopifnot(is_mlx(x))
+  local_float64_cpu(mlx_dtype(x))
   mlx_eval(x)
   out <- cpp_mlx_to_r(x$ptr)
   if (length(dim(x)) == 0L) {
@@ -220,6 +235,8 @@ as_r <- function(x, ...) {
 #' Always returns an R array using the MLX shape. One-dimensional MLX inputs
 #' become 1-D arrays (with `dim` set to their length) instead of plain vectors.
 #'
+#' @inherit mlx_float64_cpu_internal details
+#'
 #' @inheritParams mlx_array_required
 #' @inheritParams ellipsis_ignored
 #' @return An R array with the same shape as the MLX input.
@@ -233,6 +250,7 @@ as_r <- function(x, ...) {
 #' as.array(v)  # 1-D array with dim 3
 as.array.mlx <- function(x, ...) {
   stopifnot(is_mlx(x))
+  local_float64_cpu(mlx_dtype(x))
   mlx_eval(x)
   out <- cpp_mlx_to_r(x$ptr)
 
@@ -257,6 +275,8 @@ as.array.mlx <- function(x, ...) {
 #'
 #' Converts an MLX array to an R vector. Multi-dimensional arrays
 #' are flattened in column-major order (R's default).
+#'
+#' @inherit mlx_float64_cpu_internal details
 #'
 #' @inheritParams mlx_array_required
 #' @param mode Character string specifying the type of vector to return (passed to [base::as.vector()])

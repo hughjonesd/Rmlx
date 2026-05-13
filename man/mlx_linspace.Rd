@@ -29,6 +29,12 @@ A 1D mlx array.
 \code{mlx_linspace()} creates \code{num} evenly spaced values from \code{start} to \code{stop}, inclusive.
 Unlike \code{mlx_arange()}, you specify how many samples you want rather than the step size.
 }
+\details{
+MLX does not support \code{float64} operations on GPU. When this function
+creates a \code{float64} array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current \code{\link[=mlx_device]{mlx_device()}}.
+}
 \examples{
 mlx_linspace(0, 1, num = 5)
 }

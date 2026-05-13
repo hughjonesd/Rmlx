@@ -68,3 +68,13 @@ NULL
 #' @name mlx_cpu_only_operation
 #' @keywords internal
 NULL
+
+#' Float64 creation and conversion note
+#'
+#' @details MLX does not support `float64` operations on GPU. When this function
+#' creates a `float64` array or converts one back to R, Rmlx temporarily switches
+#' only that internal creation or layout work to CPU. Later operations on the
+#' returned array still use the current [mlx_device()].
+#' @name mlx_float64_cpu_internal
+#' @keywords internal
+NULL

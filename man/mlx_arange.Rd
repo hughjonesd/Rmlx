@@ -35,6 +35,12 @@ A 1D mlx array.
 \code{mlx_arange()} creates evenly spaced values starting at \code{start}, stepping by \code{step},
 up to and including \code{stop} (if exactly reachable). This matches R's \code{\link[base:seq]{base::seq()}} behavior.
 }
+\details{
+MLX does not support \code{float64} operations on GPU. When this function
+creates a \code{float64} array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current \code{\link[=mlx_device]{mlx_device()}}.
+}
 \section{Difference from Python/C++}{
 
 Unlike Python's \code{range()} and \code{numpy.arange()} which use an exclusive upper bound,

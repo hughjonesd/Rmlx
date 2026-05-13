@@ -18,6 +18,12 @@ An R array with the same shape as the MLX input.
 Always returns an R array using the MLX shape. One-dimensional MLX inputs
 become 1-D arrays (with \code{dim} set to their length) instead of plain vectors.
 }
+\details{
+MLX does not support \code{float64} operations on GPU. When this function
+creates a \code{float64} array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current \code{\link[=mlx_device]{mlx_device()}}.
+}
 \examples{
 x <- mlx_matrix(1:8, 2, 4)
 as.array(x)

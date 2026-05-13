@@ -25,6 +25,12 @@ An mlx array of ones matching \code{x}.
 \code{mlx_ones_like()} mirrors \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.ones_like}{\code{mlx.core.ones_like()}},
 creating an array of ones with the same shape. Optionally override dtype.
 }
+\details{
+MLX does not support \code{float64} operations on GPU. When this function
+creates a \code{float64} array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current \code{\link[=mlx_device]{mlx_device()}}.
+}
 \examples{
 base <- mlx_full(c(2, 3), 5)
 mlx_ones_like(base)

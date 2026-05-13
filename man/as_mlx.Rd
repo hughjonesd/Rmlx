@@ -64,6 +64,12 @@ use \verb{[mlx_array(..., allow_scalar = TRUE)][mlx_array()]}.
 \description{
 Create MLX array from R object
 }
+\details{
+MLX does not support \code{float64} operations on GPU. When this function
+creates a \code{float64} array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current \code{\link[=mlx_device]{mlx_device()}}.
+}
 \examples{
 # Default float32 for numeric
 x <- as_mlx(c(1.5, 2.5, 3.5))

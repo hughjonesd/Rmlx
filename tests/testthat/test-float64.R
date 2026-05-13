@@ -73,14 +73,76 @@ test_that("float64 arithmetic and linear algebra stay on CPU", {
 })
 
 
-test_that("float64 errors when the current device is GPU", {
+test_that("float64 array creation works when the current device is GPU", {
+  skip_if_not(mlx_has_gpu())
+
+  constructors <- list(
+    as_mlx = function() as_mlx(1:4, dtype = "float64"),
+    mlx_array = function() mlx_array(1:4, dim = c(2, 2), dtype = "float64"),
+    mlx_vector = function() mlx_vector(c(1, 2), dtype = "float64"),
+    mlx_matrix = function() mlx_matrix(1:4, nrow = 2, dtype = "float64"),
+    mlx_scalar = function() mlx_scalar(1, dtype = "float64"),
+    mlx_zeros = function() mlx_zeros(c(2, 2), dtype = "float64"),
+    mlx_ones = function() mlx_ones(c(2, 2), dtype = "float64"),
+    mlx_full = function() mlx_full(c(2, 2), 1, dtype = "float64"),
+    mlx_eye = function() mlx_eye(2, dtype = "float64"),
+    mlx_identity = function() mlx_identity(2, dtype = "float64"),
+    mlx_tri = function() mlx_tri(2, dtype = "float64"),
+    mlx_arange = function() mlx_arange(1, 3, dtype = "float64"),
+    mlx_linspace = function() mlx_linspace(0, 1, dtype = "float64")
+  )
+
+  with_device("gpu", {
+    created <- lapply(names(constructors), function(name) {
+      result <- tryCatch(constructors[[name]](), error = identity)
+      expect_false(inherits(result, "error"), info = name)
+      result
+    })
+  })
+
+  created <- Filter(is_mlx, created)
+  expect_true(all(vapply(created, mlx_dtype, character(1)) == "float64"))
+})
+
+test_that("float64 arrays convert to R when the current device is GPU", {
+  skip_if_not(mlx_has_gpu())
+
+  values <- c(1, 2 + 2^-40, pi)
+  vec <- with_device("cpu", as_mlx(values, dtype = "float64"))
+  mat_data <- matrix(values[rep(1:3, 2)], 2, 3)
+  mat <- with_device("cpu", as_mlx(mat_data, dtype = "float64"))
+  arr_data <- array(seq(1, 8) + 2^-40, dim = c(2, 2, 2))
+  arr <- with_device("cpu", as_mlx(arr_data, dtype = "float64"))
+
+  with_device("gpu", {
+    vec_r <- tryCatch(as.vector(vec), error = identity)
+    expect_false(inherits(vec_r, "error"), info = "as.vector")
+    if (!inherits(vec_r, "error")) {
+      expect_equal(vec_r, values, tolerance = 1e-12)
+    }
+
+    mat_r <- tryCatch(as.matrix(mat), error = identity)
+    expect_false(inherits(mat_r, "error"), info = "as.matrix")
+    if (!inherits(mat_r, "error")) {
+      expect_equal(mat_r, mat_data, tolerance = 1e-12)
+    }
+
+    arr_r <- tryCatch(as.array(arr), error = identity)
+    expect_false(inherits(arr_r, "error"), info = "as.array")
+    if (!inherits(arr_r, "error")) {
+      expect_equal(arr_r, arr_data, tolerance = 1e-12)
+    }
+  })
+})
+
+test_that("float64 operations still error when the current device is GPU", {
   skip_if_not(mlx_has_gpu())
   x <- with_device("cpu", as_mlx(1:3, dtype = "float64"))
 
   with_device("gpu", {
-    expect_error(x + 1, "float64", fixed = TRUE)
-    expect_error(mlx_stack(x, x), "float64", fixed = TRUE)
-    expect_error(mlx_where(x > 1, x, x), "float64", fixed = TRUE)
+    expect_error(as.vector(x + 1), "float64", fixed = TRUE)
+    expect_error(as.matrix(mlx_stack(x, x)), "float64", fixed = TRUE)
+    expect_error(as.vector(mlx_where(x > 1, x, x)), "float64", fixed = TRUE)
   })
 })
 

@@ -26,6 +26,12 @@ An mlx array filled with the supplied value.
 \description{
 Fill an mlx array with a constant value
 }
+\details{
+MLX does not support \code{float64} operations on GPU. When this function
+creates a \code{float64} array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current \code{\link[=mlx_device]{mlx_device()}}.
+}
 \examples{
 filled <- mlx_full(c(2, 2), 3.14)
 complex_full <- mlx_full(c(2, 2), 1+2i, dtype = "complex64")

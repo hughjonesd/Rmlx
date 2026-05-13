@@ -18,6 +18,12 @@ A vector, matrix or array (numeric or logical depending on dtype).
 MLX arrays with other than 2 dimensions are converted to
 a 1 column matrix, with a warning.
 }
+\details{
+MLX does not support \code{float64} operations on GPU. When this function
+creates a \code{float64} array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current \code{\link[=mlx_device]{mlx_device()}}.
+}
 \examples{
 x <- mlx_matrix(1:4, 2, 2)
 as.matrix(x)

@@ -26,6 +26,12 @@ An mlx array of zeros matching \code{x}.
 it creates a zero-filled array matching the source array's shape. Optionally override the dtype
 or dtype.
 }
+\details{
+MLX does not support \code{float64} operations on GPU. When this function
+creates a \code{float64} array or converts one back to R, Rmlx temporarily switches
+only that internal creation or layout work to CPU. Later operations on the
+returned array still use the current \code{\link[=mlx_device]{mlx_device()}}.
+}
 \examples{
 base <- mlx_ones(c(2, 2))
 mlx_zeros_like(base)
