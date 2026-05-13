@@ -74,6 +74,7 @@ kronecker.mlx "Kronecker method for mlx objects (S3 dispatch)" TRUE TRUE
 length.mlx "Get length of MLX array" TRUE FALSE
 lex_sort "Lexicographically sort rows of x" TRUE FALSE
 local_device "Set the current MLX device for the current scope" TRUE TRUE
+local_float64_cpu NA NA FALSE
 Math.mlx "Math operations for MLX arrays" TRUE FALSE
 matrix_assign NA NA FALSE
 matrix_subset NA NA FALSE
@@ -313,4 +314,3 @@ validate_shape "Validate and coerce shape specification" TRUE FALSE
 vectors_assign NA NA FALSE
 vectors_subset NA NA FALSE
 with_device "Temporarily set the current MLX device or stream" TRUE TRUE
-with_optional_device NA NA FALSE
