@@ -112,7 +112,7 @@ each iteration, we:
 ``` r
 
 w_sgd <- train_sgd()
-#> Iteration 1000 - Loss: 0.4928489
+#> Iteration 1000 - Loss: 0.5005606
 ```
 
 ## Method 2: Closed-form Regression via Matrix Algebra
@@ -139,7 +139,7 @@ mlx_eval(w_closed)
 closed_error <- w_closed - w_star
 closed_error_norm <- sqrt(sum(closed_error * closed_error))
 cat("Closed-form ||w - w*|| =", as.vector(closed_error_norm), "\n")
-#> Closed-form ||w - w*|| = 0.09398162
+#> Closed-form ||w - w*|| = 0.09705976
 ```
 
 ## Accelerating the Closed-form Solution with `mlx_compile()`
@@ -164,7 +164,7 @@ mlx_eval(w_compiled)
 compiled_error <- w_compiled - w_star
 compiled_error_norm <- sqrt(sum(compiled_error * compiled_error))
 cat("Compiled closed-form ||w - w*|| =", as.vector(compiled_error_norm), "\n")
-#> Compiled closed-form ||w - w*|| = 0.09398162
+#> Compiled closed-form ||w - w*|| = 0.09705976
 ```
 
 ## Accuracy and Performance Comparison
@@ -233,10 +233,10 @@ knitr::kable(results, digits = 4)
 
 | method                     | median_time | parameter_error |
 |:---------------------------|------------:|----------------:|
-| SGD                        |       2.26s |           0.094 |
-| MLX closed form            |     23.25ms |           0.094 |
-| MLX closed form (compiled) |     18.57ms |           0.094 |
-| Base R                     |     90.79ms |           0.094 |
+| SGD                        |       2.99s |          0.0971 |
+| MLX closed form            |     20.93ms |          0.0971 |
+| MLX closed form (compiled) |     19.57ms |          0.0971 |
+| Base R                     |      81.1ms |          0.0971 |
 
 ## Device Selection
 
