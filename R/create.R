@@ -200,6 +200,7 @@ mlx_eye <- function(n,
 #'   tile into the dimensions exactly).
 #' @param dim Integer vector of array dimensions. Set `dim = integer(0)` for
 #'   a scalar, in which case `data` must be length 1.
+#' @param dimnames Optional list of character vectors naming each dimension.
 #' @return An `mlx` array with the requested shape.
 #' @export
 #' @examples
@@ -207,7 +208,8 @@ mlx_eye <- function(n,
 #'mlx_array(payload, dim = c(2, 3))
 mlx_array <- function(data,
                       dim,
-                      dtype = NULL) {
+                      dtype = NULL,
+                      dimnames = NULL) {
   if (!is.atomic(data) || is.list(data)) {
     stop("data must be an atomic vector.", call. = FALSE)
   }
@@ -254,7 +256,7 @@ mlx_array <- function(data,
   payload <- coerce_payload(data_vec, dtype_val)
   local_float64_cpu(dtype_val)
   ptr <- cpp_mlx_from_r(payload, as.integer(dim), dtype_val)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames)
 }
 
 #' Construct MLX matrices efficiently
@@ -274,7 +276,8 @@ mlx_matrix <- function(data,
                        nrow = NULL,
                        ncol = NULL,
                        byrow = FALSE,
-                       dtype = NULL) {
+                       dtype = NULL,
+                       dimnames = NULL) {
   data_vec <- as.vector(data)
   total <- length(data_vec)
 
@@ -308,7 +311,7 @@ mlx_matrix <- function(data,
     data_vec <- as.vector(matrix(data_vec, nrow = nrow, ncol = ncol, byrow = TRUE))
   }
 
-  mlx_array(data_vec, c(nrow, ncol), dtype = dtype)
+  mlx_array(data_vec, c(nrow, ncol), dtype = dtype, dimnames = dimnames)
 }
 
 #' Construct MLX vectors
@@ -317,10 +320,12 @@ mlx_matrix <- function(data,
 #'
 #' @inheritParams mlx_array
 #' @param data Atomic vector providing the elements (recycling is not allowed).
+#' @param names Optional character vector naming vector elements.
 #' @return An `mlx` vector with `dim = length(data)`.
 #' @export
 mlx_vector <- function(data,
-                       dtype = NULL) {
+                       dtype = NULL,
+                       names = NULL) {
   if (!is.atomic(data) || is.list(data)) {
     stop("data must be an atomic vector.", call. = FALSE)
   }
@@ -330,7 +335,8 @@ mlx_vector <- function(data,
     stop("data must contain at least one element.", call. = FALSE)
   }
 
-  mlx_array(data_vec, length(data_vec), dtype = dtype)
+  mlx_array(data_vec, length(data_vec), dtype = dtype,
+            dimnames = if (is.null(names)) NULL else list(names))
 }
 
 #' Construct MLX scalars

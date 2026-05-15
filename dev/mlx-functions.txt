@@ -48,6 +48,8 @@ diag.default NA TRUE FALSE
 diag.mlx NA TRUE FALSE
 dim.mlx "Get dimensions of MLX array" TRUE FALSE
 dim<-.mlx "Set dimensions of MLX array" TRUE FALSE
+dimnames.mlx "Dimnames and names for MLX arrays" TRUE FALSE
+dimnames<-.mlx NA TRUE FALSE
 drop "Drop singleton dimensions" TRUE TRUE
 drop.default NA TRUE FALSE
 drop.mlx NA TRUE FALSE
@@ -268,6 +270,8 @@ mlx_vector "Construct MLX vectors" TRUE TRUE
 mlx_where "Elementwise conditional selection" TRUE TRUE
 mlx_zeros "Create arrays of zeros on MLX devices" TRUE TRUE
 mlx_zeros_like "Zeros shaped like an existing mlx array" TRUE TRUE
+names.mlx NA TRUE FALSE
+names<-.mlx NA TRUE FALSE
 new_mlx "Internal constructor for mlx objects" TRUE FALSE
 new_mlx_module "Internal helpers for mlx modules" TRUE FALSE
 normalize_array_list NA NA FALSE
@@ -303,6 +307,7 @@ rowSums.mlx NA TRUE FALSE
 scale.mlx "Scale mlx arrays" TRUE FALSE
 solve.mlx "Solve a system of linear equations" TRUE FALSE
 str.mlx "Object structure for MLX array" TRUE FALSE
+subset_dimnames NA NA FALSE
 Summary.mlx "Summary operations for MLX arrays" TRUE FALSE
 svd "Singular value decomposition" TRUE TRUE
 svd.default NA TRUE FALSE

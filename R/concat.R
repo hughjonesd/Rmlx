@@ -55,7 +55,41 @@ bind_along_axis <- function(objs, axis) {
   axis_lengths <- vapply(aligned, function(x) dim(x)[axis], integer(1))
   new_dim <- dim(aligned[[1L]])
   new_dim[axis] <- sum(axis_lengths)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = .mlx_bind_dimnames(aligned, axis))
+}
+
+.mlx_bind_dimnames <- function(objs, axis) {
+  ref_shape <- mlx_shape(objs[[1L]])
+  ndim <- length(ref_shape)
+  out <- vector("list", ndim)
+
+  for (ax in seq_len(ndim)) {
+    dns <- lapply(objs, function(obj) {
+      dn <- dimnames(obj)
+      if (is.null(dn)) NULL else dn[[ax]]
+    })
+
+    if (ax == axis) {
+      if (all(vapply(dns, is.null, logical(1)))) {
+        out[ax] <- list(NULL)
+      } else {
+        pieces <- Map(function(nm, obj) {
+          nm %||% rep.int(NA_character_, mlx_shape(obj)[[ax]])
+        }, dns, objs)
+        out[[ax]] <- unlist(pieces, use.names = FALSE)
+      }
+      next
+    }
+
+    first <- dns[[1L]]
+    if (!is.null(first) && all(vapply(dns, identical, logical(1), y = first))) {
+      out[[ax]] <- first
+    } else {
+      out[ax] <- list(NULL)
+    }
+  }
+
+  if (all(vapply(out, is.null, logical(1)))) NULL else out
 }
 
 #' Row-bind mlx arrays

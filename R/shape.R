@@ -25,7 +25,7 @@ mlx_cast <- function(x, dtype = NULL) {
     return(x)
   }
   ptr <- cpp_mlx_cast(x$ptr, dtype)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Normalize axes for insertion operations
@@ -126,13 +126,24 @@ drop.mlx <- function(x) {
 #' mlx_squeeze(x, axes = 1)
 mlx_squeeze <- function(x, axes = NULL) {
   x <- as_mlx(x)
+  old_shape <- mlx_shape(x)
   if (is.null(axes)) {
+    removed <- which(old_shape == 1L)
     ptr <- cpp_mlx_squeeze(x$ptr, NULL)
   } else {
     axes_idx <- normalize_axes(axes, x)
+    removed <- axes_idx + 1L
     ptr <- cpp_mlx_squeeze(x$ptr, axes_idx)
   }
-  new_mlx(ptr)
+  dn <- dimnames(x)
+  new_dn <- NULL
+  if (!is.null(dn)) {
+    keep <- setdiff(seq_along(old_shape), removed)
+    if (length(keep)) {
+      new_dn <- dn[keep]
+    }
+  }
+  new_mlx(ptr, dimnames = new_dn)
 }
 
 #' Insert singleton dimensions
@@ -560,6 +571,10 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
       current <- append(current, axis_val, after = i - 1L)
     }
   }
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    dimnames(result) <- dn[perm]
+  }
   result
 }
 
@@ -578,7 +593,7 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
 mlx_contiguous <- function(x) {
   x <- as_mlx(x)
   ptr <- cpp_mlx_contiguous(x$ptr)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Flatten axes of an mlx array
@@ -655,7 +670,11 @@ mlx_swapaxes <- function(x, axis1, axis2) {
   axis2_idx <- normalize_axis_single(axis2, x)
 
   ptr <- cpp_mlx_swapaxes(x$ptr, axis1_idx, axis2_idx)
-  new_mlx(ptr)
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    dn[c(axis1, axis2)] <- dn[c(axis2, axis1)]
+  }
+  new_mlx(ptr, dimnames = dn)
 }
 
 #' Construct coordinate arrays from input vectors

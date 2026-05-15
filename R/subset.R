@@ -15,8 +15,7 @@
 #'   subsetting is a flat mlx vector.
 #' * `mlx` vectors, logical masks, and matrices behave the same as their R equivalents.
 #' * Duplicate assignments like `x[c(1,1)] <- 2:3` are undefined behaviour.
-#' * Character indices are not supported as MLX has no concept
-#'   of dimension names.
+#' * Character indices match against the relevant axis dimnames.
 #'
 #' @inheritParams common_params
 #' @param ... Indices for each dimension. Provide one per axis; omitted indices
@@ -122,7 +121,10 @@ vectors_subset <- function(x, idx_list) {
   active_axes <- which(!vapply(idx_list, is.null, logical(1)))
   if (length(active_axes) == 1L && length(shape) <= 2L) {
     axis <- active_axes[[1L]]
-    idx <- normalize_index(idx_list[[axis]], shape[[axis]], assign = FALSE)
+    idx <- normalize_index(
+      idx_list[[axis]], shape[[axis]], assign = FALSE,
+      names = dimnames(x)[[axis]]
+    )
     idx0 <- if (is.null(idx)) {
       integer(0)
     } else {
@@ -130,17 +132,23 @@ vectors_subset <- function(x, idx_list) {
     }
     idx_arg <- if (is_mlx(idx0)) idx0$ptr else as.integer(idx0)
     ptr <- cpp_mlx_take(x$ptr, idx_arg, axis - 1L)
-    return(new_mlx(ptr))
+    return(new_mlx(ptr, dimnames = subset_dimnames(x, idx_list)))
   }
 
-  idx_list <- mapply(normalize_index, idx_list, shape, SIMPLIFY = FALSE,
-                     MoreArgs = list(assign = FALSE))
+  idx_list <- mapply(
+    function(idx, len, axis) {
+      normalize_index(idx, len, assign = FALSE, names = dimnames(x)[[axis]])
+    },
+    idx_list, shape, seq_along(shape), SIMPLIFY = FALSE
+  )
   idx_norm <- lapply(idx_list, function (x) x - 1L)
 
   idx_grids <- mlx_meshgrid(idx_norm, sparse = FALSE, indexing = "ij")
   idx_grids <- lapply(idx_grids, mlx_cast, dtype = "int32")
 
-  gather_for_subset(x, idx_grids)
+  out <- gather_for_subset(x, idx_grids)
+  dimnames(out) <- subset_dimnames(x, idx_list)
+  out
 }
 
 check_matrix_index <- function(idx_mat, shape, assign) {
@@ -176,4 +184,33 @@ gather_for_subset <- function(x, idx_list) {
   res <- mlx_squeeze(res, axes = added_axes)
 
   res
+}
+
+subset_dimnames <- function(x, idx_list) {
+  dn <- dimnames(x)
+  if (is.null(dn)) {
+    return(NULL)
+  }
+  shape <- mlx_shape(x)
+  out <- vector("list", length(shape))
+  for (axis in seq_along(shape)) {
+    axis_names <- dn[[axis]]
+    if (is.null(axis_names)) {
+      out[axis] <- list(NULL)
+    } else {
+      idx <- idx_list[[axis]]
+      if (is.null(idx)) {
+        idx <- seq_len(shape[[axis]])
+      } else if (is_mlx(idx)) {
+        idx <- if (identical(mlx_dtype(idx), "bool")) {
+          as.logical(idx)
+        } else {
+          as.integer(as.vector(idx))
+        }
+      }
+      out[[axis]] <- axis_names[idx]
+    }
+  }
+  names(out) <- names(dn)
+  if (all(vapply(out, is.null, logical(1)))) NULL else out
 }

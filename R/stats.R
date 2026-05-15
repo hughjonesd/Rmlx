@@ -245,7 +245,11 @@ colSums.mlx <- function(x, na.rm = FALSE, dims = 1, ...) {
 t.mlx <- function(x) {
   # Layout conversion (physical reordering) happens at boundaries during copy
   ptr <- cpp_mlx_transpose(x$ptr)
-  new_mlx(ptr)
+  dn <- dimnames(x)
+  if (!is.null(dn) && length(dn) >= 2L) {
+    dn[1:2] <- dn[2:1]
+  }
+  new_mlx(ptr, dimnames = dn)
 }
 
 #' Cross product
@@ -309,7 +313,16 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
   ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
-  new_mlx(ptr)
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    if (isTRUE(drop)) {
+      dn <- dn[-axis]
+      if (!length(dn)) dn <- NULL
+    } else {
+      dn[axis] <- list(NULL)
+    }
+  }
+  new_mlx(ptr, dimnames = dn)
 }
 
 #' Reduce an mlx array along multiple axes

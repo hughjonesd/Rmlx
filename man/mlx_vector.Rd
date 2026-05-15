@@ -4,7 +4,7 @@
 \alias{mlx_vector}
 \title{Construct MLX vectors}
 \usage{
-mlx_vector(data, dtype = NULL)
+mlx_vector(data, dtype = NULL, names = NULL)
 }
 \arguments{
 \item{data}{Atomic vector providing the elements (recycling is not allowed).}
@@ -17,6 +17,8 @@ mlx_vector(data, dtype = NULL)
 }
 
 Not all functions support all types. See individual function documentation.}
+
+\item{names}{Optional character vector naming vector elements.}
 }
 \value{
 An \code{mlx} vector with \code{dim = length(data)}.
