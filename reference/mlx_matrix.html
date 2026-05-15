@@ -46,7 +46,14 @@ Supply <code>nrow</code> or <code>ncol</code> (the other may be inferred from <c
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_matrix</span><span class="op">(</span><span class="va">data</span>, nrow <span class="op">=</span> <span class="cn">NULL</span>, ncol <span class="op">=</span> <span class="cn">NULL</span>, byrow <span class="op">=</span> <span class="cn">FALSE</span>, dtype <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_matrix</span><span class="op">(</span></span>
+<span>  <span class="va">data</span>,</span>
+<span>  nrow <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  ncol <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  byrow <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  dtype <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dimnames <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -72,6 +79,10 @@ tile into the dimensions exactly).</p></dd>
 <li><p>Integer: <code>"int8"</code>, <code>"int16"</code>, <code>"int32"</code>, <code>"int64"</code>, <code>"uint8"</code>, <code>"uint16"</code>, <code>"uint32"</code>, <code>"uint64"</code></p></li>
 <li><p>Other: <code>"bool"</code>, <code>"complex64"</code></p></li>
 </ul><p>Not all functions support all types. See individual function documentation.</p></dd>
+
+
+<dt id="arg-dimnames">dimnames<a class="anchor" aria-label="anchor" href="#arg-dimnames"></a></dt>
+<dd><p>Optional list of character vectors naming each dimension.</p></dd>
 
 </dl></div>
     <div class="section level2">

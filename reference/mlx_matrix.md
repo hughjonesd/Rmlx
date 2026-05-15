@@ -10,7 +10,14 @@ may be inferred from `length(data)`).
 ## Usage
 
 ``` r
-mlx_matrix(data, nrow = NULL, ncol = NULL, byrow = FALSE, dtype = NULL)
+mlx_matrix(
+  data,
+  nrow = NULL,
+  ncol = NULL,
+  byrow = FALSE,
+  dtype = NULL,
+  dimnames = NULL
+)
 ```
 
 ## Arguments
@@ -43,6 +50,10 @@ mlx_matrix(data, nrow = NULL, ncol = NULL, byrow = FALSE, dtype = NULL)
 
   Not all functions support all types. See individual function
   documentation.
+
+- dimnames:
+
+  Optional list of character vectors naming each dimension.
 
 ## Value
 

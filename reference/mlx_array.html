@@ -46,7 +46,7 @@ and it pipes the data straight into MLX.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_array</span><span class="op">(</span><span class="va">data</span>, <span class="va">dim</span>, dtype <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mlx_array</span><span class="op">(</span><span class="va">data</span>, <span class="va">dim</span>, dtype <span class="op">=</span> <span class="cn">NULL</span>, dimnames <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -69,6 +69,10 @@ a scalar, in which case <code>data</code> must be length 1.</p></dd>
 <li><p>Integer: <code>"int8"</code>, <code>"int16"</code>, <code>"int32"</code>, <code>"int64"</code>, <code>"uint8"</code>, <code>"uint16"</code>, <code>"uint32"</code>, <code>"uint64"</code></p></li>
 <li><p>Other: <code>"bool"</code>, <code>"complex64"</code></p></li>
 </ul><p>Not all functions support all types. See individual function documentation.</p></dd>
+
+
+<dt id="arg-dimnames">dimnames<a class="anchor" aria-label="anchor" href="#arg-dimnames"></a></dt>
+<dd><p>Optional list of character vectors naming each dimension.</p></dd>
 
 </dl></div>
     <div class="section level2">

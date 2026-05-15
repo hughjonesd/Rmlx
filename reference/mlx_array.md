@@ -8,7 +8,7 @@ plus an explicit shape and it pipes the data straight into MLX.
 ## Usage
 
 ``` r
-mlx_array(data, dim, dtype = NULL)
+mlx_array(data, dim, dtype = NULL, dimnames = NULL)
 ```
 
 ## Arguments
@@ -37,6 +37,10 @@ mlx_array(data, dim, dtype = NULL)
 
   Not all functions support all types. See individual function
   documentation.
+
+- dimnames:
+
+  Optional list of character vectors naming each dimension.
 
 ## Value
 

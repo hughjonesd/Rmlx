@@ -59,8 +59,7 @@ The subsetted MLX object.
 
 - Duplicate assignments like `x[c(1,1)] <- 2:3` are undefined behaviour.
 
-- Character indices are not supported as MLX has no concept of dimension
-  names.
+- Character indices match against the relevant axis dimnames.
 
 ## See also
 

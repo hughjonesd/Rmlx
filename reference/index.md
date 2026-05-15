@@ -23,6 +23,11 @@
 - [`dim(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/dim.mlx.md)
   [`mlx_shape()`](https://hughjonesd.github.io/Rmlx/reference/dim.mlx.md)
   : Get dimensions of MLX array
+- [`dimnames(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx-dimnames.md)
+  [`` `dimnames<-`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx-dimnames.md)
+  [`names(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx-dimnames.md)
+  [`` `names<-`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/mlx-dimnames.md)
+  : Dimnames and names for MLX arrays
 - [`` `dim<-`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/dim-set-.mlx.md)
   : Set dimensions of MLX array
 - [`length(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/length.mlx.md)

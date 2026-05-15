@@ -87,8 +87,7 @@ each row gives coordinates for one element. The return value from
 subsetting is a flat mlx vector.</p></li>
 <li><p><code>mlx</code> vectors, logical masks, and matrices behave the same as their R equivalents.</p></li>
 <li><p>Duplicate assignments like <code>x[c(1,1)] &lt;- 2:3</code> are undefined behaviour.</p></li>
-<li><p>Character indices are not supported as MLX has no concept
-of dimension names.</p></li>
+<li><p>Character indices match against the relevant axis dimnames.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
