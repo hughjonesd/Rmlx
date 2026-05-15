@@ -457,14 +457,14 @@ new_mlx <- function(ptr, dimnames = NULL) {
 #' `rownames()` and `colnames()` use these `dimnames()` methods through base R's
 #' internal generic dispatch.
 #'
-#' @name mlx_dimnames
+#' @name mlx-dimnames
 #' @aliases dimnames.mlx dimnames<-.mlx names.mlx names<-.mlx
 #' @export
 dimnames.mlx <- function(x) {
   attr(x, "mlx_dimnames", exact = TRUE)
 }
 
-#' @rdname mlx_dimnames
+#' @rdname mlx-dimnames
 #' @export
 `dimnames<-.mlx` <- function(x, value) {
   value <- .mlx_validate_dimnames(value, mlx_shape(x))
@@ -472,7 +472,7 @@ dimnames.mlx <- function(x) {
   x
 }
 
-#' @rdname mlx_dimnames
+#' @rdname mlx-dimnames
 #' @export
 names.mlx <- function(x) {
   dn <- dimnames(x)
@@ -482,7 +482,7 @@ names.mlx <- function(x) {
   NULL
 }
 
-#' @rdname mlx_dimnames
+#' @rdname mlx-dimnames
 #' @export
 `names<-.mlx` <- function(x, value) {
   shape <- mlx_shape(x)
