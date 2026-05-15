@@ -19,7 +19,9 @@
       idx <- idx_list[[1]]
       idx <- mlx_flatten(as_mlx(idx))
       x_flat[idx] <- value
-      return(mlx_reshape(x_flat, shape))
+      out <- mlx_reshape(x_flat, shape)
+      dimnames(out) <- dimnames(x)
+      return(out)
     }
     vectors_assign(x, idx_list, value)
   }
@@ -59,15 +61,19 @@ matrix_assign <- function (x, idx_mat, value) {
   axes <- seq_len(ndims) - 1L
 
   ptr <- cpp_mlx_scatter(x$ptr, coord_list, value$ptr, axes)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 
 vectors_assign <- function(x, idx_list, value) {
   shape <- mlx_shape(x)
   ndim <- length(shape)
-  idx_list <- mapply(normalize_index, idx_list, shape, SIMPLIFY = FALSE,
-                     MoreArgs = list(assign = TRUE))
+  idx_list <- mapply(
+    function(idx, len, axis) {
+      normalize_index(idx, len, assign = TRUE, names = dimnames(x)[[axis]])
+    },
+    idx_list, shape, seq_along(shape), SIMPLIFY = FALSE
+  )
 
   if (any(vapply(idx_list, is.null, integer(1)))) {
     return(x)
@@ -93,7 +99,7 @@ vectors_assign <- function(x, idx_list, value) {
   idx_grid <- lapply(idx_grid, mlx_cast, dtype = "int32")
   axes <- seq_len(ndim) - 1L
   ptr <- cpp_mlx_scatter(x$ptr, idx_grid, value_mlx$ptr, axes)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Normalize an index to a standard form
@@ -106,7 +112,7 @@ vectors_assign <- function(x, idx_list, value) {
 #'
 #' @returns A positive mlx vector of index positions, or NULL for none.
 #' @noRd
-normalize_index <- function(idx, len, assign, allow_dims = FALSE) {
+normalize_index <- function(idx, len, assign, allow_dims = FALSE, names = NULL) {
   if (is.null(idx)) {
     return(seq_len(len))
   }
@@ -115,6 +121,16 @@ normalize_index <- function(idx, len, assign, allow_dims = FALSE) {
   }
   if (anyNA(idx)) {
     stop("Index contains NA values.")
+  }
+  if (is.character(idx)) {
+    if (is.null(names)) {
+      stop("Character indices require dimnames on the selected axis.", call. = FALSE)
+    }
+    matched <- match(idx, names)
+    if (anyNA(matched)) {
+      stop("Character index not found in dimnames.", call. = FALSE)
+    }
+    idx <- matched
   }
 
   idx <- as_mlx(idx)

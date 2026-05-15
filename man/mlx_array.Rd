@@ -4,7 +4,7 @@
 \alias{mlx_array}
 \title{Construct an MLX array from R data}
 \usage{
-mlx_array(data, dim, dtype = NULL)
+mlx_array(data, dim, dtype = NULL, dimnames = NULL)
 }
 \arguments{
 \item{data}{Numeric, logical, or complex vector. \code{data} is recycled to
@@ -22,6 +22,8 @@ a scalar, in which case \code{data} must be length 1.}
 }
 
 Not all functions support all types. See individual function documentation.}
+
+\item{dimnames}{Optional list of character vectors naming each dimension.}
 }
 \value{
 An \code{mlx} array with the requested shape.

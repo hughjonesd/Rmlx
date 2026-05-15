@@ -23,6 +23,7 @@ reference:
       - mlx_eval
       - "[.mlx"
       - dim.mlx
+      - mlx-dimnames
       - "dim<-.mlx"
       - length.mlx
       - mlx_shape

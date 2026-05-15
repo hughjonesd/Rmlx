@@ -40,8 +40,7 @@ each row gives coordinates for one element. The return value from
 subsetting is a flat mlx vector.
 \item \code{mlx} vectors, logical masks, and matrices behave the same as their R equivalents.
 \item Duplicate assignments like \code{x[c(1,1)] <- 2:3} are undefined behaviour.
-\item Character indices are not supported as MLX has no concept
-of dimension names.
+\item Character indices match against the relevant axis dimnames.
 }
 }
 \examples{

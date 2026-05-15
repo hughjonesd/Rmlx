@@ -95,7 +95,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
   y <- mlx_cast(y, dtype = target_dtype)
 
   ptr <- cpp_mlx_matmul(x$ptr, y$ptr, target_dtype)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = list(rownames(x), colnames(y)))
 }
 
 #' Fused matrix multiply and add for MLX arrays
@@ -179,7 +179,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @noRd
 .mlx_unary <- function(x, op) {
   ptr <- cpp_mlx_unary(x$ptr, op)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Apply binary MLX operation with type promotion
@@ -203,7 +203,9 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   y <- mlx_cast(y, dtype = input_dtype)
 
   ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y)
+  out
 }
 
 #' Apply logical MLX operation
@@ -214,7 +216,9 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @noRd
 .mlx_logical <- function(x, y, op) {
   ptr <- cpp_mlx_logical(x$ptr, y$ptr, op)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y)
+  out
 }
 
 #' Apply logical NOT to mlx array
@@ -224,7 +228,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 #' @noRd
 .mlx_logical_not <- function(x) {
   ptr <- cpp_mlx_logical_not(x$ptr)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Integer division for mlx arrays
@@ -292,7 +296,9 @@ mlx_maximum <- function(x, y) {
   y <- mlx_cast(y, dtype = result_dtype)
 
   ptr <- cpp_fn(x$ptr, y$ptr)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y)
+  out
 }
 
 #' Clip mlx array values into a range

@@ -4,7 +4,14 @@
 \alias{mlx_matrix}
 \title{Construct MLX matrices efficiently}
 \usage{
-mlx_matrix(data, nrow = NULL, ncol = NULL, byrow = FALSE, dtype = NULL)
+mlx_matrix(
+  data,
+  nrow = NULL,
+  ncol = NULL,
+  byrow = FALSE,
+  dtype = NULL,
+  dimnames = NULL
+)
 }
 \arguments{
 \item{data}{Numeric, logical, or complex vector. \code{data} is recycled to
@@ -23,6 +30,8 @@ tile into the dimensions exactly).}
 }
 
 Not all functions support all types. See individual function documentation.}
+
+\item{dimnames}{Optional list of character vectors naming each dimension.}
 }
 \value{
 An \code{mlx} matrix with \code{dim = c(nrow, ncol)}.

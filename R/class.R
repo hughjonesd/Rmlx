@@ -122,7 +122,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
     if (!need_dtype) return(x)
 
     ptr <- cpp_mlx_cast(x$ptr, dtype_val)
-    return(new_mlx(ptr))
+    return(new_mlx(ptr, dimnames = dimnames(x)))
   }
 
   is_supported <- (is.vector(x) && !is.list(x)) || is.matrix(x) || is.array(x)
@@ -146,7 +146,7 @@ as_mlx <- function(x, dtype = c("float32", "float64", "bool", "complex64",
   ptr <- cpp_mlx_from_r(x_payload, as.integer(dim_vec), dtype_val)
 
   # Create S3 object (dim is always read from MLX via dim.mlx())
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = .mlx_dimnames_from_r(x, dim_vec))
 }
 
 #' Force evaluation of an MLX operations
@@ -213,7 +213,9 @@ as_r <- function(x, ...) {
   mlx_eval(x)
   out <- cpp_mlx_to_r(x$ptr)
   if (length(dim(x)) == 0L) {
-    return(as.vector(out))
+    out <- as.vector(out)
+    names(out) <- names(x)
+    return(out)
   }
 
   # Be careful before changing the below; dim(), attributes() and
@@ -222,11 +224,13 @@ as_r <- function(x, ...) {
   attrs <- attributes(x)
   attrs$names <- NULL
   attrs$class <- NULL
+  attrs$mlx_dimnames <- NULL
   if (length(attrs)) {
     for (nm in names(attrs)) {
       attr(out, nm) <- attrs[[nm]]
     }
   }
+  dimnames(out) <- dimnames(x)
   out
 }
 
@@ -263,11 +267,13 @@ as.array.mlx <- function(x, ...) {
   attrs <- attributes(x)
   attrs$names <- NULL
   attrs$class <- NULL
+  attrs$mlx_dimnames <- NULL
   if (length(attrs)) {
     for (nm in names(attrs)) {
       attr(out, nm) <- attrs[[nm]]
     }
   }
+  dimnames(out) <- dimnames(x)
   out
 }
 
@@ -342,7 +348,7 @@ is_mlx <- function(x) {
 .mlx_from_call <- function(fn, x, ...) {
   stopifnot(is_mlx(x))
   ptr <- fn(x$ptr, ...)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Internal constructor for mlx objects
@@ -350,11 +356,139 @@ is_mlx <- function(x) {
 #' @param ptr External pointer to MLX array
 #' @keywords internal
 #' @noRd
-new_mlx <- function(ptr) {
-  structure(
+new_mlx <- function(ptr, dimnames = NULL) {
+  out <- structure(
     list(
       ptr = ptr
     ),
     class = "mlx"
   )
+  if (!is.null(dimnames)) {
+    dimnames(out) <- dimnames
+  }
+  out
+}
+
+#' Validate dimnames metadata for an mlx shape
+#'
+#' @param dimnames A list of character vectors or `NULL`.
+#' @param shape Integer MLX shape.
+#' @return Normalized dimnames list or `NULL`.
+#' @noRd
+.mlx_validate_dimnames <- function(dimnames, shape) {
+  if (is.null(dimnames)) {
+    return(NULL)
+  }
+  if (!is.list(dimnames)) {
+    stop("dimnames must be a list.", call. = FALSE)
+  }
+  if (length(shape) == 0L) {
+    stop("dimnames are not supported for MLX scalars.", call. = FALSE)
+  }
+  if (length(dimnames) != length(shape)) {
+    stop("length of dimnames must match the number of dimensions.", call. = FALSE)
+  }
+
+  out <- vector("list", length(shape))
+  for (i in seq_along(shape)) {
+    dn <- dimnames[[i]]
+    if (is.null(dn)) {
+      out[i] <- list(NULL)
+      next
+    }
+    if (length(dn) != shape[[i]]) {
+      stop(
+        sprintf(
+          "length of dimnames[[%d]] (%d) must match dimension %d (%d).",
+          i, length(dn), i, shape[[i]]
+        ),
+        call. = FALSE
+      )
+    }
+    out[[i]] <- as.character(dn)
+  }
+
+  if (all(vapply(out, is.null, logical(1)))) {
+    return(NULL)
+  }
+  names(out) <- names(dimnames)
+  out
+}
+
+.mlx_dimnames_from_r <- function(x, shape) {
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    return(.mlx_validate_dimnames(dn, shape))
+  }
+  nm <- names(x)
+  if (length(shape) == 1L && !is.null(nm)) {
+    return(.mlx_validate_dimnames(list(nm), shape))
+  }
+  NULL
+}
+
+.mlx_dimnames_for_shape <- function(x, shape) {
+  dn <- dimnames(x)
+  if (is.null(dn) || !identical(as.integer(shape), as.integer(mlx_shape(x)))) {
+    return(NULL)
+  }
+  dn
+}
+
+.mlx_dimnames_for_binary <- function(result, x, y) {
+  shape <- mlx_shape(result)
+  x_dn <- .mlx_dimnames_for_shape(x, shape)
+  if (!is.null(x_dn)) {
+    return(x_dn)
+  }
+  .mlx_dimnames_for_shape(y, shape)
+}
+
+#' Dimnames and names for MLX arrays
+#'
+#' Get or set R-side dimname metadata on `mlx` arrays. Names are stored as
+#' ordinary R metadata on the wrapper and are not written into MLX storage.
+#'
+#' @param x An object.
+#' @param value Replacement names or dimnames.
+#' @return The requested names, or `x` with updated metadata for replacement
+#'   forms.
+#'
+#' `rownames()` and `colnames()` use these `dimnames()` methods through base R's
+#' internal generic dispatch.
+#'
+#' @name mlx-dimnames
+#' @aliases dimnames.mlx dimnames<-.mlx names.mlx names<-.mlx
+#' @export
+dimnames.mlx <- function(x) {
+  attr(x, "mlx_dimnames", exact = TRUE)
+}
+
+#' @rdname mlx-dimnames
+#' @export
+`dimnames<-.mlx` <- function(x, value) {
+  value <- .mlx_validate_dimnames(value, mlx_shape(x))
+  attr(x, "mlx_dimnames") <- value
+  x
+}
+
+#' @rdname mlx-dimnames
+#' @export
+names.mlx <- function(x) {
+  dn <- dimnames(x)
+  if (length(mlx_shape(x)) == 1L && !is.null(dn)) {
+    return(dn[[1L]])
+  }
+  NULL
+}
+
+#' @rdname mlx-dimnames
+#' @export
+`names<-.mlx` <- function(x, value) {
+  shape <- mlx_shape(x)
+  if (length(shape) != 1L) {
+    stop("names can only be set on one-dimensional mlx arrays.", call. = FALSE)
+  }
+  dimnames(x) <- if (is.null(value)) NULL else list(value)
+  x
 }
