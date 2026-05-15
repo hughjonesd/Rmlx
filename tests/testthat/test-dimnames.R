@@ -15,7 +15,7 @@ test_that("constructors and conversion preserve dimnames", {
   expect_equal(rownames(y), c("ra", "rb"))
   expect_equal(colnames(y), c("ca", "cb"))
 
-  z <- mlx_vector(1:3, names = c("x", "y", "z"))
+  z <- mlx_vector(setNames(1:3, c("x", "y", "z")))
   expect_equal(names(z), c("x", "y", "z"))
 })
 

@@ -364,7 +364,7 @@ new_mlx <- function(ptr, dimnames = NULL) {
     class = "mlx"
   )
   if (!is.null(dimnames)) {
-    out <- .mlx_set_dimnames(out, dimnames)
+    dimnames(out) <- dimnames
   }
   out
 }
@@ -427,16 +427,6 @@ new_mlx <- function(ptr, dimnames = NULL) {
   NULL
 }
 
-.mlx_dimnames <- function(x) {
-  attr(x, "mlx_dimnames", exact = TRUE)
-}
-
-.mlx_set_dimnames <- function(x, dimnames) {
-  dimnames <- .mlx_validate_dimnames(dimnames, mlx_shape(x))
-  attr(x, "mlx_dimnames") <- dimnames
-  x
-}
-
 .mlx_dimnames_for_shape <- function(x, shape) {
   dn <- dimnames(x)
   if (is.null(dn) || !identical(as.integer(shape), as.integer(mlx_shape(x)))) {
@@ -471,13 +461,15 @@ new_mlx <- function(ptr, dimnames = NULL) {
 #' @aliases dimnames.mlx dimnames<-.mlx names.mlx names<-.mlx
 #' @export
 dimnames.mlx <- function(x) {
-  .mlx_dimnames(x)
+  attr(x, "mlx_dimnames", exact = TRUE)
 }
 
 #' @rdname mlx_dimnames
 #' @export
 `dimnames<-.mlx` <- function(x, value) {
-  .mlx_set_dimnames(x, value)
+  value <- .mlx_validate_dimnames(value, mlx_shape(x))
+  attr(x, "mlx_dimnames") <- value
+  x
 }
 
 #' @rdname mlx_dimnames

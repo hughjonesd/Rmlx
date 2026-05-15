@@ -320,23 +320,22 @@ mlx_matrix <- function(data,
 #'
 #' @inheritParams mlx_array
 #' @param data Atomic vector providing the elements (recycling is not allowed).
-#' @param names Optional character vector naming vector elements.
 #' @return An `mlx` vector with `dim = length(data)`.
 #' @export
 mlx_vector <- function(data,
-                       dtype = NULL,
-                       names = NULL) {
+                       dtype = NULL) {
   if (!is.atomic(data) || is.list(data)) {
     stop("data must be an atomic vector.", call. = FALSE)
   }
 
+  data_names <- names(data)
   data_vec <- as.vector(data)
   if (!length(data_vec)) {
     stop("data must contain at least one element.", call. = FALSE)
   }
 
   mlx_array(data_vec, length(data_vec), dtype = dtype,
-            dimnames = if (is.null(names)) NULL else list(names))
+            dimnames = if (is.null(data_names)) NULL else list(data_names))
 }
 
 #' Construct MLX scalars
