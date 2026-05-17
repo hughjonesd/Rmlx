@@ -27,7 +27,7 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
   }
 
   ptr <- cpp_mlx_hadamard_transform(x$ptr, scale)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Argmax and argmin on mlx arrays
@@ -53,7 +53,7 @@ mlx_argmax <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_argmax(x$ptr, axis_idx, !isTRUE(drop))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = .mlx_reduction_dimnames(x, axis_idx + 1L, drop))
 }
 
 #' @rdname mlx_argmax
@@ -62,7 +62,7 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_argmin(x$ptr, axis_idx, !isTRUE(drop))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = .mlx_reduction_dimnames(x, axis_idx + 1L, drop))
 }
 
 #' Sort and argsort for mlx arrays
@@ -257,7 +257,7 @@ mlx_logsumexp <- function(x, axes = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axes_idx <- normalize_axes(axes, x)
   ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, !isTRUE(drop))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = .mlx_reduction_dimnames(x, axes_idx + 1L, drop))
 }
 
 #' Log cumulative sum exponential for mlx arrays
@@ -278,7 +278,7 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_logcumsumexp(x$ptr, axis_idx, reverse, inclusive)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Softmax for mlx arrays
@@ -296,5 +296,5 @@ mlx_softmax <- function(x, axes = NULL, precise = FALSE) {
   x <- as_mlx(x)
   axes_idx <- normalize_axes(axes, x)
   ptr <- cpp_mlx_softmax(x$ptr, axes_idx, precise)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }

@@ -105,6 +105,26 @@ test_that("linalg helpers preserve base-compatible dimnames", {
   expect_equal(dimnames(outer(as_mlx(xv), as_mlx(yv))), dimnames(outer(xv, yv)))
 })
 
+test_that("transform helpers preserve dimnames when positions still correspond", {
+  mat <- matrix(c(1, 2, 3, 4, 5, 6), 2, 3, byrow = TRUE,
+                dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  x <- as_mlx(mat)
+
+  expect_equal(dimnames(mlx_softmax(x, axes = 2)), dimnames(mat))
+  expect_equal(dimnames(mlx_logcumsumexp(x, axis = 2)), dimnames(mat))
+  expect_equal(dimnames(mlx_fft(x)), dimnames(fft(mat)))
+  expect_equal(names(mlx_fft(as_mlx(c(a = 1, b = 2, c = 3)))),
+               names(fft(c(a = 1, b = 2, c = 3))))
+  expect_equal(dimnames(mlx_hadamard_transform(x[, 1:2])), dimnames(x[, 1:2]))
+
+  expect_equal(names(mlx_argmax(x, axis = 2)), rownames(mat))
+  expect_equal(names(mlx_argmin(x, axis = 1)), colnames(mat))
+  expect_equal(names(mlx_norm(x, axes = 2)), rownames(mat))
+  expect_equal(dimnames(mlx_logsumexp(x, axes = 2, drop = FALSE)),
+               list(rownames(mat), NULL))
+  expect_null(dimnames(mlx_logsumexp(x)))
+})
+
 test_that("binding combines names on bound axis and keeps agreeing axes", {
   x <- mlx_matrix(1:4, 2, 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   y <- mlx_matrix(5:8, 2, 2, dimnames = list(c("r3", "r4"), c("c1", "c2")))
@@ -122,4 +142,12 @@ test_that("shape-changing transforms drop dimnames", {
 
   expect_null(dimnames(mlx_reshape(x, 4)))
   expect_null(dimnames(mlx_flatten(x)))
+
+  stacked <- mlx_stack(x, x, axis = 1)
+  expect_equal(dimnames(stacked), list(NULL, rownames(x), colnames(x)))
+
+  expanded <- mlx_expand_dims(x, axes = 2)
+  expect_equal(dimnames(expanded), list(rownames(x), NULL, colnames(x)))
+
+  expect_equal(dimnames(mlx_where(x > 2, x, x)), dimnames(x))
 })

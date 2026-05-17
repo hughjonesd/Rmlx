@@ -246,7 +246,7 @@ mlx_norm <- function(x, ord = NULL, axes = NULL, drop = TRUE) {
   }
   axes_arg <- if (is.null(axes)) NULL else as.integer(axes)
   ptr <- cpp_mlx_norm(x$ptr, ord, axes_arg, !isTRUE(drop))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = .mlx_reduction_dimnames(x, axes_arg, drop))
 }
 
 #' Eigen decomposition for mlx arrays

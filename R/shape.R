@@ -84,7 +84,30 @@ mlx_stack <- function(..., axis = 1L) {
   }
   axis0 <- axis_vec
   ptr <- cpp_mlx_stack(arrays, axis0)
-  new_mlx(ptr)
+  dn <- dimnames(arrays[[1L]])
+  if (!is.null(dn)) {
+    old_axis <- 1L
+    new_dn <- vector("list", length(dn) + 1L)
+    for (new_axis in seq_along(new_dn)) {
+      if (new_axis == axis0 + 1L) {
+        new_dn[new_axis] <- list(NULL)
+      } else {
+        dns <- lapply(arrays, function(obj) {
+          obj_dn <- dimnames(obj)
+          if (is.null(obj_dn)) NULL else obj_dn[[old_axis]]
+        })
+        first <- dns[[1L]]
+        if (!is.null(first) && all(vapply(dns, identical, logical(1), y = first))) {
+          new_dn[[new_axis]] <- first
+        } else {
+          new_dn[new_axis] <- list(NULL)
+        }
+        old_axis <- old_axis + 1L
+      }
+    }
+    dn <- if (all(vapply(new_dn, is.null, logical(1)))) NULL else new_dn
+  }
+  new_mlx(ptr, dimnames = dn)
 }
 
 #' Drop singleton dimensions
@@ -161,7 +184,13 @@ mlx_expand_dims <- function(x, axes) {
   x <- as_mlx(x)
   axes0 <- normalize_new_axes(axes, mlx_shape(x))
   ptr <- cpp_mlx_expand_dims(x$ptr, axes0)
-  new_mlx(ptr)
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    for (axis in sort(axes0 + 1L)) {
+      dn <- append(dn, list(NULL), after = axis - 1L)
+    }
+  }
+  new_mlx(ptr, dimnames = dn)
 }
 
 #' Repeat array elements
@@ -796,5 +825,8 @@ mlx_where <- function(condition, x, y) {
   y <- mlx_cast(y, dtype = result_dtype)
 
   ptr <- cpp_mlx_where(condition$ptr, x$ptr, y$ptr, result_dtype)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y) %||%
+    .mlx_dimnames_for_shape(condition, mlx_shape(out))
+  out
 }

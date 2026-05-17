@@ -453,6 +453,21 @@ new_mlx <- function(ptr, dimnames = NULL) {
   if (all(vapply(out, is.null, logical(1)))) NULL else out
 }
 
+.mlx_reduction_dimnames <- function(x, axes, drop) {
+  dn <- dimnames(x)
+  if (is.null(dn) || is.null(axes) || !length(axes)) {
+    return(NULL)
+  }
+  axes <- sort(unique(as.integer(axes)))
+  if (isTRUE(drop)) {
+    dn <- dn[-axes]
+    if (!length(dn) || all(vapply(dn, is.null, logical(1)))) NULL else dn
+  } else {
+    dn[axes] <- rep(list(NULL), length(axes))
+    if (all(vapply(dn, is.null, logical(1)))) NULL else dn
+  }
+}
+
 #' Dimnames and names for MLX arrays
 #'
 #' Get or set R-side dimname metadata on `mlx` arrays. Names are stored as
