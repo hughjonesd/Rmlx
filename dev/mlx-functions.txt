@@ -48,6 +48,14 @@ diag.default NA TRUE FALSE
 diag.mlx NA TRUE FALSE
 dim.mlx "Get dimensions of MLX array" TRUE FALSE
 dim<-.mlx "Set dimensions of MLX array" TRUE FALSE
+dimnames_bind "Combine dimnames when binding arrays" TRUE FALSE
+dimnames_compact "Drop all-empty dimnames metadata" TRUE FALSE
+dimnames_from_binary_operands "Choose dimnames for binary-operation results" TRUE FALSE
+dimnames_from_r "Infer dimnames from an R object" TRUE FALSE
+dimnames_if_shape_matches "Return dimnames only when shape matches" TRUE FALSE
+dimnames_matrix_inverse "Swap matrix dimnames for inverse-like outputs" TRUE FALSE
+dimnames_reduction "Transform dimnames after reducing axes" TRUE FALSE
+dimnames_validate "Validate dimnames metadata for an mlx shape" TRUE FALSE
 dimnames.mlx "Dimnames and names for MLX arrays" TRUE FALSE
 dimnames<-.mlx NA TRUE FALSE
 drop "Drop singleton dimensions" TRUE TRUE
@@ -307,7 +315,7 @@ rowSums.mlx NA TRUE FALSE
 scale.mlx "Scale mlx arrays" TRUE FALSE
 solve.mlx "Solve a system of linear equations" TRUE FALSE
 str.mlx "Object structure for MLX array" TRUE FALSE
-subset_dimnames NA NA FALSE
+subset_dimnames "Subset dimnames according to normalized indices" TRUE FALSE
 Summary.mlx "Summary operations for MLX arrays" TRUE FALSE
 svd "Singular value decomposition" TRUE TRUE
 svd.default NA TRUE FALSE

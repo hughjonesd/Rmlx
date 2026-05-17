@@ -313,16 +313,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
   ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
-  dn <- dimnames(x)
-  if (!is.null(dn)) {
-    if (isTRUE(drop)) {
-      dn <- dn[-axis]
-      if (!length(dn)) dn <- NULL
-    } else {
-      dn[axis] <- list(NULL)
-    }
-  }
-  new_mlx(ptr, dimnames = dn)
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axis, drop))
 }
 
 #' Reduce an mlx array along multiple axes

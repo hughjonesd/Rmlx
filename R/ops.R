@@ -204,7 +204,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
   ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype)
   out <- new_mlx(ptr)
-  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y)
+  dimnames(out) <- dimnames_from_binary_operands(out, x, y)
   out
 }
 
@@ -217,7 +217,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 .mlx_logical <- function(x, y, op) {
   ptr <- cpp_mlx_logical(x$ptr, y$ptr, op)
   out <- new_mlx(ptr)
-  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y)
+  dimnames(out) <- dimnames_from_binary_operands(out, x, y)
   out
 }
 
@@ -297,7 +297,7 @@ mlx_maximum <- function(x, y) {
 
   ptr <- cpp_fn(x$ptr, y$ptr)
   out <- new_mlx(ptr)
-  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y)
+  dimnames(out) <- dimnames_from_binary_operands(out, x, y)
   out
 }
 

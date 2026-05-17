@@ -150,4 +150,5 @@ test_that("shape-changing transforms drop dimnames", {
   expect_equal(dimnames(expanded), list(rownames(x), NULL, colnames(x)))
 
   expect_equal(dimnames(mlx_where(x > 2, x, x)), dimnames(x))
+  expect_equal(dimnames(mlx_where(x > 2, 1, 0)), dimnames(x))
 })

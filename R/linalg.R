@@ -28,7 +28,7 @@ solve.mlx <- function(a, b = NULL, ..., device = NULL) {
   if (is.null(b)) {
     a <- mlx_cast(a, dtype = target_dtype)
     ptr <- cpp_mlx_solve(a$ptr, NULL, target_dtype)
-    dimnames <- .mlx_matrix_inverse_dimnames(a)
+    dimnames <- dimnames_matrix_inverse(a)
   } else {
     if (!is_mlx(b)) {
       b <- as_mlx(b, dtype = target_dtype)

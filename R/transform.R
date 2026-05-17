@@ -53,7 +53,7 @@ mlx_argmax <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_argmax(x$ptr, axis_idx, !isTRUE(drop))
-  new_mlx(ptr, dimnames = .mlx_reduction_dimnames(x, axis_idx + 1L, drop))
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axis_idx + 1L, drop))
 }
 
 #' @rdname mlx_argmax
@@ -62,7 +62,7 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_argmin(x$ptr, axis_idx, !isTRUE(drop))
-  new_mlx(ptr, dimnames = .mlx_reduction_dimnames(x, axis_idx + 1L, drop))
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axis_idx + 1L, drop))
 }
 
 #' Sort and argsort for mlx arrays
@@ -257,7 +257,7 @@ mlx_logsumexp <- function(x, axes = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axes_idx <- normalize_axes(axes, x)
   ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, !isTRUE(drop))
-  new_mlx(ptr, dimnames = .mlx_reduction_dimnames(x, axes_idx + 1L, drop))
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axes_idx + 1L, drop))
 }
 
 #' Log cumulative sum exponential for mlx arrays

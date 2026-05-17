@@ -186,7 +186,7 @@ pinv <- function(x, device = NULL) {
 
   x_dtype <- mlx_dtype(x)
   ptr <- cpp_mlx_pinv(x$ptr, x_dtype)
-  new_mlx(ptr, dimnames = .mlx_matrix_inverse_dimnames(x))
+  new_mlx(ptr, dimnames = dimnames_matrix_inverse(x))
 }
 
 #' Fast Fourier Transform
@@ -246,7 +246,7 @@ mlx_norm <- function(x, ord = NULL, axes = NULL, drop = TRUE) {
   }
   axes_arg <- if (is.null(axes)) NULL else as.integer(axes)
   ptr <- cpp_mlx_norm(x$ptr, ord, axes_arg, !isTRUE(drop))
-  new_mlx(ptr, dimnames = .mlx_reduction_dimnames(x, axes_arg, drop))
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axes_arg, drop))
 }
 
 #' Eigen decomposition for mlx arrays
@@ -550,7 +550,7 @@ mlx_inv <- function(x, device = NULL) {
   x <- as_mlx(x)
   if (!is.null(device)) local_device(device)
   ptr <- cpp_mlx_inv(x$ptr)
-  new_mlx(ptr, dimnames = .mlx_matrix_inverse_dimnames(x))
+  new_mlx(ptr, dimnames = dimnames_matrix_inverse(x))
 }
 
 #' Compute triangular matrix inverse
@@ -575,7 +575,7 @@ mlx_tri_inv <- function(x, upper = FALSE, device = NULL) {
   x <- as_mlx(x)
   if (!is.null(device)) local_device(device)
   ptr <- cpp_mlx_tri_inv(x$ptr, upper)
-  new_mlx(ptr, dimnames = .mlx_matrix_inverse_dimnames(x))
+  new_mlx(ptr, dimnames = dimnames_matrix_inverse(x))
 }
 
 #' Compute matrix inverse via Cholesky decomposition

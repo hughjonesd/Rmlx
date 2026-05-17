@@ -86,6 +86,8 @@ mlx_stack <- function(..., axis = 1L) {
   ptr <- cpp_mlx_stack(arrays, axis0)
   dn <- dimnames(arrays[[1L]])
   if (!is.null(dn)) {
+    # The inserted stack axis has no names. Existing-axis names are preserved
+    # only when all inputs agree, matching the binding helpers' policy.
     old_axis <- 1L
     new_dn <- vector("list", length(dn) + 1L)
     for (new_axis in seq_along(new_dn)) {
@@ -105,7 +107,7 @@ mlx_stack <- function(..., axis = 1L) {
         old_axis <- old_axis + 1L
       }
     }
-    dn <- if (all(vapply(new_dn, is.null, logical(1)))) NULL else new_dn
+    dn <- dimnames_compact(new_dn)
   }
   new_mlx(ptr, dimnames = dn)
 }
@@ -826,7 +828,9 @@ mlx_where <- function(condition, x, y) {
 
   ptr <- cpp_mlx_where(condition$ptr, x$ptr, y$ptr, result_dtype)
   out <- new_mlx(ptr)
-  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y) %||%
-    .mlx_dimnames_for_shape(condition, mlx_shape(out))
+  # Base ifelse() labels results from the condition. Use value-branch labels
+  # first, then condition labels when both branches are scalar or unnamed.
+  dimnames(out) <- dimnames_from_binary_operands(out, x, y) %||%
+    dimnames_if_shape_matches(condition, mlx_shape(out))
   out
 }

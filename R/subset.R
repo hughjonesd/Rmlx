@@ -186,6 +186,12 @@ gather_for_subset <- function(x, idx_list) {
   res
 }
 
+#' Subset dimnames according to normalized indices
+#'
+#' @param x Source mlx array.
+#' @param idx_list List of per-axis indices.
+#' @return Dimnames for the subset result.
+#' @noRd
 subset_dimnames <- function(x, idx_list) {
   dn <- dimnames(x)
   if (is.null(dn)) {
@@ -212,5 +218,5 @@ subset_dimnames <- function(x, idx_list) {
     }
   }
   names(out) <- names(dn)
-  if (all(vapply(out, is.null, logical(1)))) NULL else out
+  dimnames_compact(out)
 }
