@@ -181,7 +181,7 @@ mlx_put_along_axis <- function(x, indices, values, axis) {
   idx_mlx <- .mlx_index_array(indices, dim(x)[axis])
   values_mlx <- as_mlx(values, dtype = mlx_dtype(x))
   ptr <- cpp_mlx_put_along_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Add values using per-position axis indices
@@ -207,7 +207,7 @@ mlx_scatter_add_axis <- function(x, indices, values, axis) {
   idx_mlx <- .mlx_index_array(indices, dim(x)[axis])
   values_mlx <- as_mlx(values, dtype = mlx_dtype(x))
   ptr <- cpp_mlx_scatter_add_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Update a slice of an mlx array
@@ -266,7 +266,7 @@ mlx_slice_update <- function(x,
   stop0 <- stop
 
   ptr <- cpp_mlx_slice_update(x$ptr, value$ptr, start0, stop0, strides)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 # Internal helper for scatter-based updates on flattened tensors
@@ -281,5 +281,5 @@ mlx_slice_update <- function(x,
 .mlx_scatter_axis <- function(x, indices, updates, axes) {
   idx_list <- if (is.list(indices)) indices else list(indices)
   ptr <- cpp_mlx_scatter(x$ptr, idx_list, updates$ptr, as.integer(axes))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }

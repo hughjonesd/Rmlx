@@ -125,6 +125,47 @@ test_that("transform helpers preserve dimnames when positions still correspond",
   expect_null(dimnames(mlx_logsumexp(x)))
 })
 
+test_that("shape-preserving helpers keep dimnames", {
+  mat <- matrix(1:12, 3, 4,
+                dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3", "c4")))
+  x <- as_mlx(mat)
+
+  expect_equal(dimnames(mlx_clip(x, min = 3, max = 10)), dimnames(mat))
+  expect_equal(dimnames(mlx_zeros_like(x)), dimnames(mat))
+  expect_equal(dimnames(mlx_ones_like(x)), dimnames(mat))
+  expect_equal(dimnames(mlx_tril(x)), dimnames(mat))
+  expect_equal(dimnames(mlx_triu(x)), dimnames(mat))
+  expect_equal(dimnames(mlx_isclose(x, x + 1)), dimnames(mat))
+  expect_equal(dimnames(mlx_cumsum(x, axis = 1)), dimnames(mat))
+  expect_equal(dimnames(mlx_cumprod(x, axis = 2)), dimnames(mat))
+
+  named <- as_mlx(c(a = 1, b = 2, c = 3))
+  expect_equal(names(cumsum(named)), c("a", "b", "c"))
+  expect_equal(names(cumprod(named)), c("a", "b", "c"))
+  expect_equal(names(cummax(named)), c("a", "b", "c"))
+  expect_equal(names(cummin(named)), c("a", "b", "c"))
+
+  updated <- mlx_slice_update(
+    x,
+    mlx_matrix(100:103, nrow = 2),
+    start = c(1L, 2L),
+    stop = c(2L, 3L)
+  )
+  expect_equal(dimnames(updated), dimnames(mat))
+
+  idx <- matrix(c(1L, 4L,
+                  2L, 3L,
+                  4L, 1L), nrow = 3, byrow = TRUE)
+  values <- matrix(c(100, 200, 300, 400, 500, 600), nrow = 3, byrow = TRUE)
+  expect_equal(dimnames(mlx_put_along_axis(x, idx, values, axis = 2L)), dimnames(mat))
+
+  scatter_idx <- matrix(c(1L, 1L,
+                          2L, 3L,
+                          4L, 4L), nrow = 3, byrow = TRUE)
+  expect_equal(dimnames(mlx_scatter_add_axis(x, scatter_idx, values, axis = 2L)),
+               dimnames(mat))
+})
+
 test_that("binding combines names on bound axis and keeps agreeing axes", {
   x <- mlx_matrix(1:4, 2, 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   y <- mlx_matrix(5:8, 2, 2, dimnames = list(c("r3", "r4"), c("c1", "c2")))

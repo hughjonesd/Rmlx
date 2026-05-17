@@ -324,7 +324,7 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
   }
 
   ptr <- cpp_mlx_clip(x$ptr, min, max)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Promote dtypes for mixed operations

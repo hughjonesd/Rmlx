@@ -70,7 +70,7 @@ mlx_zeros_like <- function(x,
 
   local_float64_cpu(dtype)
   ptr <- cpp_mlx_zeros_like(x$ptr, dtype)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Ones shaped like an existing mlx array
@@ -104,7 +104,7 @@ mlx_ones_like <- function(x,
 
   local_float64_cpu(dtype)
   ptr <- cpp_mlx_ones_like(x$ptr, dtype)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Fill an mlx array with a constant value
@@ -440,7 +440,7 @@ mlx_tril <- function(x, k = 0L) {
   }
 
   ptr <- cpp_mlx_tril(x$ptr, k)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' @rdname mlx_tri
@@ -454,7 +454,7 @@ mlx_triu <- function(x, k = 0L) {
   }
 
   ptr <- cpp_mlx_triu(x$ptr, k)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 

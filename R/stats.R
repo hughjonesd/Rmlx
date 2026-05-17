@@ -638,7 +638,9 @@ mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumsum(x$ptr, axis_mlx, reverse, inclusive)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  dimnames(out) <- dimnames_if_shape_matches(x, mlx_shape(out))
+  out
 }
 
 #' @rdname mlx_cumsum
@@ -649,7 +651,9 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  dimnames(out) <- dimnames_if_shape_matches(x, mlx_shape(out))
+  out
 }
 
 #' Normal distribution functions
