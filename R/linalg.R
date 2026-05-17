@@ -39,12 +39,7 @@ solve.mlx <- function(a, b = NULL, ..., device = NULL) {
     }
 
     ptr <- cpp_mlx_solve(a$ptr, b$ptr, target_dtype)
-    b_dim <- dim(b)
-    dimnames <- if (length(b_dim) < 2L) {
-      list(colnames(a))
-    } else {
-      list(colnames(a), colnames(b))
-    }
+    dimnames <- dimnames_solve(a, b)
   }
 
   new_mlx(ptr, dimnames = dimnames)

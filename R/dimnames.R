@@ -173,6 +173,73 @@ dimnames_reduction <- function(x, axes, drop) {
   dimnames_compact(dn)
 }
 
+#' Choose dimnames for linear-system solve results
+#'
+#' @param a Coefficient matrix.
+#' @param b Right-hand side vector or matrix.
+#' @return `solve()`-style dimnames for the solution.
+#' @noRd
+dimnames_solve <- function(a, b) {
+  if (length(dim(b)) < 2L) {
+    return(dimnames_compact(list(colnames(a))))
+  }
+  dimnames_compact(list(colnames(a), colnames(b)))
+}
+
+#' Choose dimnames for diagonal extraction
+#'
+#' @param x Source array.
+#' @param result_shape Integer shape of the diagonal result.
+#' @param offset Diagonal offset.
+#' @param axis1,axis2 One-indexed axes defining diagonal planes.
+#' @return Dimnames for `diag()`/`mlx_diagonal()` extraction.
+#' @noRd
+dimnames_diagonal <- function(x, result_shape, offset, axis1, axis2) {
+  dn <- dimnames(x)
+  if (is.null(dn) || length(mlx_shape(x)) < 2L || !length(result_shape)) {
+    return(NULL)
+  }
+
+  axes <- c(axis1, axis2)
+  remaining <- setdiff(seq_along(dn), axes)
+  out <- dn[remaining]
+
+  diag_len <- result_shape[[length(result_shape)]]
+  diag_names <- NULL
+  axis1_names <- dn[[axis1]]
+  axis2_names <- dn[[axis2]]
+  if (!is.null(axis1_names) && !is.null(axis2_names) && diag_len > 0L) {
+    if (offset >= 0L) {
+      axis1_pos <- seq_len(diag_len)
+      axis2_pos <- axis1_pos + offset
+    } else {
+      axis2_pos <- seq_len(diag_len)
+      axis1_pos <- axis2_pos - offset
+    }
+    candidate1 <- axis1_names[axis1_pos]
+    candidate2 <- axis2_names[axis2_pos]
+    if (identical(candidate1, candidate2)) {
+      diag_names <- candidate1
+    }
+  }
+
+  dimnames_compact(c(out, list(diag_names)))
+}
+
+#' Permute dimnames
+#'
+#' @param x Source array.
+#' @param perm One-indexed axis permutation.
+#' @return Permuted dimnames, or `NULL` when `x` is unnamed.
+#' @noRd
+dimnames_permute <- function(x, perm) {
+  dn <- dimnames(x)
+  if (is.null(dn)) {
+    return(NULL)
+  }
+  dimnames_compact(dn[perm])
+}
+
 #' Dimnames and names for MLX arrays
 #'
 #' Get or set R-side dimname metadata on `mlx` arrays. Names are stored as

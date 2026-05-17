@@ -105,6 +105,43 @@ test_that("linalg helpers preserve base-compatible dimnames", {
   expect_equal(dimnames(outer(as_mlx(xv), as_mlx(yv))), dimnames(outer(xv, yv)))
 })
 
+test_that("diagonal helpers match base-compatible names", {
+  named <- matrix(1:9, 3, 3, dimnames = list(c("a", "b", "c"), c("a", "b", "c")))
+  unmatched <- matrix(1:6, 2, 3,
+                      dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+
+  expect_equal(names(diag(as_mlx(named))), names(diag(named)))
+  expect_null(names(diag(as_mlx(named), names = FALSE)))
+  expect_equal(names(diag(as_mlx(unmatched))), names(diag(unmatched)))
+  expect_null(dimnames(diag(as_mlx(c(a = 1, b = 2)))))
+
+  arr <- array(1:12, c(2, 2, 3),
+               dimnames = list(c("i1", "i2"), c("i1", "i2"), c("b1", "b2", "b3")))
+  diagonal <- mlx_diagonal(as_mlx(arr), axis1 = 1, axis2 = 2)
+  expect_equal(dimnames(diagonal), list(c("b1", "b2", "b3"), c("i1", "i2")))
+})
+
+test_that("triangular solves use solve-style names where base does", {
+  a <- matrix(c(2, 1, 0, 3), 2, 2,
+              dimnames = list(c("ar1", "ar2"), c("ac1", "ac2")))
+  b <- matrix(c(1, 5, 2, 6), 2, 2,
+              dimnames = list(c("br1", "br2"), c("bc1", "bc2")))
+
+  triangular <- mlx_solve_triangular(as_mlx(a), as_mlx(b), upper = FALSE, device = "cpu")
+  expect_equal(dimnames(triangular), dimnames(solve(a, b)))
+
+  triangular_vec <- mlx_solve_triangular(
+    as_mlx(a),
+    as_mlx(c(br1 = 1, br2 = 5)),
+    upper = FALSE,
+    device = "cpu"
+  )
+  expect_equal(names(triangular_vec), names(solve(a, c(br1 = 1, br2 = 5))))
+
+  backsolve_res <- backsolve(as_mlx(a), as_mlx(b), upper.tri = FALSE, device = "cpu")
+  expect_equal(dimnames(backsolve_res), dimnames(base::backsolve(a, b, upper.tri = FALSE)))
+})
+
 test_that("transform helpers preserve dimnames when positions still correspond", {
   mat <- matrix(c(1, 2, 3, 4, 5, 6), 2, 3, byrow = TRUE,
                 dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
@@ -192,4 +229,29 @@ test_that("shape-changing transforms drop dimnames", {
 
   expect_equal(dimnames(mlx_where(x > 2, x, x)), dimnames(x))
   expect_equal(dimnames(mlx_where(x > 2, 1, 0)), dimnames(x))
+})
+
+test_that("axis movement and splitting transform dimnames like base analogues", {
+  arr <- array(1:24, c(2, 3, 4),
+               dimnames = list(c("a1", "a2"),
+                               c("b1", "b2", "b3"),
+                               c("c1", "c2", "c3", "c4")))
+  x <- as_mlx(arr)
+
+  expect_equal(dimnames(mlx_moveaxis(x, source = 1, destination = 3)),
+               dimnames(aperm(arr, c(2, 3, 1))))
+  expect_equal(dimnames(mlx_moveaxis(x, source = c(1, 3), destination = c(3, 1))),
+               dimnames(aperm(arr, c(3, 2, 1))))
+
+  parts <- mlx_split(x, sections = 3, axis = 2)
+  expect_equal(dimnames(parts[[2]]), list(dimnames(arr)[[1]], "b2", dimnames(arr)[[3]]))
+
+  custom <- mlx_split(x, sections = list(1), axis = 2)
+  expect_equal(dimnames(custom[[2]]), list(dimnames(arr)[[1]], c("b2", "b3"),
+                                           dimnames(arr)[[3]]))
+
+  base_split <- base::asplit(arr, 2)
+  mlx_split <- asplit(x, 2)
+  expect_equal(names(mlx_split), names(base_split))
+  expect_equal(dimnames(mlx_split[[1]]), dimnames(base_split[[1]]))
 })

@@ -386,6 +386,9 @@ mlx_split <- function(x, sections, axis = 1L) {
       indices_ = NULL,
       axis = axis_idx
     )
+    part_len <- dim_len %/% num
+    starts <- seq.int(1L, dim_len, by = part_len)
+    stops <- starts + part_len - 1L
   } else {
     indices <- unlist(sections, use.names = FALSE, recursive = FALSE)
     indices <- as.integer(indices)
@@ -405,9 +408,22 @@ mlx_split <- function(x, sections, axis = 1L) {
       indices_ = indices,
       axis = axis_idx
     )
+    starts <- c(1L, indices + 1L)
+    stops <- c(indices, dim_len)
   }
 
-  res <- lapply(ptrs, new_mlx)
+  dn <- dimnames(x)
+  res <- Map(function(ptr, start, stop) {
+    out <- new_mlx(ptr)
+    if (!is.null(dn)) {
+      out_dn <- dn
+      if (!is.null(out_dn[[axis_idx + 1L]])) {
+        out_dn[[axis_idx + 1L]] <- out_dn[[axis_idx + 1L]][start:stop]
+      }
+      dimnames(out) <- out_dn
+    }
+    out
+  }, ptrs, starts, stops)
   res
 }
 
@@ -443,6 +459,7 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
   axis_idx <- normalize_axis(MARGIN, x)
   dim_len <- dim(x)[axis_idx + 1L]
   splits <- mlx_split(x, sections = dim_len, axis = MARGIN)
+  dn <- dimnames(x)
 
   rest_dim <- dim(x)[-(axis_idx + 1L)]
   splits <- lapply(splits, function(part) {
@@ -450,9 +467,15 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
       dim(part) <- integer(0L)
     } else {
       dim(part) <- if (length(rest_dim)) rest_dim else integer(0L)
+      if (!is.null(dn) && length(rest_dim)) {
+        dimnames(part) <- dn[-(axis_idx + 1L)]
+      }
     }
     part
   })
+  if (!is.null(dn) && !is.null(dn[[axis_idx + 1L]])) {
+    names(splits) <- dn[[axis_idx + 1L]]
+  }
   splits
 }
 
@@ -559,7 +582,15 @@ mlx_moveaxis <- function(x, source, destination) {
   }
 
   ptr <- cpp_mlx_moveaxis(x$ptr, source_idx, dest_idx)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  perm <- seq_len(length(dim(x)))
+  moving <- perm[source_idx + 1L]
+  perm <- perm[-(source_idx + 1L)]
+  for (i in order(dest_idx)) {
+    perm <- append(perm, moving[[i]], after = dest_idx[[i]])
+  }
+  dimnames(out) <- dimnames_permute(x, perm)
+  out
 }
 
 #' @rdname mlx_moveaxis
@@ -602,10 +633,7 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
       current <- append(current, axis_val, after = i - 1L)
     }
   }
-  dn <- dimnames(x)
-  if (!is.null(dn)) {
-    dimnames(result) <- dn[perm]
-  }
+  dimnames(result) <- dimnames_permute(x, perm)
   result
 }
 

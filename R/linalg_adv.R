@@ -363,7 +363,7 @@ mlx_solve_triangular <- function(a, b, upper = FALSE, device = NULL) {
   b <- as_mlx(b)
   stopifnot(length(dim(a)) == 2L, dim(a)[1] == dim(a)[2])
   ptr <- cpp_mlx_solve_triangular(a$ptr, b$ptr, upper)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_solve(a, b))
 }
 
 #' @rdname mlx_solve_triangular
@@ -407,7 +407,9 @@ backsolve.mlx <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, .
     upper.tri <- !upper.tri
   }
 
-  mlx_solve_triangular(target, x_mlx, upper = upper.tri, device = device)
+  out <- mlx_solve_triangular(target, x_mlx, upper = upper.tri, device = device)
+  dimnames(out) <- NULL
+  out
 }
 
 #' Vector cross product with mlx arrays
@@ -477,8 +479,13 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' # (Constructing diagonals from 1D inputs is not yet supported.)
 mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_diagonal(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2))
-  new_mlx(ptr)
+  offset <- as.integer(offset)
+  axis1 <- normalize_axis_single(as.integer(axis1), x) + 1L
+  axis2 <- normalize_axis_single(as.integer(axis2), x) + 1L
+  ptr <- cpp_mlx_diagonal(x$ptr, offset, axis1, axis2)
+  out <- new_mlx(ptr)
+  dimnames(out) <- dimnames_diagonal(x, mlx_shape(out), offset, axis1, axis2)
+  out
 }
 
 #' Outer product of two vectors

@@ -475,7 +475,8 @@ diag.default <- function(x, ...) base::diag(x, ...)
 
 #' @export
 #' @rdname mlx_diagonal
-#' @param names Unused.
+#' @param names Logical; when `TRUE`, diagonal extraction may preserve names
+#'   like [base::diag()].
 #' @param nrow,ncol Diagonal offset (nrow only; ncol ignored).
 #'
 #' `diag.mlx()` is an R interface to `mlx_diagonal()` with the same semantics
@@ -490,7 +491,11 @@ diag.mlx <- function(x, nrow, ncol, names = TRUE) {
   }
 
   ptr <- cpp_mlx_diag(x$ptr, k)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  if (isTRUE(names)) {
+    dimnames(out) <- dimnames_diagonal(x, mlx_shape(out), k, 1L, 2L)
+  }
+  out
 }
 
 #' Numerical ranges on MLX devices
