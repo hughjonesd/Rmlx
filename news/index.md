@@ -1,6 +1,6 @@
 # Changelog
 
-## Rmlx (development version)
+## Rmlx 0.4.0
 
 - `mlx` objects can now have row, column and dimnames, and vectors can
   have names. These work much like base R. Names for any dimension may
