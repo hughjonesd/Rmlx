@@ -74,6 +74,37 @@ test_that("common operations preserve or transform dimnames", {
   expect_null(dimnames(sum(x)))
 })
 
+test_that("linalg helpers preserve base-compatible dimnames", {
+  a <- matrix(c(2, 1, 1, 2), 2, 2,
+              dimnames = list(c("ar1", "ar2"), c("ac1", "ac2")))
+  b <- matrix(1:4, 2, 2,
+              dimnames = list(c("br1", "br2"), c("bc1", "bc2")))
+  x <- as_mlx(a)
+
+  expect_equal(dimnames(solve(x, device = "cpu")), dimnames(solve(a)))
+  expect_equal(
+    dimnames(solve(x, as_mlx(b), device = "cpu")),
+    dimnames(solve(a, b))
+  )
+  expect_equal(names(solve(x, c(br1 = 1, br2 = 2), device = "cpu")),
+               names(solve(a, c(br1 = 1, br2 = 2))))
+
+  spd <- crossprod(a) + diag(2)
+  dimnames(spd) <- dimnames(a)
+  expect_equal(dimnames(chol(as_mlx(spd), device = "cpu")), dimnames(chol(spd)))
+  expect_equal(dimnames(mlx_inv(x, device = "cpu")), dimnames(solve(a)))
+  expect_equal(dimnames(mlx_tri_inv(x, upper = TRUE, device = "cpu")), dimnames(solve(a)))
+  expect_equal(dimnames(pinv(x, device = "cpu")), list(colnames(a), rownames(a)))
+
+  qr_mlx <- qr(x, device = "cpu")
+  expect_equal(dimnames(qr_mlx$Q), list(rownames(a), colnames(a)))
+  expect_equal(dimnames(qr_mlx$R), list(colnames(a), colnames(a)))
+
+  xv <- c(x1 = 1, x2 = 2)
+  yv <- c(y1 = 3, y2 = 4, y3 = 5)
+  expect_equal(dimnames(outer(as_mlx(xv), as_mlx(yv))), dimnames(outer(xv, yv)))
+})
+
 test_that("binding combines names on bound axis and keeps agreeing axes", {
   x <- mlx_matrix(1:4, 2, 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   y <- mlx_matrix(5:8, 2, 2, dimnames = list(c("r3", "r4"), c("c1", "c2")))

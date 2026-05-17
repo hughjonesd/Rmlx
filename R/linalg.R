@@ -28,6 +28,7 @@ solve.mlx <- function(a, b = NULL, ..., device = NULL) {
   if (is.null(b)) {
     a <- mlx_cast(a, dtype = target_dtype)
     ptr <- cpp_mlx_solve(a$ptr, NULL, target_dtype)
+    dimnames <- .mlx_matrix_inverse_dimnames(a)
   } else {
     if (!is_mlx(b)) {
       b <- as_mlx(b, dtype = target_dtype)
@@ -38,9 +39,15 @@ solve.mlx <- function(a, b = NULL, ..., device = NULL) {
     }
 
     ptr <- cpp_mlx_solve(a$ptr, b$ptr, target_dtype)
+    b_dim <- dim(b)
+    dimnames <- if (length(b_dim) < 2L) {
+      list(colnames(a))
+    } else {
+      list(colnames(a), colnames(b))
+    }
   }
 
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames)
 }
 
 #' Kronecker product dispatcher

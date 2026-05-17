@@ -444,6 +444,15 @@ new_mlx <- function(ptr, dimnames = NULL) {
   .mlx_dimnames_for_shape(y, shape)
 }
 
+.mlx_matrix_inverse_dimnames <- function(x) {
+  dn <- dimnames(x)
+  if (is.null(dn) || length(dn) != 2L) {
+    return(NULL)
+  }
+  out <- list(dn[[2L]], dn[[1L]])
+  if (all(vapply(out, is.null, logical(1)))) NULL else out
+}
+
 #' Dimnames and names for MLX arrays
 #'
 #' Get or set R-side dimname metadata on `mlx` arrays. Names are stored as

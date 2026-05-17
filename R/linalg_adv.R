@@ -21,7 +21,7 @@ chol.mlx <- function(x, pivot = FALSE, ..., device = NULL) {
   x_dtype <- mlx_dtype(x)
   if (!is.null(device)) local_device(device)
   ptr <- cpp_mlx_cholesky(x$ptr, TRUE, x_dtype)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Inverse from Cholesky decomposition
@@ -92,8 +92,8 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
   res <- cpp_mlx_qr(x$ptr, x_dtype)
   structure(
     list(
-      Q = new_mlx(res$Q),
-      R = new_mlx(res$R)
+      Q = new_mlx(res$Q, dimnames = list(rownames(x), colnames(x))),
+      R = new_mlx(res$R, dimnames = list(colnames(x), colnames(x)))
     ),
     class = c("mlx_qr", "list")
   )
@@ -186,7 +186,7 @@ pinv <- function(x, device = NULL) {
 
   x_dtype <- mlx_dtype(x)
   ptr <- cpp_mlx_pinv(x$ptr, x_dtype)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = .mlx_matrix_inverse_dimnames(x))
 }
 
 #' Fast Fourier Transform
@@ -506,7 +506,7 @@ outer.mlx <- function(X, Y, FUN = "*", ...) {
   X <- as_mlx(X)
   Y <- as_mlx(Y)
   ptr <- cpp_mlx_outer(X$ptr, Y$ptr)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = list(names(X), names(Y)))
 }
 
 #' Unflatten an axis into multiple axes
@@ -550,7 +550,7 @@ mlx_inv <- function(x, device = NULL) {
   x <- as_mlx(x)
   if (!is.null(device)) local_device(device)
   ptr <- cpp_mlx_inv(x$ptr)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = .mlx_matrix_inverse_dimnames(x))
 }
 
 #' Compute triangular matrix inverse
@@ -575,7 +575,7 @@ mlx_tri_inv <- function(x, upper = FALSE, device = NULL) {
   x <- as_mlx(x)
   if (!is.null(device)) local_device(device)
   ptr <- cpp_mlx_tri_inv(x$ptr, upper)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = .mlx_matrix_inverse_dimnames(x))
 }
 
 #' Compute matrix inverse via Cholesky decomposition
