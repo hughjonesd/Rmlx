@@ -240,21 +240,6 @@ dimnames_permute <- function(x, perm) {
   dimnames_compact(dn[perm])
 }
 
-#' Drop dimnames on selected axes
-#'
-#' @param x Source array.
-#' @param axes One-indexed axes whose dimnames no longer describe the result.
-#' @return Dimnames with selected axes set to `NULL`, or `NULL` when unnamed.
-#' @noRd
-dimnames_axis_dropped <- function(x, axes) {
-  dn <- dimnames(x)
-  if (is.null(dn)) {
-    return(NULL)
-  }
-  dn[as.integer(axes)] <- rep(list(NULL), length(axes))
-  dimnames_compact(dn)
-}
-
 #' Reorder dimnames on one axis
 #'
 #' @param x Source array.

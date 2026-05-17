@@ -119,7 +119,7 @@ mlx_sort <- function(x, axis = NULL) {
       idx <- as.integer(as.vector(mlx_argsort(x, axis = axis)))
       dimnames(out) <- dimnames_axis_indexed(x, 1L, idx)
     } else if (!is.null(axis_idx)) {
-      dimnames(out) <- dimnames_axis_dropped(x, axis_idx + 1L)
+      dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
     }
   }
   out
@@ -133,7 +133,7 @@ mlx_argsort <- function(x, axis = NULL) {
   ptr <- cpp_mlx_argsort(x$ptr, axis_idx)
   out <- new_mlx(ptr)
   if (!is.null(axis_idx)) {
-    dimnames(out) <- dimnames_axis_dropped(x, axis_idx + 1L)
+    dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
   }
   out
 }
@@ -189,7 +189,7 @@ mlx_topk <- function(x, k, axis = NULL) {
   ptr <- cpp_mlx_topk(x$ptr, as.integer(k), axis_idx)
   out <- new_mlx(ptr)
   if (!is.null(axis_idx)) {
-    dimnames(out) <- dimnames_axis_dropped(x, axis_idx + 1L)
+    dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
   }
   out
 }
@@ -212,7 +212,7 @@ mlx_partition <- function(x, kth, axis = NULL) {
       idx <- as.integer(as.vector(mlx_argpartition(x, kth, axis = axis)))
       dimnames(out) <- dimnames_axis_indexed(x, 1L, idx)
     } else if (!is.null(axis_idx)) {
-      dimnames(out) <- dimnames_axis_dropped(x, axis_idx + 1L)
+      dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
     }
   }
   out
@@ -229,7 +229,7 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   ptr <- cpp_mlx_argpartition(x$ptr, as.integer(kth), axis_idx)
   out <- new_mlx(ptr)
   if (!is.null(axis_idx)) {
-    dimnames(out) <- dimnames_axis_dropped(x, axis_idx + 1L)
+    dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
   }
   out
 }
