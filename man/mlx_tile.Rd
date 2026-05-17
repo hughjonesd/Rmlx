@@ -12,7 +12,8 @@ mlx_tile(x, reps)
 \item{reps}{Integer vector giving the number of repetitions for each axis.}
 }
 \value{
-An mlx array with tiled content.
+An mlx array with tiled content. Existing axis names are tiled with
+their axes; new leading axes introduced by \code{reps} are unnamed.
 }
 \description{
 Tile an array

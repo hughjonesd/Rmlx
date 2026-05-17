@@ -15,16 +15,51 @@ with \code{x} except at the selected axis.}
 \item{axis}{Axis to index (1-based).}
 }
 \value{
-An \code{mlx} array.
+An \code{mlx} array. Names on the indexed axis are dropped because
+per-position indices may reorder each slice differently.
 }
 \description{
 Mirrors \href{https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.take_along_axis.html}{\code{mlx.core.take_along_axis()}}
 while accepting 1-based R indices.
 }
+\details{
+If \code{y <- mlx_take_along_axis(x, idx, axis)} where \code{x} is an \verb{m x n} matrix
+and \code{idx} is a matrix:
+\itemize{
+\item \code{y} will have the same shape as \code{idx}, possibly after \code{idx} has been
+broadcast to the dimensions of \code{y} for all axes except \code{axis}.
+\item For \code{axis = 1}, values of \code{idx} give the
+row, and columns are in order: \code{y[i, j]} equals \code{x[idx[i, j], j]}.
+\code{idx} must have 1 or \code{n} columns. \code{y} will have the same number of rows
+as \code{idx}.
+\item For \code{axis = 2}, values of \code{idx} give the
+column, and rows are in order: \code{y[i, j]} equals \code{x[i, idx[i, j]]}.
+\code{idx} must have 1 or \code{m} rows, and \code{y} will have the same number of columns
+as \code{idx}.
+}
+
+More generally, for \code{x} and \code{idx} of \code{d} dimensions, and \code{axis = a}:
+\itemize{
+\item \code{y[i_1, ...., i_d]} equals \code{x[i_1, ..., idx[i_1,...,i_d], ..., i_d]} where
+the \code{idx} vector is in position \code{a}.
+}
+
+For broadcasting, the simplest rule is that if \code{idx} has 1 column,
+\code{mlx_take_along_axis(x, idx, 1)} is the same as \code{x[drop(idx),]}; and if
+\code{idx} has 1 row, \code{mlx_take_along_axis(x, idx, 2)} is the same as
+\code{x[, drop(idx)]}.
+}
 \examples{
-x <- mlx_matrix(1:12, nrow = 3, ncol = 4)
-idx <- matrix(c(1L, 4L,
-                2L, 3L,
-                4L, 1L), nrow = 3, byrow = TRUE)
-mlx_take_along_axis(x, idx, axis = 2L)
+x <- outer(1:3, c(0.1, 0.2), "+")
+x <- as_mlx(x)
+x
+
+idx_cols <- matrix(c(1, 2,
+                     2, 2,
+                     1, 1), nrow = 3, byrow = TRUE)
+mlx_take_along_axis(x, idx_cols, axis = 2)
+
+idx_rows <- matrix(c(1, 2,
+                     3, 1), nrow = 2, byrow = TRUE)
+mlx_take_along_axis(x, idx_rows, axis = 1)
 }

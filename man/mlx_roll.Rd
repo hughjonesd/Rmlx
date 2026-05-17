@@ -15,7 +15,8 @@ mlx_roll(x, shift, axes = NULL)
 When \code{NULL}, the array is flattened and shifted, then the shape is restored.}
 }
 \value{
-An mlx array with elements circularly shifted.
+An mlx array with elements circularly shifted. Dimnames are rolled
+with explicit axes; flattening rolls only keep names for vectors.
 }
 \description{
 Roll array elements

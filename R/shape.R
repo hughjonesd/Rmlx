@@ -201,7 +201,8 @@ mlx_expand_dims <- function(x, axes) {
 #' @param repeats Number of repetitions.
 #' @param axis Optional axis along which to repeat. When `NULL`, the array is
 #'   flattened before repetition (matching NumPy semantics).
-#' @return An mlx array with repeated values.
+#' @return An mlx array with repeated values. Dimnames are repeated on the
+#'   selected axis when they still describe the result.
 #' @seealso [mlx.core.repeat](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.repeat)
 #' @export
 #' @examples
@@ -220,14 +221,32 @@ mlx_repeat <- function(x, repeats, axis = NULL) {
     axis0 <- normalize_axis(axis, x)
     ptr <- cpp_mlx_repeat(x$ptr, repeats, axis0)
   }
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    shape <- mlx_shape(x)
+    if (is.null(axis)) {
+      if (length(shape) == 1L) {
+        dimnames(out) <- list(rep(dn[[1L]], each = repeats))
+      }
+    } else {
+      out_dn <- dn
+      if (!is.null(out_dn[[axis0 + 1L]])) {
+        out_dn[[axis0 + 1L]] <- rep(out_dn[[axis0 + 1L]], each = repeats)
+      }
+      dimnames(out) <- out_dn
+    }
+  }
+  out
 }
 
 #' Tile an array
 #'
 #' @inheritParams mlx_array_required
 #' @param reps Integer vector giving the number of repetitions for each axis.
-#' @return An mlx array with tiled content.
+#' @return An mlx array with tiled content. Existing axis names are tiled with
+#'   their axes; new leading axes introduced by `reps` are unnamed.
 #' @seealso [mlx.core.tile](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.tile)
 #' @export
 #' @examples
@@ -240,7 +259,26 @@ mlx_tile <- function(x, reps) {
     stop("reps must be positive integers.", call. = FALSE)
   }
   ptr <- cpp_mlx_tile(x$ptr, reps)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    old_shape <- mlx_shape(x)
+    out_ndim <- max(length(old_shape), length(reps))
+    # MLX/NumPy tile left-pads the shorter of shape and reps with ones.
+    reps_full <- c(rep.int(1L, out_ndim - length(reps)), reps)
+    offset <- out_ndim - length(old_shape)
+    out_dn <- vector("list", out_ndim)
+    for (old_axis in seq_along(old_shape)) {
+      new_axis <- old_axis + offset
+      axis_names <- dn[[old_axis]]
+      if (!is.null(axis_names)) {
+        out_dn[[new_axis]] <- rep(axis_names, times = reps_full[[new_axis]])
+      }
+    }
+    dimnames(out) <- dimnames_compact(out_dn)
+  }
+  out
 }
 
 #' Roll array elements
@@ -249,7 +287,8 @@ mlx_tile <- function(x, reps) {
 #' @param shift Integer vector giving the number of places by which elements are shifted.
 #' @param axes Optional integer vector (1-indexed) along which elements are shifted.
 #'   When `NULL`, the array is flattened and shifted, then the shape is restored.
-#' @return An mlx array with elements circularly shifted.
+#' @return An mlx array with elements circularly shifted. Dimnames are rolled
+#'   with explicit axes; flattening rolls only keep names for vectors.
 #' @seealso [mlx.core.roll](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.roll)
 #' @export
 #' @examples
@@ -271,7 +310,33 @@ mlx_roll <- function(x, shift, axes = NULL) {
     }
     ptr <- cpp_mlx_roll(x$ptr, shift, axes0)
   }
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    shape <- mlx_shape(x)
+    out_dn <- dn
+    if (is.null(axes)) {
+      # Flattened rolling only has representable dimnames for vectors.
+      if (length(shape) == 1L && length(shift) == 1L && !is.null(dn[[1L]])) {
+        idx <- ((seq_len(shape[[1L]]) - 1L - shift[[1L]]) %% shape[[1L]]) + 1L
+        out_dn[[1L]] <- dn[[1L]][idx]
+        dimnames(out) <- dimnames_compact(out_dn)
+      }
+    } else {
+      for (i in seq_along(axes0)) {
+        axis <- axes0[[i]] + 1L
+        axis_names <- out_dn[[axis]]
+        if (!is.null(axis_names)) {
+          # Output position p receives the name from input position p - shift.
+          idx <- ((seq_len(shape[[axis]]) - 1L - shift[[i]]) %% shape[[axis]]) + 1L
+          out_dn[[axis]] <- axis_names[idx]
+        }
+      }
+      dimnames(out) <- dimnames_compact(out_dn)
+    }
+  }
+  out
 }
 
 #' Pad mlx arrays
@@ -289,7 +354,8 @@ mlx_roll <- function(x, shift, axes = NULL) {
 #'   `"reflect"`).
 #' @param axes Optional integer vector of axes (1-indexed) to which `pad_width`
 #'   applies. Unlisted axes receive zero padding.
-#' @return An mlx array with the requested padding applied.
+#' @return An mlx array with the requested padding applied. Named axes are
+#'   extended according to the padding mode.
 #' @seealso [mlx.core.pad](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.pad),
 #'   [mlx_split()]
 #' @export
@@ -306,7 +372,7 @@ mlx_pad <- function(x,
   x_dtype <- mlx_dtype(x)
   mode <- match.arg(mode)
 
-  ndim <- length(dim(x))
+  ndim <- length(mlx_shape(x))
   if (ndim == 0L) {
     stop("Cannot pad a scalar mlx array.", call. = FALSE)
   }
@@ -338,7 +404,53 @@ mlx_pad <- function(x,
     x_dtype,
     mode
   )
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    out_dn <- dn
+    for (axis in seq_len(ndim)) {
+      axis_names <- out_dn[[axis]]
+      if (is.null(axis_names)) {
+        next
+      }
+
+      before <- pad_matrix[axis, 1L]
+      after <- pad_matrix[axis, 2L]
+      len <- length(axis_names)
+
+      if (mode == "constant") {
+        before_names <- rep.int(NA_character_, before)
+        after_names <- rep.int(NA_character_, after)
+      } else if (mode == "edge") {
+        before_names <- rep.int(axis_names[[1L]], before)
+        after_names <- rep.int(axis_names[[len]], after)
+      } else {
+        if (mode == "reflect") {
+          if (len > 1L) {
+            left_base <- c(seq.int(2L, len), seq.int(len - 1L, 1L))
+            right_base <- c(seq.int(len - 1L, 1L), seq.int(2L, len))
+          } else {
+            left_base <- right_base <- 1L
+          }
+          before_idx <- rep(left_base, length.out = before)
+          after_idx <- rep(right_base, length.out = after)
+          before_names <- axis_names[rev(before_idx)]
+          after_names <- axis_names[after_idx]
+        } else {
+          base_idx <- c(seq_len(len), seq.int(len, 1L))
+          left_idx <- rep(base_idx, length.out = len + before)
+          right_idx <- rep(base_idx, length.out = len + after)
+          before_names <- axis_names[rev(left_idx[seq_len(before)])]
+          after_names <- axis_names[right_idx[len + seq_len(after)]]
+        }
+      }
+
+      out_dn[[axis]] <- c(before_names, axis_names, after_names)
+    }
+    dimnames(out) <- dimnames_compact(out_dn)
+  }
+  out
 }
 
 #' Split mlx arrays
@@ -780,7 +892,8 @@ mlx_meshgrid <- function(...,
 #'
 #' @inheritParams mlx_array_required
 #' @param shape Integer vector describing the broadcasted shape.
-#' @return An mlx array with the requested dimensions.
+#' @return An mlx array with the requested dimensions. Dimnames from matching
+#'   or singleton broadcast axes are carried to the result.
 #' @seealso [mlx.core.broadcast_to](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_to)
 #' @export
 #' @examples
@@ -792,7 +905,7 @@ mlx_broadcast_to <- function(x, shape) {
   shape <- validate_shape(shape)
 
   ptr <- cpp_mlx_broadcast_to(x$ptr, shape)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_broadcast_to(x, shape))
 }
 
 #' Broadcast multiple arrays to a shared shape
@@ -801,7 +914,8 @@ mlx_broadcast_to <- function(x, shape) {
 #' returning a list of inputs expanded to a common shape.
 #'
 #' @param ... One or more arrays (or a single list) convertible via [as_mlx()].
-#' @return A list of broadcast mlx arrays.
+#' @return A list of broadcast mlx arrays, with each input's dimnames
+#'   broadcast to the shared shape where possible.
 #' @seealso [mlx.core.broadcast_arrays](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_arrays)
 #' @export
 #' @examples
@@ -824,7 +938,11 @@ mlx_broadcast_arrays <- function(...) {
   arrays <- lapply(arrays, mlx_cast, dtype = dtype)
 
   ptrs <- cpp_mlx_broadcast_arrays(arrays)
-  lapply(ptrs, new_mlx)
+  Map(function(ptr, array) {
+    out <- new_mlx(ptr)
+    dimnames(out) <- dimnames_broadcast_to(array, mlx_shape(out))
+    out
+  }, ptrs, arrays)
 }
 
 #' Elementwise conditional selection

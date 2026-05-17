@@ -240,6 +240,80 @@ dimnames_permute <- function(x, perm) {
   dimnames_compact(dn[perm])
 }
 
+#' Drop dimnames on selected axes
+#'
+#' @param x Source array.
+#' @param axes One-indexed axes whose dimnames no longer describe the result.
+#' @return Dimnames with selected axes set to `NULL`, or `NULL` when unnamed.
+#' @noRd
+dimnames_axis_dropped <- function(x, axes) {
+  dn <- dimnames(x)
+  if (is.null(dn)) {
+    return(NULL)
+  }
+  dn[as.integer(axes)] <- rep(list(NULL), length(axes))
+  dimnames_compact(dn)
+}
+
+#' Reorder dimnames on one axis
+#'
+#' @param x Source array.
+#' @param axis One-indexed axis to reorder.
+#' @param indices One-based indices for the reordered axis.
+#' @return Dimnames with one axis indexed, or `NULL` when unnamed.
+#' @noRd
+dimnames_axis_indexed <- function(x, axis, indices) {
+  dn <- dimnames(x)
+  if (is.null(dn)) {
+    return(NULL)
+  }
+  axis <- as.integer(axis)
+  if (!is.null(dn[[axis]])) {
+    dn[[axis]] <- dn[[axis]][as.integer(indices)]
+  }
+  dimnames_compact(dn)
+}
+
+#' Broadcast dimnames to a target shape
+#'
+#' @param x Source array.
+#' @param shape Target broadcast shape.
+#' @return Dimnames aligned to `shape`, or `NULL` when unnamed.
+#' @noRd
+dimnames_broadcast_to <- function(x, shape) {
+  dn <- dimnames(x)
+  if (is.null(dn)) {
+    return(NULL)
+  }
+
+  old_shape <- mlx_shape(x)
+  shape <- as.integer(shape)
+  old_ndim <- length(old_shape)
+  new_ndim <- length(shape)
+  out <- vector("list", new_ndim)
+  offset <- new_ndim - old_ndim
+
+  for (old_axis in seq_len(old_ndim)) {
+    new_axis <- old_axis + offset
+    if (new_axis < 1L || new_axis > new_ndim) {
+      next
+    }
+
+    axis_names <- dn[[old_axis]]
+    if (is.null(axis_names)) {
+      out[new_axis] <- list(NULL)
+    } else if (old_shape[[old_axis]] == shape[[new_axis]]) {
+      out[[new_axis]] <- axis_names
+    } else if (old_shape[[old_axis]] == 1L) {
+      out[[new_axis]] <- rep.int(axis_names, shape[[new_axis]])
+    } else {
+      out[new_axis] <- list(NULL)
+    }
+  }
+
+  dimnames_compact(out)
+}
+
 #' Dimnames and names for MLX arrays
 #'
 #' Get or set R-side dimname metadata on `mlx` arrays. Names are stored as

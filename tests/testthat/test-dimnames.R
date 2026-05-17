@@ -257,3 +257,97 @@ test_that("axis movement and splitting transform dimnames like base analogues", 
   expect_equal(names(mlx_split), names(base_split))
   expect_equal(dimnames(mlx_split[[1]]), dimnames(base_split[[1]]))
 })
+
+test_that("reordering helpers keep only representable dimnames", {
+  vec <- c(a = 3, b = 1, c = 2)
+  x <- as_mlx(vec)
+
+  expect_equal(names(mlx_sort(x)), names(sort(vec)))
+  expect_null(names(mlx_argsort(x)))
+
+  part <- mlx_partition(x, kth = 1L)
+  part_idx <- as.integer(as.vector(mlx_argpartition(x, kth = 1L)))
+  expect_equal(names(part), names(vec)[part_idx])
+  expect_null(names(mlx_argpartition(x, kth = 1L)))
+
+  mat <- matrix(c(3, 1, 4,
+                  2, 5, 0),
+                nrow = 2, byrow = TRUE,
+                dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  m <- as_mlx(mat)
+
+  expect_equal(dimnames(mlx_sort(m, axis = 2)), list(rownames(mat), NULL))
+  expect_equal(dimnames(mlx_sort(m, axis = 1)), list(NULL, colnames(mat)))
+  expect_equal(dimnames(mlx_argsort(m, axis = 2)), list(rownames(mat), NULL))
+  expect_equal(dimnames(mlx_partition(m, kth = 1L, axis = 2)), list(rownames(mat), NULL))
+  expect_equal(dimnames(mlx_argpartition(m, kth = 1L, axis = 1)), list(NULL, colnames(mat)))
+  expect_equal(dimnames(mlx_topk(m, k = 2L, axis = 2)), list(rownames(mat), NULL))
+  expect_null(dimnames(mlx_sort(m)))
+
+  idx <- matrix(c(3L, 1L,
+                  2L, 3L),
+                nrow = 2, byrow = TRUE)
+  expect_equal(dimnames(mlx_take_along_axis(m, idx, axis = 2)), list(rownames(mat), NULL))
+
+  broadcast_source <- mlx_matrix(
+    1:3,
+    nrow = 1,
+    dimnames = list("r", c("c1", "c2", "c3"))
+  )
+  broadcast_idx <- matrix(c(3L, 1L,
+                            2L, 3L,
+                            1L, 2L),
+                          nrow = 3, byrow = TRUE)
+  expect_equal(
+    dimnames(mlx_take_along_axis(broadcast_source, broadcast_idx, axis = 2)),
+    list(c("r", "r", "r"), NULL)
+  )
+})
+
+test_that("shape expansion helpers transform dimnames", {
+  mat <- matrix(1:6, 2, 3,
+                dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  x <- as_mlx(mat)
+
+  expect_equal(dimnames(mlx_roll(x, shift = 1L, axes = 2)),
+               list(rownames(mat), c("c3", "c1", "c2")))
+  expect_equal(names(mlx_roll(as_mlx(c(a = 1, b = 2, c = 3)), shift = -1L)),
+               c("b", "c", "a"))
+  expect_null(dimnames(mlx_roll(x, shift = 1L)))
+
+  expect_equal(dimnames(mlx_repeat(x, repeats = 2L, axis = 1)),
+               list(rep(rownames(mat), each = 2L), colnames(mat)))
+  expect_equal(names(mlx_repeat(as_mlx(c(a = 1, b = 2)), repeats = 2L)),
+               c("a", "a", "b", "b"))
+  expect_null(dimnames(mlx_repeat(x, repeats = 2L)))
+
+  expect_equal(dimnames(mlx_tile(x, reps = c(1L, 2L))),
+               list(rownames(mat), rep(colnames(mat), times = 2L)))
+  expect_equal(dimnames(mlx_tile(as_mlx(c(a = 1, b = 2)), reps = c(2L, 1L))),
+               list(NULL, c("a", "b")))
+
+  row <- mlx_matrix(1:3, nrow = 1, dimnames = list("r", c("c1", "c2", "c3")))
+  expect_equal(dimnames(mlx_broadcast_to(row, c(2L, 3L))),
+               list(c("r", "r"), c("c1", "c2", "c3")))
+
+  col <- mlx_matrix(1:2, ncol = 1, dimnames = list(c("r1", "r2"), "c"))
+  outs <- mlx_broadcast_arrays(row, col)
+  expect_equal(dimnames(outs[[1L]]), list(c("r", "r"), c("c1", "c2", "c3")))
+  expect_equal(dimnames(outs[[2L]]), list(c("r1", "r2"), c("c", "c", "c")))
+})
+
+test_that("padding extends dimnames according to mode", {
+  mat <- matrix(1:6, 2, 3,
+                dimnames = list(c("r1", "r2"), c("c1", "c2", "c3")))
+  x <- as_mlx(mat)
+
+  expect_equal(dimnames(mlx_pad(x, pad_width = list(c(1L, 0L), c(0L, 1L)))),
+               list(c(NA, "r1", "r2"), c("c1", "c2", "c3", NA)))
+  expect_equal(dimnames(mlx_pad(x, pad_width = c(1L, 1L), mode = "edge")),
+               list(c("r1", "r1", "r2", "r2"),
+                    c("c1", "c1", "c2", "c3", "c3")))
+
+  vec <- as_mlx(c(a = 1, b = 2, c = 3))
+  expect_equal(names(mlx_pad(vec, pad_width = c(1L, 2L))),
+               c(NA, "a", "b", "c", NA, NA))
+})

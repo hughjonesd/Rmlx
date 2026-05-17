@@ -48,7 +48,10 @@ diag.default NA TRUE FALSE
 diag.mlx NA TRUE FALSE
 dim.mlx "Get dimensions of MLX array" TRUE FALSE
 dim<-.mlx "Set dimensions of MLX array" TRUE FALSE
+dimnames_axis_dropped "Drop dimnames on selected axes" TRUE FALSE
+dimnames_axis_indexed "Reorder dimnames on one axis" TRUE FALSE
 dimnames_bind "Combine dimnames when binding arrays" TRUE FALSE
+dimnames_broadcast_to "Broadcast dimnames to a target shape" TRUE FALSE
 dimnames_compact "Drop all-empty dimnames metadata" TRUE FALSE
 dimnames_diagonal "Choose dimnames for diagonal extraction" TRUE FALSE
 dimnames_from_binary_operands "Choose dimnames for binary-operation results" TRUE FALSE
