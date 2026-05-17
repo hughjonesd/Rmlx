@@ -274,6 +274,41 @@ dimnames_axis_indexed <- function(x, axis, indices) {
   dimnames_compact(dn)
 }
 
+#' Subset dimnames according to normalized indices
+#'
+#' @param x Source mlx array.
+#' @param idx_list List of per-axis indices.
+#' @return Dimnames for the subset result.
+#' @noRd
+subset_dimnames <- function(x, idx_list) {
+  dn <- dimnames(x)
+  if (is.null(dn)) {
+    return(NULL)
+  }
+  shape <- mlx_shape(x)
+  out <- vector("list", length(shape))
+  for (axis in seq_along(shape)) {
+    axis_names <- dn[[axis]]
+    if (is.null(axis_names)) {
+      out[axis] <- list(NULL)
+    } else {
+      idx <- idx_list[[axis]]
+      if (is.null(idx)) {
+        idx <- seq_len(shape[[axis]])
+      } else if (is_mlx(idx)) {
+        idx <- if (identical(mlx_dtype(idx), "bool")) {
+          as.logical(idx)
+        } else {
+          as.integer(as.vector(idx))
+        }
+      }
+      out[[axis]] <- axis_names[idx]
+    }
+  }
+  names(out) <- names(dn)
+  dimnames_compact(out)
+}
+
 #' Broadcast dimnames to a target shape
 #'
 #' @param x Source array.

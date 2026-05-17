@@ -77,7 +77,10 @@ mlx_gather <- function(x, indices, axes = NULL) {
     (is.null(idx_dims[[1]]) || !length(idx_dims[[1]]))
   if (use_take) {
     ptr <- cpp_mlx_take(x$ptr, as.vector(normalized[[1]]), axes0[[1]])
-    return(new_mlx(ptr))
+    return(new_mlx(
+      ptr,
+      dimnames = dimnames_axis_indexed(x, axes[[1]], normalized[[1]] + 1L)
+    ))
   }
 
   # Convert normalized vectors into mlx int32 arrays, reapplying the user

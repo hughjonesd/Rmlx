@@ -168,7 +168,8 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   mat2 <- mlx_cast(mat2, dtype = target_dtype)
 
   ptr <- cpp_mlx_addmm(input$ptr, mat1$ptr, mat2$ptr, alpha, beta, target_dtype)
-  new_mlx(ptr)
+  dn <- dimnames(input) %||% dimnames_compact(list(rownames(mat1), colnames(mat2)))
+  new_mlx(ptr, dimnames = dn)
 }
 
 #' Apply unary MLX operation

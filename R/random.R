@@ -273,8 +273,17 @@ mlx_rand_permutation <- function(x, axis = 1L) {
     # Permute array along axis
     x <- as_mlx(x)
     axis0 <- normalize_axis_single(as.integer(axis), x)
-    ptr <- cpp_mlx_random_permutation(x, axis0)
-    new_mlx(ptr)
+    dn <- dimnames(x)
+    if (is.null(dn) || is.null(dn[[axis0 + 1L]])) {
+      ptr <- cpp_mlx_random_permutation(x, axis0)
+      return(new_mlx(ptr, dimnames = dn))
+    }
+
+    ptr <- cpp_mlx_random_permutation_n(mlx_shape(x)[[axis0 + 1L]])
+    perm <- new_mlx(ptr)
+    perm <- mlx_cast(perm, dtype = "int32")
+    perm <- perm + as_mlx(1L, dtype = mlx_dtype(perm))
+    mlx_gather(x, list(perm), axes = axis0 + 1L)
   }
 }
 

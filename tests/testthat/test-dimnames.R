@@ -205,6 +205,50 @@ test_that("shape-preserving helpers keep dimnames", {
                dimnames(mat))
 })
 
+test_that("addmm and simple gather preserve dimnames", {
+  input <- mlx_matrix(
+    0,
+    nrow = 2,
+    ncol = 2,
+    dimnames = list(c("ir1", "ir2"), c("ic1", "ic2"))
+  )
+  mat1 <- mlx_matrix(
+    1:6,
+    nrow = 2,
+    dimnames = list(c("m1r1", "m1r2"), c("k1", "k2", "k3"))
+  )
+  mat2 <- mlx_matrix(
+    1:6,
+    nrow = 3,
+    dimnames = list(c("k1", "k2", "k3"), c("m2c1", "m2c2"))
+  )
+
+  expect_equal(dimnames(mlx_addmm(input, mat1, mat2)),
+               dimnames(input))
+  expect_equal(dimnames(mlx_addmm(mlx_zeros(c(2, 2)), mat1, mat2)),
+               list(rownames(mat1), colnames(mat2)))
+
+  x <- mlx_matrix(1:9, 3, 3,
+                  dimnames = list(c("r1", "r2", "r3"), c("c1", "c2", "c3")))
+  expect_equal(dimnames(mlx_gather(x, list(c(3L, 1L)), axes = 1L)),
+               list(c("r3", "r1"), colnames(x)))
+  expect_equal(dimnames(mlx_gather(x, list(c(2L, 3L)), axes = 2L)),
+               list(rownames(x), c("c2", "c3")))
+})
+
+test_that("random permutation reorders dimnames with the permuted axis", {
+  mat <- mlx_matrix(1:12, 4, 3,
+                    dimnames = list(paste0("r", 1:4), paste0("c", 1:3)))
+
+  rows <- mlx_rand_permutation(mat, axis = 1L)
+  expect_equal(sort(rownames(rows)), rownames(mat))
+  expect_equal(colnames(rows), colnames(mat))
+
+  cols <- mlx_rand_permutation(mat, axis = 2L)
+  expect_equal(rownames(cols), rownames(mat))
+  expect_equal(sort(colnames(cols)), colnames(mat))
+})
+
 test_that("binding combines names on bound axis and keeps agreeing axes", {
   x <- mlx_matrix(1:4, 2, 2, dimnames = list(c("r1", "r2"), c("c1", "c2")))
   y <- mlx_matrix(5:8, 2, 2, dimnames = list(c("r3", "r4"), c("c1", "c2")))
