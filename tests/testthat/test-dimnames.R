@@ -39,6 +39,8 @@ test_that("subsetting updates dimnames and supports character indices", {
 
   expect_equal(dimnames(x[c("r3", "r1"), c("c2", "c2")]),
                list(c("r3", "r1"), c("c2", "c2")))
+  expect_equal(dimnames(x[c("r1", "r3"), ]),
+               list(c("r1", "r3"), colnames(mat)))
   expect_equal(names(x["r2", , drop = TRUE]), colnames(mat))
   expect_equal(names(x[, "c3", drop = TRUE]), rownames(mat))
   expect_equal(dimnames(x[matrix(c(1, 1, 3, 2), ncol = 2, byrow = TRUE)]), NULL)

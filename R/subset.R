@@ -132,7 +132,9 @@ vectors_subset <- function(x, idx_list) {
     }
     idx_arg <- if (is_mlx(idx0)) idx0$ptr else as.integer(idx0)
     ptr <- cpp_mlx_take(x$ptr, idx_arg, axis - 1L)
-    return(new_mlx(ptr, dimnames = subset_dimnames(x, idx_list)))
+    idx_norm <- idx_list
+    idx_norm[[axis]] <- idx
+    return(new_mlx(ptr, dimnames = subset_dimnames(x, idx_norm)))
   }
 
   idx_list <- mapply(
