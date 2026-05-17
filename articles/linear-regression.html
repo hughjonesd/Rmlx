@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Linear Regression with MLX • Rmlx</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Linear Regression with MLX">
 </head>
@@ -170,7 +170,7 @@ unbounded</li>
 </ol>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">w_sgd</span> <span class="op">&lt;-</span> <span class="fu">train_sgd</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Iteration 1000 - Loss: 0.491025</span></span></code></pre></div>
+<span><span class="co">#&gt; Iteration 1000 - Loss: 0.50094</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="method-2-closed-form-regression-via-matrix-algebra">Method 2: Closed-form Regression via Matrix Algebra<a class="anchor" aria-label="anchor" href="#method-2-closed-form-regression-via-matrix-algebra"></a>
@@ -201,7 +201,7 @@ and solve the triangular system
 <span><span class="va">closed_error</span> <span class="op">&lt;-</span> <span class="va">w_closed</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">closed_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">closed_error</span> <span class="op">*</span> <span class="va">closed_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">closed_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.1056848</span></span></code></pre></div>
+<span><span class="co">#&gt; Closed-form ||w - w*|| = 0.09263861</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accelerating-the-closed-form-solution-with-mlx_compile">Accelerating the Closed-form Solution with
@@ -224,7 +224,7 @@ graph.</p>
 <span><span class="va">compiled_error</span> <span class="op">&lt;-</span> <span class="va">w_compiled</span> <span class="op">-</span> <span class="va">w_star</span></span>
 <span><span class="va">compiled_error_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">compiled_error</span> <span class="op">*</span> <span class="va">compiled_error</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Compiled closed-form ||w - w*|| ="</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">compiled_error_norm</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.1056848</span></span></code></pre></div>
+<span><span class="co">#&gt; Compiled closed-form ||w - w*|| = 0.09263861</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="accuracy-and-performance-comparison">Accuracy and Performance Comparison<a class="anchor" aria-label="anchor" href="#accuracy-and-performance-comparison"></a>
@@ -296,23 +296,23 @@ as a reference.</p>
 <tbody>
 <tr class="odd">
 <td align="left">SGD</td>
-<td align="right">3.31s</td>
-<td align="right">0.1057</td>
+<td align="right">3.24s</td>
+<td align="right">0.0926</td>
 </tr>
 <tr class="even">
 <td align="left">MLX closed form</td>
-<td align="right">34.72ms</td>
-<td align="right">0.1057</td>
+<td align="right">21.48ms</td>
+<td align="right">0.0926</td>
 </tr>
 <tr class="odd">
 <td align="left">MLX closed form (compiled)</td>
-<td align="right">37.75ms</td>
-<td align="right">0.1057</td>
+<td align="right">19.37ms</td>
+<td align="right">0.0926</td>
 </tr>
 <tr class="even">
 <td align="left">Base R</td>
-<td align="right">109.02ms</td>
-<td align="right">0.1057</td>
+<td align="right">87.99ms</td>
+<td align="right">0.0926</td>
 </tr>
 </tbody>
 </table>

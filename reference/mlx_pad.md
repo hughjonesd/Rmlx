@@ -45,7 +45,8 @@ mlx_pad(
 
 ## Value
 
-An mlx array with the requested padding applied.
+An mlx array with the requested padding applied. Named axes are extended
+according to the padding mode.
 
 ## See also
 

@@ -20,7 +20,8 @@ mlx_tile(x, reps)
 
 ## Value
 
-An mlx array with tiled content.
+An mlx array with tiled content. Existing axis names are tiled with
+their axes; new leading axes introduced by `reps` are unnamed.
 
 ## See also
 

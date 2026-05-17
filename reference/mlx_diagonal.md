@@ -28,7 +28,8 @@ mlx_diagonal(x, offset = 0L, axis1 = 1L, axis2 = 2L)
 
 - names:
 
-  Unused.
+  Logical; when `TRUE`, diagonal extraction may preserve names like
+  [`base::diag()`](https://rdrr.io/r/base/diag.html).
 
 - offset:
 

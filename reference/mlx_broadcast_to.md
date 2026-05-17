@@ -22,7 +22,8 @@ mlx_broadcast_to(x, shape)
 
 ## Value
 
-An mlx array with the requested dimensions.
+An mlx array with the requested dimensions. Dimnames from matching or
+singleton broadcast axes are carried to the result.
 
 ## See also
 

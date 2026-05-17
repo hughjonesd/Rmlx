@@ -55,6 +55,11 @@ An mlx array. For `mlx_argpartition()`, returns 1-based indices
   partition the array. This follows R's indexing convention (unlike the
   underlying MLX library which uses 0-based indexing).
 
+- Named vectors keep names on partitioned values. For arrays partitioned
+  or selected along an axis, the reordered axis drops names because each
+  slice may use a different permutation, while names on untouched axes
+  are kept.
+
 Use
 [`mlx_argsort()`](https://hughjonesd.github.io/Rmlx/reference/mlx_sort.md)
 if you need fully sorted indices.

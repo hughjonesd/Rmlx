@@ -27,7 +27,8 @@ mlx_roll(x, shift, axes = NULL)
 
 ## Value
 
-An mlx array with elements circularly shifted.
+An mlx array with elements circularly shifted. Dimnames are rolled with
+explicit axes; flattening rolls only keep names for vectors.
 
 ## See also
 

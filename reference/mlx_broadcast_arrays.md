@@ -19,7 +19,8 @@ mlx_broadcast_arrays(...)
 
 ## Value
 
-A list of broadcast mlx arrays.
+A list of broadcast mlx arrays, with each input's dimnames broadcast to
+the shared shape where possible.
 
 ## See also
 

@@ -2,6 +2,12 @@
 
 ## Rmlx (development version)
 
+- `mlx` objects can now have row, column and dimnames, and vectors can
+  have names. These work much like base R. Names for any dimension may
+  be `NULL`. Subsetting with a non-existent name is an error. Many
+  functions, e.g. [`solve()`](https://rdrr.io/r/base/solve.html), `%*%`,
+  etc. preserve dimnames like their R analogues.
+
 ## Rmlx 0.3.0
 
 - We now allow float64 arrays. (Note that mlx doesn’t yet do operations
