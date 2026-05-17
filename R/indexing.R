@@ -77,7 +77,10 @@ mlx_gather <- function(x, indices, axes = NULL) {
     (is.null(idx_dims[[1]]) || !length(idx_dims[[1]]))
   if (use_take) {
     ptr <- cpp_mlx_take(x$ptr, as.vector(normalized[[1]]), axes0[[1]])
-    return(new_mlx(ptr))
+    return(new_mlx(
+      ptr,
+      dimnames = dimnames_axis_indexed(x, axes[[1]], normalized[[1]] + 1L)
+    ))
   }
 
   # Convert normalized vectors into mlx int32 arrays, reapplying the user
@@ -141,20 +144,61 @@ mlx_gather <- function(x, indices, axes = NULL) {
 #' @param indices Integer positions along `axis`. Must be broadcast-compatible
 #'   with `x` except at the selected axis.
 #' @param axis Axis to index (1-based).
-#' @return An `mlx` array.
+#' @return An `mlx` array. Names on the indexed axis are dropped because
+#'   per-position indices may reorder each slice differently.
+#'
+#' @details
+#'
+#' If `y <- mlx_take_along_axis(x, idx, axis)` where `x` is an `m x n` matrix
+#' and `idx` is a matrix:
+#'
+#' * `y` will have the same shape as `idx`, possibly after `idx` has been
+#'   broadcast to the dimensions of `y` for all axes except `axis`.
+#' * For `axis = 1`, values of `idx` give the
+#'   row, and columns are in order: `y[i, j]` equals `x[idx[i, j], j]`.
+#'   `idx` must have 1 or `n` columns. `y` will have the same number of rows
+#'   as `idx`.
+#' * For `axis = 2`, values of `idx` give the
+#'   column, and rows are in order: `y[i, j]` equals `x[i, idx[i, j]]`.
+#'   `idx` must have 1 or `m` rows, and `y` will have the same number of columns
+#'   as `idx`.
+#'
+#' More generally, for `x` and `idx` of `d` dimensions, and `axis = a`:
+#'
+#' * `y[i_1, ...., i_d]` equals `x[i_1, ..., idx[i_1,...,i_d], ..., i_d]` where
+#'   the `idx` vector is in position `a`.
+#'
+#' For broadcasting, the simplest rule is that if `idx` has 1 column,
+#' `mlx_take_along_axis(x, idx, 1)` is the same as `x[drop(idx),]`; and if
+#' `idx` has 1 row, `mlx_take_along_axis(x, idx, 2)` is the same as
+#' `x[, drop(idx)]`.
+#'
 #' @export
 #' @examples
-#' x <- mlx_matrix(1:12, nrow = 3, ncol = 4)
-#' idx <- matrix(c(1L, 4L,
-#'                 2L, 3L,
-#'                 4L, 1L), nrow = 3, byrow = TRUE)
-#' mlx_take_along_axis(x, idx, axis = 2L)
+#' x <- outer(1:3, c(0.1, 0.2), "+")
+#' x <- as_mlx(x)
+#' x
+#'
+#' idx_cols <- matrix(c(1, 2,
+#'                      2, 2,
+#'                      1, 1), nrow = 3, byrow = TRUE)
+#' mlx_take_along_axis(x, idx_cols, axis = 2)
+#'
+#' idx_rows <- matrix(c(1, 2,
+#'                      3, 1), nrow = 2, byrow = TRUE)
+#' mlx_take_along_axis(x, idx_rows, axis = 1)
 mlx_take_along_axis <- function(x, indices, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)
-  idx_mlx <- .mlx_index_array(indices, dim(x)[axis])
+  idx_mlx <- .mlx_index_array(indices, mlx_shape(x)[[axis_idx + 1L]])
   ptr <- cpp_mlx_take_along_axis(x$ptr, idx_mlx$ptr, axis_idx)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  out_dn <- dimnames_broadcast_to(x, mlx_shape(out))
+  if (!is.null(out_dn)) {
+    out_dn[axis_idx + 1L] <- list(NULL)
+    dimnames(out) <- dimnames_compact(out_dn)
+  }
+  out
 }
 
 #' Write values using per-position axis indices
@@ -178,10 +222,10 @@ mlx_take_along_axis <- function(x, indices, axis) {
 mlx_put_along_axis <- function(x, indices, values, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)
-  idx_mlx <- .mlx_index_array(indices, dim(x)[axis])
+  idx_mlx <- .mlx_index_array(indices, mlx_shape(x)[[axis_idx + 1L]])
   values_mlx <- as_mlx(values, dtype = mlx_dtype(x))
   ptr <- cpp_mlx_put_along_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Add values using per-position axis indices
@@ -204,10 +248,10 @@ mlx_put_along_axis <- function(x, indices, values, axis) {
 mlx_scatter_add_axis <- function(x, indices, values, axis) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis_single(as.integer(axis), x)
-  idx_mlx <- .mlx_index_array(indices, dim(x)[axis])
+  idx_mlx <- .mlx_index_array(indices, mlx_shape(x)[[axis_idx + 1L]])
   values_mlx <- as_mlx(values, dtype = mlx_dtype(x))
   ptr <- cpp_mlx_scatter_add_axis(x$ptr, idx_mlx$ptr, values_mlx$ptr, axis_idx)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Update a slice of an mlx array
@@ -266,7 +310,7 @@ mlx_slice_update <- function(x,
   stop0 <- stop
 
   ptr <- cpp_mlx_slice_update(x$ptr, value$ptr, start0, stop0, strides)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 # Internal helper for scatter-based updates on flattened tensors
@@ -281,5 +325,5 @@ mlx_slice_update <- function(x,
 .mlx_scatter_axis <- function(x, indices, updates, axes) {
   idx_list <- if (is.list(indices)) indices else list(indices)
   ptr <- cpp_mlx_scatter(x$ptr, idx_list, updates$ptr, as.integer(axes))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }

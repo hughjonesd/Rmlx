@@ -28,7 +28,8 @@ axis.}
 applies. Unlisted axes receive zero padding.}
 }
 \value{
-An mlx array with the requested padding applied.
+An mlx array with the requested padding applied. Named axes are
+extended according to the padding mode.
 }
 \description{
 \code{mlx_pad()} mirrors the MLX padding primitive, enlarging each axis according

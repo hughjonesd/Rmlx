@@ -122,7 +122,7 @@ mlx_fftn <- function(x,
   }
 
   ptr <- cpp_mlx_fft(mlx_x$ptr, axes_zero, isTRUE(inverse))
-  result <- new_mlx(ptr)
+  result <- new_mlx(ptr, dimnames = dimnames(mlx_x))
 
   if (isTRUE(inverse)) {
     scale_axes <- if (is.null(axes_zero)) {

@@ -17,7 +17,8 @@ mlx_diagonal(x, offset = 0L, axis1 = 1L, axis2 = 2L)
 \code{diag.mlx()} is an R interface to \code{mlx_diagonal()} with the same semantics
 as \code{\link[base:diag]{base::diag()}}.}
 
-\item{names}{Unused.}
+\item{names}{Logical; when \code{TRUE}, diagonal extraction may preserve names
+like \code{\link[base:diag]{base::diag()}}.}
 
 \item{offset}{Diagonal offset (0 for main diagonal, positive for above, negative for below).}
 

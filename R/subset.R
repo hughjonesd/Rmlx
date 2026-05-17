@@ -118,23 +118,6 @@ vectors_subset <- function(x, idx_list) {
          "To use a single logical index, flatten first.")
   }
 
-  active_axes <- which(!vapply(idx_list, is.null, logical(1)))
-  if (length(active_axes) == 1L && length(shape) <= 2L) {
-    axis <- active_axes[[1L]]
-    idx <- normalize_index(
-      idx_list[[axis]], shape[[axis]], assign = FALSE,
-      names = dimnames(x)[[axis]]
-    )
-    idx0 <- if (is.null(idx)) {
-      integer(0)
-    } else {
-      mlx_cast(idx - 1L, dtype = "int32")
-    }
-    idx_arg <- if (is_mlx(idx0)) idx0$ptr else as.integer(idx0)
-    ptr <- cpp_mlx_take(x$ptr, idx_arg, axis - 1L)
-    return(new_mlx(ptr, dimnames = subset_dimnames(x, idx_list)))
-  }
-
   idx_list <- mapply(
     function(idx, len, axis) {
       normalize_index(idx, len, assign = FALSE, names = dimnames(x)[[axis]])
@@ -184,33 +167,4 @@ gather_for_subset <- function(x, idx_list) {
   res <- mlx_squeeze(res, axes = added_axes)
 
   res
-}
-
-subset_dimnames <- function(x, idx_list) {
-  dn <- dimnames(x)
-  if (is.null(dn)) {
-    return(NULL)
-  }
-  shape <- mlx_shape(x)
-  out <- vector("list", length(shape))
-  for (axis in seq_along(shape)) {
-    axis_names <- dn[[axis]]
-    if (is.null(axis_names)) {
-      out[axis] <- list(NULL)
-    } else {
-      idx <- idx_list[[axis]]
-      if (is.null(idx)) {
-        idx <- seq_len(shape[[axis]])
-      } else if (is_mlx(idx)) {
-        idx <- if (identical(mlx_dtype(idx), "bool")) {
-          as.logical(idx)
-        } else {
-          as.integer(as.vector(idx))
-        }
-      }
-      out[[axis]] <- axis_names[idx]
-    }
-  }
-  names(out) <- names(dn)
-  if (all(vapply(out, is.null, logical(1)))) NULL else out
 }

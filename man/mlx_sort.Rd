@@ -31,6 +31,10 @@ ascending order. This follows R's indexing convention (unlike the underlying
 MLX library which uses 0-based indexing). The returned indices can be used
 directly to reorder the original array.
 
+Named vectors keep names on sorted values. For arrays sorted along an axis,
+the sorted axis drops names because each slice may use a different
+permutation, while names on untouched axes are kept.
+
 For partial sorting (finding elements up to a certain rank without fully
 sorting), see \code{\link[=mlx_partition]{mlx_partition()}} and \code{\link[=mlx_argpartition]{mlx_argpartition()}}.
 }

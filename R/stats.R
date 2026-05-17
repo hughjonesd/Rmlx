@@ -313,16 +313,7 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
   ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
-  dn <- dimnames(x)
-  if (!is.null(dn)) {
-    if (isTRUE(drop)) {
-      dn <- dn[-axis]
-      if (!length(dn)) dn <- NULL
-    } else {
-      dn[axis] <- list(NULL)
-    }
-  }
-  new_mlx(ptr, dimnames = dn)
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axis, drop))
 }
 
 #' Reduce an mlx array along multiple axes
@@ -647,7 +638,9 @@ mlx_cumsum <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumsum(x$ptr, axis_mlx, reverse, inclusive)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  dimnames(out) <- dimnames_if_shape_matches(x, mlx_shape(out))
+  out
 }
 
 #' @rdname mlx_cumsum
@@ -658,7 +651,9 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
   axis_mlx <- normalize_axis(axis, x)
 
   ptr <- cpp_mlx_cumprod(x$ptr, axis_mlx, reverse, inclusive)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  dimnames(out) <- dimnames_if_shape_matches(x, mlx_shape(out))
+  out
 }
 
 #' Normal distribution functions

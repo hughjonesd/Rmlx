@@ -12,7 +12,8 @@ mlx_broadcast_to(x, shape)
 \item{shape}{Integer vector describing the broadcasted shape.}
 }
 \value{
-An mlx array with the requested dimensions.
+An mlx array with the requested dimensions. Dimnames from matching
+or singleton broadcast axes are carried to the result.
 }
 \description{
 \code{mlx_broadcast_to()} mirrors \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_to}{\code{mlx.core.broadcast_to()}},

@@ -10,7 +10,8 @@ mlx_broadcast_arrays(...)
 \item{...}{One or more arrays (or a single list) convertible via \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
-A list of broadcast mlx arrays.
+A list of broadcast mlx arrays, with each input's dimnames
+broadcast to the shared shape where possible.
 }
 \description{
 \code{mlx_broadcast_arrays()} mirrors \href{https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_arrays}{\code{mlx.core.broadcast_arrays()}},

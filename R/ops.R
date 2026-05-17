@@ -168,7 +168,8 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
   mat2 <- mlx_cast(mat2, dtype = target_dtype)
 
   ptr <- cpp_mlx_addmm(input$ptr, mat1$ptr, mat2$ptr, alpha, beta, target_dtype)
-  new_mlx(ptr)
+  dn <- dimnames(input) %||% dimnames_compact(list(rownames(mat1), colnames(mat2)))
+  new_mlx(ptr, dimnames = dn)
 }
 
 #' Apply unary MLX operation
@@ -204,7 +205,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
   ptr <- cpp_mlx_binary(x$ptr, y$ptr, op, input_dtype)
   out <- new_mlx(ptr)
-  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y)
+  dimnames(out) <- dimnames_from_binary_operands(out, x, y)
   out
 }
 
@@ -217,7 +218,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 .mlx_logical <- function(x, y, op) {
   ptr <- cpp_mlx_logical(x$ptr, y$ptr, op)
   out <- new_mlx(ptr)
-  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y)
+  dimnames(out) <- dimnames_from_binary_operands(out, x, y)
   out
 }
 
@@ -297,7 +298,7 @@ mlx_maximum <- function(x, y) {
 
   ptr <- cpp_fn(x$ptr, y$ptr)
   out <- new_mlx(ptr)
-  dimnames(out) <- .mlx_dimnames_for_binary(out, x, y)
+  dimnames(out) <- dimnames_from_binary_operands(out, x, y)
   out
 }
 
@@ -324,7 +325,7 @@ mlx_clip <- function(x, min = NULL, max = NULL) {
   }
 
   ptr <- cpp_mlx_clip(x$ptr, min, max)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Promote dtypes for mixed operations

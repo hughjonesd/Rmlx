@@ -21,7 +21,7 @@ chol.mlx <- function(x, pivot = FALSE, ..., device = NULL) {
   x_dtype <- mlx_dtype(x)
   if (!is.null(device)) local_device(device)
   ptr <- cpp_mlx_cholesky(x$ptr, TRUE, x_dtype)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Inverse from Cholesky decomposition
@@ -92,8 +92,8 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
   res <- cpp_mlx_qr(x$ptr, x_dtype)
   structure(
     list(
-      Q = new_mlx(res$Q),
-      R = new_mlx(res$R)
+      Q = new_mlx(res$Q, dimnames = list(rownames(x), colnames(x))),
+      R = new_mlx(res$R, dimnames = list(colnames(x), colnames(x)))
     ),
     class = c("mlx_qr", "list")
   )
@@ -186,7 +186,7 @@ pinv <- function(x, device = NULL) {
 
   x_dtype <- mlx_dtype(x)
   ptr <- cpp_mlx_pinv(x$ptr, x_dtype)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_matrix_inverse(x))
 }
 
 #' Fast Fourier Transform
@@ -246,7 +246,7 @@ mlx_norm <- function(x, ord = NULL, axes = NULL, drop = TRUE) {
   }
   axes_arg <- if (is.null(axes)) NULL else as.integer(axes)
   ptr <- cpp_mlx_norm(x$ptr, ord, axes_arg, !isTRUE(drop))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axes_arg, drop))
 }
 
 #' Eigen decomposition for mlx arrays
@@ -363,7 +363,7 @@ mlx_solve_triangular <- function(a, b, upper = FALSE, device = NULL) {
   b <- as_mlx(b)
   stopifnot(length(dim(a)) == 2L, dim(a)[1] == dim(a)[2])
   ptr <- cpp_mlx_solve_triangular(a$ptr, b$ptr, upper)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_solve(a, b))
 }
 
 #' @rdname mlx_solve_triangular
@@ -407,7 +407,9 @@ backsolve.mlx <- function(r, x, k = NULL, upper.tri = TRUE, transpose = FALSE, .
     upper.tri <- !upper.tri
   }
 
-  mlx_solve_triangular(target, x_mlx, upper = upper.tri, device = device)
+  out <- mlx_solve_triangular(target, x_mlx, upper = upper.tri, device = device)
+  dimnames(out) <- NULL
+  out
 }
 
 #' Vector cross product with mlx arrays
@@ -477,8 +479,13 @@ mlx_trace <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
 #' # (Constructing diagonals from 1D inputs is not yet supported.)
 mlx_diagonal <- function(x, offset = 0L, axis1 = 1L, axis2 = 2L) {
   x <- as_mlx(x)
-  ptr <- cpp_mlx_diagonal(x$ptr, as.integer(offset), as.integer(axis1), as.integer(axis2))
-  new_mlx(ptr)
+  offset <- as.integer(offset)
+  axis1 <- normalize_axis_single(as.integer(axis1), x) + 1L
+  axis2 <- normalize_axis_single(as.integer(axis2), x) + 1L
+  ptr <- cpp_mlx_diagonal(x$ptr, offset, axis1, axis2)
+  out <- new_mlx(ptr)
+  dimnames(out) <- dimnames_diagonal(x, mlx_shape(out), offset, axis1, axis2)
+  out
 }
 
 #' Outer product of two vectors
@@ -506,7 +513,7 @@ outer.mlx <- function(X, Y, FUN = "*", ...) {
   X <- as_mlx(X)
   Y <- as_mlx(Y)
   ptr <- cpp_mlx_outer(X$ptr, Y$ptr)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = list(names(X), names(Y)))
 }
 
 #' Unflatten an axis into multiple axes
@@ -550,7 +557,7 @@ mlx_inv <- function(x, device = NULL) {
   x <- as_mlx(x)
   if (!is.null(device)) local_device(device)
   ptr <- cpp_mlx_inv(x$ptr)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_matrix_inverse(x))
 }
 
 #' Compute triangular matrix inverse
@@ -575,7 +582,7 @@ mlx_tri_inv <- function(x, upper = FALSE, device = NULL) {
   x <- as_mlx(x)
   if (!is.null(device)) local_device(device)
   ptr <- cpp_mlx_tri_inv(x$ptr, upper)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_matrix_inverse(x))
 }
 
 #' Compute matrix inverse via Cholesky decomposition

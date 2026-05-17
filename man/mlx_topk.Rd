@@ -42,6 +42,9 @@ efficient than full sorting when you only need elements up to a certain rank.
 \item \code{mlx_argpartition()} returns the \strong{1-based indices} that would partition
 the array. This follows R's indexing convention (unlike the underlying MLX
 library which uses 0-based indexing).
+\item Named vectors keep names on partitioned values. For arrays partitioned or
+selected along an axis, the reordered axis drops names because each slice
+may use a different permutation, while names on untouched axes are kept.
 }
 
 Use \code{mlx_argsort()} if you need fully sorted indices.

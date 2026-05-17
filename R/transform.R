@@ -27,7 +27,7 @@ mlx_hadamard_transform <- function(x, scale = NULL) {
   }
 
   ptr <- cpp_mlx_hadamard_transform(x$ptr, scale)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Argmax and argmin on mlx arrays
@@ -53,7 +53,7 @@ mlx_argmax <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_argmax(x$ptr, axis_idx, !isTRUE(drop))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axis_idx + 1L, drop))
 }
 
 #' @rdname mlx_argmax
@@ -62,7 +62,7 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_argmin(x$ptr, axis_idx, !isTRUE(drop))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axis_idx + 1L, drop))
 }
 
 #' Sort and argsort for mlx arrays
@@ -80,6 +80,10 @@ mlx_argmin <- function(x, axis = NULL, drop = TRUE) {
 #' ascending order. This follows R's indexing convention (unlike the underlying
 #' MLX library which uses 0-based indexing). The returned indices can be used
 #' directly to reorder the original array.
+#'
+#' Named vectors keep names on sorted values. For arrays sorted along an axis,
+#' the sorted axis drops names because each slice may use a different
+#' permutation, while names on untouched axes are kept.
 #'
 #' For partial sorting (finding elements up to a certain rank without fully
 #' sorting), see [mlx_partition()] and [mlx_argpartition()].
@@ -106,7 +110,19 @@ mlx_sort <- function(x, axis = NULL) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_sort(x$ptr, axis_idx)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    shape <- mlx_shape(x)
+    if (length(shape) == 1L && (is.null(axis_idx) || axis_idx == 0L)) {
+      idx <- as.integer(as.vector(mlx_argsort(x, axis = axis)))
+      dimnames(out) <- dimnames_axis_indexed(x, 1L, idx)
+    } else if (!is.null(axis_idx)) {
+      dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
+    }
+  }
+  out
 }
 
 #' @rdname mlx_sort
@@ -115,7 +131,11 @@ mlx_argsort <- function(x, axis = NULL) {
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_argsort(x$ptr, axis_idx)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  if (!is.null(axis_idx)) {
+    dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
+  }
+  out
 }
 
 #' Top-k selection and partitioning on mlx arrays
@@ -139,6 +159,9 @@ mlx_argsort <- function(x, axis = NULL) {
 #' - `mlx_argpartition()` returns the **1-based indices** that would partition
 #'   the array. This follows R's indexing convention (unlike the underlying MLX
 #'   library which uses 0-based indexing).
+#' - Named vectors keep names on partitioned values. For arrays partitioned or
+#'   selected along an axis, the reordered axis drops names because each slice
+#'   may use a different permutation, while names on untouched axes are kept.
 #'
 #' Use `mlx_argsort()` if you need fully sorted indices.
 #'
@@ -164,7 +187,11 @@ mlx_topk <- function(x, k, axis = NULL) {
   }
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_topk(x$ptr, as.integer(k), axis_idx)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  if (!is.null(axis_idx)) {
+    dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
+  }
+  out
 }
 
 #' @rdname mlx_topk
@@ -176,7 +203,19 @@ mlx_partition <- function(x, kth, axis = NULL) {
   }
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_partition(x$ptr, as.integer(kth), axis_idx)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+
+  dn <- dimnames(x)
+  if (!is.null(dn)) {
+    shape <- mlx_shape(x)
+    if (length(shape) == 1L && (is.null(axis_idx) || axis_idx == 0L)) {
+      idx <- as.integer(as.vector(mlx_argpartition(x, kth, axis = axis)))
+      dimnames(out) <- dimnames_axis_indexed(x, 1L, idx)
+    } else if (!is.null(axis_idx)) {
+      dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
+    }
+  }
+  out
 }
 
 #' @rdname mlx_topk
@@ -188,7 +227,11 @@ mlx_argpartition <- function(x, kth, axis = NULL) {
   }
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_argpartition(x$ptr, as.integer(kth), axis_idx)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  if (!is.null(axis_idx)) {
+    dimnames(out) <- dimnames_reduction(x, axis_idx + 1L, drop = FALSE)
+  }
+  out
 }
 
 #' Normalize multiple axes to 0-indexed values
@@ -257,7 +300,7 @@ mlx_logsumexp <- function(x, axes = NULL, drop = TRUE) {
   x <- as_mlx(x)
   axes_idx <- normalize_axes(axes, x)
   ptr <- cpp_mlx_logsumexp(x$ptr, axes_idx, !isTRUE(drop))
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axes_idx + 1L, drop))
 }
 
 #' Log cumulative sum exponential for mlx arrays
@@ -278,7 +321,7 @@ mlx_logcumsumexp <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) 
   x <- as_mlx(x)
   axis_idx <- normalize_axis(axis, x)
   ptr <- cpp_mlx_logcumsumexp(x$ptr, axis_idx, reverse, inclusive)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }
 
 #' Softmax for mlx arrays
@@ -296,5 +339,5 @@ mlx_softmax <- function(x, axes = NULL, precise = FALSE) {
   x <- as_mlx(x)
   axes_idx <- normalize_axes(axes, x)
   ptr <- cpp_mlx_softmax(x$ptr, axes_idx, precise)
-  new_mlx(ptr)
+  new_mlx(ptr, dimnames = dimnames(x))
 }

@@ -20,7 +20,9 @@ Math.mlx <- function(x, ...) {
   # MLX flattens in row-major order, so we need to fall back to R
   if (op %in% c("cumsum", "cumprod", "cummax", "cummin")) {
     ptr <- cpp_mlx_cumulative(x$ptr, op)
-    return(new_mlx(ptr))
+    out <- new_mlx(ptr)
+    dimnames(out) <- dimnames_if_shape_matches(x, mlx_shape(out))
+    return(out)
   }
 
   # Map R function names to MLX operations
@@ -97,7 +99,9 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE) {
   b <- mlx_cast(b, dtype = target_dtype)
 
   ptr <- cpp_mlx_isclose(a$ptr, b$ptr, rtol, atol, equal_nan)
-  new_mlx(ptr)
+  out <- new_mlx(ptr)
+  dimnames(out) <- dimnames_from_binary_operands(out, a, b)
+  out
 }
 
 #' Test if all elements of two arrays are close

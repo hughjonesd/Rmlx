@@ -15,7 +15,8 @@ mlx_repeat(x, repeats, axis = NULL)
 flattened before repetition (matching NumPy semantics).}
 }
 \value{
-An mlx array with repeated values.
+An mlx array with repeated values. Dimnames are repeated on the
+selected axis when they still describe the result.
 }
 \description{
 Repeat array elements
