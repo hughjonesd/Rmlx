@@ -1,7 +1,7 @@
 Package: Rmlx
 Type: Package
 Title: R Interface to MLX Arrays (GPU-Accelerated with Metal or CUDA)
-Version: 0.3.0.9000
+Version: 0.4.0
 Authors@R: c(
     person("David", "Hugh-Jones", email = "david@hughjones.com", role = c("aut", "cre")),
     person("Apple Inc.", role = "cph", comment = "MLX library downloaded at install time")
