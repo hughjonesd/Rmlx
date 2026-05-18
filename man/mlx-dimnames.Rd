@@ -29,6 +29,14 @@ forms.
 internal generic dispatch.
 }
 \description{
-Get or set R-side dimname metadata on \code{mlx} arrays. Names are stored as
-ordinary R metadata on the wrapper and are not written into MLX storage.
+Since version 0.4.0, Rmlx supports character names and dimnames. These work
+much like base R: \code{\link[=names]{names()}}, \code{\link[=rownames]{rownames()}}, \code{\link[=colnames]{colnames()}}, \code{\link[=dimnames]{dimnames()}} and
+associated setters all work. Dimnames may be \code{NULL} as a whole, and any
+individual dimension's names may be \code{NULL}.
+}
+\details{
+Dimnames can be convenient, but they also slow down operations by adding work
+in base R (mlx can't store character strings). In particular, slowdowns
+for subsetting can be considerable, maybe 5x or 6x slower. To maximize
+performance, you can avoid names, or remove them with \code{\link[=unname]{unname()}}.
 }
