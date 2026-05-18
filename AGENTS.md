@@ -62,7 +62,7 @@
 - testthat specs live in `tests/testthat/`; all skip when MLX fails to load.
 - Prefer `tolerance = 1e-6` when asserting floating point equality.
 - Use base R results as the oracle for comparisons.
-- Run a single file via `R -q -e 'devtools::test_file("tests/testthat/test-ops.R")'` when iterating.
+- Run a single file via `R -q -e 'devtools::load_all(".", quiet = TRUE); testthat::test_file("tests/testthat/test-ops.R")'` when iterating; `devtools::test_file()` is defunct in current devtools.
 
 ### Documentation Workflow
 - Roxygen comments power `man/` docs; the vignette is `vignettes/getting-started.Rmd`.
