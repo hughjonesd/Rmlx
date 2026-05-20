@@ -1,13 +1,10 @@
 # Scale mlx arrays
 
 Extends base [`scale()`](https://rdrr.io/r/base/scale.html) to handle
-mlx inputs without moving data back to base R. The computation delegates
-to MLX reductions and broadcasting. When centering or scaling values are
-computed, the attributes `"scaled:center"` and `"scaled:scale"` are
-stored as 1 x `ncol(x)` mlx arrays (user-supplied numeric vectors are
-preserved as-is). These attributes remain MLX arrays even after coercing
-with [`as.matrix()`](https://rdrr.io/r/base/matrix.html), so they stay
-lazily evaluated.
+mlx inputs with MLX reductions and broadcasting. Computed center and
+scale attributes are mlx arrays. User-supplied attributes keep their
+input type: mlx inputs stay mlx, while base R vectors stay base R
+vectors.
 
 ## Usage
 
