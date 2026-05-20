@@ -2,6 +2,9 @@
 
 ## Rmlx 0.4.0
 
+- [`scale()`](https://rdrr.io/r/base/scale.html) now preserves
+  MLX-supplied center and scale vectors as MLX attributes, avoiding a
+  round trip through base R.
 - `mlx` objects can now have row, column and dimnames, and vectors can
   have names. These work much like base R. Names for any dimension may
   be `NULL`. Subsetting with a non-existent name is an error. Many

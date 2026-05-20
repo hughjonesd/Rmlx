@@ -36,6 +36,8 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="rmlx-040">Rmlx 0.4.0<a class="anchor" aria-label="anchor" href="#rmlx-040"></a></h2>
 <ul><li>
+<code><a href="https://rdrr.io/r/base/scale.html" class="external-link">scale()</a></code> now preserves MLX-supplied center and scale vectors as MLX attributes, avoiding a round trip through base R.</li>
+<li>
 <code>mlx</code> objects can now have row, column and dimnames, and vectors can have names. These work much like base R. Names for any dimension may be <code>NULL</code>. Subsetting with a non-existent name is an error. Many functions, e.g. <code><a href="https://rdrr.io/r/base/solve.html" class="external-link">solve()</a></code>, <code>%*%</code>, etc. preserve dimnames like their R analogues.</li>
 </ul></div>
     <div class="section level2">
