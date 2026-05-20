@@ -225,4 +225,31 @@ test_that("scale.mlx matches base scale", {
   expect_equal(as.matrix(mlx_res2), unclass(base_res2), tolerance = 1e-6, ignore_attr = TRUE)
   expect_null(attr(mlx_res2, "scaled:center"))
   expect_equal(attr(mlx_res2, "scaled:scale"), c(1, 2, 3, 4))
+
+  center <- colMeans(mat)
+  scales <- apply(mat, 2L, stats::sd)
+  mlx_res3 <- scale(
+    as_mlx(mat),
+    center = as_mlx(center),
+    scale = as_mlx(scales)
+  )
+  base_res3 <- scale(mat, center = center, scale = scales)
+  expect_equal(
+    as.matrix(mlx_res3),
+    unclass(base_res3),
+    tolerance = 1e-6,
+    ignore_attr = TRUE
+  )
+  expect_s3_class(attr(mlx_res3, "scaled:center"), "mlx")
+  expect_s3_class(attr(mlx_res3, "scaled:scale"), "mlx")
+  expect_equal(
+    as.vector(attr(mlx_res3, "scaled:center")),
+    center,
+    tolerance = 1e-6
+  )
+  expect_equal(
+    as.vector(attr(mlx_res3, "scaled:scale")),
+    scales,
+    tolerance = 1e-6
+  )
 })

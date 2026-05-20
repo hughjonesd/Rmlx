@@ -536,12 +536,10 @@ col.mlx <- function(x, as.factor = FALSE) {
 
 #' Scale mlx arrays
 #'
-#' Extends base [scale()] to handle mlx inputs without moving data back to
-#' base R. The computation delegates to MLX reductions and broadcasting. When
-#' centering or scaling values are computed, the attributes `"scaled:center"`
-#' and `"scaled:scale"` are stored as 1 x `ncol(x)` mlx arrays (user-supplied
-#' numeric vectors are preserved as-is). These attributes remain MLX arrays even
-#' after coercing with [as.matrix()], so they stay lazily evaluated.
+#' Extends base [scale()] to handle mlx inputs with MLX reductions and
+#' broadcasting. Computed center and scale attributes are mlx arrays.
+#' User-supplied attributes keep their input type: mlx inputs stay mlx, while
+#' base R vectors stay base R vectors.
 #'
 #' @inheritParams base::scale
 #' @return An mlx array with centred/scaled columns.
@@ -563,6 +561,9 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
     if (isTRUE(center)) {
       centers <- mlx_mean(result, axes = 1L, drop = FALSE)
       center_attr <- centers
+    } else if (inherits(center, "mlx")) {
+      centers <- scale_mlx_param(center, n_cols, result, "center")
+      center_attr <- centers
     } else {
       center_vec <- as.numeric(center)
       if (length(center_vec) == 1L) {
@@ -583,6 +584,9 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
     if (isTRUE(scale)) {
       ddof <- if (n_rows > 1L) 1L else 0L
       scales <- mlx_std(result, axes = 1L, drop = FALSE, ddof = ddof)
+      scale_attr <- scales
+    } else if (inherits(scale, "mlx")) {
+      scales <- scale_mlx_param(scale, n_cols, result, "scale")
       scale_attr <- scales
     } else {
       scale_vec <- as.numeric(scale)
@@ -608,6 +612,21 @@ scale.mlx <- function(x, center = TRUE, scale = TRUE) {
   }
 
   result
+}
+
+scale_mlx_param <- function(value, n_cols, result, name) {
+  value_mlx <- as_mlx(value, dtype = mlx_dtype(result))
+  if (length(value_mlx) == 1L) {
+    return(mlx_broadcast_to(value_mlx, c(1L, n_cols)))
+  }
+  if (length(value_mlx) != n_cols) {
+    stop(
+      "length of '", name, "' must equal the number of columns of 'x'",
+      call. = FALSE
+    )
+  }
+
+  mlx_reshape(value_mlx, c(1L, n_cols))
 }
 
 #' Cumulative sum and product

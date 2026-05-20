@@ -317,6 +317,7 @@ rowMeans.mlx NA TRUE FALSE
 rowSums "Row sums for mlx arrays" TRUE TRUE
 rowSums.default NA TRUE FALSE
 rowSums.mlx NA TRUE FALSE
+scale_mlx_param NA NA FALSE
 scale.mlx "Scale mlx arrays" TRUE FALSE
 solve.mlx "Solve a system of linear equations" TRUE FALSE
 str.mlx "Object structure for MLX array" TRUE FALSE

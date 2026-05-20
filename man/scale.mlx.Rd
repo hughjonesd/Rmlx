@@ -21,10 +21,8 @@
 An mlx array with centred/scaled columns.
 }
 \description{
-Extends base \code{\link[=scale]{scale()}} to handle mlx inputs without moving data back to
-base R. The computation delegates to MLX reductions and broadcasting. When
-centering or scaling values are computed, the attributes \code{"scaled:center"}
-and \code{"scaled:scale"} are stored as 1 x \code{ncol(x)} mlx arrays (user-supplied
-numeric vectors are preserved as-is). These attributes remain MLX arrays even
-after coercing with \code{\link[=as.matrix]{as.matrix()}}, so they stay lazily evaluated.
+Extends base \code{\link[=scale]{scale()}} to handle mlx inputs with MLX reductions and
+broadcasting. Computed center and scale attributes are mlx arrays.
+User-supplied attributes keep their input type: mlx inputs stay mlx, while
+base R vectors stay base R vectors.
 }
