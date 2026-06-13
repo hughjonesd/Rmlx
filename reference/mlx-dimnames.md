@@ -38,11 +38,6 @@ names(x) <- value
 
 The requested names, or `x` with updated metadata for replacement forms.
 
-[`rownames()`](https://rdrr.io/r/base/colnames.html) and
-[`colnames()`](https://rdrr.io/r/base/colnames.html) use these
-[`dimnames()`](https://rdrr.io/r/base/dimnames.html) methods through
-base R's internal generic dispatch.
-
 ## Details
 
 Dimnames can be convenient, but they also slow down operations by adding
