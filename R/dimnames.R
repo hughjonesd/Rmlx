@@ -351,9 +351,6 @@ dimnames_broadcast_to <- function(x, shape) {
 #' @return The requested names, or `x` with updated metadata for replacement
 #'   forms.
 #'
-#' `rownames()` and `colnames()` use these `dimnames()` methods through base R's
-#' internal generic dispatch.
-#'
 #' @name mlx-dimnames
 #' @aliases dimnames.mlx dimnames<-.mlx names.mlx names<-.mlx
 #' @export

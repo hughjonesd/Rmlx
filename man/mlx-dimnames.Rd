@@ -24,9 +24,6 @@
 \value{
 The requested names, or \code{x} with updated metadata for replacement
 forms.
-
-\code{rownames()} and \code{colnames()} use these \code{dimnames()} methods through base R's
-internal generic dispatch.
 }
 \description{
 Since version 0.4.0, Rmlx supports character names and dimnames. These work
