@@ -48,6 +48,52 @@ test_that("mlx_qr_gpu handles matrix responses", {
   expect_equal(as.matrix(fit$qty), expected$qty, tolerance = 1e-4)
 })
 
+test_that("mlx_qr_gpu CholeskyQR2 improves an ill-conditioned solve", {
+  skip_if_not(mlx_has_gpu())
+
+  set.seed(20260815)
+  n <- 20000L
+  p <- 8L
+  x <- matrix(rnorm(n * p), n, p)
+  x[, p] <- x[, 1L] + 1e-3 * rnorm(n)
+  y <- matrix(rnorm(n), n, 1L)
+  expected <- qr.solve(x, y)
+
+  once <- mlx_qr_gpu(as_mlx(x), as_mlx(y), tol = 1e-6,
+                     method = "cholqr")
+  twice <- mlx_qr_gpu(as_mlx(x), as_mlx(y), tol = 1e-6,
+                      method = "cholqr2")
+  coef_once <- as.matrix(mlx_solve_triangular(
+    once$R, once$qty, upper = TRUE, device = "cpu"
+  ))
+  coef_twice <- as.matrix(mlx_solve_triangular(
+    twice$R, twice$qty, upper = TRUE, device = "cpu"
+  ))
+
+  error_once <- sqrt(sum((coef_once - expected)^2) / sum(expected^2))
+  error_twice <- sqrt(sum((coef_twice - expected)^2) / sum(expected^2))
+  expect_lt(error_twice, error_once / 10)
+  expect_lt(error_twice, 1e-3)
+  expect_equal(twice$method, "cholqr2")
+})
+
+test_that("mlx_qr_gpu CholeskyQR2 falls back when its first pass is unsafe", {
+  skip_if_not(mlx_has_gpu())
+
+  set.seed(20260816)
+  n <- 10000L
+  p <- 6L
+  x <- matrix(rnorm(n * p), n, p)
+  x[, p] <- x[, 1L] + 2e-4 * rnorm(n)
+  y <- matrix(rnorm(n), n, 1L)
+
+  fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), tol = 1e-7,
+                    method = "cholqr2")
+
+  expect_equal(fit$requested_method, "cholqr2")
+  expect_true(fit$method %in% c("tsqr", "cpu_qr"))
+})
+
 test_that("mlx_qr_gpu Householder path matches base qr quantities", {
   skip_if_not(mlx_has_gpu())
 
@@ -138,6 +184,12 @@ test_that("mlx_qr_gpu reports rank deficient inputs", {
 
   expect_error(
     mlx_qr_gpu(as_mlx(x), as_mlx(y), block_rows = 8L),
+    "rank deficiency",
+    fixed = TRUE
+  )
+  expect_error(
+    mlx_qr_gpu(as_mlx(x), as_mlx(y), block_rows = 8L,
+               method = "cholqr2"),
     "rank deficiency",
     fixed = TRUE
   )

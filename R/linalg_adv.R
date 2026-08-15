@@ -110,10 +110,12 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
 #'
 #' The default method uses a Cholesky QR reduction: it computes `crossprod(x)`
 #' and `crossprod(x, y)` on the GPU, then uses MLX linalg on CPU for the small
-#' `p` by `p` Cholesky and triangular solve. `method = "metal_householder"`
-#' uses cached custom Metal kernels for unpivoted Householder QR without
-#' materializing full `Q`. `method = "blocked_householder"` builds compact WY
-#' Householder panels and applies each panel with MLX GPU matrix operations.
+#' `p` by `p` Cholesky and triangular solve. `method = "cholqr2"` applies a
+#' second Cholesky QR pass to improve numerical stability, with its large
+#' matrix products on the GPU. `method = "metal_householder"` uses cached
+#' custom Metal kernels for unpivoted Householder QR without materializing full
+#' `Q`. `method = "blocked_householder"` builds compact WY Householder panels
+#' and applies each panel with MLX GPU matrix operations.
 #' `method = "householder"` uses unblocked Householder updates. `method =
 #' "tsqr"` uses custom Metal kernels for a tiled Householder reduction followed
 #' by a tree reduction of the small triangular factors. The QR-based paths are
@@ -128,6 +130,10 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
 #' the 32 KB threadgroup-memory limit and provide enough independent blocks to
 #' occupy the GPU.
 #'
+#' CholeskyQR2 checks the orthogonality of its first pass. If that pass is
+#' unsafe, it falls back to GPU TSQR when its compact state fits in threadgroup
+#' memory, and otherwise to MLX QR on the CPU.
+#'
 #' @inheritParams mlx_matrix_required
 #' @param y Optional response vector or matrix with `nrow(x)` rows.
 #' @param block_rows Number of rows reduced by each first-level GPU block for
@@ -136,6 +142,7 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
 #'   2048 rows for Metal Householder.
 #' @param tol Relative tolerance for detecting rank deficiency from `diag(R)`.
 #' @param method `"cholqr"` for the fast default Cholesky QR path,
+#'   `"cholqr2"` for a second, stabilizing Cholesky QR pass,
 #'   `"metal_householder"` for custom Metal Householder QR,
 #'   `"blocked_householder"` for compact WY Householder QR using MLX GPU
 #'   matrix operations, `"householder"` for direct Householder QR using MLX GPU
@@ -154,7 +161,7 @@ mlx_qr_gpu <- function(x,
                        y = NULL,
                        block_rows = NULL,
                        tol = 1e-4,
-                       method = c("cholqr", "metal_householder",
+                       method = c("cholqr", "cholqr2", "metal_householder",
                                   "blocked_householder",
                                   "householder", "tsqr")) {
   method <- match.arg(method)
@@ -261,37 +268,119 @@ mlx_qr_gpu <- function(x,
     }
   }
 
-  if (identical(method, "cholqr")) {
+  if (method %in% c("cholqr", "cholqr2")) {
+    stable_qr_fallback <- function() {
+      if (4L * (p * p + p * y_cols + p + y_cols + 3L) <= 32768L) {
+        fallback <- mlx_qr_gpu(
+          x, if (has_y) y else NULL,
+          block_rows = block_rows, tol = tol, method = "tsqr"
+        )
+        fallback$requested_method <- "cholqr2"
+        return(fallback)
+      }
+
+      cpu_fit <- qr(x, device = "cpu")
+      cpu_diag <- abs(as.numeric(diag(cpu_fit$R)))
+      cpu_rank_tol <- tol * max(1, max(cpu_diag, na.rm = TRUE))
+      cpu_rank <- sum(is.finite(cpu_diag) & cpu_diag > cpu_rank_tol)
+      if (cpu_rank < p) {
+        stop(sprintf(
+          "mlx_qr_gpu() detected rank deficiency: rank %d < %d.",
+          cpu_rank, p
+        ), call. = FALSE)
+      }
+      fallback <- list(
+        R = cpu_fit$R,
+        rank = cpu_rank,
+        pivot = seq_len(p),
+        block_rows = block_rows,
+        method = "cpu_qr",
+        requested_method = "cholqr2"
+      )
+      if (has_y) {
+        fallback$qty <- with_device("cpu", crossprod(cpu_fit$Q, y))
+      }
+      structure(fallback, class = c("mlx_qr_gpu", "list"))
+    }
+
     xtx <- crossprod(x)
-    r_final <- tryCatch(
+    r_first <- tryCatch(
       chol(xtx, device = "cpu"),
       error = function(e) {
+        if (identical(method, "cholqr2")) {
+          return(NULL)
+        }
         stop("mlx_qr_gpu() detected rank deficiency: Cholesky QR failed.",
              call. = FALSE)
       }
     )
 
-    diag_vals <- abs(as.numeric(diag(r_final)))
+    if (is.null(r_first)) {
+      return(stable_qr_fallback())
+    }
+
+    diag_vals <- abs(as.numeric(diag(r_first)))
     rank_tol <- tol * max(1, max(diag_vals, na.rm = TRUE))
     rank <- sum(is.finite(diag_vals) & diag_vals > rank_tol)
     if (rank < p) {
+      if (identical(method, "cholqr2")) {
+        return(stable_qr_fallback())
+      }
       stop(sprintf(
         "mlx_qr_gpu() detected rank deficiency: rank %d < %d.",
         rank, p
       ), call. = FALSE)
     }
 
+    if (identical(method, "cholqr")) {
+      out <- list(
+        R = r_first,
+        rank = rank,
+        pivot = seq_len(p),
+        block_rows = block_rows,
+        method = method
+      )
+      if (has_y) {
+        xty <- crossprod(x, y)
+        out$qty <- mlx_solve_triangular(t(r_first), xty,
+                                        upper = FALSE, device = "cpu")
+      }
+      return(structure(out, class = c("mlx_qr_gpu", "list")))
+    }
+
+    r_first_inv <- mlx_solve_triangular(
+      r_first, mlx_eye(p), upper = TRUE, device = "cpu"
+    )
+    q_first <- x %*% r_first_inv
+    q_first_gram <- crossprod(q_first)
+    orthogonality_error <- as.numeric(max(abs(q_first_gram - mlx_eye(p))))
+
+    if (!is.finite(orthogonality_error) || orthogonality_error > 0.5) {
+      return(stable_qr_fallback())
+    }
+
+    r_second <- tryCatch(
+      chol(q_first_gram, device = "cpu"),
+      error = function(e) NULL
+    )
+    if (is.null(r_second)) {
+      return(stable_qr_fallback())
+    }
+
+    r_final <- r_second %*% r_first
     out <- list(
       R = r_final,
       rank = rank,
       pivot = seq_len(p),
       block_rows = block_rows,
-      method = method
+      method = method,
+      orthogonality_error = orthogonality_error
     )
     if (has_y) {
-      xty <- crossprod(x, y)
-      out$qty <- mlx_solve_triangular(t(r_final), xty,
-                                      upper = FALSE, device = "cpu")
+      q_first_ty <- crossprod(q_first, y)
+      out$qty <- mlx_solve_triangular(
+        t(r_second), q_first_ty, upper = FALSE, device = "cpu"
+      )
     }
     return(structure(out, class = c("mlx_qr_gpu", "list")))
   }

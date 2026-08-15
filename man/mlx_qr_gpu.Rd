@@ -9,7 +9,8 @@ mlx_qr_gpu(
   y = NULL,
   block_rows = NULL,
   tol = 1e-04,
-  method = c("cholqr", "metal_householder", "blocked_householder", "householder", "tsqr")
+  method = c("cholqr", "cholqr2", "metal_householder", "blocked_householder",
+    "householder", "tsqr")
 )
 }
 \arguments{
@@ -25,6 +26,7 @@ The default \code{NULL} chooses a GPU tile size automatically for TSQR and uses
 \item{tol}{Relative tolerance for detecting rank deficiency from \code{diag(R)}.}
 
 \item{method}{\code{"cholqr"} for the fast default Cholesky QR path,
+\code{"cholqr2"} for a second, stabilizing Cholesky QR pass,
 \code{"metal_householder"} for custom Metal Householder QR,
 \code{"blocked_householder"} for compact WY Householder QR using MLX GPU
 matrix operations, \code{"householder"} for direct Householder QR using MLX GPU
@@ -43,10 +45,12 @@ real-valued matrices. It returns the final upper-triangular \code{R} and, when
 \details{
 The default method uses a Cholesky QR reduction: it computes \code{crossprod(x)}
 and \code{crossprod(x, y)} on the GPU, then uses MLX linalg on CPU for the small
-\code{p} by \code{p} Cholesky and triangular solve. \code{method = "metal_householder"}
-uses cached custom Metal kernels for unpivoted Householder QR without
-materializing full \code{Q}. \code{method = "blocked_householder"} builds compact WY
-Householder panels and applies each panel with MLX GPU matrix operations.
+\code{p} by \code{p} Cholesky and triangular solve. \code{method = "cholqr2"} applies a
+second Cholesky QR pass to improve numerical stability, with its large
+matrix products on the GPU. \code{method = "metal_householder"} uses cached
+custom Metal kernels for unpivoted Householder QR without materializing full
+\code{Q}. \code{method = "blocked_householder"} builds compact WY Householder panels
+and applies each panel with MLX GPU matrix operations.
 \code{method = "householder"} uses unblocked Householder updates. \code{method = "tsqr"} uses custom Metal kernels for a tiled Householder reduction followed
 by a tree reduction of the small triangular factors. The QR-based paths are
 more numerically stable but currently slower than Cholesky QR for
@@ -59,6 +63,10 @@ GPU work is currently restricted to \code{float32}. Integer inputs are cast to
 \code{block_rows = NULL}, the tile height is chosen from \code{p} and \code{ncol(y)} to fit
 the 32 KB threadgroup-memory limit and provide enough independent blocks to
 occupy the GPU.
+
+CholeskyQR2 checks the orthogonality of its first pass. If that pass is
+unsafe, it falls back to GPU TSQR when its compact state fits in threadgroup
+memory, and otherwise to MLX QR on the CPU.
 }
 \examples{
 \dontrun{
