@@ -99,6 +99,1081 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
   )
 }
 
+.mlx_qr_gpu_cache <- new.env(parent = emptyenv())
+
+#' GPU QR reduction for tall least-squares problems
+#'
+#' Computes the QR quantities needed by large least-squares fits without
+#' materializing the full `Q` matrix. This is intended for tall, full-rank
+#' real-valued matrices. It returns the final upper-triangular `R` and, when
+#' `y` is supplied, `qty = Q' y`.
+#'
+#' The default method uses a Cholesky QR reduction: it computes `crossprod(x)`
+#' and `crossprod(x, y)` on the GPU, then uses MLX linalg on CPU for the small
+#' `p` by `p` Cholesky and triangular solve. `method = "metal_householder"`
+#' uses cached custom Metal kernels for unpivoted Householder QR without
+#' materializing full `Q`. `method = "blocked_householder"` builds compact WY
+#' Householder panels and applies each panel with MLX GPU matrix operations.
+#' `method = "householder"` uses unblocked Householder updates. `method =
+#' "tsqr"` uses custom Metal kernels for a tall-skinny QR reduction based on
+#' streaming Givens row updates. The QR-based paths are more numerically stable
+#' but currently slower than Cholesky QR for well-conditioned large problems.
+#'
+#' GPU work is currently restricted to `float32`. Integer inputs are cast to
+#' `float32`; `float64` and complex inputs are not supported on the GPU path.
+#'
+#' `method = "tsqr"` stores one `p` by `p` triangular working matrix, plus a
+#' `p` by `ncol(y)` response accumulator, in Metal threadgroup memory. On GPUs
+#' with a 32 KB threadgroup-memory limit, this means `p = 50` fits comfortably
+#' but substantially wider matrices require a tiled implementation.
+#'
+#' @inheritParams mlx_matrix_required
+#' @param y Optional response vector or matrix with `nrow(x)` rows.
+#' @param block_rows Number of rows reduced by each first-level GPU block for
+#'   `method = "tsqr"`; reduction chunk size for `method = "metal_householder"`.
+#' @param tol Relative tolerance for detecting rank deficiency from `diag(R)`.
+#' @param method `"cholqr"` for the fast default Cholesky QR path,
+#'   `"metal_householder"` for custom Metal Householder QR,
+#'   `"blocked_householder"` for compact WY Householder QR using MLX GPU
+#'   matrix operations, `"householder"` for direct Householder QR using MLX GPU
+#'   primitives, or `"tsqr"` for the custom Metal tall-skinny QR reduction.
+#' @return A list with components `R`, optional `qty`, `rank`, `pivot`, and
+#'   `block_rows`.
+#' @export
+#' @examples
+#' \dontrun{
+#' x <- as_mlx(matrix(rnorm(1000 * 8), 1000, 8))
+#' y <- as_mlx(matrix(rnorm(1000), 1000, 1))
+#' fit <- mlx_qr_gpu(x, y)
+#' coef <- mlx_solve_triangular(fit$R, fit$qty, upper = TRUE, device = "cpu")
+#' }
+mlx_qr_gpu <- function(x,
+                       y = NULL,
+                       block_rows = 2048L,
+                       tol = 1e-4,
+                       method = c("cholqr", "metal_householder",
+                                  "blocked_householder",
+                                  "householder", "tsqr")) {
+  method <- match.arg(method)
+  if (!mlx_has_gpu()) {
+    stop("mlx_qr_gpu() requires an MLX GPU device.", call. = FALSE)
+  }
+  local_device("gpu")
+
+  x <- as_mlx(x)
+  x_shape <- mlx_shape(x)
+  if (length(x_shape) != 2L) {
+    stop("mlx_qr_gpu() requires a 2D matrix input.", call. = FALSE)
+  }
+
+  n <- as.integer(x_shape[[1L]])
+  p <- as.integer(x_shape[[2L]])
+  block_rows <- as.integer(block_rows[[1L]])
+  if (is.na(block_rows) || block_rows < 1L) {
+    stop("block_rows must be a positive integer.", call. = FALSE)
+  }
+  if (p < 1L || n < 1L) {
+    stop("mlx_qr_gpu() requires a non-empty matrix.", call. = FALSE)
+  }
+  uses_custom_tsqr <- identical(method, "tsqr")
+
+  x_dtype <- mlx_dtype(x)
+  if (identical(x_dtype, "float64")) {
+    stop("mlx_qr_gpu() does not support float64 on the GPU path.", call. = FALSE)
+  }
+  if (identical(x_dtype, "complex64")) {
+    stop("mlx_qr_gpu() does not support complex inputs.", call. = FALSE)
+  }
+  if (!identical(x_dtype, "float32")) {
+    x <- mlx_cast(x, "float32")
+  }
+
+  has_y <- !is.null(y)
+  if (has_y) {
+    y <- as_mlx(y)
+    y_dtype <- mlx_dtype(y)
+    if (identical(y_dtype, "float64")) {
+      stop("mlx_qr_gpu() does not support float64 responses on the GPU path.",
+           call. = FALSE)
+    }
+    if (identical(y_dtype, "complex64")) {
+      stop("mlx_qr_gpu() does not support complex responses.", call. = FALSE)
+    }
+    if (!identical(y_dtype, "float32")) {
+      y <- mlx_cast(y, "float32")
+    }
+
+    y_shape <- mlx_shape(y)
+    if (length(y_shape) == 1L) {
+      if (as.integer(y_shape[[1L]]) != n) {
+        stop("y must have length nrow(x).", call. = FALSE)
+      }
+      y <- mlx_reshape(y, c(n, 1L))
+      y_cols <- 1L
+    } else if (length(y_shape) == 2L) {
+      if (as.integer(y_shape[[1L]]) != n) {
+        stop("y must have nrow(x) rows.", call. = FALSE)
+      }
+      y_cols <- as.integer(y_shape[[2L]])
+    } else {
+      stop("y must be a vector or 2D matrix.", call. = FALSE)
+    }
+  } else {
+    y <- mlx_zeros(c(n, 1L), dtype = "float32")
+    y_cols <- 1L
+  }
+  if (uses_custom_tsqr && y_cols > 64L) {
+    stop(
+      "mlx_qr_gpu(method = \"tsqr\") currently supports at most 64 response columns ",
+      "because the custom Metal kernels store a full p by ncol(y) working matrix ",
+      "in threadgroup memory.",
+      call. = FALSE
+    )
+  }
+  if (uses_custom_tsqr) {
+    threadgroup_bytes <- 4L * (p * p + p * y_cols + p + y_cols + 3L)
+    if (threadgroup_bytes > 32768L) {
+      stop(
+        "mlx_qr_gpu(method = \"tsqr\") exceeds this GPU's 32 KB threadgroup ",
+        "memory limit for the requested number of columns/responses.",
+        call. = FALSE
+      )
+    }
+  }
+
+  if (identical(method, "cholqr")) {
+    xtx <- crossprod(x)
+    r_final <- tryCatch(
+      chol(xtx, device = "cpu"),
+      error = function(e) {
+        stop("mlx_qr_gpu() detected rank deficiency: Cholesky QR failed.",
+             call. = FALSE)
+      }
+    )
+
+    diag_vals <- abs(as.numeric(diag(r_final)))
+    rank_tol <- tol * max(1, max(diag_vals, na.rm = TRUE))
+    rank <- sum(is.finite(diag_vals) & diag_vals > rank_tol)
+    if (rank < p) {
+      stop(sprintf(
+        "mlx_qr_gpu() detected rank deficiency: rank %d < %d.",
+        rank, p
+      ), call. = FALSE)
+    }
+
+    out <- list(
+      R = r_final,
+      rank = rank,
+      pivot = seq_len(p),
+      block_rows = block_rows,
+      method = method
+    )
+    if (has_y) {
+      xty <- crossprod(x, y)
+      out$qty <- mlx_solve_triangular(t(r_final), xty,
+                                      upper = FALSE, device = "cpu")
+    }
+    return(structure(out, class = c("mlx_qr_gpu", "list")))
+  }
+
+  if (identical(method, "metal_householder")) {
+    if (is.null(.mlx_qr_gpu_cache$hh_norm_kernel)) {
+      .mlx_qr_gpu_cache$hh_norm_kernel <- mlx_metal_kernel(
+        name = "rmlx_qr_gpu_hh_norm",
+        input_names = "x",
+        output_names = "partial",
+        ensure_row_contiguous = TRUE,
+        source = "
+          // First phase of one Householder column: each threadgroup reduces a
+          // contiguous chunk of column K and emits one partial squared norm.
+          // A later MLX sum reduces these partials to the scalar norm.
+          uint group = threadgroup_position_in_grid.x;
+          uint lid = thread_position_in_threadgroup.x;
+          int n = x_shape[0];
+          int row_start = K + group * REDUCE_ROWS;
+          int row_stop = metal::min(n, row_start + REDUCE_ROWS);
+
+          float local_sum = 0.0f;
+          for (int row = row_start + lid; row < row_stop; row += THREADS) {
+            float val = (float)x[row * P + K];
+            local_sum += val * val;
+          }
+
+          float sum = simd_sum(local_sum);
+          if (lid == 0) {
+            partial[group] = sum;
+          }
+        "
+      )
+    }
+
+    if (is.null(.mlx_qr_gpu_cache$hh_dot_kernel)) {
+      .mlx_qr_gpu_cache$hh_dot_kernel <- mlx_metal_kernel(
+        name = "rmlx_qr_gpu_hh_dot",
+        input_names = c("x", "y", "params"),
+        output_names = "partial",
+        ensure_row_contiguous = TRUE,
+        source = "
+          // Second phase of one Householder column: compute partial dot
+          // products v' A[, K:P] and v' y. One threadgroup handles one
+          // (row chunk, target column) pair. This keeps the reduction wide
+          // enough for the GPU and avoids building full Householder vectors.
+          uint packed_group = threadgroup_position_in_grid.x;
+          uint chunk = packed_group / TARGET_COLS;
+          uint target = packed_group - chunk * TARGET_COLS;
+          uint lid = thread_position_in_threadgroup.x;
+
+          int n = x_shape[0];
+          int row_start = K + chunk * REDUCE_ROWS;
+          int row_stop = metal::min(n, row_start + REDUCE_ROWS);
+          float v0 = (float)params[0];
+
+          float local_sum = 0.0f;
+          for (int row = row_start + lid; row < row_stop; row += THREADS) {
+            float v = row == K ? v0 : (float)x[row * P + K];
+            float val;
+            if (target < TARGET_X_COLS) {
+              val = (float)x[row * P + (K + target)];
+            } else {
+              int y_col = target - TARGET_X_COLS;
+              val = (float)y[row * YCOLS + y_col];
+            }
+            local_sum += v * val;
+          }
+
+          float sum = simd_sum(local_sum);
+          if (lid == 0) {
+            partial[chunk * TARGET_COLS + target] = sum;
+          }
+        "
+      )
+    }
+
+    if (is.null(.mlx_qr_gpu_cache$hh_params_kernel)) {
+      .mlx_qr_gpu_cache$hh_params_kernel <- mlx_metal_kernel(
+        name = "rmlx_qr_gpu_hh_params",
+        input_names = c("x", "partial"),
+        output_names = "params",
+        ensure_row_contiguous = TRUE,
+        source = "
+          // Compute Householder parameters entirely on GPU to avoid a
+          // per-column CPU scalar synchronization. The output is:
+          //   params[0] = v0 = alpha - beta
+          //   params[1] = tau = 2 / (v'v)
+          //   params[2] = beta, the new diagonal entry before sign fixing
+          uint lid = thread_position_in_threadgroup.x;
+          int groups = partial_shape[0];
+
+          float local_sum = 0.0f;
+          for (int i = lid; i < groups; i += THREADS) {
+            local_sum += (float)partial[i];
+          }
+          float norm_sq = simd_sum(local_sum);
+
+          if (lid == 0) {
+            float alpha = (float)x[0];
+            float norm_x = metal::sqrt(norm_sq);
+            float beta = alpha >= 0.0f ? -norm_x : norm_x;
+            float v0 = alpha - beta;
+            float tail_sq = metal::max(norm_sq - alpha * alpha, 0.0f);
+            float u_norm_sq = v0 * v0 + tail_sq;
+            float tau = u_norm_sq == 0.0f ? 0.0f : 2.0f / u_norm_sq;
+            params[0] = v0;
+            params[1] = tau;
+            params[2] = beta;
+          }
+        "
+      )
+    }
+
+    if (is.null(.mlx_qr_gpu_cache$hh_update_kernel)) {
+      .mlx_qr_gpu_cache$hh_update_kernel <- mlx_metal_kernel(
+        name = "rmlx_qr_gpu_hh_update",
+        input_names = c("x", "y", "params", "dots"),
+        output_names = c("x_out", "y_out"),
+        ensure_row_contiguous = TRUE,
+        source = "
+          // Final phase of one Householder column. The pre-reduced dot vector
+          // contains v' A[, K:P] followed by v' y. This kernel fuses the
+          // trailing matrix update and the matching response update, producing
+          // fresh MLX arrays for the next QR step.
+          uint elem = thread_position_in_grid.x;
+          int n = x_shape[0];
+          int total_x = n * P;
+          int total_y = n * YCOLS;
+          float v0 = (float)params[0];
+          float tau = (float)params[1];
+          float beta = (float)params[2];
+
+          if (elem < total_x) {
+            int row = elem / P;
+            int col = elem - row * P;
+            float val = (float)x[elem];
+            if (row >= K && col >= K && tau != 0.0f) {
+              float v = row == K ? v0 : (float)x[row * P + K];
+              val -= tau * v * (float)dots[col - K];
+              if (col == K) {
+                val = row == K ? beta : 0.0f;
+              }
+            }
+            x_out[elem] = val;
+          }
+
+          if (elem < total_y) {
+            int row = elem / YCOLS;
+            int col = elem - row * YCOLS;
+            float val = (float)y[elem];
+            if (row >= K && tau != 0.0f) {
+              float v = row == K ? v0 : (float)x[row * P + K];
+              val -= tau * v * (float)dots[TARGET_X_COLS + col];
+            }
+            y_out[elem] = val;
+          }
+        "
+      )
+    }
+
+    if (is.null(.mlx_qr_gpu_cache$hh_compact_update_kernel)) {
+      .mlx_qr_gpu_cache$hh_compact_update_kernel <- mlx_metal_kernel(
+        name = "rmlx_qr_gpu_hh_compact_update",
+        input_names = c("x", "y", "params", "dots"),
+        output_names = c("x_next", "r_row", "y_next", "qty_row"),
+        ensure_row_contiguous = TRUE,
+        source = "
+          // Compact Householder update. Instead of writing a full n by p
+          // matrix after column 0 is eliminated, this kernel emits:
+          //   * the completed R row,
+          //   * the completed Q'y row,
+          //   * the next trailing matrix A[2:n, 2:p],
+          //   * the next trailing response block y[2:n, ].
+          // The R wrapper stores the small rows and feeds only the trailing
+          // arrays into the next Householder step.
+          uint elem = thread_position_in_grid.x;
+          int n = x_shape[0];
+          int p_cur = x_shape[1];
+          int n_next = metal::max(n - 1, 1);
+          int p_next = metal::max(p_cur - 1, 1);
+          int total_x_next = n_next * p_next;
+          int total_y_next = n_next * YCOLS;
+          float v0 = (float)params[0];
+          float tau = (float)params[1];
+          float beta = (float)params[2];
+
+          if (elem < p_cur) {
+            float val = (float)x[elem];
+            if (tau != 0.0f) {
+              val -= tau * v0 * (float)dots[elem];
+            }
+            if (elem == 0) {
+              val = beta;
+            }
+            r_row[elem] = val;
+          }
+
+          if (elem < YCOLS) {
+            float val = (float)y[elem];
+            if (tau != 0.0f) {
+              val -= tau * v0 * (float)dots[p_cur + elem];
+            }
+            qty_row[elem] = val;
+          }
+
+          if (elem < total_x_next) {
+            int row_next = elem / p_next;
+            int col_next = elem - row_next * p_next;
+            if (p_cur == 1) {
+              x_next[elem] = 0.0f;
+            } else {
+              int row = row_next + 1;
+              int col = col_next + 1;
+              float v = (float)x[row * p_cur];
+              float val = (float)x[row * p_cur + col];
+              if (tau != 0.0f) {
+                val -= tau * v * (float)dots[col];
+              }
+              x_next[elem] = val;
+            }
+          }
+
+          if (elem < total_y_next) {
+            int row_next = elem / YCOLS;
+            int col = elem - row_next * YCOLS;
+            if (n == 1) {
+              y_next[elem] = 0.0f;
+            } else {
+              int row = row_next + 1;
+              float v = (float)x[row * p_cur];
+              float val = (float)y[row * YCOLS + col];
+              if (tau != 0.0f) {
+                val -= tau * v * (float)dots[p_cur + col];
+              }
+              y_next[elem] = val;
+            }
+          }
+        "
+      )
+    }
+
+    a_work <- x
+    y_work <- y
+    r_final <- mlx_zeros(c(p, p), dtype = "float32")
+    qty_final <- mlx_zeros(c(p, y_cols), dtype = "float32")
+    reduce_rows <- block_rows
+    threadgroup_threads <- 32L
+
+    for (k in seq_len(p)) {
+      current_shape <- mlx_shape(a_work)
+      n_current <- as.integer(current_shape[[1L]])
+      p_current <- as.integer(current_shape[[2L]])
+      reduce_groups <- as.integer(ceiling(n_current / reduce_rows))
+      norm_partials <- .mlx_qr_gpu_cache$hh_norm_kernel(
+        inputs = list(a_work),
+        output_shapes = list(c(reduce_groups)),
+        output_dtypes = "float32",
+        grid = c(reduce_groups * threadgroup_threads, 1L, 1L),
+        threadgroup = c(threadgroup_threads, 1L, 1L),
+        template = list(
+          K = 0L,
+          P = p_current,
+          REDUCE_ROWS = reduce_rows,
+          THREADS = threadgroup_threads
+        )
+      )
+
+      params <- .mlx_qr_gpu_cache$hh_params_kernel(
+        inputs = list(a_work, norm_partials),
+        output_shapes = list(c(3L)),
+        output_dtypes = "float32",
+        grid = c(threadgroup_threads, 1L, 1L),
+        threadgroup = c(threadgroup_threads, 1L, 1L),
+        template = list(THREADS = threadgroup_threads)
+      )
+
+      target_x_cols <- p_current
+      target_cols <- target_x_cols + y_cols
+      dot_partials <- .mlx_qr_gpu_cache$hh_dot_kernel(
+        inputs = list(a_work, y_work, params),
+        output_shapes = list(c(reduce_groups, target_cols)),
+        output_dtypes = "float32",
+        grid = c(reduce_groups * target_cols * threadgroup_threads, 1L, 1L),
+        threadgroup = c(threadgroup_threads, 1L, 1L),
+        template = list(
+          K = 0L,
+          P = p_current,
+          YCOLS = y_cols,
+          TARGET_X_COLS = target_x_cols,
+          TARGET_COLS = target_cols,
+          REDUCE_ROWS = reduce_rows,
+          THREADS = threadgroup_threads
+        )
+      )
+      dots <- mlx_sum(dot_partials, axes = 1L)
+
+      n_next <- max(n_current - 1L, 1L)
+      p_next <- max(p_current - 1L, 1L)
+      updated <- .mlx_qr_gpu_cache$hh_compact_update_kernel(
+        inputs = list(a_work, y_work, params, dots),
+        output_shapes = list(
+          c(n_next, p_next),
+          c(p_current),
+          c(n_next, y_cols),
+          c(y_cols)
+        ),
+        output_dtypes = c("float32", "float32", "float32", "float32"),
+        grid = c(max(n_next * p_next, p_current, n_next * y_cols, y_cols),
+                 1L, 1L),
+        threadgroup = c(256L, 1L, 1L),
+        template = list(
+          YCOLS = y_cols
+        )
+      )
+      mlx_eval(updated$x_next)
+      mlx_eval(updated$r_row)
+      mlx_eval(updated$y_next)
+      mlx_eval(updated$qty_row)
+
+      r_final <- mlx_slice_update(
+        r_final, mlx_reshape(updated$r_row, c(1L, p_current)),
+        start = c(k, k), stop = c(k, p)
+      )
+      qty_final <- mlx_slice_update(
+        qty_final, mlx_reshape(updated$qty_row, c(1L, y_cols)),
+        start = c(k, 1L), stop = c(k, y_cols)
+      )
+
+      if (k < p) {
+        a_work <- updated$x_next
+        y_work <- updated$y_next
+      }
+    }
+
+    diag_vals <- as.numeric(diag(r_final))
+    row_signs <- sign(diag_vals)
+    row_signs[row_signs == 0] <- 1
+    for (row in which(row_signs < 0)) {
+      r_row <- -r_final[row, , drop = FALSE]
+      r_final <- mlx_slice_update(
+        r_final, r_row,
+        start = c(row, 1L), stop = c(row, p)
+      )
+      if (has_y) {
+        qty_row <- -qty_final[row, , drop = FALSE]
+        qty_final <- mlx_slice_update(
+          qty_final, qty_row,
+          start = c(row, 1L), stop = c(row, y_cols)
+        )
+      }
+    }
+
+    diag_vals <- abs(diag_vals)
+    rank_tol <- tol * max(1, max(diag_vals, na.rm = TRUE))
+    rank <- sum(is.finite(diag_vals) & diag_vals > rank_tol)
+    if (rank < p) {
+      stop(sprintf(
+        "mlx_qr_gpu() detected rank deficiency: rank %d < %d.",
+        rank, p
+      ), call. = FALSE)
+    }
+
+    out <- list(
+      R = r_final,
+      rank = rank,
+      pivot = seq_len(p),
+      block_rows = block_rows,
+      method = method
+    )
+    if (has_y) {
+      out$qty <- qty_final
+    }
+    return(structure(out, class = c("mlx_qr_gpu", "list")))
+  }
+
+  if (identical(method, "blocked_householder")) {
+    a_work <- x
+    y_work <- y
+    panel_width <- 8L
+
+    for (panel_start in seq(1L, p, by = panel_width)) {
+      panel_end <- min(p, panel_start + panel_width - 1L)
+      panel_size <- panel_end - panel_start + 1L
+      rows <- panel_start:n
+      panel_cols <- panel_start:panel_end
+      n_panel_rows <- n - panel_start + 1L
+
+      panel_work <- a_work[rows, panel_cols, drop = FALSE]
+      v_mat <- mlx_zeros(c(n_panel_rows, panel_size), dtype = "float32")
+      t_mat <- mlx_zeros(c(panel_size, panel_size), dtype = "float32")
+
+      for (j in seq_len(panel_size)) {
+        sub_rows <- j:n_panel_rows
+        sub_cols <- j:panel_size
+        x_tail <- panel_work[sub_rows, j, drop = FALSE]
+        norm_x <- sqrt(mlx_sum(x_tail * x_tail))
+        alpha <- x_tail[1L, 1L, drop = FALSE]
+        beta <- mlx_where(alpha >= 0, -norm_x, norm_x)
+
+        # Build H_j = I - tau_j v_j v_j'. The vector is stored unnormalized;
+        # this keeps the formula simple and still works with compact WY.
+        v_tail <- mlx_slice_update(
+          x_tail, alpha - beta,
+          start = c(1L, 1L), stop = c(1L, 1L)
+        )
+        tau <- 2 / mlx_sum(v_tail * v_tail)
+        v_mat <- mlx_slice_update(
+          v_mat, v_tail,
+          start = c(j, j), stop = c(n_panel_rows, j)
+        )
+
+        # The next panel columns must see this reflector before their own
+        # reflector is formed. Restricting this update to the narrow panel is
+        # the main work reduction versus the unblocked Householder method.
+        panel_tail <- panel_work[sub_rows, sub_cols, drop = FALSE]
+        panel_projection <- tau * crossprod(v_tail, panel_tail)
+        panel_tail_new <- panel_tail - v_tail %*% panel_projection
+        panel_work <- mlx_slice_update(
+          panel_work, panel_tail_new,
+          start = c(j, j), stop = c(n_panel_rows, panel_size)
+        )
+
+        if (j > 1L) {
+          prev <- seq_len(j - 1L)
+          v_prev <- v_mat[, prev, drop = FALSE]
+          t_prev <- t_mat[prev, prev, drop = FALSE]
+          v_full <- v_mat[, j, drop = FALSE]
+          # The panel loop applies reflectors as H_j ... H_1. For that reverse
+          # product, compact WY has a lower-triangular T update:
+          # T[j, 1:(j-1)] = -tau_j v_j' V_prev T_prev.
+          t_row <- -tau * (crossprod(v_full, v_prev) %*% t_prev)
+          t_mat <- mlx_slice_update(
+            t_mat, t_row,
+            start = c(j, 1L), stop = c(j, j - 1L)
+          )
+        }
+        t_mat <- mlx_slice_update(
+          t_mat, tau,
+          start = c(j, j), stop = c(j, j)
+        )
+      }
+
+      a_work <- mlx_slice_update(
+        a_work, panel_work,
+        start = c(panel_start, panel_start), stop = c(n, panel_end)
+      )
+
+      if (panel_end < p) {
+        after_cols <- (panel_end + 1L):p
+        trailing <- a_work[rows, after_cols, drop = FALSE]
+        wy_projection <- t_mat %*% crossprod(v_mat, trailing)
+        trailing_new <- trailing - v_mat %*% wy_projection
+        a_work <- mlx_slice_update(
+          a_work, trailing_new,
+          start = c(panel_start, panel_end + 1L), stop = c(n, p)
+        )
+      }
+
+      if (has_y) {
+        y_tail <- y_work[rows, , drop = FALSE]
+        wy_projection_y <- t_mat %*% crossprod(v_mat, y_tail)
+        y_tail_new <- y_tail - v_mat %*% wy_projection_y
+        y_work <- mlx_slice_update(
+          y_work, y_tail_new,
+          start = c(panel_start, 1L), stop = c(n, y_cols)
+        )
+      }
+    }
+
+    r_final <- mlx_triu(a_work[seq_len(p), seq_len(p), drop = FALSE])
+    qty_final <- y_work[seq_len(p), , drop = FALSE]
+
+    diag_vals <- as.numeric(diag(r_final))
+    row_signs <- sign(diag_vals)
+    row_signs[row_signs == 0] <- 1
+    for (row in which(row_signs < 0)) {
+      r_row <- -r_final[row, , drop = FALSE]
+      r_final <- mlx_slice_update(
+        r_final, r_row,
+        start = c(row, 1L), stop = c(row, p)
+      )
+      if (has_y) {
+        qty_row <- -qty_final[row, , drop = FALSE]
+        qty_final <- mlx_slice_update(
+          qty_final, qty_row,
+          start = c(row, 1L), stop = c(row, y_cols)
+        )
+      }
+    }
+
+    diag_vals <- abs(diag_vals)
+    rank_tol <- tol * max(1, max(diag_vals, na.rm = TRUE))
+    rank <- sum(is.finite(diag_vals) & diag_vals > rank_tol)
+    if (rank < p) {
+      stop(sprintf(
+        "mlx_qr_gpu() detected rank deficiency: rank %d < %d.",
+        rank, p
+      ), call. = FALSE)
+    }
+
+    out <- list(
+      R = r_final,
+      rank = rank,
+      pivot = seq_len(p),
+      block_rows = block_rows,
+      method = method
+    )
+    if (has_y) {
+      out$qty <- qty_final
+    }
+    return(structure(out, class = c("mlx_qr_gpu", "list")))
+  }
+
+  if (identical(method, "householder")) {
+    a_work <- x
+    y_work <- y
+
+    for (k in seq_len(p)) {
+      rows <- k:n
+      cols <- k:p
+      x_tail <- a_work[rows, k, drop = FALSE]
+      norm_x <- sqrt(mlx_sum(x_tail * x_tail))
+      alpha <- x_tail[1L, 1L, drop = FALSE]
+      beta <- mlx_where(alpha >= 0, -norm_x, norm_x)
+
+      # Form the Householder vector u = x - beta e_1. The update
+      # H A = A - u (2 / u'u) u' A is applied to the trailing matrix with
+      # MLX's optimized reductions and matrix multiplication kernels.
+      u <- mlx_slice_update(
+        x_tail, alpha - beta,
+        start = c(1L, 1L), stop = c(1L, 1L)
+      )
+      tau <- 2 / mlx_sum(u * u)
+
+      trailing <- a_work[rows, cols, drop = FALSE]
+      projection <- tau * crossprod(u, trailing)
+      trailing_new <- trailing - u %*% projection
+      a_work <- mlx_slice_update(
+        a_work, trailing_new,
+        start = c(k, k), stop = c(n, p)
+      )
+
+      if (has_y) {
+        y_tail <- y_work[rows, , drop = FALSE]
+        projection_y <- tau * crossprod(u, y_tail)
+        y_tail_new <- y_tail - u %*% projection_y
+        y_work <- mlx_slice_update(
+          y_work, y_tail_new,
+          start = c(k, 1L), stop = c(n, y_cols)
+        )
+      }
+    }
+
+    r_final <- mlx_triu(a_work[seq_len(p), seq_len(p), drop = FALSE])
+    qty_final <- y_work[seq_len(p), , drop = FALSE]
+
+    diag_vals <- as.numeric(diag(r_final))
+    row_signs <- sign(diag_vals)
+    row_signs[row_signs == 0] <- 1
+    for (row in which(row_signs < 0)) {
+      r_row <- -r_final[row, , drop = FALSE]
+      r_final <- mlx_slice_update(
+        r_final, r_row,
+        start = c(row, 1L), stop = c(row, p)
+      )
+      if (has_y) {
+        qty_row <- -qty_final[row, , drop = FALSE]
+        qty_final <- mlx_slice_update(
+          qty_final, qty_row,
+          start = c(row, 1L), stop = c(row, y_cols)
+        )
+      }
+    }
+
+    diag_vals <- abs(diag_vals)
+    rank_tol <- tol * max(1, max(diag_vals, na.rm = TRUE))
+    rank <- sum(is.finite(diag_vals) & diag_vals > rank_tol)
+    if (rank < p) {
+      stop(sprintf(
+        "mlx_qr_gpu() detected rank deficiency: rank %d < %d.",
+        rank, p
+      ), call. = FALSE)
+    }
+
+    out <- list(
+      R = r_final,
+      rank = rank,
+      pivot = seq_len(p),
+      block_rows = block_rows,
+      method = method
+    )
+    if (has_y) {
+      out$qty <- qty_final
+    }
+    return(structure(out, class = c("mlx_qr_gpu", "list")))
+  }
+
+  if (is.null(.mlx_qr_gpu_cache$local_kernel)) {
+    .mlx_qr_gpu_cache$local_kernel <- mlx_metal_kernel(
+      name = "rmlx_qr_gpu_local",
+      input_names = c("x", "y"),
+      output_names = c("r_out", "qty_out"),
+      ensure_row_contiguous = TRUE,
+      source = "
+        // One Metal threadgroup handles one row block. It streams rows from
+        // global memory into a compact QR accumulator instead of loading the
+        // whole block into threadgroup memory. That lets block_rows be much
+        // larger than the 32 KB threadgroup-memory limit would allow for a
+        // full Householder panel at p ~= 50.
+        uint block = threadgroup_position_in_grid.x;
+        uint lid = thread_position_in_threadgroup.x;
+        int n = x_shape[0];
+        int row_start = block * BLOCK_ROWS;
+
+        // r and qty are the compact QR state for this row block. Inserting one
+        // input row at a time is equivalent to QR-reducing [current_R; new_x].
+        // work/work_y hold the pending row while Givens rotations chase its
+        // nonzeros to the right and eventually zero it.
+        threadgroup float r[P * P];
+        threadgroup float qty[P * YCOLS];
+        threadgroup float work[P];
+        threadgroup float work_y[YCOLS];
+        threadgroup float givens[3];
+
+        // Start with an empty QR state. Threads cooperate over the compact
+        // state because P is small and fixed for a given compiled kernel.
+        for (int i = lid; i < P * P; i += THREADS) {
+          r[i] = 0.0f;
+        }
+        for (int i = lid; i < P * YCOLS; i += THREADS) {
+          qty[i] = 0.0f;
+        }
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+
+        for (int local_row = 0; local_row < BLOCK_ROWS; ++local_row) {
+          int global_row = row_start + local_row;
+          if (global_row >= n) {
+            break;
+          }
+
+          // Load the next input row and response row. Out-of-range columns are
+          // not possible because P and YCOLS are compile-time template values.
+          for (int col = lid; col < P; col += THREADS) {
+            work[col] = (float)x[global_row * P + col];
+          }
+          for (int col = lid; col < YCOLS; col += THREADS) {
+            work_y[col] = (float)y[global_row * YCOLS + col];
+          }
+          threadgroup_barrier(mem_flags::mem_threadgroup);
+
+          for (int k = 0; k < P; ++k) {
+            // Compute the Givens rotation that removes work[k] against the
+            // current accumulated diagonal r[k,k]. The rho convention keeps
+            // the diagonal non-negative, matching base QR after sign fixing.
+            if (lid == 0) {
+              float a = r[k * P + k];
+              float b = work[k];
+              float rho = metal::sqrt(a * a + b * b);
+              if (rho == 0.0f) {
+                givens[0] = 1.0f;  // cosine
+                givens[1] = 0.0f;  // sine
+                givens[2] = 0.0f;  // new diagonal
+              } else {
+                givens[0] = a / rho;
+                givens[1] = b / rho;
+                givens[2] = rho;
+              }
+            }
+            threadgroup_barrier(mem_flags::mem_threadgroup);
+
+            // Apply the rotation to the rest of the pending x row and the
+            // matching row of R. Columns below k are already known zero.
+            float c = givens[0];
+            float s = givens[1];
+            for (int col = k + 1 + lid; col < P; col += THREADS) {
+              float r_old = r[k * P + col];
+              float w_old = work[col];
+              r[k * P + col] = c * r_old + s * w_old;
+              work[col] = -s * r_old + c * w_old;
+            }
+            for (int col = lid; col < YCOLS; col += THREADS) {
+              float q_old = qty[k * YCOLS + col];
+              float y_old = work_y[col];
+              qty[k * YCOLS + col] = c * q_old + s * y_old;
+              work_y[col] = -s * q_old + c * y_old;
+            }
+
+            if (lid == 0) {
+              r[k * P + k] = givens[2];
+              work[k] = 0.0f;
+            }
+            threadgroup_barrier(mem_flags::mem_threadgroup);
+          }
+        }
+
+        // Store this block's compact QR state for the recursive combine stage.
+        uint r_base = block * P * P;
+        for (int idx = lid; idx < P * P; idx += THREADS) {
+          int row = idx / P;
+          int col = idx - row * P;
+          if (row <= col) {
+            r_out[r_base + row * P + col] = r[row * P + col];
+          } else {
+            r_out[r_base + row * P + col] = 0.0f;
+          }
+        }
+
+        uint qty_base = block * P * YCOLS;
+        for (int idx = lid; idx < P * YCOLS; idx += THREADS) {
+          qty_out[qty_base + idx] = qty[idx];
+        }
+      "
+    )
+  }
+
+  if (is.null(.mlx_qr_gpu_cache$combine_kernel)) {
+    .mlx_qr_gpu_cache$combine_kernel <- mlx_metal_kernel(
+      name = "rmlx_qr_gpu_combine",
+      input_names = c("r_in", "qty_in"),
+      output_names = c("r_out", "qty_out"),
+      ensure_row_contiguous = TRUE,
+      source = "
+        // Combine several compact block QR states into one smaller QR state.
+        // One threadgroup owns one output group. It QR-reduces a stack of input
+        // R blocks and applies the same rotations to the stacked Q'y vectors.
+        uint out_block = threadgroup_position_in_grid.x;
+        uint lid = thread_position_in_threadgroup.x;
+        int in_blocks = r_in_shape[0];
+        int first_block = out_block * BLOCKS_PER_GROUP;
+
+        // Shared accumulator for the output group's R and Q'y.
+        threadgroup float r[P * P];
+        threadgroup float qty[P * YCOLS];
+        threadgroup float work[P];
+        threadgroup float work_y[YCOLS];
+        threadgroup float givens[3];
+
+        // Initialize the group's accumulator to zero before inserting rows
+        // from the input R blocks.
+        for (int i = lid; i < P * P; i += THREADS) {
+          r[i] = 0.0f;
+        }
+        for (int i = lid; i < P * YCOLS; i += THREADS) {
+          qty[i] = 0.0f;
+        }
+        threadgroup_barrier(mem_flags::mem_threadgroup);
+
+        for (int block_offset = 0; block_offset < BLOCKS_PER_GROUP;
+             ++block_offset) {
+          int in_block = first_block + block_offset;
+          if (in_block >= in_blocks) {
+            continue;
+          }
+
+          for (int in_row = 0; in_row < P; ++in_row) {
+            // Insert each row of each input R block. Rows below the diagonal
+            // are zero, but processing all P rows keeps the kernel simple.
+            uint r_in_base = in_block * P * P + in_row * P;
+            for (int col = lid; col < P; col += THREADS) {
+              work[col] = (float)r_in[r_in_base + col];
+            }
+
+            uint qty_in_base = in_block * P * YCOLS + in_row * YCOLS;
+            for (int col = lid; col < YCOLS; col += THREADS) {
+              work_y[col] = (float)qty_in[qty_in_base + col];
+            }
+            threadgroup_barrier(mem_flags::mem_threadgroup);
+
+            for (int k = 0; k < P; ++k) {
+              // Same Givens insertion as the local kernel: eliminate work[k]
+              // against the accumulated diagonal r[k, k].
+              if (lid == 0) {
+                float a = r[k * P + k];
+                float b = work[k];
+                float rho = metal::sqrt(a * a + b * b);
+                if (rho == 0.0f) {
+                  givens[0] = 1.0f;
+                  givens[1] = 0.0f;
+                  givens[2] = 0.0f;
+                } else {
+                  givens[0] = a / rho;
+                  givens[1] = b / rho;
+                  givens[2] = rho;
+                }
+              }
+              threadgroup_barrier(mem_flags::mem_threadgroup);
+
+              // Rotate the upper-triangular accumulator and the pending row.
+              float c = givens[0];
+              float s = givens[1];
+              for (int col = k + 1 + lid; col < P; col += THREADS) {
+                float r_old = r[k * P + col];
+                float w_old = work[col];
+                r[k * P + col] = c * r_old + s * w_old;
+                work[col] = -s * r_old + c * w_old;
+              }
+
+              // Rotate the accumulated right-hand side in the same way.
+              for (int col = lid; col < YCOLS; col += THREADS) {
+                float q_old = qty[k * YCOLS + col];
+                float y_old = work_y[col];
+                qty[k * YCOLS + col] = c * q_old + s * y_old;
+                work_y[col] = -s * q_old + c * y_old;
+              }
+
+              if (lid == 0) {
+                r[k * P + k] = givens[2];
+                work[k] = 0.0f;
+              }
+              threadgroup_barrier(mem_flags::mem_threadgroup);
+            }
+          }
+        }
+
+        // Store the reduced group. The R wrapper recursively launches this
+        // kernel until only one group remains.
+        uint r_base = out_block * P * P;
+        for (int idx = lid; idx < P * P; idx += THREADS) {
+          int row = idx / P;
+          int col = idx - row * P;
+          if (row <= col) {
+            r_out[r_base + row * P + col] = r[row * P + col];
+          } else {
+            r_out[r_base + row * P + col] = 0.0f;
+          }
+        }
+
+        uint qty_base = out_block * P * YCOLS;
+        for (int idx = lid; idx < P * YCOLS; idx += THREADS) {
+          qty_out[qty_base + idx] = qty[idx];
+        }
+      "
+    )
+  }
+
+  n_blocks <- as.integer(ceiling(n / block_rows))
+  threadgroup_threads <- 64L
+  qr_blocks <- .mlx_qr_gpu_cache$local_kernel(
+    inputs = list(x, y),
+    output_shapes = list(c(n_blocks, p, p), c(n_blocks, p, y_cols)),
+    output_dtypes = c("float32", "float32"),
+    grid = c(n_blocks * threadgroup_threads, 1L, 1L),
+    threadgroup = c(threadgroup_threads, 1L, 1L),
+    template = list(
+      P = p,
+      YCOLS = y_cols,
+      BLOCK_ROWS = block_rows,
+      THREADS = threadgroup_threads
+    )
+  )
+
+  r_blocks <- qr_blocks$r_out
+  qty_blocks <- qr_blocks$qty_out
+  current_blocks <- n_blocks
+  blocks_per_group <- max(2L, min(8L, as.integer(ceiling(block_rows / p))))
+
+  while (current_blocks > 1L) {
+    next_blocks <- as.integer(ceiling(current_blocks / blocks_per_group))
+    qr_blocks <- .mlx_qr_gpu_cache$combine_kernel(
+      inputs = list(r_blocks, qty_blocks),
+      output_shapes = list(c(next_blocks, p, p), c(next_blocks, p, y_cols)),
+      output_dtypes = c("float32", "float32"),
+      grid = c(next_blocks * threadgroup_threads, 1L, 1L),
+      threadgroup = c(threadgroup_threads, 1L, 1L),
+      template = list(
+        P = p,
+        YCOLS = y_cols,
+        BLOCKS_PER_GROUP = blocks_per_group,
+        THREADS = threadgroup_threads
+      )
+    )
+    r_blocks <- qr_blocks$r_out
+    qty_blocks <- qr_blocks$qty_out
+    current_blocks <- next_blocks
+  }
+
+  r_final <- mlx_reshape(r_blocks, c(p, p))
+  qty_final <- mlx_reshape(qty_blocks, c(p, y_cols))
+  diag_vals <- abs(as.numeric(diag(r_final)))
+  rank_tol <- tol * max(1, max(diag_vals, na.rm = TRUE))
+  rank <- sum(is.finite(diag_vals) & diag_vals > rank_tol)
+  if (rank < p) {
+    stop(sprintf(
+      "mlx_qr_gpu() detected rank deficiency: rank %d < %d.",
+      rank, p
+    ), call. = FALSE)
+  }
+
+  out <- list(
+    R = r_final,
+    rank = rank,
+    pivot = seq_len(p),
+    block_rows = block_rows,
+    method = method
+  )
+  if (has_y) {
+    out$qty <- qty_final
+  }
+  structure(out, class = c("mlx_qr_gpu", "list"))
+}
+
 #' Singular value decomposition
 #'
 #' Generic function for SVD computation.

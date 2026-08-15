@@ -221,6 +221,7 @@ mlx_qexp NA TRUE TRUE
 mlx_qlnorm NA TRUE TRUE
 mlx_qlogis NA TRUE TRUE
 mlx_qnorm NA TRUE TRUE
+mlx_qr_gpu "GPU QR reduction for tall least-squares problems" TRUE TRUE
 mlx_quantile "Compute quantiles of MLX arrays" TRUE TRUE
 mlx_quantize "Quantize a Matrix" TRUE TRUE
 mlx_quantized_matmul "Quantized Matrix Multiplication" TRUE TRUE
