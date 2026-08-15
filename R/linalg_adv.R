@@ -132,7 +132,9 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
 #'
 #' CholeskyQR2 checks the orthogonality of its first pass. If that pass is
 #' unsafe, it falls back to GPU TSQR when its compact state fits in threadgroup
-#' memory, and otherwise to MLX QR on the CPU.
+#' memory, and otherwise to MLX QR on the CPU. For well-conditioned fits with
+#' `y`, an MLX GPU residual-correction pass returns `qty_corrected` for a more
+#' accurate least-squares solve while preserving `qty = Q' y`.
 #'
 #' @inheritParams mlx_matrix_required
 #' @param y Optional response vector or matrix with `nrow(x)` rows.
@@ -148,7 +150,8 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
 #'   matrix operations, `"householder"` for direct Householder QR using MLX GPU
 #'   primitives, or `"tsqr"` for the custom Metal tall-skinny QR reduction.
 #' @return A list with components `R`, optional `qty`, `rank`, `pivot`, and
-#'   `block_rows`.
+#'   `block_rows`. Well-conditioned CholeskyQR2 fits with `y` also return
+#'   `qty_corrected` for the coefficient solve.
 #' @export
 #' @examples
 #' \dontrun{
@@ -356,7 +359,7 @@ mlx_qr_gpu <- function(x,
     q_first_gram <- crossprod(q_first)
     orthogonality_error <- as.numeric(max(abs(q_first_gram - mlx_eye(p))))
 
-    if (!is.finite(orthogonality_error) || orthogonality_error > 0.2) {
+    if (!is.finite(orthogonality_error) || orthogonality_error > 0.05) {
       return(stable_qr_fallback())
     }
 
@@ -382,6 +385,16 @@ mlx_qr_gpu <- function(x,
       out$qty <- mlx_solve_triangular(
         t(r_second), q_first_ty, upper = FALSE, device = "cpu"
       )
+      if (orthogonality_error <= 1e-3) {
+        coef_first <- mlx_solve_triangular(
+          r_final, out$qty, upper = TRUE, device = "cpu"
+        )
+        normal_residual <- crossprod(x, y - x %*% coef_first)
+        qty_correction <- mlx_solve_triangular(
+          t(r_final), normal_residual, upper = FALSE, device = "cpu"
+        )
+        out$qty_corrected <- out$qty + qty_correction
+      }
     }
     return(structure(out, class = c("mlx_qr_gpu", "list")))
   }

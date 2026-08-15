@@ -34,7 +34,8 @@ primitives, or \code{"tsqr"} for the custom Metal tall-skinny QR reduction.}
 }
 \value{
 A list with components \code{R}, optional \code{qty}, \code{rank}, \code{pivot}, and
-\code{block_rows}.
+\code{block_rows}. Well-conditioned CholeskyQR2 fits with \code{y} also return
+\code{qty_corrected} for the coefficient solve.
 }
 \description{
 Computes the QR quantities needed by large least-squares fits without
@@ -66,7 +67,9 @@ occupy the GPU.
 
 CholeskyQR2 checks the orthogonality of its first pass. If that pass is
 unsafe, it falls back to GPU TSQR when its compact state fits in threadgroup
-memory, and otherwise to MLX QR on the CPU.
+memory, and otherwise to MLX QR on the CPU. For well-conditioned fits with
+\code{y}, an MLX GPU residual-correction pass returns \code{qty_corrected} for a more
+accurate least-squares solve while preserving \verb{qty = Q' y}.
 }
 \examples{
 \dontrun{

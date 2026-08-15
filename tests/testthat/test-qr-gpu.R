@@ -77,6 +77,30 @@ test_that("mlx_qr_gpu CholeskyQR2 improves an ill-conditioned solve", {
   expect_equal(twice$method, "cholqr2")
 })
 
+test_that("mlx_qr_gpu CholeskyQR2 corrects its least-squares quantities", {
+  skip_if_not(mlx_has_gpu())
+
+  set.seed(9300)
+  n <- 5000L
+  p <- 200L
+  x <- cbind(1, matrix(rnorm(n * (p - 1L)), n, p - 1L))
+  beta <- seq_len(p) / p
+  y <- matrix(drop(x %*% beta) + rnorm(n), n, 1L)
+
+  fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "cholqr2")
+  expected <- positive_base_qr(x, y)
+  actual <- mlx_solve_triangular(
+    fit$R, fit$qty_corrected, upper = TRUE, device = "cpu"
+  )
+
+  expect_equal(as.matrix(fit$qty), expected$qty, tolerance = 1e-4)
+  expect_equal(
+    drop(as.matrix(actual)),
+    unname(lm.fit(x, y)$coefficients),
+    tolerance = 1e-7
+  )
+})
+
 test_that("mlx_qr_gpu CholeskyQR2 falls back when its first pass is unsafe", {
   skip_if_not(mlx_has_gpu())
 
