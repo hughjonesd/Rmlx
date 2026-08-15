@@ -49,8 +49,8 @@ and \code{crossprod(x, y)} on the GPU, then uses MLX linalg on CPU for the small
 second Cholesky QR pass to improve numerical stability, with its large
 matrix products on the GPU. \code{method = "metal_householder"} uses cached
 custom Metal kernels for unpivoted Householder QR without materializing full
-\code{Q}. \code{method = "blocked_householder"} builds compact WY Householder panels
-and applies each panel with MLX GPU matrix operations.
+\code{Q}. \code{method = "blocked_householder"} compiles compact WY
+Householder panels with MLX and applies each panel with GPU matrix operations.
 \code{method = "householder"} uses unblocked Householder updates. \code{method = "tsqr"} uses custom Metal kernels for a tiled Householder reduction followed
 by a tree reduction of the small triangular factors. The QR-based paths are
 more numerically stable but currently slower than Cholesky QR for

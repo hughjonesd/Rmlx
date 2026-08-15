@@ -114,8 +114,8 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
 #' second Cholesky QR pass to improve numerical stability, with its large
 #' matrix products on the GPU. `method = "metal_householder"` uses cached
 #' custom Metal kernels for unpivoted Householder QR without materializing full
-#' `Q`. `method = "blocked_householder"` builds compact WY Householder panels
-#' and applies each panel with MLX GPU matrix operations.
+#' `Q`. `method = "blocked_householder"` compiles compact WY
+#' Householder panels with MLX and applies each panel with GPU matrix operations.
 #' `method = "householder"` uses unblocked Householder updates. `method =
 #' "tsqr"` uses custom Metal kernels for a tiled Householder reduction followed
 #' by a tree reduction of the small triangular factors. The QR-based paths are
@@ -758,9 +758,62 @@ mlx_qr_gpu <- function(x,
   }
 
   if (identical(method, "blocked_householder")) {
+    if (is.null(.mlx_qr_gpu_cache$blocked_panel_factor)) {
+      .mlx_qr_gpu_cache$blocked_panel_factor <- mlx_compile(function(panel_work) {
+        panel_shape <- mlx_shape(panel_work)
+        n_panel_rows <- as.integer(panel_shape[[1L]])
+        panel_size <- as.integer(panel_shape[[2L]])
+        v_mat <- mlx_zeros(c(n_panel_rows, panel_size), dtype = "float32")
+        t_mat <- mlx_zeros(c(panel_size, panel_size), dtype = "float32")
+
+        for (j in seq_len(panel_size)) {
+          sub_rows <- j:n_panel_rows
+          sub_cols <- j:panel_size
+          x_tail <- panel_work[sub_rows, j, drop = FALSE]
+          norm_x <- sqrt(mlx_sum(x_tail * x_tail))
+          alpha <- x_tail[1L, 1L, drop = FALSE]
+          beta <- mlx_where(alpha >= 0, -norm_x, norm_x)
+          v_tail <- mlx_slice_update(
+            x_tail, alpha - beta,
+            start = c(1L, 1L), stop = c(1L, 1L)
+          )
+          tau <- 2 / mlx_sum(v_tail * v_tail)
+          v_mat <- mlx_slice_update(
+            v_mat, v_tail,
+            start = c(j, j), stop = c(n_panel_rows, j)
+          )
+
+          panel_tail <- panel_work[sub_rows, sub_cols, drop = FALSE]
+          panel_projection <- tau * crossprod(v_tail, panel_tail)
+          panel_tail_new <- panel_tail - v_tail %*% panel_projection
+          panel_work <- mlx_slice_update(
+            panel_work, panel_tail_new,
+            start = c(j, j), stop = c(n_panel_rows, panel_size)
+          )
+
+          if (j > 1L) {
+            prev <- seq_len(j - 1L)
+            v_prev <- v_mat[, prev, drop = FALSE]
+            t_prev <- t_mat[prev, prev, drop = FALSE]
+            v_full <- v_mat[, j, drop = FALSE]
+            t_row <- -tau * (crossprod(v_full, v_prev) %*% t_prev)
+            t_mat <- mlx_slice_update(
+              t_mat, t_row,
+              start = c(j, 1L), stop = c(j, j - 1L)
+            )
+          }
+          t_mat <- mlx_slice_update(
+            t_mat, tau,
+            start = c(j, j), stop = c(j, j)
+          )
+        }
+        list(panel_work = panel_work, v_mat = v_mat, t_mat = t_mat)
+      })
+    }
+
     a_work <- x
     y_work <- y
-    panel_width <- 8L
+    panel_width <- 16L
 
     for (panel_start in seq(1L, p, by = panel_width)) {
       panel_end <- min(p, panel_start + panel_width - 1L)
@@ -769,60 +822,12 @@ mlx_qr_gpu <- function(x,
       panel_cols <- panel_start:panel_end
       n_panel_rows <- n - panel_start + 1L
 
-      panel_work <- a_work[rows, panel_cols, drop = FALSE]
-      v_mat <- mlx_zeros(c(n_panel_rows, panel_size), dtype = "float32")
-      t_mat <- mlx_zeros(c(panel_size, panel_size), dtype = "float32")
-
-      for (j in seq_len(panel_size)) {
-        sub_rows <- j:n_panel_rows
-        sub_cols <- j:panel_size
-        x_tail <- panel_work[sub_rows, j, drop = FALSE]
-        norm_x <- sqrt(mlx_sum(x_tail * x_tail))
-        alpha <- x_tail[1L, 1L, drop = FALSE]
-        beta <- mlx_where(alpha >= 0, -norm_x, norm_x)
-
-        # Build H_j = I - tau_j v_j v_j'. The vector is stored unnormalized;
-        # this keeps the formula simple and still works with compact WY.
-        v_tail <- mlx_slice_update(
-          x_tail, alpha - beta,
-          start = c(1L, 1L), stop = c(1L, 1L)
-        )
-        tau <- 2 / mlx_sum(v_tail * v_tail)
-        v_mat <- mlx_slice_update(
-          v_mat, v_tail,
-          start = c(j, j), stop = c(n_panel_rows, j)
-        )
-
-        # The next panel columns must see this reflector before their own
-        # reflector is formed. Restricting this update to the narrow panel is
-        # the main work reduction versus the unblocked Householder method.
-        panel_tail <- panel_work[sub_rows, sub_cols, drop = FALSE]
-        panel_projection <- tau * crossprod(v_tail, panel_tail)
-        panel_tail_new <- panel_tail - v_tail %*% panel_projection
-        panel_work <- mlx_slice_update(
-          panel_work, panel_tail_new,
-          start = c(j, j), stop = c(n_panel_rows, panel_size)
-        )
-
-        if (j > 1L) {
-          prev <- seq_len(j - 1L)
-          v_prev <- v_mat[, prev, drop = FALSE]
-          t_prev <- t_mat[prev, prev, drop = FALSE]
-          v_full <- v_mat[, j, drop = FALSE]
-          # The panel loop applies reflectors as H_j ... H_1. For that reverse
-          # product, compact WY has a lower-triangular T update:
-          # T[j, 1:(j-1)] = -tau_j v_j' V_prev T_prev.
-          t_row <- -tau * (crossprod(v_full, v_prev) %*% t_prev)
-          t_mat <- mlx_slice_update(
-            t_mat, t_row,
-            start = c(j, 1L), stop = c(j, j - 1L)
-          )
-        }
-        t_mat <- mlx_slice_update(
-          t_mat, tau,
-          start = c(j, j), stop = c(j, j)
-        )
-      }
+      panel_factor <- .mlx_qr_gpu_cache$blocked_panel_factor(
+        a_work[rows, panel_cols, drop = FALSE]
+      )
+      panel_work <- panel_factor$panel_work
+      v_mat <- panel_factor$v_mat
+      t_mat <- panel_factor$t_mat
 
       a_work <- mlx_slice_update(
         a_work, panel_work,
