@@ -115,22 +115,25 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
 #' materializing full `Q`. `method = "blocked_householder"` builds compact WY
 #' Householder panels and applies each panel with MLX GPU matrix operations.
 #' `method = "householder"` uses unblocked Householder updates. `method =
-#' "tsqr"` uses custom Metal kernels for a tall-skinny QR reduction based on
-#' streaming Givens row updates. The QR-based paths are more numerically stable
-#' but currently slower than Cholesky QR for well-conditioned large problems.
+#' "tsqr"` uses custom Metal kernels for a tiled Householder reduction followed
+#' by a tree reduction of the small triangular factors. The QR-based paths are
+#' more numerically stable but currently slower than Cholesky QR for
+#' well-conditioned large problems.
 #'
 #' GPU work is currently restricted to `float32`. Integer inputs are cast to
 #' `float32`; `float64` and complex inputs are not supported on the GPU path.
 #'
-#' `method = "tsqr"` stores one `p` by `p` triangular working matrix, plus a
-#' `p` by `ncol(y)` response accumulator, in Metal threadgroup memory. On GPUs
-#' with a 32 KB threadgroup-memory limit, this means `p = 50` fits comfortably
-#' but substantially wider matrices require a tiled implementation.
+#' `method = "tsqr"` stores one input tile in Metal threadgroup memory. When
+#' `block_rows = NULL`, the tile height is chosen from `p` and `ncol(y)` to fit
+#' the 32 KB threadgroup-memory limit and provide enough independent blocks to
+#' occupy the GPU.
 #'
 #' @inheritParams mlx_matrix_required
 #' @param y Optional response vector or matrix with `nrow(x)` rows.
 #' @param block_rows Number of rows reduced by each first-level GPU block for
 #'   `method = "tsqr"`; reduction chunk size for `method = "metal_householder"`.
+#'   The default `NULL` chooses a GPU tile size automatically for TSQR and uses
+#'   2048 rows for Metal Householder.
 #' @param tol Relative tolerance for detecting rank deficiency from `diag(R)`.
 #' @param method `"cholqr"` for the fast default Cholesky QR path,
 #'   `"metal_householder"` for custom Metal Householder QR,
@@ -149,7 +152,7 @@ qr.mlx <- function(x, tol = 1e-7, LAPACK = FALSE, ..., device = NULL) {
 #' }
 mlx_qr_gpu <- function(x,
                        y = NULL,
-                       block_rows = 2048L,
+                       block_rows = NULL,
                        tol = 1e-4,
                        method = c("cholqr", "metal_householder",
                                   "blocked_householder",
@@ -168,9 +171,12 @@ mlx_qr_gpu <- function(x,
 
   n <- as.integer(x_shape[[1L]])
   p <- as.integer(x_shape[[2L]])
-  block_rows <- as.integer(block_rows[[1L]])
-  if (is.na(block_rows) || block_rows < 1L) {
-    stop("block_rows must be a positive integer.", call. = FALSE)
+  automatic_block_rows <- is.null(block_rows)
+  if (!automatic_block_rows) {
+    block_rows <- as.integer(block_rows[[1L]])
+    if (is.na(block_rows) || block_rows < 1L) {
+      stop("block_rows must be NULL or a positive integer.", call. = FALSE)
+    }
   }
   if (p < 1L || n < 1L) {
     stop("mlx_qr_gpu() requires a non-empty matrix.", call. = FALSE)
@@ -222,6 +228,17 @@ mlx_qr_gpu <- function(x,
     y <- mlx_zeros(c(n, 1L), dtype = "float32")
     y_cols <- 1L
   }
+
+  if (automatic_block_rows) {
+    if (uses_custom_tsqr) {
+      max_tile_rows <- as.integer(floor(
+        (32768L - 4L * (p + y_cols + 16L)) / (4L * (p + y_cols))
+      ))
+      block_rows <- min(256L, max_tile_rows)
+    } else {
+      block_rows <- 2048L
+    }
+  }
   if (uses_custom_tsqr && y_cols > 64L) {
     stop(
       "mlx_qr_gpu(method = \"tsqr\") currently supports at most 64 response columns ",
@@ -231,11 +248,14 @@ mlx_qr_gpu <- function(x,
     )
   }
   if (uses_custom_tsqr) {
-    threadgroup_bytes <- 4L * (p * p + p * y_cols + p + y_cols + 3L)
-    if (threadgroup_bytes > 32768L) {
+    combine_bytes <- 4L * (p * p + p * y_cols + p + y_cols + 3L)
+    tile_bytes <- 4L * (
+      block_rows * (p + y_cols) + p + y_cols + 16L
+    )
+    if (block_rows < 1L || combine_bytes > 32768L || tile_bytes > 32768L) {
       stop(
         "mlx_qr_gpu(method = \"tsqr\") exceeds this GPU's 32 KB threadgroup ",
-        "memory limit for the requested number of columns/responses.",
+        "memory limit for the requested columns, responses, or block_rows.",
         call. = FALSE
       )
     }
@@ -877,112 +897,135 @@ mlx_qr_gpu <- function(x,
       output_names = c("r_out", "qty_out"),
       ensure_row_contiguous = TRUE,
       source = "
-        // One Metal threadgroup handles one row block. It streams rows from
-        // global memory into a compact QR accumulator instead of loading the
-        // whole block into threadgroup memory. That lets block_rows be much
-        // larger than the 32 KB threadgroup-memory limit would allow for a
-        // full Householder panel at p ~= 50.
+        // One Metal threadgroup factors one input tile. Householder reductions
+        // are parallel across rows and trailing columns, avoiding a serialized
+        // Givens chase for every input row.
         uint block = threadgroup_position_in_grid.x;
         uint lid = thread_position_in_threadgroup.x;
+        uint lane = lid & 31;
+        uint simdgroup = lid >> 5;
         int n = x_shape[0];
         int row_start = block * BLOCK_ROWS;
+        int valid_rows = metal::min(BLOCK_ROWS, n - row_start);
 
-        // r and qty are the compact QR state for this row block. Inserting one
-        // input row at a time is equivalent to QR-reducing [current_R; new_x].
-        // work/work_y hold the pending row while Givens rotations chase its
-        // nonzeros to the right and eventually zero it.
-        threadgroup float r[P * P];
-        threadgroup float qty[P * YCOLS];
-        threadgroup float work[P];
-        threadgroup float work_y[YCOLS];
-        threadgroup float givens[3];
+        threadgroup float tile[BLOCK_ROWS * P];
+        threadgroup float tile_y[BLOCK_ROWS * YCOLS];
+        threadgroup float partial[SIMDGROUPS];
+        threadgroup float dots[P + YCOLS];
+        threadgroup float params[3];
 
-        // Start with an empty QR state. Threads cooperate over the compact
-        // state because P is small and fixed for a given compiled kernel.
-        for (int i = lid; i < P * P; i += THREADS) {
-          r[i] = 0.0f;
+        for (int i = lid; i < valid_rows * P; i += THREADS) {
+          int row = i / P;
+          int col = i - row * P;
+          tile[i] = (float)x[(row_start + row) * P + col];
         }
-        for (int i = lid; i < P * YCOLS; i += THREADS) {
-          qty[i] = 0.0f;
+        for (int i = lid; i < valid_rows * YCOLS; i += THREADS) {
+          int row = i / YCOLS;
+          int col = i - row * YCOLS;
+          tile_y[i] = (float)y[(row_start + row) * YCOLS + col];
         }
         threadgroup_barrier(mem_flags::mem_threadgroup);
 
-        for (int local_row = 0; local_row < BLOCK_ROWS; ++local_row) {
-          int global_row = row_start + local_row;
-          if (global_row >= n) {
-            break;
+        int reflectors = metal::min(valid_rows, P);
+        for (int k = 0; k < reflectors; ++k) {
+          float local_norm = 0.0f;
+          for (int row = k + lid; row < valid_rows; row += THREADS) {
+            float value = tile[row * P + k];
+            local_norm += value * value;
           }
-
-          // Load the next input row and response row. Out-of-range columns are
-          // not possible because P and YCOLS are compile-time template values.
-          for (int col = lid; col < P; col += THREADS) {
-            work[col] = (float)x[global_row * P + col];
-          }
-          for (int col = lid; col < YCOLS; col += THREADS) {
-            work_y[col] = (float)y[global_row * YCOLS + col];
+          local_norm = simd_sum(local_norm);
+          if (lane == 0) {
+            partial[simdgroup] = local_norm;
           }
           threadgroup_barrier(mem_flags::mem_threadgroup);
 
-          for (int k = 0; k < P; ++k) {
-            // Compute the Givens rotation that removes work[k] against the
-            // current accumulated diagonal r[k,k]. The rho convention keeps
-            // the diagonal non-negative, matching base QR after sign fixing.
-            if (lid == 0) {
-              float a = r[k * P + k];
-              float b = work[k];
-              float rho = metal::sqrt(a * a + b * b);
-              if (rho == 0.0f) {
-                givens[0] = 1.0f;  // cosine
-                givens[1] = 0.0f;  // sine
-                givens[2] = 0.0f;  // new diagonal
-              } else {
-                givens[0] = a / rho;
-                givens[1] = b / rho;
-                givens[2] = rho;
-              }
+          if (simdgroup == 0) {
+            float norm_sq = lane < SIMDGROUPS ? partial[lane] : 0.0f;
+            norm_sq = simd_sum(norm_sq);
+            if (lane == 0) {
+              float alpha = tile[k * P + k];
+              float norm_x = metal::sqrt(norm_sq);
+              float beta = alpha >= 0.0f ? -norm_x : norm_x;
+              float v0 = alpha - beta;
+              float tail_sq = metal::max(norm_sq - alpha * alpha, 0.0f);
+              float v_norm_sq = v0 * v0 + tail_sq;
+              params[0] = v0;
+              params[1] = v_norm_sq == 0.0f ? 0.0f : 2.0f / v_norm_sq;
+              params[2] = beta;
+              tile[k * P + k] = v0;
             }
-            threadgroup_barrier(mem_flags::mem_threadgroup);
-
-            // Apply the rotation to the rest of the pending x row and the
-            // matching row of R. Columns below k are already known zero.
-            float c = givens[0];
-            float s = givens[1];
-            for (int col = k + 1 + lid; col < P; col += THREADS) {
-              float r_old = r[k * P + col];
-              float w_old = work[col];
-              r[k * P + col] = c * r_old + s * w_old;
-              work[col] = -s * r_old + c * w_old;
-            }
-            for (int col = lid; col < YCOLS; col += THREADS) {
-              float q_old = qty[k * YCOLS + col];
-              float y_old = work_y[col];
-              qty[k * YCOLS + col] = c * q_old + s * y_old;
-              work_y[col] = -s * q_old + c * y_old;
-            }
-
-            if (lid == 0) {
-              r[k * P + k] = givens[2];
-              work[k] = 0.0f;
-            }
-            threadgroup_barrier(mem_flags::mem_threadgroup);
           }
+          threadgroup_barrier(mem_flags::mem_threadgroup);
+
+          int target_count = P - k - 1 + YCOLS;
+          for (int target = simdgroup; target < target_count;
+               target += SIMDGROUPS) {
+            float local_dot = 0.0f;
+            for (int row = k + lane; row < valid_rows; row += 32) {
+              float v = row == k ? params[0] : tile[row * P + k];
+              float value;
+              if (target < P - k - 1) {
+                value = tile[row * P + k + 1 + target];
+              } else {
+                int y_col = target - (P - k - 1);
+                value = tile_y[row * YCOLS + y_col];
+              }
+              local_dot += v * value;
+            }
+            local_dot = simd_sum(local_dot);
+            if (lane == 0) {
+              dots[target] = local_dot;
+            }
+          }
+          threadgroup_barrier(mem_flags::mem_threadgroup);
+
+          int update_size = (valid_rows - k) * target_count;
+          for (int i = lid; i < update_size; i += THREADS) {
+            int row = k + i / target_count;
+            int target = i - (row - k) * target_count;
+            float v = row == k ? params[0] : tile[row * P + k];
+            float adjustment = params[1] * v * dots[target];
+            if (target < P - k - 1) {
+              int col = k + 1 + target;
+              tile[row * P + col] -= adjustment;
+            } else {
+              int y_col = target - (P - k - 1);
+              tile_y[row * YCOLS + y_col] -= adjustment;
+            }
+          }
+          threadgroup_barrier(mem_flags::mem_threadgroup);
+
+          if (lid == 0) {
+            tile[k * P + k] = params[2];
+          }
+          for (int row = k + 1 + lid; row < valid_rows; row += THREADS) {
+            tile[row * P + k] = 0.0f;
+          }
+          threadgroup_barrier(mem_flags::mem_threadgroup);
         }
 
-        // Store this block's compact QR state for the recursive combine stage.
         uint r_base = block * P * P;
         for (int idx = lid; idx < P * P; idx += THREADS) {
           int row = idx / P;
           int col = idx - row * P;
-          if (row <= col) {
-            r_out[r_base + row * P + col] = r[row * P + col];
+          if (row <= col && row < valid_rows) {
+            float sign = tile[row * P + row] < 0.0f ? -1.0f : 1.0f;
+            r_out[r_base + idx] = sign * tile[row * P + col];
           } else {
-            r_out[r_base + row * P + col] = 0.0f;
+            r_out[r_base + idx] = 0.0f;
           }
         }
 
         uint qty_base = block * P * YCOLS;
         for (int idx = lid; idx < P * YCOLS; idx += THREADS) {
-          qty_out[qty_base + idx] = qty[idx];
+          int row = idx / YCOLS;
+          int col = idx - row * YCOLS;
+          if (row < valid_rows) {
+            float sign = tile[row * P + row] < 0.0f ? -1.0f : 1.0f;
+            qty_out[qty_base + idx] = sign * tile_y[row * YCOLS + col];
+          } else {
+            qty_out[qty_base + idx] = 0.0f;
+          }
         }
       "
     )
@@ -1010,17 +1053,17 @@ mlx_qr_gpu <- function(x,
         threadgroup float work_y[YCOLS];
         threadgroup float givens[3];
 
-        // Initialize the group's accumulator to zero before inserting rows
-        // from the input R blocks.
+        // Copy the first triangular factor directly. Only subsequent factors
+        // need Givens insertion.
         for (int i = lid; i < P * P; i += THREADS) {
-          r[i] = 0.0f;
+          r[i] = (float)r_in[first_block * P * P + i];
         }
         for (int i = lid; i < P * YCOLS; i += THREADS) {
-          qty[i] = 0.0f;
+          qty[i] = (float)qty_in[first_block * P * YCOLS + i];
         }
         threadgroup_barrier(mem_flags::mem_threadgroup);
 
-        for (int block_offset = 0; block_offset < BLOCKS_PER_GROUP;
+        for (int block_offset = 1; block_offset < BLOCKS_PER_GROUP;
              ++block_offset) {
           int in_block = first_block + block_offset;
           if (in_block >= in_blocks) {
@@ -1028,10 +1071,10 @@ mlx_qr_gpu <- function(x,
           }
 
           for (int in_row = 0; in_row < P; ++in_row) {
-            // Insert each row of each input R block. Rows below the diagonal
-            // are zero, but processing all P rows keeps the kernel simple.
+            // The input row is triangular, so rotations below in_row are
+            // identities and can be skipped.
             uint r_in_base = in_block * P * P + in_row * P;
-            for (int col = lid; col < P; col += THREADS) {
+            for (int col = in_row + lid; col < P; col += THREADS) {
               work[col] = (float)r_in[r_in_base + col];
             }
 
@@ -1041,7 +1084,7 @@ mlx_qr_gpu <- function(x,
             }
             threadgroup_barrier(mem_flags::mem_threadgroup);
 
-            for (int k = 0; k < P; ++k) {
+            for (int k = in_row; k < P; ++k) {
               // Same Givens insertion as the local kernel: eliminate work[k]
               // against the accumulated diagonal r[k, k].
               if (lid == 0) {
@@ -1109,18 +1152,19 @@ mlx_qr_gpu <- function(x,
   }
 
   n_blocks <- as.integer(ceiling(n / block_rows))
-  threadgroup_threads <- 64L
+  local_threads <- 256L
   qr_blocks <- .mlx_qr_gpu_cache$local_kernel(
     inputs = list(x, y),
     output_shapes = list(c(n_blocks, p, p), c(n_blocks, p, y_cols)),
     output_dtypes = c("float32", "float32"),
-    grid = c(n_blocks * threadgroup_threads, 1L, 1L),
-    threadgroup = c(threadgroup_threads, 1L, 1L),
+    grid = c(n_blocks * local_threads, 1L, 1L),
+    threadgroup = c(local_threads, 1L, 1L),
     template = list(
       P = p,
       YCOLS = y_cols,
       BLOCK_ROWS = block_rows,
-      THREADS = threadgroup_threads
+      THREADS = local_threads,
+      SIMDGROUPS = local_threads %/% 32L
     )
   )
 
@@ -1128,6 +1172,7 @@ mlx_qr_gpu <- function(x,
   qty_blocks <- qr_blocks$qty_out
   current_blocks <- n_blocks
   blocks_per_group <- max(2L, min(8L, as.integer(ceiling(block_rows / p))))
+  combine_threads <- 64L
 
   while (current_blocks > 1L) {
     next_blocks <- as.integer(ceiling(current_blocks / blocks_per_group))
@@ -1135,13 +1180,13 @@ mlx_qr_gpu <- function(x,
       inputs = list(r_blocks, qty_blocks),
       output_shapes = list(c(next_blocks, p, p), c(next_blocks, p, y_cols)),
       output_dtypes = c("float32", "float32"),
-      grid = c(next_blocks * threadgroup_threads, 1L, 1L),
-      threadgroup = c(threadgroup_threads, 1L, 1L),
+      grid = c(next_blocks * combine_threads, 1L, 1L),
+      threadgroup = c(combine_threads, 1L, 1L),
       template = list(
         P = p,
         YCOLS = y_cols,
         BLOCKS_PER_GROUP = blocks_per_group,
-        THREADS = threadgroup_threads
+        THREADS = combine_threads
       )
     )
     r_blocks <- qr_blocks$r_out

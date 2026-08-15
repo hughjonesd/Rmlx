@@ -112,6 +112,22 @@ test_that("mlx_qr_gpu custom Metal TSQR path matches base qr quantities", {
   expect_equal(fit$method, "tsqr")
 })
 
+test_that("mlx_qr_gpu TSQR chooses a GPU tile size automatically", {
+  skip_if_not(mlx_has_gpu())
+
+  set.seed(20260815)
+  x <- matrix(rnorm(127 * 8), 127, 8)
+  y <- matrix(rnorm(127 * 3), 127, 3)
+
+  fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "tsqr")
+  expected <- positive_base_qr(x, y)
+
+  expect_lte(fit$block_rows * (ncol(x) + ncol(y)) * 4L, 32768L)
+  expect_false(identical(fit$block_rows, 2048L))
+  expect_equal(as.matrix(fit$R), expected$R, tolerance = 1e-4)
+  expect_equal(as.matrix(fit$qty), expected$qty, tolerance = 1e-4)
+})
+
 test_that("mlx_qr_gpu reports rank deficient inputs", {
   skip_if_not(mlx_has_gpu())
 

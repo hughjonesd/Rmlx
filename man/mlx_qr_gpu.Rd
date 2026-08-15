@@ -7,7 +7,7 @@
 mlx_qr_gpu(
   x,
   y = NULL,
-  block_rows = 2048L,
+  block_rows = NULL,
   tol = 1e-04,
   method = c("cholqr", "metal_householder", "blocked_householder", "householder", "tsqr")
 )
@@ -18,7 +18,9 @@ mlx_qr_gpu(
 \item{y}{Optional response vector or matrix with \code{nrow(x)} rows.}
 
 \item{block_rows}{Number of rows reduced by each first-level GPU block for
-\code{method = "tsqr"}; reduction chunk size for \code{method = "metal_householder"}.}
+\code{method = "tsqr"}; reduction chunk size for \code{method = "metal_householder"}.
+The default \code{NULL} chooses a GPU tile size automatically for TSQR and uses
+2048 rows for Metal Householder.}
 
 \item{tol}{Relative tolerance for detecting rank deficiency from \code{diag(R)}.}
 
@@ -45,17 +47,18 @@ and \code{crossprod(x, y)} on the GPU, then uses MLX linalg on CPU for the small
 uses cached custom Metal kernels for unpivoted Householder QR without
 materializing full \code{Q}. \code{method = "blocked_householder"} builds compact WY
 Householder panels and applies each panel with MLX GPU matrix operations.
-\code{method = "householder"} uses unblocked Householder updates. \code{method = "tsqr"} uses custom Metal kernels for a tall-skinny QR reduction based on
-streaming Givens row updates. The QR-based paths are more numerically stable
-but currently slower than Cholesky QR for well-conditioned large problems.
+\code{method = "householder"} uses unblocked Householder updates. \code{method = "tsqr"} uses custom Metal kernels for a tiled Householder reduction followed
+by a tree reduction of the small triangular factors. The QR-based paths are
+more numerically stable but currently slower than Cholesky QR for
+well-conditioned large problems.
 
 GPU work is currently restricted to \code{float32}. Integer inputs are cast to
 \code{float32}; \code{float64} and complex inputs are not supported on the GPU path.
 
-\code{method = "tsqr"} stores one \code{p} by \code{p} triangular working matrix, plus a
-\code{p} by \code{ncol(y)} response accumulator, in Metal threadgroup memory. On GPUs
-with a 32 KB threadgroup-memory limit, this means \code{p = 50} fits comfortably
-but substantially wider matrices require a tiled implementation.
+\code{method = "tsqr"} stores one input tile in Metal threadgroup memory. When
+\code{block_rows = NULL}, the tile height is chosen from \code{p} and \code{ncol(y)} to fit
+the 32 KB threadgroup-memory limit and provide enough independent blocks to
+occupy the GPU.
 }
 \examples{
 \dontrun{
