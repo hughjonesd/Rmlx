@@ -273,7 +273,8 @@ mlx_qr_gpu <- function(x,
       if (4L * (p * p + p * y_cols + p + y_cols + 3L) <= 32768L) {
         fallback <- mlx_qr_gpu(
           x, if (has_y) y else NULL,
-          block_rows = block_rows, tol = tol, method = "tsqr"
+          block_rows = if (automatic_block_rows) NULL else block_rows,
+          tol = tol, method = "tsqr"
         )
         fallback$requested_method <- "cholqr2"
         return(fallback)
@@ -355,7 +356,7 @@ mlx_qr_gpu <- function(x,
     q_first_gram <- crossprod(q_first)
     orthogonality_error <- as.numeric(max(abs(q_first_gram - mlx_eye(p))))
 
-    if (!is.finite(orthogonality_error) || orthogonality_error > 0.5) {
+    if (!is.finite(orthogonality_error) || orthogonality_error > 0.2) {
       return(stable_qr_fallback())
     }
 
