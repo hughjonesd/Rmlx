@@ -9,8 +9,7 @@ mlx_qr_gpu(
   y = NULL,
   block_rows = NULL,
   tol = 1e-04,
-  method = c("cholqr", "cholqr2", "metal_householder", "blocked_householder",
-    "householder", "tsqr")
+  method = c("cholqr", "tsqr")
 )
 }
 \arguments{
@@ -19,22 +18,17 @@ mlx_qr_gpu(
 \item{y}{Optional response vector or matrix with \code{nrow(x)} rows.}
 
 \item{block_rows}{Number of rows reduced by each first-level GPU block for
-\code{method = "tsqr"}; reduction chunk size for \code{method = "metal_householder"}.
-The default \code{NULL} chooses a GPU tile size automatically for TSQR and uses
-2048 rows for Metal Householder.}
+\code{method = "tsqr"}. The default \code{NULL} chooses a GPU tile size
+automatically.}
 
 \item{tol}{Relative tolerance for detecting rank deficiency from \code{diag(R)}.}
 
-\item{method}{\code{"cholqr"} for the fast default Cholesky QR path,
-\code{"cholqr2"} for a second, stabilizing Cholesky QR pass,
-\code{"metal_householder"} for custom Metal Householder QR,
-\code{"blocked_householder"} for compact WY Householder QR using MLX GPU
-matrix operations, \code{"householder"} for direct Householder QR using MLX GPU
-primitives, or \code{"tsqr"} for the custom Metal tall-skinny QR reduction.}
+\item{method}{\code{"cholqr"} for two Cholesky QR passes or \code{"tsqr"} for the
+custom Metal tall-skinny QR reduction.}
 }
 \value{
 A list with components \code{R}, optional \code{qty}, \code{rank}, \code{pivot}, and
-\code{block_rows}. Well-conditioned CholeskyQR2 fits with \code{y} also return
+\code{block_rows}. Well-conditioned Cholesky QR fits with \code{y} also return
 \code{qty_corrected} for the coefficient solve.
 }
 \description{
@@ -44,18 +38,10 @@ real-valued matrices. It returns the final upper-triangular \code{R} and, when
 \code{y} is supplied, \verb{qty = Q' y}.
 }
 \details{
-The default method uses a Cholesky QR reduction: it computes \code{crossprod(x)}
-and \code{crossprod(x, y)} on the GPU, then uses MLX linalg on CPU for the small
-\code{p} by \code{p} Cholesky and triangular solve. \code{method = "cholqr2"} applies a
-second Cholesky QR pass to improve numerical stability, with its large
-matrix products on the GPU. \code{method = "metal_householder"} uses cached
-custom Metal kernels for unpivoted Householder QR without materializing full
-\code{Q}. \code{method = "blocked_householder"} compiles compact WY
-Householder panels with MLX and applies each panel with GPU matrix operations.
-\code{method = "householder"} uses unblocked Householder updates. \code{method = "tsqr"} uses custom Metal kernels for a tiled Householder reduction followed
-by a tree reduction of the small triangular factors. The QR-based paths are
-more numerically stable but currently slower than Cholesky QR for
-well-conditioned large problems.
+The default \code{"cholqr"} method applies two Cholesky QR passes, with the large
+matrix products on the GPU. The \code{"tsqr"} method uses custom Metal kernels for
+a tiled Householder reduction followed by a tree reduction of the small
+triangular factors.
 
 GPU work is currently restricted to \code{float32}. Integer inputs are cast to
 \code{float32}; \code{float64} and complex inputs are not supported on the GPU path.
@@ -65,7 +51,7 @@ GPU work is currently restricted to \code{float32}. Integer inputs are cast to
 the 32 KB threadgroup-memory limit and provide enough independent blocks to
 occupy the GPU.
 
-CholeskyQR2 checks the orthogonality of its first pass. If that pass is
+Cholesky QR checks the orthogonality of its first pass. If that pass is
 unsafe, it falls back to GPU TSQR when its compact state fits in threadgroup
 memory, and otherwise to MLX QR on the CPU. For well-conditioned fits with
 \code{y}, an MLX GPU residual-correction pass returns \code{qty_corrected} for a more

@@ -48,36 +48,7 @@ test_that("mlx_qr_gpu handles matrix responses", {
   expect_equal(as.matrix(fit$qty), expected$qty, tolerance = 1e-4)
 })
 
-test_that("mlx_qr_gpu CholeskyQR2 improves an ill-conditioned solve", {
-  skip_if_not(mlx_has_gpu())
-
-  set.seed(20260815)
-  n <- 20000L
-  p <- 8L
-  x <- matrix(rnorm(n * p), n, p)
-  x[, p] <- x[, 1L] + 1e-3 * rnorm(n)
-  y <- matrix(rnorm(n), n, 1L)
-  expected <- qr.solve(x, y)
-
-  once <- mlx_qr_gpu(as_mlx(x), as_mlx(y), tol = 1e-6,
-                     method = "cholqr")
-  twice <- mlx_qr_gpu(as_mlx(x), as_mlx(y), tol = 1e-6,
-                      method = "cholqr2")
-  coef_once <- as.matrix(mlx_solve_triangular(
-    once$R, once$qty, upper = TRUE, device = "cpu"
-  ))
-  coef_twice <- as.matrix(mlx_solve_triangular(
-    twice$R, twice$qty, upper = TRUE, device = "cpu"
-  ))
-
-  error_once <- sqrt(sum((coef_once - expected)^2) / sum(expected^2))
-  error_twice <- sqrt(sum((coef_twice - expected)^2) / sum(expected^2))
-  expect_lt(error_twice, error_once / 10)
-  expect_lt(error_twice, 1e-3)
-  expect_equal(twice$method, "cholqr2")
-})
-
-test_that("mlx_qr_gpu CholeskyQR2 corrects its least-squares quantities", {
+test_that("mlx_qr_gpu Cholesky QR corrects its least-squares quantities", {
   skip_if_not(mlx_has_gpu())
 
   set.seed(9300)
@@ -87,7 +58,7 @@ test_that("mlx_qr_gpu CholeskyQR2 corrects its least-squares quantities", {
   beta <- seq_len(p) / p
   y <- matrix(drop(x %*% beta) + rnorm(n), n, 1L)
 
-  fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "cholqr2")
+  fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "cholqr")
   expected <- positive_base_qr(x, y)
   actual <- mlx_solve_triangular(
     fit$R, fit$qty_corrected, upper = TRUE, device = "cpu"
@@ -101,7 +72,7 @@ test_that("mlx_qr_gpu CholeskyQR2 corrects its least-squares quantities", {
   )
 })
 
-test_that("mlx_qr_gpu CholeskyQR2 falls back when its first pass is unsafe", {
+test_that("mlx_qr_gpu Cholesky QR falls back when its first pass is unsafe", {
   skip_if_not(mlx_has_gpu())
 
   set.seed(20260816)
@@ -112,58 +83,10 @@ test_that("mlx_qr_gpu CholeskyQR2 falls back when its first pass is unsafe", {
   y <- matrix(rnorm(n), n, 1L)
 
   fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), tol = 1e-7,
-                    method = "cholqr2")
+                    method = "cholqr")
 
-  expect_equal(fit$requested_method, "cholqr2")
+  expect_equal(fit$requested_method, "cholqr")
   expect_true(fit$method %in% c("tsqr", "cpu_qr"))
-})
-
-test_that("mlx_qr_gpu Householder path matches base qr quantities", {
-  skip_if_not(mlx_has_gpu())
-
-  set.seed(20260613)
-  x <- matrix(rnorm(240), 60, 4)
-  y <- matrix(rnorm(120), 60, 2)
-
-  fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "householder")
-  expected <- positive_base_qr(x, y)
-
-  expect_equal(as.matrix(fit$R), expected$R, tolerance = 1e-4)
-  expect_equal(as.matrix(fit$qty), expected$qty, tolerance = 1e-4)
-  expect_equal(crossprod(as.matrix(fit$R)), crossprod(x), tolerance = 1e-4)
-  expect_equal(fit$method, "householder")
-})
-
-test_that("mlx_qr_gpu custom Metal Householder path matches base qr quantities", {
-  skip_if_not(mlx_has_gpu())
-
-  set.seed(20260613)
-  x <- matrix(rnorm(240), 60, 4)
-  y <- matrix(rnorm(120), 60, 2)
-
-  fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "metal_householder")
-  expected <- positive_base_qr(x, y)
-
-  expect_equal(as.matrix(fit$R), expected$R, tolerance = 1e-4)
-  expect_equal(as.matrix(fit$qty), expected$qty, tolerance = 1e-4)
-  expect_equal(crossprod(as.matrix(fit$R)), crossprod(x), tolerance = 1e-4)
-  expect_equal(fit$method, "metal_householder")
-})
-
-test_that("mlx_qr_gpu blocked Householder path matches base qr quantities", {
-  skip_if_not(mlx_has_gpu())
-
-  set.seed(20260613)
-  x <- matrix(rnorm(420), 70, 6)
-  y <- matrix(rnorm(140), 70, 2)
-
-  fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "blocked_householder")
-  expected <- positive_base_qr(x, y)
-
-  expect_equal(as.matrix(fit$R), expected$R, tolerance = 1e-4)
-  expect_equal(as.matrix(fit$qty), expected$qty, tolerance = 1e-4)
-  expect_equal(crossprod(as.matrix(fit$R)), crossprod(x), tolerance = 1e-4)
-  expect_equal(fit$method, "blocked_householder")
 })
 
 test_that("mlx_qr_gpu custom Metal TSQR path matches base qr quantities", {
@@ -213,7 +136,7 @@ test_that("mlx_qr_gpu reports rank deficient inputs", {
   )
   expect_error(
     mlx_qr_gpu(as_mlx(x), as_mlx(y), block_rows = 8L,
-               method = "cholqr2"),
+               method = "cholqr"),
     "rank deficiency",
     fixed = TRUE
   )
@@ -222,21 +145,13 @@ test_that("mlx_qr_gpu reports rank deficient inputs", {
     "rank deficiency",
     fixed = TRUE
   )
-  expect_error(
-    mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "householder"),
-    "rank deficiency",
-    fixed = TRUE
-  )
-  expect_error(
-    mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "metal_householder"),
-    "rank deficiency",
-    fixed = TRUE
-  )
-  expect_error(
-    mlx_qr_gpu(as_mlx(x), as_mlx(y), method = "blocked_householder"),
-    "rank deficiency",
-    fixed = TRUE
-  )
+})
+
+test_that("mlx_qr_gpu rejects removed experimental methods", {
+  for (method in c("cholqr2", "metal_householder", "blocked_householder",
+                   "householder")) {
+    expect_error(mlx_qr_gpu(NULL, method = method), "must be one of")
+  }
 })
 
 test_that("mlx_qr_gpu rejects non-matrix inputs", {
