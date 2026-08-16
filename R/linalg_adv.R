@@ -162,7 +162,35 @@ mlx_qr_gpu <- function(x,
   }
   local_device("gpu")
 
-  x <- as_mlx(x)
+  arrays <- list(x = x)
+  if (!is.null(y)) {
+    arrays$y <- y
+  }
+  for (array_name in names(arrays)) {
+    arrays[[array_name]] <- as_mlx(arrays[[array_name]])
+    array_dtype <- mlx_dtype(arrays[[array_name]])
+    array_label <- if (identical(array_name, "x")) "inputs" else "responses"
+    if (identical(array_dtype, "float64")) {
+      stop(sprintf(
+        "mlx_qr_gpu() does not support float64 %s on the GPU path.",
+        array_label
+      ), call. = FALSE)
+    }
+    if (identical(array_dtype, "complex64")) {
+      stop(sprintf(
+        "mlx_qr_gpu() does not support complex %s.", array_label
+      ), call. = FALSE)
+    }
+    if (!identical(array_dtype, "float32")) {
+      arrays[[array_name]] <- mlx_cast(arrays[[array_name]], "float32")
+    }
+  }
+
+  x <- arrays$x
+  has_y <- "y" %in% names(arrays)
+  if (has_y) {
+    y <- arrays$y
+  }
   x_shape <- mlx_shape(x)
   if (length(x_shape) != 2L) {
     stop("mlx_qr_gpu() requires a 2D matrix input.", call. = FALSE)
@@ -180,34 +208,8 @@ mlx_qr_gpu <- function(x,
   if (p < 1L || n < 1L) {
     stop("mlx_qr_gpu() requires a non-empty matrix.", call. = FALSE)
   }
-  uses_custom_tsqr <- identical(method, "tsqr")
 
-  x_dtype <- mlx_dtype(x)
-  if (identical(x_dtype, "float64")) {
-    stop("mlx_qr_gpu() does not support float64 on the GPU path.", call. = FALSE)
-  }
-  if (identical(x_dtype, "complex64")) {
-    stop("mlx_qr_gpu() does not support complex inputs.", call. = FALSE)
-  }
-  if (!identical(x_dtype, "float32")) {
-    x <- mlx_cast(x, "float32")
-  }
-
-  has_y <- !is.null(y)
   if (has_y) {
-    y <- as_mlx(y)
-    y_dtype <- mlx_dtype(y)
-    if (identical(y_dtype, "float64")) {
-      stop("mlx_qr_gpu() does not support float64 responses on the GPU path.",
-           call. = FALSE)
-    }
-    if (identical(y_dtype, "complex64")) {
-      stop("mlx_qr_gpu() does not support complex responses.", call. = FALSE)
-    }
-    if (!identical(y_dtype, "float32")) {
-      y <- mlx_cast(y, "float32")
-    }
-
     y_shape <- mlx_shape(y)
     if (length(y_shape) == 1L) {
       if (as.integer(y_shape[[1L]]) != n) {
@@ -228,17 +230,135 @@ mlx_qr_gpu <- function(x,
     y_cols <- 1L
   }
 
+  if (identical(method, "cholqr")) {
+    return(.qr_gpu_cholqr(
+      x = x, y = y, has_y = has_y, p = p, y_cols = y_cols,
+      block_rows = block_rows, automatic_block_rows = automatic_block_rows,
+      tol = tol
+    ))
+  }
+
+  .qr_gpu_tsqr(
+    x = x, y = y, has_y = has_y, n = n, p = p, y_cols = y_cols,
+    block_rows = block_rows, automatic_block_rows = automatic_block_rows,
+    tol = tol
+  )
+}
+
+.qr_gpu_cholqr <- function(x, y, has_y, p, y_cols, block_rows,
+                           automatic_block_rows, tol) {
   if (automatic_block_rows) {
-    if (uses_custom_tsqr) {
-      max_tile_rows <- as.integer(floor(
-        (32768L - 4L * (p + y_cols + 16L)) / (4L * (p + y_cols))
-      ))
-      block_rows <- min(256L, max_tile_rows)
-    } else {
-      block_rows <- 2048L
+    block_rows <- 2048L
+  }
+
+  stable_qr_fallback <- function() {
+    if (4L * (p * p + p * y_cols + p + y_cols + 3L) <= 32768L) {
+      fallback <- mlx_qr_gpu(
+        x, if (has_y) y else NULL,
+        block_rows = if (automatic_block_rows) NULL else block_rows,
+        tol = tol, method = "tsqr"
+      )
+      fallback$requested_method <- "cholqr"
+      return(fallback)
+    }
+
+    cpu_fit <- qr(x, device = "cpu")
+    cpu_diag <- abs(as.numeric(diag(cpu_fit$R)))
+    cpu_rank_tol <- tol * max(1, max(cpu_diag, na.rm = TRUE))
+    cpu_rank <- sum(is.finite(cpu_diag) & cpu_diag > cpu_rank_tol)
+    if (cpu_rank < p) {
+      stop(sprintf(
+        "mlx_qr_gpu() detected rank deficiency: rank %d < %d.",
+        cpu_rank, p
+      ), call. = FALSE)
+    }
+    fallback <- list(
+      R = cpu_fit$R,
+      rank = cpu_rank,
+      pivot = seq_len(p),
+      block_rows = block_rows,
+      method = "cpu_qr",
+      requested_method = "cholqr"
+    )
+    if (has_y) {
+      fallback$qty <- with_device("cpu", crossprod(cpu_fit$Q, y))
+    }
+    structure(fallback, class = c("mlx_qr_gpu", "list"))
+  }
+
+  xtx <- crossprod(x)
+  r_first <- tryCatch(
+    chol(xtx, device = "cpu"),
+    error = function(e) NULL
+  )
+
+  if (is.null(r_first)) {
+    return(stable_qr_fallback())
+  }
+
+  diag_vals <- abs(as.numeric(diag(r_first)))
+  rank_tol <- tol * max(1, max(diag_vals, na.rm = TRUE))
+  rank <- sum(is.finite(diag_vals) & diag_vals > rank_tol)
+  if (rank < p) {
+    return(stable_qr_fallback())
+  }
+
+  r_first_inv <- mlx_solve_triangular(
+    r_first, mlx_eye(p), upper = TRUE, device = "cpu"
+  )
+  q_first <- x %*% r_first_inv
+  q_first_gram <- crossprod(q_first)
+  orthogonality_error <- as.numeric(max(abs(q_first_gram - mlx_eye(p))))
+
+  if (!is.finite(orthogonality_error) || orthogonality_error > 0.05) {
+    return(stable_qr_fallback())
+  }
+
+  r_second <- tryCatch(
+    chol(q_first_gram, device = "cpu"),
+    error = function(e) NULL
+  )
+  if (is.null(r_second)) {
+    return(stable_qr_fallback())
+  }
+
+  r_final <- r_second %*% r_first
+  out <- list(
+    R = r_final,
+    rank = rank,
+    pivot = seq_len(p),
+    block_rows = block_rows,
+    method = "cholqr",
+    orthogonality_error = orthogonality_error
+  )
+  if (has_y) {
+    q_first_ty <- crossprod(q_first, y)
+    out$qty <- mlx_solve_triangular(
+      t(r_second), q_first_ty, upper = FALSE, device = "cpu"
+    )
+    if (orthogonality_error <= 1e-3) {
+      coef_first <- mlx_solve_triangular(
+        r_final, out$qty, upper = TRUE, device = "cpu"
+      )
+      normal_residual <- crossprod(x, y - x %*% coef_first)
+      qty_correction <- mlx_solve_triangular(
+        t(r_final), normal_residual, upper = FALSE, device = "cpu"
+      )
+      out$qty_corrected <- out$qty + qty_correction
     }
   }
-  if (uses_custom_tsqr && y_cols > 64L) {
+  return(structure(out, class = c("mlx_qr_gpu", "list")))
+}
+
+.qr_gpu_tsqr <- function(x, y, has_y, n, p, y_cols, block_rows,
+                         automatic_block_rows, tol) {
+  if (automatic_block_rows) {
+    max_tile_rows <- as.integer(floor(
+      (32768L - 4L * (p + y_cols + 16L)) / (4L * (p + y_cols))
+    ))
+    block_rows <- min(256L, max_tile_rows)
+  }
+  if (y_cols > 64L) {
     stop(
       "mlx_qr_gpu(method = \"tsqr\") currently supports at most 64 response columns ",
       "because the custom Metal kernels store a full p by ncol(y) working matrix ",
@@ -246,118 +366,16 @@ mlx_qr_gpu <- function(x,
       call. = FALSE
     )
   }
-  if (uses_custom_tsqr) {
-    combine_bytes <- 4L * (p * p + p * y_cols + p + y_cols + 3L)
-    tile_bytes <- 4L * (
-      block_rows * (p + y_cols) + p + y_cols + 16L
+  combine_bytes <- 4L * (p * p + p * y_cols + p + y_cols + 3L)
+  tile_bytes <- 4L * (
+    block_rows * (p + y_cols) + p + y_cols + 16L
+  )
+  if (block_rows < 1L || combine_bytes > 32768L || tile_bytes > 32768L) {
+    stop(
+      "mlx_qr_gpu(method = \"tsqr\") exceeds this GPU's 32 KB threadgroup ",
+      "memory limit for the requested columns, responses, or block_rows.",
+      call. = FALSE
     )
-    if (block_rows < 1L || combine_bytes > 32768L || tile_bytes > 32768L) {
-      stop(
-        "mlx_qr_gpu(method = \"tsqr\") exceeds this GPU's 32 KB threadgroup ",
-        "memory limit for the requested columns, responses, or block_rows.",
-        call. = FALSE
-      )
-    }
-  }
-
-  if (identical(method, "cholqr")) {
-    stable_qr_fallback <- function() {
-      if (4L * (p * p + p * y_cols + p + y_cols + 3L) <= 32768L) {
-        fallback <- mlx_qr_gpu(
-          x, if (has_y) y else NULL,
-          block_rows = if (automatic_block_rows) NULL else block_rows,
-          tol = tol, method = "tsqr"
-        )
-        fallback$requested_method <- "cholqr"
-        return(fallback)
-      }
-
-      cpu_fit <- qr(x, device = "cpu")
-      cpu_diag <- abs(as.numeric(diag(cpu_fit$R)))
-      cpu_rank_tol <- tol * max(1, max(cpu_diag, na.rm = TRUE))
-      cpu_rank <- sum(is.finite(cpu_diag) & cpu_diag > cpu_rank_tol)
-      if (cpu_rank < p) {
-        stop(sprintf(
-          "mlx_qr_gpu() detected rank deficiency: rank %d < %d.",
-          cpu_rank, p
-        ), call. = FALSE)
-      }
-      fallback <- list(
-        R = cpu_fit$R,
-        rank = cpu_rank,
-        pivot = seq_len(p),
-        block_rows = block_rows,
-        method = "cpu_qr",
-        requested_method = "cholqr"
-      )
-      if (has_y) {
-        fallback$qty <- with_device("cpu", crossprod(cpu_fit$Q, y))
-      }
-      structure(fallback, class = c("mlx_qr_gpu", "list"))
-    }
-
-    xtx <- crossprod(x)
-    r_first <- tryCatch(
-      chol(xtx, device = "cpu"),
-      error = function(e) NULL
-    )
-
-    if (is.null(r_first)) {
-      return(stable_qr_fallback())
-    }
-
-    diag_vals <- abs(as.numeric(diag(r_first)))
-    rank_tol <- tol * max(1, max(diag_vals, na.rm = TRUE))
-    rank <- sum(is.finite(diag_vals) & diag_vals > rank_tol)
-    if (rank < p) {
-      return(stable_qr_fallback())
-    }
-
-    r_first_inv <- mlx_solve_triangular(
-      r_first, mlx_eye(p), upper = TRUE, device = "cpu"
-    )
-    q_first <- x %*% r_first_inv
-    q_first_gram <- crossprod(q_first)
-    orthogonality_error <- as.numeric(max(abs(q_first_gram - mlx_eye(p))))
-
-    if (!is.finite(orthogonality_error) || orthogonality_error > 0.05) {
-      return(stable_qr_fallback())
-    }
-
-    r_second <- tryCatch(
-      chol(q_first_gram, device = "cpu"),
-      error = function(e) NULL
-    )
-    if (is.null(r_second)) {
-      return(stable_qr_fallback())
-    }
-
-    r_final <- r_second %*% r_first
-    out <- list(
-      R = r_final,
-      rank = rank,
-      pivot = seq_len(p),
-      block_rows = block_rows,
-      method = method,
-      orthogonality_error = orthogonality_error
-    )
-    if (has_y) {
-      q_first_ty <- crossprod(q_first, y)
-      out$qty <- mlx_solve_triangular(
-        t(r_second), q_first_ty, upper = FALSE, device = "cpu"
-      )
-      if (orthogonality_error <= 1e-3) {
-        coef_first <- mlx_solve_triangular(
-          r_final, out$qty, upper = TRUE, device = "cpu"
-        )
-        normal_residual <- crossprod(x, y - x %*% coef_first)
-        qty_correction <- mlx_solve_triangular(
-          t(r_final), normal_residual, upper = FALSE, device = "cpu"
-        )
-        out$qty_corrected <- out$qty + qty_correction
-      }
-    }
-    return(structure(out, class = c("mlx_qr_gpu", "list")))
   }
 
   if (is.null(.mlx_qr_gpu_cache$local_kernel)) {
@@ -681,7 +699,7 @@ mlx_qr_gpu <- function(x,
     rank = rank,
     pivot = seq_len(p),
     block_rows = block_rows,
-    method = method
+    method = "tsqr"
   )
   if (has_y) {
     out$qty <- qty_final

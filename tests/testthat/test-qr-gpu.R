@@ -24,7 +24,7 @@ test_that("mlx_qr_gpu default path matches base qr quantities", {
   x <- matrix(rnorm(240), 60, 4)
   y <- matrix(rnorm(60), 60, 1)
 
-  fit <- mlx_qr_gpu(as_mlx(x), as_mlx(y), block_rows = 16L)
+  fit <- mlx_qr_gpu(x, y, block_rows = 16L)
   expected <- positive_base_qr(x, y)
 
   expect_equal(as.matrix(fit$R), expected$R, tolerance = 1e-4)
@@ -32,6 +32,19 @@ test_that("mlx_qr_gpu default path matches base qr quantities", {
   expect_equal(fit$rank, ncol(x))
   expect_equal(fit$pivot, seq_len(ncol(x)))
   expect_equal(fit$method, "cholqr")
+})
+
+test_that("mlx_qr_gpu handles an omitted response", {
+  skip_if_not(mlx_has_gpu())
+
+  x <- matrix(c(1, 2, 4, 1, 3, 2, 5, 2, 6, 4), 5, 2)
+  expected <- positive_base_qr(x)
+
+  for (method in c("cholqr", "tsqr")) {
+    fit <- mlx_qr_gpu(x, method = method)
+    expect_equal(as.matrix(fit$R), expected$R, tolerance = 1e-4)
+    expect_null(fit$qty)
+  }
 })
 
 test_that("mlx_qr_gpu handles matrix responses", {
