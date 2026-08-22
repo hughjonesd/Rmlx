@@ -200,6 +200,7 @@ reference:
       - chol2inv
       - kronecker
       - qr.mlx
+      - mlx_qr_gpu
       - svd
       - svd.mlx
       - solve.mlx
