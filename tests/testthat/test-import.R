@@ -1,7 +1,32 @@
+import_add_matrix_fixture <- function() {
+  fixture_names <- c(
+    "add_matrix.mlxfn",
+    "add_matrix_pre_metadata.mlxfn"
+  )
+  errors <- character()
+
+  for (fixture_name in fixture_names) {
+    fn_path <- system.file("extdata", fixture_name, package = "Rmlx")
+    imported <- tryCatch(
+      mlx_import_function(fn_path),
+      error = function(err) {
+        errors <<- c(errors, conditionMessage(err))
+        NULL
+      }
+    )
+    if (!is.null(imported)) return(imported)
+  }
+
+  stop(
+    "No bundled .mlxfn fixture is compatible with this MLX version: ",
+    paste(unique(errors), collapse = "; "),
+    call. = FALSE
+  )
+}
+
 test_that("mlx_import_function loads and runs positional args", {
   skip_if_not(mlx_has_gpu())
-  fn_path <- system.file("extdata", "add_matrix.mlxfn", package = "Rmlx")
-  imported <- mlx_import_function(fn_path)
+  imported <- import_add_matrix_fixture()
 
   a <- mlx_matrix(1:4, 2, 2, dtype = "float32")
   b <- mlx_matrix(5:8, 2, 2, dtype = "float32")
@@ -13,8 +38,7 @@ test_that("mlx_import_function loads and runs positional args", {
 
 test_that("mlx_import_function accepts named arguments", {
   skip_if_not(mlx_has_gpu())
-  fn_path <- system.file("extdata", "add_matrix.mlxfn", package = "Rmlx")
-  imported <- mlx_import_function(fn_path)
+  imported <- import_add_matrix_fixture()
 
   a <- mlx_matrix(rep(2, 4), 2, 2, dtype = "float32")
   b <- mlx_matrix(rep(1, 4), 2, 2, dtype = "float32")
