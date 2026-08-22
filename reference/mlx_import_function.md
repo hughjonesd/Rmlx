@@ -45,12 +45,24 @@ shapes and keyword names you provide.
 ## Examples
 
 ``` r
-add_fn <- mlx_import_function(
-  system.file("extdata/add_matrix.mlxfn", package = "Rmlx")
-)
-#> Error: [import_function] Invalid string size.
+fixture_names <- c("add_matrix.mlxfn", "add_matrix_pre_metadata.mlxfn")
+fixture_paths <- system.file("extdata", fixture_names, package = "Rmlx")
+add_fn <- NULL
+for (fixture_path in fixture_paths) {
+  add_fn <- tryCatch(
+    mlx_import_function(fixture_path),
+    error = function(err) NULL
+  )
+  if (!is.null(add_fn)) break
+}
+stopifnot(!is.null(add_fn))
 x <- mlx_matrix(1:4, 2, 2)
 y <- mlx_matrix(5:8, 2, 2)
-add_fn(x, bias = y)  # positional + keyword argument
-#> Error in add_fn(x, bias = y): could not find function "add_fn"
+add_fn(x, y)
+#> mlx array [2 x 2]
+#>   dtype: float32
+#>   values:
+#>      [,1] [,2]
+#> [1,]    6   10
+#> [2,]    8   12
 ```

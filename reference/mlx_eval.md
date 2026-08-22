@@ -29,8 +29,8 @@ The input object, invisibly.
 ``` r
 system.time(x <- mlx_rand_normal(1e7))
 #>    user  system elapsed 
-#>       0       0       0 
+#>   0.000   0.000   0.001 
 system.time(mlx_eval(x))
 #>    user  system elapsed 
-#>   0.111   0.002   0.113 
+#>   0.121   0.003   0.123 
 ```
