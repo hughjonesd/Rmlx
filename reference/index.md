@@ -353,6 +353,8 @@
   : Kronecker product dispatcher
 - [`qr(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/qr.mlx.md)
   : QR decomposition for mlx arrays
+- [`mlx_qr_gpu()`](https://hughjonesd.github.io/Rmlx/reference/mlx_qr_gpu.md)
+  : GPU QR reduction for tall least-squares problems
 - [`svd()`](https://hughjonesd.github.io/Rmlx/reference/svd.md) :
   Singular value decomposition
 - [`svd(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/svd.mlx.md)

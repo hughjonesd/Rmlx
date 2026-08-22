@@ -48,13 +48,9 @@ shapes and keyword names you provide.
 add_fn <- mlx_import_function(
   system.file("extdata/add_matrix.mlxfn", package = "Rmlx")
 )
+#> Error: [import_function] Invalid string size.
 x <- mlx_matrix(1:4, 2, 2)
 y <- mlx_matrix(5:8, 2, 2)
 add_fn(x, bias = y)  # positional + keyword argument
-#> mlx array [2 x 2]
-#>   dtype: float32
-#>   values:
-#>      [,1] [,2]
-#> [1,]    6   10
-#> [2,]    8   12
+#> Error in add_fn(x, bias = y): could not find function "add_fn"
 ```
