@@ -37,11 +37,19 @@ and keyword names you provide.
 }
 \examples{
 \dontshow{if (mlx_has_gpu()) withAutoprint(\{ # examplesIf}
-add_fn <- mlx_import_function(
-  system.file("extdata/add_matrix.mlxfn", package = "Rmlx")
-)
+fixture_names <- c("add_matrix.mlxfn", "add_matrix_pre_metadata.mlxfn")
+fixture_paths <- system.file("extdata", fixture_names, package = "Rmlx")
+add_fn <- NULL
+for (fixture_path in fixture_paths) {
+  add_fn <- tryCatch(
+    mlx_import_function(fixture_path),
+    error = function(err) NULL
+  )
+  if (!is.null(add_fn)) break
+}
+stopifnot(!is.null(add_fn))
 x <- mlx_matrix(1:4, 2, 2)
 y <- mlx_matrix(5:8, 2, 2)
-add_fn(x, bias = y)  # positional + keyword argument
+add_fn(x, y)
 \dontshow{\}) # examplesIf}
 }

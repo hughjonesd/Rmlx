@@ -1,5 +1,7 @@
 # Rmlx 0.4.0
 
+* Bundled `.mlxfn` examples now include both pre-metadata and current MLX
+  serialization formats, preserving import tests across MLX 0.31.1--0.32.1.
 * `scale()` now preserves MLX-supplied center and scale vectors as MLX
   attributes, avoiding a round trip through base R.
 * `mlx` objects can now have row, column and dimnames, and vectors can have names.
