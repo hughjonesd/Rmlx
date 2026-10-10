@@ -1,7 +1,7 @@
 Package: Rmlx
 Type: Package
 Title: R Interface to MLX Arrays (GPU-Accelerated with Metal or CUDA)
-Version: 0.4.0
+Version: 0.4.0.9000
 Authors@R: c(
     person("David", "Hugh-Jones", email = "david@hughjones.com", role = c("aut", "cre")),
     person("Apple Inc.", role = "cph", comment = "MLX library downloaded at install time")
@@ -31,7 +31,7 @@ Suggests:
     rprojroot
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-SystemRequirements: MLX (>= 0.31.1); C++17; CMake; BLAS/LAPACK development
+SystemRequirements: MLX (>= 0.32.3); C++20; CMake; BLAS/LAPACK development
     headers (e.g., Debian/Ubuntu: liblapacke-dev or libopenblas-dev)
 Roxygen: list(markdown = TRUE)
 URL: https://hughjonesd.github.io/Rmlx/, https://github.com/hughjonesd/Rmlx
