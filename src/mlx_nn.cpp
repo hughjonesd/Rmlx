@@ -177,7 +177,7 @@ SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
 
   array result = gather_qmm(x, w, scales, biases, lhs_indices, rhs_indices,
                             transpose, std::optional<int>(group_size),
-                            std::optional<int>(bits), mode, sorted_indices);
+                            std::optional<int>(bits), mode, std::nullopt, sorted_indices);
 
   return make_mlx_xptr(std::move(result));
 }

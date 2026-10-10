@@ -96,10 +96,9 @@ Sys.setenv(MLX_LIB_DIR = "/opt/homebrew/lib")
 remotes::install_github("hughjonesd/Rmlx")
 ```
 
-### Force Downloading MLX from Source
+### Force Building Bundled MLX from Source
 
-To force downloading MLX v0.29.4 and building it even if system MLX is
-available:
+To force building bundled MLX v0.32.3 even if system MLX is available:
 
 ``` r
 Sys.setenv(MLX_BUILD_FROM_SOURCE = "1")

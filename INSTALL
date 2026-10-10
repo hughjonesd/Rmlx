@@ -3,14 +3,14 @@ Rmlx Installation Guide
 
 Rmlx can use either a system-installed MLX library or build from an MLX source
 tarball. By default, it searches for system MLX first and, if not found,
-downloads MLX v0.29.4 from GitHub before building locally.
+builds the bundled MLX v0.32.3 source locally.
 
 Default Installation
 --------------------
 
 The default installation searches for system MLX in standard locations
-(/opt/homebrew, /usr/local, /usr/include). If not found, it downloads MLX
-v0.29.4 and builds it automatically:
+(/opt/homebrew, /usr/local, /usr/include). If not found, it builds bundled MLX
+v0.32.3 automatically:
 
 ```r
 install.packages("Rmlx", type = "source")
@@ -109,7 +109,7 @@ MLX_INCLUDE=/opt/homebrew/include R CMD INSTALL Rmlx_*.tar.gz
 Building from Source Tarball
 ------------------------------
 
-To force downloading MLX v0.29.4 and building it even if system MLX is available:
+To force building bundled MLX v0.32.3 even if system MLX is available:
 
 ```r
 # From R
