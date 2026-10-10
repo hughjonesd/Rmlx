@@ -1,5 +1,9 @@
 # Rmlx 0.4.0
 
+* Updated the bundled and minimum supported MLX version to 0.32.3 and
+  compilation to C++20. Fixed `mlx_gather_qmm()` for its new argument layout
+  while keeping the R interface unchanged.
+
 * Bundled `.mlxfn` examples now include both pre-metadata and current MLX
   serialization formats, preserving import tests across MLX 0.31.1--0.32.1.
 * `scale()` now preserves MLX-supplied center and scale vectors as MLX

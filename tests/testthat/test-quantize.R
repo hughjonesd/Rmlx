@@ -105,24 +105,27 @@ test_that("gather_qmm applies lhs/rhs indices correctly", {
                               group_size = 32L, bits = 4L, mode = "affine")
 
   lhs_idx_r <- c(1L, 3L)   # 1-based for R arrays
-  rhs_idx_r <- c(3L, 2L)
+  for (sorted_indices in c(FALSE, TRUE)) {
+    rhs_idx_r <- if (sorted_indices) c(2L, 3L) else c(3L, 2L)
 
-  res <- mlx_gather_qmm(
-    x, quant$w_q, quant$scales, quant$biases,
-    lhs_indices = lhs_idx_r, rhs_indices = rhs_idx_r,
-    group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE, sorted_indices = FALSE
-  )
+    res <- mlx_gather_qmm(
+      x, quant$w_q, quant$scales, quant$biases,
+      lhs_indices = lhs_idx_r, rhs_indices = rhs_idx_r,
+      group_size = 32L, bits = 4L, mode = "affine", transpose = TRUE,
+      sorted_indices = sorted_indices
+    )
 
-  x_ref <- x_data[lhs_idx_r, , , drop = FALSE]
-  w_ref <- as.array(w_dequant)[rhs_idx_r, , , drop = FALSE]
+    x_ref <- x_data[lhs_idx_r, , , drop = FALSE]
+    w_ref <- as.array(w_dequant)[rhs_idx_r, , , drop = FALSE]
 
-  ref_mat <- vapply(
-    seq_along(lhs_idx_r),
-    function(b) x_ref[b, , ] %*% t(w_ref[b, , ]),
-    FUN.VALUE = matrix(0, nrow = 2, ncol = 5)
-  )
-  dim(ref_mat) <- c(2, 5, length(lhs_idx_r))
-  ref_mat <- aperm(ref_mat, c(3, 1, 2)) # batch, M, N
+    ref_mat <- vapply(
+      seq_along(lhs_idx_r),
+      function(b) x_ref[b, , ] %*% t(w_ref[b, , ]),
+      FUN.VALUE = matrix(0, nrow = 2, ncol = 5)
+    )
+    dim(ref_mat) <- c(2, 5, length(lhs_idx_r))
+    ref_mat <- aperm(ref_mat, c(3, 1, 2)) # batch, M, N
 
-  expect_equal(as.array(res), ref_mat, tolerance = 1e-3)
+    expect_equal(as.array(res), ref_mat, tolerance = 1e-3)
+  }
 })

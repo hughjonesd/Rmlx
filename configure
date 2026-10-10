@@ -6,7 +6,7 @@ ROOT_DIR=$(pwd)
 OS=$(uname -s)
 ARCH=$(uname -m)
 
-MLX_VERSION="0.31.1"
+MLX_VERSION="0.32.3"
 MLX_TAG="v${MLX_VERSION}"
 MLX_TARBALL_URL="https://github.com/ml-explore/mlx/archive/refs/tags/${MLX_TAG}.tar.gz"
 BUILD_DIR="build"
@@ -32,12 +32,12 @@ LAPACK_LIBS=$("${R_HOME}/bin/R" CMD config LAPACK_LIBS)
 LIBS="${LIBS} ${BLAS_LIBS} ${LAPACK_LIBS}"
 export BLAS_LIBS LAPACK_LIBS LIBS
 
-CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX17 2>/dev/null || "${R_HOME}/bin/R" CMD config CXX 2>/dev/null || true)
+CXX_FULL=$("${R_HOME}/bin/R" CMD config CXX20 2>/dev/null || "${R_HOME}/bin/R" CMD config CXX 2>/dev/null || true)
 if [ -z "$CXX_FULL" ]; then
   die "Unable to determine C++ compiler from R CMD config"
 fi
 CXX=$(printf '%s\n' "$CXX_FULL" | awk '{print $1}')
-CXXFLAGS=$("${R_HOME}/bin/R" CMD config CXX17FLAGS 2>/dev/null || "${R_HOME}/bin/R" CMD config CXXFLAGS 2>/dev/null || true)
+CXXFLAGS=$("${R_HOME}/bin/R" CMD config CXX20FLAGS 2>/dev/null || "${R_HOME}/bin/R" CMD config CXXFLAGS 2>/dev/null || true)
 
 log() {
   printf '%s\n' "$1"
@@ -244,12 +244,12 @@ if [ "$USE_SYSTEM_MLX" = true ]; then
       DETECTED_VERSION="${MLX_VER_MAJOR}.${MLX_VER_MINOR}.${MLX_VER_PATCH}"
       log "Detected system MLX version: $DETECTED_VERSION"
 
-      # Check if version >= 0.31.1
+      # Check if version >= 0.32.3
       MLX_VER_NUMERIC=$((100000 * MLX_VER_MAJOR + 1000 * MLX_VER_MINOR + MLX_VER_PATCH))
-      REQUIRED_VER_NUMERIC=31001  # 0.31.1
+      REQUIRED_VER_NUMERIC=32003  # 0.32.3
 
       if [ "$MLX_VER_NUMERIC" -lt "$REQUIRED_VER_NUMERIC" ]; then
-        die "System MLX version $DETECTED_VERSION is too old. Rmlx requires MLX >= 0.31.1. Set MLX_BUILD_FROM_SOURCE=1 to build MLX from source."
+        die "System MLX version $DETECTED_VERSION is too old. Rmlx requires MLX >= 0.32.3. Set MLX_BUILD_FROM_SOURCE=1 to build MLX from source."
       fi
     fi
   fi
@@ -583,7 +583,7 @@ cat > src/Makevars <<EOF_MAKEVARS
 
 PKG_CPPFLAGS = $PKG_CPPFLAGS
 PKG_LIBS = $PKG_LIBS
-CXX_STD = CXX17
+CXX_STD = CXX20
 EOF_MAKEVARS
 
 log "✓ src/Makevars created"
