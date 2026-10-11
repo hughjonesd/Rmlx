@@ -1,5 +1,8 @@
 # Rmlx (development version)
 
+* Converting R numeric vectors and arrays to float32 with `as_mlx()` is faster
+  and uses less temporary memory.
+
 * `mlx_cross_entropy()` is faster and uses less memory, especially with many
   classes. It also improves numerical stability and gives clearer errors for
   missing target indices.
