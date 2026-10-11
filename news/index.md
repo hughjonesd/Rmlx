@@ -2,6 +2,10 @@
 
 ## Rmlx (development version)
 
+- Multi-axis reductions now use one native MLX operation, fixing
+  variance and standard deviation over multiple axes and explicit
+  reductions to scalars.
+
 - Converting R numeric vectors and arrays to float32 with
   [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md) is
   faster and uses less temporary memory.

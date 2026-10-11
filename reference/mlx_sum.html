@@ -99,7 +99,9 @@ base R reducers <code><a href="https://rdrr.io/r/base/all.html" class="external-
 logical scalars.</p>
 <p>The <code>axes</code> argument is the inverse of <code>MARGIN</code> in base R
 <code><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply()</a></code>. <code>axes</code> gives the axes which will be reduced; <code>MARGIN</code>
-gives the axes which an operation will be applied over. See the example.</p>
+gives the axes which an operation will be applied over. See the example.
+Multiple axes are reduced jointly. For variance and standard deviation,
+<code>ddof</code> is subtracted once from the total number of elements being reduced.</p>
 <p><code>mlx_sd()</code> is a convenience wrapper that matches the default behaviour
 of <code><a href="https://rdrr.io/r/stats/sd.html" class="external-link">stats::sd()</a></code>, computing a sample standard deviation with <code>ddof = 1</code>.</p>
     </div>

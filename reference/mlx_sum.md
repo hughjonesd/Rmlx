@@ -62,7 +62,9 @@ plain logical scalars.
 The `axes` argument is the inverse of `MARGIN` in base R
 [`apply()`](https://rdrr.io/r/base/apply.html). `axes` gives the axes
 which will be reduced; `MARGIN` gives the axes which an operation will
-be applied over. See the example.
+be applied over. See the example. Multiple axes are reduced jointly. For
+variance and standard deviation, `ddof` is subtracted once from the
+total number of elements being reduced.
 
 `mlx_sd()` is a convenience wrapper that matches the default behaviour
 of [`stats::sd()`](https://rdrr.io/r/stats/sd.html), computing a sample
