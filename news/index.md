@@ -2,6 +2,10 @@
 
 ## Rmlx (development version)
 
+- Axis validation and shape-based operations now recognize the single
+  dimension of MLX vectors, including explicit axes, stacking,
+  splitting, and neural layers.
+
 - Multi-axis reductions now use one native MLX operation, fixing
   variance and standard deviation over multiple axes and explicit
   reductions to scalars.

@@ -35,7 +35,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rmlx-development-version">Rmlx (development version)<a class="anchor" aria-label="anchor" href="#rmlx-development-version"></a></h2>
-<ul><li><p>Multi-axis reductions now use one native MLX operation, fixing variance and standard deviation over multiple axes and explicit reductions to scalars.</p></li>
+<ul><li><p>Axis validation and shape-based operations now recognize the single dimension of MLX vectors, including explicit axes, stacking, splitting, and neural layers.</p></li>
+<li><p>Multi-axis reductions now use one native MLX operation, fixing variance and standard deviation over multiple axes and explicit reductions to scalars.</p></li>
 <li><p>Converting R numeric vectors and arrays to float32 with <code><a href="../reference/as_mlx.html">as_mlx()</a></code> is faster and uses less temporary memory.</p></li>
 <li><p><code><a href="../reference/mlx_cross_entropy.html">mlx_cross_entropy()</a></code> is faster and uses less memory, especially with many classes. It also improves numerical stability and gives clearer errors for missing target indices.</p></li>
 <li><p>Updated the bundled and minimum supported MLX version to 0.32.3 and compilation to C++20. Fixed <code><a href="../reference/mlx_gather_qmm.html">mlx_gather_qmm()</a></code> for its new argument layout while keeping the R interface unchanged.</p></li>

@@ -17,7 +17,8 @@ mlx_stack(..., axis = 1L)
 - axis:
 
   Position of the new axis (1-indexed). Supply values between 1 and
-  `length(dim(x)) + 1` to insert anywhere along the dimension list.
+  `length(mlx_shape(x)) + 1` to insert anywhere along the dimension
+  list.
 
 ## Value
 
