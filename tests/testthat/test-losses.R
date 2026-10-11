@@ -156,3 +156,110 @@ test_that("loss functions work with gradient computation", {
   expect_s3_class(grads[[1]], "mlx")
   expect_equal(dim(grads[[1]]), c(2L, 1L))
 })
+
+test_that("cross entropy matches stable R calculations on CPU and GPU", {
+  logits_r <- matrix(c(2, -Inf, -1, -2, 3, 1), 2, 3, byrow = TRUE)
+  targets <- c(1L, 3L)
+  shifted <- logits_r - apply(logits_r, 1, max)
+  expected <- log(rowSums(exp(shifted))) - shifted[cbind(1:2, targets)]
+
+  for (device in c("cpu", "gpu")) {
+    with_device(device, {
+      logits <- as_mlx(logits_r)
+      for (indices in list(targets, as_mlx(targets))) {
+        loss <- mlx_cross_entropy(logits, indices, reduction = "none")
+        expect_equal(mlx_shape(loss), 2L)
+        expect_equal(as.numeric(loss), expected, tolerance = 1e-6)
+        expect_equal(as.numeric(mlx_cross_entropy(logits, indices)), mean(expected),
+          tolerance = 1e-6)
+        expect_equal(as.numeric(mlx_cross_entropy(logits, indices, "sum")), sum(expected),
+          tolerance = 1e-6)
+      }
+    })
+  }
+})
+
+test_that("cross entropy gradients match softmax minus target indicators", {
+  targets <- c(1L, 3L)
+  loss_fn <- function(x) mlx_cross_entropy(x, targets)
+  weighted_loss <- function(x) {
+    sum(mlx_cross_entropy(x, targets, "none") * as_mlx(c(2, -3)))
+  }
+  for (logits_r in list(
+    matrix(c(2, -Inf, -1, -2, 3, 1), 2, 3, byrow = TRUE),
+    matrix(c(-Inf, 0, 0, -2, 3, 1), 2, 3, byrow = TRUE),
+    matrix(c(-1e8, 0, 0, -2, 3, 1), 2, 3, byrow = TRUE)
+  )) {
+    shifted <- logits_r - apply(logits_r, 1, max)
+    expected <- exp(shifted) / rowSums(exp(shifted))
+    expected[cbind(1:2, targets)] <- expected[cbind(1:2, targets)] - 1
+    for (device in c("cpu", "gpu")) {
+      with_device(device, {
+        logits <- as_mlx(logits_r)
+        grads <- mlx_grad(loss_fn, logits)
+        expect_equal(as.matrix(grads[[1]]), expected / 2, tolerance = 1e-6)
+        grads <- mlx_grad(weighted_loss, logits)
+        expect_equal(as.matrix(grads[[1]]), expected * c(2, -3), tolerance = 1e-6)
+      })
+    }
+  }
+})
+
+test_that("cross entropy preserves float64 precision and handles large offsets", {
+  for (device in c("cpu", "gpu")) {
+    with_device(device, {
+      logits <- as_mlx(matrix(1e8, 2, 3))
+      expect_equal(as.numeric(mlx_cross_entropy(logits, c(1L, 3L))), log(3),
+        tolerance = 1e-6)
+    })
+  }
+  with_device("cpu", {
+    logits <- as_mlx(matrix(c(0, 1, 2), 1, 3), dtype = "float64")
+    loss <- mlx_cross_entropy(logits, 2L)
+    expect_identical(mlx_dtype(loss), "float64")
+    expect_equal(as.numeric(loss), log(sum(exp(c(-2, -1, 0)))) + 1,
+      tolerance = 1e-12)
+  })
+})
+
+test_that("cross entropy rejects invalid shapes and target indices", {
+  logits <- as_mlx(matrix(0, 2, 3))
+  expect_error(mlx_cross_entropy(logits, 1L), "one class index per sample")
+  for (targets in list(c(0L, 1L), c(1L, 4L), c(1L, NA_integer_))) {
+    expect_error(mlx_cross_entropy(logits, targets), "class indices")
+  }
+  expect_error(mlx_cross_entropy(as_mlx(1:3), 1L), "matrix")
+})
+
+test_that("cross entropy handles large class counts and integer logits", {
+  for (device in c("cpu", "gpu")) {
+    with_device(device, {
+      logits <- as_mlx(matrix(0, 2, 100000))
+      expect_equal(as.numeric(mlx_cross_entropy(logits, c(1L, 100000L))), log(100000),
+        tolerance = 1e-6)
+      logits <- as_mlx(matrix(0L, 2, 3), dtype = "int32")
+      expect_equal(as.numeric(mlx_cross_entropy(logits, c(1L, 3L))), log(3),
+        tolerance = 1e-6)
+    })
+  }
+})
+
+
+test_that("compiled cross entropy keeps stable gradients", {
+  targets <- c(1L, 3L)
+  loss_fn <- function(x) mlx_cross_entropy(x, targets)
+  logits_r <- matrix(c(-1e8, 0, 0, -2, 3, 1), 2, 3, byrow = TRUE)
+  shifted <- logits_r - apply(logits_r, 1, max)
+  expected <- exp(shifted) / rowSums(exp(shifted))
+  expected[cbind(1:2, targets)] <- expected[cbind(1:2, targets)] - 1
+  for (device in c("cpu", "gpu")) {
+    with_device(device, {
+      compiled_loss <- mlx_compile(loss_fn)
+      logits <- as_mlx(logits_r)
+      expect_equal(as.numeric(compiled_loss(logits)), as.numeric(loss_fn(logits)),
+        tolerance = 1e-6)
+      grads <- mlx_grad(compiled_loss, logits)
+      expect_equal(as.matrix(grads[[1]]), expected / 2, tolerance = 1e-6)
+    })
+  }
+})

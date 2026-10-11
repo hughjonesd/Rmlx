@@ -117,6 +117,10 @@ cpp_mlx_metal_kernel_call <- function(kernel_xp, mlx_args, output_shapes, output
     .Call(`_Rmlx_cpp_mlx_metal_kernel_call`, kernel_xp, mlx_args, output_shapes, output_dtypes, grid, threadgroup, template_args, init_value_, verbose)
 }
 
+cpp_mlx_cross_entropy <- function(logits_xp_, targets_xp_) {
+    .Call(`_Rmlx_cpp_mlx_cross_entropy`, logits_xp_, targets_xp_)
+}
+
 cpp_mlx_where <- function(cond_xp_, xp_true_, xp_false_, dtype_str) {
     .Call(`_Rmlx_cpp_mlx_where`, cond_xp_, xp_true_, xp_false_, dtype_str)
 }

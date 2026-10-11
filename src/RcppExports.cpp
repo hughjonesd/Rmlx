@@ -363,6 +363,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cpp_mlx_cross_entropy
+SEXP cpp_mlx_cross_entropy(SEXP logits_xp_, SEXP targets_xp_);
+RcppExport SEXP _Rmlx_cpp_mlx_cross_entropy(SEXP logits_xp_SEXP, SEXP targets_xp_SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type logits_xp_(logits_xp_SEXP);
+    Rcpp::traits::input_parameter< SEXP >::type targets_xp_(targets_xp_SEXP);
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_cross_entropy(logits_xp_, targets_xp_));
+    return rcpp_result_gen;
+END_RCPP
+}
 // cpp_mlx_where
 SEXP cpp_mlx_where(SEXP cond_xp_, SEXP xp_true_, SEXP xp_false_, std::string dtype_str);
 RcppExport SEXP _Rmlx_cpp_mlx_where(SEXP cond_xp_SEXP, SEXP xp_true_SEXP, SEXP xp_false_SEXP, SEXP dtype_strSEXP) {
@@ -1963,6 +1975,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_call_imported", (DL_FUNC) &_Rmlx_cpp_mlx_call_imported, 3},
     {"_Rmlx_cpp_mlx_metal_kernel_create", (DL_FUNC) &_Rmlx_cpp_mlx_metal_kernel_create, 7},
     {"_Rmlx_cpp_mlx_metal_kernel_call", (DL_FUNC) &_Rmlx_cpp_mlx_metal_kernel_call, 9},
+    {"_Rmlx_cpp_mlx_cross_entropy", (DL_FUNC) &_Rmlx_cpp_mlx_cross_entropy, 2},
     {"_Rmlx_cpp_mlx_where", (DL_FUNC) &_Rmlx_cpp_mlx_where, 4},
     {"_Rmlx_cpp_mlx_take", (DL_FUNC) &_Rmlx_cpp_mlx_take, 3},
     {"_Rmlx_cpp_mlx_take_along_axis", (DL_FUNC) &_Rmlx_cpp_mlx_take_along_axis, 3},
