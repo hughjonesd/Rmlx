@@ -261,7 +261,7 @@ normalize_axis_single <- function(axis, x) {
   if (is.na(axis)) {
     stop("axis cannot be NA", call. = FALSE)
   }
-  ndim <- length(dim(x))
+  ndim <- length(mlx_shape(x))
   if (axis < 1L || axis > ndim) {
     stop(sprintf("axis=%d is out of bounds for an array with %d dimensions.", axis, ndim), call. = FALSE)
   }

@@ -57,7 +57,7 @@ normalize_new_axes <- function(axes, dims) {
 #'
 #' @param ... One or more arrays (or a single list of arrays) coercible to mlx.
 #' @param axis Position of the new axis (1-indexed). Supply values between 1 and
-#'   `length(dim(x)) + 1` to insert anywhere along the dimension list.
+#'   `length(mlx_shape(x)) + 1` to insert anywhere along the dimension list.
 #' @return An mlx array with one additional dimension.
 #' @seealso [mlx.core.stack](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.stack)
 #' @export
@@ -78,7 +78,7 @@ mlx_stack <- function(..., axis = 1L) {
   dtype <- resolve_common_dtype(dtypes)
   arrays <- lapply(arrays, mlx_cast, dtype = dtype)
 
-  axis_vec <- normalize_new_axes(axis, dim(arrays[[1]]))
+  axis_vec <- normalize_new_axes(axis, mlx_shape(arrays[[1]]))
   if (length(axis_vec) != 1L) {
     stop("`axis` must be a single insertion position.", call. = FALSE)
   }
@@ -478,7 +478,7 @@ mlx_split <- function(x, sections, axis = 1L) {
     stop("sections must be supplied.", call. = FALSE)
   }
   axis_idx <- normalize_axis(axis, x)
-  dim_len <- dim(x)[axis_idx + 1L]
+  dim_len <- mlx_shape(x)[axis_idx + 1L]
 
   as_num_sections <- !is.list(sections)
 
@@ -569,11 +569,11 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
     stop("asplit() for mlx arrays currently supports a single margin.", call. = FALSE)
   }
   axis_idx <- normalize_axis(MARGIN, x)
-  dim_len <- dim(x)[axis_idx + 1L]
+  dim_len <- mlx_shape(x)[axis_idx + 1L]
   splits <- mlx_split(x, sections = dim_len, axis = MARGIN)
   dn <- dimnames(x)
 
-  rest_dim <- dim(x)[-(axis_idx + 1L)]
+  rest_dim <- mlx_shape(x)[-(axis_idx + 1L)]
   splits <- lapply(splits, function(part) {
     if (isTRUE(drop)) {
       dim(part) <- integer(0L)
@@ -695,7 +695,7 @@ mlx_moveaxis <- function(x, source, destination) {
 
   ptr <- cpp_mlx_moveaxis(x$ptr, source_idx, dest_idx)
   out <- new_mlx(ptr)
-  perm <- seq_len(length(dim(x)))
+  perm <- seq_len(length(mlx_shape(x)))
   moving <- perm[source_idx + 1L]
   perm <- perm[-(source_idx + 1L)]
   for (i in order(dest_idx)) {
@@ -713,7 +713,7 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
     stop("`resize = FALSE` is not supported for mlx arrays.", call. = FALSE)
   }
 
-  ndim <- length(dim(x))
+  ndim <- length(mlx_shape(x))
   if (ndim == 0L) {
     return(x)
   }
@@ -786,7 +786,7 @@ mlx_contiguous <- function(x) {
 mlx_flatten <- function(x, start_axis = 1L, end_axis = NULL) {
   x <- as_mlx(x)
 
-  if (length(dim(x)) == 0L) {
+  if (length(mlx_shape(x)) == 0L) {
     return(x)
   }
 
@@ -795,7 +795,7 @@ mlx_flatten <- function(x, start_axis = 1L, end_axis = NULL) {
     stop("start_axis must be a single positive integer.", call. = FALSE)
   }
   if (missing(end_axis) || is.null(end_axis)) {
-    end_axis <- length(dim(x))
+    end_axis <- length(mlx_shape(x))
   }
   end_axis <- as.integer(end_axis)
   if (length(end_axis) != 1L || is.na(end_axis)) {

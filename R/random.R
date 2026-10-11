@@ -188,7 +188,7 @@ mlx_rand_categorical <- function(logits, axis = NULL, num_samples = 1L) {
     stop("num_samples must be at least 1.", call. = FALSE)
   }
 
-  axis_val <- if (missing(axis) || is.null(axis)) length(dim(logits)) else axis
+  axis_val <- if (missing(axis) || is.null(axis)) length(mlx_shape(logits)) else axis
   if (length(axis_val) != 1L || is.na(axis_val)) {
     stop("`axis` must be NULL or a single positive integer.", call. = FALSE)
   }

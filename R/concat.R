@@ -52,9 +52,6 @@ bind_along_axis <- function(objs, axis) {
 
   aligned <- lapply(mlx_objs, mlx_cast, dtype = dtype)
   ptr <- cpp_mlx_concat(aligned, axis - 1L)
-  axis_lengths <- vapply(aligned, function(x) dim(x)[axis], integer(1))
-  new_dim <- dim(aligned[[1L]])
-  new_dim[axis] <- sum(axis_lengths)
   new_mlx(ptr, dimnames = dimnames_bind(aligned, axis))
 }
 

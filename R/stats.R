@@ -1149,7 +1149,7 @@ mlx_quantile <- function(x, probs, axis = NULL, drop = FALSE) {
       return(mlx_broadcast_to(sorted_x, length(probs)))
     } else {
       # For axis case, squeeze out the axis dimension and add quantile dimension
-      target_shape <- dim(x)
+      target_shape <- mlx_shape(x)
       target_shape[axis] <- length(probs)
       return(mlx_broadcast_to(sorted_x, target_shape))
     }
