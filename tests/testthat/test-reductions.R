@@ -57,6 +57,45 @@ test_that("mlx_mean/var/std support axes and ddof", {
   expect_equal(overall_sd, stats::sd(as.vector(arr)), tolerance = 1e-6)
 })
 
+test_that("variance and standard deviation reduce multiple axes jointly", {
+  arr <- array(seq_len(24)^2, dim = c(2, 3, 4),
+               dimnames = list(NULL, letters[1:3], NULL))
+  x <- as_mlx(arr)
+  sample_var <- unname(apply(arr, 2, function(v) stats::var(as.vector(v))))
+
+  for (ddof in 0:1) {
+    expected <- sample_var * 7 / (8 - ddof)
+    for (drop in c(TRUE, FALSE)) {
+      # Axis order and repeated axes must not change the reduction.
+      result <- mlx_var(x, axes = c(3, 1, 3), drop = drop, ddof = ddof)
+      expect_equal(as.vector(result), expected, tolerance = 1e-6)
+      expect_equal(mlx_shape(result), if (drop) 3L else c(1L, 3L, 1L))
+      expect_equal(dimnames(result), if (drop) list(letters[1:3]) else dimnames(arr))
+      expect_equal(
+        as.vector(mlx_std(x, axes = c(1, 3), drop = drop, ddof = ddof)),
+        sqrt(expected), tolerance = 1e-6
+      )
+    }
+  }
+  expect_equal(as.vector(mlx_sd(x, axes = c(1, 3))), sqrt(sample_var), tolerance = 1e-6)
+})
+
+test_that("explicit axes can reduce matrices and vectors to scalars", {
+  x <- mlx_matrix(1:4, 2, 2)
+  for (drop in c(TRUE, FALSE)) {
+    result <- mlx_var(x, axes = 1:2, drop = drop)
+    expect_equal(as.numeric(result), mean((1:4 - mean(1:4))^2), tolerance = 1e-6)
+    expect_equal(mlx_shape(result), if (drop) integer(0) else c(1L, 1L))
+    expect_equal(as.numeric(mlx_sum(x, axes = 1:2, drop = drop)), sum(1:4))
+  }
+
+  v <- as_mlx(1:4)
+  expect_equal(as.numeric(mlx_var(v, axes = 1, ddof = 1)), stats::var(1:4),
+               tolerance = 1e-6)
+  expect_equal(as.numeric(mlx_sum(v, axes = 1)), sum(1:4))
+  expect_identical(mlx_var(x, axes = integer(0)), x)
+})
+
 test_that("mlx_cumsum computes cumulative sum", {
   # 1D case
   x <- as_mlx(1:5)

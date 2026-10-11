@@ -1487,30 +1487,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // cpp_mlx_reduce
-SEXP cpp_mlx_reduce(SEXP xp_, std::string op, int ddof);
-RcppExport SEXP _Rmlx_cpp_mlx_reduce(SEXP xp_SEXP, SEXP opSEXP, SEXP ddofSEXP) {
+SEXP cpp_mlx_reduce(SEXP xp_, std::string op, Rcpp::Nullable<Rcpp::IntegerVector> axes_, bool keepdims, int ddof);
+RcppExport SEXP _Rmlx_cpp_mlx_reduce(SEXP xp_SEXP, SEXP opSEXP, SEXP axes_SEXP, SEXP keepdimsSEXP, SEXP ddofSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
     Rcpp::traits::input_parameter< std::string >::type op(opSEXP);
-    Rcpp::traits::input_parameter< int >::type ddof(ddofSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_reduce(xp_, op, ddof));
-    return rcpp_result_gen;
-END_RCPP
-}
-// cpp_mlx_reduce_axis
-SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims, int ddof);
-RcppExport SEXP _Rmlx_cpp_mlx_reduce_axis(SEXP xp_SEXP, SEXP opSEXP, SEXP axisSEXP, SEXP keepdimsSEXP, SEXP ddofSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type xp_(xp_SEXP);
-    Rcpp::traits::input_parameter< std::string >::type op(opSEXP);
-    Rcpp::traits::input_parameter< int >::type axis(axisSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<Rcpp::IntegerVector> >::type axes_(axes_SEXP);
     Rcpp::traits::input_parameter< bool >::type keepdims(keepdimsSEXP);
     Rcpp::traits::input_parameter< int >::type ddof(ddofSEXP);
-    rcpp_result_gen = Rcpp::wrap(cpp_mlx_reduce_axis(xp_, op, axis, keepdims, ddof));
+    rcpp_result_gen = Rcpp::wrap(cpp_mlx_reduce(xp_, op, axes_, keepdims, ddof));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -2060,8 +2047,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_Rmlx_cpp_mlx_random_randint", (DL_FUNC) &_Rmlx_cpp_mlx_random_randint, 4},
     {"_Rmlx_cpp_mlx_random_permutation_n", (DL_FUNC) &_Rmlx_cpp_mlx_random_permutation_n, 1},
     {"_Rmlx_cpp_mlx_random_permutation", (DL_FUNC) &_Rmlx_cpp_mlx_random_permutation, 2},
-    {"_Rmlx_cpp_mlx_reduce", (DL_FUNC) &_Rmlx_cpp_mlx_reduce, 3},
-    {"_Rmlx_cpp_mlx_reduce_axis", (DL_FUNC) &_Rmlx_cpp_mlx_reduce_axis, 5},
+    {"_Rmlx_cpp_mlx_reduce", (DL_FUNC) &_Rmlx_cpp_mlx_reduce, 5},
     {"_Rmlx_cpp_mlx_argmax", (DL_FUNC) &_Rmlx_cpp_mlx_argmax, 3},
     {"_Rmlx_cpp_mlx_argmin", (DL_FUNC) &_Rmlx_cpp_mlx_argmin, 3},
     {"_Rmlx_cpp_mlx_logsumexp", (DL_FUNC) &_Rmlx_cpp_mlx_logsumexp, 3},
