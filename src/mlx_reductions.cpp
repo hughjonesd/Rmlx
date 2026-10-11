@@ -8,64 +8,19 @@ using namespace rmlx;
 using namespace mlx::core;
 
 // [[Rcpp::export]]
-SEXP cpp_mlx_reduce(SEXP xp_, std::string op, int ddof) {
+SEXP cpp_mlx_reduce(SEXP xp_, std::string op,
+                    Rcpp::Nullable<Rcpp::IntegerVector> axes_, bool keepdims, int ddof) {
   MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
 
   array input = wrapper->get();
-  array result = [&]() -> array {
-    if (op == "sum") {
-      if (input.dtype() == bool_) {
-        input = astype(input, float32);
-      }
-      return sum(input, false);
-    } else if (op == "prod") {
-      if (input.dtype() == bool_) {
-        input = astype(input, float32);
-      }
-      return prod(input, false);
-    } else if (op == "mean") {
-      if (input.dtype() == bool_) {
-        input = astype(input, float32);
-      }
-      return mean(input, false);
-    } else if (op == "var") {
-      if (input.dtype() == bool_ || input.dtype() == int32 || input.dtype() == int64) {
-        input = astype(input, float32);
-      }
-      Dtype out_dtype = (input.dtype() == float64) ? float64 : float32;
-      input = astype(input, out_dtype);
-      return mlx::core::var(input, false, ddof);
-    } else if (op == "std") {
-      if (input.dtype() == bool_ || input.dtype() == int32 || input.dtype() == int64) {
-        input = astype(input, float32);
-      }
-      Dtype out_dtype = (input.dtype() == float64) ? float64 : float32;
-      input = astype(input, out_dtype);
-      return mlx::core::std(input, false, ddof);
-    } else if (op == "min") {
-      return min(input, false);
-    } else if (op == "max") {
-      return max(input, false);
-    } else if (op == "all") {
-      array bool_input = astype(input, bool_);
-      return all(bool_input, false);
-    } else if (op == "any") {
-      array bool_input = astype(input, bool_);
-      return any(bool_input, false);
-    } else {
-      Rcpp::stop("Unsupported reduction operation: " + op);
+  std::vector<int> axes;
+  if (axes_.isNull()) {
+    for (int axis = 0; axis < input.ndim(); ++axis) {
+      axes.push_back(axis);
     }
-  }();
-
-  return make_mlx_xptr(std::move(result));
-}
-
-// [[Rcpp::export]]
-SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims, int ddof) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-
-  std::vector<int> axes = {axis};
-  array input = wrapper->get();
+  } else {
+    axes = normalize_axes(input, Rcpp::as<std::vector<int>>(axes_.get()));
+  }
 
   array result = [&]() -> array {
     if (op == "sum") {
@@ -108,7 +63,7 @@ SEXP cpp_mlx_reduce_axis(SEXP xp_, std::string op, int axis, bool keepdims, int 
       array bool_input = astype(input, bool_);
       return any(bool_input, axes, keepdims);
     } else {
-      Rcpp::stop("Unsupported axis reduction operation: " + op);
+      Rcpp::stop("Unsupported reduction operation: " + op);
     }
   }();
 

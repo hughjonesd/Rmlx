@@ -32,6 +32,8 @@ NULL
 #' The `axes` argument is the inverse of `MARGIN` in base R
 #' [apply()]. `axes` gives the axes which will be reduced; `MARGIN`
 #' gives the axes which an operation will be applied over. See the example.
+#' Multiple axes are reduced jointly. For variance and standard deviation,
+#' `ddof` is subtracted once from the total number of elements being reduced.
 #'
 #' @examples
 #' x <- mlx_matrix(1:4, 2, 2)
@@ -294,26 +296,8 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
 #' @return An mlx array containing the fully reduced result.
 #' @noRd
 .mlx_reduce <- function(x, op, ddof = 0L) {
-  ptr <- cpp_mlx_reduce(x$ptr, op, as.integer(ddof))
+  ptr <- cpp_mlx_reduce(x$ptr, op, NULL, FALSE, as.integer(ddof))
   new_mlx(ptr)
-}
-
-#' Reduce an mlx array along a single axis
-#'
-#' @param x mlx array.
-#' @param op Character string naming the reduction.
-#' @param axis Single 1-indexed axis to reduce.
-#' @param drop Logical flag: keep (`FALSE`) or drop (`TRUE`) the reduced axis.
-#' @param ddof Delta degrees of freedom for variance-like reducers.
-#' @return An mlx array with the selected axis reduced.
-#' @noRd
-.mlx_reduce_axis <- function(x, op, axis, drop, ddof = 0L) {
-  axis0 <- as.integer(axis) - 1L
-  if (axis0 < 0L || axis0 >= length(dim(x))) {
-    stop("axis is out of bounds for input array", call. = FALSE)
-  }
-  ptr <- cpp_mlx_reduce_axis(x$ptr, op, axis0, !isTRUE(drop), as.integer(ddof))
-  new_mlx(ptr, dimnames = dimnames_reduction(x, axis, drop))
 }
 
 #' Reduce an mlx array along multiple axes
@@ -330,21 +314,16 @@ tcrossprod.mlx <- function(x, y = NULL, ...) {
   if (anyNA(axes)) {
     stop("axis must be a vector of integers", call. = FALSE)
   }
-  ndim <- length(dim(x))
+  ndim <- length(mlx_shape(x))
   if (any(axes < 1L | axes > ndim)) {
     stop("axis is out of bounds for input array", call. = FALSE)
   }
   axes <- unique(axes)
-  if (!drop) {
-    for (ax in sort(axes)) {
-      x <- .mlx_reduce_axis(x, op, axis = ax, drop = FALSE, ddof = ddof)
-    }
-  } else {
-    for (ax in sort(axes, decreasing = TRUE)) {
-      x <- .mlx_reduce_axis(x, op, axis = ax, drop = TRUE, ddof = ddof)
-    }
+  if (!length(axes)) {
+    return(x)
   }
-  x
+  ptr <- cpp_mlx_reduce(x$ptr, op, axes - 1L, !isTRUE(drop), as.integer(ddof))
+  new_mlx(ptr, dimnames = dimnames_reduction(x, axes, drop))
 }
 
 #' Dispatch reduction to appropriate handler

@@ -457,12 +457,8 @@ cpp_mlx_random_permutation <- function(x_, axis) {
     .Call(`_Rmlx_cpp_mlx_random_permutation`, x_, axis)
 }
 
-cpp_mlx_reduce <- function(xp_, op, ddof) {
-    .Call(`_Rmlx_cpp_mlx_reduce`, xp_, op, ddof)
-}
-
-cpp_mlx_reduce_axis <- function(xp_, op, axis, keepdims, ddof) {
-    .Call(`_Rmlx_cpp_mlx_reduce_axis`, xp_, op, axis, keepdims, ddof)
+cpp_mlx_reduce <- function(xp_, op, axes_, keepdims, ddof) {
+    .Call(`_Rmlx_cpp_mlx_reduce`, xp_, op, axes_, keepdims, ddof)
 }
 
 cpp_mlx_argmax <- function(xp_, axis, keepdims) {

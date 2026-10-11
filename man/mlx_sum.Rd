@@ -57,6 +57,8 @@ logical scalars.
 The \code{axes} argument is the inverse of \code{MARGIN} in base R
 \code{\link[=apply]{apply()}}. \code{axes} gives the axes which will be reduced; \code{MARGIN}
 gives the axes which an operation will be applied over. See the example.
+Multiple axes are reduced jointly. For variance and standard deviation,
+\code{ddof} is subtracted once from the total number of elements being reduced.
 
 \code{mlx_sd()} is a convenience wrapper that matches the default behaviour
 of \code{\link[stats:sd]{stats::sd()}}, computing a sample standard deviation with \code{ddof = 1}.
