@@ -322,6 +322,17 @@ benchmark_operations <- function() {
       mlx = function(data) { force_mlx(mean(data$a)) }
     ),
     list(
+      id = "cross_entropy",
+      label = "Cross-entropy",
+      base = function(data) {
+        logits <- data$a - apply(data$a, 1, max)
+        score <- logits[cbind(seq_len(nrow(logits)), data$idx_vec)]
+        mean(log(rowSums(exp(logits))) - score)
+        invisible(NULL)
+      },
+      mlx = function(data) { force_mlx(mlx_cross_entropy(data$a, data$idx_vec)) }
+    ),
+    list(
       id = "quantile",
       label = "Quantile",
       base = function(data) { quantile(data$vec, probs = c(0.25, 0.5, 0.75), type = 7); invisible(NULL) },

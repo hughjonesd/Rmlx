@@ -1,11 +1,8 @@
 # Rmlx (development version)
 
-* `mlx_cross_entropy()` now uses MLX's fused GPU operation and a stable CPU
-  calculation without identity or one-hot arrays. It preserves 1-based targets,
-  reductions and floating-point dtypes, handles masked non-target classes and
-  large logit offsets, and gives a clear error for missing target indices.
-  GPU gradients use stable softmax calculations to avoid upstream MLX 0.32.3
-  errors for target logits of `-Inf` or large gaps between class logits.
+* `mlx_cross_entropy()` is faster and uses less memory, especially with many
+  classes. It also improves numerical stability and gives clearer errors for
+  missing target indices.
 
 * Updated the bundled and minimum supported MLX version to 0.32.3 and
   compilation to C++20. Fixed `mlx_gather_qmm()` for its new argument layout

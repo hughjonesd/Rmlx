@@ -144,21 +144,6 @@ x_t <- t(x)
 print(x_t)
 ```
 
-### Classification loss
-
-Use `mlx_cross_entropy()` with a matrix of logits (one sample per row) and
-1-based target class indices. The GPU uses MLX's fused operation; the CPU uses a
-stable log-sum-exp calculation. Neither path constructs an identity or one-hot
-array, so the loss also works with large numbers of classes. Target indices are
-validated in R, including when supplied as an mlx array.
-
-```{r}
-logits <- as_mlx(matrix(c(2, -1, 0, 0, -1, 2), 2, 3, byrow = TRUE))
-targets <- c(1L, 3L)
-mlx_cross_entropy(logits, targets)
-mlx_cross_entropy(logits, targets, reduction = "none")
-```
-
 ### Cross Products
 
 ```{r}

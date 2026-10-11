@@ -11,7 +11,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette compares base R and MLX timings across core matrix routines.
+This vignette compares base R and MLX timings across core matrix routines and
+cross-entropy loss. For the loss benchmark, rows represent samples and columns
+represent classes.
 
 ```{r libraries}
 library(Rmlx)

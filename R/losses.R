@@ -94,19 +94,16 @@ mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean",
 #'
 #' Computes cross-entropy loss for multi-class classification.
 #'
-#' @details Uses MLX's fused cross-entropy operation on the GPU and a stable
-#'   log-sum-exp and gather calculation on the CPU, without constructing one-hot
-#'   arrays. Floating-point logits retain their dtype, including float64 on the
-#'   CPU. Target indices are validated in R; mlx targets are copied to R for
-#'   validation. Gradients with respect to logits use a stable softmax
-#'   calculation, including when a target-class logit is `-Inf`.
+#' @details Gradients can be computed with respect to `logits`. Float64 arrays
+#'   require the CPU.
 #'
 #' @param logits A matrix of unnormalized predictions (logits), with one row
 #'   per sample and one column per class, as an mlx array or R matrix.
 #' @param targets Target class indices as an mlx array or integer vector.
 #'   Indices are 1-based, with one non-missing index per sample.
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
-#' @return An mlx array containing the loss.
+#' @return A scalar mlx array for `"mean"` or `"sum"`, or a vector with one loss
+#'   per sample for `"none"`.
 #' @seealso [mlx.nn.losses.cross_entropy](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.cross_entropy)
 #' @export
 #' @examples
