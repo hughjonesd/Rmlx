@@ -438,7 +438,8 @@ mlx_softmax_layer <- function(axis = NULL) {
     }
   }
   forward <- function(x) {
-    axis_val <- if (is.null(axis)) length(dim(x)) else axis
+    x <- as_mlx(x)
+    axis_val <- if (is.null(axis)) length(mlx_shape(x)) else axis
     mlx_softmax(x, axes = axis_val)
   }
 
@@ -477,7 +478,8 @@ mlx_dropout <- function(p = 0.5) {
       return(x * 0)
     }
     # Generate dropout mask
-    mask <- mlx_rand_bernoulli(dim(x), prob = 1 - env$p)
+    x <- as_mlx(x)
+    mask <- mlx_rand_bernoulli(mlx_shape(x), prob = 1 - env$p)
     # Scale by 1/(1-p) to maintain expected value
     x * mask / (1 - env$p)
   }
@@ -522,7 +524,8 @@ mlx_layer_norm <- function(normalized_shape, eps = 1e-5) {
 
   forward <- function(x) {
     # Normalize across last dimension
-    ndim <- length(dim(x))
+    x <- as_mlx(x)
+    ndim <- length(mlx_shape(x))
     last_axis <- ndim
     mean_x <- mlx_mean(x, axes = last_axis, drop = FALSE)
     var_x <- mlx_var(x, axes = last_axis, drop = FALSE, ddof = 0L)
