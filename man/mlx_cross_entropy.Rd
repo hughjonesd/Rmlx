@@ -7,9 +7,11 @@
 mlx_cross_entropy(logits, targets, reduction = c("mean", "sum", "none"))
 }
 \arguments{
-\item{logits}{Unnormalized predictions (logits) as an mlx array.}
+\item{logits}{A matrix of unnormalized predictions (logits), with one row
+per sample and one column per class, as an mlx array or R matrix.}
 
-\item{targets}{Target class indices as an mlx array or integer vector.}
+\item{targets}{Target class indices as an mlx array or integer vector.
+Indices are 1-based, with one non-missing index per sample.}
 
 \item{reduction}{Type of reduction: "mean" (default), "sum", or "none".}
 }
@@ -18,6 +20,14 @@ An mlx array containing the loss.
 }
 \description{
 Computes cross-entropy loss for multi-class classification.
+}
+\details{
+Uses MLX's fused cross-entropy operation on the GPU and a stable
+log-sum-exp and gather calculation on the CPU, without constructing one-hot
+arrays. Floating-point logits retain their dtype, including float64 on the
+CPU. Target indices are validated in R; mlx targets are copied to R for
+validation. Gradients with respect to logits use a stable softmax
+calculation, including when a target-class logit is \code{-Inf}.
 }
 \examples{
 # Logits for 3 samples, 4 classes

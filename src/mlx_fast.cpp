@@ -1,6 +1,7 @@
 // Fast/custom kernel operations
 #include "mlx_helpers.hpp"
 #include <mlx/fast.h>
+#include <mlx/transforms.h>
 #include <Rcpp.h>
 #include <cmath>
 
@@ -296,4 +297,43 @@ List cpp_mlx_metal_kernel_call(SEXP kernel_xp,
   }
 
   return result;
+}
+
+// [[Rcpp::export]]
+SEXP cpp_mlx_cross_entropy(SEXP logits_xp_, SEXP targets_xp_) {
+  array logits = get_mlx_wrapper(logits_xp_)->get();
+  array targets = get_mlx_wrapper(targets_xp_)->get();
+  if (issubdtype(logits.dtype(), integer) || logits.dtype() == bool_) {
+    logits = astype(logits, float32);
+  }
+  if (!issubdtype(logits.dtype(), floating)) {
+    Rcpp::stop("logits must have a real numeric dtype.");
+  }
+
+  if (default_device().type == Device::gpu) {
+    auto forward = [targets](const std::vector<array>& inputs) {
+      // The fused operation accumulates in float32; retain the public loss dtype.
+      return std::vector<array>{astype(cross_entropy(inputs[0], targets), inputs[0].dtype())};
+    };
+    auto backward = [targets](const std::vector<array>& primals,
+                              const std::vector<array>& cotangents,
+                              const std::vector<array>&) {
+      // MLX 0.32.3 reconstructs probabilities from the rounded loss and target logit.
+      // Use softmax directly to handle -Inf targets and large logit gaps correctly.
+      array probabilities = softmax(primals[0], -1, true);
+      array indices = expand_dims(targets, -1);
+      array target_values = subtract(
+        take_along_axis(probabilities, indices, -1), array(1, probabilities.dtype()));
+      array gradient = put_along_axis(probabilities, indices, target_values, -1);
+      return std::vector<array>{multiply(gradient, expand_dims(cotangents[0], -1))};
+    };
+    array loss = custom_vjp(forward, backward)({logits})[0];
+    return make_mlx_xptr(std::move(loss));
+  }
+
+  // Match MLX's Python CPU path: shift first to avoid cancellation and retain float64.
+  logits = subtract(logits, stop_gradient(max(logits, -1, true)));
+  array score = squeeze(take_along_axis(logits, expand_dims(targets, -1), -1), -1);
+  array loss = subtract(logsumexp(logits, -1, false), score);
+  return make_mlx_xptr(std::move(loss));
 }

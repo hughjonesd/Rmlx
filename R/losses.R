@@ -94,8 +94,17 @@ mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean",
 #'
 #' Computes cross-entropy loss for multi-class classification.
 #'
-#' @param logits Unnormalized predictions (logits) as an mlx array.
+#' @details Uses MLX's fused cross-entropy operation on the GPU and a stable
+#'   log-sum-exp and gather calculation on the CPU, without constructing one-hot
+#'   arrays. Floating-point logits retain their dtype, including float64 on the
+#'   CPU. Target indices are validated in R; mlx targets are copied to R for
+#'   validation. Gradients with respect to logits use a stable softmax
+#'   calculation, including when a target-class logit is `-Inf`.
+#'
+#' @param logits A matrix of unnormalized predictions (logits), with one row
+#'   per sample and one column per class, as an mlx array or R matrix.
 #' @param targets Target class indices as an mlx array or integer vector.
+#'   Indices are 1-based, with one non-missing index per sample.
 #' @param reduction Type of reduction: "mean" (default), "sum", or "none".
 #' @return An mlx array containing the loss.
 #' @seealso [mlx.nn.losses.cross_entropy](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.cross_entropy)
@@ -109,31 +118,21 @@ mlx_cross_entropy <- function(logits, targets, reduction = c("mean", "sum", "non
   reduction <- match.arg(reduction)
 
   logits <- as_mlx(logits)
-  targets <- as_mlx(targets)
+  shape <- mlx_shape(logits)
+  if (length(shape) != 2L || shape[2] == 0L) {
+    stop("logits must be a matrix with at least one class.", call. = FALSE)
+  }
 
-  # Compute log-softmax for numerical stability
-  # log_softmax(x) = x - log(sum(exp(x)))
-  log_sum_exp <- mlx_logsumexp(logits, axes = 2, drop = FALSE)
-  log_probs <- logits - log_sum_exp
-
-  # Get log probability of target class (targets are 1-indexed)
-  n_samples <- dim(logits)[1]
-  n_classes <- dim(logits)[2]
+  # Validate on the host before passing zero-based indices to the native kernel.
   targets_vec <- as.integer(targets)
-  if (length(targets_vec) != n_samples) {
+  if (length(targets_vec) != shape[1]) {
     stop("targets must provide one class index per sample.", call. = FALSE)
   }
-  if (any(targets_vec < 1L | targets_vec > n_classes)) {
-    stop("targets contain class indices outside 1:n_classes.", call. = FALSE)
+  if (anyNA(targets_vec) || any(targets_vec < 1L | targets_vec > shape[2])) {
+    stop("targets contain missing class indices or indices outside 1:n_classes.", call. = FALSE)
   }
-
-  logits_dtype <- mlx_dtype(logits)
-  eye_dtype <- if (identical(logits_dtype, "float64")) "float64" else "float32"
-  one_hot <- mlx_eye(n_classes, dtype = eye_dtype)[targets_vec, , drop = FALSE]
-  one_hot <- mlx_cast(one_hot, dtype = logits_dtype)
-
-  # Compute negative log likelihood
-  loss <- -mlx_sum(log_probs * one_hot, axes = 2)
+  targets <- as_mlx(targets_vec - 1L, dtype = "int32")
+  loss <- new_mlx(cpp_mlx_cross_entropy(logits$ptr, targets$ptr))
 
   switch(reduction,
     "mean" = mlx_mean(loss),
