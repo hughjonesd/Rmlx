@@ -569,11 +569,11 @@ asplit.mlx <- function(x, MARGIN, drop = FALSE) {
     stop("asplit() for mlx arrays currently supports a single margin.", call. = FALSE)
   }
   axis_idx <- normalize_axis(MARGIN, x)
-  dim_len <- mlx_shape(x)[axis_idx + 1L]
+  dim_len <- dim(x)[axis_idx + 1L]
   splits <- mlx_split(x, sections = dim_len, axis = MARGIN)
   dn <- dimnames(x)
 
-  rest_dim <- mlx_shape(x)[-(axis_idx + 1L)]
+  rest_dim <- dim(x)[-(axis_idx + 1L)]
   splits <- lapply(splits, function(part) {
     if (isTRUE(drop)) {
       dim(part) <- integer(0L)
@@ -713,7 +713,7 @@ aperm.mlx <- function(a, perm = NULL, resize = TRUE, ...) {
     stop("`resize = FALSE` is not supported for mlx arrays.", call. = FALSE)
   }
 
-  ndim <- length(mlx_shape(x))
+  ndim <- length(dim(x))
   if (ndim == 0L) {
     return(x)
   }

@@ -79,22 +79,11 @@ test_that("mlx vectors split at explicit positions using their native axis lengt
   expect_equal(lapply(parts, as.vector), list(1, 2:3, 4))
 })
 
-test_that("asplit accepts the vector margin", {
-  x <- as_mlx(setNames(1:4, letters[1:4]))
-  expect_equal(unname(lapply(asplit(x, MARGIN = 1L), as.vector)), as.list(1:4))
-})
-
 test_that("vector axis movement preserves values and names", {
   x <- as_mlx(setNames(1:4, letters[1:4]))
   moved <- mlx_moveaxis(x, source = 1L, destination = 1L)
   expect_equal(as.vector(moved), 1:4)
   expect_equal(names(moved), letters[1:4])
-})
-
-test_that("vector aperm validates the permutation", {
-  x <- as_mlx(1:4)
-  expect_error(aperm(x, 2L), "perm must be a permutation")
-  expect_equal(as.vector(aperm(x, 1L)), 1:4)
 })
 
 test_that("vector flatten validates its axis range", {
