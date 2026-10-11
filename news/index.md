@@ -2,6 +2,11 @@
 
 ## Rmlx (development version)
 
+- [`mlx_cross_entropy()`](https://hughjonesd.github.io/Rmlx/reference/mlx_cross_entropy.md)
+  is faster and uses less memory, especially with many classes. It also
+  improves numerical stability and gives clearer errors for missing
+  target indices.
+
 - Updated the bundled and minimum supported MLX version to 0.32.3 and
   compilation to C++20. Fixed
   [`mlx_gather_qmm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_gather_qmm.md)

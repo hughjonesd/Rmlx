@@ -48,11 +48,13 @@
 
 
 <dl><dt id="arg-logits">logits<a class="anchor" aria-label="anchor" href="#arg-logits"></a></dt>
-<dd><p>Unnormalized predictions (logits) as an mlx array.</p></dd>
+<dd><p>A matrix of unnormalized predictions (logits), with one row
+per sample and one column per class, as an mlx array or R matrix.</p></dd>
 
 
 <dt id="arg-targets">targets<a class="anchor" aria-label="anchor" href="#arg-targets"></a></dt>
-<dd><p>Target class indices as an mlx array or integer vector.</p></dd>
+<dd><p>Target class indices as an mlx array or integer vector.
+Indices are 1-based, with one non-missing index per sample.</p></dd>
 
 
 <dt id="arg-reduction">reduction<a class="anchor" aria-label="anchor" href="#arg-reduction"></a></dt>
@@ -61,7 +63,13 @@
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An mlx array containing the loss.</p>
+    <p>A scalar mlx array for <code>"mean"</code> or <code>"sum"</code>, or a vector with one loss
+per sample for <code>"none"</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Gradients can be computed with respect to <code>logits</code>. Float64 arrays
+require the CPU.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

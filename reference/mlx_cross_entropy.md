@@ -12,11 +12,13 @@ mlx_cross_entropy(logits, targets, reduction = c("mean", "sum", "none"))
 
 - logits:
 
-  Unnormalized predictions (logits) as an mlx array.
+  A matrix of unnormalized predictions (logits), with one row per sample
+  and one column per class, as an mlx array or R matrix.
 
 - targets:
 
-  Target class indices as an mlx array or integer vector.
+  Target class indices as an mlx array or integer vector. Indices are
+  1-based, with one non-missing index per sample.
 
 - reduction:
 
@@ -24,7 +26,13 @@ mlx_cross_entropy(logits, targets, reduction = c("mean", "sum", "none"))
 
 ## Value
 
-An mlx array containing the loss.
+A scalar mlx array for `"mean"` or `"sum"`, or a vector with one loss
+per sample for `"none"`.
+
+## Details
+
+Gradients can be computed with respect to `logits`. Float64 arrays
+require the CPU.
 
 ## See also
 
