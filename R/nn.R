@@ -631,6 +631,11 @@ mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1) {
 #'
 #' Maps discrete tokens to continuous vectors.
 #'
+#' @details Token IDs are 1-based and may be supplied as R or mlx vectors or
+#'   arrays. The output shape is the token shape followed by `embedding_dim`;
+#'   an mlx scalar token produces a `1` by `embedding_dim` matrix. Lookup stays
+#'   in MLX so gradients reach the weight rows, accumulating for repeated IDs.
+#'
 #' @param num_embeddings Size of vocabulary.
 #' @param embedding_dim Dimension of embedding vectors.
 #' @return An `mlx_module` for token embeddings.
@@ -657,30 +662,16 @@ mlx_embedding <- function(num_embeddings, embedding_dim) {
   env$embedding_dim <- embedding_dim
 
   forward <- function(indices) {
-    indices <- as_mlx(indices)
-
-    # indices are 1-based token IDs
-    orig_shape <- cpp_mlx_shape(indices$ptr)
-    indices_r <- as.integer(indices)
-
-    # Take embeddings
-    result_list <- lapply(indices_r, function(idx) {
-      if (idx < 1 || idx > env$num_embeddings) {
-        stop("Index out of range: ", idx, call. = FALSE)
-      }
-      as.numeric(env$weight[idx, ])
-    })
-
-    # Stack results and reshape
-    if (length(orig_shape) == 0) {
-      # Scalar index - return (1, embedding_dim)
-      mlx_matrix(result_list[[1]], nrow = 1, ncol = env$embedding_dim)
-    } else {
-      # Stack into matrix then reshape to match input shape + embedding dimension
-      result_mat <- do.call(rbind, lapply(result_list, function(x) matrix(x, 1, env$embedding_dim)))
-      new_shape <- c(orig_shape, env$embedding_dim)
-      mlx_array(as.numeric(result_mat), dim = new_shape)
+    # Keep wide IDs intact until bounds validation so invalid IDs cannot wrap.
+    indices <- as_mlx(indices, dtype = "int64")
+    if (any(indices < 1L | indices > env$num_embeddings)) {
+      stop("Index out of range: token IDs must be between 1 and ",
+           env$num_embeddings, call. = FALSE)
     }
+
+    # take() appends the embedding dimension and keeps weight gradients in MLX.
+    indices <- indices - 1L
+    new_mlx(cpp_mlx_take(env$weight$ptr, indices$ptr, 0L))
   }
 
   parameters <- function() {

@@ -17,6 +17,12 @@ An \code{mlx_module} for token embeddings.
 \description{
 Maps discrete tokens to continuous vectors.
 }
+\details{
+Token IDs are 1-based and may be supplied as R or mlx vectors or
+arrays. The output shape is the token shape followed by \code{embedding_dim};
+an mlx scalar token produces a \code{1} by \code{embedding_dim} matrix. Lookup stays
+in MLX so gradients reach the weight rows, accumulating for repeated IDs.
+}
 \examples{
 set.seed(1)
 emb <- mlx_embedding(num_embeddings = 100, embedding_dim = 16)

@@ -1,5 +1,8 @@
 # Rmlx (development version)
 
+* Embedding lookup now uses one native MLX take operation, preserving weight
+  gradients and dtype and avoiding per-token transfers through R.
+
 * Axis validation and shape-based operations now recognize the single dimension
   of MLX vectors, including explicit axes, stacking, splitting, and neural layers.
 
