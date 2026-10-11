@@ -209,7 +209,7 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_) {
     x = NumericVector(x_);
   }
 
-  // Col-major fast path for dtypes we can zero-copy from R buffers.
+  // Preserve column-major layout for matching R input types.
   if (!use_complex && ndim >= 1) {
     size_t total = 1;
     for (size_t i = 0; i < ndim; ++i) {
@@ -278,8 +278,8 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_) {
     } else if (dt == float64) {
       return array(x.begin(), reversed_shape, float64);
     } else if (dt == float32) {
-      std::vector<float> data_f32(x.begin(), x.end());
-      return array(data_f32.data(), reversed_shape, float32);
+      // Cast directly into MLX-owned memory without a temporary float buffer.
+      return array(x.begin(), reversed_shape, float32);
     } else if (dt == int8) {
       std::vector<int8_t> data_i8(x.begin(), x.end());
       return array(data_i8.data(), reversed_shape, int8);
