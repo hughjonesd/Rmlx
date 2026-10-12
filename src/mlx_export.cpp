@@ -16,8 +16,7 @@ SEXP cpp_mlx_import_function(const std::string& path) {
 SEXP cpp_mlx_call_imported(SEXP fn_xp,
                            List args_ptrs,
                            List kwargs_ptrs) {
-  MlxImportedFunctionWrapper* fn_wrapper = get_mlx_imported_function(fn_xp);
-  const ImportedFunction& function = fn_wrapper->get();
+  const ImportedFunction& function = get_mlx_imported_function(fn_xp);
 
   Args positional;
   positional.reserve(args_ptrs.size());
