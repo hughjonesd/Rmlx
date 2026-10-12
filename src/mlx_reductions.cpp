@@ -10,9 +10,8 @@ using namespace mlx::core;
 // [[Rcpp::export]]
 SEXP cpp_mlx_reduce(SEXP xp_, std::string op,
                     Rcpp::Nullable<Rcpp::IntegerVector> axes_, bool keepdims, int ddof) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array input = get_mlx_array(xp_);
 
-  array input = wrapper->get();
   std::vector<int> axes;
   if (axes_.isNull()) {
     for (int axis = 0; axis < input.ndim(); ++axis) {
@@ -72,8 +71,7 @@ SEXP cpp_mlx_reduce(SEXP xp_, std::string op,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_argmax(SEXP xp_, Rcpp::Nullable<int> axis, bool keepdims) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (axis.isNotNull()) {
@@ -93,8 +91,7 @@ SEXP cpp_mlx_argmax(SEXP xp_, Rcpp::Nullable<int> axis, bool keepdims) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_argmin(SEXP xp_, Rcpp::Nullable<int> axis, bool keepdims) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (axis.isNotNull()) {
@@ -115,8 +112,7 @@ SEXP cpp_mlx_argmin(SEXP xp_, Rcpp::Nullable<int> axis, bool keepdims) {
 // [[Rcpp::export]]
 SEXP cpp_mlx_logsumexp(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes,
                        bool keepdims) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (axes.isNotNull()) {
@@ -132,8 +128,7 @@ SEXP cpp_mlx_logsumexp(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes,
 // [[Rcpp::export]]
 SEXP cpp_mlx_logcumsumexp(SEXP xp_, Rcpp::Nullable<int> axis,
                           bool reverse, bool inclusive) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (axis.isNotNull()) {
@@ -148,8 +143,7 @@ SEXP cpp_mlx_logcumsumexp(SEXP xp_, Rcpp::Nullable<int> axis,
 // [[Rcpp::export]]
 SEXP cpp_mlx_softmax(SEXP xp_, Rcpp::Nullable<Rcpp::IntegerVector> axes,
                      bool precise) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (axes.isNotNull()) {

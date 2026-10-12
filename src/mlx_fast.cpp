@@ -243,7 +243,7 @@ List cpp_mlx_metal_kernel_call(SEXP kernel_xp,
     if (!obj.inherits("mlx")) {
       Rcpp::stop("Argument %d is not an mlx object.", i + 1);
     }
-    inputs.push_back(get_mlx_wrapper(obj["ptr"])->get());
+    inputs.push_back(get_mlx_array(obj["ptr"]));
   }
 
   std::vector<Shape> shapes = parse_output_shapes(output_shapes);
@@ -301,8 +301,8 @@ List cpp_mlx_metal_kernel_call(SEXP kernel_xp,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_cross_entropy(SEXP logits_xp_, SEXP targets_xp_) {
-  array logits = get_mlx_wrapper(logits_xp_)->get();
-  array targets = get_mlx_wrapper(targets_xp_)->get();
+  array logits = get_mlx_array(logits_xp_);
+  array targets = get_mlx_array(targets_xp_);
   if (issubdtype(logits.dtype(), integer) || logits.dtype() == bool_) {
     logits = astype(logits, float32);
   }

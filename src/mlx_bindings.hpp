@@ -10,29 +10,6 @@
 
 namespace rmlx {
 
-// MLX arrays already share their descriptor; store the handle directly.
-class MlxArrayWrapper {
-private:
-  mlx::core::array array_;
-
-public:
-  explicit MlxArrayWrapper(const mlx::core::array& arr);
-  explicit MlxArrayWrapper(mlx::core::array&& arr);
-  ~MlxArrayWrapper() = default;
-
-  // Delete copy operations
-  MlxArrayWrapper(const MlxArrayWrapper&) = delete;
-  MlxArrayWrapper& operator=(const MlxArrayWrapper&) = delete;
-
-  // Move operations
-  MlxArrayWrapper(MlxArrayWrapper&& other) noexcept = default;
-  MlxArrayWrapper& operator=(MlxArrayWrapper&& other) noexcept = default;
-
-  // Accessors
-  mlx::core::array& get() { return array_; }
-  const mlx::core::array& get() const { return array_; }
-};
-
 class MlxStreamWrapper {
 private:
   mlx::core::Stream stream_;
@@ -67,8 +44,8 @@ void mlx_array_finalizer(SEXP xp);
 void mlx_stream_finalizer(SEXP xp);
 void mlx_imported_function_finalizer(SEXP xp);
 
-// Helper to unwrap external pointer to MlxArrayWrapper
-MlxArrayWrapper* get_mlx_wrapper(SEXP xp);
+// Get the native array after validating its external pointer.
+mlx::core::array& get_mlx_array(SEXP xp);
 mlx::core::Stream get_mlx_stream(SEXP xp);
 class MlxImportedFunctionWrapper;
 MlxImportedFunctionWrapper* get_mlx_imported_function(SEXP xp);

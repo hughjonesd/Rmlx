@@ -12,13 +12,10 @@ using namespace mlx::core;
 // [[Rcpp::export]]
 SEXP cpp_mlx_matmul(SEXP xp1_, SEXP xp2_,
                     std::string dtype_str) {
-  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
-  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+  array lhs = get_mlx_array(xp1_);
+  array rhs = get_mlx_array(xp2_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-
-  array lhs = wrapper1->get();
-  array rhs = wrapper2->get();
 
   lhs = astype(lhs, target_dtype);
   rhs = astype(rhs, target_dtype);
@@ -35,15 +32,15 @@ SEXP cpp_mlx_addmm(SEXP input_xp_,
                    double alpha,
                    double beta,
                    std::string dtype_str) {
-  MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
-  MlxArrayWrapper* mat1_wrapper = get_mlx_wrapper(mat1_xp_);
-  MlxArrayWrapper* mat2_wrapper = get_mlx_wrapper(mat2_xp_);
+  array& input_ref = get_mlx_array(input_xp_);
+  array& mat1_ref = get_mlx_array(mat1_xp_);
+  array& mat2_ref = get_mlx_array(mat2_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
 
-  array input_arr = astype(input_wrapper->get(), target_dtype);
-  array mat1_arr = astype(mat1_wrapper->get(), target_dtype);
-  array mat2_arr = astype(mat2_wrapper->get(), target_dtype);
+  array input_arr = astype(input_ref, target_dtype);
+  array mat1_arr = astype(mat1_ref, target_dtype);
+  array mat2_arr = astype(mat2_ref, target_dtype);
 
   array result = addmm(
     std::move(input_arr),
@@ -58,8 +55,7 @@ SEXP cpp_mlx_addmm(SEXP input_xp_,
 // [[Rcpp::export]]
 SEXP cpp_mlx_hadamard_transform(SEXP xp_,
                                 Rcpp::Nullable<double> scale_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   std::optional<float> scale = std::nullopt;
   if (scale_.isNotNull()) {
@@ -72,19 +68,16 @@ SEXP cpp_mlx_hadamard_transform(SEXP xp_,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_cast(SEXP xp_, std::string dtype_str) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
+  array arr = get_mlx_array(xp_);
   Dtype dtype = string_to_dtype(dtype_str);
 
-  array arr = wrapper->get();
   array result = astype(arr, dtype);
   return make_mlx_xptr(std::move(result));
 }
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array flat = flatten_r_order(arr);
 
@@ -109,9 +102,7 @@ SEXP cpp_mlx_cumulative(SEXP xp_, std::string op) {
 SEXP cpp_mlx_fft(SEXP xp_,
                  Rcpp::Nullable<Rcpp::IntegerVector> axes_,
                  bool inverse) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-
-  array input = wrapper->get();
+  array input = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (axes_.isNull()) {
@@ -140,8 +131,7 @@ SEXP cpp_mlx_fft(SEXP xp_,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_cumsum(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = axis_.isNull()
     ? cumsum(arr, reverse, inclusive)
@@ -152,8 +142,7 @@ SEXP cpp_mlx_cumsum(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool incl
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_cumprod(SEXP xp_, Rcpp::Nullable<int> axis_, bool reverse, bool inclusive) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = axis_.isNull()
     ? cumprod(arr, reverse, inclusive)
@@ -171,8 +160,7 @@ void cpp_mlx_synchronize(std::string device_str) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_tril(SEXP xp_, int k) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = tril(arr, k);
   return make_mlx_xptr(std::move(result));
@@ -180,8 +168,7 @@ SEXP cpp_mlx_tril(SEXP xp_, int k) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_triu(SEXP xp_, int k) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = triu(arr, k);
   return make_mlx_xptr(std::move(result));

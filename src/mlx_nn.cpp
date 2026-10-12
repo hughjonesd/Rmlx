@@ -10,11 +10,8 @@ using namespace mlx::core;
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv1d(SEXP input_xp_, SEXP weight_xp_, int stride, int padding,
                     int dilation, int groups) {
-  MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
-  MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
-
-  array input = input_wrapper->get();
-  array weight = weight_wrapper->get();
+  array input = get_mlx_array(input_xp_);
+  array weight = get_mlx_array(weight_xp_);
 
   array result = conv1d(input, weight, stride, padding, dilation, groups);
 
@@ -24,11 +21,8 @@ SEXP cpp_mlx_conv1d(SEXP input_xp_, SEXP weight_xp_, int stride, int padding,
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
                     IntegerVector padding, IntegerVector dilation, int groups) {
-  MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
-  MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
-
-  array input = input_wrapper->get();
-  array weight = weight_wrapper->get();
+  array input = get_mlx_array(input_xp_);
+  array weight = get_mlx_array(weight_xp_);
 
   std::pair<int, int> stride_pair = {stride[0], stride[1]};
   std::pair<int, int> padding_pair = {padding[0], padding[1]};
@@ -43,11 +37,8 @@ SEXP cpp_mlx_conv2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
                     IntegerVector padding, IntegerVector dilation, int groups) {
-  MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
-  MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
-
-  array input = input_wrapper->get();
-  array weight = weight_wrapper->get();
+  array input = get_mlx_array(input_xp_);
+  array weight = get_mlx_array(weight_xp_);
 
   std::tuple<int, int, int> stride_tuple = {stride[0], stride[1], stride[2]};
   std::tuple<int, int, int> padding_tuple = {padding[0], padding[1], padding[2]};
@@ -62,11 +53,8 @@ SEXP cpp_mlx_conv3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
 // [[Rcpp::export]]
 SEXP cpp_mlx_conv_transpose1d(SEXP input_xp_, SEXP weight_xp_, int stride, int padding,
                                int dilation, int output_padding, int groups) {
-  MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
-  MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
-
-  array input = input_wrapper->get();
-  array weight = weight_wrapper->get();
+  array input = get_mlx_array(input_xp_);
+  array weight = get_mlx_array(weight_xp_);
 
   array result = conv_transpose1d(input, weight, stride, padding, dilation,
                                    output_padding, groups);
@@ -78,11 +66,8 @@ SEXP cpp_mlx_conv_transpose1d(SEXP input_xp_, SEXP weight_xp_, int stride, int p
 SEXP cpp_mlx_conv_transpose2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
                                IntegerVector padding, IntegerVector dilation,
                                IntegerVector output_padding, int groups) {
-  MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
-  MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
-
-  array input = input_wrapper->get();
-  array weight = weight_wrapper->get();
+  array input = get_mlx_array(input_xp_);
+  array weight = get_mlx_array(weight_xp_);
 
   std::pair<int, int> stride_pair = {stride[0], stride[1]};
   std::pair<int, int> padding_pair = {padding[0], padding[1]};
@@ -99,11 +84,8 @@ SEXP cpp_mlx_conv_transpose2d(SEXP input_xp_, SEXP weight_xp_, IntegerVector str
 SEXP cpp_mlx_conv_transpose3d(SEXP input_xp_, SEXP weight_xp_, IntegerVector stride,
                                IntegerVector padding, IntegerVector dilation,
                                IntegerVector output_padding, int groups) {
-  MlxArrayWrapper* input_wrapper = get_mlx_wrapper(input_xp_);
-  MlxArrayWrapper* weight_wrapper = get_mlx_wrapper(weight_xp_);
-
-  array input = input_wrapper->get();
-  array weight = weight_wrapper->get();
+  array input = get_mlx_array(input_xp_);
+  array weight = get_mlx_array(weight_xp_);
 
   std::tuple<int, int, int> stride_tuple = {stride[0], stride[1], stride[2]};
   std::tuple<int, int, int> padding_tuple = {padding[0], padding[1], padding[2]};
@@ -121,18 +103,14 @@ SEXP cpp_mlx_quantized_matmul(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
                                SEXP biases_xp_,
                                bool transpose, int group_size, int bits,
                                std::string mode) {
-  MlxArrayWrapper* x_wrapper = get_mlx_wrapper(x_xp_);
-  MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
-  MlxArrayWrapper* scales_wrapper = get_mlx_wrapper(scales_xp_);
-
-  array x = x_wrapper->get();
-  array w = w_wrapper->get();
-  array scales = scales_wrapper->get();
+  array x = get_mlx_array(x_xp_);
+  array w = get_mlx_array(w_xp_);
+  array scales = get_mlx_array(scales_xp_);
 
   std::optional<array> biases = std::nullopt;
   if (biases_xp_ != R_NilValue) {
-    MlxArrayWrapper* biases_wrapper = get_mlx_wrapper(biases_xp_);
-    biases = biases_wrapper->get();
+    array& biases_ref = get_mlx_array(biases_xp_);
+    biases = biases_ref;
   }
 
   array result = quantized_matmul(x, w, scales, biases, transpose,
@@ -149,30 +127,26 @@ SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
                          SEXP rhs_indices_xp_,
                          bool transpose, int group_size, int bits,
                          std::string mode, bool sorted_indices) {
-  MlxArrayWrapper* x_wrapper = get_mlx_wrapper(x_xp_);
-  MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
-  MlxArrayWrapper* scales_wrapper = get_mlx_wrapper(scales_xp_);
-
-  array x = x_wrapper->get();
-  array w = w_wrapper->get();
-  array scales = scales_wrapper->get();
+  array x = get_mlx_array(x_xp_);
+  array w = get_mlx_array(w_xp_);
+  array scales = get_mlx_array(scales_xp_);
 
   std::optional<array> biases = std::nullopt;
   if (biases_xp_ != R_NilValue) {
-    MlxArrayWrapper* biases_wrapper = get_mlx_wrapper(biases_xp_);
-    biases = biases_wrapper->get();
+    array& biases_ref = get_mlx_array(biases_xp_);
+    biases = biases_ref;
   }
 
   std::optional<array> lhs_indices = std::nullopt;
   if (lhs_indices_xp_ != R_NilValue) {
-    MlxArrayWrapper* lhs_wrapper = get_mlx_wrapper(lhs_indices_xp_);
-    lhs_indices = lhs_wrapper->get();
+    array& lhs_ref = get_mlx_array(lhs_indices_xp_);
+    lhs_indices = lhs_ref;
   }
 
   std::optional<array> rhs_indices = std::nullopt;
   if (rhs_indices_xp_ != R_NilValue) {
-    MlxArrayWrapper* rhs_wrapper = get_mlx_wrapper(rhs_indices_xp_);
-    rhs_indices = rhs_wrapper->get();
+    array& rhs_ref = get_mlx_array(rhs_indices_xp_);
+    rhs_indices = rhs_ref;
   }
 
   array result = gather_qmm(x, w, scales, biases, lhs_indices, rhs_indices,
@@ -185,9 +159,8 @@ SEXP cpp_mlx_gather_qmm(SEXP x_xp_, SEXP w_xp_, SEXP scales_xp_,
 // [[Rcpp::export]]
 List cpp_mlx_quantize(SEXP w_xp_, int group_size, int bits,
                       std::string mode) {
-  MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
+  array w = get_mlx_array(w_xp_);
 
-  array w = w_wrapper->get();
   std::vector<array> result = quantize(w, std::optional<int>(group_size),
                                        std::optional<int>(bits), mode,
                                        std::nullopt);
@@ -208,16 +181,13 @@ List cpp_mlx_quantize(SEXP w_xp_, int group_size, int bits,
 // [[Rcpp::export]]
 SEXP cpp_mlx_dequantize(SEXP w_xp_, SEXP scales_xp_, SEXP biases_xp_,
                         int group_size, int bits, std::string mode) {
-  MlxArrayWrapper* w_wrapper = get_mlx_wrapper(w_xp_);
-  MlxArrayWrapper* scales_wrapper = get_mlx_wrapper(scales_xp_);
-
-  array w = w_wrapper->get();
-  array scales = scales_wrapper->get();
+  array w = get_mlx_array(w_xp_);
+  array scales = get_mlx_array(scales_xp_);
 
   std::optional<array> biases = std::nullopt;
   if (biases_xp_ != R_NilValue) {
-    MlxArrayWrapper* biases_wrapper = get_mlx_wrapper(biases_xp_);
-    biases = biases_wrapper->get();
+    array& biases_ref = get_mlx_array(biases_xp_);
+    biases = biases_ref;
   }
 
   array result = dequantize(w, scales, biases, std::optional<int>(group_size),

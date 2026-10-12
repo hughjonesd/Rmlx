@@ -22,19 +22,12 @@ SEXP stream_tag() {
 
 } // namespace
 
-// MlxArrayWrapper implementation
-MlxArrayWrapper::MlxArrayWrapper(const array& arr)
-    : array_(arr) {}
-
-MlxArrayWrapper::MlxArrayWrapper(array&& arr)
-    : array_(std::move(arr)) {}
-
 // Finalizer for R external pointer
 void mlx_array_finalizer(SEXP xp) {
   if (TYPEOF(xp) == EXTPTRSXP) {
-    MlxArrayWrapper* wrapper = static_cast<MlxArrayWrapper*>(R_ExternalPtrAddr(xp));
-    if (wrapper != nullptr) {
-      delete wrapper;
+    auto* arr = static_cast<array*>(R_ExternalPtrAddr(xp));
+    if (arr != nullptr) {
+      delete arr;
       R_ClearExternalPtr(xp);
     }
   }
@@ -60,16 +53,16 @@ void mlx_imported_function_finalizer(SEXP xp) {
   }
 }
 
-// Get MlxArrayWrapper from external pointer
-MlxArrayWrapper* get_mlx_wrapper(SEXP xp) {
+// Get the native array from its external pointer
+array& get_mlx_array(SEXP xp) {
   if (TYPEOF(xp) != EXTPTRSXP) {
     Rcpp::stop("Expected external pointer");
   }
-  MlxArrayWrapper* wrapper = static_cast<MlxArrayWrapper*>(R_ExternalPtrAddr(xp));
-  if (wrapper == nullptr) {
+  auto* arr = static_cast<array*>(R_ExternalPtrAddr(xp));
+  if (arr == nullptr) {
     Rcpp::stop("Invalid MLX array pointer");
   }
-  return wrapper;
+  return *arr;
 }
 
 bool is_mlx_stream(SEXP value) {
@@ -101,15 +94,15 @@ MlxImportedFunctionWrapper* get_mlx_imported_function(SEXP xp) {
 
 // Wrap MLX array in external pointer
 SEXP make_mlx_xptr(const array& arr) {
-  MlxArrayWrapper* wrapper = new MlxArrayWrapper(arr);
-  SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, R_NilValue);
+  auto* ptr = new array(arr);
+  SEXP xp = R_MakeExternalPtr(ptr, R_NilValue, R_NilValue);
   R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);
   return xp;
 }
 
 SEXP make_mlx_xptr(array&& arr) {
-  MlxArrayWrapper* wrapper = new MlxArrayWrapper(std::move(arr));
-  SEXP xp = R_MakeExternalPtr(wrapper, R_NilValue, R_NilValue);
+  auto* ptr = new array(std::move(arr));
+  SEXP xp = R_MakeExternalPtr(ptr, R_NilValue, R_NilValue);
   R_RegisterCFinalizerEx(xp, mlx_array_finalizer, TRUE);
   return xp;
 }
@@ -234,8 +227,7 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_to_r(SEXP xp_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   size_t ndim = arr.ndim();
 
@@ -366,14 +358,14 @@ SEXP cpp_mlx_to_r(SEXP xp_) {
 
 // [[Rcpp::export]]
 void cpp_mlx_eval(SEXP xp_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  eval(wrapper->get());
+  array& arr_ref = get_mlx_array(xp_);
+  eval(arr_ref);
 }
 
 // [[Rcpp::export]]
 IntegerVector cpp_mlx_shape(SEXP xp_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  const auto& shape = wrapper->get().shape();
+  array& arr_ref = get_mlx_array(xp_);
+  const auto& shape = arr_ref.shape();
 
   IntegerVector result(shape.size());
   for (size_t i = 0; i < shape.size(); ++i) {
@@ -385,6 +377,6 @@ IntegerVector cpp_mlx_shape(SEXP xp_) {
 
 // [[Rcpp::export]]
 std::string cpp_mlx_dtype(SEXP xp_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  return dtype_to_string(wrapper->get().dtype());
+  array& arr_ref = get_mlx_array(xp_);
+  return dtype_to_string(arr_ref.dtype());
 }
