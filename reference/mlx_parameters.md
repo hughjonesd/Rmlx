@@ -30,7 +30,7 @@ layer <- mlx_linear(2, 1)
 mlx_parameters(layer)
 #> [[1]]
 #> $env
-#> <environment: 0x7d07abe70>
+#> <environment: 0xb5a31a7e8>
 #> 
 #> $name
 #> [1] "weight"
@@ -40,7 +40,7 @@ mlx_parameters(layer)
 #> 
 #> [[2]]
 #> $env
-#> <environment: 0x7d07abe70>
+#> <environment: 0xb5a31a7e8>
 #> 
 #> $name
 #> [1] "bias"

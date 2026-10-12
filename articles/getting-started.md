@@ -402,7 +402,7 @@ t2 <- system.time(
 )
 
 cat("Base R:", t1["elapsed"], "seconds\n")
-#> Base R: 0.429 seconds
+#> Base R: 0.363 seconds
 cat("MLX:", t2["elapsed"], "seconds\n")
 #> MLX: 0.021 seconds
 ```
