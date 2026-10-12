@@ -23,13 +23,11 @@ SEXP stream_tag() {
 } // namespace
 
 // MlxArrayWrapper implementation
-MlxArrayWrapper::MlxArrayWrapper() : ptr_(nullptr) {}
-
 MlxArrayWrapper::MlxArrayWrapper(const array& arr)
-    : ptr_(std::make_shared<array>(arr)) {}
+    : array_(arr) {}
 
 MlxArrayWrapper::MlxArrayWrapper(array&& arr)
-    : ptr_(std::make_shared<array>(std::move(arr))) {}
+    : array_(std::move(arr)) {}
 
 // Finalizer for R external pointer
 void mlx_array_finalizer(SEXP xp) {
@@ -68,7 +66,7 @@ MlxArrayWrapper* get_mlx_wrapper(SEXP xp) {
     Rcpp::stop("Expected external pointer");
   }
   MlxArrayWrapper* wrapper = static_cast<MlxArrayWrapper*>(R_ExternalPtrAddr(xp));
-  if (wrapper == nullptr || wrapper->is_null()) {
+  if (wrapper == nullptr) {
     Rcpp::stop("Invalid MLX array pointer");
   }
   return wrapper;
