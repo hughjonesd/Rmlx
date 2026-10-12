@@ -24,9 +24,9 @@ are close within specified tolerances.
 }
 \details{
 Two values are considered close if:
-\code{abs(a - b) <= (atol + rtol * abs(b))}
+\code{abs(a - b) <= (atol + rtol * abs(b))}.
 
-This function returns \code{TRUE} only if all elements are close.
+Infinite values with matching signs are considered equal.
 Supports NumPy-style broadcasting.
 }
 \examples{

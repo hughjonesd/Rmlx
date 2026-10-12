@@ -17,7 +17,7 @@ mlx_qlogis(p, location = 0, scale = 1)
 
 \item{location, scale}{Location and scale parameters (default: 0, 1)}
 
-\item{log}{If \code{TRUE}, return log density for \code{mlx_dlogis} (default: \code{FALSE})}
+\item{log}{If \code{TRUE}, return log density (default: \code{FALSE})}
 
 \item{p}{Vector of probabilities (mlx array or coercible to mlx)}
 }

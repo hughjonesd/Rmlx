@@ -1,6 +1,7 @@
 # Internal utilities ---------------------------------------------------------
 
-#' @title Internal helpers for mlx modules
+#' Internal helpers for mlx modules
+#'
 #' @description Constructors and utilities shared across module definitions.
 #' @noRd
 new_mlx_module <- function(forward,
@@ -48,6 +49,8 @@ mlx_module_set_training <- function(module, mode = TRUE) {
   invisible(module)
 }
 
+#' Quantization parameters
+#'
 #' @param w An mlx array representing the weight matrix. Accepts either an
 #'   unquantized matrix (which may be quantized automatically) or a pre-quantized
 #'   uint32 matrix produced by [mlx_quantize()].
@@ -657,30 +660,14 @@ mlx_embedding <- function(num_embeddings, embedding_dim) {
   env$embedding_dim <- embedding_dim
 
   forward <- function(indices) {
-    indices <- as_mlx(indices)
-
-    # indices are 1-based token IDs
-    orig_shape <- cpp_mlx_shape(indices$ptr)
-    indices_r <- as.integer(indices)
-
-    # Take embeddings
-    result_list <- lapply(indices_r, function(idx) {
-      if (idx < 1 || idx > env$num_embeddings) {
-        stop("Index out of range: ", idx, call. = FALSE)
-      }
-      as.numeric(env$weight[idx, ])
-    })
-
-    # Stack results and reshape
-    if (length(orig_shape) == 0) {
-      # Scalar index - return (1, embedding_dim)
-      mlx_matrix(result_list[[1]], nrow = 1, ncol = env$embedding_dim)
-    } else {
-      # Stack into matrix then reshape to match input shape + embedding dimension
-      result_mat <- do.call(rbind, lapply(result_list, function(x) matrix(x, 1, env$embedding_dim)))
-      new_shape <- c(orig_shape, env$embedding_dim)
-      mlx_array(as.numeric(result_mat), dim = new_shape)
+    # Keep wide IDs intact until bounds validation so invalid IDs cannot wrap.
+    indices <- as_mlx(indices, dtype = "int64")
+    if (any(indices < 1L | indices > env$num_embeddings)) {
+      stop("Index out of range: token IDs must be between 1 and ",
+           env$num_embeddings, call. = FALSE)
     }
+
+    mlx_gather(env$weight, list(indices), axes = 1L)
   }
 
   parameters <- function() {
