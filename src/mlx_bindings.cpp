@@ -200,111 +200,10 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_) {
   // Strategy: create array with reversed shape, then transpose
   Shape reversed_shape(shape.rbegin(), shape.rend());
 
-  ComplexVector cx;
-  NumericVector x;
-  bool use_complex = (dt == complex64);
-  if (use_complex) {
-    cx = ComplexVector(x_);
-  } else {
-    x = NumericVector(x_);
-  }
-
-  // Preserve column-major layout for matching R input types.
-  if (!use_complex && ndim >= 1) {
-    size_t total = 1;
-    for (size_t i = 0; i < ndim; ++i) {
-      total *= static_cast<size_t>(shape[i]);
-    }
-
-    Shape target_shape(shape.begin(), shape.end());
-    Strides col_major_strides;
-    col_major_strides.reserve(ndim);
-    int64_t stride = 1;
-    for (size_t i = 0; i < ndim; ++i) {
-      col_major_strides.push_back(stride);
-      stride *= static_cast<int64_t>(shape[i]);
-    }
-
-    auto col_major_from_ptr = [&](auto ptr, Dtype ptr_dtype) -> array {
-      array flat(ptr, Shape{static_cast<int32_t>(total)}, ptr_dtype);
-      array view = as_strided(
-        flat,
-        target_shape,
-        col_major_strides,
-        /*offset=*/0);
-      array arr = contiguous(view, /*allow_col_major=*/true);
-      if (arr.dtype() != dt) {
-        arr = astype(arr, dt);
-      }
-      return arr;
-    };
-
-    bool used_fast_path = false;
-    switch (dt) {
-    case float64:
-      if (TYPEOF(x_) == REALSXP) {
-        array arr = col_major_from_ptr(REAL(x_), float64);
-        used_fast_path = true;
-        return make_mlx_xptr(std::move(arr));
-      }
-      break;
-    case int32:
-      if (TYPEOF(x_) == INTSXP) {
-        array arr = col_major_from_ptr(INTEGER(x_), int32);
-        used_fast_path = true;
-        return make_mlx_xptr(std::move(arr));
-      }
-      break;
-    case bool_:
-      if (TYPEOF(x_) == LGLSXP) {
-        array arr = col_major_from_ptr(LOGICAL(x_), bool_);
-        used_fast_path = true;
-        return make_mlx_xptr(std::move(arr));
-      }
-      break;
-    default:
-      break;
-    }
-
-    (void)used_fast_path; // silence unused var if compiled with -Wall
-  }
-
-  // Create array directly from R data (column-major) using reversed shape
-  // Use float32 for bool to avoid float64 GPU issues
-  array arr_temp = [&]() -> array {
-    if (dt == bool_) {
-      std::vector<float> data_f32(x.begin(), x.end());
-      return array(data_f32.data(), reversed_shape, float32);
-    } else if (dt == float64) {
-      return array(x.begin(), reversed_shape, float64);
-    } else if (dt == float32) {
-      // Cast directly into MLX-owned memory without a temporary float buffer.
-      return array(x.begin(), reversed_shape, float32);
-    } else if (dt == int8) {
-      std::vector<int8_t> data_i8(x.begin(), x.end());
-      return array(data_i8.data(), reversed_shape, int8);
-    } else if (dt == int16) {
-      std::vector<int16_t> data_i16(x.begin(), x.end());
-      return array(data_i16.data(), reversed_shape, int16);
-    } else if (dt == int32) {
-      std::vector<int32_t> data_i32(x.begin(), x.end());
-      return array(data_i32.data(), reversed_shape, int32);
-    } else if (dt == int64) {
-      std::vector<int64_t> data_i64(x.begin(), x.end());
-      return array(data_i64.data(), reversed_shape, int64);
-    } else if (dt == uint8) {
-      std::vector<uint8_t> data_u8(x.begin(), x.end());
-      return array(data_u8.data(), reversed_shape, uint8);
-    } else if (dt == uint16) {
-      std::vector<uint16_t> data_u16(x.begin(), x.end());
-      return array(data_u16.data(), reversed_shape, uint16);
-    } else if (dt == uint32) {
-      std::vector<uint32_t> data_u32(x.begin(), x.end());
-      return array(data_u32.data(), reversed_shape, uint32);
-    } else if (dt == uint64) {
-      std::vector<uint64_t> data_u64(x.begin(), x.end());
-      return array(data_u64.data(), reversed_shape, uint64);
-    } else if (dt == complex64) {
+  // The iterator constructor copies and casts directly into MLX-owned storage.
+  array arr = [&]() -> array {
+    if (dt == complex64) {
+      ComplexVector cx(x_);
       std::vector<complex64_t> data_c64(cx.size());
       for (R_xlen_t idx = 0; idx < cx.size(); ++idx) {
         const Rcomplex& val = cx[idx];
@@ -313,18 +212,24 @@ SEXP cpp_mlx_from_r(SEXP x_, SEXP dim_, SEXP dtype_) {
             static_cast<float>(val.i));
       }
       return array(data_c64.data(), reversed_shape, complex64);
-    } else {
-      Rcpp::stop("Unsupported dtype for conversion from numeric");
+    }
+
+    // Dispatch before constructing NumericVector, which would coerce to double.
+    switch (TYPEOF(x_)) {
+    case INTSXP:
+      return array(INTEGER(x_), reversed_shape, dt);
+    case LGLSXP:
+      return array(LOGICAL(x_), reversed_shape, dt);
+    default:
+      NumericVector x(x_);
+      return array(x.begin(), reversed_shape, dt);
     }
   }();
 
-  // Transpose to correct orientation if multi-dimensional
+  // Transpose to correct orientation if multi-dimensional.
   if (ndim > 1) {
-    arr_temp = transpose_between_mlx_and_r(arr_temp);
+    arr = transpose_between_mlx_and_r(arr);
   }
-
-  // Convert to target dtype
-  array arr = astype(arr_temp, dt);
 
   return make_mlx_xptr(std::move(arr));
 }
