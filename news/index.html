@@ -35,7 +35,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="rmlx-development-version">Rmlx (development version)<a class="anchor" aria-label="anchor" href="#rmlx-development-version"></a></h2>
-<ul><li><p>Embedding lookup now uses one native MLX take operation, preserving weight gradients and dtype and avoiding per-token transfers through R.</p></li>
+<ul><li><p>Converting R data to integer and boolean arrays now uses less temporary memory. Suitable integer and logical inputs retain their R storage type, and conversion copies directly into MLX storage.</p></li>
+<li><p>Embedding lookup now uses one native MLX take operation, preserving weight gradients and dtype and avoiding per-token transfers through R.</p></li>
 <li><p>Axis validation and shape-based operations now recognize the single dimension of MLX vectors, including explicit axes, stacking, splitting, and neural layers.</p></li>
 <li><p>Multi-axis reductions now use one native MLX operation, fixing variance and standard deviation over multiple axes and explicit reductions to scalars.</p></li>
 <li><p>Converting R numeric vectors and arrays to float32 with <code><a href="../reference/as_mlx.html">as_mlx()</a></code> is faster and uses less temporary memory.</p></li>
