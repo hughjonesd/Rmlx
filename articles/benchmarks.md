@@ -65,7 +65,7 @@ ggplot(
   geom_line() +
   geom_point(size = 2) +
   scale_colour_manual(values = c("base R" = "#4A4A4A", "mlx" = "#D63230")) +
-  facet_wrap(~ operation, scales = "free_y") +
+  facet_wrap(vars(operation), scales = "free_y") +
   labs(
     title = "Benchmarks for common matrix operations",
     subtitle = "Time taken (less is better)",
@@ -78,6 +78,10 @@ ggplot(
 ```
 
 ![](benchmarks_files/figure-html/plot-1.png)
+
+## History
+
+![](benchmarks_files/figure-html/benchmark-history-1.png)
 
 ## Distribution Functions
 
@@ -117,7 +121,7 @@ ggplot(
   geom_line() +
   geom_point(size = 2) +
   scale_colour_manual(values = c("base R" = "#4A4A4A", "mlx" = "#D63230")) +
-  facet_wrap(~ operation, scales = "free_y") +
+  facet_wrap(vars(operation), scales = "free_y") +
   labs(
     title = "Distribution function benchmarks",
     subtitle = "Time taken (less is better)",
