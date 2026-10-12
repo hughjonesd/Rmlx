@@ -2,28 +2,28 @@
 #'
 #' @param x Input object (vector/array).
 #' @param dtype Target MLX dtype.
-#' @return An integer, logical, double, or complex payload. Integer and logical
-#'   inputs with missing values are coerced to double so R's integer NA sentinel
-#'   is represented as a floating-point missing value; booleans reject missing values.
+#' @return Vector of numeric or complex values (or the original numeric input when
+#'   it is already a double vector/matrix headed for float32/float64).
 #' @noRd
 coerce_payload <- function(x, dtype) {
+  if (dtype %in% c("float32", "float64") &&
+      is.double(x) &&
+      is.atomic(x) &&
+      !is.object(x)) {
+    return(x)
+  }
+
   switch(
     dtype,
     "bool" = {
-      x_logical <- if (is.logical(x) && !is.object(x)) x else as.logical(x)
+      x_logical <- as.logical(x)
       if (anyNA(x_logical)) {
         stop("Logical NA values are not supported for MLX boolean arrays.", call. = FALSE)
       }
-      x_logical
+      as.numeric(x_logical)
     },
     "complex64" = as.complex(x),
-    {
-      if (is.atomic(x) && !is.object(x) &&
-          (is.double(x) || ((is.integer(x) || is.logical(x)) && !anyNA(x)))) {
-        return(x)
-      }
-      as.numeric(x)
-    }
+    as.numeric(x)
   )
 }
 
