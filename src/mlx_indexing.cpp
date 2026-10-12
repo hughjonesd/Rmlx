@@ -176,16 +176,6 @@ SEXP cpp_mlx_scatter(SEXP xp_,
   return make_mlx_xptr(std::move(result));
 }
 
-namespace {
-
-struct AxisSelection {
-  bool full = false;
-  std::vector<int64_t> values;
-  int64_t length = 0;
-};
-
-} // namespace
-
 // [[Rcpp::export]]
 SEXP cpp_mlx_masked_scatter(SEXP xp_,
                                      SEXP mask_xp_,
