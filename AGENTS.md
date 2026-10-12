@@ -137,6 +137,10 @@
 - Roxygen comments power `man/` docs; the vignette is
   `vignettes/getting-started.Rmd`.
 - After doc edits, regenerate with `R -q -e 'devtools::document()'`.
+- Keep roxygen documentation focused on user needs, using plain,
+  concrete language. Avoid jargon, AI slop, and implementation details.
+  Explain bugfixes and code changes in NEWS, PR descriptions, or
+  internal comments instead.
 - Favor markdown lists/tables in roxygen over `\item`.
 - Add `@seealso` links to relevant MLX online docs for new exports.
 - When adding features, update the pkgdown reference index.
