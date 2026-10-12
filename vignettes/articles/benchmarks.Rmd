@@ -63,7 +63,7 @@ ggplot(
   geom_line() +
   geom_point(size = 2) +
   scale_colour_manual(values = c("base R" = "#4A4A4A", "mlx" = "#D63230")) +
-  facet_wrap(~ operation, scales = "free_y") +
+  facet_wrap(vars(operation), scales = "free_y") +
   labs(
     title = "Benchmarks for common matrix operations",
     subtitle = "Time taken (less is better)",
@@ -125,7 +125,7 @@ if (nrow(history_results)) {
   history_plot <- ggplot(history_results, aes(date, median_ms, colour = factor(size))) +
     geom_line() +
     geom_point(size = 1) +
-    facet_wrap(~ operation, scales = "free_y", ncol = 2) +
+    facet_wrap(vars(operation), scales = "free_y", ncol = 2) +
     labs(
       title = "Benchmark history on master",
       x = "Commit date",
@@ -177,7 +177,7 @@ ggplot(
   geom_line() +
   geom_point(size = 2) +
   scale_colour_manual(values = c("base R" = "#4A4A4A", "mlx" = "#D63230")) +
-  facet_wrap(~ operation, scales = "free_y") +
+  facet_wrap(vars(operation), scales = "free_y") +
   labs(
     title = "Distribution function benchmarks",
     subtitle = "Time taken (less is better)",
