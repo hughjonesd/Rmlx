@@ -95,7 +95,7 @@ cbind.mlx <- function(..., deparse.level = 1) {
 
 #' Bind mlx arrays along an axis
 #'
-#' @param ... One or more mlx arrays (or a single list of arrays) to combine.
+#' @inheritParams array_list_params
 #' @param along Positive integer giving the existing axis (1-indexed) along which
 #'   to bind the inputs.
 #'

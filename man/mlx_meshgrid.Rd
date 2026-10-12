@@ -7,7 +7,7 @@
 mlx_meshgrid(..., sparse = FALSE, indexing = c("xy", "ij"))
 }
 \arguments{
-\item{...}{One or more arrays (or a single list) convertible via \code{\link[=as_mlx]{as_mlx()}} representing coordinate vectors.}
+\item{...}{One or more arrays (or a single list of arrays) coercible via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{sparse}{Logical flag producing broadcast-friendly outputs when \code{TRUE}.}
 
