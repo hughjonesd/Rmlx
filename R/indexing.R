@@ -76,6 +76,7 @@ mlx_gather <- function(x, indices, axes = NULL) {
   use_take <- length(axes0) == 1L && length(idx_dims) == 1L &&
     (is.null(idx_dims[[1]]) || !length(idx_dims[[1]]))
   if (use_take) {
+    # Passing the MLX pointer avoids downloading and re-uploading indices, speeding up lookup.
     idx <- normalized[[1L]]
     idx_arg <- if (is_mlx(idx)) idx$ptr else as.integer(idx)
     ptr <- cpp_mlx_take(x$ptr, idx_arg, axes0[[1]])
