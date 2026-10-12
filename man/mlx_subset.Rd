@@ -16,7 +16,8 @@
 \item{...}{Indices for each dimension. Provide one per axis; omitted indices
 select the full extent. Logical indices recycle to the dimension length.}
 
-\item{value}{Value to assign, typically an mlx or R array}
+\item{value}{Value to assign, typically an mlx or R array. Values recycle in
+R's column-major order; their length must divide the selection size.}
 
 \item{drop}{Should dimensions be dropped? (default: FALSE)}
 }
@@ -29,7 +30,11 @@ MLX subsetting is like base R with a few differences:
 \details{
 \itemize{
 \item \code{drop = FALSE} by default.
-\item Indices containing \code{NA} give an error.
+\item Indices containing \code{NA}, zero, or out-of-bounds positions give an error.
+\item Numeric indices truncate toward zero, as in R. Per-axis numeric indices
+must be undimensioned vectors; numeric matrices are coordinate indices.
+\item Logical per-axis indices on matrices and arrays must not exceed the axis length.
+\item Explicit \code{NULL} indices select no elements; omitted indices select the full axis.
 \item Single indices on a 2D or higher array are only allowed for assignment.
 For example, if \code{x} is a matrix, \code{x[x < 0] <- 0} is
 OK but \code{subset <- x[x < 0]} is not. Use \code{\link[=mlx_flatten]{mlx_flatten()}} explicitly for
@@ -39,7 +44,8 @@ individual elements. The number of columns must match the rank of \code{x};
 each row gives coordinates for one element. The return value from
 subsetting is a flat mlx vector.
 \item \code{mlx} vectors, logical masks, and matrices behave the same as their R equivalents.
-\item Duplicate assignments like \code{x[c(1,1)] <- 2:3} are undefined behaviour.
+\item Duplicate vector assignments like \code{x[c(1,1)] <- 2:3} are undefined behaviour.
+Coordinate matrix assignments reject duplicate rows.
 \item Character indices match against the relevant axis dimnames.
 }
 }
