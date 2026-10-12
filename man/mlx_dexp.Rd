@@ -17,7 +17,7 @@ mlx_qexp(p, rate = 1)
 
 \item{rate}{Rate parameter (default: 1)}
 
-\item{log}{If \code{TRUE}, return log density for \code{mlx_dexp} (default: \code{FALSE})}
+\item{log}{If \code{TRUE}, return log density (default: \code{FALSE})}
 
 \item{p}{Vector of probabilities (mlx array or coercible to mlx)}
 }

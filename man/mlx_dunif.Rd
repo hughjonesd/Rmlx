@@ -17,7 +17,7 @@ mlx_qunif(p, min = 0, max = 1)
 
 \item{min, max}{Lower and upper limits of the distribution (default: 0, 1)}
 
-\item{log}{If \code{TRUE}, return log density for \code{mlx_dunif} (default: \code{FALSE})}
+\item{log}{If \code{TRUE}, return log density (default: \code{FALSE})}
 
 \item{p}{Vector of probabilities (mlx array or coercible to mlx)}
 }
