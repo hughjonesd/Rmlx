@@ -26,7 +26,7 @@ mlx_qexp(p, rate = 1)
 
 - log:
 
-  If `TRUE`, return log density for `mlx_dexp` (default: `FALSE`)
+  If `TRUE`, return log density (default: `FALSE`)
 
 - p:
 

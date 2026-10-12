@@ -34,7 +34,7 @@ An mlx array of booleans with element-wise comparison results
 ## Details
 
 Two values are considered close if:
-`abs(a - b) <= (atol + rtol * abs(b))`
+`abs(a - b) <= (atol + rtol * abs(b))`.
 
 Infinite values with matching signs are considered equal. Supports
 NumPy-style broadcasting.

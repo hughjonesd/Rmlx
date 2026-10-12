@@ -1,18 +1,17 @@
-# Common Parameter Documentation
+# Common MLX parameters
 
-Common Parameter Documentation
+Common MLX parameters
 
 ## Arguments
 
 - device:
 
-  Execution target: supply `"gpu"`, `"cpu"`, or an `mlx_stream` created
-  via
+  Execution target for APIs that expose a one-off device or stream
+  override. Supply `"gpu"`, `"cpu"`, or an `mlx_stream` created via
   [`mlx_new_stream()`](https://hughjonesd.github.io/Rmlx/reference/mlx_new_stream.md).
-  Defaults to the current
-  [`mlx_default_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_default_device.md)
-  unless noted otherwise (helpers that act on an existing array
-  typically reuse that array's device or stream).
+  Ordinary array operations use the current
+  [`mlx_device()`](https://hughjonesd.github.io/Rmlx/reference/mlx_device.md)
+  instead.
 
 - dtype:
 

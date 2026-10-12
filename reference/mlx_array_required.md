@@ -1,6 +1,6 @@
-# Parameters for Functions Requiring MLX Arrays
+# MLX array parameter
 
-Parameters for Functions Requiring MLX Arrays
+MLX array parameter
 
 ## Arguments
 

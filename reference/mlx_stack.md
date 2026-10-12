@@ -12,7 +12,8 @@ mlx_stack(..., axis = 1L)
 
 - ...:
 
-  One or more arrays (or a single list of arrays) coercible to mlx.
+  One or more arrays (or a single list of arrays) coercible via
+  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
 
 - axis:
 

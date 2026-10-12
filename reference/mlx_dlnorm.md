@@ -27,7 +27,7 @@ mlx_qlnorm(p, meanlog = 0, sdlog = 1)
 
 - log:
 
-  If `TRUE`, return log density for `mlx_dlnorm` (default: `FALSE`)
+  If `TRUE`, return log density (default: `FALSE`)
 
 - p:
 

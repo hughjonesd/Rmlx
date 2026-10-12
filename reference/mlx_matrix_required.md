@@ -1,6 +1,6 @@
-# Parameters for Functions Requiring MLX Matrices
+# MLX matrix parameter
 
-Parameters for Functions Requiring MLX Matrices
+MLX matrix parameter
 
 ## Arguments
 

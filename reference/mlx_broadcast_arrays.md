@@ -14,7 +14,7 @@ mlx_broadcast_arrays(...)
 
 - ...:
 
-  One or more arrays (or a single list) convertible via
+  One or more arrays (or a single list of arrays) coercible via
   [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
 
 ## Value

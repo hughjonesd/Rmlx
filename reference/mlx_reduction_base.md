@@ -1,6 +1,6 @@
-# Shared arguments for MLX/base reduction helpers.
+# MLX reduction parameters
 
-Shared arguments for MLX/base reduction helpers.
+MLX reduction parameters
 
 ## Arguments
 
@@ -16,7 +16,3 @@ Shared arguments for MLX/base reduction helpers.
 
   Leading dimensions treated as rows/cols (see
   [`base::rowSums()`](https://rdrr.io/r/base/colSums.html)).
-
-- ...:
-
-  Additional arguments forwarded to the base implementation.

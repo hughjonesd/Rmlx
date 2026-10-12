@@ -137,6 +137,13 @@
 - Roxygen comments power `man/` docs; the vignette is
   `vignettes/getting-started.Rmd`.
 - After doc edits, regenerate with `R -q -e 'devtools::document()'`.
+- Abstract repeated documentation into named common roxygen blocks and
+  inherit it with `@inheritParams` or `@inherit`. Keep local
+  descriptions when argument meanings differ between functions.
+- Put the title on the first line of a roxygen block (`#' Title`),
+  followed by a blank roxygen line, instead of using `@title`.
+- Fix documentation-generation diagnostics and commit the regenerated
+  files.
 - Keep roxygen documentation focused on user needs, using plain,
   concrete language. Avoid jargon, AI slop, and implementation details.
   Explain bugfixes and code changes in NEWS, PR descriptions, or

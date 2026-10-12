@@ -30,7 +30,7 @@ mlx_qnorm(p, mean = 0, sd = 1)
 
 - log:
 
-  If `TRUE`, return log density for `mlx_dnorm` (default: `FALSE`)
+  If `TRUE`, return log density (default: `FALSE`)
 
 - p:
 

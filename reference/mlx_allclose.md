@@ -34,9 +34,9 @@ An mlx array containing a single boolean value
 ## Details
 
 Two values are considered close if:
-`abs(a - b) <= (atol + rtol * abs(b))`
+`abs(a - b) <= (atol + rtol * abs(b))`.
 
-This function returns `TRUE` only if all elements are close. Supports
+Infinite values with matching signs are considered equal. Supports
 NumPy-style broadcasting.
 
 ## See also

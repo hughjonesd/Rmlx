@@ -1,6 +1,6 @@
-# Common Convolution Parameters
+# Convolution parameters
 
-Common Convolution Parameters
+Convolution parameters
 
 ## Arguments
 

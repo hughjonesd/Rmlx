@@ -12,7 +12,8 @@ abind(..., along = 1L)
 
 - ...:
 
-  One or more mlx arrays (or a single list of arrays) to combine.
+  One or more arrays (or a single list of arrays) coercible via
+  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
 
 - along:
 

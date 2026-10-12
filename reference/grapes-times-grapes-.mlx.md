@@ -14,7 +14,8 @@ x %*% y
 
 - x, y:
 
-  numeric or complex matrices or vectors.
+  MLX matrices or R matrices coercible via
+  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
 
 ## Value
 

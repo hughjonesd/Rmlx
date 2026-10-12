@@ -1,6 +1,7 @@
 # Create MLX array from R object
 
-Create MLX array from R object
+If `dtype` is not specified, numeric inputs use `"float32"`, logical
+inputs use `"bool"`, and complex inputs use `"complex64"`.
 
 ## Usage
 
@@ -16,22 +17,22 @@ as_mlx(
 
 - x:
 
-  Numeric, logical, or complex vector, matrix, or array to convert
+  An mlx array, or an R array/matrix/vector that will be converted via
+  `as_mlx()`.
 
 - dtype:
 
-  Data type for the MLX array. One of:
+  Data type string. Supported types include:
 
   - Floating point: `"float32"`, `"float64"`
 
-  - Integer signed: `"int8"`, `"int16"`, `"int32"`, `"int64"`
-
-  - Integer unsigned: `"uint8"`, `"uint16"`, `"uint32"`, `"uint64"`
+  - Integer: `"int8"`, `"int16"`, `"int32"`, `"int64"`, `"uint8"`,
+    `"uint16"`, `"uint32"`, `"uint64"`
 
   - Other: `"bool"`, `"complex64"`
 
-  If not specified, defaults to `"float32"` for numeric, `"bool"` for
-  logical, and `"complex64"` for complex inputs.
+  Not all functions support all types. See individual function
+  documentation.
 
 ## Value
 

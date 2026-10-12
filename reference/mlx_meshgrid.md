@@ -15,9 +15,8 @@ mlx_meshgrid(..., sparse = FALSE, indexing = c("xy", "ij"))
 
 - ...:
 
-  One or more arrays (or a single list) convertible via
-  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md)
-  representing coordinate vectors.
+  One or more arrays (or a single list of arrays) coercible via
+  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
 
 - sparse:
 
