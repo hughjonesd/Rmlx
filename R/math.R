@@ -68,17 +68,7 @@ Math.mlx <- function(x, ...) {
 #' Returns a boolean array indicating which elements of two arrays are close
 #' within specified tolerances.
 #'
-#' @param a,b MLX arrays or objects coercible to MLX arrays
-#' @param rtol Relative tolerance (default: 1e-5)
-#' @param atol Absolute tolerance (default: 1e-8)
-#' @param equal_nan If `TRUE`, NaN values are considered equal (default: `FALSE`)
-#'
-#' @details
-#' Two values are considered close if:
-#' \code{abs(a - b) <= (atol + rtol * abs(b))}
-#'
-#' Infinite values with matching signs are considered equal.
-#' Supports NumPy-style broadcasting.
+#' @inherit comparison_params params details
 #'
 #' @return An mlx array of booleans with element-wise comparison results
 #'
@@ -108,17 +98,7 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE) {
 #' Returns a boolean scalar indicating whether all elements of two arrays
 #' are close within specified tolerances.
 #'
-#' @param a,b MLX arrays or objects coercible to MLX arrays
-#' @param rtol Relative tolerance (default: 1e-5)
-#' @param atol Absolute tolerance (default: 1e-8)
-#' @param equal_nan If `TRUE`, NaN values are considered equal (default: `FALSE`)
-#'
-#' @details
-#' Two values are considered close if:
-#' \code{abs(a - b) <= (atol + rtol * abs(b))}
-#'
-#' This function returns `TRUE` only if all elements are close.
-#' Supports NumPy-style broadcasting.
+#' @inherit comparison_params params details
 #'
 #' @return An mlx array containing a single boolean value
 #'

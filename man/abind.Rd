@@ -7,7 +7,7 @@
 abind(..., along = 1L)
 }
 \arguments{
-\item{...}{One or more mlx arrays (or a single list of arrays) to combine.}
+\item{...}{One or more arrays (or a single list of arrays) coercible via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{along}{Positive integer giving the existing axis (1-indexed) along which
 to bind the inputs.}

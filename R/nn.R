@@ -1,6 +1,7 @@
 # Internal utilities ---------------------------------------------------------
 
-#' @title Internal helpers for mlx modules
+#' Internal helpers for mlx modules
+#'
 #' @description Constructors and utilities shared across module definitions.
 #' @noRd
 new_mlx_module <- function(forward,
@@ -48,6 +49,8 @@ mlx_module_set_training <- function(module, mode = TRUE) {
   invisible(module)
 }
 
+#' Quantization parameters
+#'
 #' @param w An mlx array representing the weight matrix. Accepts either an
 #'   unquantized matrix (which may be quantized automatically) or a pre-quantized
 #'   uint32 matrix produced by [mlx_quantize()].
@@ -64,7 +67,6 @@ mlx_module_set_training <- function(module, mode = TRUE) {
 #'   optimizations in gather-based kernels).
 #'
 #' @name quant_params
-#' @title Quantization parameters
 #' @keywords internal
 NULL
 

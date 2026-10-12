@@ -35,17 +35,12 @@ local_float64_cpu <- function(dtype, .local_envir = parent.frame()) {
 
 #' Create MLX array from R object
 #'
+#' If `dtype` is not specified, numeric inputs use `"float32"`, logical inputs
+#' use `"bool"`, and complex inputs use `"complex64"`.
+#'
 #' @inherit mlx_float64_cpu_internal details
 #'
-#' @param x Numeric, logical, or complex vector, matrix, or array to convert
-#' @param dtype Data type for the MLX array. One of:
-#'   - Floating point: `"float32"`, `"float64"`
-#'   - Integer signed: `"int8"`, `"int16"`, `"int32"`, `"int64"`
-#'   - Integer unsigned: `"uint8"`, `"uint16"`, `"uint32"`, `"uint64"`
-#'   - Other: `"bool"`, `"complex64"`
-#'
-#'   If not specified, defaults to `"float32"` for numeric, `"bool"` for logical,
-#'   and `"complex64"` for complex inputs.
+#' @inheritParams common_params
 #' @return An object of class `mlx`
 #'
 #' ## Integer types require explicit dtype

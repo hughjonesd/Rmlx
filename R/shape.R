@@ -55,7 +55,7 @@ normalize_new_axes <- function(axes, dims) {
 
 #' Stack mlx arrays along a new axis
 #'
-#' @param ... One or more arrays (or a single list of arrays) coercible to mlx.
+#' @inheritParams array_list_params
 #' @param axis Position of the new axis (1-indexed). Supply values between 1 and
 #'   `length(mlx_shape(x)) + 1` to insert anywhere along the dimension list.
 #' @return An mlx array with one additional dimension.
@@ -853,7 +853,7 @@ mlx_swapaxes <- function(x, axis1, axis2) {
 #' `mlx_meshgrid()` mirrors [`mlx.core.meshgrid()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.meshgrid),
 #' returning coordinate arrays suitable for vectorised evaluation on MLX devices.
 #'
-#' @param ... One or more arrays (or a single list) convertible via [as_mlx()] representing coordinate vectors.
+#' @inheritParams array_list_params
 #' @param sparse Logical flag producing broadcast-friendly outputs when `TRUE`.
 #' @param indexing Either `"xy"` (Cartesian) or `"ij"` (matrix) indexing.
 #' @return A list of mlx arrays matching the number of inputs.
@@ -912,7 +912,7 @@ mlx_broadcast_to <- function(x, shape) {
 #' `mlx_broadcast_arrays()` mirrors [`mlx.core.broadcast_arrays()`](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_arrays),
 #' returning a list of inputs expanded to a common shape.
 #'
-#' @param ... One or more arrays (or a single list) convertible via [as_mlx()].
+#' @inheritParams array_list_params
 #' @return A list of broadcast mlx arrays, with each input's dimnames
 #'   broadcast to the shared shape where possible.
 #' @seealso [mlx.core.broadcast_arrays](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.broadcast_arrays)
