@@ -5,18 +5,17 @@
 #include <complex>
 #include <mlx/mlx.h>
 #include <string>
-#include <memory>
+#include <utility>
 #include <mlx/export.h>
 
 namespace rmlx {
 
-// Wrapper for MLX array using shared_ptr
+// MLX arrays already share their descriptor; store the handle directly.
 class MlxArrayWrapper {
 private:
-  std::shared_ptr<mlx::core::array> ptr_;
+  mlx::core::array array_;
 
 public:
-  MlxArrayWrapper();
   explicit MlxArrayWrapper(const mlx::core::array& arr);
   explicit MlxArrayWrapper(mlx::core::array&& arr);
   ~MlxArrayWrapper() = default;
@@ -30,11 +29,8 @@ public:
   MlxArrayWrapper& operator=(MlxArrayWrapper&& other) noexcept = default;
 
   // Accessors
-  mlx::core::array& get() { return *ptr_; }
-  const mlx::core::array& get() const { return *ptr_; }
-  std::shared_ptr<mlx::core::array> shared_array() const { return ptr_; }
-
-  bool is_null() const { return ptr_ == nullptr; }
+  mlx::core::array& get() { return array_; }
+  const mlx::core::array& get() const { return array_; }
 };
 
 class MlxStreamWrapper {

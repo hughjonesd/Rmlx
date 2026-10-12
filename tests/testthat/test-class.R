@@ -253,3 +253,29 @@ test_that("scale.mlx matches base scale", {
     tolerance = 1e-6
   )
 })
+
+test_that("lazy results retain inputs after their R wrappers are collected", {
+  for (device in c("cpu", "gpu")) {
+    with_device(device, {
+      x <- as_mlx(matrix(1:6, 2, 3))
+      alias <- x
+      intermediate <- x + x
+      result <- intermediate * intermediate
+
+      rm(x, intermediate)
+      invisible(gc())
+      expect_equal(as.matrix(alias), matrix(1:6, 2, 3), tolerance = 1e-6)
+
+      rm(alias)
+      invisible(gc())
+      expect_equal(as.matrix(result), (2 * matrix(1:6, 2, 3))^2, tolerance = 1e-6)
+    })
+  }
+})
+
+test_that("restored external pointers fail cleanly", {
+  x <- as_mlx(1:3)
+  restored <- unserialize(serialize(x, NULL))
+
+  expect_error(mlx_shape(restored), "Invalid MLX array pointer")
+})
