@@ -76,7 +76,9 @@ mlx_gather <- function(x, indices, axes = NULL) {
   use_take <- length(axes0) == 1L && length(idx_dims) == 1L &&
     (is.null(idx_dims[[1]]) || !length(idx_dims[[1]]))
   if (use_take) {
-    ptr <- cpp_mlx_take(x$ptr, as.vector(normalized[[1]]), axes0[[1]])
+    idx <- normalized[[1L]]
+    idx_arg <- if (is_mlx(idx)) idx$ptr else as.integer(idx)
+    ptr <- cpp_mlx_take(x$ptr, idx_arg, axes0[[1]])
     return(new_mlx(
       ptr,
       dimnames = dimnames_axis_indexed(x, axes[[1]], normalized[[1]] + 1L)

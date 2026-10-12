@@ -631,11 +631,6 @@ mlx_batch_norm <- function(num_features, eps = 1e-5, momentum = 0.1) {
 #'
 #' Maps discrete tokens to continuous vectors.
 #'
-#' @details Token IDs are 1-based and may be supplied as R or mlx vectors or
-#'   arrays. The output shape is the token shape followed by `embedding_dim`;
-#'   an mlx scalar token produces a `1` by `embedding_dim` matrix. Lookup stays
-#'   in MLX so gradients reach the weight rows, accumulating for repeated IDs.
-#'
 #' @param num_embeddings Size of vocabulary.
 #' @param embedding_dim Dimension of embedding vectors.
 #' @return An `mlx_module` for token embeddings.
@@ -669,9 +664,7 @@ mlx_embedding <- function(num_embeddings, embedding_dim) {
            env$num_embeddings, call. = FALSE)
     }
 
-    # take() appends the embedding dimension and keeps weight gradients in MLX.
-    indices <- indices - 1L
-    new_mlx(cpp_mlx_take(env$weight$ptr, indices$ptr, 0L))
+    mlx_gather(env$weight, list(indices), axes = 1L)
   }
 
   parameters <- function() {
