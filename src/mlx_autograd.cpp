@@ -14,8 +14,8 @@ std::vector<array> extract_primals(const List& args) {
   for (int i = 0; i < args.size(); ++i) {
     List obj(args[i]);
     SEXP xp = obj["ptr"];
-    MlxArrayWrapper* wrapper = get_mlx_wrapper(xp);
-    primals.push_back(wrapper->get());
+    array& arr_ref = get_mlx_array(xp);
+    primals.push_back(arr_ref);
   }
   return primals;
 }
@@ -82,8 +82,7 @@ SEXP cpp_mlx_value_grad(SEXP fun_sexp,
 
     List res_obj(result);
     SEXP res_ptr = res_obj["ptr"];
-    MlxArrayWrapper* res_wrap = get_mlx_wrapper(res_ptr);
-    array out = res_wrap->get();
+    array out = get_mlx_array(res_ptr);
 
     // Allow callers to return length-1 vectors; reshape to a true scalar.
     if (out.size() == 1 && out.ndim() > 0) {
@@ -122,7 +121,7 @@ SEXP cpp_mlx_value_grad(SEXP fun_sexp,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_stop_gradient(SEXP xp_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array stopped = stop_gradient(wrapper->get());
+  array& arr_ref = get_mlx_array(xp_);
+  array stopped = stop_gradient(arr_ref);
   return make_mlx_xptr(std::move(stopped));
 }

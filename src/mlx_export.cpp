@@ -26,8 +26,8 @@ SEXP cpp_mlx_call_imported(SEXP fn_xp,
     if (ptr == R_NilValue) {
       continue;
     }
-    MlxArrayWrapper* wrapper = get_mlx_wrapper(ptr);
-    positional.push_back(wrapper->get());
+    array& arr_ref = get_mlx_array(ptr);
+    positional.push_back(arr_ref);
   }
 
   Kwargs kwargs;
@@ -48,8 +48,8 @@ SEXP cpp_mlx_call_imported(SEXP fn_xp,
       stop("Keyword arguments must be named.");
     }
     std::string key = as<std::string>(names[i]);
-    MlxArrayWrapper* wrapper = get_mlx_wrapper(ptr);
-    kwargs.emplace(std::move(key), wrapper->get());
+    array& arr_ref = get_mlx_array(ptr);
+    kwargs.emplace(std::move(key), arr_ref);
   }
 
   std::vector<array> result;

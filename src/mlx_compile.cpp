@@ -18,8 +18,8 @@ std::vector<array> extract_arrays_from_result(SEXP result) {
   if (Rf_inherits(result, "mlx")) {
     List obj(result);
     SEXP ptr = obj["ptr"];
-    MlxArrayWrapper* wrapper = get_mlx_wrapper(ptr);
-    outputs.push_back(wrapper->get());
+    array& arr_ref = get_mlx_array(ptr);
+    outputs.push_back(arr_ref);
     return outputs;
   }
 
@@ -38,7 +38,7 @@ std::vector<array> extract_arrays_from_result(SEXP result) {
         );
       }
       List obj(item);
-      outputs.push_back(get_mlx_wrapper(obj["ptr"])->get());
+      outputs.push_back(get_mlx_array(obj["ptr"]));
     }
     return outputs;
   }
@@ -189,8 +189,8 @@ List cpp_mlx_compile_call(SEXP compiled_xp, List mlx_args) {
       Rcpp::stop("Argument %d is not an mlx object. All arguments must be mlx arrays.", i + 1);
     }
     SEXP ptr = obj["ptr"];
-    MlxArrayWrapper* wrapper = get_mlx_wrapper(ptr);
-    inputs.push_back(wrapper->get());
+    array& arr_ref = get_mlx_array(ptr);
+    inputs.push_back(arr_ref);
   }
 
   // Call compiled function
