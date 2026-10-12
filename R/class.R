@@ -37,7 +37,6 @@ local_float64_cpu <- function(dtype, .local_envir = parent.frame()) {
 #'
 #' @inherit mlx_float64_cpu_internal details
 #'
-#' @inheritParams common_params
 #' @param x Numeric, logical, or complex vector, matrix, or array to convert
 #' @param dtype Data type for the MLX array. One of:
 #'   - Floating point: `"float32"`, `"float64"`

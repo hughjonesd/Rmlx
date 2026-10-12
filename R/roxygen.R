@@ -22,18 +22,21 @@
 #' @param x An mlx array, or an R array/matrix/vector that will be converted via [as_mlx()].
 #'
 #' @name common_params
+#' @title Common MLX parameters
 #' @keywords internal
 NULL
 
 #' @param x An mlx array.
 #'
 #' @name mlx_array_required
+#' @title MLX array parameter
 #' @keywords internal
 NULL
 
 #' @param x An mlx matrix (2-dimensional array).
 #'
 #' @name mlx_matrix_required
+#' @title MLX matrix parameter
 #' @keywords internal
 NULL
 
@@ -48,15 +51,18 @@ NULL
 #' @param groups Number of blocked connections from input to output channels. Default: 1.
 #'
 #' @name conv_params
+#' @title Convolution parameters
 #' @keywords internal
 NULL
 
 #' @name ellipsis_ignored
+#' @title Ignored additional arguments
 #' @keywords internal
 #' @param ... Additional arguments; ignored.
 NULL
 
 #' @name ellipsis_base
+#' @title Additional arguments for base R compatibility
 #' @keywords internal
 #' @param ... Additional arguments forwarded to the corresponding base R implementation for signature compatibility.
 NULL

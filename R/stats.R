@@ -4,6 +4,7 @@
 #' @param dims Leading dimensions treated as rows/cols (see [base::rowSums()]).
 #' @keywords internal
 #' @name mlx_reduction_base
+#' @title MLX reduction parameters
 NULL
 
 #' Reduce mlx arrays
@@ -663,7 +664,6 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
 #' @param mean Mean of the distribution (default: 0)
 #' @param sd Standard deviation of the distribution (default: 1)
 #' @param log If `TRUE`, return log density for `mlx_dnorm` (default: `FALSE`)
-#' @inheritParams common_params
 #' @return An mlx array with the computed values.
 #' @seealso [mlx_erf()], [mlx_erfinv()],
 #'   [mlx.core.erf](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erf.html),
@@ -751,7 +751,6 @@ mlx_qnorm <- function(p, mean = 0, sd = 1) {
 #' @param x Vector of quantiles (mlx array or coercible to mlx)
 #' @param min,max Lower and upper limits of the distribution (default: 0, 1)
 #' @param log If `TRUE`, return log density for `mlx_dunif` (default: `FALSE`)
-#' @inheritParams common_params
 #' @return An mlx array with the computed values.
 #' @export
 #' @examples
@@ -830,7 +829,6 @@ mlx_qunif <- function(p, min = 0, max = 1) {
 #' @param x Vector of quantiles (mlx array or coercible to mlx)
 #' @param rate Rate parameter (default: 1)
 #' @param log If `TRUE`, return log density for `mlx_dexp` (default: `FALSE`)
-#' @inheritParams common_params
 #' @return An mlx array with the computed values.
 #' @export
 #' @examples
@@ -906,7 +904,6 @@ mlx_qexp <- function(p, rate = 1) {
 #' @param meanlog,sdlog Mean and standard deviation of distribution on log scale
 #'   (default: 0, 1)
 #' @param log If `TRUE`, return log density for `mlx_dlnorm` (default: `FALSE`)
-#' @inheritParams common_params
 #' @return An mlx array with the computed values.
 #' @export
 #' @examples
@@ -978,7 +975,6 @@ mlx_qlnorm <- function(p, meanlog = 0, sdlog = 1) {
 #' @param x Vector of quantiles (mlx array or coercible to mlx)
 #' @param location,scale Location and scale parameters (default: 0, 1)
 #' @param log If `TRUE`, return log density for `mlx_dlogis` (default: `FALSE`)
-#' @inheritParams common_params
 #' @return An mlx array with the computed values.
 #' @export
 #' @examples

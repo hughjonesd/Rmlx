@@ -72,7 +72,6 @@ Math.mlx <- function(x, ...) {
 #' @param rtol Relative tolerance (default: 1e-5)
 #' @param atol Absolute tolerance (default: 1e-8)
 #' @param equal_nan If `TRUE`, NaN values are considered equal (default: `FALSE`)
-#' @inheritParams common_params
 #'
 #' @details
 #' Two values are considered close if:
@@ -113,7 +112,6 @@ mlx_isclose <- function(a, b, rtol = 1e-5, atol = 1e-8, equal_nan = FALSE) {
 #' @param rtol Relative tolerance (default: 1e-5)
 #' @param atol Absolute tolerance (default: 1e-8)
 #' @param equal_nan If `TRUE`, NaN values are considered equal (default: `FALSE`)
-#' @inheritParams common_params
 #'
 #' @details
 #' Two values are considered close if:

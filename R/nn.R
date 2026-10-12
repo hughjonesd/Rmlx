@@ -64,6 +64,7 @@ mlx_module_set_training <- function(module, mode = TRUE) {
 #'   optimizations in gather-based kernels).
 #'
 #' @name quant_params
+#' @title Quantization parameters
 #' @keywords internal
 NULL
 

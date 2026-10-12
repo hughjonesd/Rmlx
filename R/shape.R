@@ -856,7 +856,6 @@ mlx_swapaxes <- function(x, axis1, axis2) {
 #' @param ... One or more arrays (or a single list) convertible via [as_mlx()] representing coordinate vectors.
 #' @param sparse Logical flag producing broadcast-friendly outputs when `TRUE`.
 #' @param indexing Either `"xy"` (Cartesian) or `"ij"` (matrix) indexing.
-#' @inheritParams common_params
 #' @return A list of mlx arrays matching the number of inputs.
 #' @seealso [mlx.core.meshgrid](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.meshgrid)
 #' @export
