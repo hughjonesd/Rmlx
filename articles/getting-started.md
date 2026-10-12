@@ -347,6 +347,34 @@ row_1 <- x[1, ]
 col_1 <- x[, 1]
 ```
 
+Dimensions are retained by default; use `drop = TRUE` to remove
+singleton axes. Short logical indices recycle along each axis. Indices
+containing `NA`, zero, or out-of-bounds positions are rejected. Empty
+indices (including `NULL`) select no positions; leaving an axis blank
+selects all its positions.
+
+``` r
+
+# Alternate rows, with logical recycling
+alternate_rows <- x[c(TRUE, FALSE), ]
+
+# Full logical masks are supported for assignment
+x[x < 10] <- 0
+
+# Coordinate matrices select individual elements
+coordinates <- rbind(c(1, 2), c(3, 4))
+elements <- x[coordinates]
+x[coordinates] <- c(100, 200)
+```
+
+A single vector or logical index on a matrix or higher-dimensional array
+is supported for assignment, in R’s column-major order. To read with a
+single vector index, explicitly use `mlx_flatten(x)` first (which
+follows MLX’s row-major order). Replacement values recycle in
+column-major order and must divide the number of selected elements.
+Duplicate vector assignments are undefined; coordinate matrix
+assignments reject duplicate rows.
+
 ## Device Management
 
 Control whether computations run on GPU or CPU:
@@ -402,9 +430,9 @@ t2 <- system.time(
 )
 
 cat("Base R:", t1["elapsed"], "seconds\n")
-#> Base R: 0.363 seconds
+#> Base R: 0.482 seconds
 cat("MLX:", t2["elapsed"], "seconds\n")
-#> MLX: 0.021 seconds
+#> MLX: 0.026 seconds
 ```
 
 For more information see the Benchmarks vignette.

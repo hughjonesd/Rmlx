@@ -27,7 +27,8 @@ x[..., drop = FALSE]
 
 - value:
 
-  Value to assign, typically an mlx or R array
+  Value to assign, typically an mlx or R array. Values recycle in R's
+  column-major order; their length must divide the selection size.
 
 - drop:
 
@@ -41,7 +42,18 @@ The subsetted MLX object.
 
 - `drop = FALSE` by default.
 
-- Indices containing `NA` give an error.
+- Indices containing `NA`, zero, or out-of-bounds positions give an
+  error.
+
+- Numeric indices truncate toward zero, as in R. Per-axis numeric
+  indices must be undimensioned vectors; numeric matrices are coordinate
+  indices.
+
+- Logical per-axis indices on matrices and arrays must not exceed the
+  axis length.
+
+- Explicit `NULL` indices select no elements; omitted indices select the
+  full axis.
 
 - Single indices on a 2D or higher array are only allowed for
   assignment. For example, if `x` is a matrix, `x[x < 0] <- 0` is OK but
@@ -57,7 +69,8 @@ The subsetted MLX object.
 - `mlx` vectors, logical masks, and matrices behave the same as their R
   equivalents.
 
-- Duplicate assignments like `x[c(1,1)] <- 2:3` are undefined behaviour.
+- Duplicate vector assignments like `x[c(1,1)] <- 2:3` are undefined
+  behaviour. Coordinate matrix assignments reject duplicate rows.
 
 - Character indices match against the relevant axis dimnames.
 

@@ -383,12 +383,35 @@ computed until needed:</p>
 <span></span>
 <span><span class="co"># Select specific column</span></span>
 <span><span class="va">col_1</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span></span></code></pre></div>
+<p>Dimensions are retained by default; use <code>drop = TRUE</code> to
+remove singleton axes. Short logical indices recycle along each axis.
+Indices containing <code>NA</code>, zero, or out-of-bounds positions are
+rejected. Empty indices (including <code>NULL</code>) select no
+positions; leaving an axis blank selects all its positions.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Alternate rows, with logical recycling</span></span>
+<span><span class="va">alternate_rows</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="cn">FALSE</span><span class="op">)</span>, <span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Full logical masks are supported for assignment</span></span>
+<span><span class="va">x</span><span class="op">[</span><span class="va">x</span> <span class="op">&lt;</span> <span class="fl">10</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span></span>
+<span><span class="co"># Coordinate matrices select individual elements</span></span>
+<span><span class="va">coordinates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">elements</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">[</span><span class="va">coordinates</span><span class="op">]</span></span>
+<span><span class="va">x</span><span class="op">[</span><span class="va">coordinates</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">200</span><span class="op">)</span></span></code></pre></div>
+<p>A single vector or logical index on a matrix or higher-dimensional
+array is supported for assignment, in R’s column-major order. To read
+with a single vector index, explicitly use <code>mlx_flatten(x)</code>
+first (which follows MLX’s row-major order). Replacement values recycle
+in column-major order and must divide the number of selected elements.
+Duplicate vector assignments are undefined; coordinate matrix
+assignments reject duplicate rows.</p>
 </div>
 <div class="section level2">
 <h2 id="device-management">Device Management<a class="anchor" aria-label="anchor" href="#device-management"></a>
 </h2>
 <p>Control whether computations run on GPU or CPU:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Check default device</span></span>
 <span><span class="fu"><a href="../reference/mlx_device.html">mlx_device</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "gpu"</span></span>
@@ -419,7 +442,7 @@ to the GPU.</p>
 </h2>
 <p>Here’s a simple timing comparison for large matrix
 multiplication:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span>
 <span></span>
 <span><span class="co"># R base</span></span>
@@ -437,9 +460,9 @@ multiplication:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Base R:"</span>, <span class="va">t1</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Base R: 0.363 seconds</span></span>
+<span><span class="co">#&gt; Base R: 0.482 seconds</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"MLX:"</span>, <span class="va">t2</span><span class="op">[</span><span class="st">"elapsed"</span><span class="op">]</span>, <span class="st">"seconds\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; MLX: 0.021 seconds</span></span></code></pre></div>
+<span><span class="co">#&gt; MLX: 0.026 seconds</span></span></code></pre></div>
 <p>For more information see the Benchmarks vignette.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

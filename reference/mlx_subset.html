@@ -61,7 +61,8 @@ select the full extent. Logical indices recycle to the dimension length.</p></dd
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
-<dd><p>Value to assign, typically an mlx or R array</p></dd>
+<dd><p>Value to assign, typically an mlx or R array. Values recycle in
+R's column-major order; their length must divide the selection size.</p></dd>
 
 
 <dt id="arg-drop">drop<a class="anchor" aria-label="anchor" href="#arg-drop"></a></dt>
@@ -76,7 +77,11 @@ select the full extent. Logical indices recycle to the dimension length.</p></dd
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
 
 <ul><li><p><code>drop = FALSE</code> by default.</p></li>
-<li><p>Indices containing <code>NA</code> give an error.</p></li>
+<li><p>Indices containing <code>NA</code>, zero, or out-of-bounds positions give an error.</p></li>
+<li><p>Numeric indices truncate toward zero, as in R. Per-axis numeric indices
+must be undimensioned vectors; numeric matrices are coordinate indices.</p></li>
+<li><p>Logical per-axis indices on matrices and arrays must not exceed the axis length.</p></li>
+<li><p>Explicit <code>NULL</code> indices select no elements; omitted indices select the full axis.</p></li>
 <li><p>Single indices on a 2D or higher array are only allowed for assignment.
 For example, if <code>x</code> is a matrix, <code>x[x &lt; 0] &lt;- 0</code> is
 OK but <code>subset &lt;- x[x &lt; 0]</code> is not. Use <code><a href="mlx_flatten.html">mlx_flatten()</a></code> explicitly for
@@ -86,7 +91,8 @@ individual elements. The number of columns must match the rank of <code>x</code>
 each row gives coordinates for one element. The return value from
 subsetting is a flat mlx vector.</p></li>
 <li><p><code>mlx</code> vectors, logical masks, and matrices behave the same as their R equivalents.</p></li>
-<li><p>Duplicate assignments like <code>x[c(1,1)] &lt;- 2:3</code> are undefined behaviour.</p></li>
+<li><p>Duplicate vector assignments like <code>x[c(1,1)] &lt;- 2:3</code> are undefined behaviour.
+Coordinate matrix assignments reject duplicate rows.</p></li>
 <li><p>Character indices match against the relevant axis dimnames.</p></li>
 </ul></div>
     <div class="section level2">
