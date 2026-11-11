@@ -37,8 +37,7 @@ SEXP cpp_mlx_ones(SEXP dim_, std::string dtype_str) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_zeros_like(SEXP xp_, std::string dtype_str) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   Dtype dtype = string_to_dtype(dtype_str);
 
@@ -49,8 +48,7 @@ SEXP cpp_mlx_zeros_like(SEXP xp_, std::string dtype_str) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_ones_like(SEXP xp_, std::string dtype_str) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   Dtype dtype = string_to_dtype(dtype_str);
 

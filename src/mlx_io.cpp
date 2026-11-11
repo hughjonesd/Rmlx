@@ -29,9 +29,8 @@ std::unordered_map<std::string, array> list_to_array_map(const List& tensor_ptrs
   }
   std::unordered_map<std::string, array> result;
   for (int i = 0; i < tensor_ptrs.size(); ++i) {
-    MlxArrayWrapper* wrapper = get_mlx_wrapper(tensor_ptrs[i]);
+    array arr = get_mlx_array(tensor_ptrs[i]);
     std::string name = as<std::string>(names[i]);
-    array arr = wrapper->get();
     result.emplace(std::move(name), to_device(arr, target_device));
   }
   return result;
@@ -61,8 +60,7 @@ GGUFMetaData build_meta_from_payload(const List& payload, const StreamOrDevice& 
     return std::monostate{};
   }
   if (type == "array") {
-    MlxArrayWrapper* wrapper = get_mlx_wrapper(payload["ptr"]);
-    array arr = wrapper->get();
+    array arr = get_mlx_array(payload["ptr"]);
     return to_device(arr, target_device);
   }
   if (type == "string") {
@@ -130,8 +128,7 @@ List wrap_tensor_map(const std::unordered_map<std::string, array>& tensor_map,
 
 // [[Rcpp::export]]
 void cpp_mlx_save(SEXP xp_, std::string file) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
   array cpu_arr = to_device(arr, cpu_device());
   save(std::move(file), cpu_arr);
 }

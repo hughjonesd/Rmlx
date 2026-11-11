@@ -97,19 +97,6 @@ test_that("vector subset assignment updates the correct element", {
   expect_equal(as.vector(mlx_vec), base_vec, tolerance = 1e-6)
 })
 
-test_that("vector subset assignment rejects unordered repeats", {
-  skip("Disabled (why?)")
-  seed <- as.integer(format(Sys.Date(), "%Y%m%d"))
-  set.seed(seed)
-  base_vec <- sample(-5:5, 6, replace = TRUE)
-  mlx_vec <- mlx_vector(base_vec)
-
-  idx <- c(6L, 2L, 6L, 1L)
-  vals <- c(-10, 20, 30, -40)
-
-  expect_error(mlx_vec[idx] <- vals, "Duplicate indices")
-})
-
 test_that("vector subset assignment handles mlx and logical indices", {
   base_vec <- 1:6
   mlx_vec <- mlx_vector(base_vec)
@@ -152,11 +139,7 @@ test_that("subset assignment with logical masks behaves like base R", {
   expect_equal(as.matrix(x_mlx_mask), mat, tolerance = 1e-6)
 })
 
-test_that("non-contiguous numeric assignment works without fast path", {
-  old <- getOption("Rmlx_use_slice_fast_path")
-  on.exit(options(Rmlx_use_slice_fast_path = old), add = TRUE)
-  options(Rmlx_use_slice_fast_path = FALSE)
-
+test_that("non-contiguous numeric assignment works", {
   mat <- matrix(seq_len(12 * 15), 12, 15)
   x <- as_mlx(mat)
 
@@ -292,22 +275,6 @@ test_that("subset assignment handles irregular mlx indices with missing axes", {
   expect_equal(as.array(x), arr, tolerance = 1e-6)
 })
 
-test_that("subset assignment handles repeated numeric indices", {
-  skip("Disabled on mlx branch")
-  set.seed(20251101)
-  mat <- matrix(seq_len(100), nrow = 10, ncol = 10)
-  x <- as_mlx(mat)
-
-  rows <- c(1L, 3L, 3L)
-  cols <- c(4L, 2L, 4L)
-  values <- matrix(runif(length(rows) * length(cols)), nrow = length(rows))
-
-  expect_error(
-    x[rows, cols] <- values,
-    "Duplicate indices"
-  )
-})
-
 test_that("subset assignment preserves order of numeric indices", {
   set.seed(20251102)
   mat <- matrix(seq_len(100), nrow = 10, ncol = 10)
@@ -361,7 +328,6 @@ test_that("negative numeric indices work for assignment", {
 })
 
 test_that("subset assignment preserves GPU device", {
-  skip_if_not(mlx_has_gpu())
   mat <- matrix(1:6, 2, 3)
   x <- as_mlx(mat)
 

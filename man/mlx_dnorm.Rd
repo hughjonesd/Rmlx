@@ -19,7 +19,7 @@ mlx_qnorm(p, mean = 0, sd = 1)
 
 \item{sd}{Standard deviation of the distribution (default: 1)}
 
-\item{log}{If \code{TRUE}, return log density for \code{mlx_dnorm} (default: \code{FALSE})}
+\item{log}{If \code{TRUE}, return log density (default: \code{FALSE})}
 
 \item{p}{Vector of probabilities (mlx array or coercible to mlx)}
 }

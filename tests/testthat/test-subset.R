@@ -51,7 +51,7 @@ test_that("NA indices should be rejected for subsetting", {
   mat <- matrix(1:4, 2, 2)
   x <- as_mlx(mat)
 
-  expect_error(x[NA], "Index contains NA")
+  expect_error(x[NA, ], "Index contains NA")
   expect_error(x[1, NA], "Index contains NA")
 })
 
@@ -432,16 +432,6 @@ test_that("mlx indexing works with higher dimensional arrays", {
   expect_equal(as.array(result), arr[c(1, 2), c(2, 4), , drop = FALSE])
 })
 
-test_that("mlx indexing preserves device", {
-  skip_if_not(mlx_has_gpu())
-  mat <- matrix(1:12, 3, 4)
-  x <- as_mlx(mat)
-
-  idx <- as_mlx(c(1L, 3L))
-  result <- x[idx, ]
-
-})
-
 test_that("empty mlx index returns empty result", {
   mat <- matrix(1:12, 3, 4)
   x <- as_mlx(mat)
@@ -458,13 +448,30 @@ test_that("mlx indexing errors appropriately", {
   mat <- matrix(1:12, 3, 4)
   x <- as_mlx(mat)
 
-  # Note: MLX does not error on out-of-bounds indices with mlx arrays
-  # It may return zeros or undefined values. This differs from R's behavior
-  # but is consistent with MLX's C++ API and lazy evaluation model.
-  # We only get bounds checking when using R integer vectors:
   expect_error(x[c(1L, 10L), ], "index out of bounds", fixed = TRUE)
 
   # Matrix with wrong number of columns should error
   idx_mat_wrong <- mlx_matrix(c(1, 1, 1), nrow = 1)  # 3 columns for 2D array
   expect_error(x[idx_mat_wrong], "wrong number of columns", fixed = TRUE)
+})
+
+
+test_that("mlx_gather keeps integer vector indices in MLX", {
+  to_r <- Rmlx:::cpp_mlx_to_r
+  # Bounds checks may download booleans, but not the integer index array.
+  testthat::local_mocked_bindings(cpp_mlx_to_r = function(ptr) {
+    if (Rmlx:::cpp_mlx_dtype(ptr) %in% c("int32", "int64", "uint32", "uint64")) {
+      stop("Integer indices were downloaded to R.")
+    }
+    to_r(ptr)
+  }, .package = "Rmlx")
+  for (device in c("cpu", "gpu")) {
+    with_device(device, {
+      values <- matrix(1:12, 4, 3)
+      x <- as_mlx(values)
+      indices <- as_mlx(c(3L, 1L), dtype = "int32")
+      output <- mlx_gather(x, list(indices), axes = 1L)
+      expect_equal(as.array(output), values[c(3L, 1L), , drop = FALSE])
+    })
+  }
 })

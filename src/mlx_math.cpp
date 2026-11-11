@@ -10,8 +10,7 @@ using namespace mlx::core;
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array input = wrapper->get();
+  array input = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (op == "neg") {
@@ -102,8 +101,7 @@ SEXP cpp_mlx_unary(SEXP xp_, std::string op) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_logical_not(SEXP xp_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
   array arr_bool = astype(arr, bool_);
   array result = logical_not(arr_bool);
   return make_mlx_xptr(std::move(result));
@@ -112,13 +110,10 @@ SEXP cpp_mlx_logical_not(SEXP xp_) {
 // [[Rcpp::export]]
 SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
                     std::string dtype_str) {
-  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
-  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+  array lhs = get_mlx_array(xp1_);
+  array rhs = get_mlx_array(xp2_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-
-  array lhs = wrapper1->get();
-  array rhs = wrapper2->get();
 
   lhs = astype(lhs, target_dtype);
   rhs = astype(rhs, target_dtype);
@@ -156,11 +151,8 @@ SEXP cpp_mlx_binary(SEXP xp1_, SEXP xp2_, std::string op,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_) {
-  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
-  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
-
-  array lhs = wrapper1->get();
-  array rhs = wrapper2->get();
+  array lhs = get_mlx_array(xp1_);
+  array rhs = get_mlx_array(xp2_);
 
   Dtype target_dtype = lhs.dtype();
   if (target_dtype == bool_) {
@@ -181,11 +173,8 @@ SEXP cpp_mlx_minimum(SEXP xp1_, SEXP xp2_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_) {
-  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
-  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
-
-  array lhs = wrapper1->get();
-  array rhs = wrapper2->get();
+  array lhs = get_mlx_array(xp1_);
+  array rhs = get_mlx_array(xp2_);
 
   Dtype target_dtype = lhs.dtype();
   if (target_dtype == bool_) {
@@ -206,8 +195,7 @@ SEXP cpp_mlx_maximum(SEXP xp1_, SEXP xp2_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   Dtype original_dtype = arr.dtype();
 
@@ -239,11 +227,8 @@ SEXP cpp_mlx_clip(SEXP xp_, SEXP min_, SEXP max_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_) {
-  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
-  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
-
-  array lhs = wrapper1->get();
-  array rhs = wrapper2->get();
+  array lhs = get_mlx_array(xp1_);
+  array rhs = get_mlx_array(xp2_);
 
   Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
 
@@ -256,11 +241,8 @@ SEXP cpp_mlx_floor_divide(SEXP xp1_, SEXP xp2_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_remainder(SEXP xp1_, SEXP xp2_) {
-  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
-  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
-
-  array lhs = wrapper1->get();
-  array rhs = wrapper2->get();
+  array lhs = get_mlx_array(xp1_);
+  array rhs = get_mlx_array(xp2_);
 
   Dtype target_dtype = promote_numeric_dtype(lhs.dtype(), rhs.dtype());
 
@@ -273,12 +255,9 @@ SEXP cpp_mlx_remainder(SEXP xp1_, SEXP xp2_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op) {
-  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
-  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+  array lhs = get_mlx_array(xp1_);
+  array rhs = get_mlx_array(xp2_);
 
-
-  array lhs = wrapper1->get();
-  array rhs = wrapper2->get();
 
   lhs = astype(lhs, bool_);
   rhs = astype(rhs, bool_);
@@ -298,12 +277,11 @@ SEXP cpp_mlx_logical(SEXP xp1_, SEXP xp2_, std::string op) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan) {
-  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
-  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+  array& lhs_ref = get_mlx_array(xp1_);
+  array& rhs_ref = get_mlx_array(xp2_);
 
-
-  array lhs = astype(wrapper1->get(), wrapper1->get().dtype());
-  array rhs = astype(wrapper2->get(), wrapper2->get().dtype());
+  array lhs = astype(lhs_ref, lhs_ref.dtype());
+  array rhs = astype(rhs_ref, rhs_ref.dtype());
 
   array result = isclose(lhs, rhs, rtol, atol, equal_nan);
 
@@ -312,12 +290,11 @@ SEXP cpp_mlx_isclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_allclose(SEXP xp1_, SEXP xp2_, double rtol, double atol, bool equal_nan) {
-  MlxArrayWrapper* wrapper1 = get_mlx_wrapper(xp1_);
-  MlxArrayWrapper* wrapper2 = get_mlx_wrapper(xp2_);
+  array& lhs_ref = get_mlx_array(xp1_);
+  array& rhs_ref = get_mlx_array(xp2_);
 
-
-  array lhs = astype(wrapper1->get(), wrapper1->get().dtype());
-  array rhs = astype(wrapper2->get(), wrapper2->get().dtype());
+  array lhs = astype(lhs_ref, lhs_ref.dtype());
+  array rhs = astype(rhs_ref, rhs_ref.dtype());
 
   array result = allclose(lhs, rhs, rtol, atol, equal_nan);
 
@@ -329,8 +306,7 @@ SEXP cpp_mlx_nan_to_num(SEXP xp_,
                         Rcpp::Nullable<double> nan_,
                         Rcpp::Nullable<double> posinf_,
                         Rcpp::Nullable<double> neginf_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   float nan_value = nan_.isNull() ? 0.0f : static_cast<float>(Rcpp::as<double>(nan_.get()));
 

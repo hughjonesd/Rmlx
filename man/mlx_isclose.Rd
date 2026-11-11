@@ -24,7 +24,7 @@ within specified tolerances.
 }
 \details{
 Two values are considered close if:
-\code{abs(a - b) <= (atol + rtol * abs(b))}
+\code{abs(a - b) <= (atol + rtol * abs(b))}.
 
 Infinite values with matching signs are considered equal.
 Supports NumPy-style broadcasting.

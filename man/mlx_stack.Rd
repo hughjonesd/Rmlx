@@ -7,7 +7,7 @@
 mlx_stack(..., axis = 1L)
 }
 \arguments{
-\item{...}{One or more arrays (or a single list of arrays) coercible to mlx.}
+\item{...}{One or more arrays (or a single list of arrays) coercible via \code{\link[=as_mlx]{as_mlx()}}.}
 
 \item{axis}{Position of the new axis (1-indexed). Supply values between 1 and
 \code{length(mlx_shape(x)) + 1} to insert anywhere along the dimension list.}

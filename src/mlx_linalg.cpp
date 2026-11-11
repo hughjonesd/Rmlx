@@ -11,10 +11,10 @@ using namespace mlx::core;
 // [[Rcpp::export]]
 SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
                    std::string dtype_str) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+  array& a_ref = get_mlx_array(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
-  array a_target = astype(a_wrapper->get(), target_dtype);
+  array a_target = astype(a_ref, target_dtype);
 
   array result = [&]() -> array {
     if (b_xp_ == R_NilValue) {
@@ -22,8 +22,8 @@ SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
       return linalg::inv(a_target);
     } else {
       // b provided: solve linear system Ax = b
-      MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
-      array b_target = astype(b_wrapper->get(), target_dtype);
+      array& b_ref = get_mlx_array(b_xp_);
+      array b_target = astype(b_ref, target_dtype);
       return linalg::solve(a_target, b_target);
     }
   }();
@@ -34,11 +34,11 @@ SEXP cpp_mlx_solve(SEXP a_xp_, SEXP b_xp_,
 // [[Rcpp::export]]
 SEXP cpp_mlx_cholesky(SEXP a_xp_, bool upper,
                       std::string dtype_str) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+  array& a_ref = get_mlx_array(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
 
-  array a_target = astype(a_wrapper->get(), target_dtype);
+  array a_target = astype(a_ref, target_dtype);
   array chol_target = mlx::core::linalg::cholesky(a_target, upper);
 
   return make_mlx_xptr(std::move(chol_target));
@@ -47,11 +47,11 @@ SEXP cpp_mlx_cholesky(SEXP a_xp_, bool upper,
 // [[Rcpp::export]]
 SEXP cpp_mlx_qr(SEXP a_xp_,
                 std::string dtype_str) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+  array& a_ref = get_mlx_array(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
 
-  array a_target = astype(a_wrapper->get(), target_dtype);
+  array a_target = astype(a_ref, target_dtype);
   auto qr_target = mlx::core::linalg::qr(a_target);
 
   array q_target = astype(qr_target.first, target_dtype);
@@ -65,11 +65,11 @@ SEXP cpp_mlx_qr(SEXP a_xp_,
 // [[Rcpp::export]]
 SEXP cpp_mlx_svd(SEXP a_xp_, bool compute_uv,
                  std::string dtype_str) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+  array& a_ref = get_mlx_array(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
 
-  array a_target = astype(a_wrapper->get(), target_dtype);
+  array a_target = astype(a_ref, target_dtype);
   std::vector<array> svd_target = mlx::core::linalg::svd(a_target, compute_uv, {});
 
   List out(svd_target.size());
@@ -100,11 +100,11 @@ SEXP cpp_mlx_svd(SEXP a_xp_, bool compute_uv,
 // [[Rcpp::export]]
 SEXP cpp_mlx_pinv(SEXP a_xp_,
                   std::string dtype_str) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
+  array& a_ref = get_mlx_array(a_xp_);
 
   Dtype target_dtype = string_to_dtype(dtype_str);
 
-  array a_target = astype(a_wrapper->get(), target_dtype);
+  array a_target = astype(a_ref, target_dtype);
   array pinv_target = mlx::core::linalg::pinv(a_target);
 
   return make_mlx_xptr(std::move(pinv_target));
@@ -114,9 +114,7 @@ SEXP cpp_mlx_pinv(SEXP a_xp_,
 SEXP cpp_mlx_norm(SEXP xp_, SEXP ord_,
                   Rcpp::Nullable<Rcpp::IntegerVector> axes,
                   bool keepdims) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
-
+  array arr = get_mlx_array(xp_);
 
   array arr_target = astype(arr, arr.dtype());
   std::optional<std::vector<int>> axes_opt = optional_axes(arr, axes);
@@ -150,9 +148,7 @@ SEXP cpp_mlx_norm(SEXP xp_, SEXP ord_,
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_eig(SEXP xp_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
-
+  array arr = get_mlx_array(xp_);
 
   array arr_target = astype(arr, arr.dtype());
   auto eig_pair = mlx::core::linalg::eig(arr_target);
@@ -167,9 +163,7 @@ SEXP cpp_mlx_eig(SEXP xp_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_eigvals(SEXP xp_) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
-
+  array arr = get_mlx_array(xp_);
 
   array arr_target = astype(arr, arr.dtype());
   array vals_target = mlx::core::linalg::eigvals(arr_target);
@@ -178,9 +172,7 @@ SEXP cpp_mlx_eigvals(SEXP xp_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_eigvalsh(SEXP xp_, std::string uplo) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
-
+  array arr = get_mlx_array(xp_);
 
   array arr_target = astype(arr, arr.dtype());
   array vals_target = mlx::core::linalg::eigvalsh(arr_target, uplo);
@@ -189,9 +181,7 @@ SEXP cpp_mlx_eigvalsh(SEXP xp_, std::string uplo) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_eigh(SEXP xp_, std::string uplo) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
-
+  array arr = get_mlx_array(xp_);
 
   array arr_target = astype(arr, arr.dtype());
   auto eig_pair = mlx::core::linalg::eigh(arr_target, uplo);
@@ -206,11 +196,9 @@ SEXP cpp_mlx_eigh(SEXP xp_, std::string uplo) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_solve_triangular(SEXP a_xp_, SEXP b_xp_, bool upper) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-  MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
+  array a_arr = get_mlx_array(a_xp_);
+  array b_arr = get_mlx_array(b_xp_);
 
-  array a_arr = a_wrapper->get();
-  array b_arr = b_wrapper->get();
   Dtype target_dtype = promote_numeric_dtype(a_arr.dtype(), b_arr.dtype());
 
   array a_target = astype(a_arr, target_dtype);
@@ -223,11 +211,9 @@ SEXP cpp_mlx_solve_triangular(SEXP a_xp_, SEXP b_xp_, bool upper) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_cross(SEXP a_xp_, SEXP b_xp_, int axis) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-  MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
+  array a_arr = get_mlx_array(a_xp_);
+  array b_arr = get_mlx_array(b_xp_);
 
-  array a_arr = a_wrapper->get();
-  array b_arr = b_wrapper->get();
   Dtype target_dtype = promote_numeric_dtype(a_arr.dtype(), b_arr.dtype());
 
   array a_target = astype(a_arr, target_dtype);
@@ -244,9 +230,7 @@ SEXP cpp_mlx_cross(SEXP a_xp_, SEXP b_xp_, int axis) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_trace(SEXP a_xp_, int offset, int axis1, int axis2) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-
-  array arr = a_wrapper->get();
+  array arr = get_mlx_array(a_xp_);
 
   // Convert 1-indexed to 0-indexed
   int ax1 = axis1 - 1;
@@ -261,9 +245,7 @@ SEXP cpp_mlx_trace(SEXP a_xp_, int offset, int axis1, int axis2) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_diagonal(SEXP a_xp_, int offset, int axis1, int axis2) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-
-  array arr = a_wrapper->get();
+  array arr = get_mlx_array(a_xp_);
 
   // Convert 1-indexed to 0-indexed
   int ax1 = axis1 - 1;
@@ -278,9 +260,7 @@ SEXP cpp_mlx_diagonal(SEXP a_xp_, int offset, int axis1, int axis2) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_diag(SEXP a_xp_, int k) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-
-  array arr = a_wrapper->get();
+  array arr = get_mlx_array(a_xp_);
 
   array result = diag(arr, k);
   return make_mlx_xptr(std::move(result));
@@ -288,11 +268,9 @@ SEXP cpp_mlx_diag(SEXP a_xp_, int k) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_outer(SEXP a_xp_, SEXP b_xp_) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-  MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
+  array a_arr = get_mlx_array(a_xp_);
+  array b_arr = get_mlx_array(b_xp_);
 
-  array a_arr = a_wrapper->get();
-  array b_arr = b_wrapper->get();
   Dtype target_dtype = promote_numeric_dtype(a_arr.dtype(), b_arr.dtype());
 
   array a_target = astype(a_arr, target_dtype);
@@ -304,9 +282,7 @@ SEXP cpp_mlx_outer(SEXP a_xp_, SEXP b_xp_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_inv(SEXP a_xp_) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-
-  array arr = a_wrapper->get();
+  array arr = get_mlx_array(a_xp_);
 
   array a_target = astype(arr, arr.dtype());
   array result_target = linalg::inv(a_target);
@@ -316,9 +292,7 @@ SEXP cpp_mlx_inv(SEXP a_xp_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_tri_inv(SEXP a_xp_, bool upper) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-
-  array arr = a_wrapper->get();
+  array arr = get_mlx_array(a_xp_);
 
   array a_target = astype(arr, arr.dtype());
   array result_target = linalg::tri_inv(a_target, upper);
@@ -328,9 +302,7 @@ SEXP cpp_mlx_tri_inv(SEXP a_xp_, bool upper) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_cholesky_inv(SEXP a_xp_, bool upper) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-
-  array arr = a_wrapper->get();
+  array arr = get_mlx_array(a_xp_);
 
   array a_target = astype(arr, arr.dtype());
   array result_target = linalg::cholesky_inv(a_target, upper);
@@ -340,9 +312,7 @@ SEXP cpp_mlx_cholesky_inv(SEXP a_xp_, bool upper) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_lu(SEXP a_xp_) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-
-  array arr = a_wrapper->get();
+  array arr = get_mlx_array(a_xp_);
 
   array a_target = astype(arr, arr.dtype());
 
@@ -366,11 +336,8 @@ SEXP cpp_mlx_lu(SEXP a_xp_) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_kron(SEXP a_xp_, SEXP b_xp_) {
-  MlxArrayWrapper* a_wrapper = get_mlx_wrapper(a_xp_);
-  MlxArrayWrapper* b_wrapper = get_mlx_wrapper(b_xp_);
-
-  array a_arr = a_wrapper->get();
-  array b_arr = b_wrapper->get();
+  array a_arr = get_mlx_array(a_xp_);
+  array b_arr = get_mlx_array(b_xp_);
 
   array result = kron(a_arr, b_arr);
   return make_mlx_xptr(std::move(result));

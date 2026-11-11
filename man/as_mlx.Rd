@@ -11,18 +11,16 @@ as_mlx(
 )
 }
 \arguments{
-\item{x}{Numeric, logical, or complex vector, matrix, or array to convert}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
 
-\item{dtype}{Data type for the MLX array. One of:
+\item{dtype}{Data type string. Supported types include:
 \itemize{
 \item Floating point: \code{"float32"}, \code{"float64"}
-\item Integer signed: \code{"int8"}, \code{"int16"}, \code{"int32"}, \code{"int64"}
-\item Integer unsigned: \code{"uint8"}, \code{"uint16"}, \code{"uint32"}, \code{"uint64"}
+\item Integer: \code{"int8"}, \code{"int16"}, \code{"int32"}, \code{"int64"}, \code{"uint8"}, \code{"uint16"}, \code{"uint32"}, \code{"uint64"}
 \item Other: \code{"bool"}, \code{"complex64"}
 }
 
-If not specified, defaults to \code{"float32"} for numeric, \code{"bool"} for logical,
-and \code{"complex64"} for complex inputs.}
+Not all functions support all types. See individual function documentation.}
 }
 \value{
 An object of class \code{mlx}
@@ -62,7 +60,8 @@ use \verb{[mlx_array(..., allow_scalar = TRUE)][mlx_array()]}.
 }
 }
 \description{
-Create MLX array from R object
+If \code{dtype} is not specified, numeric inputs use \code{"float32"}, logical inputs
+use \code{"bool"}, and complex inputs use \code{"complex64"}.
 }
 \details{
 MLX does not support \code{float64} operations on GPU. When this function
