@@ -9,7 +9,9 @@ mlx_where(condition, x, y)
 \arguments{
 \item{condition}{Logical mlx array (non-zero values are treated as \code{TRUE}).}
 
-\item{x, y}{mlx arrays or objects coercible with \code{\link[=as_mlx]{as_mlx()}}.}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
+
+\item{y}{A second array, with the same accepted types as \code{x}.}
 }
 \value{
 An mlx array where elements are drawn from \code{x} when

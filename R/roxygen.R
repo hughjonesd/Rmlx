@@ -22,6 +22,7 @@
 #'   mlx functions.
 #' @param dim Integer vector specifying array dimensions (shape).
 #' @param x An mlx array, or an R array/matrix/vector that will be converted via [as_mlx()].
+#' @param y A second array, with the same accepted types as `x`.
 #'
 #' @name common_params
 #' @keywords internal
@@ -95,13 +96,6 @@ NULL
 #' @param log If `TRUE`, return log density (default: `FALSE`)
 #' @return An mlx array with the computed values.
 #' @name distribution_params
-#' @keywords internal
-NULL
-
-#' Array pair parameters
-#'
-#' @param x,y mlx arrays or objects coercible with [as_mlx()].
-#' @name array_pair_params
 #' @keywords internal
 NULL
 
