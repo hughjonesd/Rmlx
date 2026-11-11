@@ -191,6 +191,7 @@ reference:
   - title: Linear algebra
     contents:
       - "%*%.mlx"
+      - mlx_matmul
       - mlx_addmm
       - crossprod.mlx
       - tcrossprod.mlx

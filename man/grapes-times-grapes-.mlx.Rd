@@ -7,7 +7,7 @@
 \method{\%*\%}{mlx}(x, y)
 }
 \arguments{
-\item{x, y}{numeric or complex matrices or vectors.}
+\item{x, y}{Numeric or complex matrices.}
 }
 \value{
 An mlx object.

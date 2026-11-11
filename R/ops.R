@@ -62,7 +62,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' Both operands must be 2D matrices; vectors are not auto-promoted (unlike
 #' base R).
 #'
-#' @inheritParams base::`%*%`
+#' @param x,y Numeric or complex matrices.
 #' @return An mlx object.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
@@ -405,4 +405,30 @@ coerce_binary_operands <- function(x, y) {
 
 resolve_common_dtype <- function(dtypes) {
   Reduce(promote_dtype, dtypes)
+}
+
+#' Matrix multiplication with broadcast batch dimensions
+#'
+#' Unlike `%*%`, `mlx_matmul()` accepts arrays with more than two dimensions.
+#' The last two axes are matrix axes; preceding axes broadcast. One-dimensional
+#' operands are promoted to row/column matrices and the added axes are removed
+#' from the result, following MLX semantics. Scalars are not supported.
+#'
+#' @param x,y Numeric arrays coercible to mlx arrays, each with at least one axis.
+#' @return An mlx array. Two vectors produce a scalar inner product.
+#' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.matmul.html)
+#' @export
+#' @examples
+#' x <- mlx_ones(c(2, 3, 4))
+#' w <- mlx_ones(c(4, 5))
+#' mlx_shape(mlx_matmul(x, w)) # 2 3 5
+mlx_matmul <- function(x, y) {
+  operands <- coerce_binary_operands(x, y)
+  x <- operands[[1L]]
+  y <- operands[[2L]]
+  if (!length(mlx_shape(x)) || !length(mlx_shape(y))) {
+    stop("Operands must have at least one dimension.", call. = FALSE)
+  }
+  dtype <- promote_dtype(mlx_dtype(x), mlx_dtype(y))
+  new_mlx(cpp_mlx_matmul(x$ptr, y$ptr, dtype))
 }
