@@ -1,6 +1,7 @@
 # Internal utilities ---------------------------------------------------------
 
-#' @title Internal helpers for mlx modules
+#' Internal helpers for mlx modules
+#'
 #' @description Constructors and utilities shared across module definitions.
 #' @noRd
 new_mlx_module <- function(forward,
@@ -48,6 +49,8 @@ mlx_module_set_training <- function(module, mode = TRUE) {
   invisible(module)
 }
 
+#' Quantization parameters
+#'
 #' @param w An mlx array representing the weight matrix. Accepts either an
 #'   unquantized matrix (which may be quantized automatically) or a pre-quantized
 #'   uint32 matrix produced by [mlx_quantize()].
@@ -658,8 +661,7 @@ mlx_embedding <- function(num_embeddings, embedding_dim) {
 
   forward <- function(indices) {
     indices <- as_mlx(indices)
-
-    # indices are 1-based token IDs
+    # Validate before integer conversion so fractional IDs cannot be truncated.
     indices_r <- as.numeric(indices)
     if (anyNA(indices_r) || any(!is.finite(indices_r)) ||
         any(indices_r != trunc(indices_r)) ||
@@ -667,10 +669,8 @@ mlx_embedding <- function(num_embeddings, embedding_dim) {
       stop("Index out of range: expected whole numbers in 1:num_embeddings.",
            call. = FALSE)
     }
-    # Keep the weight lookup on the MLX graph so repeated rows accumulate
-    # gradients. Native take also preserves the index array's dimensions.
-    indices0 <- mlx_cast(indices - 1L, "int32")
-    new_mlx(cpp_mlx_take(env$weight$ptr, indices0$ptr, 0L))
+    indices <- mlx_cast(indices, "int64")
+    mlx_gather(env$weight, list(indices), axes = 1L)
   }
 
   parameters <- function() {

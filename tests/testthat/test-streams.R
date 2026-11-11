@@ -33,3 +33,16 @@ test_that("mlx_synchronize accepts stream", {
   stream <- mlx_new_stream(dev)
   expect_silent(mlx_synchronize(stream))
 })
+
+test_that("stream aliases remain usable after garbage collection", {
+  for (device in c("cpu", "gpu")) {
+    stream <- mlx_new_stream(device)
+    alias <- stream
+    rm(stream)
+    invisible(gc())
+
+    result <- with_device(alias, mlx_ones(c(2, 2)))
+    expect_silent(mlx_synchronize(alias))
+    expect_equal(as.matrix(result), matrix(1, 2, 2), tolerance = 1e-6)
+  }
+})

@@ -62,7 +62,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' Both operands must be 2D matrices; vectors are not auto-promoted (unlike
 #' base R).
 #'
-#' @inheritParams base::`%*%`
+#' @param x,y MLX matrices or R matrices coercible via [as_mlx()].
 #' @return An mlx object.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export

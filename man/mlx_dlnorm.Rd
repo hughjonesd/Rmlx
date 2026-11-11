@@ -18,7 +18,7 @@ mlx_qlnorm(p, meanlog = 0, sdlog = 1)
 \item{meanlog, sdlog}{Mean and standard deviation of distribution on log scale
 (default: 0, 1)}
 
-\item{log}{If \code{TRUE}, return log density for \code{mlx_dlnorm} (default: \code{FALSE})}
+\item{log}{If \code{TRUE}, return log density (default: \code{FALSE})}
 
 \item{p}{Vector of probabilities (mlx array or coercible to mlx)}
 }

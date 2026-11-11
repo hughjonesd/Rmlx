@@ -1,4 +1,6 @@
 
+#' MLX reduction parameters
+#'
 #' @param x An array or mlx array.
 #' @param na.rm Logical; currently ignored for mlx arrays.
 #' @param dims Leading dimensions treated as rows/cols (see [base::rowSums()]).
@@ -659,12 +661,9 @@ mlx_cumprod <- function(x, axis = NULL, reverse = FALSE, inclusive = TRUE) {
 #' Compute density (`mlx_dnorm`), cumulative distribution (`mlx_pnorm`),
 #' and quantile (`mlx_qnorm`) functions for the normal distribution using MLX.
 #'
-#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @inherit distribution_params params return
 #' @param mean Mean of the distribution (default: 0)
 #' @param sd Standard deviation of the distribution (default: 1)
-#' @param log If `TRUE`, return log density for `mlx_dnorm` (default: `FALSE`)
-#' @inheritParams common_params
-#' @return An mlx array with the computed values.
 #' @seealso [mlx_erf()], [mlx_erfinv()],
 #'   [mlx.core.erf](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erf.html),
 #'   [mlx.core.erfinv](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.erfinv.html)
@@ -705,7 +704,6 @@ mlx_dnorm <- function(x, mean = 0, sd = 1, log = FALSE) {
 
 #' @rdname mlx_dnorm
 #' @export
-#' @param p Vector of probabilities (mlx array or coercible to mlx)
 mlx_pnorm <- function(x, mean = 0, sd = 1) {
   x <- as_mlx(x)
 
@@ -748,11 +746,8 @@ mlx_qnorm <- function(p, mean = 0, sd = 1) {
 #' Compute density (`mlx_dunif`), cumulative distribution (`mlx_punif`),
 #' and quantile (`mlx_qunif`) functions for the uniform distribution using MLX.
 #'
-#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @inherit distribution_params params return
 #' @param min,max Lower and upper limits of the distribution (default: 0, 1)
-#' @param log If `TRUE`, return log density for `mlx_dunif` (default: `FALSE`)
-#' @inheritParams common_params
-#' @return An mlx array with the computed values.
 #' @export
 #' @examples
 #' x <- as_mlx(seq(0, 1, by = 0.1))
@@ -790,7 +785,6 @@ mlx_dunif <- function(x, min = 0, max = 1, log = FALSE) {
 
 #' @rdname mlx_dunif
 #' @export
-#' @param p Vector of probabilities (mlx array or coercible to mlx)
 mlx_punif <- function(x, min = 0, max = 1) {
   x <- as_mlx(x)
 
@@ -827,11 +821,8 @@ mlx_qunif <- function(p, min = 0, max = 1) {
 #' Compute density (`mlx_dexp`), cumulative distribution (`mlx_pexp`),
 #' and quantile (`mlx_qexp`) functions for the exponential distribution using MLX.
 #'
-#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @inherit distribution_params params return
 #' @param rate Rate parameter (default: 1)
-#' @param log If `TRUE`, return log density for `mlx_dexp` (default: `FALSE`)
-#' @inheritParams common_params
-#' @return An mlx array with the computed values.
 #' @export
 #' @examples
 #' x <- as_mlx(seq(0, 5, by = 0.5))
@@ -866,7 +857,6 @@ mlx_dexp <- function(x, rate = 1, log = FALSE) {
 
 #' @rdname mlx_dexp
 #' @export
-#' @param p Vector of probabilities (mlx array or coercible to mlx)
 mlx_pexp <- function(x, rate = 1) {
   x <- as_mlx(x)
 
@@ -902,12 +892,9 @@ mlx_qexp <- function(p, rate = 1) {
 #' Compute density (`mlx_dlnorm`), cumulative distribution (`mlx_plnorm`),
 #' and quantile (`mlx_qlnorm`) functions for the lognormal distribution using MLX.
 #'
-#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @inherit distribution_params params return
 #' @param meanlog,sdlog Mean and standard deviation of distribution on log scale
 #'   (default: 0, 1)
-#' @param log If `TRUE`, return log density for `mlx_dlnorm` (default: `FALSE`)
-#' @inheritParams common_params
-#' @return An mlx array with the computed values.
 #' @export
 #' @examples
 #' x <- as_mlx(seq(0.1, 3, by = 0.2))
@@ -943,7 +930,6 @@ mlx_dlnorm <- function(x, meanlog = 0, sdlog = 1, log = FALSE) {
 
 #' @rdname mlx_dlnorm
 #' @export
-#' @param p Vector of probabilities (mlx array or coercible to mlx)
 mlx_plnorm <- function(x, meanlog = 0, sdlog = 1) {
   x <- as_mlx(x)
 
@@ -975,11 +961,8 @@ mlx_qlnorm <- function(p, meanlog = 0, sdlog = 1) {
 #' Compute density (`mlx_dlogis`), cumulative distribution (`mlx_plogis`),
 #' and quantile (`mlx_qlogis`) functions for the logistic distribution using MLX.
 #'
-#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @inherit distribution_params params return
 #' @param location,scale Location and scale parameters (default: 0, 1)
-#' @param log If `TRUE`, return log density for `mlx_dlogis` (default: `FALSE`)
-#' @inheritParams common_params
-#' @return An mlx array with the computed values.
 #' @export
 #' @examples
 #' x <- as_mlx(seq(-3, 3, by = 0.5))
@@ -1021,7 +1004,6 @@ mlx_dlogis <- function(x, location = 0, scale = 1, log = FALSE) {
 
 #' @rdname mlx_dlogis
 #' @export
-#' @param p Vector of probabilities (mlx array or coercible to mlx)
 mlx_plogis <- function(x, location = 0, scale = 1) {
   x <- as_mlx(x)
 

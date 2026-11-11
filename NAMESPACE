@@ -284,9 +284,13 @@ export(svd)
 export(with_device)
 exportMethods(kronecker)
 importFrom(Rcpp,sourceCpp)
-importFrom(methods,setMethod)
-importFrom(methods,setOldClass)
-importFrom(stats,quantile)
-importFrom(stats,rnorm)
+importFrom(methods,
+  setMethod,
+  setOldClass
+)
+importFrom(stats,
+  quantile,
+  rnorm
+)
 importMethodsFrom(methods,kronecker)
 useDynLib(Rmlx, .registration = TRUE)

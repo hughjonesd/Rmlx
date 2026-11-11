@@ -7,7 +7,7 @@
 mlx_broadcast_arrays(...)
 }
 \arguments{
-\item{...}{One or more arrays (or a single list) convertible via \code{\link[=as_mlx]{as_mlx()}}.}
+\item{...}{One or more arrays (or a single list of arrays) coercible via \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
 A list of broadcast mlx arrays, with each input's dimnames

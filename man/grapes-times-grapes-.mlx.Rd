@@ -7,7 +7,7 @@
 \method{\%*\%}{mlx}(x, y)
 }
 \arguments{
-\item{x, y}{numeric or complex matrices or vectors.}
+\item{x, y}{MLX matrices or R matrices coercible via \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
 An mlx object.

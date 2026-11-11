@@ -41,8 +41,7 @@ SEXP cpp_mlx_random_split(SEXP key_xp_, int num) {
     Rcpp::stop("`num` must be a positive integer.");
   }
 
-  MlxArrayWrapper* key_wrapper = get_mlx_wrapper(key_xp_);
-  array key_arr = key_wrapper->get();
+  array key_arr = get_mlx_array(key_xp_);
 
   std::vector<array> outputs;
   outputs.reserve(num);
@@ -74,8 +73,8 @@ SEXP cpp_mlx_random_bits(SEXP dim_, int width, SEXP key_xp_) {
 
   std::optional<array> key_opt = std::nullopt;
   if (!Rf_isNull(key_xp_)) {
-    MlxArrayWrapper* key_wrapper = get_mlx_wrapper(key_xp_);
-    key_opt = key_wrapper->get();
+    array& key_ref = get_mlx_array(key_xp_);
+    key_opt = key_ref;
   }
 
   array result = mlx::core::random::bits(shape, width, key_opt);
@@ -165,10 +164,10 @@ SEXP cpp_mlx_random_multivariate_normal(SEXP mean_, SEXP cov_, SEXP dim_,
   Shape shape(dim.begin(), dim.end());
 
   List mean_obj(mean_);
-  array mean_arr = get_mlx_wrapper(mean_obj["ptr"])->get();
+  array mean_arr = get_mlx_array(mean_obj["ptr"]);
 
   List cov_obj(cov_);
-  array cov_arr = get_mlx_wrapper(cov_obj["ptr"])->get();
+  array cov_arr = get_mlx_array(cov_obj["ptr"]);
 
   Dtype dtype = checked_float_random_dtype(dtype_str, "multivariate_normal");
   Dtype rng_dtype = random_kernel_dtype(dtype);
@@ -197,8 +196,7 @@ SEXP cpp_mlx_random_laplace(SEXP dim_, double loc, double scale,
 // [[Rcpp::export]]
 SEXP cpp_mlx_random_categorical(SEXP logits_, int axis, int num_samples) {
   List logits_obj(logits_);
-  MlxArrayWrapper* logits_wrapper = get_mlx_wrapper(logits_obj["ptr"]);
-  array logits_arr = logits_wrapper->get();
+  array logits_arr = get_mlx_array(logits_obj["ptr"]);
 
   array result = mlx::core::random::categorical(logits_arr, axis, num_samples, std::nullopt);
   return make_mlx_xptr(std::move(result));
@@ -224,8 +222,7 @@ SEXP cpp_mlx_random_permutation_n(int n) {
 // [[Rcpp::export]]
 SEXP cpp_mlx_random_permutation(SEXP x_, int axis) {
   List x_obj(x_);
-  MlxArrayWrapper* x_wrapper = get_mlx_wrapper(x_obj["ptr"]);
-  array x_arr = x_wrapper->get();
+  array x_arr = get_mlx_array(x_obj["ptr"]);
 
   array result = mlx::core::random::permutation(x_arr, axis, std::nullopt);
   return make_mlx_xptr(std::move(result));

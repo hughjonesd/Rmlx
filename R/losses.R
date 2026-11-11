@@ -2,10 +2,7 @@
 #'
 #' Computes the mean squared error between predictions and targets.
 #'
-#' @param predictions Predicted values as an mlx array.
-#' @param targets Target values as an mlx array.
-#' @param reduction Type of reduction: "mean" (default), "sum", or "none".
-#' @return An mlx array containing the loss.
+#' @inherit loss_params params return
 #' @seealso [mlx.nn.losses.mse_loss](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.mse_loss)
 #' @export
 #' @examples
@@ -31,10 +28,7 @@ mlx_mse_loss <- function(predictions, targets, reduction = c("mean", "sum", "non
 #'
 #' Computes the mean absolute error between predictions and targets.
 #'
-#' @param predictions Predicted values as an mlx array.
-#' @param targets Target values as an mlx array.
-#' @param reduction Type of reduction: "mean" (default), "sum", or "none".
-#' @return An mlx array containing the loss.
+#' @inherit loss_params params return
 #' @seealso [mlx.nn.losses.l1_loss](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.l1_loss)
 #' @export
 #' @examples
@@ -62,8 +56,7 @@ mlx_l1_loss <- function(predictions, targets, reduction = c("mean", "sum", "none
 #'
 #' @param predictions Predicted probabilities as an mlx array (values in \[0,1\]).
 #' @param targets Binary target values as an mlx array (0 or 1).
-#' @param reduction Type of reduction: "mean" (default), "sum", or "none".
-#' @return An mlx array containing the loss.
+#' @inherit loss_params params return
 #' @seealso [mlx.nn.losses.binary_cross_entropy](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.binary_cross_entropy)
 #' @export
 #' @examples
@@ -101,7 +94,7 @@ mlx_binary_cross_entropy <- function(predictions, targets, reduction = c("mean",
 #'   per sample and one column per class, as an mlx array or R matrix.
 #' @param targets Target class indices as an mlx array or integer vector.
 #'   Indices are 1-based, with one non-missing index per sample.
-#' @param reduction Type of reduction: "mean" (default), "sum", or "none".
+#' @inheritParams loss_params
 #' @return A scalar mlx array for `"mean"` or `"sum"`, or a vector with one loss
 #'   per sample for `"none"`.
 #' @seealso [mlx.nn.losses.cross_entropy](https://ml-explore.github.io/mlx/build/html/python/nn.html#mlx.nn.losses.cross_entropy)

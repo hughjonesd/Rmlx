@@ -36,4 +36,4 @@ SystemRequirements: MLX (>= 0.32.3); C++20; CMake; BLAS/LAPACK development
 Roxygen: list(markdown = TRUE)
 URL: https://hughjonesd.github.io/Rmlx/, https://github.com/hughjonesd/Rmlx
 BugReports: https://github.com/hughjonesd/Rmlx/issues
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0

@@ -46,3 +46,18 @@ test_that("mlx_import_function accepts named arguments", {
   result <- imported(b = b, a = a)
   expect_equal(as.matrix(result), as.matrix(a) + as.matrix(b), tolerance = 1e-6)
 })
+
+test_that("imported function aliases survive garbage collection and repeated calls", {
+  imported <- import_add_matrix_fixture()
+  alias <- imported
+  rm(imported)
+  invisible(gc())
+
+  a <- mlx_matrix(1:4, 2, 2, dtype = "float32")
+  b <- mlx_matrix(5:8, 2, 2, dtype = "float32")
+  expected <- matrix(1:4, 2, 2) + matrix(5:8, 2, 2)
+
+  expect_equal(as.matrix(alias(a, b)), expected, tolerance = 1e-6)
+  invisible(gc())
+  expect_equal(as.matrix(alias(b = b, a = a)), expected, tolerance = 1e-6)
+})

@@ -2,28 +2,28 @@
 #'
 #' @param x Input object (vector/array).
 #' @param dtype Target MLX dtype.
-#' @return Vector of numeric or complex values (or the original numeric input when
-#'   it is already a double vector/matrix headed for float32/float64).
+#' @return An integer, logical, double, or complex payload. Integer and logical
+#'   inputs with missing values are coerced to double so R's integer NA sentinel
+#'   is represented as a floating-point missing value; booleans reject missing values.
 #' @noRd
 coerce_payload <- function(x, dtype) {
-  if (dtype %in% c("float32", "float64") &&
-      is.double(x) &&
-      is.atomic(x) &&
-      !is.object(x)) {
-    return(x)
-  }
-
   switch(
     dtype,
     "bool" = {
-      x_logical <- as.logical(x)
+      x_logical <- if (is.logical(x) && !is.object(x)) x else as.logical(x)
       if (anyNA(x_logical)) {
         stop("Logical NA values are not supported for MLX boolean arrays.", call. = FALSE)
       }
-      as.numeric(x_logical)
+      x_logical
     },
     "complex64" = as.complex(x),
-    as.numeric(x)
+    {
+      if (is.atomic(x) && !is.object(x) &&
+          (is.double(x) || ((is.integer(x) || is.logical(x)) && !anyNA(x)))) {
+        return(x)
+      }
+      as.numeric(x)
+    }
   )
 }
 
@@ -35,18 +35,12 @@ local_float64_cpu <- function(dtype, .local_envir = parent.frame()) {
 
 #' Create MLX array from R object
 #'
+#' If `dtype` is not specified, numeric inputs use `"float32"`, logical inputs
+#' use `"bool"`, and complex inputs use `"complex64"`.
+#'
 #' @inherit mlx_float64_cpu_internal details
 #'
 #' @inheritParams common_params
-#' @param x Numeric, logical, or complex vector, matrix, or array to convert
-#' @param dtype Data type for the MLX array. One of:
-#'   - Floating point: `"float32"`, `"float64"`
-#'   - Integer signed: `"int8"`, `"int16"`, `"int32"`, `"int64"`
-#'   - Integer unsigned: `"uint8"`, `"uint16"`, `"uint32"`, `"uint64"`
-#'   - Other: `"bool"`, `"complex64"`
-#'
-#'   If not specified, defaults to `"float32"` for numeric, `"bool"` for logical,
-#'   and `"complex64"` for complex inputs.
 #' @return An object of class `mlx`
 #'
 #' ## Integer types require explicit dtype

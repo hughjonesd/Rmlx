@@ -9,8 +9,7 @@ using namespace mlx::core;
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_sort(SEXP xp_, Rcpp::Nullable<int> axis) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (axis.isNotNull()) {
@@ -25,8 +24,7 @@ SEXP cpp_mlx_sort(SEXP xp_, Rcpp::Nullable<int> axis) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_argsort(SEXP xp_, Rcpp::Nullable<int> axis) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (axis.isNotNull()) {
@@ -49,8 +47,7 @@ SEXP cpp_mlx_topk(SEXP xp_, int k, Rcpp::Nullable<int> axis) {
     Rcpp::stop("k must be positive.");
   }
 
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   array result = [&]() -> array {
     if (axis.isNotNull()) {
@@ -74,8 +71,7 @@ SEXP cpp_mlx_topk(SEXP xp_, int k, Rcpp::Nullable<int> axis) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_partition(SEXP xp_, int kth, Rcpp::Nullable<int> axis) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   if (kth < 0) {
     Rcpp::stop("kth must be non-negative.");
@@ -101,8 +97,7 @@ SEXP cpp_mlx_partition(SEXP xp_, int kth, Rcpp::Nullable<int> axis) {
 
 // [[Rcpp::export]]
 SEXP cpp_mlx_argpartition(SEXP xp_, int kth, Rcpp::Nullable<int> axis) {
-  MlxArrayWrapper* wrapper = get_mlx_wrapper(xp_);
-  array arr = wrapper->get();
+  array arr = get_mlx_array(xp_);
 
   if (kth < 0) {
     Rcpp::stop("kth must be non-negative.");

@@ -1,4 +1,6 @@
 
+#' Common MLX parameters
+#'
 #' @param device Execution target for APIs that expose a one-off device or
 #'   stream override. Supply `"gpu"`, `"cpu"`, or an `mlx_stream` created via
 #'   [mlx_new_stream()]. Ordinary array operations use the current
@@ -25,18 +27,24 @@
 #' @keywords internal
 NULL
 
+#' MLX array parameter
+#'
 #' @param x An mlx array.
 #'
 #' @name mlx_array_required
 #' @keywords internal
 NULL
 
+#' MLX matrix parameter
+#'
 #' @param x An mlx matrix (2-dimensional array).
 #'
 #' @name mlx_matrix_required
 #' @keywords internal
 NULL
 
+#' Convolution parameters
+#'
 #' @param input Input mlx array. Shape depends on dimensionality (see individual functions).
 #' @param weight Weight array. Shape depends on dimensionality (see individual functions).
 #' @param stride Stride of the convolution. Can be a scalar or vector (length depends
@@ -51,14 +59,60 @@ NULL
 #' @keywords internal
 NULL
 
+#' Ignored additional arguments
+#'
 #' @name ellipsis_ignored
 #' @keywords internal
 #' @param ... Additional arguments; ignored.
 NULL
 
+#' Additional arguments for base R compatibility
+#'
 #' @name ellipsis_base
 #' @keywords internal
 #' @param ... Additional arguments forwarded to the corresponding base R implementation for signature compatibility.
+NULL
+
+#' Approximate equality parameters
+#'
+#' @param a,b MLX arrays or objects coercible to MLX arrays
+#' @param rtol Relative tolerance (default: 1e-5)
+#' @param atol Absolute tolerance (default: 1e-8)
+#' @param equal_nan If `TRUE`, NaN values are considered equal (default: `FALSE`)
+#' @details Two values are considered close if:
+#' `abs(a - b) <= (atol + rtol * abs(b))`.
+#'
+#' Infinite values with matching signs are considered equal.
+#' Supports NumPy-style broadcasting.
+#' @name comparison_params
+#' @keywords internal
+NULL
+
+#' Distribution function parameters
+#'
+#' @param x Vector of quantiles (mlx array or coercible to mlx)
+#' @param p Vector of probabilities (mlx array or coercible to mlx)
+#' @param log If `TRUE`, return log density (default: `FALSE`)
+#' @return An mlx array with the computed values.
+#' @name distribution_params
+#' @keywords internal
+NULL
+
+#' Array list parameters
+#'
+#' @param ... One or more arrays (or a single list of arrays) coercible via [as_mlx()].
+#' @name array_list_params
+#' @keywords internal
+NULL
+
+#' Loss function parameters
+#'
+#' @param predictions Predicted values as an mlx array.
+#' @param targets Target values as an mlx array.
+#' @param reduction Type of reduction: "mean" (default), "sum", or "none".
+#' @return An mlx array containing the loss.
+#' @name loss_params
+#' @keywords internal
 NULL
 
 #' CPU-only MLX operation note
