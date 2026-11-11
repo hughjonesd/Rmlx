@@ -660,27 +660,17 @@ mlx_embedding <- function(num_embeddings, embedding_dim) {
     indices <- as_mlx(indices)
 
     # indices are 1-based token IDs
-    orig_shape <- cpp_mlx_shape(indices$ptr)
-    indices_r <- as.integer(indices)
-
-    # Take embeddings
-    result_list <- lapply(indices_r, function(idx) {
-      if (idx < 1 || idx > env$num_embeddings) {
-        stop("Index out of range: ", idx, call. = FALSE)
-      }
-      as.numeric(env$weight[idx, ])
-    })
-
-    # Stack results and reshape
-    if (length(orig_shape) == 0) {
-      # Scalar index - return (1, embedding_dim)
-      mlx_matrix(result_list[[1]], nrow = 1, ncol = env$embedding_dim)
-    } else {
-      # Stack into matrix then reshape to match input shape + embedding dimension
-      result_mat <- do.call(rbind, lapply(result_list, function(x) matrix(x, 1, env$embedding_dim)))
-      new_shape <- c(orig_shape, env$embedding_dim)
-      mlx_array(as.numeric(result_mat), dim = new_shape)
+    indices_r <- as.numeric(indices)
+    if (anyNA(indices_r) || any(!is.finite(indices_r)) ||
+        any(indices_r != trunc(indices_r)) ||
+        any(indices_r < 1 | indices_r > env$num_embeddings)) {
+      stop("Index out of range: expected whole numbers in 1:num_embeddings.",
+           call. = FALSE)
     }
+    # Keep the weight lookup on the MLX graph so repeated rows accumulate
+    # gradients. Native take also preserves the index array's dimensions.
+    indices0 <- mlx_cast(indices - 1L, "int32")
+    new_mlx(cpp_mlx_take(env$weight$ptr, indices0$ptr, 0L))
   }
 
   parameters <- function() {
