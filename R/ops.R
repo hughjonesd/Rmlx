@@ -62,7 +62,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' Both operands must be 2D matrices; vectors are not auto-promoted (unlike
 #' base R).
 #'
-#' @param x,y MLX matrices or R matrices coercible via [as_mlx()].
+#' @inheritParams array_pair_params
 #' @return An mlx object.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
@@ -234,7 +234,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
 #' Integer division for mlx arrays
 #'
-#' @param x,y mlx arrays.
+#' @inheritParams array_pair_params
 #' @return mlx array with floor-divided values.
 #' @noRd
 .mlx_floor_divide <- function(x, y) {
@@ -243,7 +243,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
 #' Remainder operation for mlx arrays
 #'
-#' @param x,y mlx arrays.
+#' @inheritParams array_pair_params
 #' @return mlx array with remainder values.
 #' @noRd
 .mlx_remainder <- function(x, y) {
@@ -278,7 +278,7 @@ mlx_maximum <- function(x, y) {
 
 #' Internal wrapper for binary operations
 #'
-#' @param x,y mlx arrays or coercible to mlx
+#' @inheritParams array_pair_params
 #' @param cpp_fn C++ function to call.
 #' @return mlx array.
 #' @noRd
@@ -385,7 +385,7 @@ promote_dtype <- function(dtype1, dtype2) {
 
 #' Match R operands to mlx operand dtype
 #'
-#' @param x,y mlx or R
+#' @inheritParams array_pair_params
 #'
 #' @returns `list(x, y)` with both elements mlx
 #' @noRd
