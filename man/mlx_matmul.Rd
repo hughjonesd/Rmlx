@@ -7,7 +7,7 @@
 mlx_matmul(x, y)
 }
 \arguments{
-\item{x, y}{Numeric arrays coercible to mlx arrays, each with at least one axis.}
+\item{x, y}{mlx arrays or objects coercible with \code{\link[=as_mlx]{as_mlx()}}.}
 }
 \value{
 An mlx array. Two vectors produce a scalar inner product.

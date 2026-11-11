@@ -414,7 +414,7 @@ resolve_common_dtype <- function(dtypes) {
 #' operands are promoted to row/column matrices and the added axes are removed
 #' from the result, following MLX semantics. Scalars are not supported.
 #'
-#' @param x,y Numeric arrays coercible to mlx arrays, each with at least one axis.
+#' @inheritParams mlx_minimum
 #' @return An mlx array. Two vectors produce a scalar inner product.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.matmul.html)
 #' @export
