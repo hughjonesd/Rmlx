@@ -98,6 +98,13 @@ NULL
 #' @keywords internal
 NULL
 
+#' Array pair parameters
+#'
+#' @param x,y mlx arrays or objects coercible with [as_mlx()].
+#' @name array_pair_params
+#' @keywords internal
+NULL
+
 #' Array list parameters
 #'
 #' @param ... One or more arrays (or a single list of arrays) coercible via [as_mlx()].

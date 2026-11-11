@@ -252,7 +252,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
 #' Elementwise minimum of two mlx arrays
 #'
-#' @param x,y mlx arrays or objects coercible with [as_mlx()].
+#' @inheritParams array_pair_params
 #' @return An mlx array containing the elementwise minimum.
 #' @seealso [mlx.core.minimum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum)
 #' @export
@@ -266,7 +266,7 @@ mlx_minimum <- function(x, y) {
 
 #' Elementwise maximum of two mlx arrays
 #'
-#' @inheritParams mlx_minimum
+#' @inheritParams array_pair_params
 #' @return An mlx array containing the elementwise maximum.
 #' @seealso [mlx.core.maximum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum)
 #' @export
@@ -414,7 +414,7 @@ resolve_common_dtype <- function(dtypes) {
 #' operands are promoted to row/column matrices and the added axes are removed
 #' from the result, following MLX semantics. Scalars are not supported.
 #'
-#' @inheritParams mlx_minimum
+#' @inheritParams array_pair_params
 #' @return An mlx array. Two vectors produce a scalar inner product.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.matmul.html)
 #' @export
