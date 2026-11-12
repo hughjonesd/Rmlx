@@ -51,8 +51,12 @@
 <dd><p>Logical mlx array (non-zero values are treated as <code>TRUE</code>).</p></dd>
 
 
-<dt id="arg-x-y">x, y<a class="anchor" aria-label="anchor" href="#arg-x-y"></a></dt>
-<dd><p>Arrays broadcastable to the shape of <code>condition</code>.</p></dd>
+<dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
+<dd><p>An mlx array, or an R array/matrix/vector that will be converted via <code><a href="as_mlx.html">as_mlx()</a></code>.</p></dd>
+
+
+<dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
+<dd><p>A second array, with the same accepted types as <code>x</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -62,7 +66,8 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Behaves like <code><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse()</a></code> for arrays, but evaluates both branches.</p>
+    <p>Behaves like <code><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse()</a></code> for arrays, but evaluates both branches.
+<code>condition</code>, <code>x</code>, and <code>y</code> must broadcast to a common shape.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

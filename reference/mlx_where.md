@@ -14,9 +14,14 @@ mlx_where(condition, x, y)
 
   Logical mlx array (non-zero values are treated as `TRUE`).
 
-- x, y:
+- x:
 
-  Arrays broadcastable to the shape of `condition`.
+  An mlx array, or an R array/matrix/vector that will be converted via
+  [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
+
+- y:
+
+  A second array, with the same accepted types as `x`.
 
 ## Value
 
@@ -26,7 +31,8 @@ An mlx array where elements are drawn from `x` when `condition` is
 ## Details
 
 Behaves like [`ifelse()`](https://rdrr.io/r/base/ifelse.html) for
-arrays, but evaluates both branches.
+arrays, but evaluates both branches. `condition`, `x`, and `y` must
+broadcast to a common shape.
 
 ## See also
 

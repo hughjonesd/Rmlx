@@ -430,9 +430,24 @@ t2 <- system.time(
 )
 
 cat("Base R:", t1["elapsed"], "seconds\n")
-#> Base R: 0.482 seconds
+#> Base R: 0.381 seconds
 cat("MLX:", t2["elapsed"], "seconds\n")
-#> MLX: 0.026 seconds
+#> MLX: 0.017 seconds
 ```
 
 For more information see the Benchmarks vignette.
+
+## Batched matrix multiplication
+
+Use
+[`mlx_matmul()`](https://hughjonesd.github.io/Rmlx/reference/mlx_matmul.md)
+for attention and other computations with broadcast batch dimensions.
+`%*%` continues to require two matrices.
+
+``` r
+
+batches <- mlx_ones(c(2, 3, 4))
+weights <- mlx_ones(c(4, 5))
+mlx_shape(mlx_matmul(batches, weights)) # 2 3 5
+#> [1] 2 3 5
+```

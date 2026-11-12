@@ -768,6 +768,8 @@ mlx_dtype(x64)
 
 - [`` `%*%`( ``*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/grapes-times-grapes-.mlx.md)
   : Matrix multiplication for MLX arrays
+- [`mlx_matmul()`](https://hughjonesd.github.io/Rmlx/reference/mlx_matmul.md)
+  : Matrix multiplication with broadcast batch dimensions
 - [`mlx_addmm()`](https://hughjonesd.github.io/Rmlx/reference/mlx_addmm.md)
   : Fused matrix multiply and add for MLX arrays
 - [`crossprod(`*`<mlx>`*`)`](https://hughjonesd.github.io/Rmlx/reference/crossprod.mlx.md)

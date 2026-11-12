@@ -12,10 +12,14 @@ x %*% y
 
 ## Arguments
 
-- x, y:
+- x:
 
-  MLX matrices or R matrices coercible via
+  An mlx array, or an R array/matrix/vector that will be converted via
   [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
+
+- y:
+
+  A second array, with the same accepted types as `x`.
 
 ## Value
 

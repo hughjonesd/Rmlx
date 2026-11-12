@@ -10,10 +10,14 @@ mlx_minimum(x, y)
 
 ## Arguments
 
-- x, y:
+- x:
 
-  mlx arrays or objects coercible with
+  An mlx array, or an R array/matrix/vector that will be converted via
   [`as_mlx()`](https://hughjonesd.github.io/Rmlx/reference/as_mlx.md).
+
+- y:
+
+  A second array, with the same accepted types as `x`.
 
 ## Value
 
