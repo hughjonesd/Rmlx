@@ -62,7 +62,7 @@ Ops.mlx <- function(e1, e2 = NULL) {
 #' Both operands must be 2D matrices; vectors are not auto-promoted (unlike
 #' base R).
 #'
-#' @param x,y MLX matrices or R matrices coercible via [as_mlx()].
+#' @inheritParams common_params
 #' @return An mlx object.
 #' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.matmul)
 #' @export
@@ -234,7 +234,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
 #' Integer division for mlx arrays
 #'
-#' @param x,y mlx arrays.
+#' @inheritParams common_params
 #' @return mlx array with floor-divided values.
 #' @noRd
 .mlx_floor_divide <- function(x, y) {
@@ -243,7 +243,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
 #' Remainder operation for mlx arrays
 #'
-#' @param x,y mlx arrays.
+#' @inheritParams common_params
 #' @return mlx array with remainder values.
 #' @noRd
 .mlx_remainder <- function(x, y) {
@@ -252,7 +252,7 @@ mlx_addmm <- function(input, mat1, mat2, alpha = 1, beta = 1) {
 
 #' Elementwise minimum of two mlx arrays
 #'
-#' @param x,y mlx arrays or objects coercible with [as_mlx()].
+#' @inheritParams common_params
 #' @return An mlx array containing the elementwise minimum.
 #' @seealso [mlx.core.minimum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.minimum)
 #' @export
@@ -266,7 +266,7 @@ mlx_minimum <- function(x, y) {
 
 #' Elementwise maximum of two mlx arrays
 #'
-#' @inheritParams mlx_minimum
+#' @inheritParams common_params
 #' @return An mlx array containing the elementwise maximum.
 #' @seealso [mlx.core.maximum](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.maximum)
 #' @export
@@ -278,7 +278,7 @@ mlx_maximum <- function(x, y) {
 
 #' Internal wrapper for binary operations
 #'
-#' @param x,y mlx arrays or coercible to mlx
+#' @inheritParams common_params
 #' @param cpp_fn C++ function to call.
 #' @return mlx array.
 #' @noRd
@@ -385,7 +385,7 @@ promote_dtype <- function(dtype1, dtype2) {
 
 #' Match R operands to mlx operand dtype
 #'
-#' @param x,y mlx or R
+#' @inheritParams common_params
 #'
 #' @returns `list(x, y)` with both elements mlx
 #' @noRd
@@ -405,4 +405,30 @@ coerce_binary_operands <- function(x, y) {
 
 resolve_common_dtype <- function(dtypes) {
   Reduce(promote_dtype, dtypes)
+}
+
+#' Matrix multiplication with broadcast batch dimensions
+#'
+#' Unlike `%*%`, `mlx_matmul()` accepts arrays with more than two dimensions.
+#' The last two axes are matrix axes; preceding axes broadcast. One-dimensional
+#' operands are promoted to row/column matrices and the added axes are removed
+#' from the result, following MLX semantics. Scalars are not supported.
+#'
+#' @inheritParams common_params
+#' @return An mlx array. Two vectors produce a scalar inner product.
+#' @seealso [mlx.core.matmul](https://ml-explore.github.io/mlx/build/html/python/_autosummary/mlx.core.matmul.html)
+#' @export
+#' @examples
+#' x <- mlx_ones(c(2, 3, 4))
+#' w <- mlx_ones(c(4, 5))
+#' mlx_shape(mlx_matmul(x, w)) # 2 3 5
+mlx_matmul <- function(x, y) {
+  operands <- coerce_binary_operands(x, y)
+  x <- operands[[1L]]
+  y <- operands[[2L]]
+  if (!length(mlx_shape(x)) || !length(mlx_shape(y))) {
+    stop("Operands must have at least one dimension.", call. = FALSE)
+  }
+  dtype <- promote_dtype(mlx_dtype(x), mlx_dtype(y))
+  new_mlx(cpp_mlx_matmul(x$ptr, y$ptr, dtype))
 }

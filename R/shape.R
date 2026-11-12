@@ -947,10 +947,11 @@ mlx_broadcast_arrays <- function(...) {
 #' Elementwise conditional selection
 #'
 #' @param condition Logical mlx array (non-zero values are treated as `TRUE`).
-#' @param x,y Arrays broadcastable to the shape of `condition`.
+#' @inheritParams common_params
 #' @return An mlx array where elements are drawn from `x` when
 #'   `condition` is `TRUE`, otherwise from `y`.
 #' @details Behaves like [ifelse()] for arrays, but evaluates both branches.
+#' `condition`, `x`, and `y` must broadcast to a common shape.
 #' @seealso [mlx.core.where](https://ml-explore.github.io/mlx/build/html/python/array.html#mlx.core.where)
 #' @export
 #' @examples

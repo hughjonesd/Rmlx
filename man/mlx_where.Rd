@@ -9,7 +9,9 @@ mlx_where(condition, x, y)
 \arguments{
 \item{condition}{Logical mlx array (non-zero values are treated as \code{TRUE}).}
 
-\item{x, y}{Arrays broadcastable to the shape of \code{condition}.}
+\item{x}{An mlx array, or an R array/matrix/vector that will be converted via \code{\link[=as_mlx]{as_mlx()}}.}
+
+\item{y}{A second array, with the same accepted types as \code{x}.}
 }
 \value{
 An mlx array where elements are drawn from \code{x} when
@@ -20,6 +22,7 @@ Elementwise conditional selection
 }
 \details{
 Behaves like \code{\link[=ifelse]{ifelse()}} for arrays, but evaluates both branches.
+\code{condition}, \code{x}, and \code{y} must broadcast to a common shape.
 }
 \examples{
 cond <- mlx_matrix(c(TRUE, FALSE, TRUE, FALSE), 2, 2)

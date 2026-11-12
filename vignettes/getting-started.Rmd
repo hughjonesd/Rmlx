@@ -307,3 +307,14 @@ cat("MLX:", t2["elapsed"], "seconds\n")
 ```
 
 For more information see the Benchmarks vignette.
+
+## Batched matrix multiplication
+
+Use `mlx_matmul()` for attention and other computations with broadcast batch
+dimensions. `%*%` continues to require two matrices.
+
+```{r}
+batches <- mlx_ones(c(2, 3, 4))
+weights <- mlx_ones(c(4, 5))
+mlx_shape(mlx_matmul(batches, weights)) # 2 3 5
+```

@@ -187,6 +187,7 @@ mlx_load_safetensors "Load MLX arrays from the safetensors format" TRUE TRUE
 mlx_logcumsumexp "Log cumulative sum exponential for mlx arrays" TRUE TRUE
 mlx_logsumexp "Log-sum-exp reduction for mlx arrays" TRUE TRUE
 mlx_lu "LU factorization" TRUE TRUE
+mlx_matmul "Matrix multiplication with broadcast batch dimensions" TRUE TRUE
 mlx_matrix "Construct MLX matrices efficiently" TRUE TRUE
 mlx_maximum "Elementwise maximum of two mlx arrays" TRUE TRUE
 mlx_mean NA TRUE TRUE
